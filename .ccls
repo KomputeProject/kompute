@@ -1,0 +1,14 @@
+
+%clang
+
+-fdeclspec
+-fms-extensions
+-Wall
+-Wextra
+-std=c++11
+
+%h -x
+%h c++-header
+
+-I./external/
+
