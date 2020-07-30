@@ -2,6 +2,7 @@
 ####### SRC Build Params #######
 
 CC=/c/Users/axsau/scoop/apps/gcc/current/bin/g++.exe
+CF=~/Programming/lib/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-format
 
 
 ####### Shader Build Params #######
@@ -24,6 +25,9 @@ build: build_shaders
 
 build_shaders:
 	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
+
+format:
+	$(CF) -i -style=mozilla src/*.cpp src/*.h src/*.hpp
 
 clean:
 	rm ./bin/main.exe;
