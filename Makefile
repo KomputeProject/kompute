@@ -1,18 +1,33 @@
 
+####### SRC Build Params #######
+
+CC=/c/Users/axsau/scoop/apps/gcc/current/bin/g++.exe
 
 
-build:
-	/c/Users/axsau/scoop/apps/gcc/current/bin/g++.exe \
-		-std=c++17 \
-		-c src/main.cpp \
-		-I"./external" \
-		-I"C:\\VulkanSDK\\1.2.141.2\\Include" \
-		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\vulkan-1.lib" \
-		-o main.exe
+####### Shader Build Params #######
+
+SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
+
+
+####### Main Target Rules #######
+
+build: build_shaders
+	$(CC) \
+		-Wall \
+		src/* \
+		-std=c++11 \
+		-I"./src/" \
+		-I"C:\\VulkanSDK\\1.2.141.2\\Include\\" \
+		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
+		-lvulkan-1 \
+		-o ./bin/main.exe
+
+build_shaders:
+	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
 
 clean:
-	rm ./game;
+	rm ./bin/main.exe;
 
 run:
-	./game;
+	cd bin && ./main.exe;
 
