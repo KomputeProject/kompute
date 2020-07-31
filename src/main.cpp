@@ -292,7 +292,7 @@ class VulkanExample
             // Copy to staging buffer
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
               vks::initializers::commandBufferAllocateInfo(
-                commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+                this->commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
             VK_CHECK_RESULT(
               vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
@@ -319,7 +319,7 @@ class VulkanExample
               vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
 
             vkDestroyFence(device, fence, nullptr);
-            vkFreeCommandBuffers(device, commandPool, 1, &copyCmd);
+            vkFreeCommandBuffers(device, this->commandPool, 1, &copyCmd);
         }
 
         /*
@@ -399,6 +399,7 @@ class VulkanExample
 
             VkSpecializationMapEntry specializationMapEntry =
               vks::initializers::specializationMapEntry(0, 0, sizeof(uint32_t));
+
             VkSpecializationInfo specializationInfo =
               vks::initializers::specializationInfo(1,
                                                     &specializationMapEntry,
@@ -426,7 +427,7 @@ class VulkanExample
             assert(shaderStage.module != VK_NULL_HANDLE);
             computePipelineCreateInfo.stage = shaderStage;
             VK_CHECK_RESULT(vkCreateComputePipelines(device,
-                                                     pipelineCache,
+                                                     this->pipelineCache,
                                                      1,
                                                      &computePipelineCreateInfo,
                                                      nullptr,
@@ -435,9 +436,9 @@ class VulkanExample
             // Create a command buffer for compute operations
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
               vks::initializers::commandBufferAllocateInfo(
-                commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+                this->commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VK_CHECK_RESULT(vkAllocateCommandBuffers(
-              device, &cmdBufAllocateInfo, &commandBuffer));
+              device, &cmdBufAllocateInfo, &this->commandBuffer));
 
             // Fence for compute CB sync
             VkFenceCreateInfo fenceCreateInfo =
@@ -453,7 +454,7 @@ class VulkanExample
             VkCommandBufferBeginInfo cmdBufInfo =
               vks::initializers::commandBufferBeginInfo();
 
-            VK_CHECK_RESULT(vkBeginCommandBuffer(commandBuffer, &cmdBufInfo));
+            VK_CHECK_RESULT(vkBeginCommandBuffer(this->commandBuffer, &cmdBufInfo));
 
             // Barrier to ensure that input buffer transfer is finished before
             // compute shader reads from it
@@ -466,7 +467,7 @@ class VulkanExample
             bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
             bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-            vkCmdPipelineBarrier(commandBuffer,
+            vkCmdPipelineBarrier(this->commandBuffer,
                                  VK_PIPELINE_STAGE_HOST_BIT,
                                  VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
                                  VK_FLAGS_NONE,
@@ -478,8 +479,8 @@ class VulkanExample
                                  nullptr);
 
             vkCmdBindPipeline(
-              commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
-            vkCmdBindDescriptorSets(commandBuffer,
+              this->commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+            vkCmdBindDescriptorSets(this->commandBuffer,
                                     VK_PIPELINE_BIND_POINT_COMPUTE,
                                     pipelineLayout,
                                     0,
@@ -488,7 +489,7 @@ class VulkanExample
                                     0,
                                     0);
 
-            vkCmdDispatch(commandBuffer, BUFFER_ELEMENTS, 1, 1);
+            vkCmdDispatch(this->commandBuffer, BUFFER_ELEMENTS, 1, 1);
 
             // Barrier to ensure that shader writes are finished before buffer
             // is read back from GPU
@@ -499,7 +500,7 @@ class VulkanExample
             bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
             bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-            vkCmdPipelineBarrier(commandBuffer,
+            vkCmdPipelineBarrier(this->commandBuffer,
                                  VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
                                  VK_PIPELINE_STAGE_TRANSFER_BIT,
                                  VK_FLAGS_NONE,
@@ -514,7 +515,7 @@ class VulkanExample
             VkBufferCopy copyRegion = {};
             copyRegion.size = bufferSize;
             vkCmdCopyBuffer(
-              commandBuffer, deviceBuffer, hostBuffer, 1, &copyRegion);
+              this->commandBuffer, deviceBuffer, hostBuffer, 1, &copyRegion);
 
             // Barrier to ensure that buffer copy is finished before host
             // reading from it
@@ -525,7 +526,7 @@ class VulkanExample
             bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
             bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-            vkCmdPipelineBarrier(commandBuffer,
+            vkCmdPipelineBarrier(this->commandBuffer,
                                  VK_PIPELINE_STAGE_TRANSFER_BIT,
                                  VK_PIPELINE_STAGE_HOST_BIT,
                                  VK_FLAGS_NONE,
@@ -536,7 +537,7 @@ class VulkanExample
                                  0,
                                  nullptr);
 
-            VK_CHECK_RESULT(vkEndCommandBuffer(commandBuffer));
+            VK_CHECK_RESULT(vkEndCommandBuffer(this->commandBuffer));
 
             // Submit compute work
             vkResetFences(device, 1, &fence);
@@ -545,7 +546,7 @@ class VulkanExample
             VkSubmitInfo computeSubmitInfo = vks::initializers::submitInfo();
             computeSubmitInfo.pWaitDstStageMask = &waitStageMask;
             computeSubmitInfo.commandBufferCount = 1;
-            computeSubmitInfo.pCommandBuffers = &commandBuffer;
+            computeSubmitInfo.pCommandBuffers = &this->commandBuffer;
             VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &computeSubmitInfo, fence));
             VK_CHECK_RESULT(
               vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
@@ -593,9 +594,9 @@ class VulkanExample
         vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
         vkDestroyDescriptorPool(device, descriptorPool, nullptr);
         vkDestroyPipeline(device, pipeline, nullptr);
-        vkDestroyPipelineCache(device, pipelineCache, nullptr);
+        vkDestroyPipelineCache(device, this->pipelineCache, nullptr);
         vkDestroyFence(device, fence, nullptr);
-        vkDestroyCommandPool(device, commandPool, nullptr);
+        vkDestroyCommandPool(device, this->commandPool, nullptr);
         vkDestroyShaderModule(device, shaderModule, nullptr);
         vkDestroyDevice(device, nullptr);
 #if DEBUG
