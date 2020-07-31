@@ -64,18 +64,20 @@ class VulkanExample
         // Create the buffer handle
         VkBufferCreateInfo bufferCreateInfo =
           vks::initializers::bufferCreateInfo(usageFlags, size);
+
         bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
         VK_CHECK_RESULT(
-          vkCreateBuffer(device, &bufferCreateInfo, nullptr, buffer));
+          vkCreateBuffer(this->device, &bufferCreateInfo, nullptr, buffer));
 
         // Create the memory backing up the buffer handle
         VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
-        vkGetPhysicalDeviceMemoryProperties(physicalDevice,
+        vkGetPhysicalDeviceMemoryProperties(this->physicalDevice,
                                             &deviceMemoryProperties);
         VkMemoryRequirements memReqs;
         VkMemoryAllocateInfo memAlloc = vks::initializers::memoryAllocateInfo();
-        vkGetBufferMemoryRequirements(device, *buffer, &memReqs);
+        vkGetBufferMemoryRequirements(this->device, *buffer, &memReqs);
         memAlloc.allocationSize = memReqs.size;
+
         // Find a memory type index that fits the properties of the buffer
         bool memTypeFound = false;
         for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++) {
@@ -187,9 +189,11 @@ class VulkanExample
         uint32_t deviceCount = 0;
         VK_CHECK_RESULT(
           vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr));
+
         std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
         VK_CHECK_RESULT(vkEnumeratePhysicalDevices(
           instance, &deviceCount, physicalDevices.data()));
+
         physicalDevice = physicalDevices[0];
 
         VkPhysicalDeviceProperties deviceProperties;
@@ -202,13 +206,16 @@ class VulkanExample
         uint32_t queueFamilyCount;
         vkGetPhysicalDeviceQueueFamilyProperties(
           physicalDevice, &queueFamilyCount, nullptr);
+
         std::vector<VkQueueFamilyProperties> queueFamilyProperties(
           queueFamilyCount);
         vkGetPhysicalDeviceQueueFamilyProperties(
           physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
+
         for (uint32_t i = 0;
              i < static_cast<uint32_t>(queueFamilyProperties.size());
              i++) {
+
             if (queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
                 queueFamilyIndex = i;
                 queueCreateInfo.sType =
@@ -225,18 +232,18 @@ class VulkanExample
         deviceCreateInfo.queueCreateInfoCount = 1;
         deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
         VK_CHECK_RESULT(
-          vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device));
+          vkCreateDevice(this->physicalDevice, &deviceCreateInfo, nullptr, &device));
 
         // Get a compute queue
-        vkGetDeviceQueue(device, queueFamilyIndex, 0, &queue);
+        vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &queue);
 
         // Compute command pool
         VkCommandPoolCreateInfo cmdPoolInfo = {};
         cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        cmdPoolInfo.queueFamilyIndex = queueFamilyIndex;
+        cmdPoolInfo.queueFamilyIndex = this->queueFamilyIndex;
         cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         VK_CHECK_RESULT(
-          vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &commandPool));
+          vkCreateCommandPool(this->device, &cmdPoolInfo, nullptr, &this->commandPool));
 
         /*
                 Prepare storage buffers
@@ -376,7 +383,7 @@ class VulkanExample
             pipelineCacheCreateInfo.sType =
               VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
             VK_CHECK_RESULT(vkCreatePipelineCache(
-              device, &pipelineCacheCreateInfo, nullptr, &pipelineCache));
+              this->device, &pipelineCacheCreateInfo, nullptr, &this->pipelineCache));
 
             // Create pipeline
             VkComputePipelineCreateInfo computePipelineCreateInfo =
@@ -387,6 +394,7 @@ class VulkanExample
             {
                 uint32_t BUFFER_ELEMENT_COUNT = BUFFER_ELEMENTS;
             } specializationData;
+
             VkSpecializationMapEntry specializationMapEntry =
               vks::initializers::specializationMapEntry(0, 0, sizeof(uint32_t));
             VkSpecializationInfo specializationInfo =
