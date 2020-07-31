@@ -90,7 +90,7 @@ getSupportedDepthFormat(VkPhysicalDevice physicalDevice, VkFormat* depthFormat)
     for (auto& format : depthFormats) {
         VkFormatProperties formatProps;
         vkGetPhysicalDeviceFormatProperties(
-                physicalDevice, format, &formatProps);
+          physicalDevice, format, &formatProps);
         // Format must support depth stencil attachment for optimal tiling
         if (formatProps.optimalTilingFeatures &
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
@@ -137,7 +137,7 @@ setImageLayout(VkCommandBuffer cmdbuffer,
 {
     // Create an image barrier object
     VkImageMemoryBarrier imageMemoryBarrier =
-            vks::initializers::imageMemoryBarrier();
+      vks::initializers::imageMemoryBarrier();
     imageMemoryBarrier.oldLayout = oldImageLayout;
     imageMemoryBarrier.newLayout = newImageLayout;
     imageMemoryBarrier.image = image;
@@ -165,7 +165,7 @@ setImageLayout(VkCommandBuffer cmdbuffer,
             // Image is a color attachment
             // Make sure any writes to the color buffer have been finished
             imageMemoryBarrier.srcAccessMask =
-                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+              VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
             break;
 
         case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
@@ -173,7 +173,7 @@ setImageLayout(VkCommandBuffer cmdbuffer,
             // Make sure any writes to the depth/stencil buffer have been
             // finished
             imageMemoryBarrier.srcAccessMask =
-                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+              VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
             break;
 
         case VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
@@ -217,15 +217,15 @@ setImageLayout(VkCommandBuffer cmdbuffer,
             // Image will be used as a color attachment
             // Make sure any writes to the color buffer have been finished
             imageMemoryBarrier.dstAccessMask =
-                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+              VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
             break;
 
         case VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL:
             // Image layout will be used as a depth/stencil attachment
             // Make sure any writes to depth/stencil buffer have been finished
             imageMemoryBarrier.dstAccessMask =
-                    imageMemoryBarrier.dstAccessMask |
-                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+              imageMemoryBarrier.dstAccessMask |
+              VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
             break;
 
         case VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL:
@@ -233,7 +233,7 @@ setImageLayout(VkCommandBuffer cmdbuffer,
             // Make sure any writes to the image have been finished
             if (imageMemoryBarrier.srcAccessMask == 0) {
                 imageMemoryBarrier.srcAccessMask =
-                        VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
+                  VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
             }
             imageMemoryBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
             break;
@@ -291,7 +291,7 @@ insertImageMemoryBarrier(VkCommandBuffer cmdbuffer,
                          VkImageSubresourceRange subresourceRange)
 {
     VkImageMemoryBarrier imageMemoryBarrier =
-            vks::initializers::imageMemoryBarrier();
+      vks::initializers::imageMemoryBarrier();
     imageMemoryBarrier.srcAccessMask = srcAccessMask;
     imageMemoryBarrier.dstAccessMask = dstAccessMask;
     imageMemoryBarrier.oldLayout = oldImageLayout;
@@ -348,8 +348,8 @@ loadShader(const char* fileName, VkDevice device)
         moduleCreateInfo.codeSize = size;
         moduleCreateInfo.pCode = (uint32_t*)shaderCode;
 
-        VK_CHECK_RESULT(vkCreateShaderModule(
-                device, &moduleCreateInfo, NULL, &shaderModule));
+        VK_CHECK_RESULT(
+          vkCreateShaderModule(device, &moduleCreateInfo, NULL, &shaderModule));
 
         delete[] shaderCode;
 

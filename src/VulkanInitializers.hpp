@@ -40,7 +40,7 @@ commandBufferAllocateInfo(VkCommandPool commandPool,
 {
     VkCommandBufferAllocateInfo commandBufferAllocateInfo{};
     commandBufferAllocateInfo.sType =
-            VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+      VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     commandBufferAllocateInfo.commandPool = commandPool;
     commandBufferAllocateInfo.level = level;
     commandBufferAllocateInfo.commandBufferCount = bufferCount;
@@ -68,7 +68,7 @@ commandBufferInheritanceInfo()
 {
     VkCommandBufferInheritanceInfo cmdBufferInheritanceInfo{};
     cmdBufferInheritanceInfo.sType =
-            VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+      VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
     return cmdBufferInheritanceInfo;
 }
 
@@ -280,7 +280,7 @@ descriptorSetLayoutCreateInfo(const VkDescriptorSetLayoutBinding* pBindings,
 {
     VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo{};
     descriptorSetLayoutCreateInfo.sType =
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+      VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     descriptorSetLayoutCreateInfo.pBindings = pBindings;
     descriptorSetLayoutCreateInfo.bindingCount = bindingCount;
     return descriptorSetLayoutCreateInfo;
@@ -288,14 +288,14 @@ descriptorSetLayoutCreateInfo(const VkDescriptorSetLayoutBinding* pBindings,
 
 inline VkDescriptorSetLayoutCreateInfo
 descriptorSetLayoutCreateInfo(
-        const std::vector<VkDescriptorSetLayoutBinding>& bindings)
+  const std::vector<VkDescriptorSetLayoutBinding>& bindings)
 {
     VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo{};
     descriptorSetLayoutCreateInfo.sType =
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+      VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
     descriptorSetLayoutCreateInfo.pBindings = bindings.data();
     descriptorSetLayoutCreateInfo.bindingCount =
-            static_cast<uint32_t>(bindings.size());
+      static_cast<uint32_t>(bindings.size());
     return descriptorSetLayoutCreateInfo;
 }
 
@@ -305,7 +305,7 @@ pipelineLayoutCreateInfo(const VkDescriptorSetLayout* pSetLayouts,
 {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = setLayoutCount;
     pipelineLayoutCreateInfo.pSetLayouts = pSetLayouts;
     return pipelineLayoutCreateInfo;
@@ -316,7 +316,7 @@ pipelineLayoutCreateInfo(uint32_t setLayoutCount = 1)
 {
     VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo{};
     pipelineLayoutCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutCreateInfo.setLayoutCount = setLayoutCount;
     return pipelineLayoutCreateInfo;
 }
@@ -328,7 +328,7 @@ descriptorSetAllocateInfo(VkDescriptorPool descriptorPool,
 {
     VkDescriptorSetAllocateInfo descriptorSetAllocateInfo{};
     descriptorSetAllocateInfo.sType =
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+      VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
     descriptorSetAllocateInfo.descriptorPool = descriptorPool;
     descriptorSetAllocateInfo.pSetLayouts = pSetLayouts;
     descriptorSetAllocateInfo.descriptorSetCount = descriptorSetCount;
@@ -412,59 +412,58 @@ pipelineVertexInputStateCreateInfo()
 {
     VkPipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo{};
     pipelineVertexInputStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     return pipelineVertexInputStateCreateInfo;
 }
 
 inline VkPipelineVertexInputStateCreateInfo
 pipelineVertexInputStateCreateInfo(
-        const std::vector<VkVertexInputBindingDescription>&
-                vertexBindingDescriptions,
-        const std::vector<VkVertexInputAttributeDescription>&
-                vertexAttributeDescriptions)
+  const std::vector<VkVertexInputBindingDescription>& vertexBindingDescriptions,
+  const std::vector<VkVertexInputAttributeDescription>&
+    vertexAttributeDescriptions)
 {
     VkPipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo{};
     pipelineVertexInputStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
     pipelineVertexInputStateCreateInfo.vertexBindingDescriptionCount =
-            static_cast<uint32_t>(vertexBindingDescriptions.size());
+      static_cast<uint32_t>(vertexBindingDescriptions.size());
     pipelineVertexInputStateCreateInfo.pVertexBindingDescriptions =
-            vertexBindingDescriptions.data();
+      vertexBindingDescriptions.data();
     pipelineVertexInputStateCreateInfo.vertexAttributeDescriptionCount =
-            static_cast<uint32_t>(vertexAttributeDescriptions.size());
+      static_cast<uint32_t>(vertexAttributeDescriptions.size());
     pipelineVertexInputStateCreateInfo.pVertexAttributeDescriptions =
-            vertexAttributeDescriptions.data();
+      vertexAttributeDescriptions.data();
     return pipelineVertexInputStateCreateInfo;
 }
 
 inline VkPipelineInputAssemblyStateCreateInfo
 pipelineInputAssemblyStateCreateInfo(
-        VkPrimitiveTopology topology,
-        VkPipelineInputAssemblyStateCreateFlags flags,
-        VkBool32 primitiveRestartEnable)
+  VkPrimitiveTopology topology,
+  VkPipelineInputAssemblyStateCreateFlags flags,
+  VkBool32 primitiveRestartEnable)
 {
     VkPipelineInputAssemblyStateCreateInfo
-            pipelineInputAssemblyStateCreateInfo{};
+      pipelineInputAssemblyStateCreateInfo{};
     pipelineInputAssemblyStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
     pipelineInputAssemblyStateCreateInfo.topology = topology;
     pipelineInputAssemblyStateCreateInfo.flags = flags;
     pipelineInputAssemblyStateCreateInfo.primitiveRestartEnable =
-            primitiveRestartEnable;
+      primitiveRestartEnable;
     return pipelineInputAssemblyStateCreateInfo;
 }
 
 inline VkPipelineRasterizationStateCreateInfo
 pipelineRasterizationStateCreateInfo(
-        VkPolygonMode polygonMode,
-        VkCullModeFlags cullMode,
-        VkFrontFace frontFace,
-        VkPipelineRasterizationStateCreateFlags flags = 0)
+  VkPolygonMode polygonMode,
+  VkCullModeFlags cullMode,
+  VkFrontFace frontFace,
+  VkPipelineRasterizationStateCreateFlags flags = 0)
 {
     VkPipelineRasterizationStateCreateInfo
-            pipelineRasterizationStateCreateInfo{};
+      pipelineRasterizationStateCreateInfo{};
     pipelineRasterizationStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     pipelineRasterizationStateCreateInfo.polygonMode = polygonMode;
     pipelineRasterizationStateCreateInfo.cullMode = cullMode;
     pipelineRasterizationStateCreateInfo.frontFace = frontFace;
@@ -486,12 +485,12 @@ pipelineColorBlendAttachmentState(VkColorComponentFlags colorWriteMask,
 
 inline VkPipelineColorBlendStateCreateInfo
 pipelineColorBlendStateCreateInfo(
-        uint32_t attachmentCount,
-        const VkPipelineColorBlendAttachmentState* pAttachments)
+  uint32_t attachmentCount,
+  const VkPipelineColorBlendAttachmentState* pAttachments)
 {
     VkPipelineColorBlendStateCreateInfo pipelineColorBlendStateCreateInfo{};
     pipelineColorBlendStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
     pipelineColorBlendStateCreateInfo.attachmentCount = attachmentCount;
     pipelineColorBlendStateCreateInfo.pAttachments = pAttachments;
     return pipelineColorBlendStateCreateInfo;
@@ -504,7 +503,7 @@ pipelineDepthStencilStateCreateInfo(VkBool32 depthTestEnable,
 {
     VkPipelineDepthStencilStateCreateInfo pipelineDepthStencilStateCreateInfo{};
     pipelineDepthStencilStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
     pipelineDepthStencilStateCreateInfo.depthTestEnable = depthTestEnable;
     pipelineDepthStencilStateCreateInfo.depthWriteEnable = depthWriteEnable;
     pipelineDepthStencilStateCreateInfo.depthCompareOp = depthCompareOp;
@@ -519,7 +518,7 @@ pipelineViewportStateCreateInfo(uint32_t viewportCount,
 {
     VkPipelineViewportStateCreateInfo pipelineViewportStateCreateInfo{};
     pipelineViewportStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
     pipelineViewportStateCreateInfo.viewportCount = viewportCount;
     pipelineViewportStateCreateInfo.scissorCount = scissorCount;
     pipelineViewportStateCreateInfo.flags = flags;
@@ -528,14 +527,14 @@ pipelineViewportStateCreateInfo(uint32_t viewportCount,
 
 inline VkPipelineMultisampleStateCreateInfo
 pipelineMultisampleStateCreateInfo(
-        VkSampleCountFlagBits rasterizationSamples,
-        VkPipelineMultisampleStateCreateFlags flags = 0)
+  VkSampleCountFlagBits rasterizationSamples,
+  VkPipelineMultisampleStateCreateFlags flags = 0)
 {
     VkPipelineMultisampleStateCreateInfo pipelineMultisampleStateCreateInfo{};
     pipelineMultisampleStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     pipelineMultisampleStateCreateInfo.rasterizationSamples =
-            rasterizationSamples;
+      rasterizationSamples;
     pipelineMultisampleStateCreateInfo.flags = flags;
     return pipelineMultisampleStateCreateInfo;
 }
@@ -547,7 +546,7 @@ pipelineDynamicStateCreateInfo(const VkDynamicState* pDynamicStates,
 {
     VkPipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo{};
     pipelineDynamicStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     pipelineDynamicStateCreateInfo.pDynamicStates = pDynamicStates;
     pipelineDynamicStateCreateInfo.dynamicStateCount = dynamicStateCount;
     pipelineDynamicStateCreateInfo.flags = flags;
@@ -556,15 +555,15 @@ pipelineDynamicStateCreateInfo(const VkDynamicState* pDynamicStates,
 
 inline VkPipelineDynamicStateCreateInfo
 pipelineDynamicStateCreateInfo(
-        const std::vector<VkDynamicState>& pDynamicStates,
-        VkPipelineDynamicStateCreateFlags flags = 0)
+  const std::vector<VkDynamicState>& pDynamicStates,
+  VkPipelineDynamicStateCreateFlags flags = 0)
 {
     VkPipelineDynamicStateCreateInfo pipelineDynamicStateCreateInfo{};
     pipelineDynamicStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     pipelineDynamicStateCreateInfo.pDynamicStates = pDynamicStates.data();
     pipelineDynamicStateCreateInfo.dynamicStateCount =
-            static_cast<uint32_t>(pDynamicStates.size());
+      static_cast<uint32_t>(pDynamicStates.size());
     pipelineDynamicStateCreateInfo.flags = flags;
     return pipelineDynamicStateCreateInfo;
 }
@@ -574,7 +573,7 @@ pipelineTessellationStateCreateInfo(uint32_t patchControlPoints)
 {
     VkPipelineTessellationStateCreateInfo pipelineTessellationStateCreateInfo{};
     pipelineTessellationStateCreateInfo.sType =
-            VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
     pipelineTessellationStateCreateInfo.patchControlPoints = patchControlPoints;
     return pipelineTessellationStateCreateInfo;
 }
@@ -610,7 +609,7 @@ computePipelineCreateInfo(VkPipelineLayout layout,
 {
     VkComputePipelineCreateInfo computePipelineCreateInfo{};
     computePipelineCreateInfo.sType =
-            VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+      VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     computePipelineCreateInfo.layout = layout;
     computePipelineCreateInfo.flags = flags;
     return computePipelineCreateInfo;

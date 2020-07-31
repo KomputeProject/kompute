@@ -27,7 +27,7 @@ build_shaders:
 	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
 
 format:
-	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4, ContinuationIndentWidth: 8}" src/*.cpp src/*.h src/*.hpp
+	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.h src/*.hpp
 
 clean:
 	rm ./bin/main.exe;

@@ -63,11 +63,11 @@ class VulkanExample
     {
         // Create the buffer handle
         VkBufferCreateInfo bufferCreateInfo =
-                vks::initializers::bufferCreateInfo(usageFlags, size);
+          vks::initializers::bufferCreateInfo(usageFlags, size);
 
         bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        VK_CHECK_RESULT(vkCreateBuffer(
-                this->device, &bufferCreateInfo, nullptr, buffer));
+        VK_CHECK_RESULT(
+          vkCreateBuffer(this->device, &bufferCreateInfo, nullptr, buffer));
 
         // Create the memory backing up the buffer handle
         VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
@@ -159,30 +159,26 @@ class VulkanExample
         }
 #endif
         VK_CHECK_RESULT(
-                vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
+          vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
 
 #if DEBUG
         if (layersAvailable) {
             VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
             debugReportCreateInfo.sType =
-                    VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-            debugReportCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT |
-                                          VK_DEBUG_REPORT_WARNING_BIT_EXT;
+              VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+            debugReportCreateInfo.flags =
+              VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
             debugReportCreateInfo.pfnCallback =
-                    (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+              (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
 
             // We have to explicitly load this function.
             PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
-                    reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
-                            vkGetInstanceProcAddr(
-                                    instance,
-                                    "vkCreateDebugReportCallbackEXT"));
+              reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
+                vkGetInstanceProcAddr(instance,
+                                      "vkCreateDebugReportCallbackEXT"));
             assert(vkCreateDebugReportCallbackEXT);
-            VK_CHECK_RESULT(
-                    vkCreateDebugReportCallbackEXT(instance,
-                                                   &debugReportCreateInfo,
-                                                   nullptr,
-                                                   &debugReportCallback));
+            VK_CHECK_RESULT(vkCreateDebugReportCallbackEXT(
+              instance, &debugReportCreateInfo, nullptr, &debugReportCallback));
         }
 #endif
 
@@ -192,11 +188,11 @@ class VulkanExample
         // Physical device (always use first)
         uint32_t deviceCount = 0;
         VK_CHECK_RESULT(
-                vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr));
+          vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr));
 
         std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
         VK_CHECK_RESULT(vkEnumeratePhysicalDevices(
-                instance, &deviceCount, physicalDevices.data()));
+          instance, &deviceCount, physicalDevices.data()));
 
         physicalDevice = physicalDevices[0];
 
@@ -209,13 +205,12 @@ class VulkanExample
         VkDeviceQueueCreateInfo queueCreateInfo = {};
         uint32_t queueFamilyCount;
         vkGetPhysicalDeviceQueueFamilyProperties(
-                physicalDevice, &queueFamilyCount, nullptr);
+          physicalDevice, &queueFamilyCount, nullptr);
 
         std::vector<VkQueueFamilyProperties> queueFamilyProperties(
-                queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice,
-                                                 &queueFamilyCount,
-                                                 queueFamilyProperties.data());
+          queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(
+          physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
 
         for (uint32_t i = 0;
              i < static_cast<uint32_t>(queueFamilyProperties.size());
@@ -223,7 +218,7 @@ class VulkanExample
             if (queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
                 queueFamilyIndex = i;
                 queueCreateInfo.sType =
-                        VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+                  VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
                 queueCreateInfo.queueFamilyIndex = i;
                 queueCreateInfo.queueCount = 1;
                 queueCreateInfo.pQueuePriorities = &defaultQueuePriority;
@@ -236,7 +231,7 @@ class VulkanExample
         deviceCreateInfo.queueCreateInfoCount = 1;
         deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
         VK_CHECK_RESULT(vkCreateDevice(
-                this->physicalDevice, &deviceCreateInfo, nullptr, &device));
+          this->physicalDevice, &deviceCreateInfo, nullptr, &device));
 
         // Get a compute queue
         vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &queue);
@@ -247,7 +242,7 @@ class VulkanExample
         cmdPoolInfo.queueFamilyIndex = this->queueFamilyIndex;
         cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         VK_CHECK_RESULT(vkCreateCommandPool(
-                this->device, &cmdPoolInfo, nullptr, &this->commandPool));
+          this->device, &cmdPoolInfo, nullptr, &this->commandPool));
 
         /*
                 Prepare storage buffers
@@ -258,7 +253,7 @@ class VulkanExample
         // Fill input data
         uint32_t n = 0;
         std::generate(
-                computeInput.begin(), computeInput.end(), [&n] { return n++; });
+          computeInput.begin(), computeInput.end(), [&n] { return n++; });
 
         const VkDeviceSize bufferSize = BUFFER_ELEMENTS * sizeof(uint32_t);
 
@@ -268,7 +263,7 @@ class VulkanExample
         // Copy input data to VRAM using a staging buffer
         {
             createBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
-                                 VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                           VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
                          &hostBuffer,
                          &hostMemory,
@@ -279,7 +274,7 @@ class VulkanExample
             void* mapped;
             vkMapMemory(device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
             VkMappedMemoryRange mappedRange =
-                    vks::initializers::mappedMemoryRange();
+              vks::initializers::mappedMemoryRange();
             mappedRange.memory = hostMemory;
             mappedRange.offset = 0;
             mappedRange.size = VK_WHOLE_SIZE;
@@ -287,8 +282,8 @@ class VulkanExample
             vkUnmapMemory(device, hostMemory);
 
             createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
-                                 VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
-                                 VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
+                           VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                          &deviceBuffer,
                          &deviceMemory,
@@ -296,13 +291,13 @@ class VulkanExample
 
             // Copy to staging buffer
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-                    vks::initializers::commandBufferAllocateInfo(
-                            commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+              vks::initializers::commandBufferAllocateInfo(
+                commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
-            VK_CHECK_RESULT(vkAllocateCommandBuffers(
-                    device, &cmdBufAllocateInfo, &copyCmd));
+            VK_CHECK_RESULT(
+              vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
             VkCommandBufferBeginInfo cmdBufInfo =
-                    vks::initializers::commandBufferBeginInfo();
+              vks::initializers::commandBufferBeginInfo();
             VK_CHECK_RESULT(vkBeginCommandBuffer(copyCmd, &cmdBufInfo));
 
             VkBufferCopy copyRegion = {};
@@ -314,14 +309,14 @@ class VulkanExample
             submitInfo.commandBufferCount = 1;
             submitInfo.pCommandBuffers = &copyCmd;
             VkFenceCreateInfo fenceInfo =
-                    vks::initializers::fenceCreateInfo(VK_FLAGS_NONE);
+              vks::initializers::fenceCreateInfo(VK_FLAGS_NONE);
             VkFence fence;
             VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &fence));
 
             // Submit to the queue
             VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, fence));
             VK_CHECK_RESULT(
-                    vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
+              vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
 
             vkDestroyFence(device, fence, nullptr);
             vkFreeCommandBuffers(device, commandPool, 1, &copyCmd);
@@ -333,63 +328,59 @@ class VulkanExample
         {
             std::vector<VkDescriptorPoolSize> poolSizes = {
                 vks::initializers::descriptorPoolSize(
-                        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1),
+                  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1),
             };
 
             VkDescriptorPoolCreateInfo descriptorPoolInfo =
-                    vks::initializers::descriptorPoolCreateInfo(
-                            static_cast<uint32_t>(poolSizes.size()),
-                            poolSizes.data(),
-                            1);
+              vks::initializers::descriptorPoolCreateInfo(
+                static_cast<uint32_t>(poolSizes.size()), poolSizes.data(), 1);
             VK_CHECK_RESULT(vkCreateDescriptorPool(
-                    device, &descriptorPoolInfo, nullptr, &descriptorPool));
+              device, &descriptorPoolInfo, nullptr, &descriptorPool));
 
             std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {
                 vks::initializers::descriptorSetLayoutBinding(
-                        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                        VK_SHADER_STAGE_COMPUTE_BIT,
-                        0),
+                  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                  VK_SHADER_STAGE_COMPUTE_BIT,
+                  0),
             };
             VkDescriptorSetLayoutCreateInfo descriptorLayout =
-                    vks::initializers::descriptorSetLayoutCreateInfo(
-                            setLayoutBindings);
+              vks::initializers::descriptorSetLayoutCreateInfo(
+                setLayoutBindings);
             VK_CHECK_RESULT(vkCreateDescriptorSetLayout(
-                    device, &descriptorLayout, nullptr, &descriptorSetLayout));
+              device, &descriptorLayout, nullptr, &descriptorSetLayout));
 
             VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo =
-                    vks::initializers::pipelineLayoutCreateInfo(
-                            &descriptorSetLayout, 1);
-            VK_CHECK_RESULT(vkCreatePipelineLayout(device,
-                                                   &pipelineLayoutCreateInfo,
-                                                   nullptr,
-                                                   &pipelineLayout));
+              vks::initializers::pipelineLayoutCreateInfo(&descriptorSetLayout,
+                                                          1);
+            VK_CHECK_RESULT(vkCreatePipelineLayout(
+              device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout));
 
             VkDescriptorSetAllocateInfo allocInfo =
-                    vks::initializers::descriptorSetAllocateInfo(
-                            descriptorPool, &descriptorSetLayout, 1);
-            VK_CHECK_RESULT(vkAllocateDescriptorSets(
-                    device, &allocInfo, &descriptorSet));
+              vks::initializers::descriptorSetAllocateInfo(
+                descriptorPool, &descriptorSetLayout, 1);
+            VK_CHECK_RESULT(
+              vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet));
 
             VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer,
                                                         0,
                                                         VK_WHOLE_SIZE };
             std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
                 vks::initializers::writeDescriptorSet(
-                        descriptorSet,
-                        VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                        0,
-                        &bufferDescriptor),
+                  descriptorSet,
+                  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+                  0,
+                  &bufferDescriptor),
             };
             vkUpdateDescriptorSets(
-                    device,
-                    static_cast<uint32_t>(computeWriteDescriptorSets.size()),
-                    computeWriteDescriptorSets.data(),
-                    0,
-                    NULL);
+              device,
+              static_cast<uint32_t>(computeWriteDescriptorSets.size()),
+              computeWriteDescriptorSets.data(),
+              0,
+              NULL);
 
             VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
             pipelineCacheCreateInfo.sType =
-                    VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+              VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
             VK_CHECK_RESULT(vkCreatePipelineCache(this->device,
                                                   &pipelineCacheCreateInfo,
                                                   nullptr,
@@ -397,8 +388,8 @@ class VulkanExample
 
             // Create pipeline
             VkComputePipelineCreateInfo computePipelineCreateInfo =
-                    vks::initializers::computePipelineCreateInfo(pipelineLayout,
-                                                                 0);
+              vks::initializers::computePipelineCreateInfo(this->pipelineLayout,
+                                                           0);
 
             // Pass SSBO size via specialization constant
             struct SpecializationData
@@ -407,14 +398,12 @@ class VulkanExample
             } specializationData;
 
             VkSpecializationMapEntry specializationMapEntry =
-                    vks::initializers::specializationMapEntry(
-                            0, 0, sizeof(uint32_t));
+              vks::initializers::specializationMapEntry(0, 0, sizeof(uint32_t));
             VkSpecializationInfo specializationInfo =
-                    vks::initializers::specializationInfo(
-                            1,
-                            &specializationMapEntry,
-                            sizeof(SpecializationData),
-                            &specializationData);
+              vks::initializers::specializationInfo(1,
+                                                    &specializationMapEntry,
+                                                    sizeof(SpecializationData),
+                                                    &specializationData);
 
             // TODO: There is no command line arguments parsing (nor Android
             // settings) for this example, so we have no way of picking between
@@ -424,11 +413,11 @@ class VulkanExample
 
             VkPipelineShaderStageCreateInfo shaderStage = {};
             shaderStage.sType =
-                    VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+              VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
             shaderStage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
 
             shaderStage.module = vks::tools::loadShader(
-                    (shadersPath + "computeheadless.comp.spv").c_str(), device);
+              (shadersPath + "computeheadless.comp.spv").c_str(), device);
 
             shaderStage.pName = "main";
             shaderStage.pSpecializationInfo = &specializationInfo;
@@ -445,17 +434,16 @@ class VulkanExample
 
             // Create a command buffer for compute operations
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-                    vks::initializers::commandBufferAllocateInfo(
-                            commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
+              vks::initializers::commandBufferAllocateInfo(
+                commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VK_CHECK_RESULT(vkAllocateCommandBuffers(
-                    device, &cmdBufAllocateInfo, &commandBuffer));
+              device, &cmdBufAllocateInfo, &commandBuffer));
 
             // Fence for compute CB sync
             VkFenceCreateInfo fenceCreateInfo =
-                    vks::initializers::fenceCreateInfo(
-                            VK_FENCE_CREATE_SIGNALED_BIT);
+              vks::initializers::fenceCreateInfo(VK_FENCE_CREATE_SIGNALED_BIT);
             VK_CHECK_RESULT(
-                    vkCreateFence(device, &fenceCreateInfo, nullptr, &fence));
+              vkCreateFence(device, &fenceCreateInfo, nullptr, &fence));
         }
 
         /*
@@ -463,14 +451,14 @@ class VulkanExample
         */
         {
             VkCommandBufferBeginInfo cmdBufInfo =
-                    vks::initializers::commandBufferBeginInfo();
+              vks::initializers::commandBufferBeginInfo();
 
             VK_CHECK_RESULT(vkBeginCommandBuffer(commandBuffer, &cmdBufInfo));
 
             // Barrier to ensure that input buffer transfer is finished before
             // compute shader reads from it
             VkBufferMemoryBarrier bufferBarrier =
-                    vks::initializers::bufferMemoryBarrier();
+              vks::initializers::bufferMemoryBarrier();
             bufferBarrier.buffer = deviceBuffer;
             bufferBarrier.size = VK_WHOLE_SIZE;
             bufferBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
@@ -490,7 +478,7 @@ class VulkanExample
                                  nullptr);
 
             vkCmdBindPipeline(
-                    commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+              commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
             vkCmdBindDescriptorSets(commandBuffer,
                                     VK_PIPELINE_BIND_POINT_COMPUTE,
                                     pipelineLayout,
@@ -526,7 +514,7 @@ class VulkanExample
             VkBufferCopy copyRegion = {};
             copyRegion.size = bufferSize;
             vkCmdCopyBuffer(
-                    commandBuffer, deviceBuffer, hostBuffer, 1, &copyRegion);
+              commandBuffer, deviceBuffer, hostBuffer, 1, &copyRegion);
 
             // Barrier to ensure that buffer copy is finished before host
             // reading from it
@@ -553,20 +541,20 @@ class VulkanExample
             // Submit compute work
             vkResetFences(device, 1, &fence);
             const VkPipelineStageFlags waitStageMask =
-                    VK_PIPELINE_STAGE_TRANSFER_BIT;
+              VK_PIPELINE_STAGE_TRANSFER_BIT;
             VkSubmitInfo computeSubmitInfo = vks::initializers::submitInfo();
             computeSubmitInfo.pWaitDstStageMask = &waitStageMask;
             computeSubmitInfo.commandBufferCount = 1;
             computeSubmitInfo.pCommandBuffers = &commandBuffer;
             VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &computeSubmitInfo, fence));
             VK_CHECK_RESULT(
-                    vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
+              vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
 
             // Make device writes visible to the host
             void* mapped;
             vkMapMemory(device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
             VkMappedMemoryRange mappedRange =
-                    vks::initializers::mappedMemoryRange();
+              vks::initializers::mappedMemoryRange();
             mappedRange.memory = hostMemory;
             mappedRange.offset = 0;
             mappedRange.size = VK_WHOLE_SIZE;
@@ -613,13 +601,12 @@ class VulkanExample
 #if DEBUG
         if (debugReportCallback) {
             PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
-                    reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
-                            vkGetInstanceProcAddr(
-                                    instance,
-                                    "vkDestroyDebugReportCallbackEXT"));
+              reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
+                vkGetInstanceProcAddr(instance,
+                                      "vkDestroyDebugReportCallbackEXT"));
             assert(vkDestroyDebugReportCallback);
             vkDestroyDebugReportCallback(
-                    instance, debugReportCallback, nullptr);
+              instance, debugReportCallback, nullptr);
         }
 #endif
         vkDestroyInstance(instance, nullptr);
