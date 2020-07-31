@@ -91,16 +91,16 @@ class VulkanExample
             memReqs.memoryTypeBits >>= 1;
         }
         assert(memTypeFound);
-        VK_CHECK_RESULT(vkAllocateMemory(device, &memAlloc, nullptr, memory));
+        VK_CHECK_RESULT(vkAllocateMemory(this->device, &memAlloc, nullptr, memory));
 
         if (data != nullptr) {
             void* mapped;
-            VK_CHECK_RESULT(vkMapMemory(device, *memory, 0, size, 0, &mapped));
+            VK_CHECK_RESULT(vkMapMemory(this->device, *memory, 0, size, 0, &mapped));
             memcpy(mapped, data, size);
-            vkUnmapMemory(device, *memory);
+            vkUnmapMemory(this->device, *memory);
         }
 
-        VK_CHECK_RESULT(vkBindBufferMemory(device, *buffer, *memory, 0));
+        VK_CHECK_RESULT(vkBindBufferMemory(this->device, *buffer, *memory, 0));
 
         return VK_SUCCESS;
     }
@@ -116,7 +116,7 @@ class VulkanExample
         appInfo.apiVersion = VK_API_VERSION_1_0;
 
         /*
-                Vulkan instance creation (without surface extensions)
+                Vulkan this->instance creation (without surface extensions)
         */
         VkInstanceCreateInfo instanceCreateInfo = {};
         instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -159,7 +159,7 @@ class VulkanExample
         }
 #endif
         VK_CHECK_RESULT(
-          vkCreateInstance(&instanceCreateInfo, nullptr, &instance));
+          vkCreateInstance(&instanceCreateInfo, nullptr, &this->instance));
 
 #if DEBUG
         if (layersAvailable) {
@@ -174,43 +174,43 @@ class VulkanExample
             // We have to explicitly load this function.
             PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
               reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
-                vkGetInstanceProcAddr(instance,
+                vkGetInstanceProcAddr(this->instance,
                                       "vkCreateDebugReportCallbackEXT"));
             assert(vkCreateDebugReportCallbackEXT);
             VK_CHECK_RESULT(vkCreateDebugReportCallbackEXT(
-              instance, &debugReportCreateInfo, nullptr, &debugReportCallback));
+              this->instance, &debugReportCreateInfo, nullptr, &debugReportCallback));
         }
 #endif
 
         /*
-                Vulkan device creation
+                Vulkan this->device creation
         */
-        // Physical device (always use first)
+        // Physical this->device (always use first)
         uint32_t deviceCount = 0;
         VK_CHECK_RESULT(
-          vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr));
+          vkEnumeratePhysicalDevices(this->instance, &deviceCount, nullptr));
 
         std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
         VK_CHECK_RESULT(vkEnumeratePhysicalDevices(
-          instance, &deviceCount, physicalDevices.data()));
+          this->instance, &deviceCount, physicalDevices.data()));
 
-        physicalDevice = physicalDevices[0];
+        this->physicalDevice = physicalDevices[0];
 
         VkPhysicalDeviceProperties deviceProperties;
-        vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+        vkGetPhysicalDeviceProperties(this->physicalDevice, &deviceProperties);
         LOG("GPU: %s\n", deviceProperties.deviceName);
 
-        // Request a single compute queue
+        // Request a single compute this->queue
         const float defaultQueuePriority(0.0f);
         VkDeviceQueueCreateInfo queueCreateInfo = {};
         uint32_t queueFamilyCount;
         vkGetPhysicalDeviceQueueFamilyProperties(
-          physicalDevice, &queueFamilyCount, nullptr);
+          this->physicalDevice, &queueFamilyCount, nullptr);
 
         std::vector<VkQueueFamilyProperties> queueFamilyProperties(
           queueFamilyCount);
         vkGetPhysicalDeviceQueueFamilyProperties(
-          physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
+          this->physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
 
         for (uint32_t i = 0;
              i < static_cast<uint32_t>(queueFamilyProperties.size());
@@ -225,16 +225,16 @@ class VulkanExample
                 break;
             }
         }
-        // Create logical device
+        // Create logical this->device
         VkDeviceCreateInfo deviceCreateInfo = {};
         deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         deviceCreateInfo.queueCreateInfoCount = 1;
         deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
         VK_CHECK_RESULT(vkCreateDevice(
-          this->physicalDevice, &deviceCreateInfo, nullptr, &device));
+          this->physicalDevice, &deviceCreateInfo, nullptr, &this->device));
 
-        // Get a compute queue
-        vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &queue);
+        // Get a compute this->queue
+        vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &this->queue);
 
         // Compute command pool
         VkCommandPoolCreateInfo cmdPoolInfo = {};
@@ -272,14 +272,14 @@ class VulkanExample
 
             // Flush writes to host visible buffer
             void* mapped;
-            vkMapMemory(device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
+            vkMapMemory(this->device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
             VkMappedMemoryRange mappedRange =
               vks::initializers::mappedMemoryRange();
             mappedRange.memory = hostMemory;
             mappedRange.offset = 0;
             mappedRange.size = VK_WHOLE_SIZE;
-            vkFlushMappedMemoryRanges(device, 1, &mappedRange);
-            vkUnmapMemory(device, hostMemory);
+            vkFlushMappedMemoryRanges(this->device, 1, &mappedRange);
+            vkUnmapMemory(this->device, hostMemory);
 
             createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
@@ -295,7 +295,7 @@ class VulkanExample
                 this->commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VkCommandBuffer copyCmd;
             VK_CHECK_RESULT(
-              vkAllocateCommandBuffers(device, &cmdBufAllocateInfo, &copyCmd));
+              vkAllocateCommandBuffers(this->device, &cmdBufAllocateInfo, &copyCmd));
             VkCommandBufferBeginInfo cmdBufInfo =
               vks::initializers::commandBufferBeginInfo();
             VK_CHECK_RESULT(vkBeginCommandBuffer(copyCmd, &cmdBufInfo));
@@ -310,20 +310,20 @@ class VulkanExample
             submitInfo.pCommandBuffers = &copyCmd;
             VkFenceCreateInfo fenceInfo =
               vks::initializers::fenceCreateInfo(VK_FLAGS_NONE);
-            VkFence fence;
-            VK_CHECK_RESULT(vkCreateFence(device, &fenceInfo, nullptr, &fence));
+            VkFence tmpFence;
+            VK_CHECK_RESULT(vkCreateFence(this->device, &fenceInfo, nullptr, &tmpFence));
 
-            // Submit to the queue
-            VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, fence));
+            // Submit to the this->queue
+            VK_CHECK_RESULT(vkQueueSubmit(this->queue, 1, &submitInfo, tmpFence));
             VK_CHECK_RESULT(
-              vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
+              vkWaitForFences(this->device, 1, &tmpFence, VK_TRUE, UINT64_MAX));
 
-            vkDestroyFence(device, fence, nullptr);
-            vkFreeCommandBuffers(device, this->commandPool, 1, &copyCmd);
+            vkDestroyFence(this->device, tmpFence, nullptr);
+            vkFreeCommandBuffers(this->device, this->commandPool, 1, &copyCmd);
         }
 
         /*
-                Prepare compute pipeline
+                Prepare compute this->pipeline
         */
         {
             std::vector<VkDescriptorPoolSize> poolSizes = {
@@ -335,7 +335,7 @@ class VulkanExample
               vks::initializers::descriptorPoolCreateInfo(
                 static_cast<uint32_t>(poolSizes.size()), poolSizes.data(), 1);
             VK_CHECK_RESULT(vkCreateDescriptorPool(
-              device, &descriptorPoolInfo, nullptr, &descriptorPool));
+              this->device, &descriptorPoolInfo, nullptr, &this->descriptorPool));
 
             std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {
                 vks::initializers::descriptorSetLayoutBinding(
@@ -347,32 +347,32 @@ class VulkanExample
               vks::initializers::descriptorSetLayoutCreateInfo(
                 setLayoutBindings);
             VK_CHECK_RESULT(vkCreateDescriptorSetLayout(
-              device, &descriptorLayout, nullptr, &descriptorSetLayout));
+              this->device, &descriptorLayout, nullptr, &this->descriptorSetLayout));
 
             VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo =
-              vks::initializers::pipelineLayoutCreateInfo(&descriptorSetLayout,
+              vks::initializers::pipelineLayoutCreateInfo(&this->descriptorSetLayout,
                                                           1);
             VK_CHECK_RESULT(vkCreatePipelineLayout(
-              device, &pipelineLayoutCreateInfo, nullptr, &pipelineLayout));
+              this->device, &pipelineLayoutCreateInfo, nullptr, &this->pipelineLayout));
 
             VkDescriptorSetAllocateInfo allocInfo =
               vks::initializers::descriptorSetAllocateInfo(
-                descriptorPool, &descriptorSetLayout, 1);
+                this->descriptorPool, &this->descriptorSetLayout, 1);
             VK_CHECK_RESULT(
-              vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet));
+              vkAllocateDescriptorSets(this->device, &allocInfo, &this->descriptorSet));
 
             VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer,
                                                         0,
                                                         VK_WHOLE_SIZE };
             std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
                 vks::initializers::writeDescriptorSet(
-                  descriptorSet,
+                  this->descriptorSet,
                   VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
                   0,
                   &bufferDescriptor),
             };
             vkUpdateDescriptorSets(
-              device,
+              this->device,
               static_cast<uint32_t>(computeWriteDescriptorSets.size()),
               computeWriteDescriptorSets.data(),
               0,
@@ -386,7 +386,7 @@ class VulkanExample
                                                   nullptr,
                                                   &this->pipelineCache));
 
-            // Create pipeline
+            // Create this->pipeline
             VkComputePipelineCreateInfo computePipelineCreateInfo =
               vks::initializers::computePipelineCreateInfo(this->pipelineLayout,
                                                            0);
@@ -418,33 +418,33 @@ class VulkanExample
             shaderStage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
 
             shaderStage.module = vks::tools::loadShader(
-              (shadersPath + "computeheadless.comp.spv").c_str(), device);
+              (shadersPath + "computeheadless.comp.spv").c_str(), this->device);
 
             shaderStage.pName = "main";
             shaderStage.pSpecializationInfo = &specializationInfo;
-            shaderModule = shaderStage.module;
+            this->shaderModule = shaderStage.module;
 
             assert(shaderStage.module != VK_NULL_HANDLE);
             computePipelineCreateInfo.stage = shaderStage;
-            VK_CHECK_RESULT(vkCreateComputePipelines(device,
+            VK_CHECK_RESULT(vkCreateComputePipelines(this->device,
                                                      this->pipelineCache,
                                                      1,
                                                      &computePipelineCreateInfo,
                                                      nullptr,
-                                                     &pipeline));
+                                                     &this->pipeline));
 
             // Create a command buffer for compute operations
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
               vks::initializers::commandBufferAllocateInfo(
                 this->commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
             VK_CHECK_RESULT(vkAllocateCommandBuffers(
-              device, &cmdBufAllocateInfo, &this->commandBuffer));
+              this->device, &cmdBufAllocateInfo, &this->commandBuffer));
 
             // Fence for compute CB sync
             VkFenceCreateInfo fenceCreateInfo =
               vks::initializers::fenceCreateInfo(VK_FENCE_CREATE_SIGNALED_BIT);
             VK_CHECK_RESULT(
-              vkCreateFence(device, &fenceCreateInfo, nullptr, &fence));
+              vkCreateFence(this->device, &fenceCreateInfo, nullptr, &this->fence));
         }
 
         /*
@@ -479,13 +479,13 @@ class VulkanExample
                                  nullptr);
 
             vkCmdBindPipeline(
-              this->commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, pipeline);
+              this->commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, this->pipeline);
             vkCmdBindDescriptorSets(this->commandBuffer,
                                     VK_PIPELINE_BIND_POINT_COMPUTE,
-                                    pipelineLayout,
+                                    this->pipelineLayout,
                                     0,
                                     1,
-                                    &descriptorSet,
+                                    &this->descriptorSet,
                                     0,
                                     0);
 
@@ -540,33 +540,33 @@ class VulkanExample
             VK_CHECK_RESULT(vkEndCommandBuffer(this->commandBuffer));
 
             // Submit compute work
-            vkResetFences(device, 1, &fence);
+            vkResetFences(this->device, 1, &this->fence);
             const VkPipelineStageFlags waitStageMask =
               VK_PIPELINE_STAGE_TRANSFER_BIT;
             VkSubmitInfo computeSubmitInfo = vks::initializers::submitInfo();
             computeSubmitInfo.pWaitDstStageMask = &waitStageMask;
             computeSubmitInfo.commandBufferCount = 1;
             computeSubmitInfo.pCommandBuffers = &this->commandBuffer;
-            VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &computeSubmitInfo, fence));
+            VK_CHECK_RESULT(vkQueueSubmit(this->queue, 1, &computeSubmitInfo, this->fence));
             VK_CHECK_RESULT(
-              vkWaitForFences(device, 1, &fence, VK_TRUE, UINT64_MAX));
+              vkWaitForFences(this->device, 1, &this->fence, VK_TRUE, UINT64_MAX));
 
-            // Make device writes visible to the host
+            // Make this->device writes visible to the host
             void* mapped;
-            vkMapMemory(device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
+            vkMapMemory(this->device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
             VkMappedMemoryRange mappedRange =
               vks::initializers::mappedMemoryRange();
             mappedRange.memory = hostMemory;
             mappedRange.offset = 0;
             mappedRange.size = VK_WHOLE_SIZE;
-            vkInvalidateMappedMemoryRanges(device, 1, &mappedRange);
+            vkInvalidateMappedMemoryRanges(this->device, 1, &mappedRange);
 
             // Copy to output
             memcpy(computeOutput.data(), mapped, bufferSize);
-            vkUnmapMemory(device, hostMemory);
+            vkUnmapMemory(this->device, hostMemory);
         }
 
-        vkQueueWaitIdle(queue);
+        vkQueueWaitIdle(this->queue);
 
         // Output buffer contents
         LOG("Compute input:\n");
@@ -582,35 +582,35 @@ class VulkanExample
         std::cout << std::endl;
 
         // Clean up
-        vkDestroyBuffer(device, deviceBuffer, nullptr);
-        vkFreeMemory(device, deviceMemory, nullptr);
-        vkDestroyBuffer(device, hostBuffer, nullptr);
-        vkFreeMemory(device, hostMemory, nullptr);
+        vkDestroyBuffer(this->device, deviceBuffer, nullptr);
+        vkFreeMemory(this->device, deviceMemory, nullptr);
+        vkDestroyBuffer(this->device, hostBuffer, nullptr);
+        vkFreeMemory(this->device, hostMemory, nullptr);
     }
 
     ~VulkanExample()
     {
-        vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-        vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
-        vkDestroyDescriptorPool(device, descriptorPool, nullptr);
-        vkDestroyPipeline(device, pipeline, nullptr);
-        vkDestroyPipelineCache(device, this->pipelineCache, nullptr);
-        vkDestroyFence(device, fence, nullptr);
-        vkDestroyCommandPool(device, this->commandPool, nullptr);
-        vkDestroyShaderModule(device, shaderModule, nullptr);
-        vkDestroyDevice(device, nullptr);
+        vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
+        vkDestroyDescriptorSetLayout(this->device, this->descriptorSetLayout, nullptr);
+        vkDestroyDescriptorPool(this->device, this->descriptorPool, nullptr);
+        vkDestroyPipeline(this->device, this->pipeline, nullptr);
+        vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
+        vkDestroyFence(this->device, this->fence, nullptr);
+        vkDestroyCommandPool(this->device, this->commandPool, nullptr);
+        vkDestroyShaderModule(this->device, this->shaderModule, nullptr);
+        vkDestroyDevice(this->device, nullptr);
 #if DEBUG
         if (debugReportCallback) {
             PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
               reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
-                vkGetInstanceProcAddr(instance,
+                vkGetInstanceProcAddr(this->instance,
                                       "vkDestroyDebugReportCallbackEXT"));
             assert(vkDestroyDebugReportCallback);
             vkDestroyDebugReportCallback(
-              instance, debugReportCallback, nullptr);
+              this->instance, debugReportCallback, nullptr);
         }
 #endif
-        vkDestroyInstance(instance, nullptr);
+        vkDestroyInstance(this->instance, nullptr);
     }
 };
 
