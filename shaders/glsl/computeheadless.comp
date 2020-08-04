@@ -1,33 +1,39 @@
 #version 450
 
+// This variable is set by the pipeline
+layout (constant_id = 0) const uint BUF_SIZE = 32;
+
 layout(binding = 0) buffer Pos {
    uint values[ ];
 };
 
-layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = 4, local_size_y = 1, local_size_z = 1) in;
 
-layout (constant_id = 0) const uint BUFFER_ELEMENTS = 32;
+shared uint sharedTotal[1];
 
-uint fibonacci(uint n) {
-	if(n <= 1){
-		return n;
-	}
-	uint curr = 1;
-	uint prev = 1;
-	for(uint i = 2; i < n; ++i) {
-		uint temp = curr;
-		curr += prev;
-		prev = temp;
-	}
-	return curr;
+uint mod(uint x, uint N) {
+    return (x % N + N) % N;
 }
 
 void main() 
 {
 	uint index = gl_GlobalInvocationID.x;
-	if (index >= BUFFER_ELEMENTS) 
+	if (index >= BUF_SIZE) 
 		return;	
-	values[index] = fibonacci(values[index]);
+
+    sharedTotal[0] = 0;
+
+    barrier();
+    memoryBarrierShared();
+
+    atomicAdd(sharedTotal[0], values[index]);
+
+    barrier();
+    memoryBarrierShared();
+
+    uint adjacentSum = values[mod(index+1, BUF_SIZE)] + values[mod(index-1, BUF_SIZE)];
+
+    values[index] = sharedTotal[0] + adjacentSum;
 }
 
 
