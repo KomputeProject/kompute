@@ -236,14 +236,6 @@ class VulkanExample
         // Get a compute this->queue
         vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &this->queue);
 
-        // Compute command pool
-        VkCommandPoolCreateInfo cmdPoolInfo = {};
-        cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        cmdPoolInfo.queueFamilyIndex = this->queueFamilyIndex;
-        cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-        VK_CHECK_RESULT(vkCreateCommandPool(
-          this->device, &cmdPoolInfo, nullptr, &this->commandPool));
-
         /*
                 Prepare storage buffers
         */
@@ -270,17 +262,6 @@ class VulkanExample
                          bufferSize,
                          computeInput.data());
 
-            // Flush writes to host visible buffer
-            void* mapped;
-            vkMapMemory(this->device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
-            VkMappedMemoryRange mappedRange =
-              vks::initializers::mappedMemoryRange();
-            mappedRange.memory = hostMemory;
-            mappedRange.offset = 0;
-            mappedRange.size = VK_WHOLE_SIZE;
-            vkFlushMappedMemoryRanges(this->device, 1, &mappedRange);
-            vkUnmapMemory(this->device, hostMemory);
-
             createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
                            VK_BUFFER_USAGE_TRANSFER_DST_BIT,
@@ -288,38 +269,6 @@ class VulkanExample
                          &deviceBuffer,
                          &deviceMemory,
                          bufferSize);
-
-            // Copy to staging buffer
-            VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-              vks::initializers::commandBufferAllocateInfo(
-                this->commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
-            VkCommandBuffer copyCmd;
-            VK_CHECK_RESULT(
-              vkAllocateCommandBuffers(this->device, &cmdBufAllocateInfo, &copyCmd));
-            VkCommandBufferBeginInfo cmdBufInfo =
-              vks::initializers::commandBufferBeginInfo();
-            VK_CHECK_RESULT(vkBeginCommandBuffer(copyCmd, &cmdBufInfo));
-
-            VkBufferCopy copyRegion = {};
-            copyRegion.size = bufferSize;
-            vkCmdCopyBuffer(copyCmd, hostBuffer, deviceBuffer, 1, &copyRegion);
-            VK_CHECK_RESULT(vkEndCommandBuffer(copyCmd));
-
-            VkSubmitInfo submitInfo = vks::initializers::submitInfo();
-            submitInfo.commandBufferCount = 1;
-            submitInfo.pCommandBuffers = &copyCmd;
-            VkFenceCreateInfo fenceInfo =
-              vks::initializers::fenceCreateInfo(VK_FLAGS_NONE);
-            VkFence tmpFence;
-            VK_CHECK_RESULT(vkCreateFence(this->device, &fenceInfo, nullptr, &tmpFence));
-
-            // Submit to the this->queue
-            VK_CHECK_RESULT(vkQueueSubmit(this->queue, 1, &submitInfo, tmpFence));
-            VK_CHECK_RESULT(
-              vkWaitForFences(this->device, 1, &tmpFence, VK_TRUE, UINT64_MAX));
-
-            vkDestroyFence(this->device, tmpFence, nullptr);
-            vkFreeCommandBuffers(this->device, this->commandPool, 1, &copyCmd);
         }
 
         /*
@@ -433,6 +382,14 @@ class VulkanExample
                                                      nullptr,
                                                      &this->pipeline));
 
+            // Compute command pool
+            VkCommandPoolCreateInfo cmdPoolInfo = {};
+            cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+            cmdPoolInfo.queueFamilyIndex = this->queueFamilyIndex;
+            cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+            VK_CHECK_RESULT(vkCreateCommandPool(
+            this->device, &cmdPoolInfo, nullptr, &this->commandPool));
+
             // Create a command buffer for compute operations
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
               vks::initializers::commandBufferAllocateInfo(
@@ -447,6 +404,19 @@ class VulkanExample
               vkCreateFence(this->device, &fenceCreateInfo, nullptr, &this->fence));
         }
 
+        {
+            // Flush writes to host visible buffer
+            void* mapped;
+            vkMapMemory(this->device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
+            VkMappedMemoryRange mappedRange =
+              vks::initializers::mappedMemoryRange();
+            mappedRange.memory = hostMemory;
+            mappedRange.offset = 0;
+            mappedRange.size = VK_WHOLE_SIZE;
+            vkFlushMappedMemoryRanges(this->device, 1, &mappedRange);
+            vkUnmapMemory(this->device, hostMemory);
+        }
+
         /*
                 Command buffer creation (for compute work submission)
         */
@@ -455,6 +425,10 @@ class VulkanExample
               vks::initializers::commandBufferBeginInfo();
 
             VK_CHECK_RESULT(vkBeginCommandBuffer(this->commandBuffer, &cmdBufInfo));
+
+            VkBufferCopy copyRegion = {};
+            copyRegion.size = bufferSize;
+            vkCmdCopyBuffer(this->commandBuffer, hostBuffer, deviceBuffer, 1, &copyRegion);
 
             // Barrier to ensure that input buffer transfer is finished before
             // compute shader reads from it
@@ -480,6 +454,7 @@ class VulkanExample
 
             vkCmdBindPipeline(
               this->commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, this->pipeline);
+
             vkCmdBindDescriptorSets(this->commandBuffer,
                                     VK_PIPELINE_BIND_POINT_COMPUTE,
                                     this->pipelineLayout,
@@ -489,7 +464,7 @@ class VulkanExample
                                     0,
                                     0);
 
-            vkCmdDispatch(this->commandBuffer, BUFFER_ELEMENTS, 1, 1);
+            vkCmdDispatch(this->commandBuffer, BUFFER_ELEMENTS / 4, 1, 1);
 
             // Barrier to ensure that shader writes are finished before buffer
             // is read back from GPU
@@ -512,7 +487,7 @@ class VulkanExample
                                  nullptr);
 
             // Read back to host visible buffer
-            VkBufferCopy copyRegion = {};
+            copyRegion = {};
             copyRegion.size = bufferSize;
             vkCmdCopyBuffer(
               this->commandBuffer, deviceBuffer, hostBuffer, 1, &copyRegion);
