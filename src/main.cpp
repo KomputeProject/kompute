@@ -593,8 +593,7 @@ int
 main()
 {
     VulkanExample* vulkanExample = new VulkanExample();
-    std::cout << "Finished. Press enter to terminate...";
-    getchar();
+    std::cout << "Finished.";
     delete (vulkanExample);
     return 0;
 }
