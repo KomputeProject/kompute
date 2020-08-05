@@ -53,7 +53,7 @@ docker_seldon_run_gpu:
 docker_seldon_push:
 	docker push axsauze/vulkan-seldon:0.1
 
-docker_seldon_build: docker_vulkan_build
+docker_seldon_build: 
 	docker build . -f Dockerfile.seldon -t axsauze/vulkan-seldon:0.1
 
 docker_vulkan_build:
