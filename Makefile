@@ -35,6 +35,10 @@ build_linux:
 build_shaders:
 	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
 
+docker_seldon_run:
+	docker run \
+		--rm -it -p 5000:5000 axsauze/vulkan-seldon:0.1 seldon-core-microservice Model REST
+
 docker_seldon_push:
 	docker push axsauze/vulkan-seldon:0.1
 
