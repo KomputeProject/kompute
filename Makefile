@@ -37,7 +37,18 @@ build_shaders:
 
 docker_seldon_run:
 	docker run \
-		--rm -it -p 5000:5000 axsauze/vulkan-seldon:0.1 seldon-core-microservice Model REST
+		--rm -it \
+		-p 5000:5000 \
+		axsauze/vulkan-seldon:0.1 \
+		seldon-core-microservice Model REST
+
+docker_seldon_run_gpu:
+	docker run \
+		--rm -it \
+		--gpus all \
+		-p 5000:5000 \
+		axsauze/vulkan-seldon:0.1 \
+		seldon-core-microservice Model REST
 
 docker_seldon_push:
 	docker push axsauze/vulkan-seldon:0.1
