@@ -18,8 +18,7 @@ COPY --from=vulkan-base /usr/local/bin /usr/local/bin
 COPY --from=vulkan-base /usr/local/lib /usr/local/lib
 COPY --from=vulkan-base /usr/local/include/vulkan /usr/local/include/vulkan
 COPY --from=vulkan-base /usr/local/share/vulkan /usr/local/share/vulkan
-
-COPY /etc/vulkan/icd.d/nvidia_icd.json /etc/vulkan/icd.d/nvidia_icd.json
+COPY --from=vulkan-base /etc/vulkan/icd.d/nvidia_icd.json /etc/vulkan/icd.d/nvidia_icd.json
 
 
 # Seldon Env Vars

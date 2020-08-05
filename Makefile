@@ -35,10 +35,16 @@ build_linux:
 build_shaders:
 	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
 
-build_docker:
+docker_seldon_push:
+	docker push axsauze/vulkan-seldon:0.1
+
+docker_seldon_build: docker_vanilla_build
+	docker build . -f Dockerfile.seldon -t axsauze/vulkan-seldon:0.1
+
+docker_vulkan_build:
 	docker build . -t axsauze/vulkan-sum:0.1 
 
-push_docker:
+push_vulkan_docker:
 	docker push axsauze/vulkan-sum:0.1
 
 format:
