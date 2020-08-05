@@ -23,8 +23,23 @@ build: build_shaders
 		-lvulkan-1 \
 		-o ./bin/main.exe
 
+build_linux:
+	g++ \
+		-Wall \
+		src/* \
+		-std=c++11 \
+		-I"./src" \
+		-lvulkan \
+		-o ./bin/main
+
 build_shaders:
 	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
+
+build_docker:
+	docker build . -t axsauze/vulkan-sum:0.1 
+
+push_docker:
+	docker push axsauze/vulkan-sum:0.1
 
 format:
 	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.h src/*.hpp
@@ -33,5 +48,5 @@ clean:
 	rm ./bin/main.exe;
 
 run:
-	cd bin && ./main.exe;
+	./bin/main.exe;
 
