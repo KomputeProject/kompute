@@ -12,7 +12,7 @@ SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
 
 ####### Main Target Rules #######
 
-build: build_shaders
+build: format build_shaders
 	$(CC) \
 		-Wall \
 		src/* \

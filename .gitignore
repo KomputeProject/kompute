@@ -173,4 +173,6 @@ compile_commands.json
 
 # Project files
 bin/
+external/boost/
+tmp/
 

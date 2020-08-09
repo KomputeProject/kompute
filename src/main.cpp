@@ -91,11 +91,13 @@ class VulkanExample
             memReqs.memoryTypeBits >>= 1;
         }
         assert(memTypeFound);
-        VK_CHECK_RESULT(vkAllocateMemory(this->device, &memAlloc, nullptr, memory));
+        VK_CHECK_RESULT(
+          vkAllocateMemory(this->device, &memAlloc, nullptr, memory));
 
         if (data != nullptr) {
             void* mapped;
-            VK_CHECK_RESULT(vkMapMemory(this->device, *memory, 0, size, 0, &mapped));
+            VK_CHECK_RESULT(
+              vkMapMemory(this->device, *memory, 0, size, 0, &mapped));
             memcpy(mapped, data, size);
             vkUnmapMemory(this->device, *memory);
         }
@@ -177,8 +179,11 @@ class VulkanExample
                 vkGetInstanceProcAddr(this->instance,
                                       "vkCreateDebugReportCallbackEXT"));
             assert(vkCreateDebugReportCallbackEXT);
-            VK_CHECK_RESULT(vkCreateDebugReportCallbackEXT(
-              this->instance, &debugReportCreateInfo, nullptr, &debugReportCallback));
+            VK_CHECK_RESULT(
+              vkCreateDebugReportCallbackEXT(this->instance,
+                                             &debugReportCreateInfo,
+                                             nullptr,
+                                             &debugReportCallback));
         }
 #endif
 
@@ -209,8 +214,9 @@ class VulkanExample
 
         std::vector<VkQueueFamilyProperties> queueFamilyProperties(
           queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(
-          this->physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
+        vkGetPhysicalDeviceQueueFamilyProperties(this->physicalDevice,
+                                                 &queueFamilyCount,
+                                                 queueFamilyProperties.data());
 
         for (uint32_t i = 0;
              i < static_cast<uint32_t>(queueFamilyProperties.size());
@@ -283,8 +289,10 @@ class VulkanExample
             VkDescriptorPoolCreateInfo descriptorPoolInfo =
               vks::initializers::descriptorPoolCreateInfo(
                 static_cast<uint32_t>(poolSizes.size()), poolSizes.data(), 1);
-            VK_CHECK_RESULT(vkCreateDescriptorPool(
-              this->device, &descriptorPoolInfo, nullptr, &this->descriptorPool));
+            VK_CHECK_RESULT(vkCreateDescriptorPool(this->device,
+                                                   &descriptorPoolInfo,
+                                                   nullptr,
+                                                   &this->descriptorPool));
 
             std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {
                 vks::initializers::descriptorSetLayoutBinding(
@@ -295,20 +303,25 @@ class VulkanExample
             VkDescriptorSetLayoutCreateInfo descriptorLayout =
               vks::initializers::descriptorSetLayoutCreateInfo(
                 setLayoutBindings);
-            VK_CHECK_RESULT(vkCreateDescriptorSetLayout(
-              this->device, &descriptorLayout, nullptr, &this->descriptorSetLayout));
+            VK_CHECK_RESULT(
+              vkCreateDescriptorSetLayout(this->device,
+                                          &descriptorLayout,
+                                          nullptr,
+                                          &this->descriptorSetLayout));
 
             VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo =
-              vks::initializers::pipelineLayoutCreateInfo(&this->descriptorSetLayout,
-                                                          1);
-            VK_CHECK_RESULT(vkCreatePipelineLayout(
-              this->device, &pipelineLayoutCreateInfo, nullptr, &this->pipelineLayout));
+              vks::initializers::pipelineLayoutCreateInfo(
+                &this->descriptorSetLayout, 1);
+            VK_CHECK_RESULT(vkCreatePipelineLayout(this->device,
+                                                   &pipelineLayoutCreateInfo,
+                                                   nullptr,
+                                                   &this->pipelineLayout));
 
             VkDescriptorSetAllocateInfo allocInfo =
               vks::initializers::descriptorSetAllocateInfo(
                 this->descriptorPool, &this->descriptorSetLayout, 1);
-            VK_CHECK_RESULT(
-              vkAllocateDescriptorSets(this->device, &allocInfo, &this->descriptorSet));
+            VK_CHECK_RESULT(vkAllocateDescriptorSets(
+              this->device, &allocInfo, &this->descriptorSet));
 
             VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer,
                                                         0,
@@ -388,7 +401,7 @@ class VulkanExample
             cmdPoolInfo.queueFamilyIndex = this->queueFamilyIndex;
             cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
             VK_CHECK_RESULT(vkCreateCommandPool(
-            this->device, &cmdPoolInfo, nullptr, &this->commandPool));
+              this->device, &cmdPoolInfo, nullptr, &this->commandPool));
 
             // Create a command buffer for compute operations
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
@@ -400,8 +413,8 @@ class VulkanExample
             // Fence for compute CB sync
             VkFenceCreateInfo fenceCreateInfo =
               vks::initializers::fenceCreateInfo(VK_FENCE_CREATE_SIGNALED_BIT);
-            VK_CHECK_RESULT(
-              vkCreateFence(this->device, &fenceCreateInfo, nullptr, &this->fence));
+            VK_CHECK_RESULT(vkCreateFence(
+              this->device, &fenceCreateInfo, nullptr, &this->fence));
         }
 
         {
@@ -424,11 +437,13 @@ class VulkanExample
             VkCommandBufferBeginInfo cmdBufInfo =
               vks::initializers::commandBufferBeginInfo();
 
-            VK_CHECK_RESULT(vkBeginCommandBuffer(this->commandBuffer, &cmdBufInfo));
+            VK_CHECK_RESULT(
+              vkBeginCommandBuffer(this->commandBuffer, &cmdBufInfo));
 
             VkBufferCopy copyRegion = {};
             copyRegion.size = bufferSize;
-            vkCmdCopyBuffer(this->commandBuffer, hostBuffer, deviceBuffer, 1, &copyRegion);
+            vkCmdCopyBuffer(
+              this->commandBuffer, hostBuffer, deviceBuffer, 1, &copyRegion);
 
             // Barrier to ensure that input buffer transfer is finished before
             // compute shader reads from it
@@ -452,8 +467,9 @@ class VulkanExample
                                  0,
                                  nullptr);
 
-            vkCmdBindPipeline(
-              this->commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, this->pipeline);
+            vkCmdBindPipeline(this->commandBuffer,
+                              VK_PIPELINE_BIND_POINT_COMPUTE,
+                              this->pipeline);
 
             vkCmdBindDescriptorSets(this->commandBuffer,
                                     VK_PIPELINE_BIND_POINT_COMPUTE,
@@ -522,9 +538,10 @@ class VulkanExample
             computeSubmitInfo.pWaitDstStageMask = &waitStageMask;
             computeSubmitInfo.commandBufferCount = 1;
             computeSubmitInfo.pCommandBuffers = &this->commandBuffer;
-            VK_CHECK_RESULT(vkQueueSubmit(this->queue, 1, &computeSubmitInfo, this->fence));
             VK_CHECK_RESULT(
-              vkWaitForFences(this->device, 1, &this->fence, VK_TRUE, UINT64_MAX));
+              vkQueueSubmit(this->queue, 1, &computeSubmitInfo, this->fence));
+            VK_CHECK_RESULT(vkWaitForFences(
+              this->device, 1, &this->fence, VK_TRUE, UINT64_MAX));
 
             // Make this->device writes visible to the host
             void* mapped;
@@ -566,7 +583,8 @@ class VulkanExample
     ~VulkanExample()
     {
         vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
-        vkDestroyDescriptorSetLayout(this->device, this->descriptorSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(
+          this->device, this->descriptorSetLayout, nullptr);
         vkDestroyDescriptorPool(this->device, this->descriptorPool, nullptr);
         vkDestroyPipeline(this->device, this->pipeline, nullptr);
         vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
