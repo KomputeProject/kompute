@@ -11,4 +11,6 @@
 %h c++-header
 
 -I./external/
+-I./src/
+
 
