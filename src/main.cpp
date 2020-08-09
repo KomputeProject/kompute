@@ -3,6 +3,7 @@
 #endif
 
 #include <algorithm>
+#include <set>
 #include <assert.h>
 #include <iostream>
 #include <stdio.h>
@@ -12,8 +13,11 @@
 
 #include "VulkanTools.h"
 #include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
+#ifndef DEBUG
 #define DEBUG (!NDEBUG)
+#endif
 
 #define BUFFER_ELEMENTS 32
 
@@ -53,6 +57,7 @@ class VulkanExample
     VkShaderModule shaderModule;
 
     VkDebugReportCallbackEXT debugReportCallback{};
+    vk::DebugReportCallbackEXT computeDebugReportCallback{};
 
     VkResult createBuffer(VkBufferUsageFlags usageFlags,
                           VkMemoryPropertyFlags memoryPropertyFlags,
@@ -111,81 +116,71 @@ class VulkanExample
     {
         LOG("Running headless compute example\n");
 
-        VkApplicationInfo appInfo = {};
-        appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-        appInfo.pApplicationName = "Vulkan headless example";
-        appInfo.pEngineName = "VulkanExample";
-        appInfo.apiVersion = VK_API_VERSION_1_0;
+        vk::ApplicationInfo applicationInfo;
+        applicationInfo.pApplicationName = "Vulkan compute";
+        applicationInfo.pEngineName = "VulkanCompute";
+        applicationInfo.apiVersion = VK_API_VERSION_1_0;
 
-        /*
-                Vulkan this->instance creation (without surface extensions)
-        */
-        VkInstanceCreateInfo instanceCreateInfo = {};
-        instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-        instanceCreateInfo.pApplicationInfo = &appInfo;
+        std::vector<const char*> applicationExtensions;
+        applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 
-        uint32_t layerCount = 0;
-        const char* validationLayers[] = {
+        vk::InstanceCreateInfo computeInstanceCreateInfo;
+        computeInstanceCreateInfo.pApplicationInfo = &applicationInfo;
+        if (!applicationExtensions.empty()) {
+            computeInstanceCreateInfo.enabledExtensionCount = (uint32_t)applicationExtensions.size();
+            computeInstanceCreateInfo.ppEnabledExtensionNames = applicationExtensions.data();
+        }
+
+#if DEBUG
+        // We'll identify the layers that are supported 
+        std::vector<const char*> validLayerNames; 
+        std::vector<const char*> desiredLayerNames = {
+            "VK_LAYER_LUNARG_assistant_layer",
             "VK_LAYER_LUNARG_standard_validation"
         };
-        layerCount = 1;
-#if DEBUG
-        // Check if layers are available
-        uint32_t instanceLayerCount;
-        vkEnumerateInstanceLayerProperties(&instanceLayerCount, nullptr);
-        std::vector<VkLayerProperties> instanceLayers(instanceLayerCount);
-        vkEnumerateInstanceLayerProperties(&instanceLayerCount,
-                                           instanceLayers.data());
-
-        bool layersAvailable = true;
-        for (auto layerName : validationLayers) {
-            bool layerAvailable = false;
-            for (auto instanceLayer : instanceLayers) {
-                if (strcmp(instanceLayer.layerName, layerName) == 0) {
-                    layerAvailable = true;
-                    break;
+        // Identify the valid layer names based on the desiredLayerNames
+        {
+            std::set<std::string> uniqueLayerNames;
+            std::vector<vk::LayerProperties> availableLayerProperties = vk::enumerateInstanceLayerProperties();
+            for (vk::LayerProperties layerProperties : availableLayerProperties) {
+                std::string layerName(layerProperties.layerName);
+                uniqueLayerNames.insert(layerName);
+            }
+            for (const char* desiredLayerName : desiredLayerNames) {
+                if (uniqueLayerNames.count(desiredLayerName) != 0) {
+                    validLayerNames.push_back(desiredLayerName);
                 }
             }
-            if (!layerAvailable) {
-                layersAvailable = false;
-                break;
-            }
         }
 
-        if (layersAvailable) {
-            instanceCreateInfo.ppEnabledLayerNames = validationLayers;
-            const char* validationExt = VK_EXT_DEBUG_REPORT_EXTENSION_NAME;
-            instanceCreateInfo.enabledLayerCount = layerCount;
-            instanceCreateInfo.enabledExtensionCount = 1;
-            instanceCreateInfo.ppEnabledExtensionNames = &validationExt;
+        if (validLayerNames.size() > 0) {
+            computeInstanceCreateInfo.enabledLayerCount = (uint32_t)validLayerNames.size();
+            computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
         }
 #endif
-        VK_CHECK_RESULT(
-          vkCreateInstance(&instanceCreateInfo, nullptr, &this->instance));
+
+        vk::Instance computeInstance = vk::createInstance(computeInstanceCreateInfo);
+        this->instance = static_cast<VkInstance>(computeInstance);
 
 #if DEBUG
-        if (layersAvailable) {
-            VkDebugReportCallbackCreateInfoEXT debugReportCreateInfo = {};
-            debugReportCreateInfo.sType =
-              VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-            debugReportCreateInfo.flags =
-              VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-            debugReportCreateInfo.pfnCallback =
-              (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+        if (validLayerNames.size() > 0) {
+            vk::DebugReportFlagsEXT debugFlags = 
+                vk::DebugReportFlagBitsEXT::eError | vk::DebugReportFlagBitsEXT::eWarning;
+            vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};
+            debugCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+            debugCreateInfo.flags = debugFlags;
 
-            // We have to explicitly load this function.
-            PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT =
-              reinterpret_cast<PFN_vkCreateDebugReportCallbackEXT>(
-                vkGetInstanceProcAddr(this->instance,
-                                      "vkCreateDebugReportCallbackEXT"));
-            assert(vkCreateDebugReportCallbackEXT);
-            VK_CHECK_RESULT(
-              vkCreateDebugReportCallbackEXT(this->instance,
-                                             &debugReportCreateInfo,
-                                             nullptr,
-                                             &debugReportCallback));
+            vk::DispatchLoaderDynamic dispatcher;
+            dispatcher.init(computeInstance, &vkGetInstanceProcAddr);
+            this->computeDebugReportCallback = computeInstance.createDebugReportCallbackEXT(debugCreateInfo, nullptr, dispatcher);
+            this->debugReportCallback = this->computeDebugReportCallback;
         }
 #endif
+
+
+//        /*
+//                C API Vulkan
+//        */
 
         /*
                 Vulkan this->device creation
@@ -593,14 +588,14 @@ class VulkanExample
         vkDestroyShaderModule(this->device, this->shaderModule, nullptr);
         vkDestroyDevice(this->device, nullptr);
 #if DEBUG
-        if (debugReportCallback) {
+        if (this->computeDebugReportCallback) {
             PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
               reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
                 vkGetInstanceProcAddr(this->instance,
                                       "vkDestroyDebugReportCallbackEXT"));
             assert(vkDestroyDebugReportCallback);
             vkDestroyDebugReportCallback(
-              this->instance, debugReportCallback, nullptr);
+              this->instance, this->computeDebugReportCallback, nullptr);
         }
 #endif
         vkDestroyInstance(this->instance, nullptr);

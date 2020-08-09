@@ -10,5 +10,7 @@
 %h -x
 %h c++-header
 
+-DDEBUG=1
+
 -I./external/
 
