@@ -108,7 +108,8 @@ public:
         vk::SpecializationMapEntry specializationMapEntry{ 0, 0, sizeof(uint32_t) };
         vk::SpecializationInfo specializationInfo{ 1, &specializationMapEntry, sizeof(SpecializationData), &specializationData };
         computePipelineCreateInfo.stage.pSpecializationInfo = &specializationInfo;
-        pipeline = device.createComputePipeline(context.pipelineCache, computePipelineCreateInfo);
+        vk::ResultValue<vk::Pipeline> result = device.createComputePipeline(context.pipelineCache, computePipelineCreateInfo);
+        pipeline = result.value;
         device.destroyShaderModule(computePipelineCreateInfo.stage.module);
     }
 
@@ -203,4 +204,7 @@ public:
     }
 };
 
-VULKAN_EXAMPLE_MAIN()
+int main(const int argc, const char* argv[]) {
+    VulkanExample().run();
+    return 0;
+}

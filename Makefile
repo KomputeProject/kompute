@@ -15,9 +15,11 @@ SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
 build: build_shaders
 	$(CC) \
 		-Wall \
-		src/* \
+		src/*.cpp \
+		src/*.hpp \
+		src/vks/* \
 		-std=c++17 \
-		-I"./src/" \
+		-I"./src/**/*" \
 		-I"./external/" \
 		-I"C:\\VulkanSDK\\1.2.141.2\\Include\\" \
 		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
@@ -27,10 +29,12 @@ build: build_shaders
 build_linux:
 	g++ \
 		-Wall \
-		src/* \
-		-std=c++11 \
-		-I"./src" \
+		src/*.cpp \
+		src/*.hpp \
+		src/vks/* \
+		-std=c++17 \
 		-I"./external/" \
+		-I"./src/**/*" \
 		-lvulkan \
 		-o ./bin/main
 
@@ -68,7 +72,10 @@ format:
 	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.h src/*.hpp
 
 clean:
-	rm ./bin/main.exe;
+	rm ./bin/main.exe || echo "no bin"
+	rm ./bin/main || echo "no bin"
+	rm src/vks/*.gch || echo "No gch"
+	rm src/*.gch || echo "No gch"
 
 run:
 	./bin/main.exe;

@@ -48,8 +48,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-// // Image loading - CURRENTLY DISABLED
-// #include <gli/gli.hpp>
+#include <gli/gli.hpp>
 
 // Vulkan!
 #include <vulkan/vulkan.hpp>
@@ -99,9 +98,11 @@ public:
 #include "keycodes.hpp"
 
 #include "gl.hpp"
-// Skip glfw
-// // Cross platform window management (except android)
-// #include "glfw/glfw.hpp"
+// Cross platform window management (except android)
+#ifndef VKS_COMMON_HPP_IMPORTED
+#define VKS_COMMON_HPP_IMPORTED
+#include "glfw/glfw.hpp"
+#endif
 
 // Boilerplate for running an example
 #if defined(__ANDROID__)

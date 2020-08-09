@@ -126,7 +126,7 @@ public:
         std::set<std::string> result;
         auto layers = vk::enumerateInstanceLayerProperties();
         for (auto layer : layers) {
-            result.insert(layer.layerName);
+            result.insert(std::string(layer.layerName));
         }
         return result;
     }
@@ -136,7 +136,7 @@ public:
     static std::set<std::string> getExtensionNames() {
         std::set<std::string> extensionNames;
         for (auto& ext : getExtensions()) {
-            extensionNames.insert(ext.extensionName);
+            extensionNames.insert(std::string(ext.extensionName));
         }
         return extensionNames;
     }
@@ -150,7 +150,7 @@ public:
     static std::set<std::string> getDeviceExtensionNames(const vk::PhysicalDevice& physicalDevice) {
         std::set<std::string> extensionNames;
         for (auto& ext : getDeviceExtensions(physicalDevice)) {
-            extensionNames.insert(ext.extensionName);
+            extensionNames.insert(std::string(ext.extensionName));
         }
         return extensionNames;
     }
