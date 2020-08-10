@@ -3,17 +3,17 @@
 #endif
 
 #include <algorithm>
-#include <set>
 #include <assert.h>
 #include <iostream>
+#include <set>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
 
+#include <spdlog/spdlog.h>
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
-#include <spdlog/spdlog.h>
 
 #include "VulkanTools.h"
 
@@ -51,13 +51,63 @@ class VulkanCompute
 
     vk::DebugReportCallbackEXT mDebugReportCallback{};
 
+    void createBuffer(const vk::BufferUsageFlags& aUsageFlags,
+                      const vk::MemoryPropertyFlags& aMemoryPropertyFlags,
+                      vk::Buffer* aBuffer,
+                      vk::DeviceMemory* aMemory,
+                      vk::DeviceSize aSize,
+                      void* aData = nullptr) const
+    {
+        vk::BufferCreateInfo bufferCreateInfo(vk::BufferCreateFlags(),
+                                              aSize,
+                                              aUsageFlags,
+                                              vk::SharingMode::eExclusive);
+
+        *aBuffer = this->mDevice.createBuffer(bufferCreateInfo);
+
+        vk::PhysicalDeviceMemoryProperties deviceMemoryProperties =
+          this->mPhysicalDevice.getMemoryProperties();
+
+        vk::MemoryRequirements memReqs =
+          this->mDevice.getBufferMemoryRequirements(*aBuffer);
+
+        uint32_t memoryTypeIndex = -1;
+        for (uint32_t i = 0; i < 32; i++) {
+            if (memReqs.memoryTypeBits & (1 << i)) {
+                if ((deviceMemoryProperties.memoryTypes[i].propertyFlags &
+                     aMemoryPropertyFlags) == aMemoryPropertyFlags) {
+                    memoryTypeIndex = i;
+                    break;
+                }
+            }
+        }
+        if (memoryTypeIndex < 0) {
+            throw std::runtime_error(
+              "Memory type index for buffer creation not found");
+        }
+
+        vk::MemoryAllocateInfo memoryAllocateInfo(memReqs.size,
+                                                  memoryTypeIndex);
+
+        *aMemory = this->mDevice.allocateMemory(memoryAllocateInfo);
+        this->mDevice.bindBufferMemory(*aBuffer, *aMemory, 0);
+
+        if (aData != nullptr) {
+            vk::DeviceSize offset = 0;
+            void* mapped = this->mDevice.mapMemory(
+              *aMemory, offset, aSize, vk::MemoryMapFlags());
+            memcpy(mapped, aData, aSize);
+            this->mDevice.unmapMemory(*aMemory);
+        }
+    }
+
     /*
      * C API
      */
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
     VkDevice device;
-    //uint32_t queueFamilyIndex;
+    // uint32_t queueFamilyIndex;
     VkPipelineCache pipelineCache;
     VkQueue queue;
     VkCommandPool commandPool;
@@ -72,6 +122,7 @@ class VulkanCompute
 
     // VkDebugReportCallbackEXT debugReportCallback{};
 
+    // C API Function
     VkResult createBuffer(VkBufferUsageFlags usageFlags,
                           VkMemoryPropertyFlags memoryPropertyFlags,
                           VkBuffer* buffer,
@@ -140,13 +191,15 @@ class VulkanCompute
         vk::InstanceCreateInfo computeInstanceCreateInfo;
         computeInstanceCreateInfo.pApplicationInfo = &applicationInfo;
         if (!applicationExtensions.empty()) {
-            computeInstanceCreateInfo.enabledExtensionCount = (uint32_t)applicationExtensions.size();
-            computeInstanceCreateInfo.ppEnabledExtensionNames = applicationExtensions.data();
+            computeInstanceCreateInfo.enabledExtensionCount =
+              (uint32_t)applicationExtensions.size();
+            computeInstanceCreateInfo.ppEnabledExtensionNames =
+              applicationExtensions.data();
         }
 
 #if DEBUG
-        // We'll identify the layers that are supported 
-        std::vector<const char*> validLayerNames; 
+        // We'll identify the layers that are supported
+        std::vector<const char*> validLayerNames;
         std::vector<const char*> desiredLayerNames = {
             "VK_LAYER_LUNARG_assistant_layer",
             "VK_LAYER_LUNARG_standard_validation"
@@ -154,8 +207,10 @@ class VulkanCompute
         // Identify the valid layer names based on the desiredLayerNames
         {
             std::set<std::string> uniqueLayerNames;
-            std::vector<vk::LayerProperties> availableLayerProperties = vk::enumerateInstanceLayerProperties();
-            for (vk::LayerProperties layerProperties : availableLayerProperties) {
+            std::vector<vk::LayerProperties> availableLayerProperties =
+              vk::enumerateInstanceLayerProperties();
+            for (vk::LayerProperties layerProperties :
+                 availableLayerProperties) {
                 std::string layerName(layerProperties.layerName);
                 uniqueLayerNames.insert(layerName);
             }
@@ -167,8 +222,10 @@ class VulkanCompute
         }
 
         if (validLayerNames.size() > 0) {
-            computeInstanceCreateInfo.enabledLayerCount = (uint32_t)validLayerNames.size();
-            computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
+            computeInstanceCreateInfo.enabledLayerCount =
+              (uint32_t)validLayerNames.size();
+            computeInstanceCreateInfo.ppEnabledLayerNames =
+              validLayerNames.data();
         }
 #endif
 
@@ -176,71 +233,78 @@ class VulkanCompute
 
 #if DEBUG
         if (validLayerNames.size() > 0) {
-            vk::DebugReportFlagsEXT debugFlags = 
-                vk::DebugReportFlagBitsEXT::eError | vk::DebugReportFlagBitsEXT::eWarning;
+            vk::DebugReportFlagsEXT debugFlags =
+              vk::DebugReportFlagBitsEXT::eError |
+              vk::DebugReportFlagBitsEXT::eWarning;
             vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};
-            debugCreateInfo.pfnCallback = (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+            debugCreateInfo.pfnCallback =
+              (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
             debugCreateInfo.flags = debugFlags;
 
             vk::DispatchLoaderDynamic dispatcher;
             dispatcher.init(this->mInstance, &vkGetInstanceProcAddr);
-            this->mDebugReportCallback = this->mInstance.createDebugReportCallbackEXT(debugCreateInfo, nullptr, dispatcher);
+            this->mDebugReportCallback =
+              this->mInstance.createDebugReportCallbackEXT(
+                debugCreateInfo, nullptr, dispatcher);
         }
 #endif
 
         // Find device (currently only pick first device)
         {
-            std::vector<vk::PhysicalDevice> physicalDevices = 
-                this->mInstance.enumeratePhysicalDevices();
+            std::vector<vk::PhysicalDevice> physicalDevices =
+              this->mInstance.enumeratePhysicalDevices();
 
             this->mPhysicalDevice = physicalDevices[0];
 
             vk::PhysicalDeviceProperties physicalDeviceProperties =
-                this->mPhysicalDevice.getProperties();
+              this->mPhysicalDevice.getProperties();
 
             spdlog::info("Device {}", physicalDeviceProperties.deviceName);
         }
 
         {
             // Find compute queue
-            std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties = 
-                this->mPhysicalDevice.getQueueFamilyProperties();
+            std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
+              this->mPhysicalDevice.getQueueFamilyProperties();
 
-            this->mComputeQueueFamilyIndex = 0;
-            for (; this->mComputeQueueFamilyIndex < allQueueFamilyProperties.size(); this->mComputeQueueFamilyIndex++) {
-                vk::QueueFamilyProperties queueFamilyProperties = 
-                    allQueueFamilyProperties[this->mComputeQueueFamilyIndex];
-                if (queueFamilyProperties.queueFlags & vk::QueueFlagBits::eCompute) {
+            this->mComputeQueueFamilyIndex = -1;
+            for (uint32_t i = 0; i < allQueueFamilyProperties.size(); i++) {
+                vk::QueueFamilyProperties queueFamilyProperties =
+                  allQueueFamilyProperties[this->mComputeQueueFamilyIndex];
+
+                if (queueFamilyProperties.queueFlags &
+                    vk::QueueFlagBits::eCompute) {
+                    this->mComputeQueueFamilyIndex = i;
                     break;
                 }
             }
 
-            spdlog::info("ComputeQueueFamilyIndex: {}, Size: {}", this->mComputeQueueFamilyIndex, allQueueFamilyProperties.size());
-            if (this->mComputeQueueFamilyIndex == allQueueFamilyProperties.size() - 1) {
+            if (this->mComputeQueueFamilyIndex < 0) {
                 spdlog::critical("Compute queue is not supported");
             }
-            spdlog::info("Running after critical");
 
             const float defaultQueuePriority(0.0f);
             const uint32_t defaultQueueCount(1);
             vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
-                    vk::DeviceQueueCreateFlags(),
-                    this->mComputeQueueFamilyIndex,
-                    defaultQueueCount,
-                    &defaultQueuePriority);
+              vk::DeviceQueueCreateFlags(),
+              this->mComputeQueueFamilyIndex,
+              defaultQueueCount,
+              &defaultQueuePriority);
 
             vk::DeviceCreateInfo deviceCreateInfo(
-                    vk::DeviceCreateFlags(),
-                    1, // Number of deviceQueueCreateInfo
-                    &deviceQueueCreateInfo);
+              vk::DeviceCreateFlags(),
+              1, // Number of deviceQueueCreateInfo
+              &deviceQueueCreateInfo);
 
-            this->mDevice = this->mPhysicalDevice.createDevice(deviceCreateInfo);
-            this->mComputeQueue = this->mDevice.getQueue(this->mComputeQueueFamilyIndex, 0);
+            this->mDevice =
+              this->mPhysicalDevice.createDevice(deviceCreateInfo);
+            this->mComputeQueue =
+              this->mDevice.getQueue(this->mComputeQueueFamilyIndex, 0);
         }
 
-//        /*
-//                C API Vulkan
-//        */
+        //        /*
+        //                C API Vulkan
+        //        */
 
         this->instance = static_cast<VkInstance>(this->mInstance);
         this->physicalDevice = this->mPhysicalDevice;
@@ -260,6 +324,8 @@ class VulkanCompute
 
         const VkDeviceSize bufferSize = BUFFER_ELEMENTS * sizeof(uint32_t);
 
+        /*
+
         VkBuffer deviceBuffer, hostBuffer;
         VkDeviceMemory deviceMemory, hostMemory;
 
@@ -277,6 +343,29 @@ class VulkanCompute
                            VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
                            VK_BUFFER_USAGE_TRANSFER_DST_BIT,
                          VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+                         &deviceBuffer,
+                         &deviceMemory,
+                         bufferSize);
+        }
+
+        */
+
+        vk::Buffer hostBuffer, deviceBuffer;
+        vk::DeviceMemory hostMemory, deviceMemory;
+
+        {
+            createBuffer(vk::BufferUsageFlagBits::eTransferSrc |
+                           vk::BufferUsageFlagBits::eTransferDst,
+                         vk::MemoryPropertyFlagBits::eHostVisible,
+                         &hostBuffer,
+                         &hostMemory,
+                         bufferSize,
+                         computeInput.data());
+
+            createBuffer(vk::BufferUsageFlagBits::eStorageBuffer |
+                           vk::BufferUsageFlagBits::eTransferSrc |
+                           vk::BufferUsageFlagBits::eTransferDst,
+                         vk::MemoryPropertyFlagBits::eDeviceLocal,
                          &deviceBuffer,
                          &deviceMemory,
                          bufferSize);
