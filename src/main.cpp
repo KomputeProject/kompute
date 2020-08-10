@@ -37,9 +37,15 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
     return VK_FALSE;
 }
 
-class VulkanExample
+class VulkanCompute
 {
   public:
+    vk::Instance mInstance;
+    vk::DebugReportCallbackEXT mDebugReportCallback{};
+
+    /*
+     * C API
+     */
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
     VkDevice device;
@@ -56,8 +62,7 @@ class VulkanExample
     VkPipeline pipeline;
     VkShaderModule shaderModule;
 
-    VkDebugReportCallbackEXT debugReportCallback{};
-    vk::DebugReportCallbackEXT computeDebugReportCallback{};
+    // VkDebugReportCallbackEXT debugReportCallback{};
 
     VkResult createBuffer(VkBufferUsageFlags usageFlags,
                           VkMemoryPropertyFlags memoryPropertyFlags,
@@ -112,7 +117,7 @@ class VulkanExample
         return VK_SUCCESS;
     }
 
-    VulkanExample()
+    VulkanCompute()
     {
         LOG("Running headless compute example\n");
 
@@ -159,8 +164,8 @@ class VulkanExample
         }
 #endif
 
-        vk::Instance computeInstance = vk::createInstance(computeInstanceCreateInfo);
-        this->instance = static_cast<VkInstance>(computeInstance);
+        this->mInstance = vk::createInstance(computeInstanceCreateInfo);
+        this->instance = static_cast<VkInstance>(this->mInstance);
 
 #if DEBUG
         if (validLayerNames.size() > 0) {
@@ -171,9 +176,8 @@ class VulkanExample
             debugCreateInfo.flags = debugFlags;
 
             vk::DispatchLoaderDynamic dispatcher;
-            dispatcher.init(computeInstance, &vkGetInstanceProcAddr);
-            this->computeDebugReportCallback = computeInstance.createDebugReportCallbackEXT(debugCreateInfo, nullptr, dispatcher);
-            this->debugReportCallback = this->computeDebugReportCallback;
+            dispatcher.init(this->mInstance, &vkGetInstanceProcAddr);
+            this->mDebugReportCallback = this->mInstance.createDebugReportCallbackEXT(debugCreateInfo, nullptr, dispatcher);
         }
 #endif
 
@@ -575,7 +579,7 @@ class VulkanExample
         vkFreeMemory(this->device, hostMemory, nullptr);
     }
 
-    ~VulkanExample()
+    ~VulkanCompute()
     {
         vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
         vkDestroyDescriptorSetLayout(
@@ -588,14 +592,14 @@ class VulkanExample
         vkDestroyShaderModule(this->device, this->shaderModule, nullptr);
         vkDestroyDevice(this->device, nullptr);
 #if DEBUG
-        if (this->computeDebugReportCallback) {
+        if (this->mDebugReportCallback) {
             PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
               reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
                 vkGetInstanceProcAddr(this->instance,
                                       "vkDestroyDebugReportCallbackEXT"));
             assert(vkDestroyDebugReportCallback);
             vkDestroyDebugReportCallback(
-              this->instance, this->computeDebugReportCallback, nullptr);
+              this->instance, this->mDebugReportCallback, nullptr);
         }
 #endif
         vkDestroyInstance(this->instance, nullptr);
@@ -605,7 +609,7 @@ class VulkanExample
 int
 main()
 {
-    VulkanExample* vulkanExample = new VulkanExample();
+    VulkanCompute* vulkanExample = new VulkanCompute();
     std::cout << "Finished.";
     delete (vulkanExample);
     return 0;
