@@ -16,8 +16,9 @@ build: build_shaders
 	$(CC) \
 		-Wall \
 		src/* \
-		-std=c++11 \
+		-std=c++17 \
 		-DDEBUG=1 \
+		-I"./external/" \
 		-I"./src/" \
 		-I"C:\\VulkanSDK\\1.2.141.2\\Include\\" \
 		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
@@ -28,7 +29,8 @@ build_linux:
 	g++ \
 		-Wall \
 		src/* \
-		-std=c++11 \
+		-std=c++17 \
+		-I"./external/" \
 		-I"./src" \
 		-lvulkan \
 		-o ./bin/main

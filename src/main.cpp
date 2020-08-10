@@ -11,9 +11,11 @@
 #include <string.h>
 #include <vector>
 
-#include "VulkanTools.h"
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
+#include <spdlog/spdlog.h>
+
+#include "VulkanTools.h"
 
 #ifndef DEBUG
 #define DEBUG (!NDEBUG)
@@ -41,6 +43,12 @@ class VulkanCompute
 {
   public:
     vk::Instance mInstance;
+    vk::PhysicalDevice mPhysicalDevice;
+    vk::Device mDevice;
+    vk::Queue mComputeQueue;
+
+    uint32_t mComputeQueueFamilyIndex;
+
     vk::DebugReportCallbackEXT mDebugReportCallback{};
 
     /*
@@ -49,7 +57,7 @@ class VulkanCompute
     VkInstance instance;
     VkPhysicalDevice physicalDevice;
     VkDevice device;
-    uint32_t queueFamilyIndex;
+    //uint32_t queueFamilyIndex;
     VkPipelineCache pipelineCache;
     VkQueue queue;
     VkCommandPool commandPool;
@@ -181,6 +189,55 @@ class VulkanCompute
         }
 #endif
 
+        // Find device (currently only pick first device)
+        {
+            std::vector<vk::PhysicalDevice> physicalDevices = 
+                this->mInstance.enumeratePhysicalDevices();
+
+            this->mPhysicalDevice = physicalDevices[0];
+
+            vk::PhysicalDeviceProperties physicalDeviceProperties =
+                this->mPhysicalDevice.getProperties();
+
+            spdlog::info("Device {}", physicalDeviceProperties.deviceName);
+        }
+
+        {
+            // Find compute queue
+            std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties = 
+                this->mPhysicalDevice.getQueueFamilyProperties();
+
+            this->mComputeQueueFamilyIndex = 0;
+            for (; this->mComputeQueueFamilyIndex < allQueueFamilyProperties.size(); this->mComputeQueueFamilyIndex++) {
+                vk::QueueFamilyProperties queueFamilyProperties = 
+                    allQueueFamilyProperties[this->mComputeQueueFamilyIndex];
+                if (queueFamilyProperties.queueFlags & vk::QueueFlagBits::eCompute) {
+                    break;
+                }
+            }
+
+            spdlog::info("ComputeQueueFamilyIndex: {}, Size: {}", this->mComputeQueueFamilyIndex, allQueueFamilyProperties.size());
+            if (this->mComputeQueueFamilyIndex == allQueueFamilyProperties.size() - 1) {
+                spdlog::critical("Compute queue is not supported");
+            }
+            spdlog::info("Running after critical");
+
+            const float defaultQueuePriority(0.0f);
+            const uint32_t defaultQueueCount(1);
+            vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
+                    vk::DeviceQueueCreateFlags(),
+                    this->mComputeQueueFamilyIndex,
+                    defaultQueueCount,
+                    &defaultQueuePriority);
+
+            vk::DeviceCreateInfo deviceCreateInfo(
+                    vk::DeviceCreateFlags(),
+                    1, // Number of deviceQueueCreateInfo
+                    &deviceQueueCreateInfo);
+
+            this->mDevice = this->mPhysicalDevice.createDevice(deviceCreateInfo);
+            this->mComputeQueue = this->mDevice.getQueue(this->mComputeQueueFamilyIndex, 0);
+        }
 
 //        /*
 //                C API Vulkan
@@ -190,6 +247,8 @@ class VulkanCompute
                 Vulkan this->device creation
         */
         // Physical this->device (always use first)
+        //
+        /******** Vulkan Device Creation C API *********************
         uint32_t deviceCount = 0;
         VK_CHECK_RESULT(
           vkEnumeratePhysicalDevices(this->instance, &deviceCount, nullptr));
@@ -205,7 +264,7 @@ class VulkanCompute
         LOG("GPU: %s\n", deviceProperties.deviceName);
 
         // Request a single compute this->queue
-        const float defaultQueuePriority(0.0f);
+        //const float defaultQueuePriority(0.0f);
         VkDeviceQueueCreateInfo queueCreateInfo = {};
         uint32_t queueFamilyCount;
         vkGetPhysicalDeviceQueueFamilyProperties(
@@ -217,11 +276,12 @@ class VulkanCompute
                                                  &queueFamilyCount,
                                                  queueFamilyProperties.data());
 
+        const float defaultQueuePriority(0.0f);
         for (uint32_t i = 0;
              i < static_cast<uint32_t>(queueFamilyProperties.size());
              i++) {
             if (queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
-                queueFamilyIndex = i;
+                this->queueFamilyIndex = i;
                 queueCreateInfo.sType =
                   VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
                 queueCreateInfo.queueFamilyIndex = i;
@@ -240,6 +300,11 @@ class VulkanCompute
 
         // Get a compute this->queue
         vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &this->queue);
+        **********************************************************/
+
+        this->physicalDevice = this->mPhysicalDevice;
+        this->device = this->mDevice;
+        this->queue = this->mComputeQueue;
 
         /*
                 Prepare storage buffers
@@ -397,7 +462,7 @@ class VulkanCompute
             // Compute command pool
             VkCommandPoolCreateInfo cmdPoolInfo = {};
             cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-            cmdPoolInfo.queueFamilyIndex = this->queueFamilyIndex;
+            cmdPoolInfo.queueFamilyIndex = this->mComputeQueueFamilyIndex;
             cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
             VK_CHECK_RESULT(vkCreateCommandPool(
               this->device, &cmdPoolInfo, nullptr, &this->commandPool));
