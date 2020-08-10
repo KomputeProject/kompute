@@ -173,7 +173,6 @@ class VulkanCompute
 #endif
 
         this->mInstance = vk::createInstance(computeInstanceCreateInfo);
-        this->instance = static_cast<VkInstance>(this->mInstance);
 
 #if DEBUG
         if (validLayerNames.size() > 0) {
@@ -243,65 +242,7 @@ class VulkanCompute
 //                C API Vulkan
 //        */
 
-        /*
-                Vulkan this->device creation
-        */
-        // Physical this->device (always use first)
-        //
-        /******** Vulkan Device Creation C API *********************
-        uint32_t deviceCount = 0;
-        VK_CHECK_RESULT(
-          vkEnumeratePhysicalDevices(this->instance, &deviceCount, nullptr));
-
-        std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
-        VK_CHECK_RESULT(vkEnumeratePhysicalDevices(
-          this->instance, &deviceCount, physicalDevices.data()));
-
-        this->physicalDevice = physicalDevices[0];
-
-        VkPhysicalDeviceProperties deviceProperties;
-        vkGetPhysicalDeviceProperties(this->physicalDevice, &deviceProperties);
-        LOG("GPU: %s\n", deviceProperties.deviceName);
-
-        // Request a single compute this->queue
-        //const float defaultQueuePriority(0.0f);
-        VkDeviceQueueCreateInfo queueCreateInfo = {};
-        uint32_t queueFamilyCount;
-        vkGetPhysicalDeviceQueueFamilyProperties(
-          this->physicalDevice, &queueFamilyCount, nullptr);
-
-        std::vector<VkQueueFamilyProperties> queueFamilyProperties(
-          queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(this->physicalDevice,
-                                                 &queueFamilyCount,
-                                                 queueFamilyProperties.data());
-
-        const float defaultQueuePriority(0.0f);
-        for (uint32_t i = 0;
-             i < static_cast<uint32_t>(queueFamilyProperties.size());
-             i++) {
-            if (queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT) {
-                this->queueFamilyIndex = i;
-                queueCreateInfo.sType =
-                  VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-                queueCreateInfo.queueFamilyIndex = i;
-                queueCreateInfo.queueCount = 1;
-                queueCreateInfo.pQueuePriorities = &defaultQueuePriority;
-                break;
-            }
-        }
-        // Create logical this->device
-        VkDeviceCreateInfo deviceCreateInfo = {};
-        deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-        deviceCreateInfo.queueCreateInfoCount = 1;
-        deviceCreateInfo.pQueueCreateInfos = &queueCreateInfo;
-        VK_CHECK_RESULT(vkCreateDevice(
-          this->physicalDevice, &deviceCreateInfo, nullptr, &this->device));
-
-        // Get a compute this->queue
-        vkGetDeviceQueue(this->device, this->queueFamilyIndex, 0, &this->queue);
-        **********************************************************/
-
+        this->instance = static_cast<VkInstance>(this->mInstance);
         this->physicalDevice = this->mPhysicalDevice;
         this->device = this->mDevice;
         this->queue = this->mComputeQueue;
