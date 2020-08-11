@@ -17,9 +17,7 @@
 
 #include "VulkanTools.h"
 
-#ifndef DEBUG
-#define DEBUG (!NDEBUG)
-#endif
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 
 #define BUFFER_ELEMENTS 32
 
@@ -58,6 +56,10 @@ class VulkanCompute
                       vk::DeviceSize aSize,
                       void* aData = nullptr) const
     {
+        SPDLOG_LOGGER_DEBUG("Test Debug Logger");
+        SPDLOG_LOGGER_DEBUG("Test Trace Logger");
+        spdlog::debug("Creating buffer");
+
         vk::BufferCreateInfo bufferCreateInfo(vk::BufferCreateFlags(),
                                               aSize,
                                               aUsageFlags,
@@ -90,7 +92,6 @@ class VulkanCompute
                                                   memoryTypeIndex);
 
         *aMemory = this->mDevice.allocateMemory(memoryAllocateInfo);
-        this->mDevice.bindBufferMemory(*aBuffer, *aMemory, 0);
 
         if (aData != nullptr) {
             vk::DeviceSize offset = 0;
@@ -99,6 +100,8 @@ class VulkanCompute
             memcpy(mapped, aData, aSize);
             this->mDevice.unmapMemory(*aMemory);
         }
+
+        this->mDevice.bindBufferMemory(*aBuffer, *aMemory, 0);
     }
 
     /*
@@ -263,6 +266,7 @@ class VulkanCompute
         }
 
         {
+            spdlog::info("Finding compute queue");
             // Find compute queue
             std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
               this->mPhysicalDevice.getQueueFamilyProperties();
@@ -270,7 +274,7 @@ class VulkanCompute
             this->mComputeQueueFamilyIndex = -1;
             for (uint32_t i = 0; i < allQueueFamilyProperties.size(); i++) {
                 vk::QueueFamilyProperties queueFamilyProperties =
-                  allQueueFamilyProperties[this->mComputeQueueFamilyIndex];
+                  allQueueFamilyProperties[i];
 
                 if (queueFamilyProperties.queueFlags &
                     vk::QueueFlagBits::eCompute) {
@@ -306,6 +310,7 @@ class VulkanCompute
         //                C API Vulkan
         //        */
 
+        spdlog::info("Allocating rest of components for backwards compat");
         this->instance = static_cast<VkInstance>(this->mInstance);
         this->physicalDevice = this->mPhysicalDevice;
         this->device = this->mDevice;
@@ -323,32 +328,6 @@ class VulkanCompute
           computeInput.begin(), computeInput.end(), [&n] { return n++; });
 
         const VkDeviceSize bufferSize = BUFFER_ELEMENTS * sizeof(uint32_t);
-
-        /*
-
-        VkBuffer deviceBuffer, hostBuffer;
-        VkDeviceMemory deviceMemory, hostMemory;
-
-        // Copy input data to VRAM using a staging buffer
-        {
-            createBuffer(VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
-                           VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                         VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT,
-                         &hostBuffer,
-                         &hostMemory,
-                         bufferSize,
-                         computeInput.data());
-
-            createBuffer(VK_BUFFER_USAGE_STORAGE_BUFFER_BIT |
-                           VK_BUFFER_USAGE_TRANSFER_SRC_BIT |
-                           VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-                         &deviceBuffer,
-                         &deviceMemory,
-                         bufferSize);
-        }
-
-        */
 
         vk::Buffer hostBuffer, deviceBuffer;
         vk::DeviceMemory hostMemory, deviceMemory;
