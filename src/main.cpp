@@ -47,6 +47,14 @@ class VulkanCompute
     vk::PhysicalDevice mPhysicalDevice;
     vk::Device mDevice;
     vk::Queue mComputeQueue;
+    vk::DescriptorPool mDescriptorPool;
+    vk::DescriptorSetLayout mDescriptorSetLayout;
+    vk::PipelineLayout mPipelineLayout;
+    vk::DescriptorSet mDescriptorSet;
+    vk::PipelineCache mPipelineCache;
+    vk::ShaderModule mShaderModule;
+    vk::Pipeline mPipeline;
+    vk::CommandPool mCommandPool;
 
     uint32_t mComputeQueueFamilyIndex;
 
@@ -128,60 +136,6 @@ class VulkanCompute
     VkShaderModule shaderModule;
 
     // VkDebugReportCallbackEXT debugReportCallback{};
-
-    // C API Function
-    VkResult createBuffer(VkBufferUsageFlags usageFlags,
-                          VkMemoryPropertyFlags memoryPropertyFlags,
-                          VkBuffer* buffer,
-                          VkDeviceMemory* memory,
-                          VkDeviceSize size,
-                          void* data = nullptr)
-    {
-        // Create the buffer handle
-        VkBufferCreateInfo bufferCreateInfo =
-          vks::initializers::bufferCreateInfo(usageFlags, size);
-
-        bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        VK_CHECK_RESULT(
-          vkCreateBuffer(this->device, &bufferCreateInfo, nullptr, buffer));
-
-        // Create the memory backing up the buffer handle
-        VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
-        vkGetPhysicalDeviceMemoryProperties(this->physicalDevice,
-                                            &deviceMemoryProperties);
-        VkMemoryRequirements memReqs;
-        VkMemoryAllocateInfo memAlloc = vks::initializers::memoryAllocateInfo();
-        vkGetBufferMemoryRequirements(this->device, *buffer, &memReqs);
-        memAlloc.allocationSize = memReqs.size;
-
-        // Find a memory type index that fits the properties of the buffer
-        bool memTypeFound = false;
-        for (uint32_t i = 0; i < deviceMemoryProperties.memoryTypeCount; i++) {
-            if ((memReqs.memoryTypeBits & 1) == 1) {
-                if ((deviceMemoryProperties.memoryTypes[i].propertyFlags &
-                     memoryPropertyFlags) == memoryPropertyFlags) {
-                    memAlloc.memoryTypeIndex = i;
-                    memTypeFound = true;
-                }
-            }
-            memReqs.memoryTypeBits >>= 1;
-        }
-        assert(memTypeFound);
-        VK_CHECK_RESULT(
-          vkAllocateMemory(this->device, &memAlloc, nullptr, memory));
-
-        if (data != nullptr) {
-            void* mapped;
-            VK_CHECK_RESULT(
-              vkMapMemory(this->device, *memory, 0, size, 0, &mapped));
-            memcpy(mapped, data, size);
-            vkUnmapMemory(this->device, *memory);
-        }
-
-        VK_CHECK_RESULT(vkBindBufferMemory(this->device, *buffer, *memory, 0));
-
-        return VK_SUCCESS;
-    }
 
     VulkanCompute()
     {
@@ -310,18 +264,6 @@ class VulkanCompute
               this->mDevice.getQueue(this->mComputeQueueFamilyIndex, 0);
         }
 
-        //        /*
-        //                C API Vulkan
-        //        */
-
-        {
-            spdlog::info("Allocating rest of components for backwards compat");
-            this->instance = static_cast<VkInstance>(this->mInstance);
-            this->physicalDevice = this->mPhysicalDevice;
-            this->device = this->mDevice;
-            this->queue = this->mComputeQueue;
-        }
-
         /*
                 Prepare storage buffers
         */
@@ -356,131 +298,172 @@ class VulkanCompute
                          bufferSize);
         }
 
-        /*
-                Prepare compute this->pipeline
-        */
         {
-            std::vector<VkDescriptorPoolSize> poolSizes = {
-                vks::initializers::descriptorPoolSize(
-                  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1),
+            std::vector<vk::DescriptorPoolSize> poolSizes = {
+                vk::DescriptorPoolSize(vk::DescriptorType::eStorageBuffer, 1)
             };
 
-            VkDescriptorPoolCreateInfo descriptorPoolInfo =
-              vks::initializers::descriptorPoolCreateInfo(
-                static_cast<uint32_t>(poolSizes.size()), poolSizes.data(), 1);
-            VK_CHECK_RESULT(vkCreateDescriptorPool(this->device,
-                                                   &descriptorPoolInfo,
-                                                   nullptr,
-                                                   &this->descriptorPool));
+            vk::DescriptorPoolCreateInfo descriptorPoolInfo(
+              vk::DescriptorPoolCreateFlags(),
+              1,
+              static_cast<uint32_t>(poolSizes.size()),
+              poolSizes.data());
 
-            std::vector<VkDescriptorSetLayoutBinding> setLayoutBindings = {
-                vks::initializers::descriptorSetLayoutBinding(
-                  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
-                  VK_SHADER_STAGE_COMPUTE_BIT,
-                  0),
-            };
-            VkDescriptorSetLayoutCreateInfo descriptorLayout =
-              vks::initializers::descriptorSetLayoutCreateInfo(
-                setLayoutBindings);
-            VK_CHECK_RESULT(
-              vkCreateDescriptorSetLayout(this->device,
-                                          &descriptorLayout,
-                                          nullptr,
-                                          &this->descriptorSetLayout));
+            this->mDescriptorPool =
+              this->mDevice.createDescriptorPool(descriptorPoolInfo);
 
-            VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo =
-              vks::initializers::pipelineLayoutCreateInfo(
-                &this->descriptorSetLayout, 1);
-            VK_CHECK_RESULT(vkCreatePipelineLayout(this->device,
-                                                   &pipelineLayoutCreateInfo,
-                                                   nullptr,
-                                                   &this->pipelineLayout));
-
-            VkDescriptorSetAllocateInfo allocInfo =
-              vks::initializers::descriptorSetAllocateInfo(
-                this->descriptorPool, &this->descriptorSetLayout, 1);
-            VK_CHECK_RESULT(vkAllocateDescriptorSets(
-              this->device, &allocInfo, &this->descriptorSet));
-
-            VkDescriptorBufferInfo bufferDescriptor = { deviceBuffer,
-                                                        0,
-                                                        VK_WHOLE_SIZE };
-            std::vector<VkWriteDescriptorSet> computeWriteDescriptorSets = {
-                vks::initializers::writeDescriptorSet(
-                  this->descriptorSet,
-                  VK_DESCRIPTOR_TYPE_STORAGE_BUFFER,
+            std::vector<vk::DescriptorSetLayoutBinding> setLayoutBindings = {
+                vk::DescriptorSetLayoutBinding(
                   0,
-                  &bufferDescriptor),
+                  vk::DescriptorType::eStorageBuffer,
+                  1,
+                  vk::ShaderStageFlagBits::eCompute)
             };
-            vkUpdateDescriptorSets(
-              this->device,
-              static_cast<uint32_t>(computeWriteDescriptorSets.size()),
-              computeWriteDescriptorSets.data(),
-              0,
-              NULL);
 
-            VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
-            pipelineCacheCreateInfo.sType =
-              VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-            VK_CHECK_RESULT(vkCreatePipelineCache(this->device,
-                                                  &pipelineCacheCreateInfo,
-                                                  nullptr,
-                                                  &this->pipelineCache));
+            vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo(
+              vk::DescriptorSetLayoutCreateFlags(),
+              static_cast<uint32_t>(setLayoutBindings.size()),
+              setLayoutBindings.data());
 
-            // Create this->pipeline
-            VkComputePipelineCreateInfo computePipelineCreateInfo =
-              vks::initializers::computePipelineCreateInfo(this->pipelineLayout,
-                                                           0);
+            this->mDescriptorSetLayout =
+              this->mDevice.createDescriptorSetLayout(descriptorSetLayoutInfo);
 
-            // Pass SSBO size via specialization constant
+            // For simplicity we don't create an array and pass a single
+            // descriptorSetLayout
+            vk::PipelineLayoutCreateInfo pipelineLayoutCreateInfo(
+              vk::PipelineLayoutCreateFlags(), 1, &this->mDescriptorSetLayout);
+
+            this->mPipelineLayout =
+              this->mDevice.createPipelineLayout(pipelineLayoutCreateInfo);
+
+            vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
+              this->mDescriptorPool, 1, &this->mDescriptorSetLayout);
+
+            std::vector<vk::DescriptorSet> descriptorSets =
+              this->mDevice.allocateDescriptorSets(descriptorSetAllocateInfo);
+            this->mDescriptorSet = descriptorSets[0];
+
+            vk::DescriptorBufferInfo descriptorBufferInfo(
+              deviceBuffer, 0, VK_WHOLE_SIZE);
+
+            std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets = {
+                vk::WriteDescriptorSet(this->mDescriptorSet,
+                                       0,
+                                       0,
+                                       1,
+                                       vk::DescriptorType::eStorageBuffer,
+                                       nullptr,
+                                       &descriptorBufferInfo)
+            };
+
+            this->mDevice.updateDescriptorSets(computeWriteDescriptorSets,
+                                               nullptr);
+        }
+
+        {
             struct SpecializationData
             {
                 uint32_t BUFFER_ELEMENT_COUNT = BUFFER_ELEMENTS;
             } specializationData;
 
-            VkSpecializationMapEntry specializationMapEntry =
-              vks::initializers::specializationMapEntry(0, 0, sizeof(uint32_t));
+            vk::SpecializationMapEntry specializationMapEntry(
+              0, 0, sizeof(SpecializationData));
+            vk::SpecializationInfo specializationInfo(
+              1,
+              &specializationMapEntry,
+              sizeof(SpecializationData),
+              &specializationData);
 
-            VkSpecializationInfo specializationInfo =
-              vks::initializers::specializationInfo(1,
-                                                    &specializationMapEntry,
-                                                    sizeof(SpecializationData),
-                                                    &specializationData);
+            const std::string shadersPath = "shaders/glsl/";
+            const std::string shaderFilePath =
+              shadersPath + "computeheadless.comp.spv";
+            spdlog::info("Shader file path: {}", shaderFilePath);
 
-            // TODO: There is no command line arguments parsing (nor Android
-            // settings) for this example, so we have no way of picking between
-            // GLSL or HLSL shaders. Hard-code to glsl for now.
-            const std::string shadersPath = getAssetPath() + "shaders/glsl/";
-            std::cout << "Shader path: " << shadersPath << std::endl;
+            // std::ifstream file(shaderFilePath, std::ios::binary);
+            // file.unsetf(std::ios::skipws);
+            // std::streampos fileSize;
+            // file.seekg(0, std::ios::end);
+            // fileSize = file.tellg();
+            // file.seekg(0, std::ios::beg);
 
-            VkPipelineShaderStageCreateInfo shaderStage = {};
-            shaderStage.sType =
-              VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-            shaderStage.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+            // std::vector<uint8_t> fileData;
+            // fileData.reserve(fileSize);
+            // fileData.insert(fileData.begin(),
+            // std::istream_iterator<uint8_t>(file),
+            // std::istream_iterator<uint8_t>()); file.close();
 
-            shaderStage.module = vks::tools::loadShader(
-              (shadersPath + "computeheadless.comp.spv").c_str(), this->device);
+            SPDLOG_DEBUG("Reading file");
+            std::ifstream fileStream(
+              shaderFilePath, std::ios::binary | std::ios::in | std::ios::ate);
 
-            shaderStage.pName = "main";
-            shaderStage.pSpecializationInfo = &specializationInfo;
-            this->shaderModule = shaderStage.module;
+            size_t shaderFileSize = fileStream.tellg();
+            fileStream.seekg(0, std::ios::beg);
+            char* shaderFileData = new char[shaderFileSize];
+            fileStream.read(shaderFileData, shaderFileSize);
+            fileStream.close();
 
-            assert(shaderStage.module != VK_NULL_HANDLE);
-            computePipelineCreateInfo.stage = shaderStage;
-            VK_CHECK_RESULT(vkCreateComputePipelines(this->device,
-                                                     this->pipelineCache,
-                                                     1,
-                                                     &computePipelineCreateInfo,
-                                                     nullptr,
-                                                     &this->pipeline));
+            SPDLOG_DEBUG("Converting the read file into module");
+            vk::ShaderModuleCreateInfo shaderModuleInfo(
+              vk::ShaderModuleCreateFlags(),
+              shaderFileSize,
+              (uint32_t*)shaderFileData);
+            this->mShaderModule =
+              this->mDevice.createShaderModule(shaderModuleInfo);
 
-            // Compute command pool
-            VkCommandPoolCreateInfo cmdPoolInfo = {};
-            cmdPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-            cmdPoolInfo.queueFamilyIndex = this->mComputeQueueFamilyIndex;
-            cmdPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-            VK_CHECK_RESULT(vkCreateCommandPool(
-              this->device, &cmdPoolInfo, nullptr, &this->commandPool));
+            SPDLOG_DEBUG("Converting to shader stage");
+            vk::PipelineShaderStageCreateInfo shaderStage(
+              vk::PipelineShaderStageCreateFlags(),
+              vk::ShaderStageFlagBits::eCompute,
+              this->mShaderModule,
+              "main",
+              &specializationInfo);
+
+            vk::PipelineCacheCreateInfo pipelineCacheCreateInfo;
+            this->mPipelineCache =
+              this->mDevice.createPipelineCache(pipelineCacheCreateInfo);
+
+            vk::ComputePipelineCreateInfo computePipelineCreateInfo(
+              vk::PipelineCreateFlags(),
+              shaderStage,
+              this->mPipelineLayout,
+              vk::Pipeline(),
+              0);
+
+            vk::ResultValue<vk::Pipeline> pipelineResult =
+              this->mDevice.createComputePipeline(this->mPipelineCache,
+                                                  computePipelineCreateInfo);
+
+            if (pipelineResult.result != vk::Result::eSuccess) {
+                throw std::runtime_error("Failed to create pipeline result: " +
+                                         vk::to_string(pipelineResult.result));
+            }
+            this->mPipeline = pipelineResult.value;
+        }
+
+        {
+            vk::CommandPoolCreateInfo commandPoolInfo(
+              vk::CommandPoolCreateFlags(), this->mComputeQueueFamilyIndex);
+
+            this->mCommandPool =
+              this->mDevice.createCommandPool(commandPoolInfo);
+        }
+
+        {
+            spdlog::info("Allocating rest of components for backwards compat");
+            this->instance = static_cast<VkInstance>(this->mInstance);
+            this->physicalDevice = this->mPhysicalDevice;
+            this->device = this->mDevice;
+            this->queue = this->mComputeQueue;
+            this->descriptorSetLayout = this->mDescriptorSetLayout;
+            this->pipelineLayout = this->mPipelineLayout;
+            this->descriptorPool = this->mDescriptorPool;
+            this->descriptorSet = this->mDescriptorSet;
+            this->shaderModule = this->mShaderModule;
+            this->pipeline = this->mPipeline;
+            this->commandPool = this->mCommandPool;
+        }
+
+        {
 
             // Create a command buffer for compute operations
             VkCommandBufferAllocateInfo cmdBufAllocateInfo =
@@ -694,8 +677,14 @@ main()
 #else
     spdlog::set_level(spdlog::level::info);
 #endif
-    VulkanCompute* vulkanExample = new VulkanCompute();
-    std::cout << "Finished.";
-    delete (vulkanExample);
-    return 0;
+
+    try {
+        VulkanCompute* vulkanExample = new VulkanCompute();
+        std::cout << "Finished.";
+        delete (vulkanExample);
+        return 0;
+    } catch (const std::exception& exc) {
+        spdlog::error(exc.what());
+        return 1;
+    }
 }
