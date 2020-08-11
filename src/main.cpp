@@ -2,6 +2,11 @@
 #pragma comment(linker, "/subsystem:console")
 #endif
 
+// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
+#if DEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#endif
+
 #include <algorithm>
 #include <assert.h>
 #include <iostream>
@@ -16,8 +21,6 @@
 #include <vulkan/vulkan.hpp>
 
 #include "VulkanTools.h"
-
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 
 #define BUFFER_ELEMENTS 32
 
@@ -56,9 +59,10 @@ class VulkanCompute
                       vk::DeviceSize aSize,
                       void* aData = nullptr) const
     {
-        SPDLOG_LOGGER_DEBUG("Test Debug Logger");
-        SPDLOG_LOGGER_DEBUG("Test Trace Logger");
-        spdlog::debug("Creating buffer");
+        SPDLOG_DEBUG("Creating buffer: {}, {}, {}",
+                     vk::to_string(aUsageFlags),
+                     vk::to_string(aMemoryPropertyFlags),
+                     aSize);
 
         vk::BufferCreateInfo bufferCreateInfo(vk::BufferCreateFlags(),
                                               aSize,
@@ -310,11 +314,13 @@ class VulkanCompute
         //                C API Vulkan
         //        */
 
-        spdlog::info("Allocating rest of components for backwards compat");
-        this->instance = static_cast<VkInstance>(this->mInstance);
-        this->physicalDevice = this->mPhysicalDevice;
-        this->device = this->mDevice;
-        this->queue = this->mComputeQueue;
+        {
+            spdlog::info("Allocating rest of components for backwards compat");
+            this->instance = static_cast<VkInstance>(this->mInstance);
+            this->physicalDevice = this->mPhysicalDevice;
+            this->device = this->mDevice;
+            this->queue = this->mComputeQueue;
+        }
 
         /*
                 Prepare storage buffers
@@ -683,6 +689,11 @@ class VulkanCompute
 int
 main()
 {
+#if DEBUG
+    spdlog::set_level(spdlog::level::debug);
+#else
+    spdlog::set_level(spdlog::level::info);
+#endif
     VulkanCompute* vulkanExample = new VulkanCompute();
     std::cout << "Finished.";
     delete (vulkanExample);
