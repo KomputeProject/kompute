@@ -7,14 +7,14 @@
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #endif
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <set>
 #include <string>
 #include <vector>
 
-#include <spdlog/spdlog.h>
 #include "spdlog/fmt/bundled/ranges.h"
+#include <spdlog/spdlog.h>
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
@@ -284,7 +284,7 @@ class VulkanCompute
         */
         {
             void* mapped = this->mDevice.mapMemory(
-                    hostMemory, 0, bufferSize, vk::MemoryMapFlags());
+              hostMemory, 0, bufferSize, vk::MemoryMapFlags());
             memcpy(mapped, computeInput.data(), bufferSize);
             vk::MappedMemoryRange mappedRange(hostMemory, 0, bufferSize);
             this->mDevice.flushMappedMemoryRanges(1, &mappedRange);
@@ -315,14 +315,16 @@ class VulkanCompute
             const vk::PipelineStageFlags waitStageMask =
               vk::PipelineStageFlagBits::eTransfer;
 
-            vk::SubmitInfo submitInfo(0, nullptr, &waitStageMask, 1, &copyCommandBuffer);
+            vk::SubmitInfo submitInfo(
+              0, nullptr, &waitStageMask, 1, &copyCommandBuffer);
             vk::Fence fence = this->mDevice.createFence(vk::FenceCreateInfo());
 
             this->mComputeQueue.submit(1, &submitInfo, fence);
             this->mDevice.waitForFences(1, &fence, VK_TRUE, UINT64_MAX);
 
             this->mDevice.destroy(fence);
-            this->mDevice.freeCommandBuffers(this->mCommandPool, 1, &copyCommandBuffer);
+            this->mDevice.freeCommandBuffers(
+              this->mCommandPool, 1, &copyCommandBuffer);
         }
 
         {
@@ -511,8 +513,9 @@ class VulkanCompute
                   bufferMemoryBarrier,
                   nullptr);
 
-                // // Reset the host buffer to -1 to ensure that data is being copied
-                // this->mCommandBuffer.fillBuffer(hostBuffer, 0, bufferSize, -1);
+                // // Reset the host buffer to -1 to ensure that data is being
+                // copied this->mCommandBuffer.fillBuffer(hostBuffer, 0,
+                // bufferSize, -1);
                 // // Barrier to ensure that buffer is reset before its copied
                 // bufferMemoryBarrier.srcAccessMask =
                 //   vk::AccessFlagBits::eTransferWrite;
