@@ -106,14 +106,6 @@ class VulkanCompute
 
         *aMemory = this->mDevice.allocateMemory(memoryAllocateInfo);
 
-        if (data != nullptr) {
-            vk::DeviceSize offset = 0;
-            void* mapped = this->mDevice.mapMemory(
-                    *aMemory, offset, aSize, {});
-            memcpy(mapped, data, aSize);
-            this->mDevice.unmapMemory(*aMemory);
-        }
-
         this->mDevice.bindBufferMemory(*aBuffer, *aMemory, 0);
     }
 
@@ -292,7 +284,8 @@ class VulkanCompute
         */
         {
             void* mapped = this->mDevice.mapMemory(
-                    hostMemory, 0, VK_WHOLE_SIZE, {});
+                    hostMemory, 0, bufferSize, {});
+            memcpy(mapped, computeInput.data(), bufferSize);
             vk::MappedMemoryRange mappedRange(hostMemory, 0, VK_WHOLE_SIZE);
             this->mDevice.flushMappedMemoryRanges(1, &mappedRange);
             this->mDevice.unmapMemory(hostMemory);
