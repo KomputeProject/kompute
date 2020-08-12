@@ -16,7 +16,9 @@
 #include <string.h>
 #include <vector>
 
+#include "spdlog/fmt/bundled/ranges.h"
 #include <spdlog/spdlog.h>
+
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
@@ -59,7 +61,10 @@ class VulkanCompute
 
     uint32_t mComputeQueueFamilyIndex;
 
-    vk::DebugReportCallbackEXT mDebugReportCallback{};
+#if DEBUG
+    vk::DebugReportCallbackEXT mDebugReportCallback;
+    vk::DispatchLoaderDynamic mDebugDispatcher;
+#endif
 
     void createBuffer(const vk::BufferUsageFlags& aUsageFlags,
                       const vk::MemoryPropertyFlags& aMemoryPropertyFlags,
@@ -173,11 +178,11 @@ class VulkanCompute
               (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
             debugCreateInfo.flags = debugFlags;
 
-            vk::DispatchLoaderDynamic dispatcher;
-            dispatcher.init(this->mInstance, &vkGetInstanceProcAddr);
+            this->mDebugDispatcher.init(this->mInstance,
+                                        &vkGetInstanceProcAddr);
             this->mDebugReportCallback =
               this->mInstance.createDebugReportCallbackEXT(
-                debugCreateInfo, nullptr, dispatcher);
+                debugCreateInfo, nullptr, this->mDebugDispatcher);
         }
 #endif
 
@@ -236,6 +241,17 @@ class VulkanCompute
         }
 
         /*
+                Create command pool
+        */
+        {
+            vk::CommandPoolCreateInfo commandPoolInfo(
+              vk::CommandPoolCreateFlags(), this->mComputeQueueFamilyIndex);
+
+            this->mCommandPool =
+              this->mDevice.createCommandPool(commandPoolInfo);
+        }
+
+        /*
                 Prepare storage buffers
         */
         std::vector<uint32_t> computeInput(BUFFER_ELEMENTS);
@@ -268,8 +284,10 @@ class VulkanCompute
                          bufferSize);
         }
 
+        /*
+                Copy data to host memory
+        */
         {
-            // Copy data to host memory
             vk::DeviceSize offset = 0;
             void* mapped = this->mDevice.mapMemory(
               hostMemory, offset, bufferSize, vk::MemoryMapFlags());
@@ -277,6 +295,38 @@ class VulkanCompute
             vk::MappedMemoryRange mappedRange(hostMemory, 0, bufferSize);
             this->mDevice.flushMappedMemoryRanges(1, &mappedRange);
             this->mDevice.unmapMemory(hostMemory);
+        }
+
+        /*
+                Copy data from host memory to staging buffer
+        */
+        {
+            vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
+              this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+
+            std::vector<vk::CommandBuffer> copyCommandBuffers =
+              this->mDevice.allocateCommandBuffers(commandBufferAllocateInfo);
+            vk::CommandBuffer copyCommandBuffer = copyCommandBuffers[0];
+
+            copyCommandBuffer.begin(vk::CommandBufferBeginInfo());
+            {
+                vk::BufferCopy copyRegion(0, 0, bufferSize);
+                copyCommandBuffer.copyBuffer(
+                  hostBuffer, deviceBuffer, copyRegion);
+            }
+            copyCommandBuffer.end();
+
+            const vk::PipelineStageFlags waitStageMask =
+              vk::PipelineStageFlagBits::eTransfer;
+
+            vk::SubmitInfo submitInfo(0, nullptr, &waitStageMask, 1, &copyCommandBuffer);
+            vk::Fence fence = this->mDevice.createFence(vk::FenceCreateInfo());
+
+            this->mComputeQueue.submit(1, &submitInfo, fence);
+            this->mDevice.waitForFences(1, &fence, VK_TRUE, UINT64_MAX);
+
+            this->mDevice.destroy(fence);
+            this->mDevice.freeCommandBuffers(this->mCommandPool, 1, &copyCommandBuffer);
         }
 
         {
@@ -409,14 +459,6 @@ class VulkanCompute
         }
 
         {
-            vk::CommandPoolCreateInfo commandPoolInfo(
-              vk::CommandPoolCreateFlags(), this->mComputeQueueFamilyIndex);
-
-            this->mCommandPool =
-              this->mDevice.createCommandPool(commandPoolInfo);
-        }
-
-        {
             vk::CommandBufferAllocateInfo cmdBufferAllocInfo(
               this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
 
@@ -511,8 +553,10 @@ class VulkanCompute
 
         {
             // Make device writes visible to host
-            void* mapped = this->mDevice.mapMemory(hostMemory, 0, VK_WHOLE_SIZE, vk::MemoryMapFlags());
-            vk::MappedMemoryRange mappedMemoryRange(hostMemory, 0, VK_WHOLE_SIZE);
+            void* mapped = this->mDevice.mapMemory(
+              hostMemory, 0, VK_WHOLE_SIZE, vk::MemoryMapFlags());
+            vk::MappedMemoryRange mappedMemoryRange(
+              hostMemory, 0, VK_WHOLE_SIZE);
             this->mDevice.invalidateMappedMemoryRanges(mappedMemoryRange);
             memcpy(computeOutput.data(), hostBuffer, bufferSize);
             this->mDevice.unmapMemory(hostMemory);
@@ -531,7 +575,6 @@ class VulkanCompute
             this->mDevice.destroy(hostBuffer);
             this->mDevice.freeMemory(hostMemory);
         }
-
     }
 
     ~VulkanCompute()
@@ -547,13 +590,8 @@ class VulkanCompute
 
 #if DEBUG
         if (this->mDebugReportCallback) {
-            // TODO: Migrate thsi to hpp headers
-            PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
-              reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
-                vkGetInstanceProcAddr(this->mInstance,
-                                      "vkDestroyDebugReportCallbackEXT"));
-            assert(vkDestroyDebugReportCallback);
-            this->mInstance.destroyDebugReportCallbackEXT(this->mDebugReportCallback);
+            this->mInstance.destroyDebugReportCallbackEXT(
+              this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
         }
 #endif
         this->mInstance.destroy();
