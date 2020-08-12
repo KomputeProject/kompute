@@ -55,6 +55,7 @@ class VulkanCompute
     vk::ShaderModule mShaderModule;
     vk::Pipeline mPipeline;
     vk::CommandPool mCommandPool;
+    vk::CommandBuffer mCommandBuffer;
 
     uint32_t mComputeQueueFamilyIndex;
 
@@ -64,8 +65,7 @@ class VulkanCompute
                       const vk::MemoryPropertyFlags& aMemoryPropertyFlags,
                       vk::Buffer* aBuffer,
                       vk::DeviceMemory* aMemory,
-                      vk::DeviceSize aSize,
-                      void* aData = nullptr) const
+                      vk::DeviceSize aSize) const
     {
         SPDLOG_DEBUG("Creating buffer: {}, {}, {}",
                      vk::to_string(aUsageFlags),
@@ -105,37 +105,8 @@ class VulkanCompute
 
         *aMemory = this->mDevice.allocateMemory(memoryAllocateInfo);
 
-        if (aData != nullptr) {
-            vk::DeviceSize offset = 0;
-            void* mapped = this->mDevice.mapMemory(
-              *aMemory, offset, aSize, vk::MemoryMapFlags());
-            memcpy(mapped, aData, aSize);
-            this->mDevice.unmapMemory(*aMemory);
-        }
-
         this->mDevice.bindBufferMemory(*aBuffer, *aMemory, 0);
     }
-
-    /*
-     * C API
-     */
-    VkInstance instance;
-    VkPhysicalDevice physicalDevice;
-    VkDevice device;
-    // uint32_t queueFamilyIndex;
-    VkPipelineCache pipelineCache;
-    VkQueue queue;
-    VkCommandPool commandPool;
-    VkCommandBuffer commandBuffer;
-    VkFence fence;
-    VkDescriptorPool descriptorPool;
-    VkDescriptorSetLayout descriptorSetLayout;
-    VkDescriptorSet descriptorSet;
-    VkPipelineLayout pipelineLayout;
-    VkPipeline pipeline;
-    VkShaderModule shaderModule;
-
-    // VkDebugReportCallbackEXT debugReportCallback{};
 
     VulkanCompute()
     {
@@ -286,8 +257,7 @@ class VulkanCompute
                          vk::MemoryPropertyFlagBits::eHostVisible,
                          &hostBuffer,
                          &hostMemory,
-                         bufferSize,
-                         computeInput.data());
+                         bufferSize);
 
             createBuffer(vk::BufferUsageFlagBits::eStorageBuffer |
                            vk::BufferUsageFlagBits::eTransferSrc |
@@ -296,6 +266,17 @@ class VulkanCompute
                          &deviceBuffer,
                          &deviceMemory,
                          bufferSize);
+        }
+
+        {
+            // Copy data to host memory
+            vk::DeviceSize offset = 0;
+            void* mapped = this->mDevice.mapMemory(
+              hostMemory, offset, bufferSize, vk::MemoryMapFlags());
+            memcpy(mapped, computeInput.data(), computeInput.size());
+            vk::MappedMemoryRange mappedRange(hostMemory, 0, bufferSize);
+            this->mDevice.flushMappedMemoryRanges(1, &mappedRange);
+            this->mDevice.unmapMemory(hostMemory);
         }
 
         {
@@ -379,19 +360,6 @@ class VulkanCompute
               shadersPath + "computeheadless.comp.spv";
             spdlog::info("Shader file path: {}", shaderFilePath);
 
-            // std::ifstream file(shaderFilePath, std::ios::binary);
-            // file.unsetf(std::ios::skipws);
-            // std::streampos fileSize;
-            // file.seekg(0, std::ios::end);
-            // fileSize = file.tellg();
-            // file.seekg(0, std::ios::beg);
-
-            // std::vector<uint8_t> fileData;
-            // fileData.reserve(fileSize);
-            // fileData.insert(fileData.begin(),
-            // std::istream_iterator<uint8_t>(file),
-            // std::istream_iterator<uint8_t>()); file.close();
-
             SPDLOG_DEBUG("Reading file");
             std::ifstream fileStream(
               shaderFilePath, std::ios::binary | std::ios::in | std::ios::ate);
@@ -449,223 +417,146 @@ class VulkanCompute
         }
 
         {
-            spdlog::info("Allocating rest of components for backwards compat");
-            this->instance = static_cast<VkInstance>(this->mInstance);
-            this->physicalDevice = this->mPhysicalDevice;
-            this->device = this->mDevice;
-            this->queue = this->mComputeQueue;
-            this->descriptorSetLayout = this->mDescriptorSetLayout;
-            this->pipelineLayout = this->mPipelineLayout;
-            this->descriptorPool = this->mDescriptorPool;
-            this->descriptorSet = this->mDescriptorSet;
-            this->shaderModule = this->mShaderModule;
-            this->pipeline = this->mPipeline;
-            this->commandPool = this->mCommandPool;
+            vk::CommandBufferAllocateInfo cmdBufferAllocInfo(
+              this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+
+            std::vector<vk::CommandBuffer> cmdBuffers =
+              this->mDevice.allocateCommandBuffers(cmdBufferAllocInfo);
+
+            this->mCommandBuffer = cmdBuffers[0];
+            this->mCommandBuffer.begin(vk::CommandBufferBeginInfo());
+            {
+                // Barrier to ensure input transfer is finished before compute
+                // shader reads from it
+                vk::BufferMemoryBarrier bufferMemoryBarrier;
+                bufferMemoryBarrier.buffer = deviceBuffer;
+                bufferMemoryBarrier.size = VK_WHOLE_SIZE;
+                bufferMemoryBarrier.srcAccessMask =
+                  vk::AccessFlagBits::eHostWrite;
+                bufferMemoryBarrier.dstAccessMask =
+                  vk::AccessFlagBits::eShaderRead;
+                bufferMemoryBarrier.srcQueueFamilyIndex =
+                  VK_QUEUE_FAMILY_IGNORED;
+                bufferMemoryBarrier.dstQueueFamilyIndex =
+                  VK_QUEUE_FAMILY_IGNORED;
+
+                this->mCommandBuffer.pipelineBarrier(
+                  vk::PipelineStageFlagBits::eHost,
+                  vk::PipelineStageFlagBits::eComputeShader,
+                  vk::DependencyFlags(),
+                  nullptr,
+                  bufferMemoryBarrier,
+                  nullptr);
+                this->mCommandBuffer.bindPipeline(
+                  vk::PipelineBindPoint::eCompute, this->mPipeline);
+                this->mCommandBuffer.bindDescriptorSets(
+                  vk::PipelineBindPoint::eCompute,
+                  this->mPipelineLayout,
+                  0,
+                  this->mDescriptorSet,
+                  nullptr);
+                this->mCommandBuffer.dispatch(BUFFER_ELEMENTS, 1, 1);
+
+                // Barrier to ensure that shader writes are finished before
+                // buffer is read back from GPU
+                bufferMemoryBarrier.srcAccessMask =
+                  vk::AccessFlagBits::eShaderWrite;
+                bufferMemoryBarrier.dstAccessMask =
+                  vk::AccessFlagBits::eTransferRead;
+                this->mCommandBuffer.pipelineBarrier(
+                  vk::PipelineStageFlagBits::eComputeShader,
+                  vk::PipelineStageFlagBits::eTransfer,
+                  vk::DependencyFlags(),
+                  nullptr,
+                  bufferMemoryBarrier,
+                  nullptr);
+
+                // Read back to host visible buffer
+                vk::BufferCopy copyRegion(0, 0, bufferSize);
+                this->mCommandBuffer.copyBuffer(
+                  deviceBuffer, hostBuffer, copyRegion);
+
+                // Barrier to ensure that buffer copy is finished before host
+                // reading from it
+                bufferMemoryBarrier.srcAccessMask =
+                  vk::AccessFlagBits::eTransferWrite;
+                bufferMemoryBarrier.dstAccessMask =
+                  vk::AccessFlagBits::eHostRead;
+                bufferMemoryBarrier.buffer = hostBuffer;
+                this->mCommandBuffer.pipelineBarrier(
+                  vk::PipelineStageFlagBits::eTransfer,
+                  vk::PipelineStageFlagBits::eHost,
+                  vk::DependencyFlags(),
+                  nullptr,
+                  bufferMemoryBarrier,
+                  nullptr);
+            }
+            this->mCommandBuffer.end();
         }
 
         {
+            vk::Fence fence = this->mDevice.createFence(vk::FenceCreateInfo());
 
-            // Create a command buffer for compute operations
-            VkCommandBufferAllocateInfo cmdBufAllocateInfo =
-              vks::initializers::commandBufferAllocateInfo(
-                this->commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1);
-            VK_CHECK_RESULT(vkAllocateCommandBuffers(
-              this->device, &cmdBufAllocateInfo, &this->commandBuffer));
+            const vk::PipelineStageFlags waitStageMask =
+              vk::PipelineStageFlagBits::eTransfer;
 
-            // Fence for compute CB sync
-            VkFenceCreateInfo fenceCreateInfo =
-              vks::initializers::fenceCreateInfo(VK_FENCE_CREATE_SIGNALED_BIT);
-            VK_CHECK_RESULT(vkCreateFence(
-              this->device, &fenceCreateInfo, nullptr, &this->fence));
+            vk::SubmitInfo computeSubmitInfo(
+              0, nullptr, &waitStageMask, 1, &this->mCommandBuffer);
+
+            this->mComputeQueue.submit(computeSubmitInfo, fence);
+
+            this->mDevice.waitForFences(fence, VK_TRUE, UINT64_MAX);
+            this->mDevice.destroy(fence);
         }
 
         {
-            // Flush writes to host visible buffer
-            void* mapped;
-            vkMapMemory(this->device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
-            VkMappedMemoryRange mappedRange =
-              vks::initializers::mappedMemoryRange();
-            mappedRange.memory = hostMemory;
-            mappedRange.offset = 0;
-            mappedRange.size = VK_WHOLE_SIZE;
-            vkFlushMappedMemoryRanges(this->device, 1, &mappedRange);
-            vkUnmapMemory(this->device, hostMemory);
+            // Make device writes visible to host
+            void* mapped = this->mDevice.mapMemory(hostMemory, 0, VK_WHOLE_SIZE, vk::MemoryMapFlags());
+            vk::MappedMemoryRange mappedMemoryRange(hostMemory, 0, VK_WHOLE_SIZE);
+            this->mDevice.invalidateMappedMemoryRanges(mappedMemoryRange);
+            memcpy(computeOutput.data(), hostBuffer, bufferSize);
+            this->mDevice.unmapMemory(hostMemory);
         }
 
-        /*
-                Command buffer creation (for compute work submission)
-        */
         {
-            VkCommandBufferBeginInfo cmdBufInfo =
-              vks::initializers::commandBufferBeginInfo();
+            this->mComputeQueue.waitIdle();
 
-            VK_CHECK_RESULT(
-              vkBeginCommandBuffer(this->commandBuffer, &cmdBufInfo));
-
-            VkBufferCopy copyRegion = {};
-            copyRegion.size = bufferSize;
-            vkCmdCopyBuffer(
-              this->commandBuffer, hostBuffer, deviceBuffer, 1, &copyRegion);
-
-            // Barrier to ensure that input buffer transfer is finished before
-            // compute shader reads from it
-            VkBufferMemoryBarrier bufferBarrier =
-              vks::initializers::bufferMemoryBarrier();
-            bufferBarrier.buffer = deviceBuffer;
-            bufferBarrier.size = VK_WHOLE_SIZE;
-            bufferBarrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT;
-            bufferBarrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-            bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-
-            vkCmdPipelineBarrier(this->commandBuffer,
-                                 VK_PIPELINE_STAGE_HOST_BIT,
-                                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                 VK_FLAGS_NONE,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &bufferBarrier,
-                                 0,
-                                 nullptr);
-
-            vkCmdBindPipeline(this->commandBuffer,
-                              VK_PIPELINE_BIND_POINT_COMPUTE,
-                              this->pipeline);
-
-            vkCmdBindDescriptorSets(this->commandBuffer,
-                                    VK_PIPELINE_BIND_POINT_COMPUTE,
-                                    this->pipelineLayout,
-                                    0,
-                                    1,
-                                    &this->descriptorSet,
-                                    0,
-                                    0);
-
-            vkCmdDispatch(this->commandBuffer, BUFFER_ELEMENTS / 4, 1, 1);
-
-            // Barrier to ensure that shader writes are finished before buffer
-            // is read back from GPU
-            bufferBarrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
-            bufferBarrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
-            bufferBarrier.buffer = deviceBuffer;
-            bufferBarrier.size = VK_WHOLE_SIZE;
-            bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-
-            vkCmdPipelineBarrier(this->commandBuffer,
-                                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                 VK_FLAGS_NONE,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &bufferBarrier,
-                                 0,
-                                 nullptr);
-
-            // Read back to host visible buffer
-            copyRegion = {};
-            copyRegion.size = bufferSize;
-            vkCmdCopyBuffer(
-              this->commandBuffer, deviceBuffer, hostBuffer, 1, &copyRegion);
-
-            // Barrier to ensure that buffer copy is finished before host
-            // reading from it
-            bufferBarrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-            bufferBarrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
-            bufferBarrier.buffer = hostBuffer;
-            bufferBarrier.size = VK_WHOLE_SIZE;
-            bufferBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-            bufferBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-
-            vkCmdPipelineBarrier(this->commandBuffer,
-                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
-                                 VK_PIPELINE_STAGE_HOST_BIT,
-                                 VK_FLAGS_NONE,
-                                 0,
-                                 nullptr,
-                                 1,
-                                 &bufferBarrier,
-                                 0,
-                                 nullptr);
-
-            VK_CHECK_RESULT(vkEndCommandBuffer(this->commandBuffer));
-
-            // Submit compute work
-            vkResetFences(this->device, 1, &this->fence);
-            const VkPipelineStageFlags waitStageMask =
-              VK_PIPELINE_STAGE_TRANSFER_BIT;
-            VkSubmitInfo computeSubmitInfo = vks::initializers::submitInfo();
-            computeSubmitInfo.pWaitDstStageMask = &waitStageMask;
-            computeSubmitInfo.commandBufferCount = 1;
-            computeSubmitInfo.pCommandBuffers = &this->commandBuffer;
-            VK_CHECK_RESULT(
-              vkQueueSubmit(this->queue, 1, &computeSubmitInfo, this->fence));
-            VK_CHECK_RESULT(vkWaitForFences(
-              this->device, 1, &this->fence, VK_TRUE, UINT64_MAX));
-
-            // Make this->device writes visible to the host
-            void* mapped;
-            vkMapMemory(this->device, hostMemory, 0, VK_WHOLE_SIZE, 0, &mapped);
-            VkMappedMemoryRange mappedRange =
-              vks::initializers::mappedMemoryRange();
-            mappedRange.memory = hostMemory;
-            mappedRange.offset = 0;
-            mappedRange.size = VK_WHOLE_SIZE;
-            vkInvalidateMappedMemoryRanges(this->device, 1, &mappedRange);
-
-            // Copy to output
-            memcpy(computeOutput.data(), mapped, bufferSize);
-            vkUnmapMemory(this->device, hostMemory);
+            spdlog::info("Compute input: {}", computeInput);
+            spdlog::info("Compute output: {}", computeInput);
         }
 
-        vkQueueWaitIdle(this->queue);
-
-        // Output buffer contents
-        LOG("Compute input:\n");
-        for (auto v : computeInput) {
-            LOG("%d 	", v);
+        {
+            this->mDevice.destroy(deviceBuffer);
+            this->mDevice.freeMemory(deviceMemory);
+            this->mDevice.destroy(hostBuffer);
+            this->mDevice.freeMemory(hostMemory);
         }
-        std::cout << std::endl;
 
-        LOG("Compute output:\n");
-        for (auto v : computeOutput) {
-            LOG("%d 	", v);
-        }
-        std::cout << std::endl;
-
-        // Clean up
-        vkDestroyBuffer(this->device, deviceBuffer, nullptr);
-        vkFreeMemory(this->device, deviceMemory, nullptr);
-        vkDestroyBuffer(this->device, hostBuffer, nullptr);
-        vkFreeMemory(this->device, hostMemory, nullptr);
     }
 
     ~VulkanCompute()
     {
-        vkDestroyPipelineLayout(this->device, this->pipelineLayout, nullptr);
-        vkDestroyDescriptorSetLayout(
-          this->device, this->descriptorSetLayout, nullptr);
-        vkDestroyDescriptorPool(this->device, this->descriptorPool, nullptr);
-        vkDestroyPipeline(this->device, this->pipeline, nullptr);
-        vkDestroyPipelineCache(this->device, this->pipelineCache, nullptr);
-        vkDestroyFence(this->device, this->fence, nullptr);
-        vkDestroyCommandPool(this->device, this->commandPool, nullptr);
-        vkDestroyShaderModule(this->device, this->shaderModule, nullptr);
-        vkDestroyDevice(this->device, nullptr);
+        this->mDevice.destroy(this->mPipelineLayout);
+        this->mDevice.destroy(this->mDescriptorSetLayout);
+        this->mDevice.destroy(this->mDescriptorPool);
+        this->mDevice.destroy(this->mPipeline);
+        this->mDevice.destroy(this->mPipelineCache);
+        this->mDevice.destroy(this->mCommandPool);
+        this->mDevice.destroy(this->mShaderModule);
+        this->mDevice.destroy();
+
 #if DEBUG
         if (this->mDebugReportCallback) {
+            // TODO: Migrate thsi to hpp headers
             PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallback =
               reinterpret_cast<PFN_vkDestroyDebugReportCallbackEXT>(
-                vkGetInstanceProcAddr(this->instance,
+                vkGetInstanceProcAddr(this->mInstance,
                                       "vkDestroyDebugReportCallbackEXT"));
             assert(vkDestroyDebugReportCallback);
-            vkDestroyDebugReportCallback(
-              this->instance, this->mDebugReportCallback, nullptr);
+            this->mInstance.destroyDebugReportCallbackEXT(this->mDebugReportCallback);
         }
 #endif
-        vkDestroyInstance(this->instance, nullptr);
+        this->mInstance.destroy();
     }
 };
 
