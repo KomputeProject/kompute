@@ -13,8 +13,9 @@
 #include <string>
 #include <vector>
 
-#include "spdlog/fmt/bundled/ranges.h"
 #include <spdlog/spdlog.h>
+// ranges.h must come after spdlog.h
+#include <spdlog/fmt/bundled/ranges.h>
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
@@ -230,6 +231,7 @@ class VulkanCompute
 
             this->mDevice =
               this->mPhysicalDevice.createDevice(deviceCreateInfo);
+
             this->mComputeQueue =
               this->mDevice.getQueue(this->mComputeQueueFamilyIndex, 0);
         }
@@ -267,8 +269,7 @@ class VulkanCompute
                          vk::MemoryPropertyFlagBits::eHostVisible,
                          &hostBuffer,
                          &hostMemory,
-                         bufferSize,
-                         computeInput.data());
+                         bufferSize);
 
             createBuffer(vk::BufferUsageFlagBits::eStorageBuffer |
                            vk::BufferUsageFlagBits::eTransferSrc |
@@ -512,23 +513,6 @@ class VulkanCompute
                   nullptr,
                   bufferMemoryBarrier,
                   nullptr);
-
-                // // Reset the host buffer to -1 to ensure that data is being
-                // copied this->mCommandBuffer.fillBuffer(hostBuffer, 0,
-                // bufferSize, -1);
-                // // Barrier to ensure that buffer is reset before its copied
-                // bufferMemoryBarrier.srcAccessMask =
-                //   vk::AccessFlagBits::eTransferWrite;
-                // bufferMemoryBarrier.dstAccessMask =
-                //   vk::AccessFlagBits::eTransferWrite;
-                // bufferMemoryBarrier.buffer = hostBuffer;
-                // this->mCommandBuffer.pipelineBarrier(
-                //   vk::PipelineStageFlagBits::eTransfer,
-                //   vk::PipelineStageFlagBits::eTransfer,
-                //   vk::DependencyFlags(),
-                //   nullptr,
-                //   bufferMemoryBarrier,
-                //   nullptr);
 
                 // Read back to host visible buffer
                 vk::BufferCopy copyRegion(0, 0, bufferSize);
