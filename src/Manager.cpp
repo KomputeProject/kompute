@@ -34,13 +34,14 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
 
 Manager::Manager()
 {
+    this->mPhysicalDeviceIndex = 0;
     this->createInstance();
     this->createDevice();
 }
 
 Manager::~Manager()
 {
-    SPDLOG_DEBUG("Destroying Kompute Manager");
+    SPDLOG_DEBUG("Kompute Manager Destructor started");
 
     if (this->mDevice == nullptr) {
         spdlog::error("Kompute Manager destructor reached with null Device pointer");
@@ -48,7 +49,9 @@ Manager::~Manager()
     }
 
     if (this->mFreeDevice) {
+        spdlog::info("Destroying device");
         this->mDevice->destroy();
+        SPDLOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
     if (this->mInstance == nullptr) {
@@ -56,12 +59,23 @@ Manager::~Manager()
         return;
     }
 
+#if DEBUG
+    if (this->mDebugReportCallback) {
+        this->mInstance->destroyDebugReportCallbackEXT(
+          this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
+        SPDLOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
+    }
+#endif
+
     if (this->mFreeInstance) {
         this->mInstance->destroy();
+        SPDLOG_DEBUG("Kompute Manager Destroyed Instance");
     }
 }
 
 void Manager::createInstance() {
+
+    SPDLOG_DEBUG("Kompute Manager creating instance");
 
     this->mFreeInstance = true;
 
@@ -83,6 +97,7 @@ void Manager::createInstance() {
     }
 
 #if DEBUG
+    SPDLOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
     std::vector<const char*> validLayerNames;
     std::vector<const char*> desiredLayerNames = {
@@ -114,9 +129,12 @@ void Manager::createInstance() {
     }
 #endif
 
-    vk::createInstance(&computeInstanceCreateInfo, nullptr, this->mInstance);
+    vk::Instance instance = vk::createInstance(computeInstanceCreateInfo);
+    this->mInstance = &instance;
+    SPDLOG_DEBUG("Kompute Manager Instance Created");
 
 #if DEBUG
+    SPDLOG_DEBUG("Kompute Manager adding debug callbacks");
     if (validLayerNames.size() > 0) {
         vk::DebugReportFlagsEXT debugFlags =
           vk::DebugReportFlagBitsEXT::eError |
@@ -137,8 +155,13 @@ void Manager::createInstance() {
 
 void Manager::createDevice() {
 
+    SPDLOG_DEBUG("Kompute Manager creating Device");
+
     if (this->mInstance == nullptr) {
-        throw std::runtime_error("Manager instance is null");
+        throw std::runtime_error("Kompute Manager instance is null");
+    }
+    if (this->mPhysicalDeviceIndex < 0) {
+        throw std::runtime_error("Kompute Manager physical device index not provided");
     }
 
     this->mFreeDevice = true;
@@ -146,12 +169,12 @@ void Manager::createDevice() {
     std::vector<vk::PhysicalDevice> physicalDevices =
       this->mInstance->enumeratePhysicalDevices();
 
-    vk::PhysicalDevice physicalDevice = physicalDevices[0];
+    vk::PhysicalDevice physicalDevice = physicalDevices[this->mPhysicalDeviceIndex];
 
     vk::PhysicalDeviceProperties physicalDeviceProperties =
       physicalDevice.getProperties();
 
-    spdlog::info("Using device {}", physicalDeviceProperties.deviceName);
+    spdlog::info("Using physical device index {} found {}", this->mPhysicalDeviceIndex, physicalDeviceProperties.deviceName);
 
     // Find compute queue
     std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
@@ -186,9 +209,13 @@ void Manager::createDevice() {
       1, // Number of deviceQueueCreateInfo
       &deviceQueueCreateInfo);
 
-    physicalDevice.createDevice(&deviceCreateInfo, nullptr, this->mDevice);
+    vk::Device device = physicalDevice.createDevice(deviceCreateInfo);
+    this->mDevice = &device;
+    SPDLOG_DEBUG("Kompute Manager device created");
 
-    this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0, this->mComputeQueue);
+    vk::Queue computeQueue = this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0);
+    this->mComputeQueue = &computeQueue;
+    SPDLOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
 }

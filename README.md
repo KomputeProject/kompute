@@ -60,7 +60,9 @@ Use equations to group operations on memory and execution step
 int main() {
     kp::Manager kManager(); // Chooses device 0 
 
-    kp::Sequence sq = kManager().createSequence<kp::Sequence>();
+    kp::Sequence sq;
+    kManager.createSequence(&sq);
+    //kManager.createSequence<kp::Sequence>();
 
     kp::Tensor inputOne; 
     sq.record<kp::OpCreateTensor>(&inputOne, {0, 1, 2, 3}); // Mounts to device and binds to 0

@@ -20,6 +20,9 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
+#include "Manager.hpp"
+#include "BaseOperator.hpp"
+
 #define BUFFER_ELEMENTS 32
 
 #if DEBUG
@@ -609,9 +612,16 @@ main()
 #endif
 
     try {
-        VulkanCompute* vulkanExample = new VulkanCompute();
-        std::cout << "Finished.";
-        delete (vulkanExample);
+        //VulkanCompute* vulkanExample = new VulkanCompute();
+        //spdlog::info("Finished.");
+        //delete (vulkanExample);
+
+        // Run Kompute
+        spdlog::info("Creating manager");
+        kp::Manager mgr;
+        spdlog::info("Calling manager eval");
+        mgr.eval<kp::BaseOperator>("one", "two");
+        spdlog::info("Called manager eval success");
         return 0;
     } catch (const std::exception& exc) {
         spdlog::error(exc.what());
