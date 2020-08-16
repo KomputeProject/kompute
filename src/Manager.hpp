@@ -23,7 +23,6 @@ private:
     bool mFreeDevice = false;
     uint32_t mComputeQueueFamilyIndex = -1;
     vk::Queue* mComputeQueue = nullptr;
-    bool mFreeComputeQueue = false;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;

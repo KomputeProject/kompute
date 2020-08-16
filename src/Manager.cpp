@@ -40,6 +40,25 @@ Manager::Manager()
 
 Manager::~Manager()
 {
+    SPDLOG_DEBUG("Destroying Kompute Manager");
+
+    if (this->mDevice == nullptr) {
+        spdlog::error("Kompute Manager destructor reached with null Device pointer");
+        return;
+    }
+
+    if (this->mFreeDevice) {
+        this->mDevice->destroy();
+    }
+
+    if (this->mInstance == nullptr) {
+        spdlog::error("Kompute Manager destructor reached with null Instance pointer");
+        return;
+    }
+
+    if (this->mFreeInstance) {
+        this->mInstance->destroy();
+    }
 }
 
 void Manager::createInstance() {
@@ -95,7 +114,7 @@ void Manager::createInstance() {
     }
 #endif
 
-    vk::Instance instance = vk::createInstance(computeInstanceCreateInfo, nullptr, this->mInstance);
+    vk::createInstance(&computeInstanceCreateInfo, nullptr, this->mInstance);
 
 #if DEBUG
     if (validLayerNames.size() > 0) {
@@ -123,7 +142,6 @@ void Manager::createDevice() {
     }
 
     this->mFreeDevice = true;
-    this->mFreeComputeQueue = true;
 
     std::vector<vk::PhysicalDevice> physicalDevices =
       this->mInstance->enumeratePhysicalDevices();
@@ -168,7 +186,7 @@ void Manager::createDevice() {
       1, // Number of deviceQueueCreateInfo
       &deviceQueueCreateInfo);
 
-    physicalDevice.createDevice(deviceCreateInfo, nullptr, this->mDevice);
+    physicalDevice.createDevice(&deviceCreateInfo, nullptr, this->mDevice);
 
     this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0, this->mComputeQueue);
 }
