@@ -115,7 +115,7 @@ class VulkanCompute
         vk::ApplicationInfo applicationInfo;
         applicationInfo.pApplicationName = "Vulkan compute";
         applicationInfo.pEngineName = "VulkanCompute";
-        applicationInfo.apiVersion = VK_API_VERSION_1_0;
+        applicationInfo.apiVersion = VK_API_VERSION_1_2;
 
         std::vector<const char*> applicationExtensions;
         applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
