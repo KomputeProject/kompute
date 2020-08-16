@@ -14,16 +14,26 @@ public:
 
     virtual ~Manager();
 
-private:
-    vk::Instance mInstance;
+    // Templated Commands
 
-    // Create functions
-    vk::InstanceCreateInfo createInstanceInfo();
+private:
+    vk::Instance* mInstance = nullptr;
+    bool mFreeInstance = false;
+    vk::Device* mDevice = nullptr;
+    bool mFreeDevice = false;
+    uint32_t mComputeQueueFamilyIndex = -1;
+    vk::Queue* mComputeQueue = nullptr;
+    bool mFreeComputeQueue = false;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;
     vk::DispatchLoaderDynamic mDebugDispatcher;
 #endif
+
+    // Create functions
+    void createInstance();
+    void createDevice();
+
 };
 
 } // End namespace kp
