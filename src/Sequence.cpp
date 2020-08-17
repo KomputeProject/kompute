@@ -35,7 +35,7 @@ Sequence::~Sequence() {
 
     if (this->mFreeCommandBuffer) {
         spdlog::info("Freeing CommandBuffer");
-        this->mDevice->freeCommandBuffers(*this->mCommandPool, 1, this->mCommandBuffer);
+        this->mDevice->freeCommandBuffers(*this->mCommandPool, 1, this->mCommandBuffer.get());
         SPDLOG_DEBUG("Kompute Manager Freed CommandBuffer");
     }
 
@@ -89,7 +89,7 @@ void Sequence::eval() {
     }
 
     const vk::PipelineStageFlags waitStageMask = vk::PipelineStageFlagBits::eTransfer;
-    vk::SubmitInfo submitInfo(0, nullptr, &waitStageMask, 1, this->mCommandBuffer);
+    vk::SubmitInfo submitInfo(0, nullptr, &waitStageMask, 1, this->mCommandBuffer.get());
 
     vk::Fence fence = this->mDevice->createFence(vk::FenceCreateInfo());
     this->mComputeQueue->submit(1, &submitInfo, fence);

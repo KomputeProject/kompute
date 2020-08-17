@@ -1,13 +1,13 @@
 #pragma once
 
-#import "BaseOperator.hpp"
+#include "BaseOp.hpp"
 
 namespace kp {
 
-class OpMult: BaseOperator
+class OpMult: BaseOp
 {
 private:
-    
+
 
 public:
     OpMult();

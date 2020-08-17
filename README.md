@@ -3,7 +3,8 @@
 ## Principles
 
 * Non-vulkan naming convention to disambiguate Vulkan vs Kompute components
-* BYOV: It would play nicely with existing applications with a bring-your-own-Vulkan design
+* Extends the existing vulkan API with a simpler compute-specific interface
+* BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design
 * TODO
 
 ## Getting Started
