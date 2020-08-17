@@ -7,15 +7,15 @@
 
 namespace kp {
 
-class BaseOperator
+class BaseOp
 {
 private:
 
 
 public:
-    BaseOperator();
-    BaseOperator(std::shared_ptr<vk::CommandBuffer> commandBuffer);
-    virtual ~BaseOperator();
+    BaseOp();
+    BaseOp(std::shared_ptr<vk::CommandBuffer> commandBuffer);
+    virtual ~BaseOp();
 
     void init(std::string one, std::string two);
     void record();
