@@ -21,6 +21,8 @@ private:
 public:
     Manager();
 
+    //Manager(std::shared_ptr<vk::Instance> instance, std::shared_ptr<vk::Device>, uint32_t queueIndex);
+
     ~Manager();
 
     // Evaluate actions

@@ -14,15 +14,15 @@ private:
 
 public:
     BaseOperator();
-    BaseOperator(vk::CommandBuffer* commandBuffer);
+    BaseOperator(std::shared_ptr<vk::CommandBuffer> commandBuffer);
     virtual ~BaseOperator();
 
     void init(std::string one, std::string two);
     void record();
 
 private:
-    vk::Device* mDevice;
-    vk::CommandBuffer* mCommandBuffer;
+    std::shared_ptr<vk::Device> mDevice;
+    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
 };
 

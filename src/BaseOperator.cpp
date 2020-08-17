@@ -14,7 +14,7 @@ BaseOperator::BaseOperator() {
 
 }
 
-BaseOperator::BaseOperator(vk::CommandBuffer* commandBuffer) {
+BaseOperator::BaseOperator(std::shared_ptr<vk::CommandBuffer> commandBuffer) {
     SPDLOG_DEBUG("Compute BaseOperator constructor started");
     this->mCommandBuffer = commandBuffer;
 }
