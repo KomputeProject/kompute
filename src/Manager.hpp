@@ -3,6 +3,11 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
+// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
+#if DEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#endif
+
 #include <spdlog/spdlog.h>
 
 #include "Sequence.hpp"
@@ -23,10 +28,15 @@ public:
     void eval(TArgs&&... args) {
         SPDLOG_DEBUG("Kompute Manager eval triggered");
         Sequence sq(this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
+        SPDLOG_DEBUG("Kompute Manager created sequence");
         sq.begin();
+        SPDLOG_DEBUG("Kompute Manager sequence begin");
         sq.record<T>(std::forward<TArgs>(args)...);
+        SPDLOG_DEBUG("Kompute Manager sequence end");
         sq.end();
+        SPDLOG_DEBUG("Kompute Manager sequence eval");
         sq.eval();
+        SPDLOG_DEBUG("Kompute Manager sequence done");
     }
 
 

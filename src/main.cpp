@@ -612,9 +612,9 @@ main()
 #endif
 
     try {
-        //VulkanCompute* vulkanExample = new VulkanCompute();
-        //spdlog::info("Finished.");
-        //delete (vulkanExample);
+        VulkanCompute* vulkanExample = new VulkanCompute();
+        spdlog::info("Finished.");
+        delete (vulkanExample);
 
         // Run Kompute
         spdlog::info("Creating manager");
@@ -625,6 +625,9 @@ main()
         return 0;
     } catch (const std::exception& exc) {
         spdlog::error(exc.what());
+        return 1;
+    } catch (...) {
+        spdlog::error("Uncaught exception");
         return 1;
     }
 }

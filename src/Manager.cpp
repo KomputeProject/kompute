@@ -1,16 +1,6 @@
-#if defined(_WIN32)
-#pragma comment(linker, "/subsystem:console")
-#endif
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
 
 #include <set>
 #include <string>
-
-#include <spdlog/spdlog.h>
 
 #include "Manager.hpp"
 
@@ -80,8 +70,8 @@ void Manager::createInstance() {
     this->mFreeInstance = true;
 
     vk::ApplicationInfo applicationInfo;
-    applicationInfo.pApplicationName = "Vulkan compute";
-    applicationInfo.pEngineName = "VulkanCompute";
+    applicationInfo.pApplicationName = "Vulkan Kompute";
+    applicationInfo.pEngineName = "VulkanKompute";
     applicationInfo.apiVersion = VK_API_VERSION_1_2;
 
     std::vector<const char*> applicationExtensions;
@@ -129,8 +119,8 @@ void Manager::createInstance() {
     }
 #endif
 
-    vk::Instance instance = vk::createInstance(computeInstanceCreateInfo);
-    this->mInstance = &instance;
+    this->mInstance = new vk::Instance();
+    vk::createInstance(&computeInstanceCreateInfo, nullptr, this->mInstance);
     SPDLOG_DEBUG("Kompute Manager Instance Created");
 
 #if DEBUG
@@ -209,12 +199,12 @@ void Manager::createDevice() {
       1, // Number of deviceQueueCreateInfo
       &deviceQueueCreateInfo);
 
-    vk::Device device = physicalDevice.createDevice(deviceCreateInfo);
-    this->mDevice = &device;
+    this->mDevice = new vk::Device();
+    physicalDevice.createDevice(&deviceCreateInfo, nullptr, this->mDevice);
     SPDLOG_DEBUG("Kompute Manager device created");
 
-    vk::Queue computeQueue = this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0);
-    this->mComputeQueue = &computeQueue;
+    this->mComputeQueue = new vk::Queue();
+    this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0, this->mComputeQueue);
     SPDLOG_DEBUG("Kompute Manager compute queue obtained");
 }
 

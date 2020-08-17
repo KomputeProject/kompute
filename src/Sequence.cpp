@@ -1,23 +1,23 @@
 
-#include <string>
-
-#include "spdlog/spdlog.h"
-
 #include "Sequence.hpp"
 
 namespace kp {
 
 Sequence::Sequence() 
 {
-    // TODO: Create device, queue, etc
+    SPDLOG_DEBUG("Kompute Sequence base constructor");
 }
 
 Sequence::Sequence(vk::Device* device, vk::Queue* computeQueue, uint32_t queueIndex)
 {
-    SPDLOG_DEBUG("Kompute Sequence Created with existing device & queue");
+    SPDLOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
+
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
+
+    this->createCommandPool();
+    this->createCommandBuffer();
 }
 
 Sequence::~Sequence() {
@@ -103,15 +103,23 @@ void Sequence::eval() {
 
 void Sequence::createCommandPool() {
     SPDLOG_DEBUG("Kompute Sequence creating command pool");
+    if (this->mDevice == nullptr) {
+        spdlog::info("cmdpoolinfo");
+        throw std::runtime_error("Kompute Sequence device is null");
+    }
     if (this->mQueueIndex < 0) {
+        spdlog::info("Queue index {}", this->mQueueIndex);
         throw std::runtime_error("Kompute Sequence queue index not provided");
     }
 
     this->mFreeCommandPool = true;
 
+    spdlog::info("cmdpoolinfo");
     vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlags(), this->mQueueIndex);
-    vk::CommandPool commandPool = this->mDevice->createCommandPool(commandPoolInfo);
-    this->mCommandPool = &commandPool;
+    spdlog::info("about to create");
+    this->mCommandPool = new vk::CommandPool();
+    this->mDevice->createCommandPool(&commandPoolInfo, nullptr, this->mCommandPool);
+    spdlog::info("created");
 }
 
 void Sequence::createCommandBuffer() {
@@ -127,9 +135,8 @@ void Sequence::createCommandBuffer() {
 
     vk::CommandBufferAllocateInfo commandBufferAllocateInfo(*this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
 
-    vk::CommandBuffer commandBuffer;
-    this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo, &commandBuffer);
-    this->mCommandBuffer = &commandBuffer;
+    this->mCommandBuffer = new vk::CommandBuffer();
+    this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo, this->mCommandBuffer);
 }
 
 }

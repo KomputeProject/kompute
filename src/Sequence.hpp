@@ -3,6 +3,13 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
+// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
+#if DEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#endif
+
+#include <spdlog/spdlog.h>
+
 namespace kp {
 
 class Sequence
@@ -21,6 +28,7 @@ public:
 
     template <typename T, typename...TArgs>
     void record(TArgs&&... args) {
+        SPDLOG_DEBUG("Kompute Sequence record");
         T op(this->mCommandBuffer);
         op.init(std::forward<TArgs>(args)...);
         op.record();
