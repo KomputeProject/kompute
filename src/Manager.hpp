@@ -41,13 +41,13 @@ public:
 
 
 private:
-    vk::Instance* mInstance = nullptr;
+    std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     uint32_t mPhysicalDeviceIndex = -1;
-    vk::Device* mDevice = nullptr;
+    std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
     uint32_t mComputeQueueFamilyIndex = -1;
-    vk::Queue* mComputeQueue = nullptr;
+    std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;

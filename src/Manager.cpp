@@ -119,8 +119,8 @@ void Manager::createInstance() {
     }
 #endif
 
-    this->mInstance = new vk::Instance();
-    vk::createInstance(&computeInstanceCreateInfo, nullptr, this->mInstance);
+    this->mInstance = std::make_shared<vk::Instance>();
+    vk::createInstance(&computeInstanceCreateInfo, nullptr, this->mInstance.get());
     SPDLOG_DEBUG("Kompute Manager Instance Created");
 
 #if DEBUG
@@ -199,12 +199,12 @@ void Manager::createDevice() {
       1, // Number of deviceQueueCreateInfo
       &deviceQueueCreateInfo);
 
-    this->mDevice = new vk::Device();
-    physicalDevice.createDevice(&deviceCreateInfo, nullptr, this->mDevice);
+    this->mDevice = std::make_shared<vk::Device>();
+    physicalDevice.createDevice(&deviceCreateInfo, nullptr, this->mDevice.get());
     SPDLOG_DEBUG("Kompute Manager device created");
 
-    this->mComputeQueue = new vk::Queue();
-    this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0, this->mComputeQueue);
+    this->mComputeQueue = std::make_shared<vk::Queue>();
+    this->mDevice->getQueue(this->mComputeQueueFamilyIndex, 0, this->mComputeQueue.get());
     SPDLOG_DEBUG("Kompute Manager compute queue obtained");
 }
 

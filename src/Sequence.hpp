@@ -18,7 +18,7 @@ private:
 
 public:
     Sequence();
-    Sequence(vk::Device* device, vk::Queue* computeQueue, uint32_t queueIndex);
+    Sequence(std::shared_ptr<vk::Device> device, std::shared_ptr<vk::Queue> computeQueue, uint32_t queueIndex);
     ~Sequence();
 
     // Record command functions
@@ -36,12 +36,12 @@ public:
 
 
 private:
-    vk::Device* mDevice = nullptr;
-    vk::Queue* mComputeQueue = nullptr;
+    std::shared_ptr<vk::Device> mDevice = nullptr;
+    std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
     uint32_t mQueueIndex = -1;
-    vk::CommandPool* mCommandPool = nullptr;
+    std::shared_ptr<vk::CommandPool> mCommandPool = nullptr;
     bool mFreeCommandPool = false;
-    vk::CommandBuffer* mCommandBuffer = nullptr;
+    std::shared_ptr<vk::CommandBuffer> mCommandBuffer = nullptr;
     bool mFreeCommandBuffer = false;
 
     // Record state

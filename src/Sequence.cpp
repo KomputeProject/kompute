@@ -8,7 +8,7 @@ Sequence::Sequence()
     SPDLOG_DEBUG("Kompute Sequence base constructor");
 }
 
-Sequence::Sequence(vk::Device* device, vk::Queue* computeQueue, uint32_t queueIndex)
+Sequence::Sequence(std::shared_ptr<vk::Device> device, std::shared_ptr<vk::Queue> computeQueue, uint32_t queueIndex)
 {
     SPDLOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
@@ -114,12 +114,10 @@ void Sequence::createCommandPool() {
 
     this->mFreeCommandPool = true;
 
-    spdlog::info("cmdpoolinfo");
     vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlags(), this->mQueueIndex);
-    spdlog::info("about to create");
-    this->mCommandPool = new vk::CommandPool();
-    this->mDevice->createCommandPool(&commandPoolInfo, nullptr, this->mCommandPool);
-    spdlog::info("created");
+    this->mCommandPool = std::make_shared<vk::CommandPool>();
+    this->mDevice->createCommandPool(&commandPoolInfo, nullptr, this->mCommandPool.get());
+    SPDLOG_DEBUG("Kompute Manager Command Pool Created");
 }
 
 void Sequence::createCommandBuffer() {
@@ -135,8 +133,9 @@ void Sequence::createCommandBuffer() {
 
     vk::CommandBufferAllocateInfo commandBufferAllocateInfo(*this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
 
-    this->mCommandBuffer = new vk::CommandBuffer();
-    this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo, this->mCommandBuffer);
+    this->mCommandBuffer = std::make_shared<vk::CommandBuffer>();
+    this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo, this->mCommandBuffer.get());
+    SPDLOG_DEBUG("Kompute Manager Command Buffer Created");
 }
 
 }
