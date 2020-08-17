@@ -14,22 +14,18 @@
 
 namespace kp {
 
-class OpCreateTensor: BaseOp
+class OpCreateTensor : BaseOp
 {
-private:
-
-
-public:
+  private:
+  public:
     OpCreateTensor();
 
     OpCreateTensor(std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     ~OpCreateTensor();
 
-private:
-
+  private:
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 };
 
 } // End namespace kp
-

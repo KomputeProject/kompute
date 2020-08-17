@@ -4,13 +4,10 @@ namespace kp {
 
 class Tensor
 {
-private:
-    
-
-public:
+  private:
+  public:
     Tensor();
     virtual ~Tensor();
 };
 
 } // End namespace kp
-

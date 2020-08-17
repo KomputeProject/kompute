@@ -4,12 +4,10 @@
 
 namespace kp {
 
-class OpMult: BaseOp
+class OpMult : BaseOp
 {
-private:
-
-
-public:
+  private:
+  public:
     OpMult();
     virtual ~OpMult();
 };

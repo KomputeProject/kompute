@@ -67,7 +67,7 @@ push_vulkan_docker:
 	docker push axsauze/vulkan-sum:0.1
 
 format:
-	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.h src/*.hpp
+	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.hpp src/*.h
 
 clean:
 	rm ./bin/main.exe;

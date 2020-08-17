@@ -4,10 +4,8 @@ namespace kp {
 
 class Parameter
 {
-private:
-    
-
-public:
+  private:
+  public:
     Parameter();
     virtual ~Parameter();
 };

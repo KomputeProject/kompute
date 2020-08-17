@@ -3,12 +3,14 @@
 
 namespace kp {
 
-Sequence::Sequence() 
+Sequence::Sequence()
 {
     SPDLOG_DEBUG("Kompute Sequence base constructor");
 }
 
-Sequence::Sequence(std::shared_ptr<vk::Device> device, std::shared_ptr<vk::Queue> computeQueue, uint32_t queueIndex)
+Sequence::Sequence(std::shared_ptr<vk::Device> device,
+                   std::shared_ptr<vk::Queue> computeQueue,
+                   uint32_t queueIndex)
 {
     SPDLOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
@@ -20,27 +22,32 @@ Sequence::Sequence(std::shared_ptr<vk::Device> device, std::shared_ptr<vk::Queue
     this->createCommandBuffer();
 }
 
-Sequence::~Sequence() {
+Sequence::~Sequence()
+{
     SPDLOG_DEBUG("Kompute Sequence Destructor started");
 
     if (this->mDevice == nullptr) {
-        spdlog::error("Kompute Sequence destructor reached with null Device pointer");
+        spdlog::error(
+          "Kompute Sequence destructor reached with null Device pointer");
         return;
     }
 
     if (this->mCommandBuffer == nullptr) {
-        spdlog::error("Kompute Sequence destructor reached with null CommandPool pointer");
+        spdlog::error(
+          "Kompute Sequence destructor reached with null CommandPool pointer");
         return;
     }
 
     if (this->mFreeCommandBuffer) {
         spdlog::info("Freeing CommandBuffer");
-        this->mDevice->freeCommandBuffers(*this->mCommandPool, 1, this->mCommandBuffer.get());
+        this->mDevice->freeCommandBuffers(
+          *this->mCommandPool, 1, this->mCommandBuffer.get());
         SPDLOG_DEBUG("Kompute Manager Freed CommandBuffer");
     }
 
     if (this->mCommandPool == nullptr) {
-        spdlog::error("Kompute Sequence destructor reached with null CommandPool pointer");
+        spdlog::error(
+          "Kompute Sequence destructor reached with null CommandPool pointer");
         return;
     }
 
@@ -49,10 +56,11 @@ Sequence::~Sequence() {
         this->mDevice->destroy(*this->mCommandPool);
         SPDLOG_DEBUG("Kompute Manager Destroyed CommandPool");
     }
-
 }
 
-void Sequence::begin() {
+void
+Sequence::begin()
+{
     if (this->mCommandPool == nullptr) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
@@ -61,13 +69,15 @@ void Sequence::begin() {
         spdlog::info("Kompute Sequence starting command recording");
         this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
         this->mRecording = true;
-    }
-    else {
-        spdlog::warn("Kompute Sequence attempted to start command recording but recording already started");
+    } else {
+        spdlog::warn("Kompute Sequence attempted to start command recording "
+                     "but recording already started");
     }
 }
 
-void Sequence::end() { 
+void
+Sequence::end()
+{
     if (this->mCommandPool == nullptr) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
@@ -76,20 +86,24 @@ void Sequence::end() {
         spdlog::info("Kompute Sequence ending command recording");
         this->mCommandBuffer->end();
         this->mRecording = false;
-    }
-    else {
-        spdlog::warn("Kompute Sequence attempted to end command recording but recording not started");
+    } else {
+        spdlog::warn("Kompute Sequence attempted to end command recording but "
+                     "recording not started");
     }
 }
 
-void Sequence::eval() { 
+void
+Sequence::eval()
+{
     bool toggleSingleRecording = !this->mRecording;
     if (toggleSingleRecording) {
         this->begin();
     }
 
-    const vk::PipelineStageFlags waitStageMask = vk::PipelineStageFlagBits::eTransfer;
-    vk::SubmitInfo submitInfo(0, nullptr, &waitStageMask, 1, this->mCommandBuffer.get());
+    const vk::PipelineStageFlags waitStageMask =
+      vk::PipelineStageFlagBits::eTransfer;
+    vk::SubmitInfo submitInfo(
+      0, nullptr, &waitStageMask, 1, this->mCommandBuffer.get());
 
     vk::Fence fence = this->mDevice->createFence(vk::FenceCreateInfo());
     this->mComputeQueue->submit(1, &submitInfo, fence);
@@ -101,7 +115,9 @@ void Sequence::eval() {
     }
 }
 
-void Sequence::createCommandPool() {
+void
+Sequence::createCommandPool()
+{
     SPDLOG_DEBUG("Kompute Sequence creating command pool");
     if (this->mDevice == nullptr) {
         spdlog::info("cmdpoolinfo");
@@ -114,13 +130,17 @@ void Sequence::createCommandPool() {
 
     this->mFreeCommandPool = true;
 
-    vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlags(), this->mQueueIndex);
+    vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlags(),
+                                              this->mQueueIndex);
     this->mCommandPool = std::make_shared<vk::CommandPool>();
-    this->mDevice->createCommandPool(&commandPoolInfo, nullptr, this->mCommandPool.get());
+    this->mDevice->createCommandPool(
+      &commandPoolInfo, nullptr, this->mCommandPool.get());
     SPDLOG_DEBUG("Kompute Manager Command Pool Created");
 }
 
-void Sequence::createCommandBuffer() {
+void
+Sequence::createCommandBuffer()
+{
     SPDLOG_DEBUG("Kompute Sequence creating command buffer");
     if (this->mDevice == nullptr) {
         throw std::runtime_error("Kompute Sequence device is null");
@@ -131,10 +151,12 @@ void Sequence::createCommandBuffer() {
 
     this->mFreeCommandBuffer = true;
 
-    vk::CommandBufferAllocateInfo commandBufferAllocateInfo(*this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+    vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
+      *this->mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
 
     this->mCommandBuffer = std::make_shared<vk::CommandBuffer>();
-    this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo, this->mCommandBuffer.get());
+    this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo,
+                                          this->mCommandBuffer.get());
     SPDLOG_DEBUG("Kompute Manager Command Buffer Created");
 }
 

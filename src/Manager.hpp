@@ -16,20 +16,22 @@ namespace kp {
 
 class Manager
 {
-private:
-
-public:
+  private:
+  public:
     Manager();
 
-    //Manager(std::shared_ptr<vk::Instance> instance, std::shared_ptr<vk::Device>, uint32_t queueIndex);
+    // Manager(std::shared_ptr<vk::Instance> instance,
+    // std::shared_ptr<vk::Device>, uint32_t queueIndex);
 
     ~Manager();
 
     // Evaluate actions
-    template <typename T, typename... TArgs>
-    void eval(TArgs&&... args) {
+    template<typename T, typename... TArgs>
+    void eval(TArgs&&... args)
+    {
         SPDLOG_DEBUG("Kompute Manager eval triggered");
-        Sequence sq(this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
+        Sequence sq(
+          this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
         SPDLOG_DEBUG("Kompute Manager created sequence");
         sq.begin();
         SPDLOG_DEBUG("Kompute Manager sequence begin");
@@ -41,8 +43,7 @@ public:
         SPDLOG_DEBUG("Kompute Manager sequence done");
     }
 
-
-private:
+  private:
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     uint32_t mPhysicalDeviceIndex = -1;
@@ -62,4 +63,3 @@ private:
 };
 
 } // End namespace kp
-

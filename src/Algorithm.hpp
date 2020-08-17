@@ -4,14 +4,10 @@ namespace kp {
 
 class Algorithm
 {
-private:
-    
-
-public:
+  private:
+  public:
     Algorithm();
     virtual ~Algorithm();
 };
 
 } // End namespace kp
-
-

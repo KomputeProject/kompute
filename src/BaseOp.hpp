@@ -9,10 +9,8 @@ namespace kp {
 
 class BaseOp
 {
-private:
-
-
-public:
+  private:
+  public:
     BaseOp();
     BaseOp(std::shared_ptr<vk::CommandBuffer> commandBuffer);
     virtual ~BaseOp();
@@ -20,11 +18,9 @@ public:
     void init(std::string one, std::string two);
     void record();
 
-private:
+  private:
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
-
 };
 
 } // End namespace kp
-

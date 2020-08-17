@@ -20,8 +20,8 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "Manager.hpp"
 #include "BaseOp.hpp"
+#include "Manager.hpp"
 
 #define BUFFER_ELEMENTS 32
 
@@ -612,9 +612,9 @@ main()
 #endif
 
     try {
-        //VulkanCompute* vulkanExample = new VulkanCompute();
-        //spdlog::info("Finished.");
-        //delete (vulkanExample);
+        // VulkanCompute* vulkanExample = new VulkanCompute();
+        // spdlog::info("Finished.");
+        // delete (vulkanExample);
 
         // Run Kompute
         spdlog::info("Creating manager");

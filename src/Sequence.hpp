@@ -14,11 +14,12 @@ namespace kp {
 
 class Sequence
 {
-private:
-
-public:
+  private:
+  public:
     Sequence();
-    Sequence(std::shared_ptr<vk::Device> device, std::shared_ptr<vk::Queue> computeQueue, uint32_t queueIndex);
+    Sequence(std::shared_ptr<vk::Device> device,
+             std::shared_ptr<vk::Queue> computeQueue,
+             uint32_t queueIndex);
     ~Sequence();
 
     // Record command functions
@@ -26,16 +27,16 @@ public:
     void end();
     void eval();
 
-    template <typename T, typename...TArgs>
-    void record(TArgs&&... args) {
+    template<typename T, typename... TArgs>
+    void record(TArgs&&... args)
+    {
         SPDLOG_DEBUG("Kompute Sequence record");
         T op(this->mCommandBuffer);
         op.init(std::forward<TArgs>(args)...);
         op.record();
     }
 
-
-private:
+  private:
     std::shared_ptr<vk::Device> mDevice = nullptr;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
     uint32_t mQueueIndex = -1;
@@ -50,8 +51,6 @@ private:
     // Create functions
     void createCommandPool();
     void createCommandBuffer();
-
 };
 
 } // End namespace kp
-

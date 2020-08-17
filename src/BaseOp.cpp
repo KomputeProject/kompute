@@ -10,29 +10,29 @@
 
 namespace kp {
 
-BaseOp::BaseOp() {
+BaseOp::BaseOp() {}
 
-}
-
-BaseOp::BaseOp(std::shared_ptr<vk::CommandBuffer> commandBuffer) {
+BaseOp::BaseOp(std::shared_ptr<vk::CommandBuffer> commandBuffer)
+{
     SPDLOG_DEBUG("Compute BaseOp constructor started");
     this->mCommandBuffer = commandBuffer;
 }
 
-BaseOp::~BaseOp() {
+BaseOp::~BaseOp()
+{
     SPDLOG_DEBUG("Compute BaseOp destructor started");
-
 }
 
-void BaseOp::init(std::string one, std::string two) {
+void
+BaseOp::init(std::string one, std::string two)
+{
     SPDLOG_DEBUG("Compute BaseOp init started");
-
 }
 
-void BaseOp::record() {
+void
+BaseOp::record()
+{
     SPDLOG_DEBUG("Compute BaseOp record started");
-
 }
 
 }
-
