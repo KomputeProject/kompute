@@ -39,7 +39,7 @@ class Tensor
     // Getter functions
     std::vector<uint32_t> data();
     uint32_t size();
-    std::vector<uint32_t> shape();
+    std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
     TensorTypes tensorType();
     bool isInit();
 

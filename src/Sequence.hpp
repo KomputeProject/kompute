@@ -32,7 +32,7 @@ class Sequence
     void record(TArgs&&... args)
     {
         SPDLOG_DEBUG("Kompute Sequence record");
-        T op(this->mCommandBuffer);
+        T op(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
         op.init(std::forward<TArgs>(args)...);
         op.record();
     }
