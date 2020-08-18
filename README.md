@@ -15,8 +15,30 @@ Use default equations
 int main() {
     kp::Manager kManager(); // Chooses device 0 
 
+    kp::Tensor inputOne = kp::Tensor({0, 1, 2, 3});
+
+    kp::Tensor inputTwo;
+    inputTwo = kManager.eval<kp::OpCreateTensor>(&inputTwo);
+
+    kp::Tensor output = kManager.eval<kp::OpMult>(inputOne, inputTwo);
+
+    std::cout << output << std::endl;
+}
+```
+
+```c++
+int main() {
+    kp::Manager kManager(); // Chooses device 0 
+
     kp::Tensor inputOne = kManager.eval<kp::OpCreateTensor>({0, 1, 2, 3}); // Mounts to device and binds to 0
     kp::Tensor inputTwo = kManager.eval<kp::OpCreateTensor>({0, 1, 2, 3}); // Mounts to device and binds to 1
+
+
+    kp::Tensor inputOne({0, 1, 2, 3}); 
+    kManager.eval<kp::OpCreateTensor>(&inputOne); // Mounts to device and binds to 0
+
+    kp::Tensor inputOne({0, 1, 2, 3}); 
+    kManager.eval<kp::OpCreateTensor>(&inputTwo); // Mounts to device and binds to 0
 
     kp::Tensor output = kManager.eval<kp::OpMult>(inputOne, inputTwo);
 
@@ -42,11 +64,9 @@ class CustomOp : kp::BaseOperator {
 int main() {
     kp::Manager kManager(); // Chooses device 0 
 
-    kp::Tensor inputOne; 
-    kManager.eval<kp::OpCreateTensor>(&inputOne, {0, 1, 2, 3}); // Mounts to device and binds to 0
+    kp::Tensor inputOne({0, 1, 2, 3}); 
 
-    kp::Tensor inputTwo;
-    kManager.eval<kp::OpCreateTensor>(&inputTwo, {0, 1, 2, 3}); // Mounts to device and binds to 1
+    kp::Tensor inputTwo({0, 1, 2, 3});
 
     kp::Tensor output;
     kManager.eval<kp::CustomOp>(&inputOne, &inputTwo, &output);
@@ -63,7 +83,8 @@ int main() {
 
     kp::Sequence sq;
     kManager.createSequence(&sq);
-    //kManager.createSequence<kp::Sequence>();
+
+    sq.begin();
 
     kp::Tensor inputOne; 
     sq.record<kp::OpCreateTensor>(&inputOne, {0, 1, 2, 3}); // Mounts to device and binds to 0
@@ -74,6 +95,7 @@ int main() {
     kp::Tensor output;
     sq.record<kp::OpMult>(&inputOne, &inputTwo, &output);
 
+    sq.end();
     sq.eval();
 
     std::cout << output << std::endl;

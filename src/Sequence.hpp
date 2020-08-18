@@ -17,7 +17,8 @@ class Sequence
   private:
   public:
     Sequence();
-    Sequence(std::shared_ptr<vk::Device> device,
+    Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+             std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex);
     ~Sequence();
@@ -37,6 +38,7 @@ class Sequence
     }
 
   private:
+    std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
     uint32_t mQueueIndex = -1;

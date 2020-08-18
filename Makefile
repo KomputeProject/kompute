@@ -14,9 +14,10 @@ SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
 
 build: build_shaders
 	$(CC) \
-		-g -fexceptions -fPIC \
 		src/* \
-		-std=c++14 \
+		-std=c++17 \
+		-g -fexceptions -fPIC \
+		-static-libgcc -static-libstdc++ \
 		-DDEBUG=1 \
 		-I"./external/" \
 		-I"./src/" \

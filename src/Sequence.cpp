@@ -8,12 +8,14 @@ Sequence::Sequence()
     SPDLOG_DEBUG("Kompute Sequence base constructor");
 }
 
-Sequence::Sequence(std::shared_ptr<vk::Device> device,
+Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                   std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::Queue> computeQueue,
                    uint32_t queueIndex)
 {
     SPDLOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
+    this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
@@ -26,33 +28,32 @@ Sequence::~Sequence()
 {
     SPDLOG_DEBUG("Kompute Sequence Destructor started");
 
-    if (this->mDevice == nullptr) {
+    if (!this->mDevice) {
         spdlog::error(
           "Kompute Sequence destructor reached with null Device pointer");
         return;
     }
 
-    if (this->mCommandBuffer == nullptr) {
-        spdlog::error(
-          "Kompute Sequence destructor reached with null CommandPool pointer");
-        return;
-    }
 
     if (this->mFreeCommandBuffer) {
         spdlog::info("Freeing CommandBuffer");
+        if (!this->mCommandBuffer) {
+            spdlog::error(
+              "Kompute Sequence destructor reached with null CommandPool pointer");
+            return;
+        }
         this->mDevice->freeCommandBuffers(
           *this->mCommandPool, 1, this->mCommandBuffer.get());
         SPDLOG_DEBUG("Kompute Manager Freed CommandBuffer");
     }
 
-    if (this->mCommandPool == nullptr) {
-        spdlog::error(
-          "Kompute Sequence destructor reached with null CommandPool pointer");
-        return;
-    }
-
     if (this->mFreeCommandPool) {
         spdlog::info("Destroying CommandPool");
+        if (this->mCommandPool == nullptr) {
+            spdlog::error(
+              "Kompute Sequence destructor reached with null CommandPool pointer");
+            return;
+        }
         this->mDevice->destroy(*this->mCommandPool);
         SPDLOG_DEBUG("Kompute Manager Destroyed CommandPool");
     }
@@ -120,11 +121,9 @@ Sequence::createCommandPool()
 {
     SPDLOG_DEBUG("Kompute Sequence creating command pool");
     if (this->mDevice == nullptr) {
-        spdlog::info("cmdpoolinfo");
         throw std::runtime_error("Kompute Sequence device is null");
     }
     if (this->mQueueIndex < 0) {
-        spdlog::info("Queue index {}", this->mQueueIndex);
         throw std::runtime_error("Kompute Sequence queue index not provided");
     }
 

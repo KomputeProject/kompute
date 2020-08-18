@@ -20,18 +20,19 @@ class Manager
   public:
     Manager();
 
-    // Manager(std::shared_ptr<vk::Instance> instance,
-    // std::shared_ptr<vk::Device>, uint32_t queueIndex);
+    Manager(std::shared_ptr<vk::Instance> instance,
+            std::shared_ptr<vk::Device>,
+            uint32_t queueIndex);
 
     ~Manager();
 
     // Evaluate actions
     template<typename T, typename... TArgs>
-    void eval(TArgs&&... args)
+    void evalOp(TArgs&&... args)
     {
         SPDLOG_DEBUG("Kompute Manager eval triggered");
         Sequence sq(
-          this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
+          this->mPhysicalDevice, this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
         SPDLOG_DEBUG("Kompute Manager created sequence");
         sq.begin();
         SPDLOG_DEBUG("Kompute Manager sequence begin");
@@ -46,6 +47,7 @@ class Manager
   private:
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
+    std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     uint32_t mPhysicalDeviceIndex = -1;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;

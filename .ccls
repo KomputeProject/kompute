@@ -5,7 +5,7 @@
 -fms-extensions
 -Wall
 -Wextra
--std=c++11
+-std=c++17
 
 %h -x
 %h c++-header
