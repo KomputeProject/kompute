@@ -7,15 +7,11 @@ Tensor::Tensor() {
     this->mTensorType = TensorTypes::eDevice;
 }
 
-Tensor::Tensor(std::vector<uint32_t> shape, TensorTypes tensorType)
+Tensor::Tensor(std::array<uint32_t, KP_MAX_DIM_SIZE> shape, TensorTypes tensorType)
 {
     SPDLOG_DEBUG("Kompute Tensor init with data");
 
-    if (shape.size() > KP_MAX_DIM_SIZE) {
-        spdlog::warn("Kompute Tensor created with more dimensions than supported. Max: {}, Provided: {}.", KP_MAX_DIM_SIZE, shape.size());
-    }
-
-    std::copy_n(shape.begin(), KP_MAX_DIM_SIZE, this->mShape.begin());
+    this->mShape = shape;
     this->mTensorType = tensorType;
 }
 

@@ -27,7 +27,7 @@ OpCreateTensor::init(std::shared_ptr<Tensor> tensor, std::vector<uint32_t> data)
     if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
         tensor->init(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
 
-        this->mStagingTensor = std::make_unique<Tensor>(tensor->shape(), Tensor::TensorTypes::eStaging);
+        this->mStagingTensor = std::make_shared<Tensor>(tensor->shape(), Tensor::TensorTypes::eStaging);
 
         this->mStagingTensor->init(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, data);
 

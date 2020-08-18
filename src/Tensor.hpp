@@ -27,7 +27,7 @@ class Tensor
 
     Tensor();
 
-    Tensor(std::vector<uint32_t> shape, TensorTypes tensorType = TensorTypes::eDevice);
+    Tensor(std::array<uint32_t, KP_MAX_DIM_SIZE> shape, TensorTypes tensorType = TensorTypes::eDevice);
 
     ~Tensor();
 
@@ -39,7 +39,7 @@ class Tensor
     // Getter functions
     std::vector<uint32_t> data();
     uint32_t size();
-    std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
+    std::vector<uint32_t> shape();
     TensorTypes tensorType();
     bool isInit();
 
