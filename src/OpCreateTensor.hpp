@@ -12,11 +12,11 @@
 
 #include "Tensor.hpp"
 
-#include "BaseOp.hpp"
+#include "OpBase.hpp"
 
 namespace kp {
 
-class OpCreateTensor : BaseOp<OpCreateTensor>
+class OpCreateTensor : OpBase
 {
   public:
     OpCreateTensor();
@@ -27,9 +27,9 @@ class OpCreateTensor : BaseOp<OpCreateTensor>
 
     ~OpCreateTensor();
 
-    void init(std::shared_ptr<Tensor> tensor, std::vector<uint32_t> data);
+    void init(std::shared_ptr<Tensor> tensor, ...) override;
 
-    void record();
+    void record() override;
 
   private:
 

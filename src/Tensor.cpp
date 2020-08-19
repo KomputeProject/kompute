@@ -8,11 +8,12 @@ Tensor::Tensor() {
     this->mTensorType = TensorTypes::eDevice;
 }
 
-Tensor::Tensor(std::array<uint32_t, KP_MAX_DIM_SIZE> shape, TensorTypes tensorType)
+Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
 {
     SPDLOG_DEBUG("Kompute Tensor constructor shape and type");
 
-    this->mShape = shape;
+    this->mData = data;
+    this->mShape = {data.size()};
     this->mTensorType = tensorType;
 }
 

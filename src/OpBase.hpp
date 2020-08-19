@@ -12,43 +12,33 @@
 
 #include <spdlog/spdlog.h>
 
+#include "Tensor.hpp"
+
 namespace kp {
 
-template<class T>
-class BaseOp
+class OpBase
 {
   private:
   public:
-    BaseOp() {}
+    OpBase() {}
 
-    BaseOp(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer) {
-        SPDLOG_DEBUG("Compute BaseOp constructor started");
+        SPDLOG_DEBUG("Compute OpBase constructor started");
 
         this->mPhysicalDevice = physicalDevice;
         this->mDevice = device;
         this->mCommandBuffer = commandBuffer;
     }
 
-    ~BaseOp()
+    ~OpBase()
     {
-        SPDLOG_DEBUG("Compute BaseOp destructor started");
+        SPDLOG_DEBUG("Compute OpBase destructor started");
     }
 
-    template<typename... TArgs>
-    void init(TArgs&&... args)
-    {
-        SPDLOG_DEBUG("Compute BaseOp init started");
-        static_cast<T*>(this)->init(std::forward<TArgs>(args)...);
-    }
-
-    template<typename... TArgs>
-    void record(TArgs&&... args)
-    {
-        SPDLOG_DEBUG("Compute BaseOp record started");
-        static_cast<T*>(this)->record(std::forward<TArgs>(args)...);
-    }
+    virtual void init(std::shared_ptr<Tensor> tensor, ...) = 0;
+    virtual void record() = 0;
 
   protected:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;

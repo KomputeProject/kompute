@@ -10,6 +10,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "OpBase.hpp"
+
 namespace kp {
 
 class Sequence
@@ -31,6 +33,8 @@ class Sequence
     template<typename T, typename... TArgs>
     void record(TArgs&&... args)
     {
+        static_assert(std::is_base_of<OpBase, T>::value, "Template only valid with OpBase derived classes");
+
         SPDLOG_DEBUG("Kompute Sequence record");
         T op(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
         op.init(std::forward<TArgs>(args)...);
@@ -46,6 +50,9 @@ class Sequence
     bool mFreeCommandPool = false;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer = nullptr;
     bool mFreeCommandBuffer = false;
+
+    // Base op objects
+    std::vector<OpBase> operations;
 
     // Record state
     bool mRecording = false;

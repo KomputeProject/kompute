@@ -620,10 +620,9 @@ main()
         // Run Kompute
         spdlog::info("Creating manager");
         kp::Manager mgr;
-        std::vector<uint32_t> data = {0.0, 1.0, 2.0};
-        kp::Tensor tensor({data.size()});
+        kp::Tensor tensor({0.0, 1.0, 2.0});
         spdlog::info("Calling manager eval w opcreatetensor");
-        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>(&tensor), data);
+        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>(&tensor));
         spdlog::info("Called manager eval success");
         std::vector<uint32_t> outData = tensor.data();
         spdlog::info("Output data: {}", outData);

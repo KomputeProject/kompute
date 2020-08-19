@@ -12,13 +12,11 @@ SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
 
 ####### Main Target Rules #######
 
-build: build_shaders
+build: clean build_shaders
 	$(CC) \
 		src/* \
 		-w \
 		-std=c++17 \
-		-g -fexceptions -fPIC \
-		-static-libgcc -static-libstdc++ \
 		-DDEBUG=1 \
 		-I"./external/" \
 		-I"./src/" \
@@ -26,6 +24,12 @@ build: build_shaders
 		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
 		-lvulkan-1 \
 		-o ./bin/main.exe
+		#\
+		#-L"C:\\Users\\axsau\\Programming\\lib\\vcpkg\\installed\\x64-windows\\lib\\" \
+		#-lspdlog \
+		#\
+		#-g -fexceptions -fPIC \
+		#-static-libgcc -static-libstdc++ \
 
 build_linux:
 	g++ \
@@ -72,7 +76,7 @@ format:
 	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.hpp src/*.h
 
 clean:
-	rm ./bin/main.exe;
+	rm ./bin/main.exe || echo "No main.exe"
 
 run:
 	./bin/main.exe;
