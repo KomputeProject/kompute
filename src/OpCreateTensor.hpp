@@ -16,7 +16,7 @@
 
 namespace kp {
 
-class OpCreateTensor : OpBase
+class OpCreateTensor : public OpBase
 {
   public:
     OpCreateTensor();

@@ -37,8 +37,13 @@ class OpBase
         SPDLOG_DEBUG("Compute OpBase destructor started");
     }
 
-    virtual void init(std::shared_ptr<Tensor> tensor, ...) = 0;
-    virtual void record() = 0;
+    virtual void init(std::shared_ptr<Tensor> tensor, ...) {
+        SPDLOG_DEBUG("Kompute OpBase init called");
+    }
+
+    virtual void record() {
+        SPDLOG_DEBUG("Kompute OpBase record called");
+    }
 
   protected:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;

@@ -67,7 +67,7 @@ Sequence::begin()
     }
 
     if (!this->mRecording) {
-        spdlog::info("Kompute Sequence starting command recording");
+        spdlog::info("Kompute Sequence command recording BEGIN");
         this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
         this->mRecording = true;
     } else {
@@ -84,7 +84,7 @@ Sequence::end()
     }
 
     if (this->mRecording) {
-        spdlog::info("Kompute Sequence ending command recording");
+        spdlog::info("Kompute Sequence command recording END");
         this->mCommandBuffer->end();
         this->mRecording = false;
     } else {
@@ -96,6 +96,8 @@ Sequence::end()
 void
 Sequence::eval()
 {
+    SPDLOG_DEBUG("Kompute sequence compute recording EVAL");
+
     bool toggleSingleRecording = !this->mRecording;
     if (toggleSingleRecording) {
         this->begin();
@@ -107,6 +109,9 @@ Sequence::eval()
       0, nullptr, &waitStageMask, 1, this->mCommandBuffer.get());
 
     vk::Fence fence = this->mDevice->createFence(vk::FenceCreateInfo());
+
+    SPDLOG_DEBUG("Kompute sequence submitting command buffer into compute queue");
+
     this->mComputeQueue->submit(1, &submitInfo, fence);
     this->mDevice->waitForFences(1, &fence, VK_TRUE, UINT64_MAX);
     this->mDevice->destroy(fence);
@@ -114,12 +119,15 @@ Sequence::eval()
     if (toggleSingleRecording) {
         this->end();
     }
+
+    SPDLOG_DEBUG("Kompute sequence EVAL success");
 }
 
 void
 Sequence::createCommandPool()
 {
     SPDLOG_DEBUG("Kompute Sequence creating command pool");
+
     if (this->mDevice == nullptr) {
         throw std::runtime_error("Kompute Sequence device is null");
     }

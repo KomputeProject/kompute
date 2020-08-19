@@ -621,8 +621,9 @@ main()
         spdlog::info("Creating manager");
         kp::Manager mgr;
         kp::Tensor tensor({0.0, 1.0, 2.0});
+        std::shared_ptr<kp::Tensor> tensorPtr{&tensor};
         spdlog::info("Calling manager eval w opcreatetensor");
-        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>(&tensor));
+        mgr.evalOp<kp::OpCreateTensor>(tensorPtr);
         spdlog::info("Called manager eval success");
         std::vector<uint32_t> outData = tensor.data();
         spdlog::info("Output data: {}", outData);
