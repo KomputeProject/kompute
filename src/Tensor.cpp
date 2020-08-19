@@ -4,12 +4,13 @@
 namespace kp {
 
 Tensor::Tensor() {
+    SPDLOG_DEBUG("Kompute Tensor base constructor");
     this->mTensorType = TensorTypes::eDevice;
 }
 
 Tensor::Tensor(std::array<uint32_t, KP_MAX_DIM_SIZE> shape, TensorTypes tensorType)
 {
-    SPDLOG_DEBUG("Kompute Tensor init with data");
+    SPDLOG_DEBUG("Kompute Tensor constructor shape and type");
 
     this->mShape = shape;
     this->mTensorType = tensorType;
@@ -29,6 +30,7 @@ Tensor::~Tensor()
         if (!this->mBuffer) {
             spdlog::error("Kompose Tensor expected to free buffer but got null buffer");
         } else {
+            SPDLOG_DEBUG("Kompose Tensor destroying buffer");
             this->mDevice->destroy(*this->mBuffer);
         }
     }
@@ -37,9 +39,12 @@ Tensor::~Tensor()
         if (!this->mMemory) {
             spdlog::error("Kompose Tensor expected to free buffer but got null memory");
         } else {
+            SPDLOG_DEBUG("Kompose Tensor freeing memory");
             this->mDevice->freeMemory(*this->mMemory);
         }
     }
+
+    SPDLOG_DEBUG("Kompute Tensor destructor success");
 }
 
 void Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice, std::shared_ptr<vk::Device> device, std::shared_ptr<vk::CommandBuffer> commandBuffer, std::vector<uint32_t> data) {
@@ -82,10 +87,17 @@ bool Tensor::isInit() {
 void Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor) {
     SPDLOG_DEBUG("Kompute Tensor recordCopyFrom called");
 
+    if (!this->mIsInit) {
+        throw std::runtime_error("Kompute Tensor attempted to run createBuffer without init");
+    }
+
     // TODO: Allow for dst and src offsets to be configured
     // TODO: Test and ensure sizes for tensors are compatible
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
+
+    SPDLOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
+
     // TODO: Ensure command buffer is in same device from buffer
     this->mCommandBuffer->copyBuffer(*copyFromTensor->mBuffer, *this->mBuffer, copyRegion);
 
@@ -107,7 +119,7 @@ vk::BufferUsageFlags Tensor::getBufferUsageFlags() {
             return vk::BufferUsageFlagBits::eStorageBuffer;
             break;
         default:
-            throw std::runtime_error("Invalid tensor type");
+            throw std::runtime_error("Kompute Tensor invalid tensor type");
     }
 }
 
@@ -123,7 +135,7 @@ vk::MemoryPropertyFlags Tensor::getMemoryPropertyFlags() {
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
             break;
         default:
-            throw std::runtime_error("Invalid tensor type");
+            throw std::runtime_error("Kompute Tensor invalid tensor type");
     }
 }
 
@@ -147,10 +159,15 @@ Tensor::createBuffer(void* data)
 
     vk::BufferUsageFlags usageFlags = this->getBufferUsageFlags();
     vk::DeviceSize bufferSize = this->memorySize();
+
+    SPDLOG_DEBUG("Kompute Tensor creating buffer with memory size: {}, and usage flags: {}", bufferSize, vk::to_string(usageFlags));
+
     vk::BufferCreateInfo bufferInfo(vk::BufferCreateFlags(), bufferSize, usageFlags, vk::SharingMode::eExclusive);
 
     this->mBuffer = std::make_shared<vk::Buffer>();
     this->mDevice->createBuffer(&bufferInfo, nullptr, this->mBuffer.get());
+
+    SPDLOG_DEBUG("Kompute Tensor buffer created now creating memory");
 
     vk::PhysicalDeviceMemoryProperties memoryProperties = this->mPhysicalDevice->getMemoryProperties();
 
@@ -174,6 +191,8 @@ Tensor::createBuffer(void* data)
 
     this->mFreeMemory = true;
 
+    SPDLOG_DEBUG("Kompute Tensor allocating memory index: {}, size {}, flags: {}", memoryTypeIndex, memoryRequirements.size, vk::to_string(memoryPropertyFlags));
+
     vk::MemoryAllocateInfo memoryAllocateInfo(memoryRequirements.size, memoryTypeIndex);
 
     this->mMemory = std::make_shared<vk::DeviceMemory>();
@@ -184,7 +203,7 @@ Tensor::createBuffer(void* data)
     SPDLOG_DEBUG("Kompute Tensor buffer & memory creation successful");
 
     if (data != nullptr) {
-        SPDLOG_DEBUG("Kompute Tensor copying data to buffer");
+        SPDLOG_DEBUG("Kompute Tensor mapping data to buffer");
 
         // TODO: Verify if flushed memory ranges should happend in sequence
         void* mapped = this->mDevice->mapMemory(*this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
