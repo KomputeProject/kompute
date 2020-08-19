@@ -618,15 +618,21 @@ main()
         // delete (vulkanExample);
 
         // Run Kompute
+
         spdlog::info("Creating manager");
         kp::Manager mgr;
-        kp::Tensor tensor({0.0, 1.0, 2.0});
-        std::shared_ptr<kp::Tensor> tensorPtr{&tensor};
-        spdlog::info("Calling manager eval w opcreatetensor");
-        mgr.evalOp<kp::OpCreateTensor>(tensorPtr);
+
+        spdlog::info("Creating first tensor");
+        kp::Tensor tensorOne({0.0, 1.0, 2.0});
+        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>{&tensorOne});
+
+        spdlog::info("Creating second tensor");
+        kp::Tensor tensorTwo({1.0, 2.0, 3.0});
+        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>{&tensorTwo});
+
         spdlog::info("Called manager eval success");
-        std::vector<uint32_t> outData = tensor.data();
-        spdlog::info("Output data: {}", outData);
+        spdlog::info("Tensor one: {}", tensorOne.data());
+        spdlog::info("Tensor two: {}", tensorTwo.data());
 
         return 0;
     } catch (const std::exception& exc) {
