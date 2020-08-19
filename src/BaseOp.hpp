@@ -19,11 +19,22 @@ class BaseOp
 {
   private:
   public:
-    BaseOp();
+    BaseOp() {}
+
     BaseOp(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer);
-    virtual ~BaseOp();
+           std::shared_ptr<vk::CommandBuffer> commandBuffer) {
+        SPDLOG_DEBUG("Compute BaseOp constructor started");
+
+        this->mPhysicalDevice = physicalDevice;
+        this->mDevice = device;
+        this->mCommandBuffer = commandBuffer;
+    }
+
+    ~BaseOp()
+    {
+        SPDLOG_DEBUG("Compute BaseOp destructor started");
+    }
 
     template<typename... TArgs>
     void init(TArgs&&... args)
@@ -46,3 +57,4 @@ class BaseOp
 };
 
 } // End namespace kp
+
