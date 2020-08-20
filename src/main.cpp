@@ -623,16 +623,16 @@ main()
         kp::Manager mgr;
 
         spdlog::info("Creating first tensor");
-        kp::Tensor tensorOne({0.0, 1.0, 2.0});
-        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>{&tensorOne});
+        std::shared_ptr<kp::Tensor> tensorOne{new kp::Tensor({0.0, 1.0, 2.0})};
+        mgr.evalOp<kp::OpCreateTensor>({tensorOne});
 
         spdlog::info("Creating second tensor");
-        kp::Tensor tensorTwo({1.0, 2.0, 3.0});
-        mgr.evalOp<kp::OpCreateTensor>(std::shared_ptr<kp::Tensor>{&tensorTwo});
+        std::shared_ptr<kp::Tensor> tensorTwo{new kp::Tensor({0.0, 1.0, 2.0})};
+        mgr.evalOp<kp::OpCreateTensor>({tensorTwo});
 
         spdlog::info("Called manager eval success");
-        spdlog::info("Tensor one: {}", tensorOne.data());
-        spdlog::info("Tensor two: {}", tensorTwo.data());
+        spdlog::info("Tensor one: {}", tensorOne->data());
+        spdlog::info("Tensor two: {}", tensorTwo->data());
 
         return 0;
     } catch (const std::exception& exc) {

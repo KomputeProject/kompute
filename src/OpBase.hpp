@@ -37,7 +37,7 @@ class OpBase
         SPDLOG_DEBUG("Compute OpBase destructor started");
     }
 
-    virtual void init(std::shared_ptr<Tensor> tensor, ...) {
+    virtual void init(std::vector<std::shared_ptr<Tensor>> tensors) {
         SPDLOG_DEBUG("Kompute OpBase init called");
     }
 

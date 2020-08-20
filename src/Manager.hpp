@@ -28,7 +28,7 @@ class Manager
 
     // Evaluate actions
     template<typename T, typename... TArgs>
-    void evalOp(TArgs&&... args)
+    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
     {
         SPDLOG_DEBUG("Kompute Manager eval triggered");
         Sequence sq(
@@ -36,7 +36,7 @@ class Manager
         SPDLOG_DEBUG("Kompute Manager created sequence");
         sq.begin();
         SPDLOG_DEBUG("Kompute Manager sequence begin");
-        sq.record<T>(std::forward<TArgs>(args)...);
+        sq.record<T>(tensors);
         SPDLOG_DEBUG("Kompute Manager sequence end");
         sq.end();
         SPDLOG_DEBUG("Kompute Manager sequence eval");

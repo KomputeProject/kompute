@@ -16,16 +16,16 @@
 
 namespace kp {
 
-class OpCreateTensor : public OpBase
+class OpMult : public OpBase
 {
   public:
-    OpCreateTensor();
+    OpMult();
 
-    OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
-    ~OpCreateTensor();
+    ~OpMult();
 
     void init(std::vector<std::shared_ptr<Tensor>> tensors) override;
 
