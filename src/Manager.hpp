@@ -31,8 +31,10 @@ class Manager
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
     {
         SPDLOG_DEBUG("Kompute Manager eval triggered");
-        Sequence sq(
-          this->mPhysicalDevice, this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
+        Sequence sq(this->mPhysicalDevice,
+                    this->mDevice,
+                    this->mComputeQueue,
+                    this->mComputeQueueFamilyIndex);
         SPDLOG_DEBUG("Kompute Manager created sequence");
         sq.begin();
         SPDLOG_DEBUG("Kompute Manager sequence begin");

@@ -24,7 +24,8 @@ class OpBase
 
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer) {
+           std::shared_ptr<vk::CommandBuffer> commandBuffer)
+    {
         SPDLOG_DEBUG("Compute OpBase constructor started");
 
         this->mPhysicalDevice = physicalDevice;
@@ -32,18 +33,14 @@ class OpBase
         this->mCommandBuffer = commandBuffer;
     }
 
-    ~OpBase()
-    {
-        SPDLOG_DEBUG("Compute OpBase destructor started");
-    }
+    ~OpBase() { SPDLOG_DEBUG("Compute OpBase destructor started"); }
 
-    virtual void init(std::vector<std::shared_ptr<Tensor>> tensors) {
+    virtual void init(std::vector<std::shared_ptr<Tensor>> tensors)
+    {
         SPDLOG_DEBUG("Kompute OpBase init called");
     }
 
-    virtual void record() {
-        SPDLOG_DEBUG("Kompute OpBase record called");
-    }
+    virtual void record() { SPDLOG_DEBUG("Kompute OpBase record called"); }
 
   protected:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
@@ -52,4 +49,3 @@ class OpBase
 };
 
 } // End namespace kp
-

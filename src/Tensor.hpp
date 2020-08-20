@@ -17,7 +17,6 @@ namespace kp {
 class Tensor
 {
   public:
-
     enum class TensorTypes
     {
         eDevice = 0,
@@ -27,11 +26,15 @@ class Tensor
 
     Tensor();
 
-    Tensor(std::vector<uint32_t> data, TensorTypes tensorType = TensorTypes::eDevice);
+    Tensor(std::vector<uint32_t> data,
+           TensorTypes tensorType = TensorTypes::eDevice);
 
     ~Tensor();
 
-    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice, std::shared_ptr<vk::Device> device, std::shared_ptr<vk::CommandBuffer> commandBuffer, std::vector<uint32_t> data = std::vector<uint32_t>());
+    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+              std::shared_ptr<vk::Device> device,
+              std::shared_ptr<vk::CommandBuffer> commandBuffer,
+              std::vector<uint32_t> data = std::vector<uint32_t>());
 
     // Create functions
     void createBuffer(void* data = nullptr);
@@ -63,7 +66,6 @@ class Tensor
     std::array<uint32_t, KP_MAX_DIM_SIZE> mShape; // TODO: Only 1D supported
     bool mIsInit = false;
     // uint32_t mDataType;
-
 
     // Private util functions
     vk::BufferUsageFlags getBufferUsageFlags();

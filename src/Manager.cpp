@@ -166,7 +166,7 @@ Manager::createDevice()
     vk::PhysicalDevice physicalDevice =
       physicalDevices[this->mPhysicalDeviceIndex];
 
-    this->mPhysicalDevice = 
+    this->mPhysicalDevice =
       std::make_shared<vk::PhysicalDevice>(physicalDevice);
 
     vk::PhysicalDeviceProperties physicalDeviceProperties =

@@ -22,8 +22,8 @@ class OpMult : public OpBase
     OpMult();
 
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer);
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     ~OpMult();
 
@@ -32,7 +32,6 @@ class OpMult : public OpBase
     void record() override;
 
   private:
-
     std::shared_ptr<Tensor> mPrimaryTensor;
     std::shared_ptr<Tensor> mStagingTensor;
 };

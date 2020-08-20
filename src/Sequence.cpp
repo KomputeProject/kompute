@@ -34,12 +34,11 @@ Sequence::~Sequence()
         return;
     }
 
-
     if (this->mFreeCommandBuffer) {
         spdlog::info("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            spdlog::error(
-              "Kompute Sequence destructor reached with null CommandPool pointer");
+            spdlog::error("Kompute Sequence destructor reached with null "
+                          "CommandPool pointer");
             return;
         }
         this->mDevice->freeCommandBuffers(
@@ -50,8 +49,8 @@ Sequence::~Sequence()
     if (this->mFreeCommandPool) {
         spdlog::info("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            spdlog::error(
-              "Kompute Sequence destructor reached with null CommandPool pointer");
+            spdlog::error("Kompute Sequence destructor reached with null "
+                          "CommandPool pointer");
             return;
         }
         this->mDevice->destroy(*this->mCommandPool);
@@ -110,7 +109,8 @@ Sequence::eval()
 
     vk::Fence fence = this->mDevice->createFence(vk::FenceCreateInfo());
 
-    SPDLOG_DEBUG("Kompute sequence submitting command buffer into compute queue");
+    SPDLOG_DEBUG(
+      "Kompute sequence submitting command buffer into compute queue");
 
     this->mComputeQueue->submit(1, &submitInfo, fence);
     this->mDevice->waitForFences(1, &fence, VK_TRUE, UINT64_MAX);

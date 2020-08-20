@@ -20,9 +20,9 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
+#include "Manager.hpp"
 #include "OpCreateTensor.hpp"
 #include "Tensor.hpp"
-#include "Manager.hpp"
 
 #define BUFFER_ELEMENTS 32
 
@@ -623,12 +623,14 @@ main()
         kp::Manager mgr;
 
         spdlog::info("Creating first tensor");
-        std::shared_ptr<kp::Tensor> tensorOne{new kp::Tensor({0.0, 1.0, 2.0})};
-        mgr.evalOp<kp::OpCreateTensor>({tensorOne});
+        std::shared_ptr<kp::Tensor> tensorOne{ new kp::Tensor(
+          { 0.0, 1.0, 2.0 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorOne });
 
         spdlog::info("Creating second tensor");
-        std::shared_ptr<kp::Tensor> tensorTwo{new kp::Tensor({0.0, 1.0, 2.0})};
-        mgr.evalOp<kp::OpCreateTensor>({tensorTwo});
+        std::shared_ptr<kp::Tensor> tensorTwo{ new kp::Tensor(
+          { 0.0, 1.0, 2.0 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorTwo });
 
         spdlog::info("Called manager eval success");
         spdlog::info("Tensor one: {}", tensorOne->data());

@@ -16,7 +16,6 @@ namespace kp {
 
 class Sequence
 {
-  private:
   public:
     Sequence();
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -33,14 +32,16 @@ class Sequence
     template<typename T, typename... TArgs>
     void record(TArgs&&... args)
     {
-        static_assert(std::is_base_of<OpBase, T>::value, "Template only valid with OpBase derived classes");
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Template only valid with OpBase derived classes");
 
         SPDLOG_DEBUG("Kompute Sequence record");
 
-        T* op = new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+        T* op =
+          new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
-        std::unique_ptr<OpBase> baseOpPtr{baseOp};
+        std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
         baseOpPtr->init(std::forward<TArgs>(args)...);
         baseOpPtr->record();
