@@ -31,6 +31,8 @@ class OpCreateTensor : public OpBase
 
     void record() override;
 
+    void postSubmit() override;
+
   private:
     std::shared_ptr<Tensor> mPrimaryTensor;
     std::shared_ptr<Tensor> mStagingTensor;

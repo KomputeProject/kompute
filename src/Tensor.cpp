@@ -105,12 +105,16 @@ Tensor::isInit()
     return this->mIsInit;
 }
 
+void Tensor::setData(const std::vector<uint32_t>& data) {
+    this->mData = data;
+}
+
 void
 Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
 {
     SPDLOG_DEBUG("Kompute Tensor recordCopyFrom called");
 
-    if (!this->mIsInit) {
+    if (!this->mIsInit || !copyFromTensor->mIsInit) {
         throw std::runtime_error(
           "Kompute Tensor attempted to run createBuffer without init");
     }
@@ -126,7 +130,51 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
     this->mCommandBuffer->copyBuffer(
       *copyFromTensor->mBuffer, *this->mBuffer, copyRegion);
 
+    // TODO: Ensure copied data is consistent with device
     this->mData = copyFromTensor->mData;
+}
+
+// TODO: Explore if this function should be here or expose buffer
+vk::DescriptorBufferInfo Tensor::constructDescriptorBufferInfo() {
+    return vk::DescriptorBufferInfo(
+        *this->mBuffer,
+        0, // offset
+        this->memorySize()
+    );
+}
+
+void Tensor::copyDataFromHostBuffer() {
+    SPDLOG_DEBUG("Kompute Tensor copying data from host buffer");
+
+    if (this->mTensorType != TensorTypes::eStaging) {
+        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of using record GPU command");
+    }
+
+    vk::DeviceSize bufferSize = this->memorySize();
+    void* mapped = this->mDevice->mapMemory(*this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
+    vk::MappedMemoryRange mappedMemoryRange(*this->mMemory, 0, bufferSize);
+    this->mDevice->invalidateMappedMemoryRanges(mappedMemoryRange);
+    memcpy(this->mData.data(), mapped, bufferSize);
+    this->mDevice->unmapMemory(*this->mMemory);
+}
+
+void Tensor::copyDataToHostBuffer() {
+
+    SPDLOG_DEBUG("Kompute Tensor copying data to buffer");
+
+    if (this->mTensorType != TensorTypes::eStaging) {
+        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of using record GPU command");
+    }
+
+    vk::DeviceSize bufferSize = this->memorySize();
+
+    // TODO: Verify if flushed memory ranges should happend in sequence
+    void* mapped = this->mDevice->mapMemory(
+      *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
+    memcpy(mapped, this->mData.data(), bufferSize);
+    vk::MappedMemoryRange mappedRange(*this->mMemory, 0, bufferSize);
+    this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
+    this->mDevice->unmapMemory(*this->mMemory);
 }
 
 vk::BufferUsageFlags
@@ -249,17 +297,7 @@ Tensor::createBuffer(void* data)
     SPDLOG_DEBUG("Kompute Tensor buffer & memory creation successful");
 
     if (data != nullptr) {
-        SPDLOG_DEBUG("Kompute Tensor mapping data to buffer");
-
-        // TODO: Verify if flushed memory ranges should happend in sequence
-        void* mapped = this->mDevice->mapMemory(
-          *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
-        memcpy(mapped, data, bufferSize);
-        vk::MappedMemoryRange mappedRange(*this->mMemory, 0, bufferSize);
-        this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
-        this->mDevice->unmapMemory(*this->mMemory);
-
-        SPDLOG_DEBUG("Kompute Tensor successful copy data to tensor");
+        this->copyDataToHostBuffer();
     }
 }
 

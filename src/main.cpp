@@ -22,6 +22,7 @@
 
 #include "Manager.hpp"
 #include "OpCreateTensor.hpp"
+#include "OpMult.hpp"
 #include "Tensor.hpp"
 
 #define BUFFER_ELEMENTS 32
@@ -493,6 +494,7 @@ class VulkanCompute
                   nullptr,
                   bufferMemoryBarrier,
                   nullptr);
+
                 this->mCommandBuffer.bindPipeline(
                   vk::PipelineBindPoint::eCompute, this->mPipeline);
                 this->mCommandBuffer.bindDescriptorSets(
@@ -623,18 +625,28 @@ main()
         kp::Manager mgr;
 
         spdlog::info("Creating first tensor");
-        std::shared_ptr<kp::Tensor> tensorOne{ new kp::Tensor(
+        std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
           { 0.0, 1.0, 2.0 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorOne });
+        mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
         spdlog::info("Creating second tensor");
-        std::shared_ptr<kp::Tensor> tensorTwo{ new kp::Tensor(
-          { 0.0, 1.0, 2.0 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorTwo });
+        std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
+          { 2.0, 4.0, 6.0 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
+
+        // TODO: Add capabilities for just output tensor types
+        spdlog::info("Creating output tensor");
+        std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
+            { 0.0, 0.0, 0.0 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
         spdlog::info("Called manager eval success");
-        spdlog::info("Tensor one: {}", tensorOne->data());
-        spdlog::info("Tensor two: {}", tensorTwo->data());
+        spdlog::info("Tensor one: {}", tensorLHS->data());
+        spdlog::info("Tensor two: {}", tensorRHS->data());
+        spdlog::info("Tensor two: {}", tensorOutput->data());
+
+        spdlog::info("Calling op mult");
+        mgr.evalOp<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
         return 0;
     } catch (const std::exception& exc) {

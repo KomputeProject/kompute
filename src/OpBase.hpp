@@ -42,6 +42,12 @@ class OpBase
 
     virtual void record() { SPDLOG_DEBUG("Kompute OpBase record called"); }
 
+    virtual void postSubmit()
+    {
+        SPDLOG_DEBUG("Kompute OpBase init called");
+    }
+
+
   protected:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;

@@ -46,8 +46,18 @@ class Tensor
     TensorTypes tensorType();
     bool isInit();
 
+    // Setters
+    void setData(const std::vector<uint32_t>& data);
+
     // Record functions
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor);
+    // TODO: Add memory buffer barrier capabilities
+    //void recordBufferMemoryBarrier();
+
+    // Util functions
+    vk::DescriptorBufferInfo constructDescriptorBufferInfo();
+    void copyDataFromHostBuffer();
+    void copyDataToHostBuffer();
 
   private:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;

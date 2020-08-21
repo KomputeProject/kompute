@@ -65,4 +65,10 @@ OpCreateTensor::record()
     }
 }
 
+void OpCreateTensor::postSubmit()
+{
+    SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
+
+}
+
 }

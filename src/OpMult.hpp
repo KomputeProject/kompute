@@ -11,6 +11,7 @@
 #include <spdlog/spdlog.h>
 
 #include "Tensor.hpp"
+#include "Algorithm.hpp"
 
 #include "OpBase.hpp"
 
@@ -31,9 +32,14 @@ class OpMult : public OpBase
 
     void record() override;
 
+    void postSubmit() override;
+
   private:
-    std::shared_ptr<Tensor> mPrimaryTensor;
-    std::shared_ptr<Tensor> mStagingTensor;
+    Algorithm mAlgorithm;
+    std::shared_ptr<Tensor> mTensorLHS;
+    std::shared_ptr<Tensor> mTensorRHS;
+    std::shared_ptr<Tensor> mTensorOutput;
+    std::shared_ptr<Tensor> mTensorOutputStaging;
 };
 
 } // End namespace kp
