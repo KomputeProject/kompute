@@ -105,7 +105,9 @@ Tensor::isInit()
     return this->mIsInit;
 }
 
-void Tensor::setData(const std::vector<uint32_t>& data) {
+void
+Tensor::setData(const std::vector<uint32_t>& data)
+{
     this->mData = data;
 }
 
@@ -135,36 +137,43 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
 }
 
 // TODO: Explore if this function should be here or expose buffer
-vk::DescriptorBufferInfo Tensor::constructDescriptorBufferInfo() {
+vk::DescriptorBufferInfo
+Tensor::constructDescriptorBufferInfo()
+{
     vk::DeviceSize bufferSize = this->memorySize();
-    return vk::DescriptorBufferInfo(
-        *this->mBuffer,
-        0, // offset
-        bufferSize
-    );
+    return vk::DescriptorBufferInfo(*this->mBuffer,
+                                    0, // offset
+                                    bufferSize);
 }
 
-void Tensor::copyDataFromHostBuffer() {
+void
+Tensor::copyDataFromHostBuffer()
+{
     SPDLOG_DEBUG("Kompute Tensor copying data from host buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of using record GPU command");
+        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of "
+                     "using record GPU command");
     }
 
     vk::DeviceSize bufferSize = this->memorySize();
-    void* mapped = this->mDevice->mapMemory(*this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
+    void* mapped = this->mDevice->mapMemory(
+      *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
     vk::MappedMemoryRange mappedMemoryRange(*this->mMemory, 0, bufferSize);
     this->mDevice->invalidateMappedMemoryRanges(mappedMemoryRange);
     memcpy(this->mData.data(), mapped, bufferSize);
     this->mDevice->unmapMemory(*this->mMemory);
 }
 
-void Tensor::copyDataToHostBuffer() {
+void
+Tensor::copyDataToHostBuffer()
+{
 
     SPDLOG_DEBUG("Kompute Tensor copying data to buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of using record GPU command");
+        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of "
+                     "using record GPU command");
     }
 
     vk::DeviceSize bufferSize = this->memorySize();

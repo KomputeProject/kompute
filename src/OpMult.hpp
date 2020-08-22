@@ -10,8 +10,8 @@
 
 #include <spdlog/spdlog.h>
 
-#include "Tensor.hpp"
 #include "Algorithm.hpp"
+#include "Tensor.hpp"
 
 #include "OpBase.hpp"
 

@@ -28,7 +28,7 @@ class Algorithm
 
     ~Algorithm();
 
-private:
+  private:
     // Shared resources
     std::shared_ptr<vk::Device> mDevice;
 

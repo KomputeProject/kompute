@@ -20,9 +20,7 @@ class OpBase
 {
   private:
   public:
-    OpBase() {
-        SPDLOG_DEBUG("Compute OpBase base constructor");
-    }
+    OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
 
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
@@ -44,11 +42,7 @@ class OpBase
 
     virtual void record() { SPDLOG_DEBUG("Kompute OpBase record called"); }
 
-    virtual void postSubmit()
-    {
-        SPDLOG_DEBUG("Kompute OpBase init called");
-    }
-
+    virtual void postSubmit() { SPDLOG_DEBUG("Kompute OpBase init called"); }
 
   protected:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;

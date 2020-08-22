@@ -19,7 +19,8 @@ class Algorithm
   public:
     Algorithm();
 
-    Algorithm(std::shared_ptr<vk::Device> device, std::shared_ptr<vk::CommandBuffer> commandBuffer);
+    Algorithm(std::shared_ptr<vk::Device> device,
+              std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     // TODO: Add specialisation data
     // TODO: Explore other ways of passing shader (ie raw bytes)
@@ -31,7 +32,7 @@ class Algorithm
     // Record commands
     void recordDispatch(uint32_t x, uint32_t y, uint32_t z);
 
-private:
+  private:
     // Shared resources
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;

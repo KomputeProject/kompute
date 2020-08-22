@@ -52,7 +52,7 @@ class Tensor
     // Record functions
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor);
     // TODO: Add memory buffer barrier capabilities
-    //void recordBufferMemoryBarrier();
+    // void recordBufferMemoryBarrier();
 
     // Util functions
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();

@@ -637,7 +637,7 @@ main()
         // TODO: Add capabilities for just output tensor types
         spdlog::info("Creating output tensor");
         std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-            { 0.0, 0.0, 0.0 }) };
+          { 0.0, 0.0, 0.0 }) };
         mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
         spdlog::info("OpCreateTensor success for tensors");
