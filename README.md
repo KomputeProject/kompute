@@ -13,16 +13,22 @@ Use default equations
 
 ```c++
 int main() {
-    kp::Manager kManager; // Chooses device 0 unless specified
 
-    kp::Tensor inputOne = kp::Tensor({0, 1, 2, 3});
+    kp::Manager mgr; // Automatically selects Device 0
 
-    kp::Tensor inputTwo;
-    inputTwo = kManager.eval<kp::OpCreateTensor>(&inputTwo);
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
-    kp::Tensor output = kManager.eval<kp::OpMult>(inputOne, inputTwo);
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2.0, 4.0, 6.0 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
 
-    std::cout << output << std::endl;
+    // TODO: Add capabilities for just output tensor types
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
+
+    mgr.evalOp<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
+
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
 
