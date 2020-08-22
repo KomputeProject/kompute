@@ -97,11 +97,6 @@ Sequence::eval()
 {
     SPDLOG_DEBUG("Kompute sequence compute recording EVAL");
 
-    bool toggleSingleRecording = !this->mRecording;
-    if (toggleSingleRecording) {
-        this->begin();
-    }
-
     const vk::PipelineStageFlags waitStageMask =
       vk::PipelineStageFlagBits::eTransfer;
     vk::SubmitInfo submitInfo(
@@ -115,10 +110,6 @@ Sequence::eval()
     this->mComputeQueue->submit(1, &submitInfo, fence);
     this->mDevice->waitForFences(1, &fence, VK_TRUE, UINT64_MAX);
     this->mDevice->destroy(fence);
-
-    if (toggleSingleRecording) {
-        this->end();
-    }
 
     // TODO: Explore whether moving postSubmit calls to a separate sequence
     // function that is explicitly called by the manager

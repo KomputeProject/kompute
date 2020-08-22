@@ -52,5 +52,5 @@ class OpMult : public OpBase
 } // End namespace kp
 
 // Including implemenation for template class
-#include "OpMult.tpp"
+#include "OpMult.cpp"
 

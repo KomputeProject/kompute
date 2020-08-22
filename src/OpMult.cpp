@@ -109,6 +109,7 @@ OpMult<tX, tY, tZ>::record()
 {
     SPDLOG_DEBUG("Kompute OpMult record called");
 
+    // Barrier to ensure the data is finished writing to buffer memory
     this->mTensorLHS->recordBufferMemoryBarrier(
         vk::AccessFlagBits::eHostWrite,
         vk::AccessFlagBits::eShaderRead,
@@ -122,6 +123,7 @@ OpMult<tX, tY, tZ>::record()
 
     this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
 
+    // Barrier to ensure the shader code is executed before buffer read
     this->mTensorOutput->recordBufferMemoryBarrier(
         vk::AccessFlagBits::eShaderWrite,
         vk::AccessFlagBits::eTransferRead,
@@ -140,6 +142,7 @@ OpMult<tX, tY, tZ>::record()
 
     this->mTensorOutputStaging->recordCopyFrom(this->mTensorLHS);
 
+    // Buffer to ensure wait until data is copied to staging buffer
     this->mTensorOutput->recordBufferMemoryBarrier(
         vk::AccessFlagBits::eTransferWrite,
         vk::AccessFlagBits::eHostRead,

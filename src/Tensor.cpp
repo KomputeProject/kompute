@@ -58,7 +58,7 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::vector<uint32_t> data)
 {
     SPDLOG_DEBUG(
-      "Kompute Tensor running init with physicalDevice and logical device");
+      "Kompute Tensor running init with Vulkan params and data size: {}", data.size());
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;

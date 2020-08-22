@@ -49,7 +49,7 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     // TODO: Explore design for having multiple descriptor pool sizes
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
         vk::DescriptorPoolSize(vk::DescriptorType::eStorageBuffer,
-                               1 // Descriptor count
+                               static_cast<uint32_t>(tensorParams.size()) // Descriptor count
                                )
     };
 
@@ -99,6 +99,11 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
                                           this->mDescriptorSet.get());
 
+    std::vector<vk::DescriptorBufferInfo> descriptorBufferInfos;
+    for (size_t i = 0; i < tensorParams.size(); i++) {
+        descriptorBufferInfos.push_back(tensorParams[i]->constructDescriptorBufferInfo());
+    }
+    // TODO: Explore design exposing the destination array element
     std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
     for (size_t i = 0; i < tensorParams.size(); i++) {
 
