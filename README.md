@@ -9,7 +9,7 @@
 
 ## Getting Started
 
-Use default equations
+Run your tensors against default or custom equations via the Manager.
 
 ```c++
 int main() {
@@ -32,38 +32,45 @@ int main() {
 }
 ```
 
+Record commands in a single submit by using a Sequence.
+
 ```c++
 int main() {
-    kp::Manager kManager(); // Chooses device 0 
+    kp::Manager mgr;
 
-    kp::Tensor inputOne = kManager.eval<kp::OpCreateTensor>({0, 1, 2, 3}); // Mounts to device and binds to 0
-    kp::Tensor inputTwo = kManager.eval<kp::OpCreateTensor>({0, 1, 2, 3}); // Mounts to device and binds to 1
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2.0, 4.0, 6.0 }) };
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
 
+    kp::Sequence sq = mgr.constructSequence();
+    // Begin recoding commands
+    sq.begin();
 
-    kp::Tensor inputOne({0, 1, 2, 3}); 
-    kManager.eval<kp::OpCreateTensor>(&inputOne); // Mounts to device and binds to 0
+    // Run batch operations to be sent to GPU
+    {
+        sq.record<kp::OpCreateTensor>({ tensorLHS });
+        sq.record<kp::OpCreateTensor>({ tensorRHS });
+        sq.record<kp::OpCreateTensor>({ tensorOutput });
 
-    kp::Tensor inputOne({0, 1, 2, 3}); 
-    kManager.eval<kp::OpCreateTensor>(&inputTwo); // Mounts to device and binds to 0
+        sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+    }
+    // Stop recording
+    sq.end();
+    // Submit operations to GPU
+    sq.eval();
 
-    kp::Tensor output = kManager.eval<kp::OpMult>(inputOne, inputTwo);
-
-    std::cout << output << std::endl;
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
 
 Create your own operation
 
 ```c++
-class CustomOp : kp::BaseOperator {
-    CusomOp() {
-        this->mAlgorithm = kp::Algorithm("path/to/your/shader.compute.spv")
-    }
-
-    kp::Tensor init(kp::Tensor* rhs, kp::Tensor* lhs, kp::Tensor* result) override {
-        this->appendParameter(kp::Parameter(rhs)); // Binding 0
-        this->appendParameter(kp::Parameter(lhs)); // Binding 1
-        this->appendParameter(kp::Parameter(result)); // Binding 2
+class CustomOp : kp::OpBase {
+    // ...
+    void init(std::shared_ptr<Tensor> tensors) {
+        // ... extra steps to initialise tensors
+        this->mAlgorithm->init("path/to/your/shader.compute.spv", tensors);
     }
 }
 
@@ -74,10 +81,10 @@ int main() {
 
     kp::Tensor inputTwo({0, 1, 2, 3});
 
-    kp::Tensor output;
-    kManager.eval<kp::CustomOp>(&inputOne, &inputTwo, &output);
+    kp::Tensor output( {0, 0, 0, 0} );
+    kManager.eval<kp::CustomOp>({ inputOne, inputTwo, output });
 
-    std::cout << output << std::endl;
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
 
