@@ -8,13 +8,15 @@
 
 namespace kp {
 
-OpMult::OpMult()
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpMult<tX, tY, tZ>::OpMult()
 {
     SPDLOG_DEBUG("Kompute OpMult constructor base");
 }
 
 // TODO: Remove physicalDevice from main initialiser
-OpMult::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                std::shared_ptr<vk::Device> device,
                std::shared_ptr<vk::CommandBuffer> commandBuffer)
   : OpBase(physicalDevice, device, commandBuffer)
@@ -24,13 +26,15 @@ OpMult::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
 
-OpMult::~OpMult()
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpMult<tX, tY, tZ>::~OpMult()
 {
     SPDLOG_DEBUG("Kompute OpMult destructor started");
 }
 
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpMult::init(std::vector<std::shared_ptr<Tensor>> tensors)
+OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
 {
     SPDLOG_DEBUG("Kompute OpMult init called");
 
@@ -93,8 +97,9 @@ OpMult::init(std::vector<std::shared_ptr<Tensor>> tensors)
     this->mAlgorithm->init("shaders/glsl/opmult.comp.spv", tensors);
 }
 
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpMult::record()
+OpMult<tX, tY, tZ>::record()
 {
     SPDLOG_DEBUG("Kompute OpMult record called");
 
@@ -126,8 +131,9 @@ OpMult::record()
         vk::PipelineStageFlagBits::eHost);
 }
 
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpMult::postSubmit()
+OpMult<tX, tY, tZ>::postSubmit()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
 
