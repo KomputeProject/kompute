@@ -29,6 +29,7 @@ class Sequence
     void end();
     void eval();
 
+    // TODO: Explore design without template using just top level class
     template<typename T, typename... TArgs>
     void record(TArgs&&... args)
     {
@@ -46,7 +47,7 @@ class Sequence
         baseOpPtr->init(std::forward<TArgs>(args)...);
         baseOpPtr->record();
 
-        operations.push_back(std::move(baseOpPtr));
+        mOperations.push_back(std::move(baseOpPtr));
     }
 
   private:
@@ -60,7 +61,7 @@ class Sequence
     bool mFreeCommandBuffer = false;
 
     // Base op objects
-    std::vector<std::unique_ptr<OpBase>> operations;
+    std::vector<std::unique_ptr<OpBase>> mOperations;
 
     // Record state
     bool mRecording = false;

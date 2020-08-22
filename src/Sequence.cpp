@@ -120,6 +120,11 @@ Sequence::eval()
         this->end();
     }
 
+    // TODO: Explore whether moving postSubmit calls to a separate sequence function that is explicitly called by the manager
+    for (size_t i = 0; i < this->mOperations.size(); i++) {
+        this->mOperations[i]->postSubmit();
+    }
+
     SPDLOG_DEBUG("Kompute sequence EVAL success");
 }
 

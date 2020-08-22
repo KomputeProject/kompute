@@ -44,6 +44,7 @@ build_linux:
 
 build_shaders:
 	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
+	$(SCMP) -V shaders/glsl/opmult.comp -o shaders/glsl/opmult.comp.spv
 
 docker_seldon_run:
 	docker run \

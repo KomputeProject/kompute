@@ -640,13 +640,18 @@ main()
             { 0.0, 0.0, 0.0 }) };
         mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
-        spdlog::info("Called manager eval success");
+        spdlog::info("OpCreateTensor success for tensors");
         spdlog::info("Tensor one: {}", tensorLHS->data());
         spdlog::info("Tensor two: {}", tensorRHS->data());
-        spdlog::info("Tensor two: {}", tensorOutput->data());
+        spdlog::info("Tensor output: {}", tensorOutput->data());
 
         spdlog::info("Calling op mult");
         mgr.evalOp<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
+
+        spdlog::info("OpMult call success");
+        spdlog::info("Tensor output: {}", tensorOutput->data());
+
+        spdlog::info("Called manager eval success END PROGRAM");
 
         return 0;
     } catch (const std::exception& exc) {

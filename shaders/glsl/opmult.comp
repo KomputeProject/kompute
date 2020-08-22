@@ -1,0 +1,25 @@
+#version 450
+
+layout(binding = 0) buffer tensorLhs {
+   uint valuesLhs[ ];
+};
+
+layout(binding = 1) buffer tensorRhs {
+   uint valuesRhs[ ];
+};
+
+layout(binding = 2) buffer tensorOutput {
+   uint valuesOutput[ ];
+};
+
+// TODO: Explore how to make layout inside shader dynamic
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+void main() 
+{
+	uint index = gl_GlobalInvocationID.x;
+
+    valuesOutput[index] = valuesLhs[index] * valuesRhs[index];
+}
+
+

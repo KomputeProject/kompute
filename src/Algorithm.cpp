@@ -129,16 +129,26 @@ void Algorithm::createShaderModule(std::string shaderFilePath) {
     fileStream.read(shaderFileData, shaderFileSize);
     fileStream.close();
 
-    vk::ShaderModuleCreateInfo shaderModuleInfo(vk::ShaderModuleCreateFlags(), shaderFileSize, (uint32_t*)shaderFileData);
+    vk::ShaderModuleCreateInfo shaderModuleInfo(
+        vk::ShaderModuleCreateFlags(), 
+        shaderFileSize, 
+        (uint32_t*)shaderFileData);
 
+    SPDLOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}", shaderFileSize);
     this->mFreeShaderModule = true;
-    this->mShaderModule = std::shared_ptr<vk::ShaderModule>();
-    this->mDevice->createShaderModule(&shaderModuleInfo, nullptr, this->mShaderModule.get());
+    this->mShaderModule = std::make_shared<vk::ShaderModule>();
+    this->mDevice->createShaderModule(
+        &shaderModuleInfo, 
+        nullptr, 
+        this->mShaderModule.get());
+
+    SPDLOG_DEBUG("Kompute Algorithm create shader module success");
 }
 
 void Algorithm::createPipeline() {
     SPDLOG_DEBUG("Kompute Algorithm calling create Pipeline");
 
+    // TODO: Explore design for supporting multiple sets
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
         vk::PipelineLayoutCreateFlags(),
         1, // Set layout count

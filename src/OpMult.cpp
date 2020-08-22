@@ -43,8 +43,14 @@ OpMult::init(std::vector<std::shared_ptr<Tensor>> tensors)
     this->mTensorRHS = tensors[1];
     this->mTensorOutput = tensors[2];
 
+    // TODO: Explore adding a validate function
     if (!(this->mTensorLHS->isInit() && this->mTensorRHS->isInit() && this->mTensorOutput->isInit())) {
         throw std::runtime_error("Kompute OpMult all tensor parameters must be initialised. LHS: " + std::to_string(this->mTensorLHS->isInit()) + " RHS: " + std::to_string(this->mTensorRHS->isInit()) + " Output: " + std::to_string(this->mTensorOutput->isInit()));
+    }
+
+    // TODO: Explore use-cases where tensors shouldn't be the same size, and how to deal with those situations
+    if (!(this->mTensorLHS->size() == this->mTensorRHS->size() && this->mTensorRHS->size() == this->mTensorOutput->size())) {
+        throw std::runtime_error("Kompute OpMult all tensor parameters must be the same size LHS: " + std::to_string(this->mTensorLHS->size()) + " RHS: " + std::to_string(this->mTensorRHS->size()) + " Output: " + std::to_string(this->mTensorOutput->size()));
     }
 
     this->mTensorOutputStaging = std::make_shared<Tensor>(
@@ -52,8 +58,9 @@ OpMult::init(std::vector<std::shared_ptr<Tensor>> tensors)
 
     this->mTensorOutputStaging->init(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, this->mTensorOutput->data());
 
+    // TODO: Make this path configurable
     this->mAlgorithm->init(
-        "shaders/glsl/computeheadless.comp.spv", tensors);
+        "shaders/glsl/opmult.comp.spv", tensors);
 }
 
 void
