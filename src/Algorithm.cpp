@@ -90,9 +90,6 @@ void Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorPar
         this->mDescriptorSetLayout.get());
 
     SPDLOG_DEBUG("Kompute Algorithm allocating descriptor sets");
-    std::vector<vk::DescriptorSet> descriptorSets =
-        this->mDevice->allocateDescriptorSets(descriptorSetAllocateInfo);
-
     this->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
     this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo, this->mDescriptorSet.get());
 

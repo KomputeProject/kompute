@@ -36,15 +36,21 @@ OpMult::init(std::vector<std::shared_ptr<Tensor>> tensors)
         throw std::runtime_error(
           "Kompute OpMult called with less than 1 tensor");
     } else if (tensors.size() > 3) {
-        spdlog::warn("Kompute OpMult called with more than 2 tensor");
+        spdlog::warn("Kompute OpMult called with more than 3 tensors");
     }
 
     this->mTensorLHS = tensors[0];
     this->mTensorRHS = tensors[1];
     this->mTensorOutput = tensors[2];
 
-    this->mTensorOutputStaging= std::make_shared<Tensor>(
+    if (!(this->mTensorLHS->isInit() && this->mTensorRHS->isInit() && this->mTensorOutput->isInit())) {
+        throw std::runtime_error("Kompute OpMult all tensor parameters must be initialised. LHS: " + std::to_string(this->mTensorLHS->isInit()) + " RHS: " + std::to_string(this->mTensorRHS->isInit()) + " Output: " + std::to_string(this->mTensorOutput->isInit()));
+    }
+
+    this->mTensorOutputStaging = std::make_shared<Tensor>(
       this->mTensorOutput->data(), Tensor::TensorTypes::eStaging);
+
+    this->mTensorOutputStaging->init(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, this->mTensorOutput->data());
 
     this->mAlgorithm->init(
         "shaders/glsl/computeheadless.comp.spv", tensors);
@@ -65,6 +71,7 @@ void OpMult::postSubmit()
     SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
 
     this->mTensorOutputStaging->copyDataFromHostBuffer();
+
     this->mTensorOutput->setData(this->mTensorOutputStaging->data());
 }
 
