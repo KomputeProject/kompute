@@ -86,18 +86,18 @@ OpMult::record()
     this->mAlgorithm->recordDispatch(1, 1, 1);
 
     this->mTensorOutput->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eShaderWrite,
-        vk::AccessFlagBits::eTransferRead,
-        vk::PipelineStageFlagBits::eComputeShader,
-        vk::PipelineStageFlagBits::eTransfer);
+      vk::AccessFlagBits::eShaderWrite,
+      vk::AccessFlagBits::eTransferRead,
+      vk::PipelineStageFlagBits::eComputeShader,
+      vk::PipelineStageFlagBits::eTransfer);
 
     this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput);
 
     this->mTensorOutput->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eTransferWrite,
-        vk::AccessFlagBits::eHostRead,
-        vk::PipelineStageFlagBits::eTransfer,
-        vk::PipelineStageFlagBits::eHost);
+      vk::AccessFlagBits::eTransferWrite,
+      vk::AccessFlagBits::eHostRead,
+      vk::PipelineStageFlagBits::eTransfer,
+      vk::PipelineStageFlagBits::eHost);
 }
 
 void
