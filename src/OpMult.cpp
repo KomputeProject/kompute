@@ -110,37 +110,37 @@ OpMult<tX, tY, tZ>::record()
     SPDLOG_DEBUG("Kompute OpMult record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
-    this->mTensorLHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eHostWrite,
-        vk::AccessFlagBits::eShaderRead,
-        vk::PipelineStageFlagBits::eHost,
-        vk::PipelineStageFlagBits::eComputeShader);
-    this->mTensorRHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eHostWrite,
-        vk::AccessFlagBits::eShaderRead,
-        vk::PipelineStageFlagBits::eHost,
-        vk::PipelineStageFlagBits::eComputeShader);
+    //this->mTensorLHS->recordBufferMemoryBarrier(
+    //    vk::AccessFlagBits::eHostWrite,
+    //    vk::AccessFlagBits::eShaderRead,
+    //    vk::PipelineStageFlagBits::eHost,
+    //    vk::PipelineStageFlagBits::eComputeShader);
+    //this->mTensorRHS->recordBufferMemoryBarrier(
+    //    vk::AccessFlagBits::eHostWrite,
+    //    vk::AccessFlagBits::eShaderRead,
+    //    vk::PipelineStageFlagBits::eHost,
+    //    vk::PipelineStageFlagBits::eComputeShader);
 
     this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
 
     // Barrier to ensure the shader code is executed before buffer read
+    //this->mTensorLHS->recordBufferMemoryBarrier(
+    //    vk::AccessFlagBits::eShaderWrite,
+    //    vk::AccessFlagBits::eTransferRead,
+    //    vk::PipelineStageFlagBits::eComputeShader,
+    //    vk::PipelineStageFlagBits::eTransfer);
+    //this->mTensorRHS->recordBufferMemoryBarrier(
+    //    vk::AccessFlagBits::eShaderWrite,
+    //    vk::AccessFlagBits::eTransferRead,
+    //    vk::PipelineStageFlagBits::eComputeShader,
+    //    vk::PipelineStageFlagBits::eTransfer);
     this->mTensorOutput->recordBufferMemoryBarrier(
         vk::AccessFlagBits::eShaderWrite,
         vk::AccessFlagBits::eTransferRead,
         vk::PipelineStageFlagBits::eComputeShader,
         vk::PipelineStageFlagBits::eTransfer);
-    this->mTensorLHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eShaderWrite,
-        vk::AccessFlagBits::eTransferRead,
-        vk::PipelineStageFlagBits::eComputeShader,
-        vk::PipelineStageFlagBits::eTransfer);
-    this->mTensorRHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eShaderWrite,
-        vk::AccessFlagBits::eTransferRead,
-        vk::PipelineStageFlagBits::eComputeShader,
-        vk::PipelineStageFlagBits::eTransfer);
 
-    this->mTensorOutputStaging->recordCopyFrom(this->mTensorLHS);
+    this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput);
 
     // Buffer to ensure wait until data is copied to staging buffer
     this->mTensorOutput->recordBufferMemoryBarrier(
@@ -148,16 +148,16 @@ OpMult<tX, tY, tZ>::record()
         vk::AccessFlagBits::eHostRead,
         vk::PipelineStageFlagBits::eTransfer,
         vk::PipelineStageFlagBits::eHost);
-    this->mTensorLHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eTransferWrite,
-        vk::AccessFlagBits::eHostRead,
-        vk::PipelineStageFlagBits::eTransfer,
-        vk::PipelineStageFlagBits::eHost);
-    this->mTensorRHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eTransferWrite,
-        vk::AccessFlagBits::eHostRead,
-        vk::PipelineStageFlagBits::eTransfer,
-        vk::PipelineStageFlagBits::eHost);
+    //this->mTensorLHS->recordBufferMemoryBarrier(
+    //    vk::AccessFlagBits::eTransferWrite,
+    //    vk::AccessFlagBits::eHostRead,
+    //    vk::PipelineStageFlagBits::eTransfer,
+    //    vk::PipelineStageFlagBits::eHost);
+    //this->mTensorRHS->recordBufferMemoryBarrier(
+    //    vk::AccessFlagBits::eTransferWrite,
+    //    vk::AccessFlagBits::eHostRead,
+    //    vk::PipelineStageFlagBits::eTransfer,
+    //    vk::PipelineStageFlagBits::eHost);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
