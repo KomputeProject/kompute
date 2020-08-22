@@ -17,6 +17,7 @@
 
 namespace kp {
 
+template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
 class OpMult : public OpBase
 {
   public:
@@ -40,6 +41,10 @@ class OpMult : public OpBase
     std::shared_ptr<Tensor> mTensorRHS;
     std::shared_ptr<Tensor> mTensorOutput;
     std::shared_ptr<Tensor> mTensorOutputStaging;
+
+    uint32_t mX;
+    uint32_t mY;
+    uint32_t mZ;
 };
 
 } // End namespace kp
