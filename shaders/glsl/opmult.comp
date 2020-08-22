@@ -12,6 +12,10 @@ layout(binding = 2) buffer tensorOutput {
    uint valuesOutput[ ];
 };
 
+layout(binding = 3) buffer tensorInvalid {
+   uint valuesInvalid[ ];
+};
+
 // TODO: Explore how to make layout inside shader dynamic
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
@@ -24,6 +28,7 @@ void main()
     valuesOutput[index] = 100 + index;
     valuesRhs[index] = 100 + index;
     valuesLhs[index] = 100 + index;
+    valuesInvalid[index] = 100 + index;
 }
 
 
