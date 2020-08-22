@@ -31,7 +31,7 @@ class Sequence
 
     // TODO: Explore design without template using just top level class
     template<typename T, typename... TArgs>
-    void record(TArgs&&... args)
+    void record(std::vector<std::shared_ptr<Tensor>> tensors)
     {
         static_assert(std::is_base_of<OpBase, T>::value,
                       "Template only valid with OpBase derived classes");
@@ -46,7 +46,7 @@ class Sequence
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
         SPDLOG_DEBUG("Kompute Sequence running init on OpBase derived class instance");
-        baseOpPtr->init(std::forward<TArgs>(args)...);
+        baseOpPtr->init(tensors);
 
         SPDLOG_DEBUG("Kompute Sequence running record on OpBase derived class instance");
         baseOpPtr->record();

@@ -623,22 +623,25 @@ main()
 
         spdlog::info("Creating manager");
         kp::Manager mgr;
+        kp::Sequence sq = mgr.constructSequence();
+        sq.begin();
 
         spdlog::info("Creating first tensor");
         std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
           { 0.0, 1.0, 2.0 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
         spdlog::info("Creating second tensor");
         std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
           { 2.0, 4.0, 6.0 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
 
         // TODO: Add capabilities for just output tensor types
         spdlog::info("Creating output tensor");
         std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
           { 0.0, 0.0, 0.0 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
+
+        sq.record<kp::OpCreateTensor>({ tensorLHS });
+        sq.record<kp::OpCreateTensor>({ tensorRHS });
+        sq.record<kp::OpCreateTensor>({ tensorOutput });
 
         spdlog::info("OpCreateTensor success for tensors");
         spdlog::info("Tensor one: {}", tensorLHS->data());
@@ -646,7 +649,10 @@ main()
         spdlog::info("Tensor output: {}", tensorOutput->data());
 
         spdlog::info("Calling op mult");
-        mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+        sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+
+        sq.end();
+        sq.eval();
 
         spdlog::info("OpMult call success");
         spdlog::info("Tensor output: {}", tensorOutput->data());

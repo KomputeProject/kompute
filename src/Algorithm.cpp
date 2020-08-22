@@ -103,13 +103,25 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
                                           this->mDescriptorSet.get());
 
-    std::vector<vk::DescriptorBufferInfo> descriptorBufferInfos;
-    for (size_t i = 0; i < tensorParams.size(); i++) {
-        descriptorBufferInfos.push_back(tensorParams[i]->constructDescriptorBufferInfo());
-    }
+    ////std::vector<vk::DescriptorBufferInfo> descriptorBufferInfos;
+    ////for (size_t i = 0; i < tensorParams.size(); i++) {
+    ////    descriptorBufferInfos.push_back(tensorParams[i]->constructDescriptorBufferInfo());
+    ////}
+    ////std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
+
+    ////computeWriteDescriptorSets.push_back(
+    ////  vk::WriteDescriptorSet(*this->mDescriptorSet,
+    ////                         0, // Destination binding
+    ////                         0, // Destination array element
+    ////                         1, // Descriptor count
+    ////                         vk::DescriptorType::eStorageBuffer,
+    ////                         nullptr, // Descriptor image info
+    ////                         descriptorBufferInfos.data()
+    ////                         ));
+
     // TODO: Explore design exposing the destination array element
-    std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
     for (size_t i = 0; i < tensorParams.size(); i++) {
+        std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
 
         vk::DescriptorBufferInfo descriptorBufferInfo =
           tensorParams[i]->constructDescriptorBufferInfo();
@@ -123,10 +135,12 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
                                  vk::DescriptorType::eStorageBuffer,
                                  nullptr, // Descriptor image info
                                  &descriptorBufferInfo));
+
+        this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
     }
 
     SPDLOG_DEBUG("Kompute Algorithm updating descriptor sets");
-    this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
+    //this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
 
     SPDLOG_DEBUG("Kompue Algorithm successfully run init");
 }

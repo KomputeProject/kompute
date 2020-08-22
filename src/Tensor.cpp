@@ -211,6 +211,10 @@ Tensor::mapDataIntoHostMemory()
     void* mapped = this->mDevice->mapMemory(
       *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
     memcpy(mapped, this->mData.data(), bufferSize);
+    this->mDevice->unmapMemory(*this->mMemory);
+
+    mapped = this->mDevice->mapMemory(
+      *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
     vk::MappedMemoryRange mappedRange(*this->mMemory, 0, bufferSize);
     this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
     this->mDevice->unmapMemory(*this->mMemory);

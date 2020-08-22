@@ -123,6 +123,11 @@ OpMult<tX, tY, tZ>::record()
     this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
 
     // Barrier to ensure the shader code is executed before buffer read
+    this->mTensorLHS->recordBufferMemoryBarrier(
+        vk::AccessFlagBits::eShaderWrite,
+        vk::AccessFlagBits::eTransferRead,
+        vk::PipelineStageFlagBits::eComputeShader,
+        vk::PipelineStageFlagBits::eTransfer);
     this->mTensorOutput->recordBufferMemoryBarrier(
         vk::AccessFlagBits::eShaderWrite,
         vk::AccessFlagBits::eTransferRead,
@@ -132,6 +137,11 @@ OpMult<tX, tY, tZ>::record()
     this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput);
 
     // Buffer to ensure wait until data is copied to staging buffer
+    this->mTensorLHS->recordBufferMemoryBarrier(
+        vk::AccessFlagBits::eTransferWrite,
+        vk::AccessFlagBits::eHostRead,
+        vk::PipelineStageFlagBits::eTransfer,
+        vk::PipelineStageFlagBits::eHost);
     this->mTensorOutput->recordBufferMemoryBarrier(
         vk::AccessFlagBits::eTransferWrite,
         vk::AccessFlagBits::eHostRead,
@@ -143,7 +153,7 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
 OpMult<tX, tY, tZ>::postSubmit()
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
+    SPDLOG_DEBUG("Kompute OpMult postSubmit called");
 
     this->mTensorOutputStaging->mapDataFromHostMemory();
 

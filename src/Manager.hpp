@@ -26,7 +26,8 @@ class Manager
 
     ~Manager();
 
-    // Evaluate actions
+    Sequence constructSequence();
+
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
     {

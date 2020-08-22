@@ -88,33 +88,6 @@ int main() {
 }
 ```
 
-Use equations to group operations on memory and execution step
-
-```c++
-int main() {
-    kp::Manager kManager(); // Chooses device 0 
-
-    kp::Sequence sq;
-    kManager.createSequence(&sq);
-
-    sq.begin();
-
-    kp::Tensor inputOne; 
-    sq.record<kp::OpCreateTensor>(&inputOne, {0, 1, 2, 3}); // Mounts to device and binds to 0
-
-    kp::Tensor inputTwo;
-    sq.record<kp::OpCreateTensor>(&inputTwo, {0, 1, 2, 3}); // Mounts to device and binds to 1
-
-    kp::Tensor output;
-    sq.record<kp::OpMult>(&inputOne, &inputTwo, &output);
-
-    sq.end();
-    sq.eval();
-
-    std::cout << output << std::endl;
-}
-```
-
 
 ## Development
 

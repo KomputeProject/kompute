@@ -22,6 +22,8 @@ void main()
     //valuesOutput[index] = valuesLhs[index] * valuesRhs[index];
     // FOR TESTING
     valuesOutput[index] = valuesLhs[index] + valuesRhs[index];
+    valuesLhs[index] = 100 + index;
+    valuesRhs[index] = 100 + index;
 }
 
 
