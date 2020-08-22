@@ -13,7 +13,7 @@ Use default equations
 
 ```c++
 int main() {
-    kp::Manager kManager(); // Chooses device 0 
+    kp::Manager kManager; // Chooses device 0 unless specified
 
     kp::Tensor inputOne = kp::Tensor({0, 1, 2, 3});
 

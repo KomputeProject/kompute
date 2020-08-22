@@ -35,7 +35,7 @@ class OpMult : public OpBase
     void postSubmit() override;
 
   private:
-    Algorithm mAlgorithm;
+    std::shared_ptr<Algorithm> mAlgorithm;
     std::shared_ptr<Tensor> mTensorLHS;
     std::shared_ptr<Tensor> mTensorRHS;
     std::shared_ptr<Tensor> mTensorOutput;

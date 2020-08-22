@@ -30,20 +30,20 @@ class Manager
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
     {
-        SPDLOG_DEBUG("Kompute Manager eval triggered");
+        SPDLOG_DEBUG("Kompute Manager evalOp triggered");
         Sequence sq(this->mPhysicalDevice,
                     this->mDevice,
                     this->mComputeQueue,
                     this->mComputeQueueFamilyIndex);
-        SPDLOG_DEBUG("Kompute Manager created sequence");
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
         sq.begin();
-        SPDLOG_DEBUG("Kompute Manager sequence begin");
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
         sq.record<T>(tensors);
-        SPDLOG_DEBUG("Kompute Manager sequence end");
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
         sq.end();
-        SPDLOG_DEBUG("Kompute Manager sequence eval");
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
         sq.eval();
-        SPDLOG_DEBUG("Kompute Manager sequence done");
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
   private:

@@ -650,7 +650,7 @@ main()
 
         return 0;
     } catch (const std::exception& exc) {
-        spdlog::error(exc.what());
+        spdlog::error("Exception caught: {}", exc.what());
         return 1;
     } catch (...) {
         spdlog::error("Uncaught exception");

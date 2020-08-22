@@ -19,7 +19,7 @@ OpMult::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 {
     SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
-    this->mAlgorithm = Algorithm(device, commandBuffer);
+    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
 
 OpMult::~OpMult()
@@ -46,7 +46,7 @@ OpMult::init(std::vector<std::shared_ptr<Tensor>> tensors)
     this->mTensorOutputStaging= std::make_shared<Tensor>(
       this->mTensorOutput->data(), Tensor::TensorTypes::eStaging);
 
-    this->mAlgorithm.init(
+    this->mAlgorithm->init(
         "shaders/glsl/computeheadless.comp.spv", tensors);
 }
 
@@ -55,7 +55,7 @@ OpMult::record()
 {
     SPDLOG_DEBUG("Kompute OpMult record called");
 
-    this->mAlgorithm.recordDispatch(1, 1, 1);
+    this->mAlgorithm->recordDispatch(1, 1, 1);
 
     this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput);
 }

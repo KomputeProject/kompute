@@ -11,7 +11,7 @@ Tensor::Tensor()
 
 Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
 {
-    SPDLOG_DEBUG("Kompute Tensor constructor shape and type");
+    SPDLOG_DEBUG("Kompute Tensor constructor data and type");
 
     this->mData = data;
     this->mShape = { data.size() };
@@ -139,7 +139,7 @@ vk::DescriptorBufferInfo Tensor::constructDescriptorBufferInfo() {
     return vk::DescriptorBufferInfo(
         *this->mBuffer,
         0, // offset
-        this->memorySize()
+        VK_WHOLE_SIZE
     );
 }
 

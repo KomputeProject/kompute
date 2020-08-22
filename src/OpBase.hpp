@@ -20,13 +20,15 @@ class OpBase
 {
   private:
   public:
-    OpBase() {}
+    OpBase() {
+        SPDLOG_DEBUG("Compute OpBase base constructor");
+    }
 
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer)
     {
-        SPDLOG_DEBUG("Compute OpBase constructor started");
+        SPDLOG_DEBUG("Compute OpBase constructor with params");
 
         this->mPhysicalDevice = physicalDevice;
         this->mDevice = device;
