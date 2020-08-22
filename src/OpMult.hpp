@@ -1,3 +1,5 @@
+// Defining OPMULT_H to ensure cpp class doesn't reimport
+#define OPMULT_H
 #pragma once
 
 #include <vulkan/vulkan.h>
@@ -48,3 +50,7 @@ class OpMult : public OpBase
 };
 
 } // End namespace kp
+
+// Including implemenation for template class
+#include "OpMult.tpp"
+

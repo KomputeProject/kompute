@@ -4,7 +4,13 @@
 
 #include "Tensor.hpp"
 
+// Only defining hpp file for syntax validation in editors
+#ifndef OPMULT_H
 #include "OpMult.hpp"
+#endif
+
+#ifndef OPMULT_CPP
+#define OPMULT_CPP
 
 namespace kp {
 
@@ -143,3 +149,6 @@ OpMult<tX, tY, tZ>::postSubmit()
 }
 
 }
+
+#endif // #ifndef OPMULT_CPP
+

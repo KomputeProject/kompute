@@ -646,7 +646,7 @@ main()
         spdlog::info("Tensor output: {}", tensorOutput->data());
 
         spdlog::info("Calling op mult");
-        mgr.evalOp<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
+        mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
         spdlog::info("OpMult call success");
         spdlog::info("Tensor output: {}", tensorOutput->data());
