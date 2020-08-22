@@ -41,6 +41,7 @@ private:
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
     bool mFreeDescriptorPool = false;
+    // TODO: Potentially change to vector pointer of objects depending on whether it will be expected to pass a pointer (or reference) to the constructor
     std::vector<std::shared_ptr<vk::DescriptorSet>> mDescriptorSets;
     bool mFreeDescriptorSet = false;
     std::shared_ptr<vk::ShaderModule> mShaderModule;

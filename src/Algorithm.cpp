@@ -147,7 +147,9 @@ void Algorithm::createPipeline() {
 
     // TODO: Confirm what the best structure is with pipeline cache
     this->mFreePipelineCache = true;
-    this->mPipelineCache = std::make_shared<vk::PipelineCache>(vk::PipelineCacheCreateInfo());
+    vk::PipelineCacheCreateInfo pipelineCacheInfo = vk::PipelineCacheCreateInfo();
+    this->mPipelineCache = std::make_shared<vk::PipelineCache>();
+    this->mDevice->createPipelineCache(&pipelineCacheInfo, nullptr, this->mPipelineCache.get());
 
     vk::ResultValue<vk::Pipeline> pipelineResult = this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
 
@@ -165,9 +167,9 @@ void Algorithm::recordDispatch(uint32_t x, uint32_t y, uint32_t z) {
     this->mCommandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute, *this->mPipeline);
 
     // TODO: Simplify interaction given we store array of pointers
-    std::vector<vk::DescriptorSet&> descriptorSetRefs(this->mDescriptorSets.size());
+    std::vector<vk::DescriptorSet> descriptorSetRefs(this->mDescriptorSets.size());
     for (size_t i = 0; i < this->mDescriptorSets.size(); i++) {
-        descriptorSetRefs[i] = this->mDescriptorSets[i];
+        descriptorSetRefs[i] = *this->mDescriptorSets[i];
     }
 
     this->mCommandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eCompute, *this->mPipelineLayout, 0, descriptorSetRefs, nullptr);
