@@ -36,15 +36,19 @@ class Sequence
         static_assert(std::is_base_of<OpBase, T>::value,
                       "Template only valid with OpBase derived classes");
 
-        SPDLOG_DEBUG("Kompute Sequence record");
+        SPDLOG_DEBUG("Kompute Sequence record function started");
 
+        SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         T* op =
           new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
+        SPDLOG_DEBUG("Kompute Sequence running init on OpBase derived class instance");
         baseOpPtr->init(std::forward<TArgs>(args)...);
+
+        SPDLOG_DEBUG("Kompute Sequence running record on OpBase derived class instance");
         baseOpPtr->record();
 
         mOperations.push_back(std::move(baseOpPtr));

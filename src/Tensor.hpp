@@ -33,11 +33,10 @@ class Tensor
 
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              std::vector<uint32_t> data = std::vector<uint32_t>());
+              std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     // Create functions
-    void createBuffer(void* data = nullptr);
+    void createBuffer();
 
     // Getter functions
     std::vector<uint32_t> data();
@@ -60,8 +59,8 @@ class Tensor
 
     // Util functions
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
-    void copyDataFromHostBuffer();
-    void copyDataToHostBuffer();
+    void mapDataFromHostMemory();
+    void mapDataIntoHostMemory();
 
   private:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;

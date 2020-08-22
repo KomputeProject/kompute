@@ -55,9 +55,12 @@ class Algorithm
     bool mFreePipeline = false;
 
     // Create util functions
-    void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
     void createShaderModule(std::string shaderFilePath);
     void createPipeline();
+    // Parameters
+    void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
+    void createDescriptorPool();
+
 };
 
 } // End namespace kp

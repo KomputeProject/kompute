@@ -1,4 +1,8 @@
 
+#if DEBUG
+#include <spdlog/fmt/bundled/ranges.h>
+#endif
+
 #include "Tensor.hpp"
 
 namespace kp {
@@ -11,7 +15,7 @@ Tensor::Tensor()
 
 Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
 {
-    SPDLOG_DEBUG("Kompute Tensor constructor data and type");
+    SPDLOG_DEBUG("Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
 
     this->mData = data;
     this->mShape = { data.size() };
@@ -54,11 +58,10 @@ Tensor::~Tensor()
 void
 Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
-             std::shared_ptr<vk::CommandBuffer> commandBuffer,
-             std::vector<uint32_t> data)
+             std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     SPDLOG_DEBUG(
-      "Kompute Tensor running init with Vulkan params and data size: {}", data.size());
+      "Kompute Tensor running init with Vulkan params and num data elementS: {}", this->mData.size());
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
@@ -66,7 +69,7 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
     this->mIsInit = true;
 
-    this->createBuffer(data.data());
+    this->createBuffer();
 }
 
 std::vector<uint32_t>
@@ -131,9 +134,6 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
     // TODO: Ensure command buffer is in same device from buffer
     this->mCommandBuffer->copyBuffer(
       *copyFromTensor->mBuffer, *this->mBuffer, copyRegion);
-
-    // TODO: Ensure copied data is consistent with device
-    this->mData = copyFromTensor->mData;
 }
 
 void
@@ -173,13 +173,14 @@ Tensor::constructDescriptorBufferInfo()
 }
 
 void
-Tensor::copyDataFromHostBuffer()
+Tensor::mapDataFromHostMemory()
 {
-    SPDLOG_DEBUG("Kompute Tensor copying data from host buffer");
+    SPDLOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of "
-                     "using record GPU command");
+        spdlog::error("Mapping tensor data manually from DEVICE buffer instead of "
+                     "using record GPU command with staging buffer");
+        return;
     }
 
     vk::DeviceSize bufferSize = this->memorySize();
@@ -192,14 +193,16 @@ Tensor::copyDataFromHostBuffer()
 }
 
 void
-Tensor::copyDataToHostBuffer()
+Tensor::mapDataIntoHostMemory()
 {
 
-    SPDLOG_DEBUG("Kompute Tensor copying data to buffer");
+    SPDLOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
 
+    // TODO: Verify if there are situations where we want to copy to device memory
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::warn("Copying tensor data manually to DEVICE buffer instead of "
-                     "using record GPU command");
+        spdlog::error("Mapping tensor data manually to DEVICE memory instead of "
+                     "using record GPU command with staging buffer");
+        return;
     }
 
     vk::DeviceSize bufferSize = this->memorySize();
@@ -253,7 +256,7 @@ Tensor::getMemoryPropertyFlags()
 }
 
 void
-Tensor::createBuffer(void* data)
+Tensor::createBuffer()
 {
     SPDLOG_DEBUG("Kompute Tensor creating buffer");
 
@@ -331,10 +334,6 @@ Tensor::createBuffer(void* data)
     this->mDevice->bindBufferMemory(*this->mBuffer, *this->mMemory, 0);
 
     SPDLOG_DEBUG("Kompute Tensor buffer & memory creation successful");
-
-    if (data != nullptr) {
-        this->copyDataToHostBuffer();
-    }
 }
 
 }

@@ -43,7 +43,7 @@ Sequence::~Sequence()
         }
         this->mDevice->freeCommandBuffers(
           *this->mCommandPool, 1, this->mCommandBuffer.get());
-        SPDLOG_DEBUG("Kompute Manager Freed CommandBuffer");
+        SPDLOG_DEBUG("Kompute Sequence Freed CommandBuffer");
     }
 
     if (this->mFreeCommandPool) {
@@ -54,7 +54,7 @@ Sequence::~Sequence()
             return;
         }
         this->mDevice->destroy(*this->mCommandPool);
-        SPDLOG_DEBUG("Kompute Manager Destroyed CommandPool");
+        SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 }
 
@@ -139,7 +139,7 @@ Sequence::createCommandPool()
     this->mCommandPool = std::make_shared<vk::CommandPool>();
     this->mDevice->createCommandPool(
       &commandPoolInfo, nullptr, this->mCommandPool.get());
-    SPDLOG_DEBUG("Kompute Manager Command Pool Created");
+    SPDLOG_DEBUG("Kompute Sequence Command Pool Created");
 }
 
 void
@@ -161,7 +161,7 @@ Sequence::createCommandBuffer()
     this->mCommandBuffer = std::make_shared<vk::CommandBuffer>();
     this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo,
                                           this->mCommandBuffer.get());
-    SPDLOG_DEBUG("Kompute Manager Command Buffer Created");
+    SPDLOG_DEBUG("Kompute Sequence Command Buffer Created");
 }
 
 }

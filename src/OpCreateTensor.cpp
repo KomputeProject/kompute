@@ -37,7 +37,6 @@ OpCreateTensor::init(std::vector<std::shared_ptr<Tensor>> tensors)
     }
 
     this->mPrimaryTensor = tensors[0];
-    std::vector<uint32_t> data = this->mPrimaryTensor->data();
 
     if (this->mPrimaryTensor->tensorType() == Tensor::TensorTypes::eDevice) {
         this->mPrimaryTensor->init(
@@ -47,11 +46,13 @@ OpCreateTensor::init(std::vector<std::shared_ptr<Tensor>> tensors)
           this->mPrimaryTensor->data(), Tensor::TensorTypes::eStaging);
 
         this->mStagingTensor->init(
-          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, data);
+          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+
+        this->mStagingTensor->mapDataIntoHostMemory();
 
     } else {
         this->mPrimaryTensor->init(
-          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, data);
+          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
     }
 }
 
@@ -69,6 +70,10 @@ void
 OpCreateTensor::postSubmit()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
+
+    this->mStagingTensor->mapDataFromHostMemory();
+
+    this->mPrimaryTensor->setData(this->mStagingTensor->data());
 }
 
 }

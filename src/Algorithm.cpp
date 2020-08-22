@@ -41,6 +41,10 @@ Algorithm::init(std::string shaderFilePath,
     this->createPipeline();
 }
 
+void Algorithm::createDescriptorPool() {
+
+}
+
 void
 Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 {
