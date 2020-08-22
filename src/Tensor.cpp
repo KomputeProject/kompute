@@ -136,6 +136,31 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
     this->mData = copyFromTensor->mData;
 }
 
+void Tensor::recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask, vk::AccessFlagBits dstAccessMask, vk::PipelineStageFlagBits srcStageMask, vk::PipelineStageFlagBits dstStageMask) {
+    SPDLOG_DEBUG("Kompute Tensor recording buffer memory barrier");
+
+    vk::DeviceSize bufferSize = this->memorySize();
+
+    vk::BufferMemoryBarrier bufferMemoryBarrier;
+    bufferMemoryBarrier.buffer = *this->mBuffer;
+    bufferMemoryBarrier.size = bufferSize;
+    bufferMemoryBarrier.srcAccessMask = srcAccessMask;
+    bufferMemoryBarrier.dstAccessMask = dstAccessMask;
+    bufferMemoryBarrier.srcQueueFamilyIndex =
+      VK_QUEUE_FAMILY_IGNORED;
+    bufferMemoryBarrier.dstQueueFamilyIndex =
+      VK_QUEUE_FAMILY_IGNORED;
+
+    this->mCommandBuffer->pipelineBarrier(
+      srcStageMask,
+      dstStageMask,
+      vk::DependencyFlags(),
+      nullptr,
+      bufferMemoryBarrier,
+      nullptr);
+
+}
+
 // TODO: Explore if this function should be here or expose buffer
 vk::DescriptorBufferInfo
 Tensor::constructDescriptorBufferInfo()

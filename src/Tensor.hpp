@@ -51,8 +51,8 @@ class Tensor
 
     // Record functions
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor);
-    // TODO: Add memory buffer barrier capabilities
-    // void recordBufferMemoryBarrier();
+    // TODO: Explore simplifying by infering pipeline stage flag bits from access flag bits (as seems to be superset)
+    void recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask, vk::AccessFlagBits dstAccessMask, vk::PipelineStageFlagBits srcStageMask, vk::PipelineStageFlagBits dstStageMask);
 
     // Util functions
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();

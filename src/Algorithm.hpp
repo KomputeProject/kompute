@@ -30,7 +30,7 @@ class Algorithm
     ~Algorithm();
 
     // Record commands
-    void recordDispatch(uint32_t x, uint32_t y, uint32_t z);
+    void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
   private:
     // Shared resources
