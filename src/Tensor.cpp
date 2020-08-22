@@ -136,10 +136,11 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
 
 // TODO: Explore if this function should be here or expose buffer
 vk::DescriptorBufferInfo Tensor::constructDescriptorBufferInfo() {
+    vk::DeviceSize bufferSize = this->memorySize();
     return vk::DescriptorBufferInfo(
         *this->mBuffer,
         0, // offset
-        VK_WHOLE_SIZE
+        bufferSize
     );
 }
 

@@ -1,4 +1,6 @@
 
+#include <chrono>
+#include <thread>
 
 #include "Tensor.hpp"
 
