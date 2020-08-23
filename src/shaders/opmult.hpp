@@ -1,3 +1,5 @@
+#pragma once
+
 namespace kp {
 namespace shader_data {
 unsigned char shaders_glsl_opmult_comp_spv[] = {

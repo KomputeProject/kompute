@@ -15,6 +15,8 @@
 #include "Algorithm.hpp"
 #include "Tensor.hpp"
 
+#include "shaders/opmult.hpp"
+
 #include "OpBase.hpp"
 
 namespace kp {

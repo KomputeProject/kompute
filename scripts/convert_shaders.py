@@ -80,11 +80,12 @@ def run_cli(
         logger.debug(f"Header path provided. Converting bin files to hpp.")
         logger.debug(f"Output header path: {shader_path}")
         for file in spirv_files:
-            logger.debug(f"Converting to hpp: {file}")
             header_data = str(sh.xxd("-i", file))
             file_name = file.split("/")[-1]
             header_file = file_name.replace(".comp.spv", ".hpp")
+            logger.debug(f"Converting to hpp: {file_name}")
             with open(os.path.join(header_path, header_file), "w+") as fstream:
+                fstream.write("#pragma once\n\n")
                 fstream.write("namespace kp {\n")
                 fstream.write("namespace shader_data {\n")
                 fstream.write(header_data)

@@ -1,8 +1,7 @@
 
-#include <chrono>
-#include <thread>
-
 #include "Tensor.hpp"
+
+#include "shaders/opmult.hpp"
 
 // Only defining hpp file for syntax validation in editors
 #ifndef OPMULT_H
@@ -99,8 +98,10 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
                                      this->mDevice,
                                      this->mCommandBuffer);
 
-    // TODO: Make this path configurable
-    this->mAlgorithm->init("shaders/glsl/opmult.comp.spv", tensors);
+    std::vector<char> shaderFileData(
+            kp::shader_data::shaders_glsl_opmult_comp_spv_len,
+            kp::shader_data::shaders_glsl_opmult_comp_spv + kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+    this->mAlgorithm->init(shaderFileData, tensors);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>

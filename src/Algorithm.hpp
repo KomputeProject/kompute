@@ -24,7 +24,7 @@ class Algorithm
 
     // TODO: Add specialisation data
     // TODO: Explore other ways of passing shader (ie raw bytes)
-    void init(std::string shaderFilePath,
+    void init(const std::vector<char>& shaderFileData,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 
     ~Algorithm();
@@ -55,7 +55,7 @@ class Algorithm
     bool mFreePipeline = false;
 
     // Create util functions
-    void createShaderModule(std::string shaderFilePath);
+    void createShaderModule(const std::vector<char>& shaderFileData);
     void createPipeline();
     // Parameters
     void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);

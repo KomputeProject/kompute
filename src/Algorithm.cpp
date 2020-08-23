@@ -30,14 +30,14 @@ Algorithm::~Algorithm()
 }
 
 void
-Algorithm::init(std::string shaderFilePath,
+Algorithm::init(const std::vector<char>& shaderFileData,
                 std::vector<std::shared_ptr<Tensor>> tensorParams)
 {
     SPDLOG_DEBUG("Kompute Algorithm init started");
 
     // TODO: Move to util function
     this->createParameters(tensorParams);
-    this->createShaderModule(shaderFilePath);
+    this->createShaderModule(shaderFileData);
     this->createPipeline();
 }
 
@@ -103,22 +103,6 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
                                           this->mDescriptorSet.get());
 
-    ////std::vector<vk::DescriptorBufferInfo> descriptorBufferInfos;
-    ////for (size_t i = 0; i < tensorParams.size(); i++) {
-    ////    descriptorBufferInfos.push_back(tensorParams[i]->constructDescriptorBufferInfo());
-    ////}
-    ////std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
-
-    ////computeWriteDescriptorSets.push_back(
-    ////  vk::WriteDescriptorSet(*this->mDescriptorSet,
-    ////                         0, // Destination binding
-    ////                         0, // Destination array element
-    ////                         1, // Descriptor count
-    ////                         vk::DescriptorType::eStorageBuffer,
-    ////                         nullptr, // Descriptor image info
-    ////                         descriptorBufferInfos.data()
-    ////                         ));
-
     // TODO: Explore design exposing the destination array element
     for (size_t i = 0; i < tensorParams.size(); i++) {
         std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
@@ -146,24 +130,15 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 }
 
 void
-Algorithm::createShaderModule(std::string shaderFilePath)
+Algorithm::createShaderModule(const std::vector<char>& shaderFileData)
 {
     SPDLOG_DEBUG("Kompute Algorithm createShaderModule started");
 
-    std::ifstream fileStream(shaderFilePath,
-                             std::ios::binary | std::ios::in | std::ios::ate);
-
-    size_t shaderFileSize = fileStream.tellg();
-    fileStream.seekg(0, std::ios::beg);
-    char* shaderFileData = new char[shaderFileSize];
-    fileStream.read(shaderFileData, shaderFileSize);
-    fileStream.close();
-
     vk::ShaderModuleCreateInfo shaderModuleInfo(
-      vk::ShaderModuleCreateFlags(), shaderFileSize, (uint32_t*)shaderFileData);
+      vk::ShaderModuleCreateFlags(), shaderFileData.size(), (uint32_t*)shaderFileData.data());
 
     SPDLOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
-                 shaderFileSize);
+                 shaderFileData.size());
     this->mFreeShaderModule = true;
     this->mShaderModule = std::make_shared<vk::ShaderModule>();
     this->mDevice->createShaderModule(
