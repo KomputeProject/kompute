@@ -2,6 +2,7 @@
 
 ## Principles
 
+* Single header easy to import library to boost your Vulkan compute experience
 * Non-vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing vulkan API with a simpler compute-specific interface
 * BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design
@@ -46,7 +47,7 @@ int main() {
     // Begin recoding commands
     sq.begin();
 
-    // Run batch operations to be sent to GPU
+    // Record sequence of operations to be sent to GPU in batch
     {
         sq.record<kp::OpCreateTensor>({ tensorLHS });
         sq.record<kp::OpCreateTensor>({ tensorRHS });
