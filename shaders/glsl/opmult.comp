@@ -19,8 +19,6 @@ void main()
 {
 	uint index = gl_GlobalInvocationID.x;
 
-    //valuesOutput[index] = valuesLhs[index] * valuesRhs[index];
-    // FOR TESTING
     valuesOutput[index] = valuesLhs[index] * valuesRhs[index];
 }
 
