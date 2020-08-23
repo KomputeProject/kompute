@@ -5,7 +5,9 @@
 
 #include "Tensor.hpp"
 
+#if RELEASE
 #include <shaders/opmult.hpp>
+#endif
 
 // Only defining hpp file for syntax validation in editors
 #ifndef OPMULT_HPP
