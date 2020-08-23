@@ -31,9 +31,6 @@ main()
 #endif
 
     try {
-        // VulkanCompute* vulkanExample = new VulkanCompute();
-        // spdlog::info("Finished.");
-        // delete (vulkanExample);
 
         // Run Kompute
 

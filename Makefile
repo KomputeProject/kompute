@@ -43,8 +43,11 @@ build_linux:
 		-o ./bin/main
 
 build_shaders:
-	$(SCMP) -V shaders/glsl/computeheadless.comp -o shaders/glsl/computeheadless.comp.spv
-	$(SCMP) -V shaders/glsl/opmult.comp -o shaders/glsl/opmult.comp.spv
+	python scripts/convert_shaders.py \
+		--shader-path shaders/glsl \
+		--shader-binary $(SCMP) \
+		--header-path src/shaders \
+		-v
 
 docker_seldon_run:
 	docker run \
