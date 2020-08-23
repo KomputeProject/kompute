@@ -11,6 +11,7 @@
 %h c++-header
 
 -DDEBUG=1
+-DKOMPUTE_INCLUDE_FOR_SYNTAX
 
 -I./external/
 

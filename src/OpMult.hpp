@@ -1,6 +1,6 @@
 // Defining OPMULT_H to ensure cpp class doesn't reimport
-#define OPMULT_H
 #pragma once
+#define OPMULT_HPP
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
@@ -14,8 +14,6 @@
 
 #include "Algorithm.hpp"
 #include "Tensor.hpp"
-
-#include "shaders/opmult.hpp"
 
 #include "OpBase.hpp"
 

@@ -79,18 +79,24 @@ def run_cli(
     if header_path:
         logger.debug(f"Header path provided. Converting bin files to hpp.")
         logger.debug(f"Output header path: {shader_path}")
+
         for file in spirv_files:
             header_data = str(sh.xxd("-i", file))
+            # Ensuring the variable is a static unsigned const
+            header_data = header_data.replace("unsigned", "static unsigned const")
             file_name = file.split("/")[-1]
             header_file = file_name.replace(".comp.spv", ".hpp")
+            header_file_define = "SHADEROP_" + header_file.replace(".", "_").upper()
             logger.debug(f"Converting to hpp: {file_name}")
             with open(os.path.join(header_path, header_file), "w+") as fstream:
-                fstream.write("#pragma once\n\n")
+                fstream.write(f"#ifndef {header_file_define}\n")
+                fstream.write(f"#define {header_file_define}\n\n")
                 fstream.write("namespace kp {\n")
                 fstream.write("namespace shader_data {\n")
-                fstream.write(header_data)
+                fstream.write(f"{header_data}")
                 fstream.write("}\n")
                 fstream.write("}\n")
+                fstream.write(f"#endif // define {header_file_define}\n")
 
 
 if __name__ == "__main__":

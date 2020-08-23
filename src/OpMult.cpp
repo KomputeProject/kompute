@@ -1,15 +1,15 @@
+#ifndef OPMULT_CPP
+#define OPMULT_CPP
 
 #include "Tensor.hpp"
 
-#include "shaders/opmult.hpp"
+#include <shaders/opmult.hpp>
 
 // Only defining hpp file for syntax validation in editors
-#ifndef OPMULT_H
+#ifndef OPMULT_HPP
 #include "OpMult.hpp"
 #endif
 
-#ifndef OPMULT_CPP
-#define OPMULT_CPP
 
 namespace kp {
 
@@ -99,8 +99,8 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
                                      this->mCommandBuffer);
 
     std::vector<char> shaderFileData(
-            kp::shader_data::shaders_glsl_opmult_comp_spv_len,
-            kp::shader_data::shaders_glsl_opmult_comp_spv + kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+            shader_data::shaders_glsl_opmult_comp_spv,
+            shader_data::shaders_glsl_opmult_comp_spv + shader_data::shaders_glsl_opmult_comp_spv_len);
     this->mAlgorithm->init(shaderFileData, tensors);
 }
 

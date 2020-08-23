@@ -19,7 +19,6 @@ build: clean build_shaders
 		-std=c++17 \
 		-DDEBUG=1 \
 		-I"./external/" \
-		-I"./src/" \
 		-I"C:\\VulkanSDK\\1.2.141.2\\Include\\" \
 		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
 		-lvulkan-1 \
@@ -46,7 +45,7 @@ build_shaders:
 	python scripts/convert_shaders.py \
 		--shader-path shaders/glsl \
 		--shader-binary $(SCMP) \
-		--header-path src/shaders \
+		--header-path external/shaders \
 		-v
 
 docker_seldon_run:
@@ -80,6 +79,7 @@ format:
 	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.hpp src/*.h
 
 clean:
+	find src -name "*gch" -exec rm {} \; || "No ghc files"
 	rm ./bin/main.exe || echo "No main.exe"
 
 run:
