@@ -1,6 +1,6 @@
 // Defining OPMULT_H to ensure cpp class doesn't reimport
-#pragma once
 #define OPMULT_HPP
+#pragma once
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>

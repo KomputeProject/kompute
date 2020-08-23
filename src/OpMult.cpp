@@ -1,6 +1,8 @@
 #ifndef OPMULT_CPP
 #define OPMULT_CPP
 
+#include <fstream>
+
 #include "Tensor.hpp"
 
 #include <shaders/opmult.hpp>
@@ -98,9 +100,26 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
                                      this->mDevice,
                                      this->mCommandBuffer);
 
+#if RELEASE
     std::vector<char> shaderFileData(
             shader_data::shaders_glsl_opmult_comp_spv,
-            shader_data::shaders_glsl_opmult_comp_spv + shader_data::shaders_glsl_opmult_comp_spv_len);
+            shader_data::shaders_glsl_opmult_comp_spv + kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+#else
+
+    // TODO: Move to utility function
+    std::string shaderFilePath = "shaders/glsl/opmult.comp.spv";
+    std::ifstream fileStream(shaderFilePath,
+                             std::ios::binary | std::ios::in | std::ios::ate);
+
+    size_t shaderFileSize = fileStream.tellg();
+    fileStream.seekg(0, std::ios::beg);
+    char* shaderDataRaw = new char[shaderFileSize];
+    fileStream.read(shaderDataRaw, shaderFileSize);
+    fileStream.close();
+
+    std::vector<char> shaderFileData(shaderDataRaw, shaderDataRaw + shaderFileSize);
+#endif
+
     this->mAlgorithm->init(shaderFileData, tensors);
 }
 
