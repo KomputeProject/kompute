@@ -36,6 +36,7 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::~OpMult()
 {
     SPDLOG_DEBUG("Kompute OpMult destructor started");
+
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>

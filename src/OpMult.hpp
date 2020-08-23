@@ -38,11 +38,17 @@ class OpMult : public OpBase
     void postSubmit() override;
 
   private:
+    // Always owned resources
+    std::shared_ptr<Tensor> mTensorOutputStaging;
+
+    // Optionally owned resources
     std::shared_ptr<Algorithm> mAlgorithm;
+    bool mFreeAlgorithm = false;
+
+    // Never owned resources
     std::shared_ptr<Tensor> mTensorLHS;
     std::shared_ptr<Tensor> mTensorRHS;
     std::shared_ptr<Tensor> mTensorOutput;
-    std::shared_ptr<Tensor> mTensorOutputStaging;
 
     uint32_t mX;
     uint32_t mY;
