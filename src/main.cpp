@@ -11,7 +11,7 @@
 
 #include <spdlog/spdlog.h>
 // ranges.h must come after spdlog.h
-#include <spdlog/fmt/bundled/ranges.h>
+#include <fmt/ranges.h>
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
@@ -39,18 +39,18 @@ main()
             kp::Manager mgr;
 
             spdlog::info("Creating first tensor");
-            std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor( { 0.0, 1.0, 2.0 }) };
+            std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor( { 0, 1, 2 }) };
             mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
             spdlog::info("Creating second tensor");
             std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-              { 2.0, 4.0, 6.0 }) };
+              { 2, 4, 6 }) };
             mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
 
             // TODO: Add capabilities for just output tensor types
             spdlog::info("Creating output tensor");
             std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-              { 0.0, 0.0, 0.0 }) };
+              { 0, 0, 0 }) };
             mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
             spdlog::info("OpCreateTensor success for tensors");
@@ -74,16 +74,16 @@ main()
 
             spdlog::info("Creating first tensor");
             std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
-              { 0.0, 1.0, 2.0 }) };
+              { 0, 1, 2 }) };
 
             spdlog::info("Creating second tensor");
             std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-              { 2.0, 4.0, 6.0 }) };
+              { 2, 4, 6 }) };
 
             // TODO: Add capabilities for just output tensor types
             spdlog::info("Creating output tensor");
             std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-              { 0.0, 0.0, 0.0 }) };
+              { 0, 0, 0 }) };
 
             sq.record<kp::OpCreateTensor>({ tensorLHS });
             sq.record<kp::OpCreateTensor>({ tensorRHS });

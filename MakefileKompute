@@ -9,8 +9,16 @@ CF=~/Programming/lib/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-f
 
 SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
 
+####### Package manager #######
+
+VCPKG=/c/Users/axsau/Programming/lib/vcpkg/vcpkg
 
 ####### Main Target Rules #######
+
+run_cmake:
+	cmake \
+		-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
 build: clean build_shaders
 	$(CC) \
@@ -18,8 +26,8 @@ build: clean build_shaders
 		-w \
 		-std=c++17 \
 		-DDEBUG=1 \
+		-DRELEASE=1 \
 		-I"./external/" \
-		-I"C:\\VulkanSDK\\1.2.141.2\\Include\\" \
 		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
 		-lvulkan-1 \
 		-o ./bin/main.exe
@@ -29,6 +37,21 @@ build: clean build_shaders
 		#\
 		#-g -fexceptions -fPIC \
 		#-static-libgcc -static-libstdc++ \
+
+run_test:
+	$(CC) \
+		test/* \
+		-Wall \
+		-std=c++17 \
+		-DDEBUG=1 \
+		-DRELEASE=1 \
+		-I"./external/" \
+		-I"./src/" \
+		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
+		-lvulkan-1 \
+		-o ./bin/test.exe && \
+		./bin/test.exe --success
+
 
 build_linux:
 	g++ \
@@ -45,7 +68,7 @@ build_shaders:
 	python scripts/convert_shaders.py \
 		--shader-path shaders/glsl \
 		--shader-binary $(SCMP) \
-		--header-path external/shaders \
+		--header-path src/shaders \
 		-v
 
 docker_seldon_run:

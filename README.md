@@ -2,7 +2,7 @@
 
 ## Principles
 
-* Single header easy to import library to boost your Vulkan compute experience
+* Single header easy to import library to boost your Vulkan compute experience (WIP)
 * Non-vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing vulkan API with a simpler compute-specific interface
 * BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design
@@ -92,4 +92,6 @@ int main() {
 
 ## Development
 
-Follows Mozilla C++ Style Guide https://www-archive.mozilla.org/hacking/mozilla-style-guide.html
+* Follows Mozilla C++ Style Guide https://www-archive.mozilla.org/hacking/mozilla-style-guide.html
+    + Uses post-commit hook to run the linter, you can set it up so it runs the linter before commit
+* Uses vcpkg for finding the dependencies, it's the recommanded set up to retrieve the libraries
