@@ -85,6 +85,7 @@ def run_cli(
             # Ensuring the variable is a static unsigned const
             header_data = header_data.replace("unsigned", "static unsigned const")
             file_name = file.split("/")[-1]
+            file_name = f"shader{file_name}"
             header_file = file_name.replace(".comp.spv", ".hpp")
             header_file_define = "SHADEROP_" + header_file.replace(".", "_").upper()
             logger.debug(f"Converting to hpp: {file_name}")

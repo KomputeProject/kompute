@@ -73,7 +73,7 @@ build_shaders:
 	python scripts/convert_shaders.py \
 		--shader-path shaders/glsl \
 		--shader-binary $(SCMP) \
-		--header-path src/shaders \
+		--header-path src/include/kompute/shaders/ \
 		-v
 
 docker_seldon_run:
@@ -102,6 +102,13 @@ docker_vulkan_build:
 
 push_vulkan_docker:
 	docker push axsauze/vulkan-sum:0.1
+
+build_single_header:
+	quom \
+		--include_directory \
+		"src/include/" \
+		"single_include/AggregateHeaders.cpp" \
+		"single_include/kompute/Kompute.hpp"
 
 format:
 	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.hpp src/*.h

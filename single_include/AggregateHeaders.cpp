@@ -1,0 +1,7 @@
+#include "kompute/shaders/opmult.hpp"
+#include "kompute/Manager.hpp"
+#include "kompute/OpBase.hpp"
+#include "kompute/OpMult.hpp"
+#include "kompute/OpCreateTensor.hpp"
+#include "kompute/OpMult.hpp"
+#include "kompute/Tensor.hpp"

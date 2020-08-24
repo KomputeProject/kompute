@@ -16,10 +16,7 @@
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "kompute/Manager.hpp"
-#include "kompute/OpCreateTensor.hpp"
-#include "kompute/OpMult.hpp"
-#include "kompute/Tensor.hpp"
+#include "kompute/Kompute.hpp"
 
 int
 main()
