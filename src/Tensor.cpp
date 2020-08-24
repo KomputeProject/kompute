@@ -18,7 +18,7 @@ Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
     SPDLOG_DEBUG("Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
 
     this->mData = data;
-    this->mShape = { data.size() };
+    this->mShape = { static_cast<uint32_t>(data.size()) };
     this->mTensorType = tensorType;
 }
 

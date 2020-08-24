@@ -16,9 +16,11 @@ VCPKG=/c/Users/axsau/Programming/lib/vcpkg/vcpkg
 ####### Main Target Rules #######
 
 run_cmake:
-	cmake \
+	wcmake \
+		-Bbuild \
 		-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake \
-		-DCMAKE_EXPORT_COMPILE_COMMANDS=1
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+		-G "Visual Studio 16 2019"
 
 build: clean build_shaders
 	$(CC) \
