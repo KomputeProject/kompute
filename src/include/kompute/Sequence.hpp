@@ -10,7 +10,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "OpBase.hpp"
+#include "kompute/OpBase.hpp"
 
 namespace kp {
 

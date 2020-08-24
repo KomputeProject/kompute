@@ -3,7 +3,7 @@
 #include <spdlog/fmt/bundled/ranges.h>
 #endif
 
-#include "Tensor.hpp"
+#include "kompute/Tensor.hpp"
 
 namespace kp {
 

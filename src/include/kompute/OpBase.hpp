@@ -12,7 +12,7 @@
 
 #include <spdlog/spdlog.h>
 
-#include "Tensor.hpp"
+#include "kompute/Tensor.hpp"
 
 namespace kp {
 

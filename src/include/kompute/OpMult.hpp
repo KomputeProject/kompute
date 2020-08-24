@@ -1,19 +1,65 @@
-#ifndef OPMULT_CPP
-#define OPMULT_CPP
+#pragma once
 
 #include <fstream>
 
-#include "Tensor.hpp"
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
-#if RELEASE
-#include <shaders/opmult.hpp>
+// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
+#if DEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #endif
 
-// Only defining hpp file for syntax validation in editors
-#ifndef OPMULT_HPP
-#include "OpMult.hpp"
-#endif
+#include <spdlog/spdlog.h>
 
+#include "kompute/Algorithm.hpp"
+#include "kompute/Tensor.hpp"
+
+#include "kompute/OpBase.hpp"
+
+namespace kp {
+
+template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
+class OpMult : public OpBase
+{
+  public:
+    OpMult();
+
+    OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer);
+
+    ~OpMult();
+
+    void init(std::vector<std::shared_ptr<Tensor>> tensors) override;
+
+    void record() override;
+
+    void postSubmit() override;
+
+  private:
+    // Always owned resources
+    std::shared_ptr<Tensor> mTensorOutputStaging;
+
+    // Optionally owned resources
+    std::shared_ptr<Algorithm> mAlgorithm;
+    bool mFreeAlgorithm = false;
+
+    // Never owned resources
+    std::shared_ptr<Tensor> mTensorLHS;
+    std::shared_ptr<Tensor> mTensorRHS;
+    std::shared_ptr<Tensor> mTensorOutput;
+
+    uint32_t mX;
+    uint32_t mY;
+    uint32_t mZ;
+};
+
+} // End namespace kp
+
+// Including implemenation for template class
+#ifndef OPMULT_CPP
+#define OPMULT_CPP
 
 namespace kp {
 
@@ -186,4 +232,5 @@ OpMult<tX, tY, tZ>::postSubmit()
 }
 
 #endif // #ifndef OPMULT_CPP
+
 

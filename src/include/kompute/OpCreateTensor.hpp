@@ -10,9 +10,9 @@
 
 #include <spdlog/spdlog.h>
 
-#include "Tensor.hpp"
+#include "kompute/Tensor.hpp"
 
-#include "OpBase.hpp"
+#include "kompute/OpBase.hpp"
 
 namespace kp {
 

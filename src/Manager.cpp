@@ -2,7 +2,7 @@
 #include <set>
 #include <string>
 
-#include "Manager.hpp"
+#include "kompute/Manager.hpp"
 
 namespace kp {
 

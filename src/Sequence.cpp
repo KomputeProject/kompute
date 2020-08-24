@@ -1,5 +1,5 @@
 
-#include "Sequence.hpp"
+#include "kompute/Sequence.hpp"
 
 namespace kp {
 

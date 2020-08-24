@@ -22,6 +22,9 @@ run_cmake:
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Visual Studio 16 2019"
 
+clean_cmake:
+	rm -rf build/
+
 build: clean build_shaders
 	$(CC) \
 		src/* \

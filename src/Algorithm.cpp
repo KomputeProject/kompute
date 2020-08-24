@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "Algorithm.hpp"
+#include "kompute/Algorithm.hpp"
 
 namespace kp {
 
