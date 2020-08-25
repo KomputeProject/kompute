@@ -3,9 +3,10 @@ find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Vulkan REQUIRED)
 
-kompute_make(install_python_reqs)
-kompute_make(build_shaders)
-kompute_make(build_single_header)
+kompute_make(build_shaders 
+    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+kompute_make(build_single_header
+    OUTPUT ${PROJECT_SOURCE_DIR}/single_include)
 
 file(GLOB kompute_CPP
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -31,8 +32,6 @@ add_dependencies(kompute
     build_shaders
     build_single_header)
 
-add_dependencies(kompute
-    install_python_reqs)
 
 add_library(kompute::kompute ALIAS kompute)
 

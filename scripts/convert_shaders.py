@@ -16,6 +16,27 @@ CWD=os.path.dirname(os.path.abspath(__file__))
 XXD_LINUX_CMD="xxd"
 XXD_WINDOWS_CMD=os.path.abspath(os.path.join(CWD, "..\\external\\bin\\", "xxd.exe"))
 
+SHADER_GENERATED_NOTICE = """/*
+    THIS FILE HAS BEEN AUTOMATICALLY GENERATED - DO NOT EDIT
+
+    ---
+
+    Copyright 2020 The Institute for Ethical AI & Machine Learning
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+"""
+
 @click.command()
 @click.option(
     "--shader-path",
@@ -112,6 +133,7 @@ def run_cli(
             header_file_define = "SHADEROP_" + header_file.replace(".", "_").upper()
             logger.debug(f"Converting to hpp: {file_name}")
             with open(os.path.join(header_path, header_file), "w+") as fstream:
+                fstream.write(f"{SHADER_GENERATED_NOTICE}\n")
                 fstream.write(f"#ifndef {header_file_define}\n")
                 fstream.write(f"#define {header_file_define}\n\n")
                 fstream.write("namespace kp {\n")
