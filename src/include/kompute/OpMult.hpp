@@ -147,6 +147,7 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
             shader_data::shaders_glsl_opmult_comp_spv,
             shader_data::shaders_glsl_opmult_comp_spv + kp::shader_data::shaders_glsl_opmult_comp_spv_len);
 #else
+    SPDLOG_DEBUG("Kompute OpMult Running debug loading shaders directly from spirv file");
 
     // TODO: Move to utility function
     std::string shaderFilePath = "shaders/glsl/opmult.comp.spv";
@@ -161,6 +162,8 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
 
     std::vector<char> shaderFileData(shaderDataRaw, shaderDataRaw + shaderFileSize);
 #endif
+
+    SPDLOG_DEBUG("Kompute OpMult Initialising algorithm component");
 
     this->mAlgorithm->init(shaderFileData, tensors);
 }
