@@ -1,4 +1,4 @@
-#include "kompute/shaders/opmult.hpp"
+#include "kompute/shaders/shaderopmult.hpp"
 #include "kompute/Manager.hpp"
 #include "kompute/OpBase.hpp"
 #include "kompute/OpMult.hpp"

@@ -7,7 +7,11 @@ CF=~/Programming/lib/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-f
 
 ####### Shader Build Params #######
 
-SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
+ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
+	SCMP=C:\VulkanSDK\1.2.141.2\Bin32\glslangValidator.exe
+else
+	SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
+endif
 
 ####### Package manager #######
 
@@ -16,8 +20,9 @@ VCPKG=/c/Users/axsau/Programming/lib/vcpkg/vcpkg
 ####### Main Target Rules #######
 
 run_cmake:
-	wcmake \
+	cmake \
 		-Bbuild \
+		-DKOMPUTE_OPT_INSTALL_PYTHON_REQS=ON \
 		-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Visual Studio 16 2019"
@@ -68,6 +73,9 @@ build_linux:
 		-I"./src" \
 		-lvulkan \
 		-o ./bin/main
+
+install_python_reqs:
+	python -m pip install -r scripts/requirements.txt
 
 build_shaders:
 	python scripts/convert_shaders.py \

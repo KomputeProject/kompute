@@ -90,8 +90,11 @@ int main() {
 ```
 
 
-## Development
+## Kompute Development
 
 * Follows Mozilla C++ Style Guide https://www-archive.mozilla.org/hacking/mozilla-style-guide.html
     + Uses post-commit hook to run the linter, you can set it up so it runs the linter before commit
 * Uses vcpkg for finding the dependencies, it's the recommanded set up to retrieve the libraries
+    + All dependencies are defined in vcpkg.json 
+* Uses cmake as build system, and provides a top level makefile with recommended command
+* Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files

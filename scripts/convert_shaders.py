@@ -2,12 +2,19 @@
     Script to handle conversion of compute shaders to spirv and to headers
 """
 import os
+import sys
 import logging
 import click
-import sh
+import subprocess
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
+
+is_windows = sys.platform.startswith('win')
+
+CWD=os.path.dirname(os.path.abspath(__file__))
+XXD_LINUX_CMD="xxd"
+XXD_WINDOWS_CMD=os.path.abspath(os.path.join(CWD, "..\\external\\bin\\", "xxd.exe"))
 
 @click.command()
 @click.option(
@@ -57,13 +64,18 @@ def run_cli(
 
     logger.debug(f"Starting script with variables: {locals()}")
 
+    if is_windows:
+        logger.debug(f"Running on windows, converting input paths")
+        shader_path = shader_path.replace("/", "\\")
+        header_path = header_path.replace("/", "\\")
+
     shader_files = []
     for root, directory, files in os.walk(shader_path):
         for file in files:
             if file.endswith(".comp"):
                 shader_files.append(os.path.join(root, file))
 
-    shader_cmd = sh.Command(shader_binary)
+    run_cmd = lambda *args: subprocess.check_output([*args]).decode()
 
     logger.debug(f"Output spirv path: {shader_path}")
     logger.debug(f"Converting files to spirv: {shader_files}")
@@ -72,7 +84,7 @@ def run_cli(
     for file in shader_files:
         logger.debug(f"Converting to spirv: {file}")
         spirv_file = f"{file}.spv"
-        shader_cmd("-V", file, "-o", spirv_file)
+        run_cmd(shader_binary, "-V", file, "-o", spirv_file)
         spirv_files.append(spirv_file)
 
     # Create cpp files if header_path provided
@@ -80,12 +92,22 @@ def run_cli(
         logger.debug(f"Header path provided. Converting bin files to hpp.")
         logger.debug(f"Output header path: {shader_path}")
 
+        # Check if xxd command options are available
+        if is_windows:
+            xxd_cmd = XXD_WINDOWS_CMD
+        else:
+            xxd_cmd = XXD_LINUX_CMD
+
         for file in spirv_files:
-            header_data = str(sh.xxd("-i", file))
+            print(xxd_cmd)
+            header_data = str(run_cmd(xxd_cmd, "-i", file))
             # Ensuring the variable is a static unsigned const
             header_data = header_data.replace("unsigned", "static unsigned const")
-            file_name = file.split("/")[-1]
-            file_name = f"shader{file_name}"
+            if is_windows:
+                raw_file_name = file.split("\\")[-1]
+            else:
+                raw_file_name = file.split("/")[-1]
+            file_name = f"shader{raw_file_name}"
             header_file = file_name.replace(".comp.spv", ".hpp")
             header_file_define = "SHADEROP_" + header_file.replace(".", "_").upper()
             logger.debug(f"Converting to hpp: {file_name}")

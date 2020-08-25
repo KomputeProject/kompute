@@ -12,6 +12,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "kompute/shaders/shaderopmult.hpp"
+
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 

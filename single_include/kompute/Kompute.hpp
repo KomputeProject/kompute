@@ -1,5 +1,5 @@
-#ifndef SHADEROP_OPMULT_HPP
-#define SHADEROP_OPMULT_HPP
+#ifndef SHADEROP_SHADEROPMULT_HPP
+#define SHADEROP_SHADEROPMULT_HPP
 
 namespace kp {
 namespace shader_data {
@@ -117,7 +117,7 @@ static unsigned const char shaders_glsl_opmult_comp_spv[] = {
 static unsigned const int shaders_glsl_opmult_comp_spv_len = 1308;
 }
 }
-#endif // define SHADEROP_OPMULT_HPP
+#endif // define SHADEROP_SHADEROPMULT_HPP
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan.hpp>
