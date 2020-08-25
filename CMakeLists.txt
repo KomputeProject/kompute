@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG=1")
+set(CMAKE_CXX_FLAGS_RELEASE "-DRELEASE=1")
+
 option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" ON)
 
 # Allow scripts to call main kompute Makefile

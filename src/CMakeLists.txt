@@ -3,8 +3,10 @@ find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Vulkan REQUIRED)
 
+# In production builds all shaders are compiled into cpp files
 kompute_make(build_shaders 
     OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# In production builds all headers are compiled into a single header
 kompute_make(build_single_header
     OUTPUT ${PROJECT_SOURCE_DIR}/single_include)
 

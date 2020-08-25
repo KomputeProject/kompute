@@ -132,7 +132,7 @@ def run_cli(
             header_file = file_name.replace(".comp.spv", ".hpp")
             header_file_define = "SHADEROP_" + header_file.replace(".", "_").upper()
             logger.debug(f"Converting to hpp: {file_name}")
-            with open(os.path.join(header_path, header_file), "w+") as fstream:
+            with open(os.path.join(header_path, header_file), "w+", newline='\n') as fstream:
                 fstream.write(f"{SHADER_GENERATED_NOTICE}\n")
                 fstream.write(f"#ifndef {header_file_define}\n")
                 fstream.write(f"#define {header_file_define}\n\n")
