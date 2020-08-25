@@ -1,3 +1,14 @@
+
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
+
+// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
+#if DEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#endif
+
+#include <spdlog/spdlog.h>
+
 /*
     THIS FILE HAS BEEN AUTOMATICALLY GENERATED - DO NOT EDIT
 
@@ -138,48 +149,6 @@ static unsigned const int shaders_glsl_opmult_comp_spv_len = 1308;
 }
 }
 #endif // define SHADEROP_SHADEROPMULT_HPP
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
-
-#include <string>
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
 
 #define KP_MAX_DIM_SIZE 1
 
@@ -420,26 +389,6 @@ class Manager
 } // End namespace kp
 
 #include <fstream>
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
 
 namespace kp {
 
@@ -709,16 +658,6 @@ OpMult<tX, tY, tZ>::postSubmit()
 }
 
 #endif // #ifndef OPMULT_CPP
-
-#include <vulkan/vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <spdlog/spdlog.h>
 
 namespace kp {
 
