@@ -22,10 +22,7 @@
 </tr>
 </table>
 
-A GPGPU (General Purpose GPU) processing framework to augment your Vulkan Compute experience.
-
-
-## Principles
+## Principles & Features
 
 * Single header easy to import static library
 * Packaged with vcpkg for easy download and integration with projects
@@ -36,14 +33,6 @@ A GPGPU (General Purpose GPU) processing framework to augment your Vulkan Comput
 * Explicit memory management responsibilities
 * Opinionated approach towards base interface for memory management hierarchy with explicit and extensible design
 * Best practices for safe memory GPU / Vulkan memory management (WIP)
-
-## Motivations
-
-Vulkan Kompute was created after identifying the challenge most GPU processing projects with Vulkan undergo - namely having to build extensive boilerplate for Vulkan and create abstractions and interfaces that expose the core compute capabilities. It is only after a few thousand lines of code that it's possible to start building the application-specific logic. 
-
-We believe Vulkan has an excellent design in its way to interact with the GPU, so by no means we aim to abstract or hide any complexity, but instead we want to provide a baseline of tools and interfaces that allow Vulkan Compute developers to focus on the higher level computational complexities of the application.
-
-It is because of this that we have adopted development principles for the project that ensure the Vulkan API is augmented specifically for computation, whilst speeding development iterations and opening the doors to further use-cases.
 
 ## Getting Started
 
@@ -125,6 +114,14 @@ int main() {
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
+
+## Motivations
+
+Vulkan Kompute was created after identifying the challenge most GPU processing projects with Vulkan undergo - namely having to build extensive boilerplate for Vulkan and create abstractions and interfaces that expose the core compute capabilities. It is only after a few thousand lines of code that it's possible to start building the application-specific logic. 
+
+We believe Vulkan has an excellent design in its way to interact with the GPU, so by no means we aim to abstract or hide any complexity, but instead we want to provide a baseline of tools and interfaces that allow Vulkan Compute developers to focus on the higher level computational complexities of the application.
+
+It is because of this that we have adopted development principles for the project that ensure the Vulkan API is augmented specifically for computation, whilst speeding development iterations and opening the doors to further use-cases.
 
 ## Components & Architecture
 
