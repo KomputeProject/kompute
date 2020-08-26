@@ -1,3 +1,10 @@
+![GitHub](https://img.shields.io/badge/Release-ALPHA-yellow.svg)
+![GitHub](https://img.shields.io/badge/Version-0.1.0-green.svg)
+![GitHub](https://img.shields.io/badge/C++-11—20-purple.svg)
+![GitHub](https://img.shields.io/badge/Build-cmake-red.svg)
+![GitHub](https://img.shields.io/badge/Python-3.5—3.8-blue.svg)
+![GitHub](https://img.shields.io/badge/License-Apache-black.svg)
+
 <table>
 <tr>
 
