@@ -37,10 +37,12 @@ class Sequence
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
-        SPDLOG_DEBUG("Kompute Sequence running init on OpBase derived class instance");
+        SPDLOG_DEBUG(
+          "Kompute Sequence running init on OpBase derived class instance");
         baseOpPtr->init(tensors);
 
-        SPDLOG_DEBUG("Kompute Sequence running record on OpBase derived class instance");
+        SPDLOG_DEBUG(
+          "Kompute Sequence running record on OpBase derived class instance");
         baseOpPtr->record();
 
         mOperations.push_back(std::move(baseOpPtr));

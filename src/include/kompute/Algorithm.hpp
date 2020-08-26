@@ -52,7 +52,6 @@ class Algorithm
     // Parameters
     void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
     void createDescriptorPool();
-
 };
 
 } // End namespace kp

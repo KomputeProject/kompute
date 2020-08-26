@@ -41,9 +41,9 @@ Algorithm::init(const std::vector<char>& shaderFileData,
     this->createPipeline();
 }
 
-void Algorithm::createDescriptorPool() {
-
-}
+void
+Algorithm::createDescriptorPool()
+{}
 
 void
 Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
@@ -52,9 +52,10 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 
     // TODO: Explore design for having multiple descriptor pool sizes
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
-        vk::DescriptorPoolSize(vk::DescriptorType::eStorageBuffer,
-                               static_cast<uint32_t>(tensorParams.size()) // Descriptor count
-                               )
+        vk::DescriptorPoolSize(
+          vk::DescriptorType::eStorageBuffer,
+          static_cast<uint32_t>(tensorParams.size()) // Descriptor count
+          )
     };
 
     // TODO: Explore design for having more than 1 set configurable
@@ -120,11 +121,12 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
                                  nullptr, // Descriptor image info
                                  &descriptorBufferInfo));
 
-        this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
+        this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
+                                            nullptr);
     }
 
     SPDLOG_DEBUG("Kompute Algorithm updating descriptor sets");
-    //this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
+    // this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
 
     SPDLOG_DEBUG("Kompue Algorithm successfully run init");
 }
@@ -135,7 +137,9 @@ Algorithm::createShaderModule(const std::vector<char>& shaderFileData)
     SPDLOG_DEBUG("Kompute Algorithm createShaderModule started");
 
     vk::ShaderModuleCreateInfo shaderModuleInfo(
-      vk::ShaderModuleCreateFlags(), shaderFileData.size(), (uint32_t*)shaderFileData.data());
+      vk::ShaderModuleCreateFlags(),
+      shaderFileData.size(),
+      (uint32_t*)shaderFileData.data());
 
     SPDLOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
                  shaderFileData.size());

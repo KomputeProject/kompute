@@ -15,7 +15,8 @@ Tensor::Tensor()
 
 Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
 {
-    SPDLOG_DEBUG("Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
+    SPDLOG_DEBUG(
+      "Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
 
     this->mData = data;
     this->mShape = { static_cast<uint32_t>(data.size()) };
@@ -60,8 +61,9 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
-    SPDLOG_DEBUG(
-      "Kompute Tensor running init with Vulkan params and num data elementS: {}", this->mData.size());
+    SPDLOG_DEBUG("Kompute Tensor running init with Vulkan params and num data "
+                 "elementS: {}",
+                 this->mData.size());
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
@@ -178,8 +180,9 @@ Tensor::mapDataFromHostMemory()
     SPDLOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::error("Mapping tensor data manually from DEVICE buffer instead of "
-                     "using record GPU command with staging buffer");
+        spdlog::error(
+          "Mapping tensor data manually from DEVICE buffer instead of "
+          "using record GPU command with staging buffer");
         return;
     }
 
@@ -198,10 +201,12 @@ Tensor::mapDataIntoHostMemory()
 
     SPDLOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
 
-    // TODO: Verify if there are situations where we want to copy to device memory
+    // TODO: Verify if there are situations where we want to copy to device
+    // memory
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::error("Mapping tensor data manually to DEVICE memory instead of "
-                     "using record GPU command with staging buffer");
+        spdlog::error(
+          "Mapping tensor data manually to DEVICE memory instead of "
+          "using record GPU command with staging buffer");
         return;
     }
 

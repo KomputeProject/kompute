@@ -8,5 +8,3 @@
 #endif
 
 #include <spdlog/spdlog.h>
-
-

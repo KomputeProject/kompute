@@ -66,9 +66,13 @@ Manager::~Manager()
 }
 
 Sequence
-Manager::constructSequence() {
+Manager::constructSequence()
+{
     SPDLOG_DEBUG("Kompute Manager creating Sequence object");
-    return Sequence(this->mPhysicalDevice, this->mDevice, this->mComputeQueue, this->mComputeQueueFamilyIndex);
+    return Sequence(this->mPhysicalDevice,
+                    this->mDevice,
+                    this->mComputeQueue,
+                    this->mComputeQueueFamilyIndex);
 }
 
 void

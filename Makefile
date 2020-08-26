@@ -1,8 +1,7 @@
 
 ####### SRC Build Params #######
 
-CC=/c/Users/axsau/scoop/apps/gcc/current/bin/g++.exe
-CF=~/Programming/lib/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-format
+CC="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuildTaskHost.exe"
 
 
 ####### Shader Build Params #######
@@ -22,57 +21,12 @@ VCPKG=/c/Users/axsau/Programming/lib/vcpkg/vcpkg
 run_cmake:
 	cmake \
 		-Bbuild \
-		-DKOMPUTE_OPT_INSTALL_PYTHON_REQS=ON \
 		-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Visual Studio 16 2019"
 
 clean_cmake:
 	rm -rf build/
-
-build: clean build_shaders
-	$(CC) \
-		src/* \
-		-w \
-		-std=c++17 \
-		-DDEBUG=1 \
-		-DRELEASE=1 \
-		-I"./external/" \
-		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
-		-lvulkan-1 \
-		-o ./bin/main.exe
-		#\
-		#-L"C:\\Users\\axsau\\Programming\\lib\\vcpkg\\installed\\x64-windows\\lib\\" \
-		#-lspdlog \
-		#\
-		#-g -fexceptions -fPIC \
-		#-static-libgcc -static-libstdc++ \
-
-run_test:
-	$(CC) \
-		test/* \
-		-Wall \
-		-std=c++17 \
-		-DDEBUG=1 \
-		-DRELEASE=1 \
-		-I"./external/" \
-		-I"./src/" \
-		-L"C:\\VulkanSDK\\1.2.141.2\\Lib\\" \
-		-lvulkan-1 \
-		-o ./bin/test.exe && \
-		./bin/test.exe --success
-
-
-build_linux:
-	g++ \
-		-g -shared-libgcc \
-		-Wall \
-		src/* \
-		-std=c++17 \
-		-I"./external/" \
-		-I"./src" \
-		-lvulkan \
-		-o ./bin/main
 
 install_python_reqs:
 	python -m pip install -r scripts/requirements.txt
@@ -119,7 +73,7 @@ build_single_header:
 		"single_include/kompute/Kompute.hpp"
 
 format:
-	$(CF) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/*.hpp src/*.h
+	clang-format -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp
 
 clean:
 	find src -name "*gch" -exec rm {} \; || "No ghc files"

@@ -66,8 +66,8 @@ OpMult<tX, tY, tZ>::OpMult()
 // TODO: Remove physicalDevice from main initialiser
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-               std::shared_ptr<vk::Device> device,
-               std::shared_ptr<vk::CommandBuffer> commandBuffer)
+                           std::shared_ptr<vk::Device> device,
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer)
   : OpBase(physicalDevice, device, commandBuffer)
 {
     SPDLOG_DEBUG("Kompute OpMult constructor with params");
@@ -79,7 +79,6 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::~OpMult()
 {
     SPDLOG_DEBUG("Kompute OpMult destructor started");
-
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -99,20 +98,24 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
     this->mTensorRHS = tensors[1];
     this->mTensorOutput = tensors[2];
 
-    // The dispatch size is set up based on either explicitly provided template parameters or by default it would take the shape and size of the tensors
+    // The dispatch size is set up based on either explicitly provided template
+    // parameters or by default it would take the shape and size of the tensors
     if (tX > 0) {
-        // If at least the x value is provided we use mainly the parameters provided
+        // If at least the x value is provided we use mainly the parameters
+        // provided
         this->mX = tX;
         this->mY = tY > 0 ? tY : 1;
         this->mZ = tZ > 0 ? tZ : 1;
-    }
-    else {
+    } else {
         // TODO: Fully support the full size dispatch using size for the shape
         this->mX = this->mTensorLHS->size();
         this->mY = 1;
         this->mZ = 1;
     }
-    spdlog::info("Kompute OpMult dispatch size X: {}, Y: {}, Z: {}", this->mX, this->mY, this->mZ);
+    spdlog::info("Kompute OpMult dispatch size X: {}, Y: {}, Z: {}",
+                 this->mX,
+                 this->mY,
+                 this->mZ);
 
     // TODO: Explore adding a validate function
     if (!(this->mTensorLHS->isInit() && this->mTensorRHS->isInit() &&
@@ -138,16 +141,17 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
     this->mTensorOutputStaging = std::make_shared<Tensor>(
       this->mTensorOutput->data(), Tensor::TensorTypes::eStaging);
 
-    this->mTensorOutputStaging->init(this->mPhysicalDevice,
-                                     this->mDevice,
-                                     this->mCommandBuffer);
+    this->mTensorOutputStaging->init(
+      this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
 
 #if RELEASE
     std::vector<char> shaderFileData(
-            shader_data::shaders_glsl_opmult_comp_spv,
-            shader_data::shaders_glsl_opmult_comp_spv + kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+      shader_data::shaders_glsl_opmult_comp_spv,
+      shader_data::shaders_glsl_opmult_comp_spv +
+        kp::shader_data::shaders_glsl_opmult_comp_spv_len);
 #else
-    SPDLOG_DEBUG("Kompute OpMult Running debug loading shaders directly from spirv file");
+    SPDLOG_DEBUG(
+      "Kompute OpMult Running debug loading shaders directly from spirv file");
 
     // TODO: Move to utility function
     std::string shaderFilePath = "shaders/glsl/opmult.comp.spv";
@@ -160,7 +164,8 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
     fileStream.read(shaderDataRaw, shaderFileSize);
     fileStream.close();
 
-    std::vector<char> shaderFileData(shaderDataRaw, shaderDataRaw + shaderFileSize);
+    std::vector<char> shaderFileData(shaderDataRaw,
+                                     shaderDataRaw + shaderFileSize);
 #endif
 
     SPDLOG_DEBUG("Kompute OpMult Initialising algorithm component");
@@ -176,43 +181,43 @@ OpMult<tX, tY, tZ>::record()
 
     // Barrier to ensure the data is finished writing to buffer memory
     this->mTensorLHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eHostWrite,
-        vk::AccessFlagBits::eShaderRead,
-        vk::PipelineStageFlagBits::eHost,
-        vk::PipelineStageFlagBits::eComputeShader);
+      vk::AccessFlagBits::eHostWrite,
+      vk::AccessFlagBits::eShaderRead,
+      vk::PipelineStageFlagBits::eHost,
+      vk::PipelineStageFlagBits::eComputeShader);
     this->mTensorRHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eHostWrite,
-        vk::AccessFlagBits::eShaderRead,
-        vk::PipelineStageFlagBits::eHost,
-        vk::PipelineStageFlagBits::eComputeShader);
+      vk::AccessFlagBits::eHostWrite,
+      vk::AccessFlagBits::eShaderRead,
+      vk::PipelineStageFlagBits::eHost,
+      vk::PipelineStageFlagBits::eComputeShader);
 
     this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
 
     // Barrier to ensure the shader code is executed before buffer read
     this->mTensorLHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eShaderWrite,
-        vk::AccessFlagBits::eTransferRead,
-        vk::PipelineStageFlagBits::eComputeShader,
-        vk::PipelineStageFlagBits::eTransfer);
+      vk::AccessFlagBits::eShaderWrite,
+      vk::AccessFlagBits::eTransferRead,
+      vk::PipelineStageFlagBits::eComputeShader,
+      vk::PipelineStageFlagBits::eTransfer);
     this->mTensorOutput->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eShaderWrite,
-        vk::AccessFlagBits::eTransferRead,
-        vk::PipelineStageFlagBits::eComputeShader,
-        vk::PipelineStageFlagBits::eTransfer);
+      vk::AccessFlagBits::eShaderWrite,
+      vk::AccessFlagBits::eTransferRead,
+      vk::PipelineStageFlagBits::eComputeShader,
+      vk::PipelineStageFlagBits::eTransfer);
 
     this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput);
 
     // Buffer to ensure wait until data is copied to staging buffer
     this->mTensorLHS->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eTransferWrite,
-        vk::AccessFlagBits::eHostRead,
-        vk::PipelineStageFlagBits::eTransfer,
-        vk::PipelineStageFlagBits::eHost);
+      vk::AccessFlagBits::eTransferWrite,
+      vk::AccessFlagBits::eHostRead,
+      vk::PipelineStageFlagBits::eTransfer,
+      vk::PipelineStageFlagBits::eHost);
     this->mTensorOutput->recordBufferMemoryBarrier(
-        vk::AccessFlagBits::eTransferWrite,
-        vk::AccessFlagBits::eHostRead,
-        vk::PipelineStageFlagBits::eTransfer,
-        vk::PipelineStageFlagBits::eHost);
+      vk::AccessFlagBits::eTransferWrite,
+      vk::AccessFlagBits::eHostRead,
+      vk::PipelineStageFlagBits::eTransfer,
+      vk::PipelineStageFlagBits::eHost);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -229,5 +234,3 @@ OpMult<tX, tY, tZ>::postSubmit()
 }
 
 #endif // #ifndef OPMULT_CPP
-
-
