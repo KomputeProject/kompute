@@ -1,7 +1,7 @@
 
 ####### SRC Build Params #######
 
-CC="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuildTaskHost.exe"
+CC="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe"
 
 
 ####### Shader Build Params #######
@@ -24,6 +24,12 @@ run_cmake:
 		-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Visual Studio 16 2019"
+
+build_vs:
+	$(CC) build/kompute.sln
+
+run_tests:
+	./build/test/Debug/test_kompute.exe
 
 clean_cmake:
 	rm -rf build/

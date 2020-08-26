@@ -1,7 +1,11 @@
 
 find_package(Catch2 REQUIRED)
 
-add_executable(test_kompute Main.cpp)
+file(GLOB test_kompute_CPP
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+)
+
+add_executable(test_kompute ${test_kompute_CPP})
 
 target_include_directories(
     test_kompute PUBLIC
