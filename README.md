@@ -93,7 +93,7 @@ int main() {
 Create your own custom operations to leverage Vulkan Compute for your specialised use-cases.
 
 ```c++
-class CustomOp : kp::OpBase {
+class OpCustom : kp::OpBase {
     // ...
     void init(std::shared_ptr<Tensor> tensors) {
         // ... extra steps to initialise tensors
@@ -102,14 +102,12 @@ class CustomOp : kp::OpBase {
 }
 
 int main() {
-    kp::Manager kManager(); // Chooses device 0 
+    kp::Manager mgr; // Automatically selects Device 0
 
-    kp::Tensor inputOne({0, 1, 2, 3}); 
+    std::shared_ptr<kp::Tensor> tensor{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
-    kp::Tensor inputTwo({0, 1, 2, 3});
-
-    kp::Tensor output( {0, 0, 0, 0} );
-    kManager.eval<kp::CustomOp>({ inputOne, inputTwo, output });
+    mgr.evalOp<kp::OpCustom>({ tensorLHS, tensorRHS, tensorOutput });
 
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }

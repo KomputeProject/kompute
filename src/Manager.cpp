@@ -39,6 +39,11 @@ Manager::~Manager()
         return;
     }
 
+    if (this->mManagedSequences.size()) {
+        SPDLOG_DEBUG("Releasing managed sequence");
+        this->mManagedSequences.clear();
+    }
+
     if (this->mFreeDevice) {
         spdlog::info("Destroying device");
         this->mDevice->destroy();
@@ -65,14 +70,17 @@ Manager::~Manager()
     }
 }
 
-Sequence
-Manager::constructSequence()
+std::weak_ptr<Sequence>
+Manager::managedSequence()
 {
     SPDLOG_DEBUG("Kompute Manager creating Sequence object");
-    return Sequence(this->mPhysicalDevice,
+    std::shared_ptr<Sequence> sq = std::make_shared<Sequence>(
+                    this->mPhysicalDevice,
                     this->mDevice,
                     this->mComputeQueue,
                     this->mComputeQueueFamilyIndex);
+    this->mManagedSequences.push_back(sq);
+    return sq;
 }
 
 void

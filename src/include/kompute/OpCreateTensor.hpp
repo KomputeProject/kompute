@@ -27,7 +27,9 @@ class OpCreateTensor : public OpBase
 
   private:
     std::shared_ptr<Tensor> mPrimaryTensor;
+    bool mFreePrimaryTensorResources = false;
     std::shared_ptr<Tensor> mStagingTensor;
+    bool mFreeStagingTensorResources = false;
 };
 
 } // End namespace kp

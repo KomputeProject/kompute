@@ -22,6 +22,29 @@ OpCreateTensor::OpCreateTensor(
 OpCreateTensor::~OpCreateTensor()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor destructor started");
+
+    if(!this->mDevice) {
+        spdlog::warn("Kompute OpCreateTensor destructor called with empty device");
+        return;
+    }
+
+    if (!this->mFreePrimaryTensorResources) {
+        SPDLOG_DEBUG("Kompute OpCreateTensor removing primary tensor");
+        if (this->mPrimaryTensor && this->mPrimaryTensor->isInit()) {
+            this->mPrimaryTensor->freeMemoryDestroyGPUResources();
+        } else {
+            spdlog::error("Kompute OpCreateTensor expected to free primary tensor but has already been freed.");
+        }
+    }
+
+    if (!this->mFreeStagingTensorResources) {
+        SPDLOG_DEBUG("Kompute OpCreateTensor removing primary tensor");
+        if (this->mStagingTensor && this->mStagingTensor->isInit()) {
+            this->mStagingTensor->freeMemoryDestroyGPUResources();
+        } else {
+            spdlog::error("Kompute OpCreateTensor expected to free secondary tensor but has already been freed.");
+        }
+    }
 }
 
 void
@@ -35,6 +58,9 @@ OpCreateTensor::init(std::vector<std::shared_ptr<Tensor>> tensors)
     } else if (tensors.size() > 1) {
         spdlog::warn("Kompute OpCreateTensor called with more than 1 tensor");
     }
+
+    this->mFreePrimaryTensorResources = true;
+    this->mFreeStagingTensorResources = true;
 
     this->mPrimaryTensor = tensors[0];
 

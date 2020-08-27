@@ -18,7 +18,7 @@ class Manager
 
     ~Manager();
 
-    Sequence constructSequence();
+    std::weak_ptr<Sequence> managedSequence();
 
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
@@ -48,6 +48,9 @@ class Manager
     bool mFreeDevice = false;
     uint32_t mComputeQueueFamilyIndex = -1;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
+
+    // Always owned resources
+    std::vector<std::shared_ptr<Sequence>> mManagedSequences;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;

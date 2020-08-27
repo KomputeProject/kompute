@@ -178,6 +178,9 @@ class Tensor
     // Create functions
     void createBuffer();
 
+    // Destroy/Free functions
+    void freeMemoryDestroyGPUResources();
+
     // Getter functions
     std::vector<uint32_t> data();
     uint32_t size();
@@ -692,7 +695,9 @@ class OpCreateTensor : public OpBase
 
   private:
     std::shared_ptr<Tensor> mPrimaryTensor;
+    bool mFreePrimaryTensorResources = false;
     std::shared_ptr<Tensor> mStagingTensor;
+    bool mFreeStagingTensorResources = false;
 };
 
 } // End namespace kp

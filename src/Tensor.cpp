@@ -27,30 +27,8 @@ Tensor::~Tensor()
 {
     SPDLOG_DEBUG("Kompute Tensor destructor started");
 
-    if (!this->mDevice) {
-        spdlog::error(
-          "Kompute Sequence destructor reached with null Device pointer");
-        return;
-    }
-
-    if (this->mFreeBuffer) {
-        if (!this->mBuffer) {
-            spdlog::error(
-              "Kompose Tensor expected to free buffer but got null buffer");
-        } else {
-            SPDLOG_DEBUG("Kompose Tensor destroying buffer");
-            this->mDevice->destroy(*this->mBuffer);
-        }
-    }
-
-    if (this->mFreeMemory) {
-        if (!this->mMemory) {
-            spdlog::error(
-              "Kompose Tensor expected to free buffer but got null memory");
-        } else {
-            SPDLOG_DEBUG("Kompose Tensor freeing memory");
-            this->mDevice->freeMemory(*this->mMemory);
-        }
+    if (this->isInit()) {
+        this->freeMemoryDestroyGPUResources();
     }
 
     SPDLOG_DEBUG("Kompute Tensor destructor success");
@@ -343,6 +321,41 @@ Tensor::createBuffer()
     this->mDevice->bindBufferMemory(*this->mBuffer, *this->mMemory, 0);
 
     SPDLOG_DEBUG("Kompute Tensor buffer & memory creation successful");
+}
+
+void Tensor::freeMemoryDestroyGPUResources() {
+    SPDLOG_DEBUG("Kompute Tensor started freeMemoryDestroyGPUResources");
+
+    this->mIsInit = false;
+
+    if (!this->mDevice) {
+        spdlog::error(
+          "Kompute Tensor destructor reached with null Device pointer");
+        return;
+    }
+
+    if (this->mFreeBuffer) {
+        if (!this->mBuffer) {
+            spdlog::error(
+              "Kompose Tensor expected to free buffer but got null buffer");
+        } else {
+            SPDLOG_DEBUG("Kompose Tensor destroying buffer");
+            this->mDevice->destroy(*this->mBuffer);
+        }
+    }
+
+    if (this->mFreeMemory) {
+        if (!this->mMemory) {
+            spdlog::error(
+              "Kompose Tensor expected to free buffer but got null memory");
+        } else {
+            SPDLOG_DEBUG("Kompose Tensor freeing memory");
+            this->mDevice->freeMemory(*this->mMemory);
+        }
+    }
+
+    SPDLOG_DEBUG("Kompute Tensor successful freeMemoryDestroyGPUResources");
+
 }
 
 }

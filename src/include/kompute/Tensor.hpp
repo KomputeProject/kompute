@@ -30,6 +30,9 @@ class Tensor
     // Create functions
     void createBuffer();
 
+    // Destroy/Free functions
+    void freeMemoryDestroyGPUResources();
+
     // Getter functions
     std::vector<uint32_t> data();
     uint32_t size();
@@ -53,6 +56,7 @@ class Tensor
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
     void mapDataFromHostMemory();
     void mapDataIntoHostMemory();
+
 
   private:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
