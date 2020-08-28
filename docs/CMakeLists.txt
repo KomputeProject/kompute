@@ -52,16 +52,14 @@ add_custom_target(gensphinx ALL
         ${SPHINX_SOURCE} ${SPHINX_BUILD}
         -Dbreathe_projects.Kompute=${DOXYGEN_XML_PATH}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS ${DOXYGEN_INDEX_FILE}
+    DEPENDS gendoxygen
     COMMENT "Generating documentation with Sphinx")
 
 # For completeness we also copy the output doxygen html files
-file(COPY ${DOXYGEN_OUTPUT_DIR}/html/ 
-    DESTINATION ${SPHINX_BUILD}/doxygen/)
-#add_custom_target(includedoxygen ALL
-#    COMMAND ${CMAKE_COMMAND}
-#        -E copy_directory
-#        ${DOXYGEN_OUTPUT_DIR}/html/
-#        ${SPHINX_BUILD}/doxygen/
-#    DEPENDS gensphinx)
+add_custom_target(gendocsall ALL
+    COMMAND ${CMAKE_COMMAND}
+        -E copy_directory
+        ${DOXYGEN_OUTPUT_DIR}/html/
+        ${SPHINX_BUILD}/doxygen/
+    DEPENDS gensphinx)
 

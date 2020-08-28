@@ -1,21 +1,9 @@
-#if defined(_WIN32)
-#pragma comment(linker, "/subsystem:console")
-#endif
-
-// clang-format: SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif
-
-#include <vector>
-
-#include <spdlog/spdlog.h>
-// clang-format: ranges.h must come after spdlog.h
-#include <fmt/ranges.h>
 
 #include "catch2/catch.hpp"
 
 #include "kompute/Kompute.hpp"
+
+#include <fmt/ranges.h>
 
 TEST_CASE("End to end OpMult Flow should execute correctly from manager") {
     spdlog::info("TEST CASE STARTING");

@@ -420,41 +420,85 @@ class OpBase
 namespace kp {
 
 /**
-    Container of operations that can be sent to GPU as batch
-*/
+ *  Container of operations that can be sent to GPU as batch
+ */
 class Sequence
 {
   public:
     /**
-        Constructor
+     *  Base constructor for Sequence. Should not be used unless explicit intended.
     */
     Sequence();
+    /**
+     * Main constructor for sequence which requires core vulkan components to generate all dependent resources.
+     *
+     * @param physicalDevice Vulkan physical device
+     * @param device Vulkan logical device
+     * @param computeQueue Vulkan compute queue
+     * @param queueIndex Vulkan compute queue index in device
+     */
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex);
+    /**
+     * Destructor for sequence which is responsible for cleaning all subsequent owned operations.
+     */
     ~Sequence();
 
-    // Initialiser
+    /**
+     * Initialises sequence including the creation of the command pool and the command buffer.
+     */
     void init();
 
-    // Record command functions
-    void begin();
-    void end();
-    void eval();
+    /**
+     * Begins recording commands for commands to be submitted into the command buffer.
+     */
+    bool begin();
+    /**
+     * Ends the recording and stops recording commands when the record command is sent.
+     */
+    bool end();
+    /**
+     * Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier.
+     */
+    bool eval();
 
-    // TODO: Explore design without template using just top level class
+    /**
+     * Returns true if the sequence is currently in recording activated.
+     *
+     * @return Boolean stating if recording ongoing.
+     */
+    bool isRecording();
+
+    /**
+     * Returns true if the sequence has been successfully initialised.
+     *
+     * @return Boolean stating if sequence has been initialised.
+     */
+    bool isInit();
+
+    /**
+     * Record function for operation to be added to the GPU queue in batch. This template requires classes to be derived from the OpBase class. This function also requires the Sequence to be recording, otherwise it will not be able to add the operation.
+     *
+     * @param tensors Vector of tensors to use for the operation
+     */
     template<typename T, typename... TArgs>
-    void record(std::vector<std::shared_ptr<Tensor>> tensors)
+    bool record(std::vector<std::shared_ptr<Tensor>> tensors)
     {
         static_assert(std::is_base_of<OpBase, T>::value,
-                      "Template only valid with OpBase derived classes");
+                      "Kompute Sequence record(...) template only valid with OpBase derived classes");
 
         SPDLOG_DEBUG("Kompute Sequence record function started");
 
+        if (!this->isRecording()) {
+            spdlog::error("Kompute sequence record attempted when not record BEGIN");
+            return false;
+        }
+
         SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op = new T(
-          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, tensors);
+        T* op =
+          new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, tensors);
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
@@ -468,6 +512,8 @@ class Sequence
         baseOpPtr->record();
 
         mOperations.push_back(std::move(baseOpPtr));
+
+        return true;
     }
 
   private:
@@ -483,7 +529,8 @@ class Sequence
     // Base op objects
     std::vector<std::unique_ptr<OpBase>> mOperations;
 
-    // Record state
+    // State
+    bool mIsInit = false;
     bool mRecording = false;
 
     // Create functions
@@ -505,28 +552,54 @@ class Manager
   private:
   public:
     /**
-        Constructor
+        Base constructor and default used which creates the base resources including choosing the device 0 by default.
     */
     Manager();
 
+    /**
+        Similar to base constructor but allows the user to provide the device they would like to create the resources on.
+    */
     Manager(uint32_t physicalDeviceIndex);
 
+    /**
+     * Manager constructor which allows your own vulkan application to integrate with the vulkan kompute use.
+     *
+     * @param instance Vulkan compute instance to base this application
+     * @physicalDevice Vulkan physical device to use for application
+     * @device Vulkan logical device to use for all base resources
+     * @physicalDeviceIndex Index for vulkan physical device used
+     */
     Manager(std::shared_ptr<vk::Instance> instance,
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device,
             uint32_t physicalDeviceIndex);
 
+    /**
+     * Manager destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed.
+     */
     ~Manager();
 
-    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sessionName);
+    /**
+     * Get or create a managed Sequence that will be contained by this manager. If the named sequence does not currently exist, it would be created and initialised.
+     * 
+     * @param sequenceName The name for the named sequence to be retrieved or created
+     * @return Weak pointer to the manager owned sequence resource
+     */
+    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sequenceName);
 
+    /**
+     * Operation that adds extra operations to existing or new created sequences.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sessionName = KP_DEFAULT_SESSION)
+                std::string sequenceName = KP_DEFAULT_SESSION)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
         std::weak_ptr<Sequence> sqWeakPtr =
-          this->getOrCreateManagedSequence(sessionName);
+          this->getOrCreateManagedSequence(sequenceName);
 
         if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
@@ -574,22 +647,47 @@ class Manager
 
 namespace kp {
 
+/**
+    Abstraction for compute shaders that are run on top of tensors grouped via ParameterGroups (which group descriptorsets)
+*/
 class Algorithm
 {
   public:
+    /**
+        Base constructor for Algorithm. Should not be used unless explicit intended.
+    */
     Algorithm();
 
+    /**
+     *  Default constructor for Algorithm
+     *
+     *  @param device The Vulkan device to use for creating resources
+     *  @param commandBuffer The vulkan command buffer to bind the pipeline and shaders
+    */
     Algorithm(std::shared_ptr<vk::Device> device,
               std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
-    // TODO: Add specialisation data
-    // TODO: Explore other ways of passing shader (ie raw bytes)
+    /**
+     * Initialiser for the shader data provided to the algoithm as well as tensor parameters that will be used in shader.
+     *
+     * @param shaderFileData The bytes in spir-v format of the shader
+     * @tensorParams The Tensors to be used in the Algorithm / shader for processing
+     */
     void init(const std::vector<char>& shaderFileData,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 
+    /**
+     * Destructor for Algorithm which is responsible for freeing and desroying respective pipelines and owned parameter groups.
+     */
     ~Algorithm();
 
-    // Record commands
+    /**
+     * Records the dispatch function with the provided template parameters or alternatively using the size of the tensor by default.
+     *
+     * @param x Layout X dispatch value
+     * @param y Layout Y dispatch value
+     * @param z Layout Z dispatch value
+     */
     void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
   private:

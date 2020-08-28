@@ -88,11 +88,11 @@ Manager::~Manager()
 }
 
 std::weak_ptr<Sequence>
-Manager::getOrCreateManagedSequence(std::string sessionName)
+Manager::getOrCreateManagedSequence(std::string sequenceName)
 {
     SPDLOG_DEBUG("Kompute Manager creating Sequence object");
     std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
-      this->mManagedSequences.find(sessionName);
+      this->mManagedSequences.find(sequenceName);
 
     if (found == this->mManagedSequences.end()) {
         std::shared_ptr<Sequence> sq =
@@ -101,7 +101,7 @@ Manager::getOrCreateManagedSequence(std::string sessionName)
                                      this->mComputeQueue,
                                      this->mComputeQueueFamilyIndex);
         sq->init();
-        this->mManagedSequences.insert({ sessionName, sq });
+        this->mManagedSequences.insert({ sequenceName, sq });
         return sq;
     } else {
         return found->second;

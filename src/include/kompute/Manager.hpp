@@ -18,28 +18,54 @@ class Manager
   private:
   public:
     /**
-        Constructor
+        Base constructor and default used which creates the base resources including choosing the device 0 by default.
     */
     Manager();
 
+    /**
+        Similar to base constructor but allows the user to provide the device they would like to create the resources on.
+    */
     Manager(uint32_t physicalDeviceIndex);
 
+    /**
+     * Manager constructor which allows your own vulkan application to integrate with the vulkan kompute use.
+     *
+     * @param instance Vulkan compute instance to base this application
+     * @physicalDevice Vulkan physical device to use for application
+     * @device Vulkan logical device to use for all base resources
+     * @physicalDeviceIndex Index for vulkan physical device used
+     */
     Manager(std::shared_ptr<vk::Instance> instance,
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device,
             uint32_t physicalDeviceIndex);
 
+    /**
+     * Manager destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed.
+     */
     ~Manager();
 
-    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sessionName);
+    /**
+     * Get or create a managed Sequence that will be contained by this manager. If the named sequence does not currently exist, it would be created and initialised.
+     * 
+     * @param sequenceName The name for the named sequence to be retrieved or created
+     * @return Weak pointer to the manager owned sequence resource
+     */
+    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sequenceName);
 
+    /**
+     * Operation that adds extra operations to existing or new created sequences.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sessionName = KP_DEFAULT_SESSION)
+                std::string sequenceName = KP_DEFAULT_SESSION)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
         std::weak_ptr<Sequence> sqWeakPtr =
-          this->getOrCreateManagedSequence(sessionName);
+          this->getOrCreateManagedSequence(sequenceName);
 
         if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");

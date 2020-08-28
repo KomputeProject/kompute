@@ -6,6 +6,7 @@ namespace kp {
 Sequence::Sequence()
 {
     SPDLOG_DEBUG("Kompute Sequence base constructor");
+    this->mIsInit = false;
 }
 
 Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -19,6 +20,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
+    this->mIsInit = true;
 }
 
 Sequence::~Sequence()
@@ -60,11 +62,19 @@ Sequence::init()
 {
     this->createCommandPool();
     this->createCommandBuffer();
+    this->mIsInit = true;
 }
 
-void
+bool
 Sequence::begin()
 {
+    SPDLOG_DEBUG("Kompute sequence called BEGIN");
+
+    if (this->isRecording()) {
+        spdlog::warn("Kompute Sequence begin called when  already recording");
+        return false;
+    }
+
     if (!this->mCommandPool) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
@@ -77,11 +87,19 @@ Sequence::begin()
         spdlog::warn("Kompute Sequence attempted to start command recording "
                      "but recording already started");
     }
+    return true;
 }
 
-void
+bool
 Sequence::end()
 {
+    SPDLOG_DEBUG("Kompute Sequence calling END");
+
+    if (!this->isRecording()) {
+        spdlog::warn("Kompute Sequence end called when not recording");
+        return false;
+    }
+
     if (!this->mCommandPool) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
@@ -94,12 +112,18 @@ Sequence::end()
         spdlog::warn("Kompute Sequence attempted to end command recording but "
                      "recording not started");
     }
+    return true;
 }
 
-void
+bool
 Sequence::eval()
 {
     SPDLOG_DEBUG("Kompute sequence compute recording EVAL");
+
+    if (this->isRecording()) {
+        spdlog::warn("Kompute Sequence eval called when still recording");
+        return false;
+    }
 
     const vk::PipelineStageFlags waitStageMask =
       vk::PipelineStageFlagBits::eTransfer;
@@ -122,6 +146,16 @@ Sequence::eval()
     }
 
     SPDLOG_DEBUG("Kompute sequence EVAL success");
+
+    return true;
+}
+
+bool Sequence::isRecording() {
+    return this->mRecording;
+}
+
+bool Sequence::isInit() {
+    return this->mIsInit;
 }
 
 void
