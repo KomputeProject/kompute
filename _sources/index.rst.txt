@@ -13,23 +13,43 @@ Welcome to Vulkan Kompute's documentation!
    :caption: Contents:
 
 
-Docs
+Reference
 ====
+
+You can also go directoy to the `raw doxygen docs <doxygen/annotated.html>`_
+
+Manager
+-------
 
 .. doxygenclass:: kp::Manager
    :members:
 
+Sequence
+-------
+
 .. doxygenclass:: kp::Sequence
    :members:
+
+OpBase
+-------
 
 .. doxygenclass:: kp::OpBase
    :members:
 
+OpMult
+-------
+
 .. doxygenclass:: kp::OpMult
    :members:
 
+OpCreateTensor
+-------
+
 .. doxygenclass:: kp::OpCreateTensor
    :members:
+
+Algorithm
+-------
 
 .. doxygenclass:: kp::Algorithm
    :members:

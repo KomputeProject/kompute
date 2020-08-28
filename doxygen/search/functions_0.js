@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['init_25',['init',['../classkp_1_1OpBase.html#af1fb6bd20031f0a70b5ef881f88de721',1,'kp::OpBase::init()'],['../classkp_1_1OpCreateTensor.html#ad0961c7a2acec064f0253964616d0762',1,'kp::OpCreateTensor::init()'],['../classkp_1_1OpMult.html#a91b0b3f5b4e2f590df819d094e0b9bad',1,'kp::OpMult::init()']]]
+  ['algorithm_49',['Algorithm',['../classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b',1,'kp::Algorithm::Algorithm()'],['../classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303',1,'kp::Algorithm::Algorithm(std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer)']]]
 ];

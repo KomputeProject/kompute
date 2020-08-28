@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['postsubmit_11',['postSubmit',['../classkp_1_1OpBase.html#a38e7e80ccfd7f6d1f6ccc408610bda13',1,'kp::OpBase::postSubmit()'],['../classkp_1_1OpCreateTensor.html#a43ef24dc63dc05abc8cee693f95d5b6a',1,'kp::OpCreateTensor::postSubmit()'],['../classkp_1_1OpMult.html#aa1dde9d4824dec8269c02a7526d6941d',1,'kp::OpMult::postSubmit()']]]
+  ['end_4',['end',['../classkp_1_1Sequence.html#ac51befb176acd2064d3e85133bf66ada',1,'kp::Sequence']]],
+  ['eval_5',['eval',['../classkp_1_1Sequence.html#aa0b36564769ba25a43a38e14a2d510dc',1,'kp::Sequence']]],
+  ['evalop_6',['evalOp',['../classkp_1_1Manager.html#ae866a25ee386c581f2be427789e15e94',1,'kp::Manager']]]
 ];

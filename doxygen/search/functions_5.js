@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sequence_32',['Sequence',['../classkp_1_1Sequence.html#a7086ddbc33ffb5c99cfc83cfa926f65e',1,'kp::Sequence']]]
+  ['freememorydestroygpuresources_56',['freeMemoryDestroyGPUResources',['../classkp_1_1Tensor.html#afdfc816a4f040ad43e36534c6fbc69a2',1,'kp::Tensor']]]
 ];

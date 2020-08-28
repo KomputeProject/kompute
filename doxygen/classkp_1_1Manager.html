@@ -79,22 +79,23 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a43cc11ff353b2b0775e6a204c8395d97"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">Manager</a> ()</td></tr>
 <tr class="separator:a43cc11ff353b2b0775e6a204c8395d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afcaa8d2799118d1323dfbf35a6980d5c"><td class="memItemLeft" align="right" valign="top"><a id="afcaa8d2799118d1323dfbf35a6980d5c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Manager</b> (std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::Device &gt;, uint32_t queueIndex)</td></tr>
-<tr class="separator:afcaa8d2799118d1323dfbf35a6980d5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5831619ed835644aa964180214a407b0"><td class="memItemLeft" align="right" valign="top"><a id="a5831619ed835644aa964180214a407b0"></a>
-std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getOrCreateManagedSequence</b> (std::string sessionName)</td></tr>
-<tr class="separator:a5831619ed835644aa964180214a407b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a533d4a43387e1f0e1988401754ee3d56"><td class="memTemplParams" colspan="2"><a id="a533d4a43387e1f0e1988401754ee3d56"></a>
-template&lt;typename T , typename... TArgs&gt; </td></tr>
-<tr class="memitem:a533d4a43387e1f0e1988401754ee3d56"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>evalOp</b> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sessionName=KP_DEFAULT_SESSION)</td></tr>
-<tr class="separator:a533d4a43387e1f0e1988401754ee3d56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2750eee25b482b114a8032a35664de27"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">Manager</a> (uint32_t physicalDeviceIndex)</td></tr>
+<tr class="separator:a2750eee25b482b114a8032a35664de27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">Manager</a> (std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, uint32_t physicalDeviceIndex)</td></tr>
+<tr class="separator:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">~Manager</a> ()</td></tr>
+<tr class="separator:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55d0744536347209bb88250b2e276d1a"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a> (std::string sequenceName)</td></tr>
+<tr class="separator:a55d0744536347209bb88250b2e276d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae866a25ee386c581f2be427789e15e94"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
+<tr class="memitem:ae866a25ee386c581f2be427789e15e94"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ae866a25ee386c581f2be427789e15e94">evalOp</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sequenceName=KP_DEFAULT_SESSION)</td></tr>
+<tr class="separator:ae866a25ee386c581f2be427789e15e94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base orchestrator which creates and manages device and child components </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a43cc11ff353b2b0775e6a204c8395d97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43cc11ff353b2b0775e6a204c8395d97">&#9670;&nbsp;</a></span>Manager()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a43cc11ff353b2b0775e6a204c8395d97">&#9670;&nbsp;</a></span>Manager() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -107,7 +108,164 @@ template&lt;typename T , typename... TArgs&gt; </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Constructor </p>
+<p>Base constructor and default used which creates the base resources including choosing the device 0 by default. </p>
+
+</div>
+</div>
+<a id="a2750eee25b482b114a8032a35664de27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2750eee25b482b114a8032a35664de27">&#9670;&nbsp;</a></span>Manager() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::Manager::Manager </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>physicalDeviceIndex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Similar to base constructor but allows the user to provide the device they would like to create the resources on. </p>
+
+</div>
+</div>
+<a id="a81eb45116fae9ae3a34d22cf7a238b54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81eb45116fae9ae3a34d22cf7a238b54">&#9670;&nbsp;</a></span>Manager() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::Manager::Manager </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; vk::Instance &gt;&#160;</td>
+          <td class="paramname"><em>instance</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::PhysicalDevice &gt;&#160;</td>
+          <td class="paramname"><em>physicalDevice</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::Device &gt;&#160;</td>
+          <td class="paramname"><em>device</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>physicalDeviceIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classkp_1_1Manager.html">Manager</a> constructor which allows your own vulkan application to integrate with the vulkan kompute use.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">instance</td><td>Vulkan compute instance to base this application @physicalDevice Vulkan physical device to use for application @device Vulkan logical device to use for all base resources @physicalDeviceIndex Index for vulkan physical device used </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af9b31d91851f8b7bb8d95c32a905b1ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9b31d91851f8b7bb8d95c32a905b1ad">&#9670;&nbsp;</a></span>~Manager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::Manager::~Manager </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classkp_1_1Manager.html">Manager</a> destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae866a25ee386c581f2be427789e15e94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae866a25ee386c581f2be427789e15e94">&#9670;&nbsp;</a></span>evalOp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename... TArgs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Manager::evalOp </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sequenceName</em> = <code>KP_DEFAULT_SESSION</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Operation that adds extra operations to existing or new created sequences.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>
+    <tr><td class="paramname">sequenceName</td><td>The name of the sequence to be retrieved or created </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a55d0744536347209bb88250b2e276d1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55d0744536347209bb88250b2e276d1a">&#9670;&nbsp;</a></span>getOrCreateManagedSequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::weak_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::getOrCreateManagedSequence </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sequenceName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Get or create a managed <a class="el" href="classkp_1_1Sequence.html">Sequence</a> that will be contained by this manager. If the named sequence does not currently exist, it would be created and initialised.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequenceName</td><td>The name for the named sequence to be retrieved or created </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Weak pointer to the manager owned sequence resource </dd></dl>
 
 </div>
 </div>

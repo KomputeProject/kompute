@@ -72,17 +72,20 @@ $(function() {
 <div class="title">kp::Algorithm Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="Algorithm_8hpp_source.html">Algorithm.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a71175003231f8a716df9146d70a70303"><td class="memItemLeft" align="right" valign="top"><a id="a71175003231f8a716df9146d70a70303"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Algorithm</b> (std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer)</td></tr>
+<tr class="memitem:abca36359b946dc1102890d34b6fa562b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">Algorithm</a> ()</td></tr>
+<tr class="separator:abca36359b946dc1102890d34b6fa562b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71175003231f8a716df9146d70a70303"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer)</td></tr>
 <tr class="separator:a71175003231f8a716df9146d70a70303"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae54d2ab78d3236964d4281635368d8ef"><td class="memItemLeft" align="right" valign="top"><a id="ae54d2ab78d3236964d4281635368d8ef"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (const std::vector&lt; char &gt; &amp;shaderFileData, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensorParams)</td></tr>
+<tr class="memitem:ae54d2ab78d3236964d4281635368d8ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">init</a> (const std::vector&lt; char &gt; &amp;shaderFileData, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensorParams)</td></tr>
 <tr class="separator:ae54d2ab78d3236964d4281635368d8ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad4bd57e0e03ccdc113c7c38b181ccbf6"><td class="memItemLeft" align="right" valign="top"><a id="ad4bd57e0e03ccdc113c7c38b181ccbf6"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>recordDispatch</b> (uint32_t x=1, uint32_t y=1, uint32_t z=1)</td></tr>
+<tr class="memitem:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">~Algorithm</a> ()</td></tr>
+<tr class="separator:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4bd57e0e03ccdc113c7c38b181ccbf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">recordDispatch</a> (uint32_t x=1, uint32_t y=1, uint32_t z=1)</td></tr>
 <tr class="separator:ad4bd57e0e03ccdc113c7c38b181ccbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab00ba598796461653ce59d9db1a14e8d"><td class="memItemLeft" align="right" valign="top"><a id="ab00ba598796461653ce59d9db1a14e8d"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Algorithm</b> (std::shared_ptr&lt; vk::Device &gt; device)</td></tr>
@@ -91,6 +94,160 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>recordDispatch</b> (u
 void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string shaderFilePath, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensorParams)</td></tr>
 <tr class="separator:a3eb6701b515c27c7aa158ce73dc59a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Abstraction for compute shaders that are run on top of tensors grouped via ParameterGroups (which group descriptorsets) </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="abca36359b946dc1102890d34b6fa562b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abca36359b946dc1102890d34b6fa562b">&#9670;&nbsp;</a></span>Algorithm() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::Algorithm::Algorithm </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Base constructor for <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a>. Should not be used unless explicit intended. </p>
+
+</div>
+</div>
+<a id="a71175003231f8a716df9146d70a70303"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71175003231f8a716df9146d70a70303">&#9670;&nbsp;</a></span>Algorithm() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::Algorithm::Algorithm </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; vk::Device &gt;&#160;</td>
+          <td class="paramname"><em>device</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default constructor for <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">device</td><td>The Vulkan device to use for creating resources </td></tr>
+    <tr><td class="paramname">commandBuffer</td><td>The vulkan command buffer to bind the pipeline and shaders </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8bb732b02135afeec7e80e7a2c5d3ce7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bb732b02135afeec7e80e7a2c5d3ce7">&#9670;&nbsp;</a></span>~Algorithm()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::Algorithm::~Algorithm </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Destructor for <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> which is responsible for freeing and desroying respective pipelines and owned parameter groups. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae54d2ab78d3236964d4281635368d8ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae54d2ab78d3236964d4281635368d8ef">&#9670;&nbsp;</a></span>init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::init </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; char &gt; &amp;&#160;</td>
+          <td class="paramname"><em>shaderFileData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>tensorParams</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Initialiser for the shader data provided to the algoithm as well as tensor parameters that will be used in shader.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">shaderFileData</td><td>The bytes in spir-v format of the shader @tensorParams The Tensors to be used in the <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> / shader for processing </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad4bd57e0e03ccdc113c7c38b181ccbf6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4bd57e0e03ccdc113c7c38b181ccbf6">&#9670;&nbsp;</a></span>recordDispatch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::recordDispatch </td>
+          <td>(</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>x</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>y</em> = <code>1</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>z</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Records the dispatch function with the provided template parameters or alternatively using the size of the tensor by default.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Layout X dispatch value </td></tr>
+    <tr><td class="paramname">y</td><td>Layout Y dispatch value </td></tr>
+    <tr><td class="paramname">z</td><td>Layout Z dispatch value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>C:/Users/axsau/Programming/vulkan/vulkan-compute/src/include/kompute/<a class="el" href="Algorithm_8hpp_source.html">Algorithm.hpp</a></li>
 <li>C:/Users/axsau/Programming/vulkan/vulkan-compute/src/include/kompute/<a class="el" href="Parameter_8hpp_source.html">Parameter.hpp</a></li>

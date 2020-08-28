@@ -73,7 +73,7 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;kompute/Core.hpp&quot;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;kompute/OpBase.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;kompute/operations/OpBase.hpp&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>kp {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
@@ -81,73 +81,91 @@ $(function() {
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a7086ddbc33ffb5c99cfc83cfa926f65e">   18</a></span>&#160;    <a class="code" href="classkp_1_1Sequence.html#a7086ddbc33ffb5c99cfc83cfa926f65e">Sequence</a>();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <a class="code" href="classkp_1_1Sequence.html#a7086ddbc33ffb5c99cfc83cfa926f65e">Sequence</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;             std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;             std::shared_ptr&lt;vk::Queue&gt; computeQueue,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;             uint32_t queueIndex);</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    ~<a class="code" href="classkp_1_1Sequence.html">Sequence</a>();</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="comment">// Initialiser</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keywordtype">void</span> init();</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">// Record command functions</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">void</span> begin();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordtype">void</span> end();</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">void</span> eval();</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="comment">// TODO: Explore design without template using just top level class</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... TArgs&gt;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> record(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors)</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        static_assert(std::is_base_of&lt;OpBase, T&gt;::value,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                      <span class="stringliteral">&quot;Template only valid with OpBase derived classes&quot;</span>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Sequence record function started&quot;</span>);</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Sequence creating OpBase derived class instance&quot;</span>);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        T* op = <span class="keyword">new</span> T(</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;          this-&gt;mPhysicalDevice, this-&gt;mDevice, this-&gt;mCommandBuffer, tensors);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <a class="code" href="classkp_1_1OpBase.html">OpBase</a>* baseOp = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classkp_1_1OpBase.html">OpBase</a>*<span class="keyword">&gt;</span>(op);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        std::unique_ptr&lt;OpBase&gt; baseOpPtr{ baseOp };</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        SPDLOG_DEBUG(</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;          <span class="stringliteral">&quot;Kompute Sequence running init on OpBase derived class instance&quot;</span>);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        baseOpPtr-&gt;init();</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        SPDLOG_DEBUG(</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;          <span class="stringliteral">&quot;Kompute Sequence running record on OpBase derived class instance&quot;</span>);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        baseOpPtr-&gt;record();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        mOperations.push_back(std::move(baseOpPtr));</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    std::shared_ptr&lt;vk::Queue&gt; mComputeQueue = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    uint32_t mQueueIndex = -1;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::shared_ptr&lt;vk::CommandPool&gt; mCommandPool = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">bool</span> mFreeCommandPool = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    std::shared_ptr&lt;vk::CommandBuffer&gt; mCommandBuffer = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">bool</span> mFreeCommandBuffer = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="comment">// Base op objects</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    std::vector&lt;std::unique_ptr&lt;OpBase&gt;&gt; mOperations;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="comment">// Record state</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">bool</span> mRecording = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="comment">// Create functions</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">void</span> createCommandPool();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordtype">void</span> createCommandBuffer();</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a83518e6c7f249680a9a0a9e7d5270b9a">   27</a></span>&#160;    <a class="code" href="classkp_1_1Sequence.html#a83518e6c7f249680a9a0a9e7d5270b9a">Sequence</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;             std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;             std::shared_ptr&lt;vk::Queue&gt; computeQueue,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;             uint32_t queueIndex);</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a657bf520b64ddbd42e12095c5241ef52">   34</a></span>&#160;    <a class="code" href="classkp_1_1Sequence.html#a657bf520b64ddbd42e12095c5241ef52">~Sequence</a>();</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a437ff4b49b8ce0e4fd9f80ea2d1d3593">   39</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Sequence.html#a437ff4b49b8ce0e4fd9f80ea2d1d3593">init</a>();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a9b4922affdae332381e14c7c555bdfc4">   44</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Sequence.html#a9b4922affdae332381e14c7c555bdfc4">begin</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#ac51befb176acd2064d3e85133bf66ada">   48</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Sequence.html#ac51befb176acd2064d3e85133bf66ada">end</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#aa0b36564769ba25a43a38e14a2d510dc">   52</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Sequence.html#aa0b36564769ba25a43a38e14a2d510dc">eval</a>();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85">   59</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85">isRecording</a>();</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">   66</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">isInit</a>();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... TArgs&gt;</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classkp_1_1Sequence.html#a169bf7b4ea0a96fc197ed4852511b202">   74</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Sequence.html#a169bf7b4ea0a96fc197ed4852511b202">record</a>(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors)</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        static_assert(std::is_base_of&lt;OpBase, T&gt;::value,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                      <span class="stringliteral">&quot;Kompute Sequence record(...) template only valid with OpBase derived classes&quot;</span>);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Sequence record function started&quot;</span>);</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;} <span class="comment">// End namespace kp</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordflow">if</span> (!this-&gt;<a class="code" href="classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85">isRecording</a>()) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            spdlog::error(<span class="stringliteral">&quot;Kompute sequence record attempted when not record BEGIN&quot;</span>);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        }</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Sequence creating OpBase derived class instance&quot;</span>);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        T* op =</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;          <span class="keyword">new</span> T(this-&gt;mPhysicalDevice, this-&gt;mDevice, this-&gt;mCommandBuffer, tensors);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <a class="code" href="classkp_1_1OpBase.html">OpBase</a>* baseOp = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classkp_1_1OpBase.html">OpBase</a>*<span class="keyword">&gt;</span>(op);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        std::unique_ptr&lt;OpBase&gt; baseOpPtr{ baseOp };</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        SPDLOG_DEBUG(</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;          <span class="stringliteral">&quot;Kompute Sequence running init on OpBase derived class instance&quot;</span>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        baseOpPtr-&gt;init();</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        SPDLOG_DEBUG(</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;          <span class="stringliteral">&quot;Kompute Sequence running record on OpBase derived class instance&quot;</span>);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        baseOpPtr-&gt;record();</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        mOperations.push_back(std::move(baseOpPtr));</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    }</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    std::shared_ptr&lt;vk::Queue&gt; mComputeQueue = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    uint32_t mQueueIndex = -1;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    std::shared_ptr&lt;vk::CommandPool&gt; mCommandPool = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">bool</span> mFreeCommandPool = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    std::shared_ptr&lt;vk::CommandBuffer&gt; mCommandBuffer = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">bool</span> mFreeCommandBuffer = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="comment">// Base op objects</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    std::vector&lt;std::unique_ptr&lt;OpBase&gt;&gt; mOperations;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="comment">// State</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keywordtype">bool</span> mIsInit = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">bool</span> mRecording = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="comment">// Create functions</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">void</span> createCommandPool();</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordtype">void</span> createCommandBuffer();</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;};</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;} <span class="comment">// End namespace kp</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclasskp_1_1Sequence_html_aa0b36564769ba25a43a38e14a2d510dc"><div class="ttname"><a href="classkp_1_1Sequence.html#aa0b36564769ba25a43a38e14a2d510dc">kp::Sequence::eval</a></div><div class="ttdeci">bool eval()</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_a169bf7b4ea0a96fc197ed4852511b202"><div class="ttname"><a href="classkp_1_1Sequence.html#a169bf7b4ea0a96fc197ed4852511b202">kp::Sequence::record</a></div><div class="ttdeci">bool record(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors)</div><div class="ttdef"><b>Definition:</b> Sequence.hpp:74</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_a657bf520b64ddbd42e12095c5241ef52"><div class="ttname"><a href="classkp_1_1Sequence.html#a657bf520b64ddbd42e12095c5241ef52">kp::Sequence::~Sequence</a></div><div class="ttdeci">~Sequence()</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_a9b4922affdae332381e14c7c555bdfc4"><div class="ttname"><a href="classkp_1_1Sequence.html#a9b4922affdae332381e14c7c555bdfc4">kp::Sequence::begin</a></div><div class="ttdeci">bool begin()</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_a84ff30d6164cc730bd554dcdfd423f74"><div class="ttname"><a href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">kp::Sequence::isInit</a></div><div class="ttdeci">bool isInit()</div></div>
 <div class="ttc" id="aclasskp_1_1OpBase_html"><div class="ttname"><a href="classkp_1_1OpBase.html">kp::OpBase</a></div><div class="ttdef"><b>Definition:</b> OpBase.hpp:18</div></div>
 <div class="ttc" id="aclasskp_1_1Sequence_html"><div class="ttname"><a href="classkp_1_1Sequence.html">kp::Sequence</a></div><div class="ttdef"><b>Definition:</b> Sequence.hpp:13</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_a83518e6c7f249680a9a0a9e7d5270b9a"><div class="ttname"><a href="classkp_1_1Sequence.html#a83518e6c7f249680a9a0a9e7d5270b9a">kp::Sequence::Sequence</a></div><div class="ttdeci">Sequence(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::Queue &gt; computeQueue, uint32_t queueIndex)</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_ac6400fc9c0fb879e1131157fef8b2e85"><div class="ttname"><a href="classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85">kp::Sequence::isRecording</a></div><div class="ttdeci">bool isRecording()</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_a437ff4b49b8ce0e4fd9f80ea2d1d3593"><div class="ttname"><a href="classkp_1_1Sequence.html#a437ff4b49b8ce0e4fd9f80ea2d1d3593">kp::Sequence::init</a></div><div class="ttdeci">void init()</div></div>
 <div class="ttc" id="aclasskp_1_1Sequence_html_a7086ddbc33ffb5c99cfc83cfa926f65e"><div class="ttname"><a href="classkp_1_1Sequence.html#a7086ddbc33ffb5c99cfc83cfa926f65e">kp::Sequence::Sequence</a></div><div class="ttdeci">Sequence()</div></div>
+<div class="ttc" id="aclasskp_1_1Sequence_html_ac51befb176acd2064d3e85133bf66ada"><div class="ttname"><a href="classkp_1_1Sequence.html#ac51befb176acd2064d3e85133bf66ada">kp::Sequence::end</a></div><div class="ttdeci">bool end()</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['manager_26',['Manager',['../classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97',1,'kp::Manager']]]
+  ['begin_50',['begin',['../classkp_1_1Sequence.html#a9b4922affdae332381e14c7c555bdfc4',1,'kp::Sequence']]]
 ];
