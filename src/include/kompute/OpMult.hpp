@@ -13,10 +13,16 @@
 
 namespace kp {
 
+/**
+    Base algorithm based operation
+*/
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
 class OpMult : public OpBase
 {
   public:
+    /**
+        Constructor
+    */
     OpMult();
 
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,

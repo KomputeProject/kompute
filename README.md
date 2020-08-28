@@ -36,6 +36,15 @@
 
 ## Getting Started
 
+### Setup
+
+Kompute is provided as a single header file `Kompute.hpp` that can be simply included in your code.
+
+You can go to our [release page]() to grab the latest library or you can [build from source]().
+
+
+### Your first Kompute
+
 Run your tensors against default operations via the Manager.
 
 ```c++
@@ -166,7 +175,17 @@ Simplified Kompute Components
 
 We appreciate PRs and Issues. If you want to contribute try checking the "Good first issue" tag, but even using Vulkan Kompute and reporting issues is a great contribution!
 
-### Dev Overview
+### Contributing
+
+#### Dev Dependencies
+
+* Testing
+    + Catch2
+* Documentation
+    + Doxygen (with Dot)
+    + Sphynx
+
+#### Development
 
 * Follows Mozilla C++ Style Guide https://www-archive.mozilla.org/hacking/mozilla-style-guide.html
     + Uses post-commit hook to run the linter, you can set it up so it runs the linter before commit
@@ -174,5 +193,4 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
     + All dependencies are defined in vcpkg.json 
 * Uses cmake as build system, and provides a top level makefile with recommended command
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
-
 

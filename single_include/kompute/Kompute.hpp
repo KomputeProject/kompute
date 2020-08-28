@@ -233,10 +233,16 @@ class Tensor
 
 namespace kp {
 
+/**
+    Base Operation
+*/
 class OpBase
 {
   private:
   public:
+    /**
+        Constructor
+    */
     OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
 
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -250,7 +256,9 @@ class OpBase
         this->mCommandBuffer = commandBuffer;
     }
 
-    ~OpBase() { SPDLOG_DEBUG("Compute OpBase destructor started"); }
+    ~OpBase() {
+        SPDLOG_DEBUG("Compute OpBase destructor started"); 
+    }
 
     virtual void init(std::vector<std::shared_ptr<Tensor>> tensors)
     {
@@ -271,9 +279,15 @@ class OpBase
 
 namespace kp {
 
+/**
+    Container of operations that can be sent to GPU as batch
+*/
 class Sequence
 {
   public:
+    /**
+        Constructor
+    */
     Sequence();
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
@@ -338,10 +352,16 @@ class Sequence
 
 namespace kp {
 
+/**
+    Base orchestrator which creates and manages device and child components
+*/
 class Manager
 {
   private:
   public:
+    /**
+        Constructor
+    */
     Manager();
 
     Manager(std::shared_ptr<vk::Instance> instance,
@@ -452,10 +472,16 @@ class Algorithm
 
 namespace kp {
 
+/**
+    Base algorithm based operation
+*/
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
 class OpMult : public OpBase
 {
   public:
+    /**
+        Constructor
+    */
     OpMult();
 
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,

@@ -8,7 +8,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG=1")
 set(CMAKE_CXX_FLAGS_RELEASE "-DRELEASE=1")
 
+set(CMAKE_VERBOSE_MAKEFILE on)
+
 option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" ON)
+option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" ON)
+
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/config" ${CMAKE_MODULE_PATH})
 
 # Allow scripts to call main kompute Makefile
 function(kompute_make KOMPUTE_MAKE_TARGET)
@@ -17,6 +22,10 @@ function(kompute_make KOMPUTE_MAKE_TARGET)
 endfunction()
 
 add_subdirectory(src)
+
+if(KOMPUTE_OPT_BUILD_DOCS)
+    add_subdirectory(docs)
+endif()
 
 if(KOMPUTE_OPT_BUILD_TESTS)
     include(CTest)

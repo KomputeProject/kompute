@@ -6,10 +6,16 @@
 
 namespace kp {
 
+/**
+    Base Operation
+*/
 class OpBase
 {
   private:
   public:
+    /**
+        Constructor
+    */
     OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
 
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -23,7 +29,9 @@ class OpBase
         this->mCommandBuffer = commandBuffer;
     }
 
-    ~OpBase() { SPDLOG_DEBUG("Compute OpBase destructor started"); }
+    ~OpBase() {
+        SPDLOG_DEBUG("Compute OpBase destructor started"); 
+    }
 
     virtual void init(std::vector<std::shared_ptr<Tensor>> tensors)
     {

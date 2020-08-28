@@ -6,10 +6,16 @@
 
 namespace kp {
 
+/**
+    Base orchestrator which creates and manages device and child components
+*/
 class Manager
 {
   private:
   public:
+    /**
+        Constructor
+    */
     Manager();
 
     Manager(std::shared_ptr<vk::Instance> instance,

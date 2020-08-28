@@ -6,9 +6,15 @@
 
 namespace kp {
 
+/**
+    Container of operations that can be sent to GPU as batch
+*/
 class Sequence
 {
   public:
+    /**
+        Constructor
+    */
     Sequence();
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
