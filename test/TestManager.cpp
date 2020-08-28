@@ -102,3 +102,24 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
 
     spdlog::info("Called manager eval success END PROGRAM");
 }
+
+TEST_CASE("Test manager get create functionality for sequences") {
+    kp::Manager mgr;
+
+    std::weak_ptr<kp::Sequence> sqWeakPtrOne = 
+        mgr.getOrCreateManagedSequence("sqOne");
+
+    std::weak_ptr<kp::Sequence> sqWeakPtrTwo = 
+        mgr.getOrCreateManagedSequence("sqTwo");
+
+    std::weak_ptr<kp::Sequence> sqWeakPtrOneRef = 
+        mgr.getOrCreateManagedSequence("sqOne");
+
+    std::weak_ptr<kp::Sequence> sqWeakPtrTwoRef = 
+        mgr.getOrCreateManagedSequence("sqTwo");
+
+    REQUIRE(sqWeakPtrOne.lock() == sqWeakPtrOneRef.lock());
+    REQUIRE(sqWeakPtrTwo.lock() != sqWeakPtrOneRef.lock());
+    REQUIRE(sqWeakPtrTwo.lock() == sqWeakPtrTwoRef.lock());
+    REQUIRE(sqWeakPtrOneRef.lock() != sqWeakPtrTwoRef.lock());
+}

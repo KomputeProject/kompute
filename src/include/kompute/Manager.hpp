@@ -22,9 +22,12 @@ class Manager
     */
     Manager();
 
+    Manager(uint32_t physicalDeviceIndex);
+
     Manager(std::shared_ptr<vk::Instance> instance,
-            std::shared_ptr<vk::Device>,
-            uint32_t queueIndex);
+            std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device,
+            uint32_t physicalDeviceIndex);
 
     ~Manager();
 

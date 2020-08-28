@@ -156,9 +156,20 @@ static unsigned const int shaders_glsl_opmult_comp_spv_len = 1308;
 
 namespace kp {
 
+/**
+ * Structured data used in GPU operations.
+ *
+ * Tensors are the base building block in Kompute to perform operations across
+ * GPUs. Each tensor would have a respective Vulkan memory and buffer, which
+ * woudl be used to store their respective data. The tensors can be used for GPU
+ * data storage or transfer.
+ */
 class Tensor
 {
   public:
+    /**
+     * Type for tensors created: Device allows memory to be transferred from staging buffers. Staging are host memory visible. Storage are device visible but are not set up to transfer or receive data (only for shader storage).
+     */
     enum class TensorTypes
     {
         eDevice = 0,
@@ -166,45 +177,107 @@ class Tensor
         eStorage = 2,
     };
 
+    /**
+     *  Base constructor, should not be used unless explicitly intended.
+     */
     Tensor();
 
+    /**
+     *  Default constructor with data provided which would be used to create the respective vulkan buffer and memory.
+     *
+     *  @param data Vector of data that will be used by the tensor
+     *  @param tensorType Type for the tensor which is of type TensorTypes
+     */
     Tensor(std::vector<uint32_t> data,
            TensorTypes tensorType = TensorTypes::eDevice);
 
+    /**
+     * Destructor which is in charge of freeing vulkan resources unless they have been provided externally.
+     */
     ~Tensor();
 
+    /**
+     * Initialiser creates the buffer and GPU memory.
+     */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device,
               std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
-    // Create functions
-    void createBuffer();
-
-    // Destroy/Free functions
+    /**
+     * Destroys and frees the GPU resources which include the buffer and memory.
+     */
     void freeMemoryDestroyGPUResources();
 
-    // Getter functions
+    /**
+     * Returns the vector of data currently contained by the Tensor. It is important to ensure that there is no out-of-sync data with the GPU memory.
+     *
+     * @return Vector of elements representing the data in the tensor.
+     */
     std::vector<uint32_t> data();
+    /**
+     * Returns the size/magnitude of the Tensor, which will be the total number of elements across all dimensions
+     *
+     * @return Unsigned integer representing the total number of elements
+     */
     uint32_t size();
+    /**
+     * Returns the shape of the tensor, which includes the number of dimensions and the size per dimension.
+     *
+     * @return Array containing the sizes for each dimension. Zero means respective dimension is not active.
+     */
     std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
+    /**
+     * Retrieve the tensor type of the Tensor
+     *
+     * @return Tensor type of tensor
+     */
     TensorTypes tensorType();
+    /**
+     * Returns true if the tensor initialisation function has been carried out successful, which would mean that the buffer and memory will have been provisioned.
+     */
     bool isInit();
 
-    // Setters
+    /**
+     * Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host.
+     */
     void setData(const std::vector<uint32_t>& data);
 
-    // Record functions
+    /**
+     * Records a copy from the memory of the tensor provided to the current
+     * thensor. This is intended to pass memory into a processing, to perform
+     * a staging buffer transfer, or to gather output (between others).
+     */
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor);
-    // TODO: Explore simplifying by infering pipeline stage flag bits from
-    // access flag bits (as seems to be superset)
+
+    /**
+     * Records the buffer memory barrier into the command buffer which
+     * ensures that relevant data transfers are carried out correctly.
+     *
+     * @param srcAccessMask Access flags for source access mask
+     * @param dstAccessMask Access flags for destination access mask
+     * @param scrStageMask Pipeline stage flags for source stage mask
+     * @param dstStageMask Pipeline stage flags for destination stage mask
+     */
     void recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask,
                                    vk::AccessFlagBits dstAccessMask,
                                    vk::PipelineStageFlagBits srcStageMask,
                                    vk::PipelineStageFlagBits dstStageMask);
 
-    // Util functions
+    /**
+     * Constructs a vulkan descriptor buffer info which can be used to specify
+     * and reference the underlying buffer component of the tensor without
+     * exposing it.
+     *
+     * @return Descriptor buffer info with own buffer
+     */
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
+    /**
+     * Maps data from the Host Visible GPU memory into the data vector. It requires the Tensor to be of staging type for it to work.
+     */
     void mapDataFromHostMemory();
+    /**
+     * Maps data from the data vector into the Host Visible GPU memory. It requires the tensor to be of staging type for it to work.
+     */
     void mapDataIntoHostMemory();
 
   private:
@@ -221,9 +294,11 @@ class Tensor
 
     TensorTypes mTensorType = TensorTypes::eDevice;
 
-    std::array<uint32_t, KP_MAX_DIM_SIZE> mShape; // TODO: Only 1D supported
+    std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
     bool mIsInit = false;
-    // uint32_t mDataType;
+
+    // Creates the vulkan buffer
+    void createBuffer();
 
     // Private util functions
     vk::BufferUsageFlags getBufferUsageFlags();
@@ -252,9 +327,15 @@ class OpBase
     OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
 
     /**
-     *  Default constructor with parameters that provides the bare minimum
+     * Default constructor with parameters that provides the bare minimum
      * requirements for the operations to be able to create and manage their
      * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param freeTensors Whether operation manages the memory of the Tensors
      */
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
@@ -298,22 +379,40 @@ class OpBase
         }
     }
 
+    /**
+     * The init function is responsible for setting up all the resources and
+     * should be called after the Operation has been created.
+     */
     virtual void init() = 0;
 
+    /**
+     * The record function is intended to only send a record command or run
+     * commands that are expected to record operations that are to be submitted
+     * as a batch into the GPU.
+     */
     virtual void record() = 0;
 
+    /**
+     * Post submit is called after the Sequence has submitted the commands to
+     * the GPU for processing, and can be used to perform any tear-down steps
+     * required as the computation iteration finishes.
+     */
     virtual void postSubmit() = 0;
 
   protected:
-    // Sometimes owned resources
-    std::vector<std::shared_ptr<Tensor>> mTensors;
-    bool mFreeTensors =
-      false; // TODO: Provide granularity to specify which to free
+    // OPTIONALLY OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>>
+      mTensors; ///< Tensors referenced by operation that can be managed
+                ///< optionally by operation
+    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
+                               ///< tensors are freed (if they are managed)
 
-    // Always external resources
-    std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
-    std::shared_ptr<vk::Device> mDevice;
-    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
+    // NEVER OWNED RESOURCES
+    std::shared_ptr<vk::PhysicalDevice>
+      mPhysicalDevice;                   ///< Vulkan Physical Device
+    std::shared_ptr<vk::Device> mDevice; ///< Vulkan Logical Device
+    std::shared_ptr<vk::CommandBuffer>
+      mCommandBuffer; ///< Vulkan Command Buffer
 };
 
 } // End namespace kp
@@ -410,23 +509,26 @@ class Manager
     */
     Manager();
 
+    Manager(uint32_t physicalDeviceIndex);
+
     Manager(std::shared_ptr<vk::Instance> instance,
-            std::shared_ptr<vk::Device>,
-            uint32_t queueIndex);
+            std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device,
+            uint32_t physicalDeviceIndex);
 
     ~Manager();
 
     std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sessionName);
 
     template<typename T, typename... TArgs>
-    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors, std::string sessionName = KP_DEFAULT_SESSION)
+    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
+                std::string sessionName = KP_DEFAULT_SESSION)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
-        std::weak_ptr<Sequence> sqWeakPtr = 
-            this->getOrCreateManagedSequence(sessionName);
+        std::weak_ptr<Sequence> sqWeakPtr =
+          this->getOrCreateManagedSequence(sessionName);
 
-        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) 
-        {
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
             sq->begin();
 
@@ -443,7 +545,6 @@ class Manager
     }
 
   private:
-
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -454,7 +555,8 @@ class Manager
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
     // Always owned resources
-    std::unordered_map<std::string, std::shared_ptr<Sequence>> mManagedSequences;
+    std::unordered_map<std::string, std::shared_ptr<Sequence>>
+      mManagedSequences;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;
@@ -527,29 +629,66 @@ class Algorithm
 namespace kp {
 
 /**
-    Base algorithm based operation
-*/
+ * Operation that performs multiplication on two tensors and outpus on third
+ * tensor. The template parameters specify the processing GPU layout number of
+ * iterations for each x, y, z parameter. More specifically, this will be the
+ * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
+ */
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
 class OpMult : public OpBase
 {
   public:
     /**
-        Constructor
-    */
+     *  Base constructor, should not be used unless explicitly intended.
+     */
     OpMult();
 
+    /**
+     * Default constructor with parameters that provides the bare minimum
+     * requirements for the operations to be able to create and manage their
+     * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param freeTensors Whether operation manages the memory of the Tensors
+     */
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            bool freeTensors = false);
 
+    /**
+     * Default destructor, which is in charge of destroying the algorithm
+     * components but does not destroy the underlying tensors
+     */
     ~OpMult();
 
+    /**
+     * The init function is responsible for ensuring that all of the tensors
+     * provided are aligned with requirements such as LHS, RHS and Output
+     * tensors, and  creates the algorithm component which processes the
+     * computation.
+     */
     void init() override;
 
+    /**
+     * This records the commands that are to be sent to the GPU. This includes
+     * the barriers that ensure the memory has been copied before going in and
+     * out of the shader, as well as the dispatch operation that sends the
+     * shader processing to the gpu. This function also records the GPU memory
+     * copy of the output data for the staging bufffer so it can be read by the
+     * host.
+     */
     void record() override;
 
+    /**
+     * Executes after the recorded commands are submitted, and performs a copy
+     * of the GPU Device memory into the staging buffer so the output data can
+     * be retrieved.
+     */
     void postSubmit() override;
 
   private:
@@ -584,7 +723,6 @@ OpMult<tX, tY, tZ>::OpMult()
     SPDLOG_DEBUG("Kompute OpMult constructor base");
 }
 
-// TODO: Remove physicalDevice from main initialiser
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
@@ -760,23 +898,55 @@ OpMult<tX, tY, tZ>::postSubmit()
 
 namespace kp {
 
+/**
+    Operation that creates tensor and manages the memory of the components
+   created
+*/
 class OpCreateTensor : public OpBase
 {
   public:
     OpCreateTensor();
 
+    /**
+     * Default constructor with parameters that provides the bare minimum
+     * requirements for the operations to be able to create and manage their
+     * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param freeTensors Whether operation manages the memory of the Tensors
+     */
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
                    std::vector<std::shared_ptr<Tensor>>& tensors,
                    bool freeTensors = true);
 
+    /**
+     * Default destructor which in this case expects the parent class to free
+     * the tensors
+     */
     ~OpCreateTensor();
 
+    /**
+     * In charge of initialising the primary Tensor as well as the staging
+     * tensor as required. It will only initialise a staging tensor if the
+     * Primary tensor is of type Device.
+     */
     void init() override;
 
+    /**
+     * Records the copy command into the GPU memory from the staging or host
+     * memory depending on the type of tensor.
+     */
     void record() override;
 
+    /**
+     * Performs a copy back into the main tensor to ensure that the data
+     * contained is the one that is now being stored in the GPU.
+     */
     void postSubmit() override;
 
   private:

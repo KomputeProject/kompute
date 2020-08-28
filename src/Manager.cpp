@@ -22,11 +22,28 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
 }
 #endif
 
-Manager::Manager()
+Manager::Manager() : Manager(0)
 {
-    this->mPhysicalDeviceIndex = 0;
+
+}
+
+Manager::Manager(uint32_t physicalDeviceIndex) 
+{
+    this->mPhysicalDeviceIndex = physicalDeviceIndex;
+    // TODO: Moving this into a separate init
     this->createInstance();
     this->createDevice();
+}
+
+Manager::Manager(std::shared_ptr<vk::Instance> instance,
+            std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device,
+            uint32_t physicalDeviceIndex) 
+{
+    this->mInstance = instance;
+    this->mPhysicalDevice = physicalDevice;
+    this->mDevice = device;
+    this->mPhysicalDeviceIndex = physicalDeviceIndex;
 }
 
 Manager::~Manager()
