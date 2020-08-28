@@ -25,6 +25,7 @@
 ## Principles & Features
 
 * Single header easy to import static library
+* [Documentation]() using doxygen and sphinx for
 * Packaged with vcpkg for easy download and integration with projects
 * Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing Vulkan API with a compute-specific interface
@@ -193,4 +194,5 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
     + All dependencies are defined in vcpkg.json 
 * Uses cmake as build system, and provides a top level makefile with recommended command
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
+* Uses doxygen and sphinx
 

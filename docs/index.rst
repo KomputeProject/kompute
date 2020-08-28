@@ -17,6 +17,18 @@ Docs
 .. doxygenclass:: kp::Manager
    :members:
 
+.. doxygenclass:: kp::Sequence
+   :members:
+
+.. doxygenclass:: kp::OpBase
+   :members:
+
+.. doxygenclass:: kp::OpMult
+   :members:
+
+.. doxygenclass:: kp::OpCreateTensor
+   :members:
+
 .. doxygenclass:: kp::Algorithm
    :members:
 

@@ -25,6 +25,12 @@ run_cmake:
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Visual Studio 16 2019"
 
+push_docs_to_ghpages:
+	GIT_DEPLOY_DIR="build/docs/sphinx/" \
+		GIT_DEPLOY_BRANCH="gh-pages" \
+		GIT_DEPLOY_REPO="origin" \
+			./scripts/push_folder_to_branch.sh
+
 build_vs:
 	$(CC) build/kompute.sln
 

@@ -58,7 +58,7 @@ html_theme = 'sphinx_material'
 
 if html_theme == 'sphinx_material':
     html_theme_options = {
-        'nav_title': 'Project Name',
+        'nav_title': 'Vulkan Kompute',
         #'google_analytics_account': 'UA-XXXXX',
         #'base_url': 'https://project.github.io/project',
         'color_primary': 'red',
