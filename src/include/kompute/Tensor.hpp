@@ -6,6 +6,14 @@
 
 namespace kp {
 
+/**
+ * Structured data used in GPU operations.
+ *
+ * Tensors are the base building block in Kompute to perform operations across
+ * GPUs. Each tensor would have a respective Vulkan memory and buffer, which
+ * woudl be used to store their respective data. The tensors can be used for GPU
+ * data storage or transfer.
+ */
 class Tensor
 {
   public:

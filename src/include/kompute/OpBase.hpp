@@ -23,9 +23,15 @@ class OpBase
     OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
 
     /**
-     *  Default constructor with parameters that provides the bare minimum
+     * Default constructor with parameters that provides the bare minimum
      * requirements for the operations to be able to create and manage their
      * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param freeTensors Whether operation manages the memory of the Tensors
      */
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
@@ -69,22 +75,40 @@ class OpBase
         }
     }
 
+    /**
+     * The init function is responsible for setting up all the resources and
+     * should be called after the Operation has been created.
+     */
     virtual void init() = 0;
 
+    /**
+     * The record function is intended to only send a record command or run
+     * commands that are expected to record operations that are to be submitted
+     * as a batch into the GPU.
+     */
     virtual void record() = 0;
 
+    /**
+     * Post submit is called after the Sequence has submitted the commands to
+     * the GPU for processing, and can be used to perform any tear-down steps
+     * required as the computation iteration finishes.
+     */
     virtual void postSubmit() = 0;
 
   protected:
-    // Sometimes owned resources
-    std::vector<std::shared_ptr<Tensor>> mTensors;
-    bool mFreeTensors =
-      false; // TODO: Provide granularity to specify which to free
+    // OPTIONALLY OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>>
+      mTensors; ///< Tensors referenced by operation that can be managed
+                ///< optionally by operation
+    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
+                               ///< tensors are freed (if they are managed)
 
-    // Always external resources
-    std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
-    std::shared_ptr<vk::Device> mDevice;
-    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
+    // NEVER OWNED RESOURCES
+    std::shared_ptr<vk::PhysicalDevice>
+      mPhysicalDevice;                   ///< Vulkan Physical Device
+    std::shared_ptr<vk::Device> mDevice; ///< Vulkan Logical Device
+    std::shared_ptr<vk::CommandBuffer>
+      mCommandBuffer; ///< Vulkan Command Buffer
 };
 
 } // End namespace kp

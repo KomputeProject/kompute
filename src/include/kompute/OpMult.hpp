@@ -14,29 +14,66 @@
 namespace kp {
 
 /**
-    Base algorithm based operation
-*/
+ * Operation that performs multiplication on two tensors and outpus on third
+ * tensor. The template parameters specify the processing GPU layout number of
+ * iterations for each x, y, z parameter. More specifically, this will be the
+ * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
+ */
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
 class OpMult : public OpBase
 {
   public:
     /**
-        Constructor
-    */
+     *  Base constructor, should not be used unless explicitly intended.
+     */
     OpMult();
 
+    /**
+     * Default constructor with parameters that provides the bare minimum
+     * requirements for the operations to be able to create and manage their
+     * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param freeTensors Whether operation manages the memory of the Tensors
+     */
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            bool freeTensors = false);
 
+    /**
+     * Default destructor, which is in charge of destroying the algorithm
+     * components but does not destroy the underlying tensors
+     */
     ~OpMult();
 
+    /**
+     * The init function is responsible for ensuring that all of the tensors
+     * provided are aligned with requirements such as LHS, RHS and Output
+     * tensors, and  creates the algorithm component which processes the
+     * computation.
+     */
     void init() override;
 
+    /**
+     * This records the commands that are to be sent to the GPU. This includes
+     * the barriers that ensure the memory has been copied before going in and
+     * out of the shader, as well as the dispatch operation that sends the
+     * shader processing to the gpu. This function also records the GPU memory
+     * copy of the output data for the staging bufffer so it can be read by the
+     * host.
+     */
     void record() override;
 
+    /**
+     * Executes after the recorded commands are submitted, and performs a copy
+     * of the GPU Device memory into the staging buffer so the output data can
+     * be retrieved.
+     */
     void postSubmit() override;
 
   private:
@@ -71,7 +108,6 @@ OpMult<tX, tY, tZ>::OpMult()
     SPDLOG_DEBUG("Kompute OpMult constructor base");
 }
 
-// TODO: Remove physicalDevice from main initialiser
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,

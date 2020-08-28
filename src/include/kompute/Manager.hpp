@@ -31,14 +31,14 @@ class Manager
     std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sessionName);
 
     template<typename T, typename... TArgs>
-    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors, std::string sessionName = KP_DEFAULT_SESSION)
+    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
+                std::string sessionName = KP_DEFAULT_SESSION)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
-        std::weak_ptr<Sequence> sqWeakPtr = 
-            this->getOrCreateManagedSequence(sessionName);
+        std::weak_ptr<Sequence> sqWeakPtr =
+          this->getOrCreateManagedSequence(sessionName);
 
-        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) 
-        {
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
             sq->begin();
 
@@ -55,7 +55,6 @@ class Manager
     }
 
   private:
-
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -66,7 +65,8 @@ class Manager
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
     // Always owned resources
-    std::unordered_map<std::string, std::shared_ptr<Sequence>> mManagedSequences;
+    std::unordered_map<std::string, std::shared_ptr<Sequence>>
+      mManagedSequences;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;
