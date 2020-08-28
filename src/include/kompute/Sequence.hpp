@@ -2,7 +2,7 @@
 
 #include "kompute/Core.hpp"
 
-#include "kompute/OpBase.hpp"
+#include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 

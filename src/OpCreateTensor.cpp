@@ -1,7 +1,7 @@
 
 #include "kompute/Tensor.hpp"
 
-#include "kompute/OpCreateTensor.hpp"
+#include "kompute/operations/OpCreateTensor.hpp"
 
 namespace kp {
 

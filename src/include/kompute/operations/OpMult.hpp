@@ -9,7 +9,7 @@
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 
-#include "kompute/OpBase.hpp"
+#include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 

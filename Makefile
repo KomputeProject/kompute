@@ -35,8 +35,7 @@ build_all:
 	$(MSBUILD_BIN) build/kompute.sln
 
 build_docs:
-	$(MSBUILD_BIN) build/docs/gendoxygen.vcxproj
-	$(MSBUILD_BIN) build/docs/gensphinx.vcxproj
+	$(MSBUILD_BIN) build/docs/gendocsall.vcxproj
 
 build_kompute:
 	$(MSBUILD_BIN) build/src/kompute.vcxproj
