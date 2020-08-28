@@ -14,9 +14,14 @@ Welcome to Vulkan Kompute's documentation!
 
 
 Reference
-====
+========
 
 You can also go directoy to the `raw doxygen docs <doxygen/annotated.html>`_
+
+Overview of entire dependencies and their relationship with vulkan component ownership.
+
+.. image:: images/kompute-vulkan-architecture.jpg
+   :width: 100%
 
 Manager
 -------
@@ -24,11 +29,35 @@ Manager
 .. doxygenclass:: kp::Manager
    :members:
 
+.. image:: images/kompute-vulkan-architecture-manager.jpg
+   :width: 100%
+
 Sequence
 -------
 
 .. doxygenclass:: kp::Sequence
    :members:
+
+.. image:: images/kompute-vulkan-architecture-sequence.jpg
+   :width: 100%
+
+Tensor
+-------
+
+.. doxygenclass:: kp::Tensor
+   :members:
+
+.. image:: images/kompute-vulkan-architecture-tensor.jpg
+   :width: 100%
+
+Algorithm
+-------
+
+.. doxygenclass:: kp::Algorithm
+   :members:
+
+.. image:: images/kompute-vulkan-architecture-algorithm.jpg
+   :width: 100%
 
 OpBase
 -------
@@ -36,11 +65,17 @@ OpBase
 .. doxygenclass:: kp::OpBase
    :members:
 
+.. image:: images/kompute-vulkan-architecture-operations.jpg
+   :width: 100%
+
 OpMult
 -------
 
 .. doxygenclass:: kp::OpMult
    :members:
+
+.. image:: images/kompute-vulkan-architecture-opmult.jpg
+   :width: 100%
 
 OpCreateTensor
 -------
@@ -48,11 +83,9 @@ OpCreateTensor
 .. doxygenclass:: kp::OpCreateTensor
    :members:
 
-Algorithm
--------
+.. image:: images/kompute-vulkan-architecture-opcreatetensor.jpg
+   :width: 100%
 
-.. doxygenclass:: kp::Algorithm
-   :members:
 
 
 Indices and tables

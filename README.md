@@ -22,13 +22,13 @@
 </tr>
 </table>
 
-🔋 [Documentation]() 💻 [Import to your project]() ⌨ [Tutorials]() 💾
+🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Import to your project](https://axsaucedo.github.io/vulkan-kompute/) ⌨ [Tutorials](https://axsaucedo.github.io/vulkan-kompute/) 💾
 
 
 ## Principles & Features
 
 * Single header easy to import static library
-* [Documentation]() using doxygen and sphinx for
+* [Documentation](https://axsaucedo.github.io/vulkan-kompute/) using doxygen and sphinx for
 * Packaged with vcpkg for easy download and integration with projects
 * Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing Vulkan API with a compute-specific interface
