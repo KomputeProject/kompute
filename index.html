@@ -213,7 +213,35 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Welcome to Vulkan Kompute’s documentation!</a>
+        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Welcome to Vulkan Kompute’s documentation!</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#principles-features" class="md-nav__link">Principles & Features</a>
+        </li>
+        <li class="md-nav__item"><a href="#getting-started" class="md-nav__link">Getting Started</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#setup" class="md-nav__link">Setup</a>
+        </li>
+        <li class="md-nav__item"><a href="#your-first-kompute" class="md-nav__link">Your first Kompute</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#motivations" class="md-nav__link">Motivations</a>
+        </li>
+        <li class="md-nav__item"><a href="#components-architecture" class="md-nav__link">Components & Architecture</a>
+        </li>
+        <li class="md-nav__item"><a href="#kompute-development" class="md-nav__link">Kompute Development</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#contributing" class="md-nav__link">Contributing</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#dev-dependencies" class="md-nav__link">Dev Dependencies</a>
+        </li>
+        <li class="md-nav__item"><a href="#development" class="md-nav__link">Development</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#docs" class="md-nav__link">Docs</a>
         </li>
@@ -235,8 +263,202 @@
             
   
 <h1 id="index--page-root">Welcome to Vulkan Kompute’s documentation!<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
+<a class="reference external image-reference" href="https://img.shields.io/badge/Release-ALPHA-yellow.svg"><img alt="GitHub" src="https://img.shields.io/badge/Release-ALPHA-yellow.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/Version-0.1.0-green.svg"><img alt="GitHub" src="https://img.shields.io/badge/Version-0.1.0-green.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/C++-11—20-purple.svg"><img alt="GitHub" src="https://img.shields.io/badge/C++-11—20-purple.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/Build-cmake-red.svg"><img alt="GitHub" src="https://img.shields.io/badge/Build-cmake-red.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/Python-3.5—3.8-blue.svg"><img alt="GitHub" src="https://img.shields.io/badge/Python-3.5—3.8-blue.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/License-Apache-black.svg"><img alt="GitHub" src="https://img.shields.io/badge/License-Apache-black.svg"/></a>
+<table>
+<tr>
+<td width="20%">
+<img src="https://github.com/axsaucedo/vulkan-kompute/blob/master/docs/images/kompute.jpg"/>
+</td>
+<td>
+<h1>Vulkan Kompute</h1>
+<h3>The General Purpose Vulkan Compute Framework</h3>
+</td>
+</tr>
+</table>
+<h2 id="principles-features">Principles &amp; Features<a class="headerlink" href="#principles-features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Single header easy to import static library</p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">`Documentation &lt;&gt;`_</span></a> using doxygen and sphinx for</p></li>
+<li><p>Packaged with vcpkg for easy download and integration with projects</p></li>
+<li><p>Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components</p></li>
+<li><p>Extends the existing Vulkan API with a compute-specific interface</p></li>
+<li><p>BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design</p></li>
+<li><p>Directed acyclic memory management and relationships of ownership</p></li>
+<li><p>Explicit memory management responsibilities</p></li>
+<li><p>Opinionated approach towards base interface for memory management hierarchy with explicit and extensible design</p></li>
+<li><p>Best practices for safe memory GPU / Vulkan memory management (WIP)</p></li>
+</ul>
+
+
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+
+<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<p>Kompute is provided as a single header file <code class="docutils literal notranslate"><span class="pre">Kompute.hpp</span></code> that can be simply included in your code.</p>
+<p>You can go to our <a href="#id3"><span class="problematic" id="id4">`release page &lt;&gt;`_</span></a> to grab the latest library or you can <a href="#id5"><span class="problematic" id="id6">`build from source &lt;&gt;`_</span></a>.</p>
+
+
+<h3 id="your-first-kompute">Your first Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h3>
+<p>Run your tensors against default operations via the Manager.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorLHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span> <span class="p">});</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorRHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span> <span class="p">{</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorRHS</span> <span class="p">});</span>
+
+    <span class="c1">// TODO: Add capabilities for just output tensor types</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorOutput</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Record commands in a single submit by using a Sequence to send in batch to GPU.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorLHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorRHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span> <span class="p">{</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorOutput</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">})</span> <span class="p">};</span>
+
+    <span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">constructSequence</span><span class="p">();</span>
+    <span class="c1">// Begin recoding commands</span>
+    <span class="n">sq</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+
+    <span class="c1">// Record sequence of operations to be sent to GPU in batch</span>
+    <span class="p">{</span>
+        <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span> <span class="p">});</span>
+        <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorRHS</span> <span class="p">});</span>
+        <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+
+        <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="c1">// Stop recording</span>
+    <span class="n">sq</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+    <span class="c1">// Submit operations to GPU</span>
+    <span class="n">sq</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Create your own custom operations to leverage Vulkan Compute for your specialised use-cases.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OpCustom</span> <span class="o">:</span> <span class="n">kp</span><span class="o">::</span><span class="n">OpBase</span> <span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="kt">void</span> <span class="n">init</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensors</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// ... extra steps to initialise tensors</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">mAlgorithm</span><span class="o">-&gt;</span><span class="n">init</span><span class="p">(</span><span class="s">"path/to/your/shader.compute.spv"</span><span class="p">,</span> <span class="n">tensors</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensor</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span> <span class="p">});</span>
+
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCustom</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+
+
+
+<h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
+<p>Vulkan Kompute was created after identifying the challenge most GPU processing projects with Vulkan undergo - namely having to build extensive boilerplate for Vulkan and create abstractions and interfaces that expose the core compute capabilities. It is only after a few thousand lines of code that it’s possible to start building the application-specific logic.</p>
+<p>We believe Vulkan has an excellent design in its way to interact with the GPU, so by no means we aim to abstract or hide any complexity, but instead we want to provide a baseline of tools and interfaces that allow Vulkan Compute developers to focus on the higher level computational complexities of the application.</p>
+<p>It is because of this that we have adopted development principles for the project that ensure the Vulkan API is augmented specifically for computation, whilst speeding development iterations and opening the doors to further use-cases.</p>
+
+
+<h2 id="components-architecture">Components &amp; Architecture<a class="headerlink" href="#components-architecture" title="Permalink to this headline">¶</a></h2>
+<p>The core architecture of Kompute include the following:</p>
+<ul class="simple">
+<li><p>Kompute Manager - Base orchestrator which creates and manages device and child components</p></li>
+<li><p>Kompute Sequence - Container of operations that can be sent to GPU as batch</p></li>
+<li><p>Kompute Operation - Individual operation which performs actions on top of tensors and (opt) algorithms</p></li>
+<li><p>Kompute Tensor - Tensor structured data used in GPU operations</p></li>
+<li><p>Kompute Algorithm - Abstraction for (shader) code executed in the GPU</p></li>
+<li><p>Kompute ParameterGroup - Container that can group tensors to be fed into an algorithm</p></li>
+</ul>
+<p>To see a full breakdown you can read further in the documentation.</p>
+<table>
+<th>
+Full Vulkan Components
+</th>
+<th>
+Simplified Kompute Components
+</th>
+<tr>
+<td width="30%">
+<img src="https://github.com/axsaucedo/vulkan-kompute/blob/master/docs/images/kompute-vulkan-architecture.jpg" width="100%"/>
+<br/>
+<br/>
+(very tiny, check the docs to for details)
+<br/>
+<br/>
+<img src="https://www.memesmonkey.com/images/memesmonkey/a2/a29e06384bf8981e7ae66d5150383f6e.jpeg" width="100%"/>
+</td>
+<td>
+<img src="https://github.com/axsaucedo/vulkan-kompute/blob/master/docs/images/kompute-architecture.jpg" width="100%"/>
+</td>
+</tr>
+</table>
+
+<h2 id="kompute-development">Kompute Development<a class="headerlink" href="#kompute-development" title="Permalink to this headline">¶</a></h2>
+<p>We appreciate PRs and Issues. If you want to contribute try checking the “Good first issue” tag, but even using Vulkan Kompute and reporting issues is a great contribution!</p>
+
+<h3 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h3>
+
+<h4 id="dev-dependencies">Dev Dependencies<a class="headerlink" href="#dev-dependencies" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Testing</p>
+<ul>
+<li><p>Catch2</p></li>
+</ul>
+</li>
+<li><p>Documentation</p>
+<ul>
+<li><p>Doxygen (with Dot)</p></li>
+<li><p>Sphynx</p></li>
+</ul>
+</li>
+</ul>
+
+
+<h4 id="development">Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Follows Mozilla C++ Style Guide <a class="reference external" href="https://www-archive.mozilla.org/hacking/mozilla-style-guide.html">https://www-archive.mozilla.org/hacking/mozilla-style-guide.html</a></p>
+<ul>
+<li><p>Uses post-commit hook to run the linter, you can set it up so it runs the linter before commit</p></li>
+</ul>
+</li>
+<li><p>Uses vcpkg for finding the dependencies, it’s the recommanded set up to retrieve the libraries</p>
+<ul>
+<li><p>All dependencies are defined in vcpkg.json</p></li>
+</ul>
+</li>
+<li><p>Uses cmake as build system, and provides a top level makefile with recommended command</p></li>
+<li><p>Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files</p></li>
+<li><p>Uses doxygen and sphinx</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 </div>
+
+
+
 
 
 <h1 id="docs">Docs<a class="headerlink" href="#docs" title="Permalink to this headline">¶</a></h1>
