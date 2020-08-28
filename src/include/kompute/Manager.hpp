@@ -1,8 +1,12 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "kompute/Core.hpp"
 
 #include "kompute/Sequence.hpp"
+
+#define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
 
@@ -24,28 +28,34 @@ class Manager
 
     ~Manager();
 
-    std::weak_ptr<Sequence> managedSequence();
+    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sessionName);
 
     template<typename T, typename... TArgs>
-    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
+    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors, std::string sessionName = KP_DEFAULT_SESSION)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
-        Sequence sq(this->mPhysicalDevice,
-                    this->mDevice,
-                    this->mComputeQueue,
-                    this->mComputeQueueFamilyIndex);
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
-        sq.begin();
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
-        sq.record<T>(tensors);
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
-        sq.end();
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
-        sq.eval();
+        std::weak_ptr<Sequence> sqWeakPtr = 
+            this->getOrCreateManagedSequence(sessionName);
+
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) 
+        {
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+            sq->begin();
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+            sq->record<T>(tensors);
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+            sq->end();
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+            sq->eval();
+        }
         SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
   private:
+
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -56,7 +66,7 @@ class Manager
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
     // Always owned resources
-    std::vector<std::shared_ptr<Sequence>> mManagedSequences;
+    std::unordered_map<std::string, std::shared_ptr<Sequence>> mManagedSequences;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;

@@ -323,7 +323,9 @@ Tensor::createBuffer()
     SPDLOG_DEBUG("Kompute Tensor buffer & memory creation successful");
 }
 
-void Tensor::freeMemoryDestroyGPUResources() {
+void
+Tensor::freeMemoryDestroyGPUResources()
+{
     SPDLOG_DEBUG("Kompute Tensor started freeMemoryDestroyGPUResources");
 
     this->mIsInit = false;
@@ -355,7 +357,6 @@ void Tensor::freeMemoryDestroyGPUResources() {
     }
 
     SPDLOG_DEBUG("Kompute Tensor successful freeMemoryDestroyGPUResources");
-
 }
 
 }

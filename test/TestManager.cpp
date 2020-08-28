@@ -74,8 +74,8 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
 
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sq_ref = mgr.managedSequence();
-    if (std::shared_ptr<kp::Sequence> sq = sq_ref.lock()) {
+    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
         sq->record<kp::OpCreateTensor>({ tensorLHS });
@@ -93,7 +93,7 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
         sq->end();
         sq->eval();
     }
-    sq_ref.reset();
+    sqWeakPtr.reset();
 
     spdlog::info("OpMult call success");
     spdlog::info("Tensor output: {}", tensorOutput->data());

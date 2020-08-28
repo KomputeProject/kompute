@@ -1,28 +1,26 @@
 
-####### SRC Build Params #######
-
-CC="/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe"
-
-
-####### Shader Build Params #######
-
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
-	SCMP=C:\VulkanSDK\1.2.141.2\Bin32\glslangValidator.exe
+	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
+	SCMP_BIN="C:\\VulkanSDK\\1.2.141.2\\Bin32\\glslangValidator.exe"
+	MSBUILD_BIN ?= "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"
+	VCPKG_CMAKE ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
 else
-	SCMP=/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe
+	CLANG_FORMAT_BIN ?= "/home/alejandro/Programming/lib/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-format"
+	CMAKE_BIN ?= "/c/Program Files/CMake/bin/cmake.exe"
+	SCMP_BIN ?= "/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe"
+	MSBUILD_BIN ?= "/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe"
+	VCPKG_CMAKE ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
 endif
 
-####### Package manager #######
-
-VCPKG=/c/Users/axsau/Programming/lib/vcpkg/vcpkg
 
 ####### Main Target Rules #######
 
 run_cmake:
-	cmake \
+	$(CMAKE_BIN) \
 		-Bbuild \
-		-DCMAKE_TOOLCHAIN_FILE=C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake \
+		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_CMAKE) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		-G "Visual Studio 16 2019"
 
 push_docs_to_ghpages:
@@ -31,10 +29,25 @@ push_docs_to_ghpages:
 		GIT_DEPLOY_REPO="origin" \
 			./scripts/push_folder_to_branch.sh
 
-build_vs:
-	$(CC) build/kompute.sln
+####### Visual studio build shortcut commands #######
 
-run_tests:
+build_all:
+	$(MSBUILD_BIN) build/kompute.sln
+
+build_docs:
+	$(MSBUILD_BIN) build/docs/gendoxygen.vcxproj
+	$(MSBUILD_BIN) build/docs/gensphinx.vcxproj
+
+build_kompute:
+	$(MSBUILD_BIN) build/src/kompute.vcxproj
+
+build_tests:
+	$(MSBUILD_BIN) build/test/test_kompute.vcxproj
+
+run_docs: build_docs
+	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
+
+run_tests: build_tests
 	./build/test/Debug/test_kompute.exe
 
 clean_cmake:
@@ -46,7 +59,7 @@ install_python_reqs:
 build_shaders:
 	python scripts/convert_shaders.py \
 		--shader-path shaders/glsl \
-		--shader-binary $(SCMP) \
+		--shader-binary $(SCMP_BIN) \
 		--header-path src/include/kompute/shaders/ \
 		-v
 
@@ -85,7 +98,7 @@ build_single_header:
 		"single_include/kompute/Kompute.hpp"
 
 format:
-	clang-format -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp
+	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp
 
 clean:
 	find src -name "*gch" -exec rm {} \; || "No ghc files"

@@ -57,7 +57,6 @@ class Tensor
     void mapDataFromHostMemory();
     void mapDataIntoHostMemory();
 
-
   private:
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;

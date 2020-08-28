@@ -22,6 +22,9 @@
 </tr>
 </table>
 
+🔋 [Documentation]() 💻 [Import to your project]() ⌨ [Tutorials]() 💾
+
+
 ## Principles & Features
 
 * Single header easy to import static library

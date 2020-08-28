@@ -15,21 +15,22 @@ class OpCreateTensor : public OpBase
 
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer);
+                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                   std::vector<std::shared_ptr<Tensor>>& tensors,
+                   bool freeTensors = true);
 
     ~OpCreateTensor();
 
-    void init(std::vector<std::shared_ptr<Tensor>> tensors) override;
+    void init() override;
 
     void record() override;
 
     void postSubmit() override;
 
   private:
+    // Never owned resources
     std::shared_ptr<Tensor> mPrimaryTensor;
-    bool mFreePrimaryTensorResources = false;
     std::shared_ptr<Tensor> mStagingTensor;
-    bool mFreeStagingTensorResources = false;
 };
 
 } // End namespace kp

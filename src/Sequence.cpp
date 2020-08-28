@@ -19,9 +19,6 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
-
-    this->createCommandPool();
-    this->createCommandBuffer();
 }
 
 Sequence::~Sequence()
@@ -59,9 +56,16 @@ Sequence::~Sequence()
 }
 
 void
+Sequence::init()
+{
+    this->createCommandPool();
+    this->createCommandBuffer();
+}
+
+void
 Sequence::begin()
 {
-    if (this->mCommandPool == nullptr) {
+    if (!this->mCommandPool) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
 
@@ -78,7 +82,7 @@ Sequence::begin()
 void
 Sequence::end()
 {
-    if (this->mCommandPool == nullptr) {
+    if (!this->mCommandPool) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
 
@@ -125,7 +129,7 @@ Sequence::createCommandPool()
 {
     SPDLOG_DEBUG("Kompute Sequence creating command pool");
 
-    if (this->mDevice == nullptr) {
+    if (!this->mDevice) {
         throw std::runtime_error("Kompute Sequence device is null");
     }
     if (this->mQueueIndex < 0) {
@@ -146,10 +150,10 @@ void
 Sequence::createCommandBuffer()
 {
     SPDLOG_DEBUG("Kompute Sequence creating command buffer");
-    if (this->mDevice == nullptr) {
+    if (!this->mDevice) {
         throw std::runtime_error("Kompute Sequence device is null");
     }
-    if (this->mCommandPool == nullptr) {
+    if (!this->mCommandPool) {
         throw std::runtime_error("Kompute Sequence command pool is null");
     }
 

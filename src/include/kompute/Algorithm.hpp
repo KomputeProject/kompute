@@ -25,15 +25,16 @@ class Algorithm
     void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
   private:
-    // Shared resources
+    // Never Owned Resources
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
-    // Resources owned by default
+    // Optionally owned resources
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
     bool mFreeDescriptorPool = false;
+
     // TODO: Explore design for multiple descriptor sets
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;
@@ -49,6 +50,7 @@ class Algorithm
     // Create util functions
     void createShaderModule(const std::vector<char>& shaderFileData);
     void createPipeline();
+
     // Parameters
     void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
     void createDescriptorPool();

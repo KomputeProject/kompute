@@ -27,11 +27,13 @@ class OpMult : public OpBase
 
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer);
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors,
+           bool freeTensors = false);
 
     ~OpMult();
 
-    void init(std::vector<std::shared_ptr<Tensor>> tensors) override;
+    void init() override;
 
     void record() override;
 
@@ -73,8 +75,10 @@ OpMult<tX, tY, tZ>::OpMult()
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
-                           std::shared_ptr<vk::CommandBuffer> commandBuffer)
-  : OpBase(physicalDevice, device, commandBuffer)
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                           std::vector<std::shared_ptr<Tensor>>& tensors,
+                           bool freeTensors)
+  : OpBase(physicalDevice, device, commandBuffer, tensors, freeTensors)
 {
     SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
@@ -89,20 +93,20 @@ OpMult<tX, tY, tZ>::~OpMult()
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
+OpMult<tX, tY, tZ>::init()
 {
     SPDLOG_DEBUG("Kompute OpMult init called");
 
-    if (tensors.size() < 3) {
+    if (this->mTensors.size() < 3) {
         throw std::runtime_error(
           "Kompute OpMult called with less than 1 tensor");
-    } else if (tensors.size() > 3) {
-        spdlog::warn("Kompute OpMult called with more than 3 tensors");
+    } else if (this->mTensors.size() > 3) {
+        spdlog::warn("Kompute OpMult called with more than 3 this->mTensors");
     }
 
-    this->mTensorLHS = tensors[0];
-    this->mTensorRHS = tensors[1];
-    this->mTensorOutput = tensors[2];
+    this->mTensorLHS = this->mTensors[0];
+    this->mTensorRHS = this->mTensors[1];
+    this->mTensorOutput = this->mTensors[2];
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -176,7 +180,7 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
 
     SPDLOG_DEBUG("Kompute OpMult Initialising algorithm component");
 
-    this->mAlgorithm->init(shaderFileData, tensors);
+    this->mAlgorithm->init(shaderFileData, this->mTensors);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>

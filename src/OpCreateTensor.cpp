@@ -13,8 +13,10 @@ OpCreateTensor::OpCreateTensor()
 OpCreateTensor::OpCreateTensor(
   std::shared_ptr<vk::PhysicalDevice> physicalDevice,
   std::shared_ptr<vk::Device> device,
-  std::shared_ptr<vk::CommandBuffer> commandBuffer)
-  : OpBase(physicalDevice, device, commandBuffer)
+  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  std::vector<std::shared_ptr<Tensor>>& tensors,
+  bool freeTensors)
+  : OpBase(physicalDevice, device, commandBuffer, tensors, freeTensors)
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor constructor with params");
 }
@@ -22,47 +24,21 @@ OpCreateTensor::OpCreateTensor(
 OpCreateTensor::~OpCreateTensor()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor destructor started");
-
-    if(!this->mDevice) {
-        spdlog::warn("Kompute OpCreateTensor destructor called with empty device");
-        return;
-    }
-
-    if (!this->mFreePrimaryTensorResources) {
-        SPDLOG_DEBUG("Kompute OpCreateTensor removing primary tensor");
-        if (this->mPrimaryTensor && this->mPrimaryTensor->isInit()) {
-            this->mPrimaryTensor->freeMemoryDestroyGPUResources();
-        } else {
-            spdlog::error("Kompute OpCreateTensor expected to free primary tensor but has already been freed.");
-        }
-    }
-
-    if (!this->mFreeStagingTensorResources) {
-        SPDLOG_DEBUG("Kompute OpCreateTensor removing primary tensor");
-        if (this->mStagingTensor && this->mStagingTensor->isInit()) {
-            this->mStagingTensor->freeMemoryDestroyGPUResources();
-        } else {
-            spdlog::error("Kompute OpCreateTensor expected to free secondary tensor but has already been freed.");
-        }
-    }
 }
 
 void
-OpCreateTensor::init(std::vector<std::shared_ptr<Tensor>> tensors)
+OpCreateTensor::init()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor init called");
 
-    if (tensors.size() < 1) {
+    if (this->mTensors.size() < 1) {
         throw std::runtime_error(
           "Kompute OpCreateTensor called with less than 1 tensor");
-    } else if (tensors.size() > 1) {
+    } else if (this->mTensors.size() > 1) {
         spdlog::warn("Kompute OpCreateTensor called with more than 1 tensor");
     }
 
-    this->mFreePrimaryTensorResources = true;
-    this->mFreeStagingTensorResources = true;
-
-    this->mPrimaryTensor = tensors[0];
+    this->mPrimaryTensor = this->mTensors[0];
 
     if (this->mPrimaryTensor->tensorType() == Tensor::TensorTypes::eDevice) {
         this->mPrimaryTensor->init(
@@ -75,6 +51,9 @@ OpCreateTensor::init(std::vector<std::shared_ptr<Tensor>> tensors)
           this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
 
         this->mStagingTensor->mapDataIntoHostMemory();
+
+        // Adding to the OpBase owned resource so they are freed
+        this->mTensors.push_back(this->mStagingTensor);
 
     } else {
         this->mPrimaryTensor->init(

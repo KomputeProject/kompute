@@ -150,6 +150,8 @@ static unsigned const int shaders_glsl_opmult_comp_spv_len = 1308;
 }
 #endif // define SHADEROP_SHADEROPMULT_HPP
 
+#include <unordered_map>
+
 #define KP_MAX_DIM_SIZE 1
 
 namespace kp {
@@ -234,42 +236,81 @@ class Tensor
 namespace kp {
 
 /**
-    Base Operation
-*/
+ *  Base Operation which provides the high level interface that Kompute
+ *  operations implement in order to perform a set of actions in the GPU.
+ *
+ *  Operations can perform actions on tensors, and optionally can also own an
+ *  Algorithm with respective parameters. kp::Operations with kp::Algorithms
+ *  would inherit from kp::OpBaseAlgo.
+ */
 class OpBase
 {
-  private:
   public:
     /**
-        Constructor
-    */
+     *  Base constructor, should not be used unless explicitly intended.
+     */
     OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
 
+    /**
+     *  Default constructor with parameters that provides the bare minimum
+     * requirements for the operations to be able to create and manage their
+     * sub-components.
+     */
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer)
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors,
+           bool freeTensors)
     {
         SPDLOG_DEBUG("Compute OpBase constructor with params");
 
         this->mPhysicalDevice = physicalDevice;
         this->mDevice = device;
         this->mCommandBuffer = commandBuffer;
+        this->mTensors = tensors;
     }
 
-    ~OpBase() {
-        SPDLOG_DEBUG("Compute OpBase destructor started"); 
-    }
-
-    virtual void init(std::vector<std::shared_ptr<Tensor>> tensors)
+    /**
+     * Default destructor for OpBase class. This OpBase destructor class should
+     * always be called to destroy and free owned resources unless it is
+     * intended to destroy the resources in the parent class. This can be done
+     * by passing the mFreeTensors=false.
+     */
+    ~OpBase()
     {
-        SPDLOG_DEBUG("Kompute OpBase init called");
+        SPDLOG_DEBUG("Kompute OpBase destructor started");
+
+        if (!this->mDevice) {
+            spdlog::warn("Kompute OpBase destructor called with empty device");
+            return;
+        }
+
+        if (this->mFreeTensors) {
+            SPDLOG_DEBUG("Kompute OpBase freeing tensors");
+            for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+                if (tensor && tensor->isInit()) {
+                    tensor->freeMemoryDestroyGPUResources();
+                } else {
+                    spdlog::error("Kompute OpBase expected to free "
+                                  "tensor but has already been freed.");
+                }
+            }
+        }
     }
 
-    virtual void record() { SPDLOG_DEBUG("Kompute OpBase record called"); }
+    virtual void init() = 0;
 
-    virtual void postSubmit() { SPDLOG_DEBUG("Kompute OpBase init called"); }
+    virtual void record() = 0;
+
+    virtual void postSubmit() = 0;
 
   protected:
+    // Sometimes owned resources
+    std::vector<std::shared_ptr<Tensor>> mTensors;
+    bool mFreeTensors =
+      false; // TODO: Provide granularity to specify which to free
+
+    // Always external resources
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
@@ -295,6 +336,9 @@ class Sequence
              uint32_t queueIndex);
     ~Sequence();
 
+    // Initialiser
+    void init();
+
     // Record command functions
     void begin();
     void end();
@@ -310,15 +354,15 @@ class Sequence
         SPDLOG_DEBUG("Kompute Sequence record function started");
 
         SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op =
-          new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+        T* op = new T(
+          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, tensors);
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
         SPDLOG_DEBUG(
           "Kompute Sequence running init on OpBase derived class instance");
-        baseOpPtr->init(tensors);
+        baseOpPtr->init();
 
         SPDLOG_DEBUG(
           "Kompute Sequence running record on OpBase derived class instance");
@@ -350,6 +394,8 @@ class Sequence
 
 } // End namespace kp
 
+#define KP_DEFAULT_SESSION "DEFAULT"
+
 namespace kp {
 
 /**
@@ -370,28 +416,34 @@ class Manager
 
     ~Manager();
 
-    std::weak_ptr<Sequence> managedSequence();
+    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sessionName);
 
     template<typename T, typename... TArgs>
-    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors)
+    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors, std::string sessionName = KP_DEFAULT_SESSION)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
-        Sequence sq(this->mPhysicalDevice,
-                    this->mDevice,
-                    this->mComputeQueue,
-                    this->mComputeQueueFamilyIndex);
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
-        sq.begin();
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
-        sq.record<T>(tensors);
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
-        sq.end();
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
-        sq.eval();
+        std::weak_ptr<Sequence> sqWeakPtr = 
+            this->getOrCreateManagedSequence(sessionName);
+
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) 
+        {
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+            sq->begin();
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+            sq->record<T>(tensors);
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+            sq->end();
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+            sq->eval();
+        }
         SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
   private:
+
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -402,7 +454,7 @@ class Manager
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
     // Always owned resources
-    std::vector<std::shared_ptr<Sequence>> mManagedSequences;
+    std::unordered_map<std::string, std::shared_ptr<Sequence>> mManagedSequences;
 
 #if DEBUG
     vk::DebugReportCallbackEXT mDebugReportCallback;
@@ -439,15 +491,16 @@ class Algorithm
     void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
   private:
-    // Shared resources
+    // Never Owned Resources
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
-    // Resources owned by default
+    // Optionally owned resources
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
     bool mFreeDescriptorPool = false;
+
     // TODO: Explore design for multiple descriptor sets
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;
@@ -463,6 +516,7 @@ class Algorithm
     // Create util functions
     void createShaderModule(const std::vector<char>& shaderFileData);
     void createPipeline();
+
     // Parameters
     void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
     void createDescriptorPool();
@@ -486,11 +540,13 @@ class OpMult : public OpBase
 
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer);
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors,
+           bool freeTensors = false);
 
     ~OpMult();
 
-    void init(std::vector<std::shared_ptr<Tensor>> tensors) override;
+    void init() override;
 
     void record() override;
 
@@ -532,8 +588,10 @@ OpMult<tX, tY, tZ>::OpMult()
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
-                           std::shared_ptr<vk::CommandBuffer> commandBuffer)
-  : OpBase(physicalDevice, device, commandBuffer)
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                           std::vector<std::shared_ptr<Tensor>>& tensors,
+                           bool freeTensors)
+  : OpBase(physicalDevice, device, commandBuffer, tensors, freeTensors)
 {
     SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
@@ -548,20 +606,20 @@ OpMult<tX, tY, tZ>::~OpMult()
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
+OpMult<tX, tY, tZ>::init()
 {
     SPDLOG_DEBUG("Kompute OpMult init called");
 
-    if (tensors.size() < 3) {
+    if (this->mTensors.size() < 3) {
         throw std::runtime_error(
           "Kompute OpMult called with less than 1 tensor");
-    } else if (tensors.size() > 3) {
-        spdlog::warn("Kompute OpMult called with more than 3 tensors");
+    } else if (this->mTensors.size() > 3) {
+        spdlog::warn("Kompute OpMult called with more than 3 this->mTensors");
     }
 
-    this->mTensorLHS = tensors[0];
-    this->mTensorRHS = tensors[1];
-    this->mTensorOutput = tensors[2];
+    this->mTensorLHS = this->mTensors[0];
+    this->mTensorRHS = this->mTensors[1];
+    this->mTensorOutput = this->mTensors[2];
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -635,7 +693,7 @@ OpMult<tX, tY, tZ>::init(std::vector<std::shared_ptr<Tensor>> tensors)
 
     SPDLOG_DEBUG("Kompute OpMult Initialising algorithm component");
 
-    this->mAlgorithm->init(shaderFileData, tensors);
+    this->mAlgorithm->init(shaderFileData, this->mTensors);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -709,21 +767,22 @@ class OpCreateTensor : public OpBase
 
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer);
+                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                   std::vector<std::shared_ptr<Tensor>>& tensors,
+                   bool freeTensors = true);
 
     ~OpCreateTensor();
 
-    void init(std::vector<std::shared_ptr<Tensor>> tensors) override;
+    void init() override;
 
     void record() override;
 
     void postSubmit() override;
 
   private:
+    // Never owned resources
     std::shared_ptr<Tensor> mPrimaryTensor;
-    bool mFreePrimaryTensorResources = false;
     std::shared_ptr<Tensor> mStagingTensor;
-    bool mFreeStagingTensorResources = false;
 };
 
 } // End namespace kp

@@ -22,6 +22,9 @@ class Sequence
              uint32_t queueIndex);
     ~Sequence();
 
+    // Initialiser
+    void init();
+
     // Record command functions
     void begin();
     void end();
@@ -37,15 +40,15 @@ class Sequence
         SPDLOG_DEBUG("Kompute Sequence record function started");
 
         SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op =
-          new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+        T* op = new T(
+          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, tensors);
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
         SPDLOG_DEBUG(
           "Kompute Sequence running init on OpBase derived class instance");
-        baseOpPtr->init(tensors);
+        baseOpPtr->init();
 
         SPDLOG_DEBUG(
           "Kompute Sequence running record on OpBase derived class instance");
