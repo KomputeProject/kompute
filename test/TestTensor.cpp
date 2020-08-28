@@ -8,3 +8,4 @@ TEST_CASE("Tensor should have same vector as initialised") {
     kp::Tensor tensor(vec);
     REQUIRE( tensor.data() == vec );
 }
+
