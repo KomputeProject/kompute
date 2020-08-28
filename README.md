@@ -27,8 +27,8 @@
 
 ## Principles & Features
 
-* Single header easy to import static library
-* [Documentation](https://axsaucedo.github.io/vulkan-kompute/) using doxygen and sphinx for
+* [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
+* [Documentation](https://axsaucedo.github.io/vulkan-kompute/) leveraging doxygen and sphinx 
 * Packaged with vcpkg for easy download and integration with projects
 * Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing Vulkan API with a compute-specific interface
