@@ -196,3 +196,11 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
 * Uses doxygen and sphinx
 
+##### Updating documentation
+
+To update the documentation will need to:
+* Run the gendoxygen target in the build system
+* Run the gensphynx target in the buildsystem 
+* Push to github pages with `make push_docs_to_ghpages`
+
+
