@@ -9,7 +9,7 @@
 <tr>
 
 <td width="20%">
-<img src="docs/images/kompute.jpg">
+<img src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/kompute.jpg">
 </td>
 
 <td>
@@ -154,7 +154,7 @@ Simplified Kompute Components
 <td width=30%>
 
 
-<img width="100%" src="docs/images/kompute-vulkan-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/kompute-vulkan-architecture.jpg">
 
 <br>
 <br>
@@ -166,7 +166,7 @@ Simplified Kompute Components
 
 </td>
 <td>
-<img width="100%" src="docs/images/kompute-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/kompute-architecture.jpg">
 </td>
 </tr>
 </table>

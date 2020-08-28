@@ -7,3 +7,4 @@ quom==1.2.0
 Sphinx==3.2.1
 sphinx_materialdesign_theme==0.1.11
 breathe==4.20.0
+m2r2==0.2.5
