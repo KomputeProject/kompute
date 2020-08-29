@@ -66,7 +66,7 @@ OpCreateTensor::record()
     SPDLOG_DEBUG("Kompute OpCreateTensor record called");
 
     if (this->mPrimaryTensor->tensorType() == Tensor::TensorTypes::eDevice) {
-        this->mPrimaryTensor->recordCopyFrom(this->mStagingTensor);
+        this->mPrimaryTensor->recordCopyFrom(this->mStagingTensor, true);
     }
 }
 

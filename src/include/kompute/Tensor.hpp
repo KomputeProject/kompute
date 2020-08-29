@@ -115,7 +115,7 @@ class Tensor
      * copied before further operations. Default is true.
      */
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
-                        bool createBarrier = true);
+                        bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which

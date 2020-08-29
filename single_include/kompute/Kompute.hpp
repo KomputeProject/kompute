@@ -277,7 +277,7 @@ class Tensor
      * copied before further operations. Default is true.
      */
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
-                        bool createBarrier = true);
+                        bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which
@@ -990,8 +990,10 @@ OpAlgoBase<tX, tY, tZ>::postSubmit()
 namespace kp {
 
 /**
- * Operation that performs multiplication on two tensors and outpus on third
- * tensor. The template parameters specify the processing GPU layout number of
+ * Operation base class to simplify the creation of operations that require
+ * right hand and left hand side datapoints together with a single output.
+ * The expected data passed is two input tensors and one output tensor.
+ * The template parameters specify the processing GPU layout number of
  * iterations for each x, y, z parameter. More specifically, this will be the
  * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
  */
@@ -1171,7 +1173,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::record()
       vk::PipelineStageFlagBits::eComputeShader,
       vk::PipelineStageFlagBits::eTransfer);
 
-    this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput);
+    this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput, true);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
