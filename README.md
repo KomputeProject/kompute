@@ -29,14 +29,10 @@
 
 * [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
 * [Documentation](https://axsaucedo.github.io/vulkan-kompute/) leveraging doxygen and sphinx 
-* Packaged with vcpkg for easy download and integration with projects
 * Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing Vulkan API with a compute-specific interface
 * BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design
 * Directed acyclic memory management and relationships of ownership
-* Explicit memory management responsibilities
-* Opinionated approach towards base interface for memory management hierarchy with explicit and extensible design
-* Best practices for safe memory GPU / Vulkan memory management (WIP)
 
 ## Getting Started
 
@@ -193,11 +189,11 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 
 * Follows Mozilla C++ Style Guide https://www-archive.mozilla.org/hacking/mozilla-style-guide.html
     + Uses post-commit hook to run the linter, you can set it up so it runs the linter before commit
-* Uses vcpkg for finding the dependencies, it's the recommanded set up to retrieve the libraries
     + All dependencies are defined in vcpkg.json 
 * Uses cmake as build system, and provides a top level makefile with recommended command
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
-* Uses doxygen and sphinx
+* Uses doxygen and sphinx for documentation and autodocs
+* Uses vcpkg for finding the dependencies, it's the recommanded set up to retrieve the libraries
 
 ##### Updating documentation
 
