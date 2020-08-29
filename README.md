@@ -52,17 +52,50 @@ int main() {
 
     kp::Manager mgr; // Automatically selects Device 0
 
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
+    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
+    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
+    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 0, 0 }));
 
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2.0, 4.0, 6.0 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
+    auto params = std::vector<kp::Tensor>({ tensorLhs, tensorRhs, tensorOut })
 
-    // TODO: Add capabilities for just output tensor types
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
+    // Create tensor data in GPU
+    mgr.evalOp<kp::OpCreateTensor>(params);
 
-    mgr.evalOp<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
+    // Run Kompute operation on the parameters provided with dispatch layout
+    mgr.evalOp<kp::OpAlgoShader<10, 1, 1>>(params, "path/to/shader.comp.spv");
+
+    // Print the output
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
+}
+```
+
+Create your own operations with full control on each of the steps.
+
+```c++
+template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
+class OpCustom : public OpAlgoBase<tX, tY, tZ> {
+    // ...
+    OpCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors)
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true)
+    {
+        // ... extra steps to perform custom setup
+        this->mOptSpirvBinPath = "shaders/glsl/opmult.comp.spv";
+    }
+}
+
+int main() {
+    kp::Manager mgr; // Automatically selects Device 0
+
+    // Create parameters but don't initialise if customOp performs multiple
+    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
+    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
+    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 0, 0 }));
+
+    // Pass parameters to custom operation which performs relevant steps
+    mgr.evalOp<kp::OpCustom>({ tensorLHS, tensorRHS, tensorOutput });
 
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
@@ -72,6 +105,7 @@ Record commands in a single submit by using a Sequence to send in batch to GPU.
 
 ```c++
 int main() {
+
     kp::Manager mgr;
 
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
@@ -90,33 +124,12 @@ int main() {
 
         sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
     }
+
     // Stop recording
     sq.end();
+
     // Submit operations to GPU
     sq.eval();
-
-    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
-}
-```
-
-Create your own custom operations to leverage Vulkan Compute for your specialised use-cases.
-
-```c++
-class OpCustom : kp::OpBase {
-    // ...
-    void init(std::shared_ptr<Tensor> tensors) {
-        // ... extra steps to initialise tensors
-        this->mAlgorithm->init("path/to/your/shader.compute.spv", tensors);
-    }
-}
-
-int main() {
-    kp::Manager mgr; // Automatically selects Device 0
-
-    std::shared_ptr<kp::Tensor> tensor{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
-
-    mgr.evalOp<kp::OpCustom>({ tensorLHS, tensorRHS, tensorOutput });
 
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }

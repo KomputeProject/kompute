@@ -11,7 +11,7 @@
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpAlgoLhsRhsOut.hpp"
+#include "kompute/operations/OpAlgoBase.hpp"
 
 namespace kp {
 
@@ -22,7 +22,7 @@ namespace kp {
  * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
  */
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-class OpMult : public OpAlgoLhsRhsOut<tX, tY, tZ>
+class OpMult : public OpAlgoBase<tX, tY, tZ>
 {
   public:
     /**
@@ -47,7 +47,7 @@ class OpMult : public OpAlgoLhsRhsOut<tX, tY, tZ>
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors)
-      : OpAlgoLhsRhsOut<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors)
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true)
     {
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
