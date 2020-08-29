@@ -50,16 +50,15 @@ class Algorithm
     void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
   private:
-    // Never Owned Resources
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
-    // Optionally owned resources
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
     bool mFreeDescriptorPool = false;
-
     // TODO: Explore design for multiple descriptor sets
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;

@@ -132,15 +132,18 @@ class Tensor
     void mapDataIntoHostMemory();
 
   private:
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Buffer> mBuffer;
     bool mFreeBuffer;
     std::shared_ptr<vk::DeviceMemory> mMemory;
     bool mFreeMemory;
 
+    // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mData;
 
     TensorTypes mTensorType = TensorTypes::eDevice;
@@ -148,8 +151,7 @@ class Tensor
     std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
     bool mIsInit = false;
 
-    // Creates the vulkan buffer
-    void createBuffer();
+    void createBuffer(); // Creates the vulkan buffer
 
     // Private util functions
     vk::BufferUsageFlags getBufferUsageFlags();

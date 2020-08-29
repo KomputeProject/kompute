@@ -84,6 +84,7 @@ class Manager
     }
 
   private:
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -93,7 +94,7 @@ class Manager
     uint32_t mComputeQueueFamilyIndex = -1;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
-    // Always owned resources
+    // -------------- ALWAYS OWNED RESOURCES
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
 

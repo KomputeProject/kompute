@@ -104,10 +104,13 @@ class Sequence
     }
 
   private:
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
     uint32_t mQueueIndex = -1;
+
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::CommandPool> mCommandPool = nullptr;
     bool mFreeCommandPool = false;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer = nullptr;

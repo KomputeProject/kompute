@@ -96,19 +96,19 @@ class OpBase
     virtual void postSubmit() = 0;
 
   protected:
-    // OPTIONALLY OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>>
-      mTensors; ///< Tensors referenced by operation that can be managed
-                ///< optionally by operation
-    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
-                               ///< tensors are freed (if they are managed)
-
-    // NEVER OWNED RESOURCES
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice>
       mPhysicalDevice;                   ///< Vulkan Physical Device
     std::shared_ptr<vk::Device> mDevice; ///< Vulkan Logical Device
     std::shared_ptr<vk::CommandBuffer>
       mCommandBuffer; ///< Vulkan Command Buffer
+
+    // -------------- OPTIONALLY OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>>
+      mTensors; ///< Tensors referenced by operation that can be managed
+                ///< optionally by operation
+    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
+                               ///< tensors are freed (if they are managed)
 };
 
 } // End namespace kp

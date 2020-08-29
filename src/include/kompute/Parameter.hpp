@@ -21,10 +21,10 @@ class Algorithm
     ~Algorithm();
 
   private:
-    // Shared resources
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
 
-    // Resources owned by default
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
