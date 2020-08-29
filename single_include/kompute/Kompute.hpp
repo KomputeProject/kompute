@@ -168,7 +168,10 @@ class Tensor
 {
   public:
     /**
-     * Type for tensors created: Device allows memory to be transferred from staging buffers. Staging are host memory visible. Storage are device visible but are not set up to transfer or receive data (only for shader storage).
+     * Type for tensors created: Device allows memory to be transferred from
+     * staging buffers. Staging are host memory visible. Storage are device
+     * visible but are not set up to transfer or receive data (only for shader
+     * storage).
      */
     enum class TensorTypes
     {
@@ -183,7 +186,8 @@ class Tensor
     Tensor();
 
     /**
-     *  Default constructor with data provided which would be used to create the respective vulkan buffer and memory.
+     *  Default constructor with data provided which would be used to create the
+     * respective vulkan buffer and memory.
      *
      *  @param data Vector of data that will be used by the tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
@@ -192,7 +196,8 @@ class Tensor
            TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
-     * Destructor which is in charge of freeing vulkan resources unless they have been provided externally.
+     * Destructor which is in charge of freeing vulkan resources unless they
+     * have been provided externally.
      */
     ~Tensor();
 
@@ -209,21 +214,26 @@ class Tensor
     void freeMemoryDestroyGPUResources();
 
     /**
-     * Returns the vector of data currently contained by the Tensor. It is important to ensure that there is no out-of-sync data with the GPU memory.
+     * Returns the vector of data currently contained by the Tensor. It is
+     * important to ensure that there is no out-of-sync data with the GPU
+     * memory.
      *
      * @return Vector of elements representing the data in the tensor.
      */
     std::vector<uint32_t> data();
     /**
-     * Returns the size/magnitude of the Tensor, which will be the total number of elements across all dimensions
+     * Returns the size/magnitude of the Tensor, which will be the total number
+     * of elements across all dimensions
      *
      * @return Unsigned integer representing the total number of elements
      */
     uint32_t size();
     /**
-     * Returns the shape of the tensor, which includes the number of dimensions and the size per dimension.
+     * Returns the shape of the tensor, which includes the number of dimensions
+     * and the size per dimension.
      *
-     * @return Array containing the sizes for each dimension. Zero means respective dimension is not active.
+     * @return Array containing the sizes for each dimension. Zero means
+     * respective dimension is not active.
      */
     std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
     /**
@@ -233,12 +243,15 @@ class Tensor
      */
     TensorTypes tensorType();
     /**
-     * Returns true if the tensor initialisation function has been carried out successful, which would mean that the buffer and memory will have been provisioned.
+     * Returns true if the tensor initialisation function has been carried out
+     * successful, which would mean that the buffer and memory will have been
+     * provisioned.
      */
     bool isInit();
 
     /**
-     * Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host.
+     * Sets / resets the vector data of the tensor. This function does not
+     * perform any copies into GPU memory and is only performed on the host.
      */
     void setData(const std::vector<uint32_t>& data);
 
@@ -248,10 +261,11 @@ class Tensor
      * a staging buffer transfer, or to gather output (between others).
      *
      * @param copyFromTensor Tensor to copy the data from
-     * @param createBarrier Whether to create a barrier that ensures the data is copied before further operations. Default is true.
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
      */
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
-            bool createBarrier = true);
+                        bool createBarrier = true);
 
     /**
      * Records the buffer memory barrier into the command buffer which
@@ -276,11 +290,13 @@ class Tensor
      */
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
     /**
-     * Maps data from the Host Visible GPU memory into the data vector. It requires the Tensor to be of staging type for it to work.
+     * Maps data from the Host Visible GPU memory into the data vector. It
+     * requires the Tensor to be of staging type for it to work.
      */
     void mapDataFromHostMemory();
     /**
-     * Maps data from the data vector into the Host Visible GPU memory. It requires the tensor to be of staging type for it to work.
+     * Maps data from the data vector into the Host Visible GPU memory. It
+     * requires the tensor to be of staging type for it to work.
      */
     void mapDataIntoHostMemory();
 
@@ -432,11 +448,13 @@ class Sequence
 {
   public:
     /**
-     *  Base constructor for Sequence. Should not be used unless explicit intended.
-    */
+     *  Base constructor for Sequence. Should not be used unless explicit
+     * intended.
+     */
     Sequence();
     /**
-     * Main constructor for sequence which requires core vulkan components to generate all dependent resources.
+     * Main constructor for sequence which requires core vulkan components to
+     * generate all dependent resources.
      *
      * @param physicalDevice Vulkan physical device
      * @param device Vulkan logical device
@@ -448,25 +466,30 @@ class Sequence
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex);
     /**
-     * Destructor for sequence which is responsible for cleaning all subsequent owned operations.
+     * Destructor for sequence which is responsible for cleaning all subsequent
+     * owned operations.
      */
     ~Sequence();
 
     /**
-     * Initialises sequence including the creation of the command pool and the command buffer.
+     * Initialises sequence including the creation of the command pool and the
+     * command buffer.
      */
     void init();
 
     /**
-     * Begins recording commands for commands to be submitted into the command buffer.
+     * Begins recording commands for commands to be submitted into the command
+     * buffer.
      */
     bool begin();
     /**
-     * Ends the recording and stops recording commands when the record command is sent.
+     * Ends the recording and stops recording commands when the record command
+     * is sent.
      */
     bool end();
     /**
-     * Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier.
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
      */
     bool eval();
 
@@ -485,26 +508,35 @@ class Sequence
     bool isInit();
 
     /**
-     * Record function for operation to be added to the GPU queue in batch. This template requires classes to be derived from the OpBase class. This function also requires the Sequence to be recording, otherwise it will not be able to add the operation.
+     * Record function for operation to be added to the GPU queue in batch. This
+     * template requires classes to be derived from the OpBase class. This
+     * function also requires the Sequence to be recording, otherwise it will
+     * not be able to add the operation.
      *
      * @param tensors Vector of tensors to use for the operation
      */
     template<typename T, typename... TArgs>
-    bool record(std::vector<std::shared_ptr<Tensor>> tensors)
+    bool record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
     {
         static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with OpBase derived classes");
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
 
         SPDLOG_DEBUG("Kompute Sequence record function started");
 
         if (!this->isRecording()) {
-            spdlog::error("Kompute sequence record attempted when not record BEGIN");
+            spdlog::error(
+              "Kompute sequence record attempted when not record BEGIN");
             return false;
         }
 
         SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op =
-          new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, tensors);
+        T* op = new T(this->mPhysicalDevice,
+                      this->mDevice,
+                      this->mCommandBuffer,
+                      tensors,
+                      std::forward<TArgs>(params)...);
+
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
@@ -561,17 +593,20 @@ class Manager
   private:
   public:
     /**
-        Base constructor and default used which creates the base resources including choosing the device 0 by default.
+        Base constructor and default used which creates the base resources
+       including choosing the device 0 by default.
     */
     Manager();
 
     /**
-        Similar to base constructor but allows the user to provide the device they would like to create the resources on.
+        Similar to base constructor but allows the user to provide the device
+       they would like to create the resources on.
     */
     Manager(uint32_t physicalDeviceIndex);
 
     /**
-     * Manager constructor which allows your own vulkan application to integrate with the vulkan kompute use.
+     * Manager constructor which allows your own vulkan application to integrate
+     * with the vulkan kompute use.
      *
      * @param instance Vulkan compute instance to base this application
      * @physicalDevice Vulkan physical device to use for application
@@ -584,27 +619,34 @@ class Manager
             uint32_t physicalDeviceIndex);
 
     /**
-     * Manager destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed.
+     * Manager destructor which would ensure all owned resources are destroyed
+     * unless explicitly stated that resources should not be destroyed or freed.
      */
     ~Manager();
 
     /**
-     * Get or create a managed Sequence that will be contained by this manager. If the named sequence does not currently exist, it would be created and initialised.
-     * 
-     * @param sequenceName The name for the named sequence to be retrieved or created
+     * Get or create a managed Sequence that will be contained by this manager.
+     * If the named sequence does not currently exist, it would be created and
+     * initialised.
+     *
+     * @param sequenceName The name for the named sequence to be retrieved or
+     * created
      * @return Weak pointer to the manager owned sequence resource
      */
-    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sequenceName);
+    std::weak_ptr<Sequence> getOrCreateManagedSequence(
+      std::string sequenceName);
 
     /**
-     * Operation that adds extra operations to existing or new created sequences.
+     * Operation that adds extra operations to existing or new created
+     * sequences.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
      */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sequenceName = KP_DEFAULT_SESSION)
+                std::string sequenceName = KP_DEFAULT_SESSION,
+                TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
         std::weak_ptr<Sequence> sqWeakPtr =
@@ -615,7 +657,7 @@ class Manager
             sq->begin();
 
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
-            sq->record<T>(tensors);
+            sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
             sq->end();
@@ -658,13 +700,15 @@ class Manager
 namespace kp {
 
 /**
-    Abstraction for compute shaders that are run on top of tensors grouped via ParameterGroups (which group descriptorsets)
+    Abstraction for compute shaders that are run on top of tensors grouped via
+   ParameterGroups (which group descriptorsets)
 */
 class Algorithm
 {
   public:
     /**
-        Base constructor for Algorithm. Should not be used unless explicit intended.
+        Base constructor for Algorithm. Should not be used unless explicit
+       intended.
     */
     Algorithm();
 
@@ -672,27 +716,32 @@ class Algorithm
      *  Default constructor for Algorithm
      *
      *  @param device The Vulkan device to use for creating resources
-     *  @param commandBuffer The vulkan command buffer to bind the pipeline and shaders
-    */
+     *  @param commandBuffer The vulkan command buffer to bind the pipeline and
+     * shaders
+     */
     Algorithm(std::shared_ptr<vk::Device> device,
               std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     /**
-     * Initialiser for the shader data provided to the algoithm as well as tensor parameters that will be used in shader.
+     * Initialiser for the shader data provided to the algoithm as well as
+     * tensor parameters that will be used in shader.
      *
      * @param shaderFileData The bytes in spir-v format of the shader
-     * @tensorParams The Tensors to be used in the Algorithm / shader for processing
+     * @tensorParams The Tensors to be used in the Algorithm / shader for
+     * processing
      */
     void init(const std::vector<char>& shaderFileData,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 
     /**
-     * Destructor for Algorithm which is responsible for freeing and desroying respective pipelines and owned parameter groups.
+     * Destructor for Algorithm which is responsible for freeing and desroying
+     * respective pipelines and owned parameter groups.
      */
     ~Algorithm();
 
     /**
-     * Records the dispatch function with the provided template parameters or alternatively using the size of the tensor by default.
+     * Records the dispatch function with the provided template parameters or
+     * alternatively using the size of the tensor by default.
      *
      * @param x Layout X dispatch value
      * @param y Layout Y dispatch value

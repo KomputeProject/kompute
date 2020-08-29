@@ -18,7 +18,10 @@ class Tensor
 {
   public:
     /**
-     * Type for tensors created: Device allows memory to be transferred from staging buffers. Staging are host memory visible. Storage are device visible but are not set up to transfer or receive data (only for shader storage).
+     * Type for tensors created: Device allows memory to be transferred from
+     * staging buffers. Staging are host memory visible. Storage are device
+     * visible but are not set up to transfer or receive data (only for shader
+     * storage).
      */
     enum class TensorTypes
     {
@@ -33,7 +36,8 @@ class Tensor
     Tensor();
 
     /**
-     *  Default constructor with data provided which would be used to create the respective vulkan buffer and memory.
+     *  Default constructor with data provided which would be used to create the
+     * respective vulkan buffer and memory.
      *
      *  @param data Vector of data that will be used by the tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
@@ -42,7 +46,8 @@ class Tensor
            TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
-     * Destructor which is in charge of freeing vulkan resources unless they have been provided externally.
+     * Destructor which is in charge of freeing vulkan resources unless they
+     * have been provided externally.
      */
     ~Tensor();
 
@@ -59,21 +64,26 @@ class Tensor
     void freeMemoryDestroyGPUResources();
 
     /**
-     * Returns the vector of data currently contained by the Tensor. It is important to ensure that there is no out-of-sync data with the GPU memory.
+     * Returns the vector of data currently contained by the Tensor. It is
+     * important to ensure that there is no out-of-sync data with the GPU
+     * memory.
      *
      * @return Vector of elements representing the data in the tensor.
      */
     std::vector<uint32_t> data();
     /**
-     * Returns the size/magnitude of the Tensor, which will be the total number of elements across all dimensions
+     * Returns the size/magnitude of the Tensor, which will be the total number
+     * of elements across all dimensions
      *
      * @return Unsigned integer representing the total number of elements
      */
     uint32_t size();
     /**
-     * Returns the shape of the tensor, which includes the number of dimensions and the size per dimension.
+     * Returns the shape of the tensor, which includes the number of dimensions
+     * and the size per dimension.
      *
-     * @return Array containing the sizes for each dimension. Zero means respective dimension is not active.
+     * @return Array containing the sizes for each dimension. Zero means
+     * respective dimension is not active.
      */
     std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
     /**
@@ -83,12 +93,15 @@ class Tensor
      */
     TensorTypes tensorType();
     /**
-     * Returns true if the tensor initialisation function has been carried out successful, which would mean that the buffer and memory will have been provisioned.
+     * Returns true if the tensor initialisation function has been carried out
+     * successful, which would mean that the buffer and memory will have been
+     * provisioned.
      */
     bool isInit();
 
     /**
-     * Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host.
+     * Sets / resets the vector data of the tensor. This function does not
+     * perform any copies into GPU memory and is only performed on the host.
      */
     void setData(const std::vector<uint32_t>& data);
 
@@ -98,10 +111,11 @@ class Tensor
      * a staging buffer transfer, or to gather output (between others).
      *
      * @param copyFromTensor Tensor to copy the data from
-     * @param createBarrier Whether to create a barrier that ensures the data is copied before further operations. Default is true.
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
      */
     void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
-            bool createBarrier = true);
+                        bool createBarrier = true);
 
     /**
      * Records the buffer memory barrier into the command buffer which
@@ -117,7 +131,6 @@ class Tensor
                                    vk::PipelineStageFlagBits srcStageMask,
                                    vk::PipelineStageFlagBits dstStageMask);
 
-
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
      * and reference the underlying buffer component of the tensor without
@@ -127,11 +140,13 @@ class Tensor
      */
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
     /**
-     * Maps data from the Host Visible GPU memory into the data vector. It requires the Tensor to be of staging type for it to work.
+     * Maps data from the Host Visible GPU memory into the data vector. It
+     * requires the Tensor to be of staging type for it to work.
      */
     void mapDataFromHostMemory();
     /**
-     * Maps data from the data vector into the Host Visible GPU memory. It requires the tensor to be of staging type for it to work.
+     * Maps data from the data vector into the Host Visible GPU memory. It
+     * requires the tensor to be of staging type for it to work.
      */
     void mapDataIntoHostMemory();
 

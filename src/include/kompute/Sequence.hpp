@@ -13,11 +13,13 @@ class Sequence
 {
   public:
     /**
-     *  Base constructor for Sequence. Should not be used unless explicit intended.
-    */
+     *  Base constructor for Sequence. Should not be used unless explicit
+     * intended.
+     */
     Sequence();
     /**
-     * Main constructor for sequence which requires core vulkan components to generate all dependent resources.
+     * Main constructor for sequence which requires core vulkan components to
+     * generate all dependent resources.
      *
      * @param physicalDevice Vulkan physical device
      * @param device Vulkan logical device
@@ -29,25 +31,30 @@ class Sequence
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex);
     /**
-     * Destructor for sequence which is responsible for cleaning all subsequent owned operations.
+     * Destructor for sequence which is responsible for cleaning all subsequent
+     * owned operations.
      */
     ~Sequence();
 
     /**
-     * Initialises sequence including the creation of the command pool and the command buffer.
+     * Initialises sequence including the creation of the command pool and the
+     * command buffer.
      */
     void init();
 
     /**
-     * Begins recording commands for commands to be submitted into the command buffer.
+     * Begins recording commands for commands to be submitted into the command
+     * buffer.
      */
     bool begin();
     /**
-     * Ends the recording and stops recording commands when the record command is sent.
+     * Ends the recording and stops recording commands when the record command
+     * is sent.
      */
     bool end();
     /**
-     * Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier.
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
      */
     bool eval();
 
@@ -66,26 +73,35 @@ class Sequence
     bool isInit();
 
     /**
-     * Record function for operation to be added to the GPU queue in batch. This template requires classes to be derived from the OpBase class. This function also requires the Sequence to be recording, otherwise it will not be able to add the operation.
+     * Record function for operation to be added to the GPU queue in batch. This
+     * template requires classes to be derived from the OpBase class. This
+     * function also requires the Sequence to be recording, otherwise it will
+     * not be able to add the operation.
      *
      * @param tensors Vector of tensors to use for the operation
      */
     template<typename T, typename... TArgs>
-    bool record(std::vector<std::shared_ptr<Tensor>> tensors)
+    bool record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
     {
         static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with OpBase derived classes");
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
 
         SPDLOG_DEBUG("Kompute Sequence record function started");
 
         if (!this->isRecording()) {
-            spdlog::error("Kompute sequence record attempted when not record BEGIN");
+            spdlog::error(
+              "Kompute sequence record attempted when not record BEGIN");
             return false;
         }
 
         SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op =
-          new T(this->mPhysicalDevice, this->mDevice, this->mCommandBuffer, tensors);
+        T* op = new T(this->mPhysicalDevice,
+                      this->mDevice,
+                      this->mCommandBuffer,
+                      tensors,
+                      std::forward<TArgs>(params)...);
+
         OpBase* baseOp = dynamic_cast<OpBase*>(op);
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };

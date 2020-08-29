@@ -18,17 +18,20 @@ class Manager
   private:
   public:
     /**
-        Base constructor and default used which creates the base resources including choosing the device 0 by default.
+        Base constructor and default used which creates the base resources
+       including choosing the device 0 by default.
     */
     Manager();
 
     /**
-        Similar to base constructor but allows the user to provide the device they would like to create the resources on.
+        Similar to base constructor but allows the user to provide the device
+       they would like to create the resources on.
     */
     Manager(uint32_t physicalDeviceIndex);
 
     /**
-     * Manager constructor which allows your own vulkan application to integrate with the vulkan kompute use.
+     * Manager constructor which allows your own vulkan application to integrate
+     * with the vulkan kompute use.
      *
      * @param instance Vulkan compute instance to base this application
      * @physicalDevice Vulkan physical device to use for application
@@ -41,27 +44,34 @@ class Manager
             uint32_t physicalDeviceIndex);
 
     /**
-     * Manager destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed.
+     * Manager destructor which would ensure all owned resources are destroyed
+     * unless explicitly stated that resources should not be destroyed or freed.
      */
     ~Manager();
 
     /**
-     * Get or create a managed Sequence that will be contained by this manager. If the named sequence does not currently exist, it would be created and initialised.
-     * 
-     * @param sequenceName The name for the named sequence to be retrieved or created
+     * Get or create a managed Sequence that will be contained by this manager.
+     * If the named sequence does not currently exist, it would be created and
+     * initialised.
+     *
+     * @param sequenceName The name for the named sequence to be retrieved or
+     * created
      * @return Weak pointer to the manager owned sequence resource
      */
-    std::weak_ptr<Sequence> getOrCreateManagedSequence(std::string sequenceName);
+    std::weak_ptr<Sequence> getOrCreateManagedSequence(
+      std::string sequenceName);
 
     /**
-     * Operation that adds extra operations to existing or new created sequences.
+     * Operation that adds extra operations to existing or new created
+     * sequences.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
      */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sequenceName = KP_DEFAULT_SESSION)
+                std::string sequenceName = KP_DEFAULT_SESSION,
+                TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
         std::weak_ptr<Sequence> sqWeakPtr =
@@ -72,7 +82,7 @@ class Manager
             sq->begin();
 
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
-            sq->record<T>(tensors);
+            sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
             SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
             sq->end();

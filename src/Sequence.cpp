@@ -150,11 +150,15 @@ Sequence::eval()
     return true;
 }
 
-bool Sequence::isRecording() {
+bool
+Sequence::isRecording()
+{
     return this->mRecording;
 }
 
-bool Sequence::isInit() {
+bool
+Sequence::isInit()
+{
     return this->mIsInit;
 }
 
