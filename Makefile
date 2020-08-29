@@ -38,9 +38,10 @@ clean_cmake:
 ####### Visual studio build shortcut commands #######
 
 mk_cmake:
-	$(CMAKE_BIN) \
+	cmake \
 		-Bbuild \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DKOMPUTE_OPT_BUILD_DOCS=0 \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_UNIX_PATH) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Unix Makefiles"
@@ -92,13 +93,26 @@ vs_run_docs: vs_build_docs
 vs_run_tests: vs_build_tests
 	./build/test/Debug/test_kompute.exe
 
+####### Create release ######
+
+update_builder_image:
+	docker build -f Dockerfile.linux . \
+		-t axsauze/kompute-builder:0.1
+	docker push axsauze/kompute-builder:0.1
+
+create_linux_release:
+	docker run -it \
+		-v $(pwd):/workspace \
+		axsauze/kompute-builder:0.1 \
+		/workspace/scripts/build_release_linux.sh
+
 ####### General project commands #######
 
 install_python_reqs:
-	python -m pip install -r scripts/requirements.txt
+	python3 -m pip install -r scripts/requirements.txt
 
 build_shaders:
-	python scripts/convert_shaders.py \
+	python3 scripts/convert_shaders.py \
 		--shader-path shaders/glsl \
 		--shader-binary $(SCMP_BIN) \
 		--header-path src/include/kompute/shaders/ \

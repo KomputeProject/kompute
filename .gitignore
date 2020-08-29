@@ -181,5 +181,6 @@ tmp/
 
 # CMake
 build/
+release/
 
 
