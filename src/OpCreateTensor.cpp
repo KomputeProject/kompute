@@ -14,9 +14,8 @@ OpCreateTensor::OpCreateTensor(
   std::shared_ptr<vk::PhysicalDevice> physicalDevice,
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-  std::vector<std::shared_ptr<Tensor>>& tensors,
-  bool freeTensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors, freeTensors)
+  std::vector<std::shared_ptr<Tensor>>& tensors)
+  : OpBase(physicalDevice, device, commandBuffer, tensors, true)
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor constructor with params");
 }

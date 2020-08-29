@@ -4,12 +4,14 @@
 
 #include "kompute/Core.hpp"
 
+#if RELEASE
 #include "kompute/shaders/shaderopmult.hpp"
+#endif
 
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpBase.hpp"
+#include "kompute/operations/OpAlgoBase.hpp"
 
 namespace kp {
 
@@ -20,7 +22,7 @@ namespace kp {
  * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
  */
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-class OpMult : public OpBase
+class OpMult : public OpAlgoBase<tX, tY, tZ>
 {
   public:
     /**
@@ -42,8 +44,7 @@ class OpMult : public OpBase
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool freeTensors = false);
+           std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -82,16 +83,8 @@ class OpMult : public OpBase
     std::shared_ptr<Tensor> mTensorRHS;
     std::shared_ptr<Tensor> mTensorOutput;
 
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<Algorithm> mAlgorithm;
-    bool mFreeAlgorithm = false;
-
     // -------------- ALWAYS OWNED RESOURCES
     std::shared_ptr<Tensor> mTensorOutputStaging;
-
-    uint32_t mX;
-    uint32_t mY;
-    uint32_t mZ;
 };
 
 } // End namespace kp
@@ -112,13 +105,10 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool freeTensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors, freeTensors)
+                           std::vector<std::shared_ptr<Tensor>>& tensors)
+  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpMult constructor with params");
-
-    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -144,24 +134,6 @@ OpMult<tX, tY, tZ>::init()
     this->mTensorRHS = this->mTensors[1];
     this->mTensorOutput = this->mTensors[2];
 
-    // The dispatch size is set up based on either explicitly provided template
-    // parameters or by default it would take the shape and size of the tensors
-    if (tX > 0) {
-        // If at least the x value is provided we use mainly the parameters
-        // provided
-        this->mX = tX;
-        this->mY = tY > 0 ? tY : 1;
-        this->mZ = tZ > 0 ? tZ : 1;
-    } else {
-        // TODO: Fully support the full size dispatch using size for the shape
-        this->mX = this->mTensorLHS->size();
-        this->mY = 1;
-        this->mZ = 1;
-    }
-    spdlog::info("Kompute OpMult dispatch size X: {}, Y: {}, Z: {}",
-                 this->mX,
-                 this->mY,
-                 this->mZ);
 
     // TODO: Explore adding a validate function
     if (!(this->mTensorLHS->isInit() && this->mTensorRHS->isInit() &&
@@ -196,22 +168,8 @@ OpMult<tX, tY, tZ>::init()
       shader_data::shaders_glsl_opmult_comp_spv +
         kp::shader_data::shaders_glsl_opmult_comp_spv_len);
 #else
-    SPDLOG_DEBUG(
-      "Kompute OpMult Running debug loading shaders directly from spirv file");
-
-    // TODO: Move to utility function
-    std::string shaderFilePath = "shaders/glsl/opmult.comp.spv";
-    std::ifstream fileStream(shaderFilePath,
-                             std::ios::binary | std::ios::in | std::ios::ate);
-
-    size_t shaderFileSize = fileStream.tellg();
-    fileStream.seekg(0, std::ios::beg);
-    char* shaderDataRaw = new char[shaderFileSize];
-    fileStream.read(shaderDataRaw, shaderFileSize);
-    fileStream.close();
-
-    std::vector<char> shaderFileData(shaderDataRaw,
-                                     shaderDataRaw + shaderFileSize);
+    this->mOptSpirvBinPath = "shaders/glsl/opmult.comp.spv";
+    std::vector<char>& shaderFileData = this->fetchSpirvBinaryData();
 #endif
 
     SPDLOG_DEBUG("Kompute OpMult Initialising algorithm component");

@@ -31,8 +31,7 @@ class OpCreateTensor : public OpBase
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>>& tensors,
-                   bool freeTensors = true);
+                   std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor which in this case expects the parent class to free

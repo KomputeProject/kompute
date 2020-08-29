@@ -281,15 +281,18 @@ class Tensor
     void mapDataIntoHostMemory();
 
   private:
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Buffer> mBuffer;
     bool mFreeBuffer;
     std::shared_ptr<vk::DeviceMemory> mMemory;
     bool mFreeMemory;
 
+    // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mData;
 
     TensorTypes mTensorType = TensorTypes::eDevice;
@@ -297,8 +300,7 @@ class Tensor
     std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
     bool mIsInit = false;
 
-    // Creates the vulkan buffer
-    void createBuffer();
+    void createBuffer(); // Creates the vulkan buffer
 
     // Private util functions
     vk::BufferUsageFlags getBufferUsageFlags();
@@ -400,19 +402,19 @@ class OpBase
     virtual void postSubmit() = 0;
 
   protected:
-    // OPTIONALLY OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>>
-      mTensors; ///< Tensors referenced by operation that can be managed
-                ///< optionally by operation
-    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
-                               ///< tensors are freed (if they are managed)
-
-    // NEVER OWNED RESOURCES
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice>
       mPhysicalDevice;                   ///< Vulkan Physical Device
     std::shared_ptr<vk::Device> mDevice; ///< Vulkan Logical Device
     std::shared_ptr<vk::CommandBuffer>
       mCommandBuffer; ///< Vulkan Command Buffer
+
+    // -------------- OPTIONALLY OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>>
+      mTensors; ///< Tensors referenced by operation that can be managed
+                ///< optionally by operation
+    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
+                               ///< tensors are freed (if they are managed)
 };
 
 } // End namespace kp
@@ -517,10 +519,13 @@ class Sequence
     }
 
   private:
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
     uint32_t mQueueIndex = -1;
+
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::CommandPool> mCommandPool = nullptr;
     bool mFreeCommandPool = false;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer = nullptr;
@@ -618,6 +623,7 @@ class Manager
     }
 
   private:
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -627,7 +633,7 @@ class Manager
     uint32_t mComputeQueueFamilyIndex = -1;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
-    // Always owned resources
+    // -------------- ALWAYS OWNED RESOURCES
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
 
@@ -691,16 +697,15 @@ class Algorithm
     void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
   private:
-    // Never Owned Resources
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
-    // Optionally owned resources
+    // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
     bool mFreeDescriptorPool = false;
-
     // TODO: Explore design for multiple descriptor sets
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;
@@ -727,13 +732,202 @@ class Algorithm
 namespace kp {
 
 /**
+ * Operation that provides a general abstraction that simplifies the use of 
+ * algorithm and parameter components which can be used with shaders.
+ * The template parameters specify the processing GPU layout number of
+ * iterations for each x, y, z parameter. More specifically, this will be the
+ * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
+ */
+template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
+class OpAlgoBase : public OpBase
+{
+  public:
+    /**
+     *  Base constructor, should not be used unless explicitly intended.
+     */
+    OpAlgoBase();
+
+    /**
+     * Default constructor with parameters that provides the bare minimum
+     * requirements for the operations to be able to create and manage their
+     * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     */
+    OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors);
+
+    /**
+     * Default destructor, which is in charge of destroying the algorithm
+     * components but does not destroy the underlying tensors
+     */
+    ~OpAlgoBase();
+
+    /**
+     * The init function is responsible for the initialisation of the algorithm
+     * component based on the parameters specified, and allows for extensibility
+     * on the options provided. Further dependent classes can perform more 
+     * specific checks such as ensuring tensors provided are initialised, etc.
+     */
+    virtual void init() override;
+
+    /**
+     * This records the commands that are to be sent to the GPU. This includes
+     * the barriers that ensure the memory has been copied before going in and
+     * out of the shader, as well as the dispatch operation that sends the
+     * shader processing to the gpu. This function also records the GPU memory
+     * copy of the output data for the staging bufffer so it can be read by the
+     * host.
+     */
+    virtual void record() override;
+
+    /**
+     * Executes after the recorded commands are submitted, and performs a copy
+     * of the GPU Device memory into the staging buffer so the output data can
+     * be retrieved.
+     */
+    virtual void postSubmit() override;
+
+  protected:
+    // -------------- NEVER OWNED RESOURCES
+
+    // -------------- OPTIONALLY OWNED RESOURCES
+    std::shared_ptr<Algorithm> mAlgorithm;
+    bool mFreeAlgorithm = false;
+
+    // -------------- ALWAYS OWNED RESOURCES
+    uint32_t mX;
+    uint32_t mY;
+    uint32_t mZ;
+
+    std::string mOptSpirvBinPath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
+
+    virtual std::vector<char> fetchSpirvBinaryData();
+};
+
+} // End namespace kp
+
+// Including implemenation for template class
+#ifndef OPALGOBASE_IMPL
+#define OPALGOBASE_IMPL
+
+namespace kp {
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpAlgoBase<tX, tY, tZ>::OpAlgoBase()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor base");
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                           std::shared_ptr<vk::Device> device,
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                           std::vector<std::shared_ptr<Tensor>>& tensors)
+  : OpBase(physicalDevice, device, commandBuffer, tensors, false)
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params");
+
+    // The dispatch size is set up based on either explicitly provided template
+    // parameters or by default it would take the shape and size of the tensors
+    if (tX > 0) {
+        // If at least the x value is provided we use mainly the parameters
+        // provided
+        this->mX = tX;
+        this->mY = tY > 0 ? tY : 1;
+        this->mZ = tZ > 0 ? tZ : 1;
+    } else {
+        // TODO: If tensor empty vector exception would be thrown
+        // TODO: Fully support the full size dispatch using size for the shape
+        this->mX = tensors[0]->size();
+        this->mY = 1;
+        this->mZ = 1;
+    }
+    spdlog::info("Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}",
+                 this->mX,
+                 this->mY,
+                 this->mZ);
+
+    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpAlgoBase<tX, tY, tZ>::~OpAlgoBase()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase destructor started");
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+std::vector<char> OpAlgoBase<tX, tY, tZ>::fetchSpirvBinaryData() 
+{
+    SPDLOG_WARN(
+      "Kompute OpAlgoBase Running shaders directly from spirv file");
+
+    std::ifstream fileStream(this->mOptSpirvBinPath,
+                             std::ios::binary | std::ios::in | std::ios::ate);
+
+    size_t shaderFileSize = fileStream.tellg();
+    fileStream.seekg(0, std::ios::beg);
+    char* shaderDataRaw = new char[shaderFileSize];
+    fileStream.read(shaderDataRaw, shaderFileSize);
+    fileStream.close();
+
+    return std::vector<char>(shaderDataRaw,
+                             shaderDataRaw + shaderFileSize);
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::init()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase init called");
+
+    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
+
+    this->mAlgorithm->init(shaderFileData, this->mTensors);
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::record()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase record called");
+
+    this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::postSubmit()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
+}
+
+}
+
+#endif // #ifndef OPALGOBASE_IMPL
+
+#include <fstream>
+
+#if RELEASE
+
+#endif
+
+namespace kp {
+
+/**
  * Operation that performs multiplication on two tensors and outpus on third
  * tensor. The template parameters specify the processing GPU layout number of
  * iterations for each x, y, z parameter. More specifically, this will be the
  * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
  */
 template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-class OpMult : public OpBase
+class OpMult : public OpAlgoBase<tX, tY, tZ>
 {
   public:
     /**
@@ -755,8 +949,7 @@ class OpMult : public OpBase
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool freeTensors = false);
+           std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -790,21 +983,13 @@ class OpMult : public OpBase
     void postSubmit() override;
 
   private:
-    // Always owned resources
-    std::shared_ptr<Tensor> mTensorOutputStaging;
-
-    // Optionally owned resources
-    std::shared_ptr<Algorithm> mAlgorithm;
-    bool mFreeAlgorithm = false;
-
-    // Never owned resources
+    // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<Tensor> mTensorLHS;
     std::shared_ptr<Tensor> mTensorRHS;
     std::shared_ptr<Tensor> mTensorOutput;
 
-    uint32_t mX;
-    uint32_t mY;
-    uint32_t mZ;
+    // -------------- ALWAYS OWNED RESOURCES
+    std::shared_ptr<Tensor> mTensorOutputStaging;
 };
 
 } // End namespace kp
@@ -825,13 +1010,10 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpMult<tX, tY, tZ>::OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool freeTensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors, freeTensors)
+                           std::vector<std::shared_ptr<Tensor>>& tensors)
+  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpMult constructor with params");
-
-    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -856,25 +1038,6 @@ OpMult<tX, tY, tZ>::init()
     this->mTensorLHS = this->mTensors[0];
     this->mTensorRHS = this->mTensors[1];
     this->mTensorOutput = this->mTensors[2];
-
-    // The dispatch size is set up based on either explicitly provided template
-    // parameters or by default it would take the shape and size of the tensors
-    if (tX > 0) {
-        // If at least the x value is provided we use mainly the parameters
-        // provided
-        this->mX = tX;
-        this->mY = tY > 0 ? tY : 1;
-        this->mZ = tZ > 0 ? tZ : 1;
-    } else {
-        // TODO: Fully support the full size dispatch using size for the shape
-        this->mX = this->mTensorLHS->size();
-        this->mY = 1;
-        this->mZ = 1;
-    }
-    spdlog::info("Kompute OpMult dispatch size X: {}, Y: {}, Z: {}",
-                 this->mX,
-                 this->mY,
-                 this->mZ);
 
     // TODO: Explore adding a validate function
     if (!(this->mTensorLHS->isInit() && this->mTensorRHS->isInit() &&
@@ -909,25 +1072,12 @@ OpMult<tX, tY, tZ>::init()
       shader_data::shaders_glsl_opmult_comp_spv +
         kp::shader_data::shaders_glsl_opmult_comp_spv_len);
 #else
-    SPDLOG_DEBUG(
-      "Kompute OpMult Running debug loading shaders directly from spirv file");
-
-    // TODO: Move to utility function
-    std::string shaderFilePath = "shaders/glsl/opmult.comp.spv";
-    std::ifstream fileStream(shaderFilePath,
-                             std::ios::binary | std::ios::in | std::ios::ate);
-
-    size_t shaderFileSize = fileStream.tellg();
-    fileStream.seekg(0, std::ios::beg);
-    char* shaderDataRaw = new char[shaderFileSize];
-    fileStream.read(shaderDataRaw, shaderFileSize);
-    fileStream.close();
-
-    std::vector<char> shaderFileData(shaderDataRaw,
-                                     shaderDataRaw + shaderFileSize);
+    this->mOptSpirvBinPath = "shaders/glsl/opmult.comp.spv";
+    std::vector<char>& shaderFileData = this->fetchSpirvBinaryData();
 #endif
 
     SPDLOG_DEBUG("Kompute OpMult Initialising algorithm component");
+    SPDLOG_DEBUG("Kompute vector size {}", shaderFileData.size());
 
     this->mAlgorithm->init(shaderFileData, this->mTensors);
 }
@@ -1019,8 +1169,7 @@ class OpCreateTensor : public OpBase
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>>& tensors,
-                   bool freeTensors = true);
+                   std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor which in this case expects the parent class to free

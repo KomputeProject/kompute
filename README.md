@@ -15,7 +15,7 @@
 <td>
 
 <h1>Vulkan Kompute</h1>
-<h3>The General Purpose Vulkan Compute Framework</h3>
+<h3>The General Purpose Vulkan Compute Framework. Blazing fast, lightweight, easy to set up and optimized for advanced data processing usecases.</h3>
 
 </td>
 
