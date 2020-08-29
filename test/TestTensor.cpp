@@ -6,6 +6,7 @@
 TEST_CASE("Tensor should have same vector as initialised") {
     std::vector<uint32_t> vec{0,1,2};
     kp::Tensor tensor(vec);
+    REQUIRE( tensor.size() == vec.size() );
     REQUIRE( tensor.data() == vec );
 }
 
