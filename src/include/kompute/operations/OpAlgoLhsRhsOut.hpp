@@ -56,7 +56,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
      * tensors, and  creates the algorithm component which processes the
      * computation.
      */
-    void init() override;
+    virtual void init() override;
 
     /**
      * This records the commands that are to be sent to the GPU. This includes
@@ -66,14 +66,14 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
      * copy of the output data for the staging bufffer so it can be read by the
      * host.
      */
-    void record() override;
+    virtual void record() override;
 
     /**
      * Executes after the recorded commands are submitted, and performs a copy
      * of the GPU Device memory into the staging buffer so the output data can
      * be retrieved.
      */
-    void postSubmit() override;
+    virtual void postSubmit() override;
 
   protected:
     // -------------- NEVER OWNED RESOURCES
@@ -104,7 +104,10 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice>
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
                            std::vector<std::shared_ptr<Tensor>>& tensors)
-  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors)
+  // The inheritance is initialised with the copyOutputData to false given that
+  // this depencendant class handles the transfer of data via staging buffers in 
+  // a granular way.
+  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, false)
 {
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor with params");
 }

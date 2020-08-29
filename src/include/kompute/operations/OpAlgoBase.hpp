@@ -42,7 +42,8 @@ class OpAlgoBase : public OpBase
     OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors);
+           std::vector<std::shared_ptr<Tensor>>& tensors,
+           bool copyOutputData);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -83,6 +84,9 @@ class OpAlgoBase : public OpBase
     bool mFreeAlgorithm = false;
 
     // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mOutputStagingTensors; ///< Array of output staging tensors which will be expected to be the same size as the number of inputs.
+    bool mCopyOutputData; ///< Configuration parameter which states whether data will be copied back to all provided tensors for convenience. This can be deactivated by setting this flag and or overriding the functions provided.
+
     uint32_t mX;
     uint32_t mY;
     uint32_t mZ;
@@ -110,10 +114,13 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>>& tensors)
+                           std::vector<std::shared_ptr<Tensor>>& tensors,
+                           bool copyOutputData)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params");
+
+    SPDLOG_DEBUG("Kompute OpAlgoBase configured for copy output data: {}", copyOutputData);
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -135,6 +142,8 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                  this->mY,
                  this->mZ);
 
+    this->mCopyOutputData = copyOutputData;
+
     this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
 
@@ -142,6 +151,101 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpAlgoBase<tX, tY, tZ>::~OpAlgoBase()
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase destructor started");
+
+    if (this->mCopyOutputData) {
+        SPDLOG_DEBUG("Kompute OpAlgoBase destroying staging tensors");
+        for (std::shared_ptr<Tensor> stagingTensor : this->mOutputStagingTensors) {
+            stagingTensor->freeMemoryDestroyGPUResources();
+        }
+    }
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::init()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase init called");
+
+    if (this->mTensors.size() < 1) {
+        throw std::runtime_error(
+          "Kompute OpAlgoBase called with less than 1 tensor");
+    } 
+
+    for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+        if(!tensor->isInit()) {
+            throw std::runtime_error("Kompute OpAlgoBase validation failed; all tensor parameters must be initialised.");
+        }
+    }
+
+    if (this->mCopyOutputData) {
+        SPDLOG_DEBUG("Kompute OpAlgoBase creating staging output tensors");
+
+        for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+            std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
+              tensor->data(), Tensor::TensorTypes::eStaging);
+            stagingTensor->init(
+                this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+            this->mOutputStagingTensors.push_back(stagingTensor);
+        }
+    }
+
+    SPDLOG_DEBUG("Kompute OpAlgoBase fetching spirv data");
+
+    std::vector<char>& shaderFileData = this->fetchSpirvBinaryData();
+
+    SPDLOG_DEBUG("Kompute OpAlgoBase Initialising algorithm component");
+
+    this->mAlgorithm->init(shaderFileData, this->mTensors);
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::record()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase record called");
+
+    // Barrier to ensure the data is finished writing to buffer memory
+    for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+        tensor->recordBufferMemoryBarrier(
+          vk::AccessFlagBits::eHostWrite,
+          vk::AccessFlagBits::eShaderRead,
+          vk::PipelineStageFlagBits::eHost,
+          vk::PipelineStageFlagBits::eComputeShader);
+    }
+
+    this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
+
+    if (this->mCopyOutputData) {
+        // Barrier to ensure the shader code is executed before buffer read
+        for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+            tensor->recordBufferMemoryBarrier(
+              vk::AccessFlagBits::eShaderWrite,
+              vk::AccessFlagBits::eTransferRead,
+              vk::PipelineStageFlagBits::eComputeShader,
+              vk::PipelineStageFlagBits::eTransfer);
+        }
+
+        // Record copy from and create barrier for STAGING tensors
+        for (size_t i = 0; i < this->mTensors.size(); i++) {
+            this->mOutputStagingTensors[i]->recordCopyFrom(
+                this->mTensors[i], true);
+        }
+    }
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::postSubmit()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
+
+    if (this->mCopyOutputData) {
+        for (size_t i = 0; i < this->mTensors.size(); i++) {
+            this->mOutputStagingTensors[i]->mapDataFromHostMemory();
+
+            this->mTensors[i]->setData(this->mOutputStagingTensors[i]->data());
+        }
+    }
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -161,33 +265,6 @@ std::vector<char> OpAlgoBase<tX, tY, tZ>::fetchSpirvBinaryData()
 
     return std::vector<char>(shaderDataRaw,
                              shaderDataRaw + shaderFileSize);
-}
-
-template<uint32_t tX, uint32_t tY, uint32_t tZ>
-void
-OpAlgoBase<tX, tY, tZ>::init()
-{
-    SPDLOG_DEBUG("Kompute OpAlgoBase init called");
-
-    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
-
-    this->mAlgorithm->init(shaderFileData, this->mTensors);
-}
-
-template<uint32_t tX, uint32_t tY, uint32_t tZ>
-void
-OpAlgoBase<tX, tY, tZ>::record()
-{
-    SPDLOG_DEBUG("Kompute OpAlgoBase record called");
-
-    this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
-}
-
-template<uint32_t tX, uint32_t tY, uint32_t tZ>
-void
-OpAlgoBase<tX, tY, tZ>::postSubmit()
-{
-    SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
 }
 
 }
