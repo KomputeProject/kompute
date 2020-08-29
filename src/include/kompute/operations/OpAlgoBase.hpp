@@ -16,6 +16,18 @@ namespace kp {
 /**
  * Operation that provides a general abstraction that simplifies the use of 
  * algorithm and parameter components which can be used with shaders.
+ * By default it enables the user to provide a dynamic number of tensors
+ * which are then passed as inputs. 
+ *
+ * All of these tensors are expected to be initlaised and this is checked with throw std exception in the init function.
+ *
+ * It is possible to also choose if the user requires all of the tensors to be
+ * copied from device memory to their host data. This can be disabled by either
+ * passing the copyOutputData constructor parameter and/or by overriding the 
+ * functions to carry out copy commands accordingly. 
+ *
+ * See OpLhsRhsOut for an example implementation on a more specific granularity on tensor parameters.
+ * 
  * The template parameters specify the processing GPU layout number of
  * iterations for each x, y, z parameter. More specifically, this will be the
  * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"

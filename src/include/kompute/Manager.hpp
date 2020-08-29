@@ -67,7 +67,8 @@ class Manager
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
-     * @param TArgs Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation
+     * @param TArgs Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
      */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
