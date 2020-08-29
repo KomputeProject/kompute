@@ -79,6 +79,7 @@ class Sequence
      * not be able to add the operation.
      *
      * @param tensors Vector of tensors to use for the operation
+     * @param TArgs Template parameters that are used to initialise operation which allows for extensible configurations on initialisation.
      */
     template<typename T, typename... TArgs>
     bool record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
