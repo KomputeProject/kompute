@@ -68,6 +68,15 @@ OpBase
 .. image:: images/kompute-vulkan-architecture-operations.jpg
    :width: 100%
 
+OpAlgoBase
+-------
+
+.. doxygenclass:: kp::OpAlgoBase
+   :members:
+
+.. image:: images/kompute-vulkan-architecture-opmult.jpg
+   :width: 100%
+
 OpMult
 -------
 

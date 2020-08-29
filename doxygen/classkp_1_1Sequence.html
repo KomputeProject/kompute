@@ -95,9 +95,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac6400fc9c0fb879e1131157fef8b2e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84ff30d6164cc730bd554dcdfd423f74"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">isInit</a> ()</td></tr>
 <tr class="separator:a84ff30d6164cc730bd554dcdfd423f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a169bf7b4ea0a96fc197ed4852511b202"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
-<tr class="memitem:a169bf7b4ea0a96fc197ed4852511b202"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a169bf7b4ea0a96fc197ed4852511b202">record</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors)</td></tr>
-<tr class="separator:a169bf7b4ea0a96fc197ed4852511b202"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
+<tr class="memitem:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a3cf05ff800f9bbb267be2367f554c2f4">record</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, TArgs &amp;&amp;... params)</td></tr>
+<tr class="separator:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Container of operations that can be sent to GPU as batch </p>
@@ -299,8 +299,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a169bf7b4ea0a96fc197ed4852511b202"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a169bf7b4ea0a96fc197ed4852511b202">&#9670;&nbsp;</a></span>record()</h2>
+<a id="a3cf05ff800f9bbb267be2367f554c2f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cf05ff800f9bbb267be2367f554c2f4">&#9670;&nbsp;</a></span>record()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -314,8 +314,18 @@ template&lt;typename T , typename... TArgs&gt; </div>
           <td class="memname">bool kp::Sequence::record </td>
           <td>(</td>
           <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt;&#160;</td>
-          <td class="paramname"><em>tensors</em></td><td>)</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">TArgs &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -328,6 +338,7 @@ template&lt;typename T , typename... TArgs&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tensors</td><td>Vector of tensors to use for the operation </td></tr>
+    <tr><td class="paramname">TArgs</td><td>Template parameters that are used to initialise operation which allows for extensible configurations on initialisation. </td></tr>
   </table>
   </dd>
 </dl>

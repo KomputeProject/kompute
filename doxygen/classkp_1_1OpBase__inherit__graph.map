@@ -1,5 +1,7 @@
 <map id="kp::OpBase" name="kp::OpBase">
-<area shape="rect" id="node1" title=" " alt="" coords="109,5,200,32"/>
-<area shape="rect" id="node2" href="$classkp_1_1OpCreateTensor.html" title=" " alt="" coords="5,87,144,114"/>
-<area shape="rect" id="node3" href="$classkp_1_1OpMult.html" title=" " alt="" coords="169,80,303,121"/>
+<area shape="rect" id="node1" title=" " alt="" coords="197,5,288,32"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="5,80,149,121"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpCreateTensor.html" title=" " alt="" coords="173,87,312,114"/>
+<area shape="rect" id="node4" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="337,80,477,121"/>
+<area shape="rect" id="node5" href="$classkp_1_1OpMult.html" title=" " alt="" coords="339,169,474,211"/>
 </map>

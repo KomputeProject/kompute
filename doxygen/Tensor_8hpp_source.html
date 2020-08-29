@@ -80,84 +80,86 @@ $(function() {
 <div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html">   17</a></span>&#160;<span class="keyword">class </span><a class="code" href="classkp_1_1Tensor.html">Tensor</a></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;{</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">   23</a></span>&#160;    <span class="keyword">enum class</span> <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        eDevice = 0,</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        eStaging = 1,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        eStorage = 2,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    };</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#aee6c5bb44b1c58d67c33c86efdc24acd">   33</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#aee6c5bb44b1c58d67c33c86efdc24acd">Tensor</a>();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a99f9f5a2f89e826291ab3fd479829e23">   41</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a99f9f5a2f89e826291ab3fd479829e23">Tensor</a>(std::vector&lt;uint32_t&gt; <a class="code" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>,</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;           <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> <a class="code" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a> = TensorTypes::eDevice);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a38e886e69103a956b994790f320a254e">   47</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a38e886e69103a956b994790f320a254e">~Tensor</a>();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#aec6bd8edf3252869d9fb5de067ede6b4">   52</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#aec6bd8edf3252869d9fb5de067ede6b4">init</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;              std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;              std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#afdfc816a4f040ad43e36534c6fbc69a2">   59</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#afdfc816a4f040ad43e36534c6fbc69a2">freeMemoryDestroyGPUResources</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">   26</a></span>&#160;    <span class="keyword">enum class</span> <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        eDevice = 0,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        eStaging = 1,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        eStorage = 2,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    };</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#aee6c5bb44b1c58d67c33c86efdc24acd">   36</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#aee6c5bb44b1c58d67c33c86efdc24acd">Tensor</a>();</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a99f9f5a2f89e826291ab3fd479829e23">   45</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a99f9f5a2f89e826291ab3fd479829e23">Tensor</a>(std::vector&lt;uint32_t&gt; <a class="code" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;           <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> <a class="code" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a> = TensorTypes::eDevice);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a38e886e69103a956b994790f320a254e">   52</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a38e886e69103a956b994790f320a254e">~Tensor</a>();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#aec6bd8edf3252869d9fb5de067ede6b4">   57</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#aec6bd8edf3252869d9fb5de067ede6b4">init</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;              std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;              std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">   66</a></span>&#160;    std::vector&lt;uint32_t&gt; <a class="code" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>();</div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">   72</a></span>&#160;    uint32_t <a class="code" href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">size</a>();</div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a70a95b98a2558fbc80458c22ca9e043c">   78</a></span>&#160;    std::array&lt;uint32_t, KP_MAX_DIM_SIZE&gt; <a class="code" href="classkp_1_1Tensor.html#a70a95b98a2558fbc80458c22ca9e043c">shape</a>();</div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">   84</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> <a class="code" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a>();</div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">   88</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">isInit</a>();</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">   93</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">setData</a>(<span class="keyword">const</span> std::vector&lt;uint32_t&gt;&amp; <a class="code" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a35c8b146182c57bc19c5271d7e1b0c98">  100</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#a35c8b146182c57bc19c5271d7e1b0c98">recordCopyFrom</a>(std::shared_ptr&lt;Tensor&gt; copyFromTensor);</div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#afdfc816a4f040ad43e36534c6fbc69a2">   64</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#afdfc816a4f040ad43e36534c6fbc69a2">freeMemoryDestroyGPUResources</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">   73</a></span>&#160;    std::vector&lt;uint32_t&gt; <a class="code" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>();</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">   80</a></span>&#160;    uint32_t <a class="code" href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">size</a>();</div>
+<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a70a95b98a2558fbc80458c22ca9e043c">   88</a></span>&#160;    std::array&lt;uint32_t, KP_MAX_DIM_SIZE&gt; <a class="code" href="classkp_1_1Tensor.html#a70a95b98a2558fbc80458c22ca9e043c">shape</a>();</div>
+<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">   94</a></span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> <a class="code" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a>();</div>
+<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">  100</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">isInit</a>();</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">  111</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">recordBufferMemoryBarrier</a>(vk::AccessFlagBits srcAccessMask,</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                                   vk::AccessFlagBits dstAccessMask,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                                   vk::PipelineStageFlagBits srcStageMask,</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                                   vk::PipelineStageFlagBits dstStageMask);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">  124</a></span>&#160;    vk::DescriptorBufferInfo <a class="code" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">constructDescriptorBufferInfo</a>();</div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46">  128</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46">mapDataFromHostMemory</a>();</div>
-<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704">  132</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704">mapDataIntoHostMemory</a>();</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">  106</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">setData</a>(<span class="keyword">const</span> std::vector&lt;uint32_t&gt;&amp; <a class="code" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a0a6bed25811743942fd2a5b408c713a6">  117</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#a0a6bed25811743942fd2a5b408c713a6">recordCopyFrom</a>(std::shared_ptr&lt;Tensor&gt; copyFromTensor,</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                        <span class="keywordtype">bool</span> createBarrier = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">  129</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">recordBufferMemoryBarrier</a>(vk::AccessFlagBits srcAccessMask,</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;                                   vk::AccessFlagBits dstAccessMask,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                                   vk::PipelineStageFlagBits srcStageMask,</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                                   vk::PipelineStageFlagBits dstStageMask);</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    std::shared_ptr&lt;vk::CommandBuffer&gt; mCommandBuffer;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    std::shared_ptr&lt;vk::Buffer&gt; mBuffer;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keywordtype">bool</span> mFreeBuffer;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    std::shared_ptr&lt;vk::DeviceMemory&gt; mMemory;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordtype">bool</span> mFreeMemory;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    std::vector&lt;uint32_t&gt; mData;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> mTensorType = TensorTypes::eDevice;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    std::array&lt;uint32_t, KP_MAX_DIM_SIZE&gt; mShape;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordtype">bool</span> mIsInit = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="comment">// Creates the vulkan buffer</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keywordtype">void</span> createBuffer();</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="comment">// Private util functions</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    vk::BufferUsageFlags getBufferUsageFlags();</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    vk::MemoryPropertyFlags getMemoryPropertyFlags();</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    uint64_t memorySize();</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;};</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;} <span class="comment">// End namespace kp</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">  141</a></span>&#160;    vk::DescriptorBufferInfo <a class="code" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">constructDescriptorBufferInfo</a>();</div>
+<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46">  146</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46">mapDataFromHostMemory</a>();</div>
+<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704">  151</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704">mapDataIntoHostMemory</a>();</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="comment">// -------------- NEVER OWNED RESOURCES</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    std::shared_ptr&lt;vk::CommandBuffer&gt; mCommandBuffer;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="comment">// -------------- OPTIONALLY OWNED RESOURCES</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;    std::shared_ptr&lt;vk::Buffer&gt; mBuffer;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordtype">bool</span> mFreeBuffer;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    std::shared_ptr&lt;vk::DeviceMemory&gt; mMemory;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordtype">bool</span> mFreeMemory;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="comment">// -------------- ALWAYS OWNED RESOURCES</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    std::vector&lt;uint32_t&gt; mData;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> mTensorType = TensorTypes::eDevice;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    std::array&lt;uint32_t, KP_MAX_DIM_SIZE&gt; mShape;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="keywordtype">bool</span> mIsInit = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordtype">void</span> createBuffer(); <span class="comment">// Creates the vulkan buffer</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// Private util functions</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    vk::BufferUsageFlags getBufferUsageFlags();</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    vk::MemoryPropertyFlags getMemoryPropertyFlags();</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    uint64_t memorySize();</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;};</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;} <span class="comment">// End namespace kp</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasskp_1_1Tensor_html_af2ae7f0b57fd8e57570ab63962a97f36"><div class="ttname"><a href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">kp::Tensor::isInit</a></div><div class="ttdeci">bool isInit()</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a1fb937df6cc482c1f37c74d8fab0f9a9"><div class="ttname"><a href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">kp::Tensor::size</a></div><div class="ttdeci">uint32_t size()</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a99f9f5a2f89e826291ab3fd479829e23"><div class="ttname"><a href="classkp_1_1Tensor.html#a99f9f5a2f89e826291ab3fd479829e23">kp::Tensor::Tensor</a></div><div class="ttdeci">Tensor(std::vector&lt; uint32_t &gt; data, TensorTypes tensorType=TensorTypes::eDevice)</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a9cba0e1dc63157342c8384d97a8441e1"><div class="ttname"><a href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">kp::Tensor::recordBufferMemoryBarrier</a></div><div class="ttdeci">void recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask, vk::AccessFlagBits dstAccessMask, vk::PipelineStageFlagBits srcStageMask, vk::PipelineStageFlagBits dstStageMask)</div></div>
-<div class="ttc" id="aclasskp_1_1Tensor_html_a35c8b146182c57bc19c5271d7e1b0c98"><div class="ttname"><a href="classkp_1_1Tensor.html#a35c8b146182c57bc19c5271d7e1b0c98">kp::Tensor::recordCopyFrom</a></div><div class="ttdeci">void recordCopyFrom(std::shared_ptr&lt; Tensor &gt; copyFromTensor)</div></div>
+<div class="ttc" id="aclasskp_1_1Tensor_html_a0a6bed25811743942fd2a5b408c713a6"><div class="ttname"><a href="classkp_1_1Tensor.html#a0a6bed25811743942fd2a5b408c713a6">kp::Tensor::recordCopyFrom</a></div><div class="ttdeci">void recordCopyFrom(std::shared_ptr&lt; Tensor &gt; copyFromTensor, bool createBarrier=true)</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a8a2b1f7900a6cc0fa903fdd0242109ba"><div class="ttname"><a href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">kp::Tensor::data</a></div><div class="ttdeci">std::vector&lt; uint32_t &gt; data()</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html"><div class="ttname"><a href="classkp_1_1Tensor.html">kp::Tensor</a></div><div class="ttdef"><b>Definition:</b> Tensor.hpp:18</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a70a95b98a2558fbc80458c22ca9e043c"><div class="ttname"><a href="classkp_1_1Tensor.html#a70a95b98a2558fbc80458c22ca9e043c">kp::Tensor::shape</a></div><div class="ttdeci">std::array&lt; uint32_t, KP_MAX_DIM_SIZE &gt; shape()</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_aee6c5bb44b1c58d67c33c86efdc24acd"><div class="ttname"><a href="classkp_1_1Tensor.html#aee6c5bb44b1c58d67c33c86efdc24acd">kp::Tensor::Tensor</a></div><div class="ttdeci">Tensor()</div></div>
-<div class="ttc" id="aclasskp_1_1Tensor_html_a1b2af1c0e8dc0f154e11780e7103beb4"><div class="ttname"><a href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">kp::Tensor::TensorTypes</a></div><div class="ttdeci">TensorTypes</div><div class="ttdef"><b>Definition:</b> Tensor.hpp:24</div></div>
+<div class="ttc" id="aclasskp_1_1Tensor_html_a1b2af1c0e8dc0f154e11780e7103beb4"><div class="ttname"><a href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">kp::Tensor::TensorTypes</a></div><div class="ttdeci">TensorTypes</div><div class="ttdef"><b>Definition:</b> Tensor.hpp:27</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a59452f1c62fd738536bb0a6cbf8d896b"><div class="ttname"><a href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">kp::Tensor::tensorType</a></div><div class="ttdeci">TensorTypes tensorType()</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_abbefa5c6b5b579f9e48dea47bdb42002"><div class="ttname"><a href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">kp::Tensor::setData</a></div><div class="ttdeci">void setData(const std::vector&lt; uint32_t &gt; &amp;data)</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_ae8e16f48058f17d55d313727c9ceaa46"><div class="ttname"><a href="classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46">kp::Tensor::mapDataFromHostMemory</a></div><div class="ttdeci">void mapDataFromHostMemory()</div></div>

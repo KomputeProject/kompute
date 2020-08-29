@@ -77,60 +77,59 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>kp {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html">   12</a></span>&#160;<span class="keyword">class </span><a class="code" href="classkp_1_1Algorithm.html">Algorithm</a></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">   18</a></span>&#160;    <a class="code" href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">Algorithm</a>();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">   26</a></span>&#160;    <a class="code" href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">Algorithm</a>(std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;              std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer);</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">   35</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">init</a>(<span class="keyword">const</span> std::vector&lt;char&gt;&amp; shaderFileData,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;              std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensorParams);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">   41</a></span>&#160;    <a class="code" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">~Algorithm</a>();</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html">   13</a></span>&#160;<span class="keyword">class </span><a class="code" href="classkp_1_1Algorithm.html">Algorithm</a></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;{</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">   20</a></span>&#160;    <a class="code" href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">Algorithm</a>();</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">   29</a></span>&#160;    <a class="code" href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">Algorithm</a>(std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;              std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">   40</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">init</a>(<span class="keyword">const</span> std::vector&lt;char&gt;&amp; shaderFileData,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;              std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensorParams);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">   50</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">recordDispatch</a>(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="comment">// Never Owned Resources</span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    std::shared_ptr&lt;vk::CommandBuffer&gt; mCommandBuffer;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="comment">// Optionally owned resources</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    std::shared_ptr&lt;vk::DescriptorSetLayout&gt; mDescriptorSetLayout;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">bool</span> mFreeDescriptorSetLayout = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    std::shared_ptr&lt;vk::DescriptorPool&gt; mDescriptorPool;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">bool</span> mFreeDescriptorPool = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="comment">// TODO: Explore design for multiple descriptor sets</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::shared_ptr&lt;vk::DescriptorSet&gt; mDescriptorSet;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordtype">bool</span> mFreeDescriptorSet = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    std::shared_ptr&lt;vk::ShaderModule&gt; mShaderModule;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordtype">bool</span> mFreeShaderModule = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    std::shared_ptr&lt;vk::PipelineLayout&gt; mPipelineLayout;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">bool</span> mFreePipelineLayout = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    std::shared_ptr&lt;vk::PipelineCache&gt; mPipelineCache;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">bool</span> mFreePipelineCache = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    std::shared_ptr&lt;vk::Pipeline&gt; mPipeline;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">bool</span> mFreePipeline = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="comment">// Create util functions</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">void</span> createShaderModule(<span class="keyword">const</span> std::vector&lt;char&gt;&amp; shaderFileData);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">void</span> createPipeline();</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="comment">// Parameters</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">void</span> createParameters(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensorParams);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordtype">void</span> createDescriptorPool();</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;};</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;} <span class="comment">// End namespace kp</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">   47</a></span>&#160;    <a class="code" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">~Algorithm</a>();</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">   57</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">recordDispatch</a>(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="comment">// -------------- NEVER OWNED RESOURCES</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    std::shared_ptr&lt;vk::CommandBuffer&gt; mCommandBuffer;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="comment">// -------------- OPTIONALLY OWNED RESOURCES</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::shared_ptr&lt;vk::DescriptorSetLayout&gt; mDescriptorSetLayout;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordtype">bool</span> mFreeDescriptorSetLayout = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    std::shared_ptr&lt;vk::DescriptorPool&gt; mDescriptorPool;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">bool</span> mFreeDescriptorPool = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="comment">// TODO: Explore design for multiple descriptor sets</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    std::shared_ptr&lt;vk::DescriptorSet&gt; mDescriptorSet;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">bool</span> mFreeDescriptorSet = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    std::shared_ptr&lt;vk::ShaderModule&gt; mShaderModule;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">bool</span> mFreeShaderModule = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    std::shared_ptr&lt;vk::PipelineLayout&gt; mPipelineLayout;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">bool</span> mFreePipelineLayout = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    std::shared_ptr&lt;vk::PipelineCache&gt; mPipelineCache;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordtype">bool</span> mFreePipelineCache = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    std::shared_ptr&lt;vk::Pipeline&gt; mPipeline;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">bool</span> mFreePipeline = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="comment">// Create util functions</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordtype">void</span> createShaderModule(<span class="keyword">const</span> std::vector&lt;char&gt;&amp; shaderFileData);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keywordtype">void</span> createPipeline();</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="comment">// Parameters</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> createParameters(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensorParams);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> createDescriptorPool();</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;};</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;} <span class="comment">// End namespace kp</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasskp_1_1Algorithm_html_abca36359b946dc1102890d34b6fa562b"><div class="ttname"><a href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">kp::Algorithm::Algorithm</a></div><div class="ttdeci">Algorithm()</div></div>
 <div class="ttc" id="aclasskp_1_1Algorithm_html_ad4bd57e0e03ccdc113c7c38b181ccbf6"><div class="ttname"><a href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">kp::Algorithm::recordDispatch</a></div><div class="ttdeci">void recordDispatch(uint32_t x=1, uint32_t y=1, uint32_t z=1)</div></div>
 <div class="ttc" id="aclasskp_1_1Algorithm_html_a71175003231f8a716df9146d70a70303"><div class="ttname"><a href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">kp::Algorithm::Algorithm</a></div><div class="ttdeci">Algorithm(std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer)</div></div>
 <div class="ttc" id="aclasskp_1_1Algorithm_html_a8bb732b02135afeec7e80e7a2c5d3ce7"><div class="ttname"><a href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">kp::Algorithm::~Algorithm</a></div><div class="ttdeci">~Algorithm()</div></div>
-<div class="ttc" id="aclasskp_1_1Algorithm_html"><div class="ttname"><a href="classkp_1_1Algorithm.html">kp::Algorithm</a></div><div class="ttdef"><b>Definition:</b> Algorithm.hpp:13</div></div>
+<div class="ttc" id="aclasskp_1_1Algorithm_html"><div class="ttname"><a href="classkp_1_1Algorithm.html">kp::Algorithm</a></div><div class="ttdef"><b>Definition:</b> Algorithm.hpp:14</div></div>
 <div class="ttc" id="aclasskp_1_1Algorithm_html_ae54d2ab78d3236964d4281635368d8ef"><div class="ttname"><a href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">kp::Algorithm::init</a></div><div class="ttdeci">void init(const std::vector&lt; char &gt; &amp;shaderFileData, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensorParams)</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

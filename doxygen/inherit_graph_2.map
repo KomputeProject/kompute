@@ -1,5 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classkp_1_1OpBase.html" title=" " alt="" coords="5,35,96,61"/>
-<area shape="rect" id="node2" href="$classkp_1_1OpCreateTensor.html" title=" " alt="" coords="144,5,283,32"/>
-<area shape="rect" id="node3" href="$classkp_1_1OpMult.html" title=" " alt="" coords="146,57,281,98"/>
+<area shape="rect" id="node1" href="$classkp_1_1OpBase.html" title=" " alt="" coords="5,71,96,98"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="144,5,288,47"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpCreateTensor.html" title=" " alt="" coords="147,71,285,98"/>
+<area shape="rect" id="node4" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="146,123,286,164"/>
+<area shape="rect" id="node5" href="$classkp_1_1OpMult.html" title=" " alt="" coords="336,123,471,164"/>
 </map>

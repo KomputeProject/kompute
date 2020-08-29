@@ -108,8 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbefa5c6b5b579f9e48dea47bdb42002"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">setData</a> (const std::vector&lt; uint32_t &gt; &amp;<a class="el" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>)</td></tr>
 <tr class="separator:abbefa5c6b5b579f9e48dea47bdb42002"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35c8b146182c57bc19c5271d7e1b0c98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a35c8b146182c57bc19c5271d7e1b0c98">recordCopyFrom</a> (std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; copyFromTensor)</td></tr>
-<tr class="separator:a35c8b146182c57bc19c5271d7e1b0c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a6bed25811743942fd2a5b408c713a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a0a6bed25811743942fd2a5b408c713a6">recordCopyFrom</a> (std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; copyFromTensor, bool createBarrier=true)</td></tr>
+<tr class="separator:a0a6bed25811743942fd2a5b408c713a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cba0e1dc63157342c8384d97a8441e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">recordBufferMemoryBarrier</a> (vk::AccessFlagBits srcAccessMask, vk::AccessFlagBits dstAccessMask, vk::PipelineStageFlagBits srcStageMask, vk::PipelineStageFlagBits dstStageMask)</td></tr>
 <tr class="separator:a9cba0e1dc63157342c8384d97a8441e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805e6050a935763488116e071c0ce461"><td class="memItemLeft" align="right" valign="top">vk::DescriptorBufferInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">constructDescriptorBufferInfo</a> ()</td></tr>
@@ -415,8 +415,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a35c8b146182c57bc19c5271d7e1b0c98"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a35c8b146182c57bc19c5271d7e1b0c98">&#9670;&nbsp;</a></span>recordCopyFrom()</h2>
+<a id="a0a6bed25811743942fd2a5b408c713a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a6bed25811743942fd2a5b408c713a6">&#9670;&nbsp;</a></span>recordCopyFrom()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -425,12 +425,29 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void kp::Tensor::recordCopyFrom </td>
           <td>(</td>
           <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&#160;</td>
-          <td class="paramname"><em>copyFromTensor</em></td><td>)</td>
+          <td class="paramname"><em>copyFromTensor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>createBarrier</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Records a copy from the memory of the tensor provided to the current thensor. This is intended to pass memory into a processing, to perform a staging buffer transfer, or to gather output (between others). </p>
+<p>Records a copy from the memory of the tensor provided to the current thensor. This is intended to pass memory into a processing, to perform a staging buffer transfer, or to gather output (between others).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">copyFromTensor</td><td><a class="el" href="classkp_1_1Tensor.html">Tensor</a> to copy the data from </td></tr>
+    <tr><td class="paramname">createBarrier</td><td>Whether to create a barrier that ensures the data is copied before further operations. Default is true. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
