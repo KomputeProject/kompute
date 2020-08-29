@@ -52,7 +52,7 @@ class Tensor
     ~Tensor();
 
     /**
-     * Initialiser creates the buffer and GPU memory.
+     * Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device,

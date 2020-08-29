@@ -15,12 +15,14 @@
 <td>
 
 <h1>Vulkan Kompute</h1>
-<h3>The General Purpose Vulkan Compute Framework. Blazing fast, lightweight, easy to set up and optimized for advanced data processing usecases.</h3>
+<h3>The General Purpose Vulkan Compute Framework. </h3>
 
 </td>
 
 </tr>
 </table>
+
+<h4>Blazing fast, lightweight, easy to set up and optimized for advanced data processing usecases.</h4>
 
 🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Import to your project](https://axsaucedo.github.io/vulkan-kompute/) ⌨ [Tutorials](https://axsaucedo.github.io/vulkan-kompute/) 💾
 
@@ -38,7 +40,7 @@
 
 ### Setup
 
-Kompute is provided as a single header file `Kompute.hpp` that can be simply included in your code.
+Kompute is provided as a single header file [`Kompute.hpp`](single_include/kompute/Kompute.hpp) that can be simply included in your code.
 
 You can go to our [release page]() to grab the latest library or you can [build from source]().
 
@@ -62,7 +64,7 @@ int main() {
     mgr.evalOp<kp::OpCreateTensor>(params);
 
     // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOp<kp::OpAlgoShader<10, 1, 1>>(params, "path/to/shader.comp.spv");
+    mgr.evalOp<kp::OpAlgoShader<3, 1, 1>>(params, "path/to/shader.comp.spv");
 
     // Print the output
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;

@@ -25,13 +25,13 @@ class OpCreateTensor : public OpBase
      * @param physicalDevice Vulkan physical device used to find device queues
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
+     * @param tensors Tensors that will be used to create in operation.
      * @param freeTensors Whether operation manages the memory of the Tensors
      */
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>>& tensors);
+                   std::vector<std::shared_ptr<Tensor>> tensors);
 
     /**
      * Default destructor which in this case expects the parent class to free
@@ -60,8 +60,7 @@ class OpCreateTensor : public OpBase
 
   private:
     // Never owned resources
-    std::shared_ptr<Tensor> mPrimaryTensor;
-    std::shared_ptr<Tensor> mStagingTensor;
+    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp

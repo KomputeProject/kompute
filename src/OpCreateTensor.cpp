@@ -14,7 +14,7 @@ OpCreateTensor::OpCreateTensor(
   std::shared_ptr<vk::PhysicalDevice> physicalDevice,
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-  std::vector<std::shared_ptr<Tensor>>& tensors)
+  std::vector<std::shared_ptr<Tensor>> tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, true)
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor constructor with params");
@@ -23,6 +23,13 @@ OpCreateTensor::OpCreateTensor(
 OpCreateTensor::~OpCreateTensor()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor destructor started");
+
+    SPDLOG_DEBUG("Kompute OpCreateTensor destroying staging tensors");
+    for (size_t i = 0; i < this->mStagingTensors.size(); i++) {
+        if (this->mStagingTensors[i]) {
+            this->mStagingTensors[i]->freeMemoryDestroyGPUResources();
+        }
+    }
 }
 
 void
@@ -33,30 +40,35 @@ OpCreateTensor::init()
     if (this->mTensors.size() < 1) {
         throw std::runtime_error(
           "Kompute OpCreateTensor called with less than 1 tensor");
-    } else if (this->mTensors.size() > 1) {
-        spdlog::warn("Kompute OpCreateTensor called with more than 1 tensor");
     }
 
-    this->mPrimaryTensor = this->mTensors[0];
+    for (std::shared_ptr<Tensor> tensor: this->mTensors) {
+        if (tensor->isInit()) {
+            throw std::runtime_error("Kompute OpCreateTensor: Tensor has already been initialized");
+        }
+        if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
+            tensor->init(
+              this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
 
-    if (this->mPrimaryTensor->tensorType() == Tensor::TensorTypes::eDevice) {
-        this->mPrimaryTensor->init(
-          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+            std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
+              tensor->data(), Tensor::TensorTypes::eStaging);
 
-        this->mStagingTensor = std::make_shared<Tensor>(
-          this->mPrimaryTensor->data(), Tensor::TensorTypes::eStaging);
+            stagingTensor->init(
+              this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
 
-        this->mStagingTensor->init(
-          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+            stagingTensor->mapDataIntoHostMemory();
 
-        this->mStagingTensor->mapDataIntoHostMemory();
+            this->mStagingTensors.push_back(stagingTensor);
 
-        // Adding to the OpBase owned resource so they are freed
-        this->mTensors.push_back(this->mStagingTensor);
+        } else {
 
-    } else {
-        this->mPrimaryTensor->init(
-          this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+            tensor->init(
+              this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+
+            // We push a nullptr when no staging tensor is needed to match 
+            // index number in array to have one to one mapping with tensors
+            this->mStagingTensors.push_back(nullptr);
+        }
     }
 }
 
@@ -65,8 +77,10 @@ OpCreateTensor::record()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor record called");
 
-    if (this->mPrimaryTensor->tensorType() == Tensor::TensorTypes::eDevice) {
-        this->mPrimaryTensor->recordCopyFrom(this->mStagingTensor, true);
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
+        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
+            this->mTensors[i]->recordCopyFrom(this->mStagingTensors[i], false);
+        }
     }
 }
 
@@ -75,9 +89,13 @@ OpCreateTensor::postSubmit()
 {
     SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
 
-    this->mStagingTensor->mapDataFromHostMemory();
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
+        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
+            this->mStagingTensors[i]->mapDataFromHostMemory();
 
-    this->mPrimaryTensor->setData(this->mStagingTensor->data());
+            this->mTensors[i]->setData(this->mStagingTensors[i]->data());
+        }
+    }
 }
 
 }

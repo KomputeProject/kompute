@@ -25,7 +25,7 @@ Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
 
 Tensor::~Tensor()
 {
-    SPDLOG_DEBUG("Kompute Tensor destructor started");
+    SPDLOG_DEBUG("Kompute Tensor destructor started. Type: {}", this->tensorType());
 
     if (this->isInit()) {
         this->freeMemoryDestroyGPUResources();

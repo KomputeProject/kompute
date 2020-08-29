@@ -45,6 +45,7 @@ class OpBase
         this->mDevice = device;
         this->mCommandBuffer = commandBuffer;
         this->mTensors = tensors;
+        this->mFreeTensors = freeTensors;
     }
 
     /**

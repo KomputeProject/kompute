@@ -42,7 +42,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
     OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors);
+           std::vector<std::shared_ptr<Tensor>> tensors);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -103,7 +103,7 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpAlgoLhsRhsOut<tX, tY, tZ>::OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>>& tensors)
+                           std::vector<std::shared_ptr<Tensor>> tensors)
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in 
   // a granular way.

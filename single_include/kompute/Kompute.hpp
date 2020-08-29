@@ -214,7 +214,7 @@ class Tensor
     ~Tensor();
 
     /**
-     * Initialiser creates the buffer and GPU memory.
+     * Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device,
@@ -383,6 +383,7 @@ class OpBase
         this->mDevice = device;
         this->mCommandBuffer = commandBuffer;
         this->mTensors = tensors;
+        this->mFreeTensors = freeTensors;
     }
 
     /**
@@ -1105,7 +1106,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
     OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors);
+           std::vector<std::shared_ptr<Tensor>> tensors);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -1166,7 +1167,7 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpAlgoLhsRhsOut<tX, tY, tZ>::OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>>& tensors)
+                           std::vector<std::shared_ptr<Tensor>> tensors)
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in 
   // a granular way.
@@ -1318,7 +1319,7 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors)
+           std::vector<std::shared_ptr<Tensor>> tensors)
       : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true)
     {
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
@@ -1383,13 +1384,13 @@ class OpCreateTensor : public OpBase
      * @param physicalDevice Vulkan physical device used to find device queues
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
+     * @param tensors Tensors that will be used to create in operation.
      * @param freeTensors Whether operation manages the memory of the Tensors
      */
     OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>>& tensors);
+                   std::vector<std::shared_ptr<Tensor>> tensors);
 
     /**
      * Default destructor which in this case expects the parent class to free
@@ -1418,8 +1419,7 @@ class OpCreateTensor : public OpBase
 
   private:
     // Never owned resources
-    std::shared_ptr<Tensor> mPrimaryTensor;
-    std::shared_ptr<Tensor> mStagingTensor;
+    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp
