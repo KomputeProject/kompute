@@ -80,7 +80,7 @@ class Algorithm
 
     // Create util functions
     void createShaderModule(const std::vector<char>& shaderFileData);
-    void createPipeline();
+    void createPipeline(std::vector<uint32_t> specializationData = {});
 
     // Parameters
     void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
