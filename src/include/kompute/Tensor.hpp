@@ -96,8 +96,12 @@ class Tensor
      * Records a copy from the memory of the tensor provided to the current
      * thensor. This is intended to pass memory into a processing, to perform
      * a staging buffer transfer, or to gather output (between others).
+     *
+     * @param copyFromTensor Tensor to copy the data from
+     * @param createBarrier Whether to create a barrier that ensures the data is copied before further operations. Default is true.
      */
-    void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor);
+    void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
+            bool createBarrier = true);
 
     /**
      * Records the buffer memory barrier into the command buffer which

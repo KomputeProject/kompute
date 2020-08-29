@@ -95,7 +95,7 @@ Tensor::setData(const std::vector<uint32_t>& data)
 }
 
 void
-Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
+Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor, bool createBarrier)
 {
     SPDLOG_DEBUG("Kompute Tensor recordCopyFrom called");
 
@@ -114,6 +114,15 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor)
     // TODO: Ensure command buffer is in same device from buffer
     this->mCommandBuffer->copyBuffer(
       *copyFromTensor->mBuffer, *this->mBuffer, copyRegion);
+
+    if (createBarrier) {
+        // Buffer to ensure wait until data is copied to staging buffer
+        this->recordBufferMemoryBarrier(
+          vk::AccessFlagBits::eTransferWrite,
+          vk::AccessFlagBits::eHostRead,
+          vk::PipelineStageFlagBits::eTransfer,
+          vk::PipelineStageFlagBits::eHost);
+        }
 }
 
 void
