@@ -48,7 +48,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpAlgoLhsRhsOut();
+    virtual ~OpAlgoLhsRhsOut() override;
 
     /**
      * The init function is responsible for ensuring that all of the tensors

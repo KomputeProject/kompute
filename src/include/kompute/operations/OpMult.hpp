@@ -84,7 +84,7 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpMult() {
+    ~OpMult() override {
         SPDLOG_DEBUG("Kompute OpMult destructor started");
     }
 

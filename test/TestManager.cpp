@@ -9,35 +9,37 @@ TEST_CASE("End to end OpMult Flow should execute correctly from manager") {
     spdlog::info("TEST CASE STARTING");
 
     spdlog::info("Creating manager");
-    kp::Manager mgr;
+    {
+        kp::Manager mgr;
 
-    spdlog::info("Creating first tensor");
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor( { 0, 1, 2 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
+        spdlog::info("Creating first tensor");
+        std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
-    spdlog::info("Creating second tensor");
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-      { 2, 4, 6 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
+        spdlog::info("Creating second tensor");
+        std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
+          { 2, 4, 6 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
 
-    // TODO: Add capabilities for just output tensor types
-    spdlog::info("Creating output tensor");
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-      { 0, 0, 0 }) };
-    mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
+        // TODO: Add capabilities for just output tensor types
+        spdlog::info("Creating output tensor");
+        std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
+          { 0, 0, 0 }) };
+        mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
-    spdlog::info("OpCreateTensor success for tensors");
-    spdlog::info("Tensor one: {}", tensorLHS->data());
-    spdlog::info("Tensor two: {}", tensorRHS->data());
-    spdlog::info("Tensor output: {}", tensorOutput->data());
+        spdlog::info("OpCreateTensor success for tensors");
+        spdlog::info("Tensor one: {}", tensorLHS->data());
+        spdlog::info("Tensor two: {}", tensorRHS->data());
+        spdlog::info("Tensor output: {}", tensorOutput->data());
 
-    spdlog::info("Calling op mult");
-    mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+        spdlog::info("Calling op mult");
+        mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
-    spdlog::info("OpMult call success");
-    spdlog::info("Tensor output: {}", tensorOutput->data());
+        spdlog::info("OpMult call success");
+        spdlog::info("Tensor output: {}", tensorOutput->data());
 
-    REQUIRE(tensorOutput->data() == std::vector<uint32_t>{0, 4, 12});
+        REQUIRE(tensorOutput->data() == std::vector<uint32_t>{0, 4, 12});
+    }
 
     spdlog::info("Called manager eval success END PROGRAM");
 }

@@ -392,7 +392,7 @@ class OpBase
      * intended to destroy the resources in the parent class. This can be done
      * by passing the mFreeTensors=false.
      */
-    ~OpBase()
+    virtual ~OpBase()
     {
         SPDLOG_DEBUG("Kompute OpBase destructor started");
 
@@ -849,7 +849,7 @@ class OpAlgoBase : public OpBase
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpAlgoBase();
+    virtual ~OpAlgoBase() override;
 
     /**
      * The init function is responsible for the initialisation of the algorithm
@@ -1057,11 +1057,18 @@ std::vector<char> OpAlgoBase<tX, tY, tZ>::fetchSpirvBinaryData()
     std::ifstream fileStream(this->mOptSpirvBinPath,
                              std::ios::binary | std::ios::in | std::ios::ate);
 
+    if (!fileStream.good()) {
+        throw std::runtime_error("Error reading file: " + this->mOptSpirvBinPath);
+    }
+
     size_t shaderFileSize = fileStream.tellg();
     fileStream.seekg(0, std::ios::beg);
     char* shaderDataRaw = new char[shaderFileSize];
     fileStream.read(shaderDataRaw, shaderFileSize);
     fileStream.close();
+
+    SPDLOG_WARN(
+      "Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
 
     return std::vector<char>(shaderDataRaw,
                              shaderDataRaw + shaderFileSize);
@@ -1112,7 +1119,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpAlgoLhsRhsOut();
+    virtual ~OpAlgoLhsRhsOut() override;
 
     /**
      * The init function is responsible for ensuring that all of the tensors
@@ -1357,7 +1364,7 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpMult() {
+    ~OpMult() override {
         SPDLOG_DEBUG("Kompute OpMult destructor started");
     }
 
@@ -1396,7 +1403,7 @@ class OpCreateTensor : public OpBase
      * Default destructor which in this case expects the parent class to free
      * the tensors
      */
-    ~OpCreateTensor();
+    ~OpCreateTensor() override;
 
     /**
      * In charge of initialising the primary Tensor as well as the staging

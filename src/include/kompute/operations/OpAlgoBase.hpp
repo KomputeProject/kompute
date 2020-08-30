@@ -61,7 +61,7 @@ class OpAlgoBase : public OpBase
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpAlgoBase();
+    virtual ~OpAlgoBase() override;
 
     /**
      * The init function is responsible for the initialisation of the algorithm
@@ -269,11 +269,18 @@ std::vector<char> OpAlgoBase<tX, tY, tZ>::fetchSpirvBinaryData()
     std::ifstream fileStream(this->mOptSpirvBinPath,
                              std::ios::binary | std::ios::in | std::ios::ate);
 
+    if (!fileStream.good()) {
+        throw std::runtime_error("Error reading file: " + this->mOptSpirvBinPath);
+    }
+
     size_t shaderFileSize = fileStream.tellg();
     fileStream.seekg(0, std::ios::beg);
     char* shaderDataRaw = new char[shaderFileSize];
     fileStream.read(shaderDataRaw, shaderFileSize);
     fileStream.close();
+
+    SPDLOG_WARN(
+      "Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
 
     return std::vector<char>(shaderDataRaw,
                              shaderDataRaw + shaderFileSize);

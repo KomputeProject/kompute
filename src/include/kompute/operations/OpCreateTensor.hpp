@@ -37,7 +37,7 @@ class OpCreateTensor : public OpBase
      * Default destructor which in this case expects the parent class to free
      * the tensors
      */
-    ~OpCreateTensor();
+    ~OpCreateTensor() override;
 
     /**
      * In charge of initialising the primary Tensor as well as the staging

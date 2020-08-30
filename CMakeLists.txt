@@ -5,13 +5,15 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-DDEBUG=1")
-set(CMAKE_CXX_FLAGS_RELEASE "-DRELEASE=1")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1")
+set(CMAKE_CXX_FLAGS_RELEASE "{CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1")
+
 
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" ON)
 option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" ON)
+option(KOMPUTE_OPT_DEBUG_SYMBOLS "Enable if you want to build debug with symbols" 0)
 
 # Allow scripts to call main kompute Makefile
 function(kompute_make KOMPUTE_MAKE_TARGET)

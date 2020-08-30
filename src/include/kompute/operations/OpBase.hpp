@@ -54,7 +54,7 @@ class OpBase
      * intended to destroy the resources in the parent class. This can be done
      * by passing the mFreeTensors=false.
      */
-    ~OpBase()
+    virtual ~OpBase()
     {
         SPDLOG_DEBUG("Kompute OpBase destructor started");
 

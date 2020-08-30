@@ -27,6 +27,62 @@ Algorithm::~Algorithm()
           "Kompute Algorithm destructor reached with null Device pointer");
         return;
     }
+
+    if (this->mFreePipeline) {
+        SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline");
+        if (!this->mPipeline) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy pipeline but it is null");
+        }
+        this->mDevice->destroy(*this->mPipeline);
+    }
+
+    if (this->mFreePipelineCache) {
+        SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
+        if (!this->mPipelineCache) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy pipeline cache but it is null");
+        }
+        this->mDevice->destroy(*this->mPipelineCache);
+    }
+
+    if (this->mFreePipelineLayout) {
+        SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
+        if (!this->mPipelineLayout) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy pipeline layout but it is null");
+        }
+        this->mDevice->destroy(*this->mPipelineLayout);
+    }
+
+    if (this->mFreeShaderModule) {
+        SPDLOG_DEBUG("Kompute Algorithm Destroying shader module");
+        if (!this->mShaderModule) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy shader module but it is null");
+        }
+        this->mDevice->destroy(*this->mShaderModule);
+    }
+
+    if (this->mFreeDescriptorSet) {
+        SPDLOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
+        if (!this->mDescriptorSet) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to free descriptor set");
+        }
+        this->mDevice->freeDescriptorSets(*this->mDescriptorPool, 1, this->mDescriptorSet.get());
+    }
+
+    if (this->mFreeDescriptorSetLayout) {
+        SPDLOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
+        if (!this->mDescriptorSetLayout) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy descriptor set layout but it is null");
+        }
+        this->mDevice->destroy(*this->mDescriptorSetLayout);
+    }
+
+    if (this->mFreeDescriptorPool) {
+        SPDLOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
+        if (!this->mDescriptorPool) {
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy descriptor pool but it is null");
+        }
+        this->mDevice->destroy(*this->mDescriptorPool);
+    }
 }
 
 void
@@ -99,6 +155,7 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     this->mDescriptorSetLayout = std::make_shared<vk::DescriptorSetLayout>();
     this->mDevice->createDescriptorSetLayout(
       &descriptorSetLayoutInfo, nullptr, this->mDescriptorSetLayout.get());
+    this->mFreeDescriptorSetLayout = true;
 
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
       *this->mDescriptorPool,
@@ -109,6 +166,7 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     this->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
     this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
                                           this->mDescriptorSet.get());
+    this->mFreeDescriptorSet = true;
 
     // TODO: Explore design exposing the destination array element
     for (size_t i = 0; i < tensorParams.size(); i++) {
@@ -153,6 +211,7 @@ Algorithm::createShaderModule(const std::vector<char>& shaderFileData)
     this->mShaderModule = std::make_shared<vk::ShaderModule>();
     this->mDevice->createShaderModule(
       &shaderModuleInfo, nullptr, this->mShaderModule.get());
+    this->mFreeShaderModule = true;
 
     SPDLOG_DEBUG("Kompute Algorithm create shader module success");
 }
@@ -171,6 +230,7 @@ Algorithm::createPipeline(std::vector<uint32_t> specializationData)
     this->mPipelineLayout = std::make_shared<vk::PipelineLayout>();
     this->mDevice->createPipelineLayout(
       &pipelineLayoutInfo, nullptr, this->mPipelineLayout.get());
+    this->mFreePipelineLayout = true;
 
     std::vector<vk::SpecializationMapEntry> specializationEntries;
 
@@ -203,15 +263,16 @@ Algorithm::createPipeline(std::vector<uint32_t> specializationData)
                                                0);
 
     // TODO: Confirm what the best structure is with pipeline cache
-    this->mFreePipelineCache = true;
     vk::PipelineCacheCreateInfo pipelineCacheInfo =
       vk::PipelineCacheCreateInfo();
     this->mPipelineCache = std::make_shared<vk::PipelineCache>();
     this->mDevice->createPipelineCache(
       &pipelineCacheInfo, nullptr, this->mPipelineCache.get());
+    this->mFreePipelineCache = true;
 
     vk::ResultValue<vk::Pipeline> pipelineResult =
       this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
+    this->mFreePipeline = true;
 
     if (pipelineResult.result != vk::Result::eSuccess) {
         throw std::runtime_error("Failed to create pipeline result: " +
