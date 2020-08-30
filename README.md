@@ -40,9 +40,9 @@
 
 ### Setup
 
-Kompute is provided as a single header file [`Kompute.hpp`](single_include/kompute/Kompute.hpp) that can be simply included in your code.
+Kompute is provided as a single header file [`Kompute.hpp`](single_include/kompute/Kompute.hpp) that can be simply included in your code and integrated with the shared library.
 
-You can go to our [release page]() to grab the latest library or you can [build from source]().
+This project is built using cmake so you are able to include it in your project to build from source as a static library.
 
 
 ### Your first Kompute
@@ -176,7 +176,7 @@ Simplified Kompute Components
 <br>
 <br>
 
-<img width="100%" src="raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/suspicious.jfif">
+<img width="100%" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/suspicious.jfif">
 
 </td>
 <td>
