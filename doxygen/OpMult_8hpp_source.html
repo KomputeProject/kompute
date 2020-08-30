@@ -103,8 +103,8 @@ $(function() {
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpMult constructor with params&quot;</span>);</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#ifndef RELEASE</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#ac4afe18bc81ad24d4bc93c576f5102a5">mOptSpirvBinPath</a> = <span class="stringliteral">&quot;shaders/glsl/opmult.comp.spv&quot;</span>;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#ac4afe18bc81ad24d4bc93c576f5102a5">mOptSpirvBinPath</a> = <span class="stringliteral">&quot;shaders/glsl/opmult.comp&quot;</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif // end RELEASE</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#if RELEASE</span></div>
@@ -130,9 +130,9 @@ $(function() {
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;} <span class="comment">// End namespace kp</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a></div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:37</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a></div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:39</div></div>
 <div class="ttc" id="aclasskp_1_1OpMult_html"><div class="ttname"><a href="classkp_1_1OpMult.html">kp::OpMult</a></div><div class="ttdef"><b>Definition:</b> OpMult.hpp:26</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_ac4afe18bc81ad24d4bc93c576f5102a5"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#ac4afe18bc81ad24d4bc93c576f5102a5">kp::OpAlgoBase&lt; 0, 0, 0 &gt;::mOptSpirvBinPath</a></div><div class="ttdeci">std::string mOptSpirvBinPath</div><div class="ttdoc">Optional member variable which can be provided for the OpAlgoBase to find the data automatically and ...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:106</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_ac4afe18bc81ad24d4bc93c576f5102a5"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#ac4afe18bc81ad24d4bc93c576f5102a5">kp::OpAlgoBase&lt; 0, 0, 0 &gt;::mOptSpirvBinPath</a></div><div class="ttdeci">std::string mOptSpirvBinPath</div><div class="ttdoc">Optional member variable which can be provided for the OpAlgoBase to find the data automatically and ...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:108</div></div>
 <div class="ttc" id="aclasskp_1_1OpMult_html_af4a03dea029f0aae6ef4c50f0aa91dc0"><div class="ttname"><a href="classkp_1_1OpMult.html#af4a03dea029f0aae6ef4c50f0aa91dc0">kp::OpMult::~OpMult</a></div><div class="ttdeci">~OpMult() override</div><div class="ttdef"><b>Definition:</b> OpMult.hpp:87</div></div>
 <div class="ttc" id="aclasskp_1_1OpMult_html_aa08d346a261039b2b29478ee8fc47a96"><div class="ttname"><a href="classkp_1_1OpMult.html#aa08d346a261039b2b29478ee8fc47a96">kp::OpMult::OpMult</a></div><div class="ttdeci">OpMult(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors)</div><div class="ttdef"><b>Definition:</b> OpMult.hpp:46</div></div>
 <div class="ttc" id="aclasskp_1_1OpMult_html_a515bc68245dcb76d266237280046d965"><div class="ttname"><a href="classkp_1_1OpMult.html#a515bc68245dcb76d266237280046d965">kp::OpMult::OpMult</a></div><div class="ttdeci">OpMult()</div><div class="ttdef"><b>Definition:</b> OpMult.hpp:31</div></div>
