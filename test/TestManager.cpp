@@ -113,3 +113,53 @@ TEST_CASE("Test manager get create functionality for sequences") {
     REQUIRE(sqWeakPtrTwo.lock() == sqWeakPtrTwoRef.lock());
     REQUIRE(sqWeakPtrOneRef.lock() != sqWeakPtrTwoRef.lock());
 }
+
+TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tensors") {
+    spdlog::info("TEST CASE STARTING");
+
+    spdlog::info("Creating manager");
+
+    spdlog::info("Creating first tensor");
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
+      { 0, 1, 2 }) };
+
+    spdlog::info("Creating second tensor");
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
+      { 2, 4, 6 }) };
+
+    // TODO: Add capabilities for just output tensor types
+    spdlog::info("Creating output tensor");
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
+      { 0, 0, 0 }) };
+
+    kp::Manager mgr;
+
+    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+        sq->begin();
+
+        sq->record<kp::OpCreateTensor>({ tensorLHS, tensorRHS, tensorOutput });
+
+        spdlog::info("OpCreateTensor success for tensors");
+        spdlog::info("Tensor one: {}", tensorLHS->data());
+        spdlog::info("Tensor two: {}", tensorRHS->data());
+        spdlog::info("Tensor output: {}", tensorOutput->data());
+        REQUIRE(tensorLHS->isInit());
+        REQUIRE(tensorRHS->isInit());
+        REQUIRE(tensorOutput->isInit());
+
+        spdlog::info("Calling op mult");
+        sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+
+        sq->end();
+        sq->eval();
+    }
+    sqWeakPtr.reset();
+
+    spdlog::info("OpMult call success");
+    spdlog::info("Tensor output: {}", tensorOutput->data());
+
+    REQUIRE(tensorOutput->data() == std::vector<uint32_t>{0, 4, 12});
+
+    spdlog::info("Called manager eval success END PROGRAM");
+}
