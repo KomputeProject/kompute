@@ -217,5 +217,8 @@ To update the documentation will need to:
 * Run the gensphynx target in the buildsystem 
 * Push to github pages with `make push_docs_to_ghpages`
 
+
+# The Komputer is waiting for instructions...
+
 ![](https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif)
 
