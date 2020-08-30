@@ -108,8 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbefa5c6b5b579f9e48dea47bdb42002"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#abbefa5c6b5b579f9e48dea47bdb42002">setData</a> (const std::vector&lt; uint32_t &gt; &amp;<a class="el" href="classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba">data</a>)</td></tr>
 <tr class="separator:abbefa5c6b5b579f9e48dea47bdb42002"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a6bed25811743942fd2a5b408c713a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a0a6bed25811743942fd2a5b408c713a6">recordCopyFrom</a> (std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; copyFromTensor, bool createBarrier=true)</td></tr>
-<tr class="separator:a0a6bed25811743942fd2a5b408c713a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a860ac72211724dc9fd3a74cbd3e53b04"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a860ac72211724dc9fd3a74cbd3e53b04">recordCopyFrom</a> (std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; copyFromTensor, bool createBarrier)</td></tr>
+<tr class="separator:a860ac72211724dc9fd3a74cbd3e53b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cba0e1dc63157342c8384d97a8441e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">recordBufferMemoryBarrier</a> (vk::AccessFlagBits srcAccessMask, vk::AccessFlagBits dstAccessMask, vk::PipelineStageFlagBits srcStageMask, vk::PipelineStageFlagBits dstStageMask)</td></tr>
 <tr class="separator:a9cba0e1dc63157342c8384d97a8441e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805e6050a935763488116e071c0ce461"><td class="memItemLeft" align="right" valign="top">vk::DescriptorBufferInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">constructDescriptorBufferInfo</a> ()</td></tr>
@@ -307,7 +307,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialiser creates the buffer and GPU memory. </p>
+<p>Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory. </p>
 
 </div>
 </div>
@@ -415,8 +415,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0a6bed25811743942fd2a5b408c713a6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a6bed25811743942fd2a5b408c713a6">&#9670;&nbsp;</a></span>recordCopyFrom()</h2>
+<a id="a860ac72211724dc9fd3a74cbd3e53b04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a860ac72211724dc9fd3a74cbd3e53b04">&#9670;&nbsp;</a></span>recordCopyFrom()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -431,7 +431,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>createBarrier</em> = <code>true</code>&#160;</td>
+          <td class="paramname"><em>createBarrier</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

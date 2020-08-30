@@ -84,12 +84,12 @@ $(function() {
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="classkp_1_1OpCreateTensor.html">OpCreateTensor</a>();</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classkp_1_1OpCreateTensor.html#ad945d8c7938cd23c6f1aec5e3adb517a">   31</a></span>&#160;    <a class="code" href="classkp_1_1OpCreateTensor.html#ad945d8c7938cd23c6f1aec5e3adb517a">OpCreateTensor</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classkp_1_1OpCreateTensor.html#a1b4c0323a99f49de2805446f881b9604">   31</a></span>&#160;    <a class="code" href="classkp_1_1OpCreateTensor.html#a1b4c0323a99f49de2805446f881b9604">OpCreateTensor</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                   std::shared_ptr&lt;vk::Device&gt; device,</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                   std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                   std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                   std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classkp_1_1OpCreateTensor.html#a03927fbf5d9786dbe29cc5b6ad6eb9a3">   40</a></span>&#160;    <a class="code" href="classkp_1_1OpCreateTensor.html#a03927fbf5d9786dbe29cc5b6ad6eb9a3">~OpCreateTensor</a>();</div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classkp_1_1OpCreateTensor.html#a6967f68a56a0d256827d4e625124a106">   40</a></span>&#160;    <a class="code" href="classkp_1_1OpCreateTensor.html#a6967f68a56a0d256827d4e625124a106">~OpCreateTensor</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classkp_1_1OpCreateTensor.html#ad0961c7a2acec064f0253964616d0762">   47</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpCreateTensor.html#ad0961c7a2acec064f0253964616d0762">init</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
@@ -99,19 +99,18 @@ $(function() {
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="comment">// Never owned resources</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    std::shared_ptr&lt;Tensor&gt; mPrimaryTensor;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::shared_ptr&lt;Tensor&gt; mStagingTensor;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;} <span class="comment">// End namespace kp</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; mStagingTensors;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;};</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;} <span class="comment">// End namespace kp</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasskp_1_1OpCreateTensor_html_a43ef24dc63dc05abc8cee693f95d5b6a"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#a43ef24dc63dc05abc8cee693f95d5b6a">kp::OpCreateTensor::postSubmit</a></div><div class="ttdeci">void postSubmit() override</div></div>
+<div class="ttc" id="aclasskp_1_1OpCreateTensor_html_a1b4c0323a99f49de2805446f881b9604"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#a1b4c0323a99f49de2805446f881b9604">kp::OpCreateTensor::OpCreateTensor</a></div><div class="ttdeci">OpCreateTensor(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors)</div></div>
 <div class="ttc" id="aclasskp_1_1OpCreateTensor_html_a42f0876e55b1f5e74fb34504d4cd6b5b"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#a42f0876e55b1f5e74fb34504d4cd6b5b">kp::OpCreateTensor::record</a></div><div class="ttdeci">void record() override</div></div>
 <div class="ttc" id="aclasskp_1_1OpCreateTensor_html_ad0961c7a2acec064f0253964616d0762"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#ad0961c7a2acec064f0253964616d0762">kp::OpCreateTensor::init</a></div><div class="ttdeci">void init() override</div></div>
 <div class="ttc" id="aclasskp_1_1OpCreateTensor_html"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html">kp::OpCreateTensor</a></div><div class="ttdef"><b>Definition:</b> OpCreateTensor.hpp:16</div></div>
 <div class="ttc" id="aclasskp_1_1OpBase_html"><div class="ttname"><a href="classkp_1_1OpBase.html">kp::OpBase</a></div><div class="ttdef"><b>Definition:</b> OpBase.hpp:18</div></div>
-<div class="ttc" id="aclasskp_1_1OpCreateTensor_html_ad945d8c7938cd23c6f1aec5e3adb517a"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#ad945d8c7938cd23c6f1aec5e3adb517a">kp::OpCreateTensor::OpCreateTensor</a></div><div class="ttdeci">OpCreateTensor(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors)</div></div>
-<div class="ttc" id="aclasskp_1_1OpCreateTensor_html_a03927fbf5d9786dbe29cc5b6ad6eb9a3"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#a03927fbf5d9786dbe29cc5b6ad6eb9a3">kp::OpCreateTensor::~OpCreateTensor</a></div><div class="ttdeci">~OpCreateTensor()</div></div>
+<div class="ttc" id="aclasskp_1_1OpCreateTensor_html_a6967f68a56a0d256827d4e625124a106"><div class="ttname"><a href="classkp_1_1OpCreateTensor.html#a6967f68a56a0d256827d4e625124a106">kp::OpCreateTensor::~OpCreateTensor</a></div><div class="ttdeci">~OpCreateTensor() override</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

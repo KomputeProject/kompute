@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Reference &#8212; Vulkan Kompute 0.1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Memory Management Principles" href="memory-management.html" />
+    <link rel="prev" title="Kompute Docs Home" href="../index.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=red data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#overview/reference" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Vulkan Kompute 0.1.0 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Vulkan Kompute</span>
+          <span class="md-header-nav__topic"> Reference </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="GET" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/axsaucedo/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    Vulkan Kompute
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.1.0 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Vulkan Kompute 0.1.0 documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Vulkan Kompute 0.1.0 documentation">Vulkan Kompute</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/axsaucedo/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    Vulkan Kompute
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Class Reference </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Class Reference</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/overview/reference.rst.txt">Show Source</a> </li>
+
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="memory-management.html" class="md-nav__link">Memory management principles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../genindex.html" class="md-nav__link">Code Index</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/overview/reference.rst.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<h1 id="overview-reference--page-root">Reference<a class="headerlink" href="#overview-reference--page-root" title="Permalink to this headline">¶</a></h1>
+<p>This section provides a breakdown of the cpp classes and what each of their functions provide. It is partially generated and augomented from the Doxygen autodoc content. You can also go directly to the <a class="reference external" href="doxygen/annotated.html">raw doxygen docs</a>.</p>
+<p>Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture.jpg"><img alt="../_images/kompute-vulkan-architecture.jpg" src="../_images/kompute-vulkan-architecture.jpg" style="width: 100%;"/></a>
+
+<h2 id="manager">Manager<a class="headerlink" href="#manager" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp7ManagerE">
+<span id="_CPPv3N2kp7ManagerE"></span><span id="_CPPv2N2kp7ManagerE"></span><span id="kp::Manager"></span><span class="target" id="classkp_1_1Manager"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Manager</code><a class="headerlink" href="#_CPPv4N2kp7ManagerE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base orchestrator which creates and manages device and child components </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager7ManagerEv">
+<span id="_CPPv3N2kp7Manager7ManagerEv"></span><span id="_CPPv2N2kp7Manager7ManagerEv"></span><span id="kp::Manager::Manager"></span><span class="target" id="classkp_1_1Manager_1a43cc11ff353b2b0775e6a204c8395d97"></span><code class="sig-name descname">Manager</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager7ManagerEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor and default used which creates the base resources including choosing the device 0 by default. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager7ManagerE8uint32_t">
+<span id="_CPPv3N2kp7Manager7ManagerE8uint32_t"></span><span id="_CPPv2N2kp7Manager7ManagerE8uint32_t"></span><span id="kp::Manager::Manager__uint32_t"></span><span class="target" id="classkp_1_1Manager_1a2750eee25b482b114a8032a35664de27"></span><code class="sig-name descname">Manager</code><span class="sig-paren">(</span>uint32_t <em>physicalDeviceIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager7ManagerE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Similar to base constructor but allows the user to provide the device they would like to create the resources on. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager7ManagerENSt10shared_ptrIN2vk8InstanceEEENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEE8uint32_t">
+<span id="_CPPv3N2kp7Manager7ManagerENSt10shared_ptrIN2vk8InstanceEEENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEE8uint32_t"></span><span id="_CPPv2N2kp7Manager7ManagerENSt10shared_ptrIN2vk8InstanceEEENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEE8uint32_t"></span><span id="kp::Manager::Manager__std::shared_ptr:vk::Instance:.std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.uint32_t"></span><span class="target" id="classkp_1_1Manager_1a81eb45116fae9ae3a34d22cf7a238b54"></span><code class="sig-name descname">Manager</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::Instance&gt; <em>instance</em>, std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, uint32_t <em>physicalDeviceIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager7ManagerENSt10shared_ptrIN2vk8InstanceEEENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p><a class="reference internal" href="#classkp_1_1Manager"><span class="std std-ref">Manager</span></a> constructor which allows your own vulkan application to integrate with the vulkan kompute use.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">instance</span></code>: Vulkan compute instance to base this application @physicalDevice Vulkan physical device to use for application @device Vulkan logical device to use for all base resources @physicalDeviceIndex Index for vulkan physical device used </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7ManagerD0Ev">
+<span id="_CPPv3N2kp7ManagerD0Ev"></span><span id="_CPPv2N2kp7ManagerD0Ev"></span><span id="kp::Manager::~Manager"></span><span class="target" id="classkp_1_1Manager_1af9b31d91851f8b7bb8d95c32a905b1ad"></span><code class="sig-name descname">~Manager</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7ManagerD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p><a class="reference internal" href="#classkp_1_1Manager"><span class="std std-ref">Manager</span></a> destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager26getOrCreateManagedSequenceENSt6stringE">
+<span id="_CPPv3N2kp7Manager26getOrCreateManagedSequenceENSt6stringE"></span><span id="_CPPv2N2kp7Manager26getOrCreateManagedSequenceENSt6stringE"></span><span id="kp::Manager::getOrCreateManagedSequence__ss"></span><span class="target" id="classkp_1_1Manager_1a55d0744536347209bb88250b2e276d1a"></span>std::weak_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp8SequenceE" title="kp::Sequence">Sequence</a>&gt; <code class="sig-name descname">getOrCreateManagedSequence</code><span class="sig-paren">(</span>std::string <em>sequenceName</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager26getOrCreateManagedSequenceENSt6stringE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Get or create a managed <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a> that will be contained by this manager. If the named sequence does not currently exist, it would be created and initialised.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Weak pointer to the manager owned sequence resource </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sequenceName</span></code>: The name for the named sequence to be retrieved or created </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs">
+<span id="_CPPv3I0DpEN2kp7Manager6evalOpENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager6evalOpENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1af5ef1e29c5c4a2af3184016dc718f022"></span>void <code class="sig-name descname">evalOp</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, std::string <em>sequenceName</em> = KP_DEFAULT_SESSION, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="kp::Manager::evalOp::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that adds extra operations to existing or new created sequences.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sequenceName</span></code>: The name of the sequence to be retrieved or created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TArgs</span></code>: Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-manager.jpg"><img alt="../_images/kompute-vulkan-architecture-manager.jpg" src="../_images/kompute-vulkan-architecture-manager.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="sequence">Sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp8SequenceE">
+<span id="_CPPv3N2kp8SequenceE"></span><span id="_CPPv2N2kp8SequenceE"></span><span id="kp::Sequence"></span><span class="target" id="classkp_1_1Sequence"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Sequence</code><a class="headerlink" href="#_CPPv4N2kp8SequenceE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Container of operations that can be sent to GPU as batch </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence8SequenceEv">
+<span id="_CPPv3N2kp8Sequence8SequenceEv"></span><span id="_CPPv2N2kp8Sequence8SequenceEv"></span><span id="kp::Sequence::Sequence"></span><span class="target" id="classkp_1_1Sequence_1a7086ddbc33ffb5c99cfc83cfa926f65e"></span><code class="sig-name descname">Sequence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence8SequenceEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor for <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a>. Should not be used unless explicit intended. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t">
+<span id="_CPPv3N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t"></span><span id="_CPPv2N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t"></span><span id="kp::Sequence::Sequence__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::Queue:.uint32_t"></span><span class="target" id="classkp_1_1Sequence_1a83518e6c7f249680a9a0a9e7d5270b9a"></span><code class="sig-name descname">Sequence</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::Queue&gt; <em>computeQueue</em>, uint32_t <em>queueIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Main constructor for sequence which requires core vulkan components to generate all dependent resources.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">computeQueue</span></code>: Vulkan compute queue </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">queueIndex</span></code>: Vulkan compute queue index in device </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8SequenceD0Ev">
+<span id="_CPPv3N2kp8SequenceD0Ev"></span><span id="_CPPv2N2kp8SequenceD0Ev"></span><span id="kp::Sequence::~Sequence"></span><span class="target" id="classkp_1_1Sequence_1a657bf520b64ddbd42e12095c5241ef52"></span><code class="sig-name descname">~Sequence</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8SequenceD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Destructor for sequence which is responsible for cleaning all subsequent owned operations. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence4initEv">
+<span id="_CPPv3N2kp8Sequence4initEv"></span><span id="_CPPv2N2kp8Sequence4initEv"></span><span id="kp::Sequence::init"></span><span class="target" id="classkp_1_1Sequence_1a437ff4b49b8ce0e4fd9f80ea2d1d3593"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence4initEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Initialises sequence including the creation of the command pool and the command buffer. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence5beginEv">
+<span id="_CPPv3N2kp8Sequence5beginEv"></span><span id="_CPPv2N2kp8Sequence5beginEv"></span><span id="kp::Sequence::begin"></span><span class="target" id="classkp_1_1Sequence_1a9b4922affdae332381e14c7c555bdfc4"></span>bool <code class="sig-name descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence5beginEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Begins recording commands for commands to be submitted into the command buffer. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence3endEv">
+<span id="_CPPv3N2kp8Sequence3endEv"></span><span id="_CPPv2N2kp8Sequence3endEv"></span><span id="kp::Sequence::end"></span><span class="target" id="classkp_1_1Sequence_1ac51befb176acd2064d3e85133bf66ada"></span>bool <code class="sig-name descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence3endEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Ends the recording and stops recording commands when the record command is sent. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence4evalEv">
+<span id="_CPPv3N2kp8Sequence4evalEv"></span><span id="_CPPv2N2kp8Sequence4evalEv"></span><span id="kp::Sequence::eval"></span><span class="target" id="classkp_1_1Sequence_1aa0b36564769ba25a43a38e14a2d510dc"></span>bool <code class="sig-name descname">eval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence4evalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence11isRecordingEv">
+<span id="_CPPv3N2kp8Sequence11isRecordingEv"></span><span id="_CPPv2N2kp8Sequence11isRecordingEv"></span><span id="kp::Sequence::isRecording"></span><span class="target" id="classkp_1_1Sequence_1ac6400fc9c0fb879e1131157fef8b2e85"></span>bool <code class="sig-name descname">isRecording</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence11isRecordingEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns true if the sequence is currently in recording activated.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating if recording ongoing. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence6isInitEv">
+<span id="_CPPv3N2kp8Sequence6isInitEv"></span><span id="_CPPv2N2kp8Sequence6isInitEv"></span><span id="kp::Sequence::isInit"></span><span class="target" id="classkp_1_1Sequence_1a84ff30d6164cc730bd554dcdfd423f74"></span>bool <code class="sig-name descname">isInit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence6isInitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns true if the sequence has been successfully initialised.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating if sequence has been initialised. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN2kp8Sequence6recordEbNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs">
+<span id="_CPPv3I0DpEN2kp8Sequence6recordENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp8Sequence6recordENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Sequence_1a3cf05ff800f9bbb267be2367f554c2f4"></span>bool <code class="sig-name descname">record</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, <a class="reference internal" href="#_CPPv4I0DpEN2kp8Sequence6recordEbNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="kp::Sequence::record::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp8Sequence6recordEbNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Record function for operation to be added to the GPU queue in batch. This template requires classes to be derived from the <a class="reference internal" href="#classkp_1_1OpBase"><span class="std std-ref">OpBase</span></a> class. This function also requires the <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a> to be recording, otherwise it will not be able to add the operation.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Vector of tensors to use for the operation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TArgs</span></code>: Template parameters that are used to initialise operation which allows for extensible configurations on initialisation. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-sequence.jpg"><img alt="../_images/kompute-vulkan-architecture-sequence.jpg" src="../_images/kompute-vulkan-architecture-sequence.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="tensor">Tensor<a class="headerlink" href="#tensor" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp6TensorE">
+<span id="_CPPv3N2kp6TensorE"></span><span id="_CPPv2N2kp6TensorE"></span><span id="kp::Tensor"></span><span class="target" id="classkp_1_1Tensor"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#_CPPv4N2kp6TensorE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Structured data used in GPU operations.</p>
+<p>Tensors are the base building block in Kompute to perform operations across GPUs. Each tensor would have a respective Vulkan memory and buffer, which woudl be used to store their respective data. The tensors can be used for GPU data storage or transfer. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="cpp enum">
+<dt id="_CPPv4N2kp6Tensor11TensorTypesE">
+<span id="_CPPv3N2kp6Tensor11TensorTypesE"></span><span id="_CPPv2N2kp6Tensor11TensorTypesE"></span><span class="target" id="classkp_1_1Tensor_1a1b2af1c0e8dc0f154e11780e7103beb4"></span><em class="property">enum </em><code class="sig-name descname">TensorTypes</code><a class="headerlink" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Type for tensors created: Device allows memory to be transferred from staging buffers. Staging are host memory visible. Storage are device visible but are not set up to transfer or receive data (only for shader storage). </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N2kp6Tensor11TensorTypes7eDeviceE">
+<span id="_CPPv3N2kp6Tensor11TensorTypes7eDeviceE"></span><span id="_CPPv2N2kp6Tensor11TensorTypes7eDeviceE"></span><span class="target" id="classkp_1_1Tensor_1a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f"></span><em class="property">enumerator </em><code class="sig-name descname">eDevice</code> = 0<a class="headerlink" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="Permalink to this definition">¶</a><br/></dt>
+<dd></dd></dl>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N2kp6Tensor11TensorTypes8eStagingE">
+<span id="_CPPv3N2kp6Tensor11TensorTypes8eStagingE"></span><span id="_CPPv2N2kp6Tensor11TensorTypes8eStagingE"></span><span class="target" id="classkp_1_1Tensor_1a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5"></span><em class="property">enumerator </em><code class="sig-name descname">eStaging</code> = 1<a class="headerlink" href="#_CPPv4N2kp6Tensor11TensorTypes8eStagingE" title="Permalink to this definition">¶</a><br/></dt>
+<dd></dd></dl>
+<dl class="cpp enumerator">
+<dt id="_CPPv4N2kp6Tensor11TensorTypes8eStorageE">
+<span id="_CPPv3N2kp6Tensor11TensorTypes8eStorageE"></span><span id="_CPPv2N2kp6Tensor11TensorTypes8eStorageE"></span><span class="target" id="classkp_1_1Tensor_1a1b2af1c0e8dc0f154e11780e7103beb4ae1a7e733531f08074becd467959f0521"></span><em class="property">enumerator </em><code class="sig-name descname">eStorage</code> = 2<a class="headerlink" href="#_CPPv4N2kp6Tensor11TensorTypes8eStorageE" title="Permalink to this definition">¶</a><br/></dt>
+<dd></dd></dl>
+</dd></dl>
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor6TensorEv">
+<span id="_CPPv3N2kp6Tensor6TensorEv"></span><span id="_CPPv2N2kp6Tensor6TensorEv"></span><span id="kp::Tensor::Tensor"></span><span class="target" id="classkp_1_1Tensor_1aee6c5bb44b1c58d67c33c86efdc24acd"></span><code class="sig-name descname">Tensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6TensorEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor, should not be used unless explicitly intended. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes">
+<span id="_CPPv3N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes"></span><span id="_CPPv2N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes"></span><span id="kp::Tensor::Tensor__std::vector:uint32_t:.TensorTypes"></span><span class="target" id="classkp_1_1Tensor_1a99f9f5a2f89e826291ab3fd479829e23"></span><code class="sig-name descname">Tensor</code><span class="sig-paren">(</span>std::vector&lt;uint32_t&gt; <em>data</em>, <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with data provided which would be used to create the respective vulkan buffer and memory.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Vector of data that will be used by the tensor </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensorType</span></code>: Type for the tensor which is of type TensorTypes </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6TensorD0Ev">
+<span id="_CPPv3N2kp6TensorD0Ev"></span><span id="_CPPv2N2kp6TensorD0Ev"></span><span id="kp::Tensor::~Tensor"></span><span class="target" id="classkp_1_1Tensor_1a38e886e69103a956b994790f320a254e"></span><code class="sig-name descname">~Tensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6TensorD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Destructor which is in charge of freeing vulkan resources unless they have been provided externally. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor4initENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE">
+<span id="_CPPv3N2kp6Tensor4initENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE"></span><span id="_CPPv2N2kp6Tensor4initENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE"></span><span id="kp::Tensor::init__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:"></span><span class="target" id="classkp_1_1Tensor_1aec6bd8edf3252869d9fb5de067ede6b4"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4initENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor29freeMemoryDestroyGPUResourcesEv">
+<span id="_CPPv3N2kp6Tensor29freeMemoryDestroyGPUResourcesEv"></span><span id="_CPPv2N2kp6Tensor29freeMemoryDestroyGPUResourcesEv"></span><span id="kp::Tensor::freeMemoryDestroyGPUResources"></span><span class="target" id="classkp_1_1Tensor_1afdfc816a4f040ad43e36534c6fbc69a2"></span>void <code class="sig-name descname">freeMemoryDestroyGPUResources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor29freeMemoryDestroyGPUResourcesEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Destroys and frees the GPU resources which include the buffer and memory. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor4dataEv">
+<span id="_CPPv3N2kp6Tensor4dataEv"></span><span id="_CPPv2N2kp6Tensor4dataEv"></span><span id="kp::Tensor::data"></span><span class="target" id="classkp_1_1Tensor_1a8a2b1f7900a6cc0fa903fdd0242109ba"></span>std::vector&lt;uint32_t&gt; <code class="sig-name descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4dataEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns the vector of data currently contained by the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>. It is important to ensure that there is no out-of-sync data with the GPU memory.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Vector of elements representing the data in the tensor. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor4sizeEv">
+<span id="_CPPv3N2kp6Tensor4sizeEv"></span><span id="_CPPv2N2kp6Tensor4sizeEv"></span><span id="kp::Tensor::size"></span><span class="target" id="classkp_1_1Tensor_1a1fb937df6cc482c1f37c74d8fab0f9a9"></span>uint32_t <code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4sizeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns the size/magnitude of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>, which will be the total number of elements across all dimensions</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Unsigned integer representing the total number of elements </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor5shapeEv">
+<span id="_CPPv3N2kp6Tensor5shapeEv"></span><span id="_CPPv2N2kp6Tensor5shapeEv"></span><span id="kp::Tensor::shape"></span><span class="target" id="classkp_1_1Tensor_1a70a95b98a2558fbc80458c22ca9e043c"></span>std::array&lt;uint32_t, KP_MAX_DIM_SIZE&gt; <code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor5shapeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns the shape of the tensor, which includes the number of dimensions and the size per dimension.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Array containing the sizes for each dimension. Zero means respective dimension is not active. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor10tensorTypeEv">
+<span id="_CPPv3N2kp6Tensor10tensorTypeEv"></span><span id="_CPPv2N2kp6Tensor10tensorTypeEv"></span><span id="kp::Tensor::tensorType"></span><span class="target" id="classkp_1_1Tensor_1a59452f1c62fd738536bb0a6cbf8d896b"></span><a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <code class="sig-name descname">tensorType</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor10tensorTypeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Retrieve the tensor type of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a></p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> type of tensor </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor6isInitEv">
+<span id="_CPPv3N2kp6Tensor6isInitEv"></span><span id="_CPPv2N2kp6Tensor6isInitEv"></span><span id="kp::Tensor::isInit"></span><span class="target" id="classkp_1_1Tensor_1af2ae7f0b57fd8e57570ab63962a97f36"></span>bool <code class="sig-name descname">isInit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6isInitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns true if the tensor initialisation function has been carried out successful, which would mean that the buffer and memory will have been provisioned. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE">
+<span id="_CPPv3N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE"></span><span id="_CPPv2N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE"></span><span id="kp::Tensor::setData__std::vector:uint32_t:CR"></span><span class="target" id="classkp_1_1Tensor_1abbefa5c6b5b579f9e48dea47bdb42002"></span>void <code class="sig-name descname">setData</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor14recordCopyFromENSt10shared_ptrI6TensorEEb">
+<span id="_CPPv3N2kp6Tensor14recordCopyFromENSt10shared_ptrI6TensorEEb"></span><span id="_CPPv2N2kp6Tensor14recordCopyFromENSt10shared_ptrI6TensorEEb"></span><span id="kp::Tensor::recordCopyFrom__std::shared_ptr:Tensor:.b"></span><span class="target" id="classkp_1_1Tensor_1a860ac72211724dc9fd3a74cbd3e53b04"></span>void <code class="sig-name descname">recordCopyFrom</code><span class="sig-paren">(</span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt; <em>copyFromTensor</em>, bool <em>createBarrier</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor14recordCopyFromENSt10shared_ptrI6TensorEEb" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Records a copy from the memory of the tensor provided to the current thensor. This is intended to pass memory into a processing, to perform a staging buffer transfer, or to gather output (between others).</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">copyFromTensor</span></code>: <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> to copy the data from </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">createBarrier</span></code>: Whether to create a barrier that ensures the data is copied before further operations. Default is true. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor25recordBufferMemoryBarrierEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE">
+<span id="_CPPv3N2kp6Tensor25recordBufferMemoryBarrierEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="_CPPv2N2kp6Tensor25recordBufferMemoryBarrierEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="kp::Tensor::recordBufferMemoryBarrier__vk::AccessFlagBits.vk::AccessFlagBits.vk::PipelineStageFlagBits.vk::PipelineStageFlagBits"></span><span class="target" id="classkp_1_1Tensor_1a9cba0e1dc63157342c8384d97a8441e1"></span>void <code class="sig-name descname">recordBufferMemoryBarrier</code><span class="sig-paren">(</span>vk::AccessFlagBits <em>srcAccessMask</em>, vk::AccessFlagBits <em>dstAccessMask</em>, vk::PipelineStageFlagBits <em>srcStageMask</em>, vk::PipelineStageFlagBits <em>dstStageMask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor25recordBufferMemoryBarrierEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Records the buffer memory barrier into the command buffer which ensures that relevant data transfers are carried out correctly.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">srcAccessMask</span></code>: Access flags for source access mask </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dstAccessMask</span></code>: Access flags for destination access mask </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scrStageMask</span></code>: Pipeline stage flags for source stage mask </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dstStageMask</span></code>: Pipeline stage flags for destination stage mask </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor29constructDescriptorBufferInfoEv">
+<span id="_CPPv3N2kp6Tensor29constructDescriptorBufferInfoEv"></span><span id="_CPPv2N2kp6Tensor29constructDescriptorBufferInfoEv"></span><span id="kp::Tensor::constructDescriptorBufferInfo"></span><span class="target" id="classkp_1_1Tensor_1a805e6050a935763488116e071c0ce461"></span>vk::DescriptorBufferInfo <code class="sig-name descname">constructDescriptorBufferInfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor29constructDescriptorBufferInfoEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Constructs a vulkan descriptor buffer info which can be used to specify and reference the underlying buffer component of the tensor without exposing it.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Descriptor buffer info with own buffer </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor21mapDataFromHostMemoryEv">
+<span id="_CPPv3N2kp6Tensor21mapDataFromHostMemoryEv"></span><span id="_CPPv2N2kp6Tensor21mapDataFromHostMemoryEv"></span><span id="kp::Tensor::mapDataFromHostMemory"></span><span class="target" id="classkp_1_1Tensor_1ae8e16f48058f17d55d313727c9ceaa46"></span>void <code class="sig-name descname">mapDataFromHostMemory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor21mapDataFromHostMemoryEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Maps data from the Host Visible GPU memory into the data vector. It requires the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> to be of staging type for it to work. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor21mapDataIntoHostMemoryEv">
+<span id="_CPPv3N2kp6Tensor21mapDataIntoHostMemoryEv"></span><span id="_CPPv2N2kp6Tensor21mapDataIntoHostMemoryEv"></span><span id="kp::Tensor::mapDataIntoHostMemory"></span><span class="target" id="classkp_1_1Tensor_1aeeeb1b7d8ed4681565f17e44c98fb704"></span>void <code class="sig-name descname">mapDataIntoHostMemory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor21mapDataIntoHostMemoryEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Maps data from the data vector into the Host Visible GPU memory. It requires the tensor to be of staging type for it to work. </p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-tensor.jpg"><img alt="../_images/kompute-vulkan-architecture-tensor.jpg" src="../_images/kompute-vulkan-architecture-tensor.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="algorithm">Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp9AlgorithmE">
+<span id="_CPPv3N2kp9AlgorithmE"></span><span id="_CPPv2N2kp9AlgorithmE"></span><span id="kp::Algorithm"></span><span class="target" id="classkp_1_1Algorithm"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Algorithm</code><a class="headerlink" href="#_CPPv4N2kp9AlgorithmE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Abstraction for compute shaders that are run on top of tensors grouped via ParameterGroups (which group descriptorsets) </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp9Algorithm9AlgorithmEv">
+<span id="_CPPv3N2kp9Algorithm9AlgorithmEv"></span><span id="_CPPv2N2kp9Algorithm9AlgorithmEv"></span><span id="kp::Algorithm::Algorithm"></span><span class="target" id="classkp_1_1Algorithm_1abca36359b946dc1102890d34b6fa562b"></span><code class="sig-name descname">Algorithm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm9AlgorithmEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor for <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a>. Should not be used unless explicit intended. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE">
+<span id="_CPPv3N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE"></span><span id="_CPPv2N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE"></span><span id="kp::Algorithm::Algorithm__std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:"></span><span class="target" id="classkp_1_1Algorithm_1a71175003231f8a716df9146d70a70303"></span><code class="sig-name descname">Algorithm</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor for <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a></p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: The Vulkan device to use for creating resources </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The vulkan command buffer to bind the pipeline and shaders </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp9Algorithm4initERKNSt6vectorIcEENSt6vectorINSt10shared_ptrI6TensorEEEE">
+<span id="_CPPv3N2kp9Algorithm4initERKNSt6vectorIcEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="_CPPv2N2kp9Algorithm4initERKNSt6vectorIcEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="kp::Algorithm::init__std::vector:c:CR.std::vector:std::shared_ptr:Tensor::"></span><span class="target" id="classkp_1_1Algorithm_1ae54d2ab78d3236964d4281635368d8ef"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;char&gt; &amp;<em>shaderFileData</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensorParams</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm4initERKNSt6vectorIcEENSt6vectorINSt10shared_ptrI6TensorEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Initialiser for the shader data provided to the algoithm as well as tensor parameters that will be used in shader.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shaderFileData</span></code>: The bytes in spir-v format of the shader @tensorParams The Tensors to be used in the <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> / shader for processing </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp9AlgorithmD0Ev">
+<span id="_CPPv3N2kp9AlgorithmD0Ev"></span><span id="_CPPv2N2kp9AlgorithmD0Ev"></span><span id="kp::Algorithm::~Algorithm"></span><span class="target" id="classkp_1_1Algorithm_1a8bb732b02135afeec7e80e7a2c5d3ce7"></span><code class="sig-name descname">~Algorithm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9AlgorithmD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Destructor for <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> which is responsible for freeing and desroying respective pipelines and owned parameter groups. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp9Algorithm14recordDispatchE8uint32_t8uint32_t8uint32_t">
+<span id="_CPPv3N2kp9Algorithm14recordDispatchE8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv2N2kp9Algorithm14recordDispatchE8uint32_t8uint32_t8uint32_t"></span><span id="kp::Algorithm::recordDispatch__uint32_t.uint32_t.uint32_t"></span><span class="target" id="classkp_1_1Algorithm_1ad4bd57e0e03ccdc113c7c38b181ccbf6"></span>void <code class="sig-name descname">recordDispatch</code><span class="sig-paren">(</span>uint32_t <em>x</em> = 1, uint32_t <em>y</em> = 1, uint32_t <em>z</em> = 1<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm14recordDispatchE8uint32_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Records the dispatch function with the provided template parameters or alternatively using the size of the tensor by default.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code>: Layout X dispatch value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: Layout Y dispatch value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z</span></code>: Layout Z dispatch value </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-algorithm.jpg"><img alt="../_images/kompute-vulkan-architecture-algorithm.jpg" src="../_images/kompute-vulkan-architecture-algorithm.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="opbase">OpBase<a class="headerlink" href="#opbase" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp6OpBaseE">
+<span id="_CPPv3N2kp6OpBaseE"></span><span id="_CPPv2N2kp6OpBaseE"></span><span id="kp::OpBase"></span><span class="target" id="classkp_1_1OpBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpBase</code><a class="headerlink" href="#_CPPv4N2kp6OpBaseE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base Operation which provides the high level interface that Kompute operations implement in order to perform a set of actions in the GPU.</p>
+<p>Operations can perform actions on tensors, and optionally can also own an <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> with respective parameters. kp::Operations with kp::Algorithms would inherit from kp::OpBaseAlgo. </p>
+<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</span></a>, <a class="reference internal" href="#classkp_1_1OpCreateTensor"><span class="std std-ref">kp::OpCreateTensor</span></a>, <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBase6OpBaseEv">
+<span id="_CPPv3N2kp6OpBase6OpBaseEv"></span><span id="_CPPv2N2kp6OpBase6OpBaseEv"></span><span id="kp::OpBase::OpBase"></span><span class="target" id="classkp_1_1OpBase_1ad0b568269057a48cf5c71c5616bba750"></span><code class="sig-name descname">OpBase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6OpBase6OpBaseEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor, should not be used unless explicitly intended. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBase6OpBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb">
+<span id="_CPPv3N2kp6OpBase6OpBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb"></span><span id="_CPPv2N2kp6OpBase6OpBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb"></span><span id="kp::OpBase::OpBase__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::R.b"></span><span class="target" id="classkp_1_1OpBase_1ab84b915d9e0627590c34a1f83dad0a9e"></span><code class="sig-name descname">OpBase</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, bool <em>freeTensors</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6OpBase6OpBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with parameters that provides the bare minimum requirements for the operations to be able to create and manage their sub-components.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that are to be used in this operation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freeTensors</span></code>: Whether operation manages the memory of the Tensors </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBaseD0Ev">
+<span id="_CPPv3N2kp6OpBaseD0Ev"></span><span id="_CPPv2N2kp6OpBaseD0Ev"></span><span id="kp::OpBase::~OpBase"></span><span class="target" id="classkp_1_1OpBase_1aab3aa15a2a7f6482461a1ff9de3b47af"></span><code class="sig-name descname">~OpBase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6OpBaseD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor for <a class="reference internal" href="#classkp_1_1OpBase"><span class="std std-ref">OpBase</span></a> class. This <a class="reference internal" href="#classkp_1_1OpBase"><span class="std std-ref">OpBase</span></a> destructor class should always be called to destroy and free owned resources unless it is intended to destroy the resources in the parent class. This can be done by passing the mFreeTensors=false. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBase4initEv">
+<span id="_CPPv3N2kp6OpBase4initEv"></span><span id="_CPPv2N2kp6OpBase4initEv"></span><span id="kp::OpBase::init"></span><span class="target" id="classkp_1_1OpBase_1af1fb6bd20031f0a70b5ef881f88de721"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N2kp6OpBase4initEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>The init function is responsible for setting up all the resources and should be called after the Operation has been created. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBase6recordEv">
+<span id="_CPPv3N2kp6OpBase6recordEv"></span><span id="_CPPv2N2kp6OpBase6recordEv"></span><span id="kp::OpBase::record"></span><span class="target" id="classkp_1_1OpBase_1a242dbf4582c0b3b1d1a1f2a2207833ef"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N2kp6OpBase6recordEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>The record function is intended to only send a record command or run commands that are expected to record operations that are to be submitted as a batch into the GPU. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBase10postSubmitEv">
+<span id="_CPPv3N2kp6OpBase10postSubmitEv"></span><span id="_CPPv2N2kp6OpBase10postSubmitEv"></span><span id="kp::OpBase::postSubmit"></span><span class="target" id="classkp_1_1OpBase_1a38e7e80ccfd7f6d1f6ccc408610bda13"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N2kp6OpBase10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Post submit is called after the <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a> has submitted the commands to the GPU for processing, and can be used to perform any tear-down steps required as the computation iteration finishes. </p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-operations.jpg"><img alt="../_images/kompute-vulkan-architecture-operations.jpg" src="../_images/kompute-vulkan-architecture-operations.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="opalgobase">OpAlgoBase<a class="headerlink" href="#opalgobase" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE">
+<span id="_CPPv3I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE"></span><span id="_CPPv2I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE"></span>template&lt;uint32_t <code class="sig-name descname">tX</code> = 0, uint32_t <code class="sig-name descname">tY</code> = 0, uint32_t <code class="sig-name descname">tZ</code> = 0&gt;<br/><span class="target" id="classkp_1_1OpAlgoBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpAlgoBase</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that provides a general abstraction that simplifies the use of algorithm and parameter components which can be used with shaders. By default it enables the user to provide a dynamic number of tensors which are then passed as inputs.</p>
+<p>All of these tensors are expected to be initlaised and this is checked with throw std exception in the init function.</p>
+<p>It is possible to also choose if the user requires all of the tensors to be copied from device memory to their host data. This can be disabled by either passing the copyOutputData constructor parameter and/or by overriding the functions to carry out copy commands accordingly.</p>
+<p>See OpLhsRhsOut for an example implementation on a more specific granularity on tensor parameters.</p>
+<p>The template parameters specify the processing GPU layout number of iterations for each x, y, z parameter. More specifically, this will be the input to “.dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)” </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase10OpAlgoBaseEv">
+<span id="_CPPv3N2kp10OpAlgoBase10OpAlgoBaseEv"></span><span id="_CPPv2N2kp10OpAlgoBase10OpAlgoBaseEv"></span><span id="kp::OpAlgoBase::OpAlgoBase"></span><span class="target" id="classkp_1_1OpAlgoBase_1a2850b4021ce69814483aa5b2654ff9a9"></span><code class="sig-name descname">OpAlgoBase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase10OpAlgoBaseEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor, should not be used unless explicitly intended. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb">
+<span id="_CPPv3N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb"></span><span id="_CPPv2N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb"></span><span id="kp::OpAlgoBase::OpAlgoBase__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::R.b"></span><span class="target" id="classkp_1_1OpAlgoBase_1a7e7a49cb3bd4d06bd744d0c37e9a3362"></span><code class="sig-name descname">OpAlgoBase</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, bool <em>copyOutputData</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with parameters that provides the bare minimum requirements for the operations to be able to create and manage their sub-components.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that are to be used in this operation </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBaseD0Ev">
+<span id="_CPPv3N2kp10OpAlgoBaseD0Ev"></span><span id="_CPPv2N2kp10OpAlgoBaseD0Ev"></span><span id="kp::OpAlgoBase::~OpAlgoBase"></span><span class="target" id="classkp_1_1OpAlgoBase_1a97b9338bfea210a42fc9763054940bb0"></span><code class="sig-name descname">~OpAlgoBase</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBaseD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor, which is in charge of destroying the algorithm components but does not destroy the underlying tensors </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase4initEv">
+<span id="_CPPv3N2kp10OpAlgoBase4initEv"></span><span id="_CPPv2N2kp10OpAlgoBase4initEv"></span><span id="kp::OpAlgoBase::init"></span><span class="target" id="classkp_1_1OpAlgoBase_1aaa9a149f16950072fa2058b5c2cc7309"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase4initEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>The init function is responsible for the initialisation of the algorithm component based on the parameters specified, and allows for extensibility on the options provided. Further dependent classes can perform more specific checks such as ensuring tensors provided are initialised, etc. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase6recordEv">
+<span id="_CPPv3N2kp10OpAlgoBase6recordEv"></span><span id="_CPPv2N2kp10OpAlgoBase6recordEv"></span><span id="kp::OpAlgoBase::record"></span><span class="target" id="classkp_1_1OpAlgoBase_1a09f543be8d6a630fd789d08d62faa57d"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase6recordEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>This records the commands that are to be sent to the GPU. This includes the barriers that ensure the memory has been copied before going in and out of the shader, as well as the dispatch operation that sends the shader processing to the gpu. This function also records the GPU memory copy of the output data for the staging bufffer so it can be read by the host. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase10postSubmitEv">
+<span id="_CPPv3N2kp10OpAlgoBase10postSubmitEv"></span><span id="_CPPv2N2kp10OpAlgoBase10postSubmitEv"></span><span id="kp::OpAlgoBase::postSubmit"></span><span class="target" id="classkp_1_1OpAlgoBase_1a2c90552db4b85ff0b503568ad98786d1"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Executes after the recorded commands are submitted, and performs a copy of the GPU Device memory into the staging buffer so the output data can be retrieved. </p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="opmult">OpMult<a class="headerlink" href="#opmult" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE">
+<span id="_CPPv3I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE"></span><span id="_CPPv2I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE"></span>template&lt;uint32_t <code class="sig-name descname">tX</code> = 0, uint32_t <code class="sig-name descname">tY</code> = 0, uint32_t <code class="sig-name descname">tZ</code> = 0&gt;<br/><span class="target" id="classkp_1_1OpMult"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpMult</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE" title="kp::OpAlgoBase">OpAlgoBase</a>&lt;0, 0, 0&gt;<a class="headerlink" href="#_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that performs multiplication on two tensors and outpus on third tensor. The template parameters specify the processing GPU layout number of iterations for each x, y, z parameter. More specifically, this will be the input to “.dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)” </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpMult6OpMultEv">
+<span id="_CPPv3N2kp6OpMult6OpMultEv"></span><span id="_CPPv2N2kp6OpMult6OpMultEv"></span><span id="kp::OpMult::OpMult"></span><span class="target" id="classkp_1_1OpMult_1a515bc68245dcb76d266237280046d965"></span><code class="sig-name descname">OpMult</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6OpMult6OpMultEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Base constructor, should not be used unless explicitly intended. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpMult6OpMultENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE">
+<span id="_CPPv3N2kp6OpMult6OpMultENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="_CPPv2N2kp6OpMult6OpMultENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="kp::OpMult::OpMult__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::"></span><span class="target" id="classkp_1_1OpMult_1aa08d346a261039b2b29478ee8fc47a96"></span><code class="sig-name descname">OpMult</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6OpMult6OpMultENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with parameters that provides the bare minimum requirements for the operations to be able to create and manage their sub-components.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that are to be used in this operation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freeTensors</span></code>: Whether operation manages the memory of the Tensors </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpMultD0Ev">
+<span id="_CPPv3N2kp6OpMultD0Ev"></span><span id="_CPPv2N2kp6OpMultD0Ev"></span><span id="kp::OpMult::~OpMult"></span><span class="target" id="classkp_1_1OpMult_1af4a03dea029f0aae6ef4c50f0aa91dc0"></span><code class="sig-name descname">~OpMult</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp6OpMultD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor, which is in charge of destroying the algorithm components but does not destroy the underlying tensors </p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
+
+
+<h2 id="opcreatetensor">OpCreateTensor<a class="headerlink" href="#opcreatetensor" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp14OpCreateTensorE">
+<span id="_CPPv3N2kp14OpCreateTensorE"></span><span id="_CPPv2N2kp14OpCreateTensorE"></span><span id="kp::OpCreateTensor"></span><span class="target" id="classkp_1_1OpCreateTensor"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpCreateTensor</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp14OpCreateTensorE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that creates tensor and manages the memory of the components created </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpCreateTensor14OpCreateTensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE">
+<span id="_CPPv3N2kp14OpCreateTensor14OpCreateTensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="_CPPv2N2kp14OpCreateTensor14OpCreateTensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="kp::OpCreateTensor::OpCreateTensor__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::"></span><span class="target" id="classkp_1_1OpCreateTensor_1a1b4c0323a99f49de2805446f881b9604"></span><code class="sig-name descname">OpCreateTensor</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp14OpCreateTensor14OpCreateTensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with parameters that provides the bare minimum requirements for the operations to be able to create and manage their sub-components.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that will be used to create in operation. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freeTensors</span></code>: Whether operation manages the memory of the Tensors </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpCreateTensorD0Ev">
+<span id="_CPPv3N2kp14OpCreateTensorD0Ev"></span><span id="_CPPv2N2kp14OpCreateTensorD0Ev"></span><span id="kp::OpCreateTensor::~OpCreateTensor"></span><span class="target" id="classkp_1_1OpCreateTensor_1a6967f68a56a0d256827d4e625124a106"></span><code class="sig-name descname">~OpCreateTensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpCreateTensorD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor which in this case expects the parent class to free the tensors </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpCreateTensor4initEv">
+<span id="_CPPv3N2kp14OpCreateTensor4initEv"></span><span id="_CPPv2N2kp14OpCreateTensor4initEv"></span><span id="kp::OpCreateTensor::init"></span><span class="target" id="classkp_1_1OpCreateTensor_1ad0961c7a2acec064f0253964616d0762"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpCreateTensor4initEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>In charge of initialising the primary <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> as well as the staging tensor as required. It will only initialise a staging tensor if the Primary tensor is of type Device. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpCreateTensor6recordEv">
+<span id="_CPPv3N2kp14OpCreateTensor6recordEv"></span><span id="_CPPv2N2kp14OpCreateTensor6recordEv"></span><span id="kp::OpCreateTensor::record"></span><span class="target" id="classkp_1_1OpCreateTensor_1a42f0876e55b1f5e74fb34504d4cd6b5b"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpCreateTensor6recordEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Records the copy command into the GPU memory from the staging or host memory depending on the type of tensor. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpCreateTensor10postSubmitEv">
+<span id="_CPPv3N2kp14OpCreateTensor10postSubmitEv"></span><span id="_CPPv2N2kp14OpCreateTensor10postSubmitEv"></span><span id="kp::OpCreateTensor::postSubmit"></span><span class="target" id="classkp_1_1OpCreateTensor_1a43ef24dc63dc05abc8cee693f95d5b6a"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpCreateTensor10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Performs a copy back into the main tensor to ensure that the data contained is the one that is now being stored in the GPU. </p>
+</dd></dl>
+</div>
+</dd></dl>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opcreatetensor.jpg"><img alt="../_images/kompute-vulkan-architecture-opcreatetensor.jpg" src="../_images/kompute-vulkan-architecture-opcreatetensor.jpg" style="width: 100%;"/></a>
+
+
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="../index.html" title="Kompute Docs Home"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Kompute Docs Home </span>
+              </div>
+            </a>
+          
+          
+            <a href="memory-management.html" title="Memory Management Principles"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Memory Management Principles </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2020, Alejandro Saucedo.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
