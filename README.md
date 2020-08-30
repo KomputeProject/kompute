@@ -176,7 +176,7 @@ Simplified Kompute Components
 <br>
 <br>
 
-<img width="100%" src="https://www.memesmonkey.com/images/memesmonkey/a2/a29e06384bf8981e7ae66d5150383f6e.jpeg">
+<img width="100%" src="raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/suspicious.jfif">
 
 </td>
 <td>
