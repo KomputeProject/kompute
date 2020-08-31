@@ -58,48 +58,77 @@ int main() {
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
     auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 0, 0 }));
 
-    auto params = std::vector<kp::Tensor>({ tensorLhs, tensorRhs, tensorOut })
-
     // Create tensor data in GPU
-    mgr.evalOp<kp::OpCreateTensor>(params);
+    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorLhs, tensorRhs, tensorOut });
 
     // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOp<kp::OpAlgoShader<3, 1, 1>>(params, "path/to/shader.comp.spv");
+    mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
+        { tensorLhs, tensorRhs, tensorOut }, 
+        true, // Whether to retrieve the output from GPU memory
+        std::vector<char>(shader.begin(), shader.end()));
 
-    // Print the output
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
+    // Prints the output which is { 0, 4, 12 }
 }
 ```
 
-Create your own operations with full control on each of the steps.
+Pass compute shader data (in raw or compiled SPIR-V) format for faster dev cycles.
 
 ```c++
-template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-class OpCustom : public OpAlgoBase<tX, tY, tZ> {
-    // ...
-    OpCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors)
-      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true)
-    {
-        // ... extra steps to perform custom setup
-        this->mOptSpirvBinPath = "shaders/glsl/opmult.comp.spv";
-    }
-}
-
 int main() {
+
     kp::Manager mgr; // Automatically selects Device 0
 
-    // Create parameters but don't initialise if customOp performs multiple
-    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
+    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
-    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 0, 0 }));
 
-    // Pass parameters to custom operation which performs relevant steps
-    mgr.evalOp<kp::OpCustom>({ tensorLHS, tensorRHS, tensorOutput });
+    std::string shader(
+        "#version 450\n"
+        "layout (local_size_x = 1) in;\n"
+        "layout(set = 0, binding = 0) buffer bufa { uint a[]; };\n"
+        "layout(set = 0, binding = 1) buffer bufb { uint b[]; };\n"
+        "void main() {\n"
+        "    uint index = gl_GlobalInvocationID.x;\n"
+        "    b[index] = a[index];\n"
+        "    a[index] = index;\n"
+        "}\n"
+    );
 
-    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
+    // Create tensor data in GPU
+    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
+
+    // Run Kompute operation on the parameters provided with dispatch layout
+    mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
+        { tensorLhs, tensorRhs, tensorOut }, 
+        true, // Whether to retrieve the output from GPU memory
+        "path/to/shader.comp");
+
+    std::cout << fmt::format("A: {}, B: {}", 
+        tensorA.data(), tensorB.data()) << std::endl;
+    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
+}
+```
+
+Pass file path for shader data (in raw or compiled SPIR-V) for faster dev cycles.
+
+```c++
+int main() {
+
+    kp::Manager mgr; // Automatically selects Device 0
+
+    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
+    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
+
+    // Create tensor data in GPU
+    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
+
+    // Run Kompute operation on the parameters provided with dispatch layout
+    mgr.evalOpDefault<kp::OpAlgoBase<3, 1, 1>>(
+        { tensorA, tensorB });
+
+    std::cout << fmt::format("A: {}, B: {}", 
+        tensorA.data(), tensorB.data()) << std::endl;
+    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
 }
 ```
 
@@ -136,6 +165,8 @@ int main() {
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
+
+..and many more - check out the examples section in the documentation for more.
 
 ## Motivations
 
