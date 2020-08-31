@@ -13,7 +13,7 @@ Tensor::Tensor()
     this->mTensorType = TensorTypes::eDevice;
 }
 
-Tensor::Tensor(std::vector<uint32_t> data, TensorTypes tensorType)
+Tensor::Tensor(std::vector<float> data, TensorTypes tensorType)
 {
     SPDLOG_DEBUG(
       "Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
@@ -52,7 +52,7 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->createBuffer();
 }
 
-std::vector<uint32_t>
+std::vector<float>
 Tensor::data()
 {
     return this->mData;
@@ -61,7 +61,7 @@ Tensor::data()
 uint64_t
 Tensor::memorySize()
 {
-    return this->size() * sizeof(uint32_t);
+    return this->size() * sizeof(float);
 }
 
 uint32_t
@@ -89,7 +89,7 @@ Tensor::isInit()
 }
 
 void
-Tensor::setData(const std::vector<uint32_t>& data)
+Tensor::setData(const std::vector<float>& data)
 {
     this->mData = data;
 }

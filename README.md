@@ -54,9 +54,10 @@ int main() {
 
     kp::Manager mgr; // Automatically selects Device 0
 
-    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
-    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
-    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 0, 0 }));
+    // Create 3 tensors of default type float
+    auto tensorLhs = std::make_shared<kp::Tensor<>>(kp::Tensor<>({ 0., 1., 2. }));
+    auto tensorRhs = std::make_shared<kp::Tensor<>>(kp::Tensor<>({ 2., 4., 6. }));
+    auto tensorOut = std::make_shared<kp::Tensor<>>(kp::Tensor<>({ 0., 0., 0. }));
 
     // Create tensor data in GPU
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorLhs, tensorRhs, tensorOut });
@@ -67,8 +68,8 @@ int main() {
         true, // Whether to retrieve the output from GPU memory
         std::vector<char>(shader.begin(), shader.end()));
 
-    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
     // Prints the output which is { 0, 4, 12 }
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
 
@@ -104,9 +105,9 @@ int main() {
         true, // Whether to retrieve the output from GPU memory
         std::vector<char>(shader.begin(), shader.end()));
 
+    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
     std::cout << fmt::format("A: {}, B: {}", 
         tensorA.data(), tensorB.data()) << std::endl;
-    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
 }
 ```
 
@@ -129,9 +130,9 @@ int main() {
         true, // Whether to retrieve the output from GPU memory
         "path/to/shader.comp");
 
+    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
     std::cout << fmt::format("A: {}, B: {}", 
         tensorA.data(), tensorB.data()) << std::endl;
-    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
 }
 ```
 

@@ -4,15 +4,15 @@
 #include "kompute/Kompute.hpp"
 
 TEST_CASE("test_tensor_constructor_data") {
-    std::vector<uint32_t> vec{0,1,2};
+    std::vector<float> vec{0,1,2};
     kp::Tensor tensor(vec);
     REQUIRE( tensor.size() == vec.size() );
     REQUIRE( tensor.data() == vec );
 }
 
 TEST_CASE("test_tensor_copy_from_other_tensor_host_data") {
-    std::vector<uint32_t> vecA{0,1,2};
-    std::vector<uint32_t> vecB{0,0,0};
+    std::vector<float> vecA{0,1,2};
+    std::vector<float> vecB{0,0,0};
 
     std::shared_ptr<kp::Tensor> tensorA = std::make_shared<kp::Tensor>(
             vecA,

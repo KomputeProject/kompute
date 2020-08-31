@@ -38,7 +38,7 @@ TEST_CASE("End to end OpMult Flow should execute correctly from manager") {
         spdlog::info("OpMult call success");
         spdlog::info("Tensor output: {}", tensorOutput->data());
 
-        REQUIRE(tensorOutput->data() == std::vector<uint32_t>{0, 4, 12});
+        REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
     }
 
     spdlog::info("Called manager eval success END PROGRAM");
@@ -88,7 +88,7 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
     spdlog::info("OpMult call success");
     spdlog::info("Tensor output: {}", tensorOutput->data());
 
-    REQUIRE(tensorOutput->data() == std::vector<uint32_t>{0, 4, 12});
+    REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
 
     spdlog::info("Called manager eval success END PROGRAM");
 }
@@ -159,7 +159,7 @@ TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tenso
     spdlog::info("OpMult call success");
     spdlog::info("Tensor output: {}", tensorOutput->data());
 
-    REQUIRE(tensorOutput->data() == std::vector<uint32_t>{0, 4, 12});
+    REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
 
     spdlog::info("Called manager eval success END PROGRAM");
 }
