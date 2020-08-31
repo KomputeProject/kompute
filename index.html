@@ -297,9 +297,10 @@
 
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
 
-    <span class="k">auto</span> <span class="n">tensorLhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">}));</span>
+    <span class="c1">// Create 3 tensors of default type float</span>
+    <span class="k">auto</span> <span class="n">tensorLhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">}));</span>
+    <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span> <span class="p">}));</span>
+    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
 
     <span class="c1">// Create tensor data in GPU</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
@@ -310,8 +311,8 @@
         <span class="nb">true</span><span class="p">,</span> <span class="c1">// Whether to retrieve the output from GPU memory</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
     <span class="c1">// Prints the output which is { 0, 4, 12 }</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -345,9 +346,9 @@
         <span class="nb">true</span><span class="p">,</span> <span class="c1">// Whether to retrieve the output from GPU memory</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
+    <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
         <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -368,9 +369,9 @@
         <span class="nb">true</span><span class="p">,</span> <span class="c1">// Whether to retrieve the output from GPU memory</span>
         <span class="s">"path/to/shader.comp"</span><span class="p">);</span>
 
+    <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
         <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
 <span class="p">}</span>
 </pre></div>
 </div>
