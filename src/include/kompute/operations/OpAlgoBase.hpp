@@ -57,9 +57,44 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool copyOutputData = false,
-           std::string shaderFilePath = "",
-           const std::vector<char>& shaderDataRaw = {});
+           bool copyOutputData);
+
+    /**
+     * Constructor that enables a file to be passed to the operation with
+     * the contents of the shader. This can be either in raw format or in
+     * compiled SPIR-V binary format.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param copyOutputData Whether to map device data for all output tensors back to their host data vectors
+     * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
+     */
+    OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors,
+           bool copyOutputData,
+           std::string shaderFilePath);
+
+    /**
+     * Constructor that enables raw shader data to be passed to the main operation
+     * which can be either in raw shader glsl code or in compiled SPIR-V binary.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that are to be used in this operation
+     * @param copyOutputData Whether to map device data for all output tensors back to their host data vectors
+     * @param shaderDataRaw Optional parameter to specify the shader data either in binary or raw form
+     */
+    OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>>& tensors,
+           bool copyOutputData,
+           const std::vector<char>& shaderDataRaw);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -132,12 +167,10 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
                            std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool copyOutputData,
-                           std::string shaderFilePath,
-                           const std::vector<char>& shaderDataRaw)
+                           bool copyOutputData)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} copyOutputData: {}, shaderFilePath: {}", tensors.size(), copyOutputData, shaderFilePath);
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} copyOutputData: {}, shaderFilePath: {}", tensors.size(), copyOutputData);
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -159,11 +192,37 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                  this->mY,
                  this->mZ);
 
-    this->mShaderFilePath = shaderFilePath;
     this->mCopyOutputData = copyOutputData;
-    this->mShaderDataRaw = shaderDataRaw;
 
     this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                           std::shared_ptr<vk::Device> device,
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                           std::vector<std::shared_ptr<Tensor>>& tensors,
+                           bool copyOutputData,
+                           std::string shaderFilePath)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, copyOutputData)
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}", shaderFilePath);
+
+    this->mShaderFilePath = shaderFilePath;
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                           std::shared_ptr<vk::Device> device,
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                           std::vector<std::shared_ptr<Tensor>>& tensors,
+                           bool copyOutputData,
+                           const std::vector<char>& shaderDataRaw)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, copyOutputData)
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shader raw data length: {}", shaderDataRaw.size());
+
+    this->mShaderDataRaw = shaderDataRaw;
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>

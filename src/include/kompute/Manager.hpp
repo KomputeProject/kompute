@@ -95,6 +95,23 @@ class Manager
         SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
+    /**
+     * Operation that adds extra operations to existing or new created
+     * sequences.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     * @param TArgs Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
+                TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
+        this->evalOp<T>(tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;

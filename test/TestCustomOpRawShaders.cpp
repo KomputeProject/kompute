@@ -10,7 +10,7 @@ TEST_CASE("op_custom_simple_raw_shader") {
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 })};
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 })};
-    mgr.evalOp<kp::OpCreateTensor>({ tensorA, tensorB });
+    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
 
     std::string shader(
         "#version 450\n"
@@ -24,11 +24,9 @@ TEST_CASE("op_custom_simple_raw_shader") {
         "}\n"
     );
 
-    mgr.evalOp<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase<>>(
             { tensorA, tensorB }, 
-            "DEFAULT",
-            true,
-            "",
+            true, // Whether to copy output from device
             std::vector<char>(shader.begin(), shader.end()));
 
     REQUIRE(tensorA->data() == std::vector<uint32_t>{0, 1, 2});
