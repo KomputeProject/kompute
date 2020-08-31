@@ -78,7 +78,7 @@ Pass compute shader data (in raw or compiled SPIR-V) format for faster dev cycle
 ```c++
 int main() {
 
-    kp::Manager mgr; // Automatically selects Device 0
+    kp::Manager mgr(1); // Explicitly selecting device 1
 
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));

@@ -97,7 +97,6 @@ Algorithm::init(const std::vector<char>& shaderFileData,
 
     std::vector<uint32_t> sizes;
     for (std::shared_ptr<Tensor> tensor : tensorParams) {
-        SPDLOG_WARN("size: {}", tensor->size());
         sizes.push_back(tensor->size());
     }
     this->createPipeline(sizes);
