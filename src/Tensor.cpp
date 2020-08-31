@@ -85,7 +85,7 @@ Tensor::tensorType()
 bool
 Tensor::isInit()
 {
-    return this->mIsInit;
+    return this->mIsInit && this->mBuffer && this->mMemory;
 }
 
 void
@@ -352,6 +352,7 @@ Tensor::freeMemoryDestroyGPUResources()
         } else {
             SPDLOG_DEBUG("Kompose Tensor destroying buffer");
             this->mDevice->destroy(*this->mBuffer);
+            this->mBuffer = nullptr;
         }
     }
 
@@ -362,6 +363,7 @@ Tensor::freeMemoryDestroyGPUResources()
         } else {
             SPDLOG_DEBUG("Kompose Tensor freeing memory");
             this->mDevice->freeMemory(*this->mMemory);
+            this->mDevice = nullptr;
         }
     }
 
