@@ -55,9 +55,9 @@ int main() {
     kp::Manager mgr; // Automatically selects Device 0
 
     // Create 3 tensors of default type float
-    auto tensorLhs = std::make_shared<kp::Tensor<>>(kp::Tensor<>({ 0., 1., 2. }));
-    auto tensorRhs = std::make_shared<kp::Tensor<>>(kp::Tensor<>({ 2., 4., 6. }));
-    auto tensorOut = std::make_shared<kp::Tensor<>>(kp::Tensor<>({ 0., 0., 0. }));
+    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
+    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
+    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
     // Create tensor data in GPU
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorLhs, tensorRhs, tensorOut });
