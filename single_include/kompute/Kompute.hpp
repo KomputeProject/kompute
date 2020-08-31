@@ -1332,7 +1332,7 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
 #ifndef RELEASE
-        this->mOptSpirvBinPath = "shaders/glsl/opmult.comp.spv";
+        this->mOptSpirvBinPath = "shaders/glsl/opmult.comp";
 #endif
     }
 
