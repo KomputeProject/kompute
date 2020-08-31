@@ -50,12 +50,16 @@ class OpAlgoBase : public OpBase
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
+     * @param copyOutputData Whether to map device data for all output tensors back to their host data vectors
+     * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
      */
     OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool copyOutputData);
+           bool copyOutputData = false,
+           std::string shaderFilePath = "",
+           const std::vector<char>& shaderDataRaw = {});
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -103,7 +107,8 @@ class OpAlgoBase : public OpBase
     uint32_t mY;
     uint32_t mZ;
 
-    std::string mOptSpirvBinPath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
+    std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
+    std::vector<char> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
 
     virtual std::vector<char> fetchSpirvBinaryData();
 };
@@ -127,12 +132,12 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
                            std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool copyOutputData)
+                           bool copyOutputData,
+                           std::string shaderFilePath,
+                           const std::vector<char>& shaderDataRaw)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params");
-
-    SPDLOG_DEBUG("Kompute OpAlgoBase configured for copy output data: {}", copyOutputData);
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} copyOutputData: {}, shaderFilePath: {}", tensors.size(), copyOutputData, shaderFilePath);
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -154,7 +159,9 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                  this->mY,
                  this->mZ);
 
+    this->mShaderFilePath = shaderFilePath;
     this->mCopyOutputData = copyOutputData;
+    this->mShaderDataRaw = shaderDataRaw;
 
     this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
@@ -266,24 +273,32 @@ std::vector<char> OpAlgoBase<tX, tY, tZ>::fetchSpirvBinaryData()
     SPDLOG_WARN(
       "Kompute OpAlgoBase Running shaders directly from spirv file");
 
-    std::ifstream fileStream(this->mOptSpirvBinPath,
-                             std::ios::binary | std::ios::in | std::ios::ate);
+    if (this->mShaderFilePath.size()) {
+        std::ifstream fileStream(this->mShaderFilePath,
+                                 std::ios::binary | std::ios::in | std::ios::ate);
 
-    if (!fileStream.good()) {
-        throw std::runtime_error("Error reading file: " + this->mOptSpirvBinPath);
+        if (!fileStream.good()) {
+            throw std::runtime_error("Error reading file: " + this->mShaderFilePath);
+        }
+
+        size_t shaderFileSize = fileStream.tellg();
+        fileStream.seekg(0, std::ios::beg);
+        char* shaderDataRaw = new char[shaderFileSize];
+        fileStream.read(shaderDataRaw, shaderFileSize);
+        fileStream.close();
+
+        SPDLOG_WARN(
+          "Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
+
+        return std::vector<char>(shaderDataRaw,
+                                 shaderDataRaw + shaderFileSize);
     }
-
-    size_t shaderFileSize = fileStream.tellg();
-    fileStream.seekg(0, std::ios::beg);
-    char* shaderDataRaw = new char[shaderFileSize];
-    fileStream.read(shaderDataRaw, shaderFileSize);
-    fileStream.close();
-
-    SPDLOG_WARN(
-      "Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
-
-    return std::vector<char>(shaderDataRaw,
-                             shaderDataRaw + shaderFileSize);
+    else if (this->mShaderDataRaw.size()) {
+        return this->mShaderDataRaw;
+    }
+    else {
+        throw std::runtime_error("Kompute OpAlgoBase Error reached fetchSpirvBinaryData but neither filepath nor data provided");
+    }
 }
 
 }

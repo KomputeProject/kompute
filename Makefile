@@ -10,6 +10,9 @@
 VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
+# Regext to pass to catch2 to filter tests
+FILTER_TESTS ?= "*"
+
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
 	SCMP_BIN="C:\\VulkanSDK\\1.2.141.2\\Bin32\\glslangValidator.exe"
@@ -62,7 +65,7 @@ mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 mk_run_tests: mk_build_tests
-	./build/test/test_kompute
+	./build/test/test_kompute $(FILTER_TESTS)
 
 
 ####### Visual studio build shortcut commands #######
@@ -91,7 +94,7 @@ vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 vs_run_tests: vs_build_tests
-	./build/test/Debug/test_kompute.exe
+	./build/test/Debug/test_kompute.exe $(FILTER_TESTS)
 
 ####### Create release ######
 
