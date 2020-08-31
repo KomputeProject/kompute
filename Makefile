@@ -120,6 +120,11 @@ build_shaders:
 		--shader-binary $(SCMP_BIN) \
 		--header-path src/include/kompute/shaders/ \
 		-v
+	python3 scripts/convert_shaders.py \
+		--shader-path test/shaders/glsl \
+		--shader-binary $(SCMP_BIN) \
+		--header-path test/compiled_shaders_include/kompute_test/shaders/ \
+		-v
 
 docker_seldon_run:
 	docker run \

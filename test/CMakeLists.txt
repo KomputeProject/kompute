@@ -10,6 +10,7 @@ add_executable(test_kompute ${test_kompute_CPP})
 target_include_directories(
     test_kompute PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compiled_shaders_include>
 )
 
 target_link_libraries(test_kompute PRIVATE Catch2::Catch2)

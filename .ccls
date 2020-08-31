@@ -16,4 +16,5 @@
 -I/c/Users/axsau/Programming/lib/vcpkg/installed/x64-linux/include/
 -I./src/include/
 -I./single_include/
+-I./test/compiled_shaders_include/
 
