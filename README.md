@@ -34,7 +34,7 @@
 * Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components
 * Extends the existing Vulkan API with a compute-specific interface
 * BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design
-* Directed acyclic memory management and relationships of ownership
+* Directed acyclic memory management and explicits relationships of ownership
 
 ## Getting Started
 
@@ -42,7 +42,7 @@
 
 Kompute is provided as a single header file [`Kompute.hpp`](single_include/kompute/Kompute.hpp) that can be simply included in your code and integrated with the shared library.
 
-This project is built using cmake so you are able to include it in your project to build from source as a static library.
+This project is built using cmake providing a simple way to integrate as static or shared library.
 
 
 ### Your first Kompute
@@ -82,6 +82,7 @@ int main() {
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
 
+    // Define your shader as a string, or directly pass the compiled bytes
     std::string shader(
         "#version 450\n"
         "layout (local_size_x = 1) in;\n"
@@ -101,7 +102,7 @@ int main() {
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
         { tensorLhs, tensorRhs, tensorOut }, 
         true, // Whether to retrieve the output from GPU memory
-        "path/to/shader.comp");
+        std::vector<char>(shader.begin(), shader.end()));
 
     std::cout << fmt::format("A: {}, B: {}", 
         tensorA.data(), tensorB.data()) << std::endl;
@@ -123,8 +124,10 @@ int main() {
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
 
     // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOpDefault<kp::OpAlgoBase<3, 1, 1>>(
-        { tensorA, tensorB });
+    mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
+        { tensorLhs, tensorRhs, tensorOut }, 
+        true, // Whether to retrieve the output from GPU memory
+        "path/to/shader.comp");
 
     std::cout << fmt::format("A: {}, B: {}", 
         tensorA.data(), tensorB.data()) << std::endl;
