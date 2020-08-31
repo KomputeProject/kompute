@@ -33,20 +33,26 @@ TEST_CASE("test_logistic_regression") {
         kp::Manager mgr;
 
         if (std::shared_ptr<kp::Sequence> sq = 
-                mgr.getOrCreateManagedSequence("testSq").lock()) {
+                mgr.getOrCreateManagedSequence("createTensors").lock()) {
+
             sq->begin();
 
             sq->record<kp::OpCreateTensor>(params);
 
-            sq->record<kp::OpAlgoBase<>>(
-                    params, 
-                    true, // Whether to copy output from device
-                    "test/shaders/glsl/test_logistic_regression.comp");
-
             sq->end();
+            sq->eval();
 
             // Iterate across all expected iterations
             for (size_t i = 0; i < ITERATIONS; i++) {
+                sq->begin();
+
+                sq->record<kp::OpAlgoBase<>>(
+                        params, 
+                        true, // Whether to copy output from device
+                        "test/shaders/glsl/test_logistic_regression.comp");
+
+                sq->end();
+
                 sq->eval();
 
                 // TODO: Reference of data instead of full value copy every time
@@ -75,4 +81,7 @@ TEST_CASE("test_logistic_regression") {
     REQUIRE(wIn->data()[0] < 0.01);
     REQUIRE(wIn->data()[1] > 1.0);
     REQUIRE(bIn->data()[0] < 0.0);
+
+    SPDLOG_DEBUG("Result wIn: {}, bIn: {}", 
+            wIn->data(), bIn->data());
 }

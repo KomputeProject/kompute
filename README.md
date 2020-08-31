@@ -170,7 +170,11 @@ int main() {
 }
 ```
 
-..and many more - check out the examples section in the documentation for more.
+## Advanced Examples
+
+We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.
+
+You can find these in the advanced examples documentation section, such as the [logistic regression example](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html).
 
 ## Motivations
 
