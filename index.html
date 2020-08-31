@@ -56,7 +56,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Reference" href="overview/reference.html" />
+    <link rel="next" title="Advanced Examples" href="overview/advanced-examples.html" />
   
    
 
@@ -208,6 +208,13 @@
     <li class="md-nav__item">
     
     
+      <a href="overview/advanced-examples.html" class="md-nav__link">Advanced Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="overview/reference.html" class="md-nav__link">Class Reference</a>
       
     
@@ -319,7 +326,7 @@
 <p>Pass compute shader data (in raw or compiled SPIR-V) format for faster dev cycles.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Explicitly selecting device 1</span>
 
     <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">}));</span>
     <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span> <span class="p">}));</span>
@@ -407,8 +414,12 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>..and many more - check out the examples section in the documentation for more.</p>
 
+
+
+<h2 id="advanced-examples">Advanced Examples<a class="headerlink" href="#advanced-examples" title="Permalink to this headline">¶</a></h2>
+<p>We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.</p>
+<p>You can find these in the advanced examples documentation section, such as the <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html">logistic regression example</a>.</p>
 
 
 <h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
@@ -505,6 +516,7 @@ Simplified Kompute Components
 <h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">Advanced Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/reference.html">Class Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">Memory management principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Code Index</a></li>
@@ -524,12 +536,12 @@ Simplified Kompute Components
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="overview/reference.html" title="Reference"
+            <a href="overview/advanced-examples.html" title="Advanced Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Reference </span>
+                class="md-footer-nav__direction"> Next </span> Advanced Examples </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
