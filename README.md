@@ -22,7 +22,7 @@
 </tr>
 </table>
 
-<h4>Blazing fast, lightweight, easy to set up and optimized for advanced data processing usecases.</h4>
+<h4>Blazing fast, lightweight, easy to set up and optimized for advanced GPU processing usecases.</h4>
 
 🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Import to your project](https://axsaucedo.github.io/vulkan-kompute/) ⌨ [Tutorials](https://axsaucedo.github.io/vulkan-kompute/) 💾
 
@@ -31,10 +31,11 @@
 
 * [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
 * [Documentation](https://axsaucedo.github.io/vulkan-kompute/) leveraging doxygen and sphinx 
-* Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components
-* Extends the existing Vulkan API with a compute-specific interface
-* BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design
-* Directed acyclic memory management and explicits relationships of ownership
+* BYOV: Bring-your-own-Vulkan design to play nice with existing Vulkan applications
+* Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components
+* Fast development cycles with shader tooling, but robust static shader binary bundles for prod
+* Explicit relationships for GPU and host memory ownership and memory management
+* Providing [simple usecases]() as well as [advanced machine learning & data processing](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html) examples
 
 ## Getting Started
 
