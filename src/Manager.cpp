@@ -29,7 +29,7 @@ Manager::Manager()
 Manager::Manager(uint32_t physicalDeviceIndex)
 {
     this->mPhysicalDeviceIndex = physicalDeviceIndex;
-    // TODO: Moving this into a separate init
+
     this->createInstance();
     this->createDevice();
 }

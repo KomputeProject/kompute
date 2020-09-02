@@ -68,9 +68,18 @@ class Tensor
      * important to ensure that there is no out-of-sync data with the GPU
      * memory.
      *
-     * @return Vector of elements representing the data in the tensor.
+     * @return Reference to vector of elements representing the data in the tensor.
      */
-    std::vector<float> data();
+    std::vector<float>& data();
+    /**
+     * Overrides the subscript operator to expose the underlying data's
+     * subscript operator which in this case would be its underlying
+     * vector's.
+     *
+     * @param i The index where the element will be returned from.
+     * @return Returns the element in the position requested.
+     */
+    float& operator[] (int index);
     /**
      * Returns the size/magnitude of the Tensor, which will be the total number
      * of elements across all dimensions

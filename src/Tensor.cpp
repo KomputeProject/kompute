@@ -52,10 +52,16 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->createBuffer();
 }
 
-std::vector<float>
+std::vector<float>&
 Tensor::data()
 {
     return this->mData;
+}
+
+float&
+Tensor::operator[] (int index)
+{
+    return this->mData[index];
 }
 
 uint64_t
@@ -105,14 +111,11 @@ Tensor::recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
           "Kompute Tensor attempted to run createBuffer without init");
     }
 
-    // TODO: Allow for dst and src offsets to be configured
-    // TODO: Test and ensure sizes for tensors are compatible
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
 
     SPDLOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
-    // TODO: Ensure command buffer is in same device from buffer
     this->mCommandBuffer->copyBuffer(
       *copyFromTensor->mBuffer, *this->mBuffer, copyRegion);
 
@@ -151,7 +154,6 @@ Tensor::recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask,
                                           nullptr);
 }
 
-// TODO: Explore if this function should be here or expose buffer
 vk::DescriptorBufferInfo
 Tensor::constructDescriptorBufferInfo()
 {
@@ -188,8 +190,6 @@ Tensor::mapDataIntoHostMemory()
 
     SPDLOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
 
-    // TODO: Verify if there are situations where we want to copy to device
-    // memory
     if (this->mTensorType != TensorTypes::eStaging) {
         spdlog::error(
           "Mapping tensor data manually to DEVICE memory instead of "
@@ -199,14 +199,9 @@ Tensor::mapDataIntoHostMemory()
 
     vk::DeviceSize bufferSize = this->memorySize();
 
-    // TODO: Verify if flushed memory ranges should happend in sequence
     void* mapped = this->mDevice->mapMemory(
       *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
     memcpy(mapped, this->mData.data(), bufferSize);
-    this->mDevice->unmapMemory(*this->mMemory);
-
-    mapped = this->mDevice->mapMemory(
-      *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
     vk::MappedMemoryRange mappedRange(*this->mMemory, 0, bufferSize);
     this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
     this->mDevice->unmapMemory(*this->mMemory);

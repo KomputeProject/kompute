@@ -136,7 +136,6 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::init()
     this->mTensorOutput = this->mTensors[2];
 
 
-    // TODO: Explore adding a validate function
     if (!(this->mTensorLHS->isInit() && this->mTensorRHS->isInit() &&
           this->mTensorOutput->isInit())) {
         throw std::runtime_error(
@@ -146,8 +145,6 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::init()
           " Output: " + std::to_string(this->mTensorOutput->isInit()));
     }
 
-    // TODO: Explore use-cases where tensors shouldn't be the same size, and how
-    // to deal with those situations
     if (!(this->mTensorLHS->size() == this->mTensorRHS->size() &&
           this->mTensorRHS->size() == this->mTensorOutput->size())) {
         throw std::runtime_error(

@@ -181,8 +181,6 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
         this->mY = tY > 0 ? tY : 1;
         this->mZ = tZ > 0 ? tZ : 1;
     } else {
-        // TODO: If tensor empty vector exception would be thrown
-        // TODO: Fully support the full size dispatch using size for the shape
         this->mX = tensors[0]->size();
         this->mY = 1;
         this->mZ = 1;

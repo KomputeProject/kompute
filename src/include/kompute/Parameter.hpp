@@ -13,8 +13,6 @@ class Algorithm
 
     Algorithm(std::shared_ptr<vk::Device> device);
 
-    // TODO: Add specialisation data
-    // TODO: Explore other ways of passing shader (ie raw bytes)
     void init(std::string shaderFilePath,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 

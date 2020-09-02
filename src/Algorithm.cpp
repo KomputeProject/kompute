@@ -91,7 +91,6 @@ Algorithm::init(const std::vector<char>& shaderFileData,
 {
     SPDLOG_DEBUG("Kompute Algorithm init started");
 
-    // TODO: Move to util function
     this->createParameters(tensorParams);
     this->createShaderModule(shaderFileData);
 
@@ -111,7 +110,6 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 {
     SPDLOG_DEBUG("Kompute Algorithm createParameters started");
 
-    // TODO: Explore design for having multiple descriptor pool sizes
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
         vk::DescriptorPoolSize(
           vk::DescriptorType::eStorageBuffer,
@@ -119,7 +117,6 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
           )
     };
 
-    // TODO: Explore design for having more than 1 set configurable
     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
       vk::DescriptorPoolCreateFlags(),
       1, // Max sets
@@ -132,8 +129,6 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
       &descriptorPoolInfo, nullptr, this->mDescriptorPool.get());
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
-    // TODO: Explore allowing descriptor set bind index to be configurable by
-    // user to specify which tensors woudl go on each binding
     for (size_t i = 0; i < tensorParams.size(); i++) {
         descriptorSetBindings.push_back(
           vk::DescriptorSetLayoutBinding(i, // Binding index
@@ -149,8 +144,6 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
       descriptorSetBindings.data());
 
     SPDLOG_DEBUG("Kompute Algorithm creating descriptor set layout");
-    // TODO: We createa  signle descriptor set layout which would have to be
-    // extended if multiple set layouts to be supported
     this->mDescriptorSetLayout = std::make_shared<vk::DescriptorSetLayout>();
     this->mDevice->createDescriptorSetLayout(
       &descriptorSetLayoutInfo, nullptr, this->mDescriptorSetLayout.get());
@@ -167,14 +160,13 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
                                           this->mDescriptorSet.get());
     this->mFreeDescriptorSet = true;
 
-    // TODO: Explore design exposing the destination array element
+    SPDLOG_DEBUG("Kompute Algorithm updating descriptor sets");
     for (size_t i = 0; i < tensorParams.size(); i++) {
         std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
 
         vk::DescriptorBufferInfo descriptorBufferInfo =
           tensorParams[i]->constructDescriptorBufferInfo();
 
-        // TODO: Explore design exposing the destination array element
         computeWriteDescriptorSets.push_back(
           vk::WriteDescriptorSet(*this->mDescriptorSet,
                                  i, // Destination binding
@@ -187,9 +179,6 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
         this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
                                             nullptr);
     }
-
-    SPDLOG_DEBUG("Kompute Algorithm updating descriptor sets");
-    // this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
 
     SPDLOG_DEBUG("Kompue Algorithm successfully run init");
 }
@@ -220,7 +209,6 @@ Algorithm::createPipeline(std::vector<uint32_t> specializationData)
 {
     SPDLOG_DEBUG("Kompute Algorithm calling create Pipeline");
 
-    // TODO: Explore design for supporting multiple sets
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
       vk::PipelineLayoutCreateFlags(),
       1, // Set layout count
@@ -261,7 +249,6 @@ Algorithm::createPipeline(std::vector<uint32_t> specializationData)
                                                vk::Pipeline(),
                                                0);
 
-    // TODO: Confirm what the best structure is with pipeline cache
     vk::PipelineCacheCreateInfo pipelineCacheInfo =
       vk::PipelineCacheCreateInfo();
     this->mPipelineCache = std::make_shared<vk::PipelineCache>();

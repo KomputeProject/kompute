@@ -139,8 +139,6 @@ Sequence::eval()
     this->mDevice->waitForFences(1, &fence, VK_TRUE, UINT64_MAX);
     this->mDevice->destroy(fence);
 
-    // TODO: Explore whether moving postSubmit calls to a separate sequence
-    // function that is explicitly called by the manager
     for (size_t i = 0; i < this->mOperations.size(); i++) {
         this->mOperations[i]->postSubmit();
     }
