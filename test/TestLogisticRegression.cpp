@@ -42,35 +42,30 @@ TEST_CASE("test_logistic_regression") {
             sq->end();
             sq->eval();
 
+            // Record op algo base
+            sq->begin();
+
+            sq->record<kp::OpAlgoBase<>>(
+                    params, 
+                    true, // Whether to copy output from device
+                    "test/shaders/glsl/test_logistic_regression.comp");
+
+            sq->end();
+
             // Iterate across all expected iterations
             for (size_t i = 0; i < ITERATIONS; i++) {
-                sq->begin();
-
-                sq->record<kp::OpAlgoBase<>>(
-                        params, 
-                        true, // Whether to copy output from device
-                        "test/shaders/glsl/test_logistic_regression.comp");
-
-                sq->end();
 
                 sq->eval();
 
-                // TODO: Reference of data instead of full value copy every time
                 for(size_t j = 0; j < bOut->size(); j++) {
-                    wInVec[0] -= wOutI->data()[j];
-                    wInVec[1] -= wOutJ->data()[j];
-                    bInVec[0] -= bOut->data()[j];
+                    wIn->data()[0] -= wOutI->data()[j];
+                    wIn->data()[1] -= wOutJ->data()[j];
+                    bIn->data()[0] -= bOut->data()[j];
                 }
-                wIn->setData(wInVec);
-                bIn->setData(bInVec);
-
                 wIn->mapDataIntoHostMemory();
                 bIn->mapDataIntoHostMemory();
             }
         }
-
-        wIn->mapDataFromHostMemory();
-        bIn->mapDataFromHostMemory();
     }
 
 

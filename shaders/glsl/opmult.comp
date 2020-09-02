@@ -16,7 +16,6 @@ layout (constant_id = 0) const uint LEN_LHS = 0;
 layout (constant_id = 1) const uint LEN_RHS = 0;
 layout (constant_id = 2) const uint LEN_OUT = 0;
 
-// TODO: Explore how to make layout inside shader dynamic
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
 void main() 

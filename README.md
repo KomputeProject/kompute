@@ -257,6 +257,24 @@ To update the documentation will need to:
 * Run the gensphynx target in the buildsystem 
 * Push to github pages with `make push_docs_to_ghpages`
 
+##### Running tests
+
+To run tests you can use the helper top level Makefile
+
+For visual studio you can run
+
+```
+make vs_cmake
+make vs_run_tests VS_BUILD_TYPE="Release"
+```
+
+For unix you can run
+
+```
+make mk_cmake MK_BUILD_TYPE="Release"
+make mk_run_tests
+```
+
 
 # The Komputer is waiting for instructions...
 

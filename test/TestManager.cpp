@@ -5,60 +5,43 @@
 
 #include <fmt/ranges.h>
 
-TEST_CASE("End to end OpMult Flow should execute correctly from manager") {
-    spdlog::info("TEST CASE STARTING");
+TEST_CASE("End to end OpMult Flow should execute correctly from manager") 
+{
+    kp::Manager mgr;
 
-    spdlog::info("Creating manager");
-    {
-        kp::Manager mgr;
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
 
-        spdlog::info("Creating first tensor");
-        std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorLHS });
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
+      { 2, 4, 6 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
 
-        spdlog::info("Creating second tensor");
-        std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-          { 2, 4, 6 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorRHS });
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
+      { 0, 0, 0 }) };
+    mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
-        // TODO: Add capabilities for just output tensor types
-        spdlog::info("Creating output tensor");
-        std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-          { 0, 0, 0 }) };
-        mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
+    spdlog::info("OpCreateTensor success for tensors");
+    spdlog::info("Tensor one: {}", tensorLHS->data());
+    spdlog::info("Tensor two: {}", tensorRHS->data());
+    spdlog::info("Tensor output: {}", tensorOutput->data());
 
-        spdlog::info("OpCreateTensor success for tensors");
-        spdlog::info("Tensor one: {}", tensorLHS->data());
-        spdlog::info("Tensor two: {}", tensorRHS->data());
-        spdlog::info("Tensor output: {}", tensorOutput->data());
+    spdlog::info("Calling op mult");
+    mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
-        spdlog::info("Calling op mult");
-        mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+    spdlog::info("OpMult call success");
+    spdlog::info("Tensor output: {}", tensorOutput->data());
 
-        spdlog::info("OpMult call success");
-        spdlog::info("Tensor output: {}", tensorOutput->data());
-
-        REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
-    }
-
-    spdlog::info("Called manager eval success END PROGRAM");
+    REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
 }
 
 TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
-    spdlog::info("TEST CASE STARTING");
 
-    spdlog::info("Creating manager");
-
-    spdlog::info("Creating first tensor");
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
       { 0, 1, 2 }) };
 
-    spdlog::info("Creating second tensor");
     std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
       { 2, 4, 6 }) };
 
-    // TODO: Add capabilities for just output tensor types
-    spdlog::info("Creating output tensor");
     std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
       { 0, 0, 0 }) };
 
@@ -72,12 +55,6 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
         sq->record<kp::OpCreateTensor>({ tensorRHS });
         sq->record<kp::OpCreateTensor>({ tensorOutput });
 
-        spdlog::info("OpCreateTensor success for tensors");
-        spdlog::info("Tensor one: {}", tensorLHS->data());
-        spdlog::info("Tensor two: {}", tensorRHS->data());
-        spdlog::info("Tensor output: {}", tensorOutput->data());
-
-        spdlog::info("Calling op mult");
         sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
         sq->end();
@@ -85,12 +62,7 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
     }
     sqWeakPtr.reset();
 
-    spdlog::info("OpMult call success");
-    spdlog::info("Tensor output: {}", tensorOutput->data());
-
     REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
-
-    spdlog::info("Called manager eval success END PROGRAM");
 }
 
 TEST_CASE("Test manager get create functionality for sequences") {
@@ -115,20 +87,13 @@ TEST_CASE("Test manager get create functionality for sequences") {
 }
 
 TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tensors") {
-    spdlog::info("TEST CASE STARTING");
 
-    spdlog::info("Creating manager");
-
-    spdlog::info("Creating first tensor");
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
       { 0, 1, 2 }) };
 
-    spdlog::info("Creating second tensor");
     std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
       { 2, 4, 6 }) };
 
-    // TODO: Add capabilities for just output tensor types
-    spdlog::info("Creating output tensor");
     std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
       { 0, 0, 0 }) };
 
@@ -140,15 +105,10 @@ TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tenso
 
         sq->record<kp::OpCreateTensor>({ tensorLHS, tensorRHS, tensorOutput });
 
-        spdlog::info("OpCreateTensor success for tensors");
-        spdlog::info("Tensor one: {}", tensorLHS->data());
-        spdlog::info("Tensor two: {}", tensorRHS->data());
-        spdlog::info("Tensor output: {}", tensorOutput->data());
         REQUIRE(tensorLHS->isInit());
         REQUIRE(tensorRHS->isInit());
         REQUIRE(tensorOutput->isInit());
 
-        spdlog::info("Calling op mult");
         sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
         sq->end();
@@ -156,10 +116,5 @@ TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tenso
     }
     sqWeakPtr.reset();
 
-    spdlog::info("OpMult call success");
-    spdlog::info("Tensor output: {}", tensorOutput->data());
-
     REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
-
-    spdlog::info("Called manager eval success END PROGRAM");
 }

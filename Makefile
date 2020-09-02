@@ -40,10 +40,12 @@ clean_cmake:
 
 ####### Visual studio build shortcut commands #######
 
+MK_BUILD_TYPE ?= "Release"
+
 mk_cmake:
 	cmake \
 		-Bbuild \
-		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_BUILD_TYPE=$(MK_BUILD_TYPE) \
 		-DKOMPUTE_OPT_BUILD_DOCS=0 \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_UNIX_PATH) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
@@ -70,6 +72,8 @@ mk_run_tests: mk_build_tests
 
 ####### Visual studio build shortcut commands #######
 
+VS_BUILD_TYPE ?= "Debug"
+
 vs_cmake:
 	$(CMAKE_BIN) \
 		-Bbuild \
@@ -79,22 +83,22 @@ vs_cmake:
 		-G "Visual Studio 16 2019"
 
 vs_build_all:
-	$(MSBUILD_BIN) build/kompute.sln
+	$(MSBUILD_BIN) build/kompute.sln -p:Configuration$(VS_BUILD_TYPE)
 
 vs_build_docs:
-	$(MSBUILD_BIN) build/docs/gendocsall.vcxproj
+	$(MSBUILD_BIN) build/docs/gendocsall.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
 
 vs_build_kompute:
-	$(MSBUILD_BIN) build/src/kompute.vcxproj
+	$(MSBUILD_BIN) build/src/kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
 
 vs_build_tests:
-	$(MSBUILD_BIN) build/test/test_kompute.vcxproj
+	$(MSBUILD_BIN) build/test/test_kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
 
 vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 vs_run_tests: vs_build_tests
-	./build/test/Debug/test_kompute.exe $(FILTER_TESTS)
+	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe $(FILTER_TESTS)
 
 ####### Create release ######
 
