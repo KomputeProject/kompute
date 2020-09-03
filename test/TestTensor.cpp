@@ -1,16 +1,16 @@
 
-#include <catch2/catch.hpp>
+#include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
 
-TEST_CASE("test_tensor_constructor_data") {
+TEST(TestTensor, ConstructorData) {
     std::vector<float> vec{0,1,2};
     kp::Tensor tensor(vec);
-    REQUIRE( tensor.size() == vec.size() );
-    REQUIRE( tensor.data() == vec );
+    EXPECT_EQ( tensor.size(), vec.size() );
+    EXPECT_EQ( tensor.data(), vec );
 }
 
-TEST_CASE("test_tensor_copy_from_other_tensor_host_data") {
+TEST(TestTensor, CopyFromHostData) {
     std::vector<float> vecA{0,1,2};
     std::vector<float> vecB{0,0,0};
 
@@ -41,6 +41,6 @@ TEST_CASE("test_tensor_copy_from_other_tensor_host_data") {
         tensorB->mapDataFromHostMemory();
     }
 
-    REQUIRE(tensorA->data() == tensorB->data());
+    EXPECT_EQ(tensorA->data(), tensorB->data());
 }
 

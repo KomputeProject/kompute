@@ -1,9 +1,9 @@
 
-#include "catch2/catch.hpp"
+#include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
 
-TEST_CASE("test_opcreatetensor_create_single_tensor") {
+TEST(TestOpCreateTensor, CreateSingleTensorSingleOp) {
 
     kp::Manager mgr;
 
@@ -13,15 +13,15 @@ TEST_CASE("test_opcreatetensor_create_single_tensor") {
 
     mgr.evalOpDefault<kp::OpCreateTensor>({tensorA});
 
-    REQUIRE(tensorA->isInit());
+    EXPECT_TRUE(tensorA->isInit());
 
-    REQUIRE(tensorA->data() == testVecA);
+    EXPECT_EQ(tensorA->data(), testVecA);
 
     tensorA->freeMemoryDestroyGPUResources();
-    REQUIRE(!tensorA->isInit());
+    EXPECT_FALSE(tensorA->isInit());
 }
 
-TEST_CASE("test_opcreatetensor_create_multiple_tensors_single_op") {
+TEST(TestOpCreateTensor, CreateMultipleTensorSingleOp) {
 
     kp::Manager mgr;
 
@@ -33,14 +33,14 @@ TEST_CASE("test_opcreatetensor_create_multiple_tensors_single_op") {
 
     mgr.evalOpDefault<kp::OpCreateTensor>({tensorA, tensorB});
 
-    REQUIRE(tensorA->isInit());
-    REQUIRE(tensorB->isInit());
+    EXPECT_TRUE(tensorA->isInit());
+    EXPECT_TRUE(tensorB->isInit());
 
-    REQUIRE(tensorA->data() == testVecA);
-    REQUIRE(tensorB->data() == testVecB);
+    EXPECT_EQ(tensorA->data(), testVecA);
+    EXPECT_EQ(tensorB->data(), testVecB);
 }
 
-TEST_CASE("test_opcreatetensor_create_multiple_tensors_multiple_op") {
+TEST(TestOpCreateTensor, CreateMultipleTensorMultipleOp) {
 
     kp::Manager mgr;
 
@@ -53,14 +53,14 @@ TEST_CASE("test_opcreatetensor_create_multiple_tensors_multiple_op") {
     mgr.evalOpDefault<kp::OpCreateTensor>({tensorA});
     mgr.evalOpDefault<kp::OpCreateTensor>({tensorB});
 
-    REQUIRE(tensorA->isInit());
-    REQUIRE(tensorB->isInit());
+    EXPECT_TRUE(tensorA->isInit());
+    EXPECT_TRUE(tensorB->isInit());
 
-    REQUIRE(tensorA->data() == testVecA);
-    REQUIRE(tensorB->data() == testVecB);
+    EXPECT_EQ(tensorA->data(), testVecA);
+    EXPECT_EQ(tensorB->data(), testVecB);
 }
 
-TEST_CASE("test_opcreatetensor_manage_tensor_memory_when_destroyed") {
+TEST(TestOpCreateTensor, ManageTensorMemoryWhenOpCreateTensorDestroyed) {
 
     std::vector<float> testVecA{ 9, 8, 7 };
     std::vector<float> testVecB{ 6, 5, 4 };
@@ -73,18 +73,18 @@ TEST_CASE("test_opcreatetensor_manage_tensor_memory_when_destroyed") {
         mgr.evalOpDefault<kp::OpCreateTensor>({tensorA});
         mgr.evalOpDefault<kp::OpCreateTensor>({tensorB});
 
-        REQUIRE(tensorA->isInit());
-        REQUIRE(tensorB->isInit());
+        EXPECT_TRUE(tensorA->isInit());
+        EXPECT_TRUE(tensorB->isInit());
 
-        REQUIRE(tensorA->data() == testVecA);
-        REQUIRE(tensorB->data() == testVecB);
+        EXPECT_EQ(tensorA->data(), testVecA);
+        EXPECT_EQ(tensorB->data(), testVecB);
     }
 
-    REQUIRE(!tensorA->isInit());
-    REQUIRE(!tensorB->isInit());
+    EXPECT_FALSE(tensorA->isInit());
+    EXPECT_FALSE(tensorB->isInit());
 }
 
-TEST_CASE("test_opcreatetensor_no_error_if_tensor_freed_before") {
+TEST(TestOpCreateTensor, NoErrorIfTensorFreedBefore) {
 
     std::vector<float> testVecA{ 9, 8, 7 };
     std::vector<float> testVecB{ 6, 5, 4 };
@@ -97,15 +97,15 @@ TEST_CASE("test_opcreatetensor_no_error_if_tensor_freed_before") {
     mgr.evalOpDefault<kp::OpCreateTensor>({tensorA});
     mgr.evalOpDefault<kp::OpCreateTensor>({tensorB});
 
-    REQUIRE(tensorA->isInit());
-    REQUIRE(tensorB->isInit());
+    EXPECT_TRUE(tensorA->isInit());
+    EXPECT_TRUE(tensorB->isInit());
 
-    REQUIRE(tensorA->data() == testVecA);
-    REQUIRE(tensorB->data() == testVecB);
+    EXPECT_EQ(tensorA->data(), testVecA);
+    EXPECT_EQ(tensorB->data(), testVecB);
 
     tensorA->freeMemoryDestroyGPUResources();
     tensorB->freeMemoryDestroyGPUResources();
-    REQUIRE(!tensorA->isInit());
-    REQUIRE(!tensorB->isInit());
+    EXPECT_FALSE(tensorA->isInit());
+    EXPECT_FALSE(tensorB->isInit());
 }
 

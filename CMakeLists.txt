@@ -35,8 +35,6 @@ if(KOMPUTE_OPT_BUILD_DOCS)
 endif()
 
 if(KOMPUTE_OPT_BUILD_TESTS)
-    include(CTest)
-    enable_testing()
     add_subdirectory(test)
 endif()
 

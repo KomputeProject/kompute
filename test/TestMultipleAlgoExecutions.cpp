@@ -1,9 +1,9 @@
 
-#include "catch2/catch.hpp"
+#include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
 
-TEST_CASE("test_multiple_algo_exec_single_cmd_buf_record") {
+TEST(TestMultipleAlgoExecutions, SingleSequenceRecord) {
 
     kp::Manager mgr;
 
@@ -43,10 +43,10 @@ TEST_CASE("test_multiple_algo_exec_single_cmd_buf_record") {
     }
     sqWeakPtr.reset();
 
-    REQUIRE(tensorA->data() == std::vector<float>{3, 3, 3});
+    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
 }
 
-TEST_CASE("test_multiple_algo_exec_multiple_record") {
+TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
 
     kp::Manager mgr;
 
@@ -98,11 +98,11 @@ TEST_CASE("test_multiple_algo_exec_multiple_record") {
     }
     sqWeakPtr.reset();
 
-    REQUIRE(tensorA->data() == std::vector<float>{3, 3, 3});
+    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
 
 }
 
-TEST_CASE("test_multiple_algo_exec_multiple_sequence") {
+TEST(TestMultipleAlgoExecutions, MultipleSequences) {
 
     kp::Manager mgr;
 
@@ -160,10 +160,10 @@ TEST_CASE("test_multiple_algo_exec_multiple_sequence") {
         sq->eval();
     }
 
-    REQUIRE(tensorA->data() == std::vector<float>{3, 3, 3});
+    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
 }
 
-TEST_CASE("test_multiple_algo_exec_single_sequence_single_record") {
+TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
 
     kp::Manager mgr;
 
@@ -205,6 +205,6 @@ TEST_CASE("test_multiple_algo_exec_single_sequence_single_record") {
         sq->eval();
     }
 
-    REQUIRE(tensorA->data() == std::vector<float>{3, 3, 3});
+    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
 }
 

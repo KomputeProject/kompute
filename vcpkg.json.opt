@@ -2,9 +2,8 @@
   "name": "example",
   "version-string": "0.0.1",
   "dependencies": [
-    "fmt",
     "spdlog",
     "vulkan",
-    "catch2"
+    "gtest"
   ]
 }
