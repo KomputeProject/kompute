@@ -3,8 +3,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include <fmt/ranges.h>
-
 TEST_CASE("test_logistic_regression") {
 
     uint32_t ITERATIONS = 100;
@@ -77,6 +75,6 @@ TEST_CASE("test_logistic_regression") {
     REQUIRE(wIn->data()[1] > 1.0);
     REQUIRE(bIn->data()[0] < 0.0);
 
-    SPDLOG_DEBUG("Result wIn: {}, bIn: {}", 
-            wIn->data(), bIn->data());
+    //SPDLOG_DEBUG("Result wIn: {}, bIn: {}", 
+    //        wIn->data(), bIn->data());
 }

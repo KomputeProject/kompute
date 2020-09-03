@@ -73,12 +73,14 @@ mk_run_tests: mk_build_tests
 ####### Visual studio build shortcut commands #######
 
 VS_BUILD_TYPE ?= "Debug"
+VS_CMAKE_EXTRA_FLAGS ?= ""
 
 vs_cmake:
 	$(CMAKE_BIN) \
 		-Bbuild \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_WIN_PATH) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
+		$(VS_CMAKE_EXTRA_FLAGS) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		-G "Visual Studio 16 2019"
 

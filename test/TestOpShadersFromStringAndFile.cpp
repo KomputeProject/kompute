@@ -3,8 +3,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include <fmt/ranges.h>
-
 #include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
 
 TEST_CASE("test_op_shader_raw_data_from_constructor") {

@@ -1,5 +1,4 @@
 
-find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(Vulkan REQUIRED)
 
@@ -25,10 +24,15 @@ target_include_directories(
 
 target_link_libraries(
     kompute 
-    fmt::fmt
-    spdlog::spdlog
     Vulkan::Vulkan
 )
+
+if(KOMPUTE_OPT_ENABLE_SPDLOG)
+    target_link_libraries(
+        kompute 
+        spdlog::spdlog
+    )
+endif()
 
 add_dependencies(kompute
     build_shaders

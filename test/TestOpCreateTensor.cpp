@@ -3,8 +3,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include <fmt/ranges.h>
-
 TEST_CASE("test_opcreatetensor_create_single_tensor") {
 
     kp::Manager mgr;

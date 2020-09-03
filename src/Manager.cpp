@@ -50,7 +50,7 @@ Manager::~Manager()
     SPDLOG_DEBUG("Kompute Manager Destructor started");
 
     if (this->mDevice == nullptr) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Kompute Manager destructor reached with null Device pointer");
         return;
     }
@@ -61,13 +61,13 @@ Manager::~Manager()
     }
 
     if (this->mFreeDevice) {
-        spdlog::info("Destroying device");
+        SPDLOG_INFO("Destroying device");
         this->mDevice->destroy();
         SPDLOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
     if (this->mInstance == nullptr) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Kompute Manager destructor reached with null Instance pointer");
         return;
     }
@@ -214,7 +214,7 @@ Manager::createDevice()
     vk::PhysicalDeviceProperties physicalDeviceProperties =
       physicalDevice.getProperties();
 
-    spdlog::info("Using physical device index {} found {}",
+    SPDLOG_INFO("Using physical device index {} found {}",
                  this->mPhysicalDeviceIndex,
                  physicalDeviceProperties.deviceName);
 
@@ -234,7 +234,7 @@ Manager::createDevice()
     }
 
     if (this->mComputeQueueFamilyIndex < 0) {
-        spdlog::critical("Compute queue is not supported");
+        throw std::runtime_error("Compute queue is not supported");
     }
 
     const float defaultQueuePriority(0.0f);

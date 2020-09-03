@@ -92,7 +92,7 @@ class Sequence
         SPDLOG_DEBUG("Kompute Sequence record function started");
 
         if (!this->isRecording()) {
-            spdlog::error(
+            SPDLOG_ERROR(
               "Kompute sequence record attempted when not record BEGIN");
             return false;
         }

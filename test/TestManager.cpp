@@ -3,8 +3,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include <fmt/ranges.h>
-
 TEST_CASE("End to end OpMult Flow should execute correctly from manager") 
 {
     kp::Manager mgr;
@@ -20,16 +18,7 @@ TEST_CASE("End to end OpMult Flow should execute correctly from manager")
       { 0, 0, 0 }) };
     mgr.evalOp<kp::OpCreateTensor>({ tensorOutput });
 
-    spdlog::info("OpCreateTensor success for tensors");
-    spdlog::info("Tensor one: {}", tensorLHS->data());
-    spdlog::info("Tensor two: {}", tensorRHS->data());
-    spdlog::info("Tensor output: {}", tensorOutput->data());
-
-    spdlog::info("Calling op mult");
     mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
-
-    spdlog::info("OpMult call success");
-    spdlog::info("Tensor output: {}", tensorOutput->data());
 
     REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
 }

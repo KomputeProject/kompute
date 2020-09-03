@@ -28,15 +28,15 @@ Sequence::~Sequence()
     SPDLOG_DEBUG("Kompute Sequence Destructor started");
 
     if (!this->mDevice) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Kompute Sequence destructor reached with null Device pointer");
         return;
     }
 
     if (this->mFreeCommandBuffer) {
-        spdlog::info("Freeing CommandBuffer");
+        SPDLOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            spdlog::error("Kompute Sequence destructor reached with null "
+            SPDLOG_ERROR("Kompute Sequence destructor reached with null "
                           "CommandPool pointer");
             return;
         }
@@ -46,9 +46,9 @@ Sequence::~Sequence()
     }
 
     if (this->mFreeCommandPool) {
-        spdlog::info("Destroying CommandPool");
+        SPDLOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            spdlog::error("Kompute Sequence destructor reached with null "
+            SPDLOG_ERROR("Kompute Sequence destructor reached with null "
                           "CommandPool pointer");
             return;
         }
@@ -71,7 +71,7 @@ Sequence::begin()
     SPDLOG_DEBUG("Kompute sequence called BEGIN");
 
     if (this->isRecording()) {
-        spdlog::warn("Kompute Sequence begin called when  already recording");
+        SPDLOG_WARN("Kompute Sequence begin called when  already recording");
         return false;
     }
 
@@ -80,11 +80,11 @@ Sequence::begin()
     }
 
     if (!this->mRecording) {
-        spdlog::info("Kompute Sequence command recording BEGIN");
+        SPDLOG_INFO("Kompute Sequence command recording BEGIN");
         this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
         this->mRecording = true;
     } else {
-        spdlog::warn("Kompute Sequence attempted to start command recording "
+        SPDLOG_WARN("Kompute Sequence attempted to start command recording "
                      "but recording already started");
     }
     return true;
@@ -96,7 +96,7 @@ Sequence::end()
     SPDLOG_DEBUG("Kompute Sequence calling END");
 
     if (!this->isRecording()) {
-        spdlog::warn("Kompute Sequence end called when not recording");
+        SPDLOG_WARN("Kompute Sequence end called when not recording");
         return false;
     }
 
@@ -105,11 +105,11 @@ Sequence::end()
     }
 
     if (this->mRecording) {
-        spdlog::info("Kompute Sequence command recording END");
+        SPDLOG_INFO("Kompute Sequence command recording END");
         this->mCommandBuffer->end();
         this->mRecording = false;
     } else {
-        spdlog::warn("Kompute Sequence attempted to end command recording but "
+        SPDLOG_WARN("Kompute Sequence attempted to end command recording but "
                      "recording not started");
     }
     return true;
@@ -121,7 +121,7 @@ Sequence::eval()
     SPDLOG_DEBUG("Kompute sequence compute recording EVAL");
 
     if (this->isRecording()) {
-        spdlog::warn("Kompute Sequence eval called when still recording");
+        SPDLOG_WARN("Kompute Sequence eval called when still recording");
         return false;
     }
 

@@ -23,7 +23,7 @@ Algorithm::~Algorithm()
     SPDLOG_DEBUG("Kompute Algorithm Destructor started");
 
     if (!this->mDevice) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Kompute Algorithm destructor reached with null Device pointer");
         return;
     }

@@ -185,7 +185,7 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
         this->mY = 1;
         this->mZ = 1;
     }
-    spdlog::info("Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}",
+    SPDLOG_INFO("Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}",
                  this->mX,
                  this->mY,
                  this->mZ);

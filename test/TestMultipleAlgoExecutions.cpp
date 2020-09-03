@@ -3,8 +3,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include <fmt/ranges.h>
-
 TEST_CASE("test_multiple_algo_exec_single_cmd_buf_record") {
 
     kp::Manager mgr;

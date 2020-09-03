@@ -37,6 +37,10 @@
 * Explicit relationships for GPU and host memory ownership and memory management
 * Providing [simple usecases]() as well as [advanced machine learning & data processing](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html) examples
 
+
+![](https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif)
+
+
 ## Getting Started
 
 ### Setup
@@ -177,6 +181,32 @@ We cover more advanced examples and applications of Vulkan Kompute, such as mach
 
 You can find these in the advanced examples documentation section, such as the [logistic regression example](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html).
 
+## Build Overview
+
+### Dependencies
+
+Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies. 
+
+#### Required dependencies
+
+The only required dependency in the build is Vulkan (vulkan.h and vulkan.hpp which are both part of the Vulkan SDK).
+
+#### Optional dependencies
+
+SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:
+
+```c++
+#ifndef KOMPUTE_LOG_OVERRIDE // Use this if you want to define custom macro overrides
+#if KOMPUTE_SPDLOG_ENABLED // Use this if you want to enable SPDLOG
+#include <spdlog/spdlog.h>
+#endif //KOMPUTE_SPDLOG_ENABLED
+// ... Otherwise it adds macros that use std::cout (and only print first element)
+#endif // KOMPUTE_LOG_OVERRIDE
+```
+
+You can choose to build with or without SPDLOG by using the cmake flag `KOMPUTE_OPT_ENABLE_SPDLOG`.
+
+
 ## Motivations
 
 Vulkan Kompute was created after identifying the challenge most GPU processing projects with Vulkan undergo - namely having to build extensive boilerplate for Vulkan and create abstractions and interfaces that expose the core compute capabilities. It is only after a few thousand lines of code that it's possible to start building the application-specific logic. 
@@ -274,9 +304,4 @@ For unix you can run
 make mk_cmake MK_BUILD_TYPE="Release"
 make mk_run_tests
 ```
-
-
-# The Komputer is waiting for instructions...
-
-![](https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif)
 

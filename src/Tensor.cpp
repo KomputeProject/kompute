@@ -1,6 +1,9 @@
 
 #if DEBUG
-#include <fmt/ranges.h>
+#if KOMPUTE_SPDLOG_ENABLED
+// Only enabled if spdlog is enabled
+#include <spdlog/fmt/ranges.h>
+#endif
 #endif
 
 #include "kompute/Tensor.hpp"
@@ -169,7 +172,7 @@ Tensor::mapDataFromHostMemory()
     SPDLOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Mapping tensor data manually from DEVICE buffer instead of "
           "using record GPU command with staging buffer");
         return;
@@ -191,7 +194,7 @@ Tensor::mapDataIntoHostMemory()
     SPDLOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Mapping tensor data manually to DEVICE memory instead of "
           "using record GPU command with staging buffer");
         return;
@@ -335,14 +338,14 @@ Tensor::freeMemoryDestroyGPUResources()
     this->mIsInit = false;
 
     if (!this->mDevice) {
-        spdlog::error(
+        SPDLOG_ERROR(
           "Kompute Tensor destructor reached with null Device pointer");
         return;
     }
 
     if (this->mFreeBuffer) {
         if (!this->mBuffer) {
-            spdlog::error(
+            SPDLOG_ERROR(
               "Kompose Tensor expected to free buffer but got null buffer");
         } else {
             SPDLOG_DEBUG("Kompose Tensor destroying buffer");
@@ -353,7 +356,7 @@ Tensor::freeMemoryDestroyGPUResources()
 
     if (this->mFreeMemory) {
         if (!this->mMemory) {
-            spdlog::error(
+            SPDLOG_ERROR(
               "Kompose Tensor expected to free buffer but got null memory");
         } else {
             SPDLOG_DEBUG("Kompose Tensor freeing memory");

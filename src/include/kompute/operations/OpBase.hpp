@@ -59,7 +59,7 @@ class OpBase
         SPDLOG_DEBUG("Kompute OpBase destructor started");
 
         if (!this->mDevice) {
-            spdlog::warn("Kompute OpBase destructor called with empty device");
+            SPDLOG_WARN("Kompute OpBase destructor called with empty device");
             return;
         }
 
@@ -69,7 +69,7 @@ class OpBase
                 if (tensor && tensor->isInit()) {
                     tensor->freeMemoryDestroyGPUResources();
                 } else {
-                    spdlog::error("Kompute OpBase expected to free "
+                    SPDLOG_ERROR("Kompute OpBase expected to free "
                                   "tensor but has already been freed.");
                 }
             }
