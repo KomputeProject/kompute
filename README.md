@@ -152,24 +152,26 @@ int main() {
     std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2.0, 4.0, 6.0 }) };
     std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
 
-    kp::Sequence sq = mgr.constructSequence();
-    // Begin recoding commands
-    sq.begin();
+    // Create a new sequence
+    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence();
 
-    // Record sequence of operations to be sent to GPU in batch
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock())
     {
+        // Begin recording commands
+        sq.begin();
+
+        // Record batch commands to send to GPU
         sq.record<kp::OpCreateTensor>({ tensorLHS });
         sq.record<kp::OpCreateTensor>({ tensorRHS });
         sq.record<kp::OpCreateTensor>({ tensorOutput });
-
         sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+
+        // Stop recording
+        sq.end();
+
+        // Submit operations to GPU
+        sq.eval();
     }
-
-    // Stop recording
-    sq.end();
-
-    // Submit operations to GPU
-    sq.eval();
 
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
