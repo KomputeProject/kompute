@@ -18,8 +18,10 @@ Tensor::Tensor()
 
 Tensor::Tensor(std::vector<float> data, TensorTypes tensorType)
 {
+#if DEBUG
     SPDLOG_DEBUG(
       "Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
+#endif
 
     this->mData = data;
     this->mShape = { static_cast<uint32_t>(data.size()) };

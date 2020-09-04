@@ -3,11 +3,13 @@
 #include <vulkan/vulkan.hpp>
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if DEBUG
-#ifndef SPDLOG_ACTIVE_LEVEL
+#if !defined(SPDLOG_ACTIVE_LEVEL)
+#if RELEASE
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
+#else
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#endif 
 #endif
+#endif 
 
 #ifndef KOMPUTE_LOG_OVERRIDE
 #if KOMPUTE_ENABLE_SPDLOG

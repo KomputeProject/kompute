@@ -15,8 +15,8 @@ target_include_directories(
 )
 
 target_link_libraries(test_kompute PRIVATE 
-    GTest::gtest 
-    GTest::gtest_main)
+    GTest::gtest
+    GTest::gmock)
 
 target_link_libraries(test_kompute PRIVATE kompute)
 

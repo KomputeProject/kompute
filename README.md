@@ -208,6 +208,8 @@ SPDLOG is the preferred logging library, however by default Vulkan Kompute runs 
 
 You can choose to build with or without SPDLOG by using the cmake flag `KOMPUTE_OPT_ENABLE_SPDLOG`.
 
+Finally, remember that you will still need to set both the compile time log level with `SPDLOG_ACTIVE_LEVEL`, and the runtime log level with `spdlog::set_level(spdlog::level::debug);`.
+
 
 ## Motivations
 
