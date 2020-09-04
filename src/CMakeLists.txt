@@ -1,5 +1,10 @@
 
-find_package(spdlog REQUIRED)
+
+if(KOMPUTE_OPT_ENABLE_SPDLOG)
+    find_package(spdlog REQUIRED)
+    find_package(fmt REQUIRED)
+endif()
+
 find_package(Vulkan REQUIRED)
 
 # In production builds all shaders are compiled into cpp files
@@ -30,6 +35,7 @@ target_link_libraries(
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     target_link_libraries(
         kompute 
+        fmt::fmt
         spdlog::spdlog
     )
 endif()

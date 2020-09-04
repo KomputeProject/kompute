@@ -1,8 +1,8 @@
 
 #if DEBUG
-#if KOMPUTE_SPDLOG_ENABLED
+#if KOMPUTE_ENABLE_SPDLOG
 // Only enabled if spdlog is enabled
-#include <spdlog/fmt/ranges.h>
+#include <fmt/ranges.h>
 #endif
 #endif
 
