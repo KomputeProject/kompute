@@ -271,7 +271,7 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 #### Dev Dependencies
 
 * Testing
-    + Catch2
+    + GTest
 * Documentation
     + Doxygen (with Dot)
     + Sphynx
