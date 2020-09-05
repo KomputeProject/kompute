@@ -1,26 +1,26 @@
 
-#include "catch2/catch.hpp"
+#include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
 
-TEST_CASE("Sequence begin end recording should work as expected") {
+TEST(TestSequence, CmdBufSequenceBeginEnd) {
     kp::Manager mgr;
 
     std::weak_ptr<kp::Sequence> sqWeakPtr = 
         mgr.getOrCreateManagedSequence("newSequence");
 
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
-        REQUIRE(sq->eval());
-        REQUIRE(!sq->isRecording());
-        REQUIRE(sq->begin());
-        REQUIRE(sq->isRecording());
-        REQUIRE(!sq->begin());
-        REQUIRE(sq->isRecording());
-        REQUIRE(sq->end());
-        REQUIRE(!sq->isRecording());
-        REQUIRE(!sq->end());
-        REQUIRE(!sq->isRecording());
-        REQUIRE(sq->eval());
+        EXPECT_TRUE(sq->eval());
+        EXPECT_TRUE(!sq->isRecording());
+        EXPECT_TRUE(sq->begin());
+        EXPECT_TRUE(sq->isRecording());
+        EXPECT_TRUE(!sq->begin());
+        EXPECT_TRUE(sq->isRecording());
+        EXPECT_TRUE(sq->end());
+        EXPECT_TRUE(!sq->isRecording());
+        EXPECT_TRUE(!sq->end());
+        EXPECT_TRUE(!sq->isRecording());
+        EXPECT_TRUE(sq->eval());
     }
 }
 

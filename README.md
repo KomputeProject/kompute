@@ -64,14 +64,12 @@ int main() {
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
     auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
-    // Create tensor data in GPU
+    // Create tensors data in GPU
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorLhs, tensorRhs, tensorOut });
 
     // Run Kompute operation on the parameters provided with dispatch layout
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
-        { tensorLhs, tensorRhs, tensorOut }, 
-        true, // Whether to retrieve the output from GPU memory
-        std::vector<char>(shader.begin(), shader.end()));
+        { tensorLhs, tensorRhs, tensorOut });
 
     // Prints the output which is { 0, 4, 12 }
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
@@ -88,18 +86,22 @@ int main() {
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
 
-    // Define your shader as a string, or directly pass the compiled bytes
-    std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer bufa { uint a[]; };\n"
-        "layout(set = 0, binding = 1) buffer bufb { uint b[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    b[index] = a[index];\n"
-        "    a[index] = index;\n"
-        "}\n"
-    );
+    // Define your shader as a string (using string literals for simplicity)
+    // Or pass the raw bytes of the compiled shader as uint32_t 
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer a { float pa[]; };
+        layout(set = 0, binding = 1) buffer b { float pb[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            pb[index] = pa[index];
+            pa[index] = index;
+        }
+    )");
 
     // Create tensor data in GPU
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
@@ -208,6 +210,8 @@ SPDLOG is the preferred logging library, however by default Vulkan Kompute runs 
 
 You can choose to build with or without SPDLOG by using the cmake flag `KOMPUTE_OPT_ENABLE_SPDLOG`.
 
+Finally, remember that you will still need to set both the compile time log level with `SPDLOG_ACTIVE_LEVEL`, and the runtime log level with `spdlog::set_level(spdlog::level::debug);`.
+
 
 ## Motivations
 
@@ -267,7 +271,7 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 #### Dev Dependencies
 
 * Testing
-    + Catch2
+    + GTest
 * Documentation
     + Doxygen (with Dot)
     + Sphynx

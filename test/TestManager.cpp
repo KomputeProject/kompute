@@ -1,9 +1,9 @@
 
-#include "catch2/catch.hpp"
+#include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
 
-TEST_CASE("End to end OpMult Flow should execute correctly from manager") 
+TEST(TestManager, EndToEndOpMultFlow)
 {
     kp::Manager mgr;
 
@@ -20,10 +20,10 @@ TEST_CASE("End to end OpMult Flow should execute correctly from manager")
 
     mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
-    REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
+    EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
 }
 
-TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
+TEST(TestManager, OpMultSequenceFlow) {
 
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
       { 0, 1, 2 }) };
@@ -51,10 +51,10 @@ TEST_CASE("End to end OpMult Flow should execute correctly from sequence") {
     }
     sqWeakPtr.reset();
 
-    REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
+    EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
 }
 
-TEST_CASE("Test manager get create functionality for sequences") {
+TEST(TestManager, TestMultipleSequences) {
     kp::Manager mgr;
 
     std::weak_ptr<kp::Sequence> sqWeakPtrOne = 
@@ -69,13 +69,13 @@ TEST_CASE("Test manager get create functionality for sequences") {
     std::weak_ptr<kp::Sequence> sqWeakPtrTwoRef = 
         mgr.getOrCreateManagedSequence("sqTwo");
 
-    REQUIRE(sqWeakPtrOne.lock() == sqWeakPtrOneRef.lock());
-    REQUIRE(sqWeakPtrTwo.lock() != sqWeakPtrOneRef.lock());
-    REQUIRE(sqWeakPtrTwo.lock() == sqWeakPtrTwoRef.lock());
-    REQUIRE(sqWeakPtrOneRef.lock() != sqWeakPtrTwoRef.lock());
+    EXPECT_EQ(sqWeakPtrOne.lock(), sqWeakPtrOneRef.lock());
+    EXPECT_NE(sqWeakPtrTwo.lock(), sqWeakPtrOneRef.lock());
+    EXPECT_EQ(sqWeakPtrTwo.lock(), sqWeakPtrTwoRef.lock());
+    EXPECT_NE(sqWeakPtrOneRef.lock(), sqWeakPtrTwoRef.lock());
 }
 
-TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tensors") {
+TEST(TestManager, TestMultipleTensorsAtOnce) {
 
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
       { 0, 1, 2 }) };
@@ -94,9 +94,9 @@ TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tenso
 
         sq->record<kp::OpCreateTensor>({ tensorLHS, tensorRHS, tensorOutput });
 
-        REQUIRE(tensorLHS->isInit());
-        REQUIRE(tensorRHS->isInit());
-        REQUIRE(tensorOutput->isInit());
+        EXPECT_TRUE(tensorLHS->isInit());
+        EXPECT_TRUE(tensorRHS->isInit());
+        EXPECT_TRUE(tensorOutput->isInit());
 
         sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
@@ -105,5 +105,5 @@ TEST_CASE("End to end OpMult Flow with OpCreateTensor called with multiple tenso
     }
     sqWeakPtr.reset();
 
-    REQUIRE(tensorOutput->data() == std::vector<float>{0, 4, 12});
+    EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
 }

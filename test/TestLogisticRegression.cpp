@@ -1,9 +1,9 @@
 
-#include "catch2/catch.hpp"
+#include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
 
-TEST_CASE("test_logistic_regression") {
+TEST(LogisticRegressionAlgorithm, TestMainLogisticRegression) {
 
     uint32_t ITERATIONS = 100;
 
@@ -71,9 +71,10 @@ TEST_CASE("test_logistic_regression") {
     // * wi < 0.01
     // * wj > 1.0
     // * b < 0
-    REQUIRE(wIn->data()[0] < 0.01);
-    REQUIRE(wIn->data()[1] > 1.0);
-    REQUIRE(bIn->data()[0] < 0.0);
+    // TODO: Add EXPECT_DOUBLE_EQ instead
+    EXPECT_LT(wIn->data()[0], 0.01);
+    EXPECT_GT(wIn->data()[1], 1.0);
+    EXPECT_LT(bIn->data()[0], 0.0);
 
     //SPDLOG_DEBUG("Result wIn: {}, bIn: {}", 
     //        wIn->data(), bIn->data());
