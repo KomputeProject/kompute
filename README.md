@@ -86,7 +86,8 @@ int main() {
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
 
-    // Define your shader as a string, or directly pass the compiled bytes
+    // Define your shader as a string (using string literals for simplicity)
+    // Or pass the raw bytes of the compiled shader as uint32_t 
     std::string shader(R"(
         #version 450
 
