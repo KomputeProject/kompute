@@ -263,6 +263,8 @@ Simplified Kompute Components
 
 ## Other projects to check out
 
+* [Awesome Vulkan List](https://github.com/vinjn/awesome-vulkan)
+* [Libvc Vulkan Compute for C++](https://github.com/uNetworking/libvc)
 * [Sascha Willems Vulkan Compute Examples](https://github.com/SaschaWillems/Vulkan#ComputeShader)
 * [Sascha Willems Vulkan Compute HPP Examples](https://github.com/jherico/vulkan)
 * [Vuh - A vulkan-based GPGPU computing framework](https://github.com/Glavnokoman/vuh)
