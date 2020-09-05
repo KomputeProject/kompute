@@ -4,10 +4,10 @@
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
 #if !defined(SPDLOG_ACTIVE_LEVEL)
-#if RELEASE
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
-#else
+#if DEBUG
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#else
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
 #endif
 #endif 
 
@@ -1137,7 +1137,7 @@ OpAlgoBase<tX, tY, tZ>::record()
 
     if (this->mCopyOutputData) {
         // Barrier to ensure the shader code is executed before buffer read
-        for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+        for (const std::shared_ptr<Tensor>& tensor : this->mTensors) {
             tensor->recordBufferMemoryBarrier(
               vk::AccessFlagBits::eShaderWrite,
               vk::AccessFlagBits::eTransferRead,

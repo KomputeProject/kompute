@@ -71,6 +71,7 @@ TEST(LogisticRegressionAlgorithm, TestMainLogisticRegression) {
     // * wi < 0.01
     // * wj > 1.0
     // * b < 0
+    // TODO: Add EXPECT_DOUBLE_EQ instead
     EXPECT_LT(wIn->data()[0], 0.01);
     EXPECT_GT(wIn->data()[1], 1.0);
     EXPECT_LT(bIn->data()[0], 0.0);

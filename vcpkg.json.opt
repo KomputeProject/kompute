@@ -4,6 +4,7 @@
   "dependencies": [
     "spdlog",
     "vulkan",
+    "vulkan-hpp",
     "gtest"
   ]
 }

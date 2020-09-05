@@ -64,14 +64,12 @@ int main() {
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
     auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
-    // Create tensor data in GPU
+    // Create tensors data in GPU
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorLhs, tensorRhs, tensorOut });
 
     // Run Kompute operation on the parameters provided with dispatch layout
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
-        { tensorLhs, tensorRhs, tensorOut }, 
-        true, // Whether to retrieve the output from GPU memory
-        std::vector<char>(shader.begin(), shader.end()));
+        { tensorLhs, tensorRhs, tensorOut });
 
     // Prints the output which is { 0, 4, 12 }
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
@@ -89,17 +87,20 @@ int main() {
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
 
     // Define your shader as a string, or directly pass the compiled bytes
-    std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer bufa { uint a[]; };\n"
-        "layout(set = 0, binding = 1) buffer bufb { uint b[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    b[index] = a[index];\n"
-        "    a[index] = index;\n"
-        "}\n"
-    );
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer a { float pa[]; };
+        layout(set = 0, binding = 1) buffer b { float pb[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            pb[index] = pa[index];
+            pa[index] = index;
+        }
+    )");
 
     // Create tensor data in GPU
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });

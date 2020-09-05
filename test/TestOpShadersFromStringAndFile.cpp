@@ -12,17 +12,17 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor) {
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 })};
     mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
 
-    std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-        "layout(set = 0, binding = 1) buffer b { float pb[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    pb[index] = pa[index];\n"
-        "    pa[index] = index;\n"
-        "}\n"
-    );
+    std::string shader(R"(
+        #version 450
+        layout (local_size_x = 1) in;
+        layout(set = 0, binding = 0) buffer a { float pa[]; };
+        layout(set = 0, binding = 1) buffer b { float pb[]; };
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            pb[index] = pa[index];
+            pa[index] = index;
+        }
+    )");
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
             { tensorA, tensorB }, 

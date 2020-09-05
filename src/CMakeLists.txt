@@ -44,7 +44,6 @@ add_dependencies(kompute
     build_shaders
     build_single_header)
 
-
 add_library(kompute::kompute ALIAS kompute)
 
 
