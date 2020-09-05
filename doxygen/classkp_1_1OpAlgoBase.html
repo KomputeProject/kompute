@@ -101,6 +101,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2850b4021ce69814483aa5b2654ff9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e7a49cb3bd4d06bd744d0c37e9a3362"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a7e7a49cb3bd4d06bd744d0c37e9a3362">OpAlgoBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, bool copyOutputData)</td></tr>
 <tr class="separator:a7e7a49cb3bd4d06bd744d0c37e9a3362"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee634391b7ec4cb81c0df3c0e831aa08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#aee634391b7ec4cb81c0df3c0e831aa08">OpAlgoBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, bool copyOutputData, std::string shaderFilePath)</td></tr>
+<tr class="separator:aee634391b7ec4cb81c0df3c0e831aa08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a921f2bf9ee50d87e60b151f7273d72e7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a921f2bf9ee50d87e60b151f7273d72e7">OpAlgoBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, bool copyOutputData, const std::vector&lt; char &gt; &amp;shaderDataRaw)</td></tr>
+<tr class="separator:a921f2bf9ee50d87e60b151f7273d72e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97b9338bfea210a42fc9763054940bb0"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">~OpAlgoBase</a> () override</td></tr>
 <tr class="separator:a97b9338bfea210a42fc9763054940bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa9a149f16950072fa2058b5c2cc7309"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">init</a> () override</td></tr>
@@ -148,10 +152,14 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>mY</b></td></tr>
 <tr class="memitem:a0c872ad6f32f91bec29ab0d3aaec0ba1"><td class="memItemLeft" align="right" valign="top"><a id="a0c872ad6f32f91bec29ab0d3aaec0ba1"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>mZ</b></td></tr>
 <tr class="separator:a0c872ad6f32f91bec29ab0d3aaec0ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4afe18bc81ad24d4bc93c576f5102a5"><td class="memItemLeft" align="right" valign="top"><a id="ac4afe18bc81ad24d4bc93c576f5102a5"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#ac4afe18bc81ad24d4bc93c576f5102a5">mOptSpirvBinPath</a></td></tr>
-<tr class="memdesc:ac4afe18bc81ad24d4bc93c576f5102a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional member variable which can be provided for the <a class="el" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a> to find the data automatically and load for processing. <br /></td></tr>
-<tr class="separator:ac4afe18bc81ad24d4bc93c576f5102a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a808c93897a50514e7e6fc6bd36fd78bd"><td class="memItemLeft" align="right" valign="top"><a id="a808c93897a50514e7e6fc6bd36fd78bd"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">mShaderFilePath</a></td></tr>
+<tr class="memdesc:a808c93897a50514e7e6fc6bd36fd78bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional member variable which can be provided for the <a class="el" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a> to find the data automatically and load for processing. <br /></td></tr>
+<tr class="separator:a808c93897a50514e7e6fc6bd36fd78bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f2958ef21fe0bacd97bf12674711ecd"><td class="memItemLeft" align="right" valign="top"><a id="a7f2958ef21fe0bacd97bf12674711ecd"></a>
+std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">mShaderDataRaw</a></td></tr>
+<tr class="memdesc:a7f2958ef21fe0bacd97bf12674711ecd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional member variable which can be provided to contain either the raw shader content or the spirv binary content. <br /></td></tr>
+<tr class="separator:a7f2958ef21fe0bacd97bf12674711ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classkp_1_1OpBase"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classkp_1_1OpBase')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classkp_1_1OpBase.html">kp::OpBase</a></td></tr>
 <tr class="memitem:a0896d76ccfb1aca3aace9e60acbc1377 inherit pro_attribs_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top"><a id="a0896d76ccfb1aca3aace9e60acbc1377"></a>
 std::shared_ptr&lt; vk::PhysicalDevice &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#a0896d76ccfb1aca3aace9e60acbc1377">mPhysicalDevice</a></td></tr>
@@ -181,7 +189,7 @@ class kp::OpAlgoBase&lt; tX, tY, tZ &gt;</h3>
 <p>The template parameters specify the processing GPU layout number of iterations for each x, y, z parameter. More specifically, this will be the input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)" </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2850b4021ce69814483aa5b2654ff9a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2850b4021ce69814483aa5b2654ff9a9">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2850b4021ce69814483aa5b2654ff9a9">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,7 +206,7 @@ template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
 </div>
 </div>
 <a id="a7e7a49cb3bd4d06bd744d0c37e9a3362"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7e7a49cb3bd4d06bd744d0c37e9a3362">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e7a49cb3bd4d06bd744d0c37e9a3362">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -249,6 +257,140 @@ template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
     <tr><td class="paramname">device</td><td>Vulkan logical device for passing to <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> </td></tr>
     <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record commands into </td></tr>
     <tr><td class="paramname">tensors</td><td>Tensors that are to be used in this operation </td></tr>
+    <tr><td class="paramname">copyOutputData</td><td>Whether to map device data for all output tensors back to their host data vectors </td></tr>
+    <tr><td class="paramname">shaderFilePath</td><td>Optional parameter to specify the shader to load (either in spirv or raw format) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aee634391b7ec4cb81c0df3c0e831aa08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee634391b7ec4cb81c0df3c0e831aa08">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a>&lt; tX, tY, tZ &gt;::<a class="el" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a> </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; vk::PhysicalDevice &gt;&#160;</td>
+          <td class="paramname"><em>physicalDevice</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::Device &gt;&#160;</td>
+          <td class="paramname"><em>device</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>copyOutputData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>shaderFilePath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructor that enables a file to be passed to the operation with the contents of the shader. This can be either in raw format or in compiled SPIR-V binary format.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physicalDevice</td><td>Vulkan physical device used to find device queues </td></tr>
+    <tr><td class="paramname">device</td><td>Vulkan logical device for passing to <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> </td></tr>
+    <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record commands into </td></tr>
+    <tr><td class="paramname">tensors</td><td>Tensors that are to be used in this operation </td></tr>
+    <tr><td class="paramname">copyOutputData</td><td>Whether to map device data for all output tensors back to their host data vectors </td></tr>
+    <tr><td class="paramname">shaderFilePath</td><td>Optional parameter to specify the shader to load (either in spirv or raw format) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a921f2bf9ee50d87e60b151f7273d72e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a921f2bf9ee50d87e60b151f7273d72e7">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a>&lt; tX, tY, tZ &gt;::<a class="el" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a> </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; vk::PhysicalDevice &gt;&#160;</td>
+          <td class="paramname"><em>physicalDevice</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::Device &gt;&#160;</td>
+          <td class="paramname"><em>device</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>copyOutputData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; char &gt; &amp;&#160;</td>
+          <td class="paramname"><em>shaderDataRaw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructor that enables raw shader data to be passed to the main operation which can be either in raw shader glsl code or in compiled SPIR-V binary.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physicalDevice</td><td>Vulkan physical device used to find device queues </td></tr>
+    <tr><td class="paramname">device</td><td>Vulkan logical device for passing to <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> </td></tr>
+    <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record commands into </td></tr>
+    <tr><td class="paramname">tensors</td><td>Tensors that are to be used in this operation </td></tr>
+    <tr><td class="paramname">copyOutputData</td><td>Whether to map device data for all output tensors back to their host data vectors </td></tr>
+    <tr><td class="paramname">shaderDataRaw</td><td>Optional parameter to specify the shader data either in binary or raw form </td></tr>
   </table>
   </dd>
 </dl>

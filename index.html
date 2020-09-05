@@ -278,17 +278,19 @@
 <h3>The General Purpose Vulkan Compute Framework. </h3>
 </td>
 </tr>
-</table><h4>Blazing fast, lightweight, easy to set up and optimized for advanced data processing usecases.</h4><p>🔋 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Documentation</a> 💻 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Import to your project</a> ⌨ <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Tutorials</a> 💾</p>
+</table><h4>Blazing fast, lightweight, easy to set up and optimized for advanced GPU processing usecases.</h4><p>🔋 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Documentation</a> 💻 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Import to your project</a> ⌨ <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Tutorials</a> 💾</p>
 
 <h2 id="principles-features">Principles &amp; Features<a class="headerlink" href="#principles-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="single_include/kompute/Kompute.hpp">Single header</a> library for simple import to your project</p></li>
 <li><p><a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Documentation</a> leveraging doxygen and sphinx</p></li>
-<li><p>Non-Vulkan naming convention to disambiguate Vulkan vs Kompute components</p></li>
-<li><p>Extends the existing Vulkan API with a compute-specific interface</p></li>
-<li><p>BYOV: Play nice with existing Vulkan applications with a bring-your-own-Vulkan design</p></li>
-<li><p>Directed acyclic memory management and explicits relationships of ownership</p></li>
+<li><p>BYOV: Bring-your-own-Vulkan design to play nice with existing Vulkan applications</p></li>
+<li><p>Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components</p></li>
+<li><p>Fast development cycles with shader tooling, but robust static shader binary bundles for prod</p></li>
+<li><p>Explicit relationships for GPU and host memory ownership and memory management</p></li>
+<li><p>Providing <a href="#id2"><span class="problematic" id="id3">`simple usecases &lt;&gt;`_</span></a> as well as <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html">advanced machine learning &amp; data processing</a> examples</p></li>
 </ul>
+<a class="reference external image-reference" href="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
 
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
@@ -309,14 +311,12 @@
     <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span> <span class="p">}));</span>
     <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
 
-    <span class="c1">// Create tensor data in GPU</span>
+    <span class="c1">// Create tensors data in GPU</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
 
     <span class="c1">// Run Kompute operation on the parameters provided with dispatch layout</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">},</span>
-        <span class="nb">true</span><span class="p">,</span> <span class="c1">// Whether to retrieve the output from GPU memory</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+        <span class="p">{</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
 
     <span class="c1">// Prints the output which is { 0, 4, 12 }</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
@@ -331,18 +331,22 @@
     <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">}));</span>
     <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span> <span class="p">}));</span>
 
-    <span class="c1">// Define your shader as a string, or directly pass the compiled bytes</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span>
-        <span class="s">"#version 450</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"layout (local_size_x = 1) in;</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"layout(set = 0, binding = 0) buffer bufa { uint a[]; };</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"layout(set = 0, binding = 1) buffer bufb { uint b[]; };</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"void main() {</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"    uint index = gl_GlobalInvocationID.x;</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"    b[index] = a[index];</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"    a[index] = index;</span><span class="se">\n</span><span class="s">"</span>
-        <span class="s">"}</span><span class="se">\n</span><span class="s">"</span>
-    <span class="p">);</span>
+    <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
+    <span class="c1">// Or pass the raw bytes of the compiled shader as uint32_t</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+<span class="s">        #version 450</span>
+
+<span class="s">        layout (local_size_x = 1) in;</span>
+
+<span class="s">        layout(set = 0, binding = 0) buffer a { float pa[]; };</span>
+<span class="s">        layout(set = 0, binding = 1) buffer b { float pb[]; };</span>
+
+<span class="s">        void main() {</span>
+<span class="s">            uint index = gl_GlobalInvocationID.x;</span>
+<span class="s">            pb[index] = pa[index];</span>
+<span class="s">            pa[index] = index;</span>
+<span class="s">        }</span>
+<span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
     <span class="c1">// Create tensor data in GPU</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
@@ -391,24 +395,26 @@
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorRHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span> <span class="p">{</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span> <span class="p">})</span> <span class="p">};</span>
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorOutput</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">})</span> <span class="p">};</span>
 
-    <span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">constructSequence</span><span class="p">();</span>
-    <span class="c1">// Begin recoding commands</span>
-    <span class="n">sq</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+    <span class="c1">// Create a new sequence</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sqWeakPtr</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">getOrCreateManagedSequence</span><span class="p">();</span>
 
-    <span class="c1">// Record sequence of operations to be sent to GPU in batch</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">sqWeakPtr</span><span class="p">.</span><span class="n">lock</span><span class="p">())</span>
     <span class="p">{</span>
+        <span class="c1">// Begin recording commands</span>
+        <span class="n">sq</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+
+        <span class="c1">// Record batch commands to send to GPU</span>
         <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span> <span class="p">});</span>
         <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorRHS</span> <span class="p">});</span>
         <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorOutput</span> <span class="p">});</span>
-
         <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+
+        <span class="c1">// Stop recording</span>
+        <span class="n">sq</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+
+        <span class="c1">// Submit operations to GPU</span>
+        <span class="n">sq</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
     <span class="p">}</span>
-
-    <span class="c1">// Stop recording</span>
-    <span class="n">sq</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
-
-    <span class="c1">// Submit operations to GPU</span>
-    <span class="n">sq</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
 
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
@@ -420,6 +426,31 @@
 <h2 id="advanced-examples">Advanced Examples<a class="headerlink" href="#advanced-examples" title="Permalink to this headline">¶</a></h2>
 <p>We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.</p>
 <p>You can find these in the advanced examples documentation section, such as the <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html">logistic regression example</a>.</p>
+
+
+<h2 id="build-overview">Build Overview<a class="headerlink" href="#build-overview" title="Permalink to this headline">¶</a></h2>
+
+<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<p>Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies.</p>
+
+<h4 id="required-dependencies">Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h4>
+<p>The only required dependency in the build is Vulkan (vulkan.h and vulkan.hpp which are both part of the Vulkan SDK).</p>
+
+
+<h4 id="optional-dependencies">Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h4>
+<p>SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef KOMPUTE_LOG_OVERRIDE </span><span class="c1">// Use this if you want to define custom macro overrides</span>
+<span class="cp">#if KOMPUTE_SPDLOG_ENABLED </span><span class="c1">// Use this if you want to enable SPDLOG</span>
+<span class="cp">#include</span> <span class="cpf">&lt;spdlog/spdlog.h&gt;</span><span class="cp"></span>
+<span class="cp">#endif </span><span class="c1">//KOMPUTE_SPDLOG_ENABLED</span>
+<span class="c1">// ... Otherwise it adds macros that use std::cout (and only print first element)</span>
+<span class="cp">#endif </span><span class="c1">// KOMPUTE_LOG_OVERRIDE</span>
+</pre></div>
+</div>
+<p>You can choose to build with or without SPDLOG by using the cmake flag <code class="docutils literal notranslate"><span class="pre">KOMPUTE_OPT_ENABLE_SPDLOG</span></code>.</p>
+<p>Finally, remember that you will still need to set both the compile time log level with <code class="docutils literal notranslate"><span class="pre">SPDLOG_ACTIVE_LEVEL</span></code>, and the runtime log level with <code class="docutils literal notranslate"><span class="pre">spdlog::set_level(spdlog::level::debug);</span></code>.</p>
+
+
 
 
 <h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
@@ -471,7 +502,7 @@ Simplified Kompute Components
 <ul class="simple">
 <li><p>Testing</p>
 <ul>
-<li><p>Catch2</p></li>
+<li><p>GTest</p></li>
 </ul>
 </li>
 <li><p>Documentation</p>
@@ -506,12 +537,22 @@ Simplified Kompute Components
 </ul>
 
 
+<h5 id="running-tests">Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h5>
+<p>To run tests you can use the helper top level Makefile</p>
+<p>For visual studio you can run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">vs_cmake</span>
+<span class="n">make</span> <span class="n">vs_run_tests</span> <span class="n">VS_BUILD_TYPE</span><span class="o">=</span><span class="s2">"Release"</span>
+</pre></div>
+</div>
+<p>For unix you can run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">mk_cmake</span> <span class="n">MK_BUILD_TYPE</span><span class="o">=</span><span class="s2">"Release"</span>
+<span class="n">make</span> <span class="n">mk_run_tests</span>
+</pre></div>
+</div>
 
 
 
 
-<h1 id="the-komputer-is-waiting-for-instructions">The Komputer is waiting for instructions…<a class="headerlink" href="#the-komputer-is-waiting-for-instructions" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
 <h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">

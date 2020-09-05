@@ -102,7 +102,7 @@ $(function() {
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpBase destructor started&quot;</span>);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">if</span> (!this-&gt;<a class="code" href="classkp_1_1OpBase.html#aa9029cd39aa5852b066e11bfabc0dc05">mDevice</a>) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            spdlog::warn(<span class="stringliteral">&quot;Kompute OpBase destructor called with empty device&quot;</span>);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            SPDLOG_WARN(<span class="stringliteral">&quot;Kompute OpBase destructor called with empty device&quot;</span>);</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
@@ -112,7 +112,7 @@ $(function() {
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                <span class="keywordflow">if</span> (tensor &amp;&amp; tensor-&gt;isInit()) {</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                    tensor-&gt;freeMemoryDestroyGPUResources();</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    spdlog::error(<span class="stringliteral">&quot;Kompute OpBase expected to free &quot;</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    SPDLOG_ERROR(<span class="stringliteral">&quot;Kompute OpBase expected to free &quot;</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                                  <span class="stringliteral">&quot;tensor but has already been freed.&quot;</span>);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                }</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            }</div>

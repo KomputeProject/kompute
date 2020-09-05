@@ -67,6 +67,15 @@ We will have the following output vectors:
     std::shared_ptr<kp::Tensor> bOut{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
 
 
+For simplicity we will store all the tensors inside a params variable:
+
+.. code-block:: cpp
+    :linenos:
+
+    std::vector<std::shared_ptr<kp::Tensor>> params = 
+        {xI, xJ, y, wIn, wOutI, wOutJ, bIn, bOut};
+
+
 Now that we have the inputs and outputs we will be able to use them in the processing. The workflow we will be using is the following:
 
 1. Create a Sequence to record and submit GPU commands
@@ -96,28 +105,38 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 .. code-block:: cpp
     :linenos:
 
-    sq->begin();
+    {
+        // ... continuing from codeblock above
 
-    sq->record<kp::OpCreateTensor>(params);
+        sq->begin();
 
-    sq->end();
-    sq->eval();
+        sq->record<kp::OpCreateTensor>(params);
+
+        sq->end();
+        sq->eval();
 
 
 3. Record the OpAlgo with the Logistic Regresion shader
 ~~~~~~~~~~~~~~~~~~~~~~
 
+Once we re-record, all the instructions that were recorded previosuly are cleared.
+
+Because of this we can record now the new command which is just the OpAlgoBase with the LR shader.
+
 .. code-block:: cpp
     :linenos:
 
-    sq->begin();
+    {
+        // ... continuing from codeblock above
 
-    sq->record<kp::OpAlgoBase<>>(
-            params, 
-            true, // Whether to copy output from device
-            "test/shaders/glsl/test_logistic_regression.comp");
+        sq->begin();
 
-    sq->end();
+        sq->record<kp::OpAlgoBase<>>(
+                params, 
+                true, // Whether to copy output from device
+                "test/shaders/glsl/test_logistic_regression.comp");
+
+        sq->end();
 
 4. Loop across number of iterations + 4-a. Submit algo operation on LR shader
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -125,24 +144,46 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 .. code-block:: cpp
     :linenos:
 
-    // Iterate across all expected iterations
-    for (size_t i = 0; i < ITERATIONS; i++) 
     {
-        sq->eval();
+        // ... continuing from codeblock above
+
+        uint32_t ITERATIONS = 100;
+
+        for (size_t i = 0; i < ITERATIONS; i++) 
+        {
+            // Run evaluation which passes data through shader once
+            sq->eval();
 
 
-   4-b. Re-calculate weights from loss
+4-b. Re-calculate weights from loss
+~~~~~~~~~~~~~~~~~~~~~~
+
+Once the shader code is executed, we are able to use the outputs from the shader calculation.
+
+In this case we want to basically add all the calculated weights and bias from the back-prop step.
 
 .. code-block:: cpp
     :linenos:
 
-    for(size_t j = 0; j < bOut->size(); j++) {
-        wInVec[0] -= wOutI->data()[j];
-        wInVec[1] -= wOutJ->data()[j];
-        bInVec[0] -= bOut->data()[j];
-    }
-    wIn->setData(wInVec);
-    bIn->setData(bInVec);
+    {
+        // ... 
+        for (size_t i = 0; i < ITERATIONS; i++) 
+        {
+            // ... continuing from codeblock above
+
+            // Run evaluation which passes data through shader once
+            sq->eval();
+
+            // Substract the resulting weights and biases 
+            for(size_t j = 0; j < bOut->size(); j++) {
+                wInVec[0] -= wOutI->data()[j];
+                wInVec[1] -= wOutJ->data()[j];
+                bInVec[0] -= bOut->data()[j];
+            }
+            // Set the data for the GPU to use in the next iteration
+            wIn->mapDataIntoHostMemory();
+            bIn->mapDataIntoHostMemory();
+        }
 
 5. Print output weights and bias
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -151,12 +192,10 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 .. code-block:: cpp
     :linenos:
 
-    REQUIRE(wIn->data()[0] < 0.01);
-    REQUIRE(wIn->data()[1] > 1.0);
-    REQUIRE(bIn->data()[0] < 0.0);
+    std::cout << "Weight i: " << wIn->data()[0] << std::endl;
+    std::cout << "Weight j: " << wIn->data()[1] << std::endl;
+    std::cout << "Bias: " << bIn->data()[0] << std::endl;
 
-    SPDLOG_DEBUG("Result wIn: {}, bIn: {}", 
-            wIn->data(), bIn->data());
 
 Logistic Regression Compute Shader
 ------------------------

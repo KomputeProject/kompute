@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['data_67',['data',['../classkp_1_1Tensor.html#a8a2b1f7900a6cc0fa903fdd0242109ba',1,'kp::Tensor']]]
+  ['data_70',['data',['../classkp_1_1Tensor.html#a858f9a010a112983244cdf16ea0e5308',1,'kp::Tensor']]]
 ];

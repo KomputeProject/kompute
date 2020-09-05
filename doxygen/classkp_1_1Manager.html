@@ -90,6 +90,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af5ef1e29c5c4a2af3184016dc718f022"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:af5ef1e29c5c4a2af3184016dc718f022"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">evalOp</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sequenceName=KP_DEFAULT_SESSION, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:af5ef1e29c5c4a2af3184016dc718f022"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a3f54442823198af724c97c87c3dc6"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
+<tr class="memitem:ae7a3f54442823198af724c97c87c3dc6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">evalOpDefault</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, TArgs &amp;&amp;... params)</td></tr>
+<tr class="separator:ae7a3f54442823198af724c97c87c3dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base orchestrator which creates and manages device and child components </p>
@@ -219,6 +222,53 @@ template&lt;typename T , typename... TArgs&gt; </div>
           <td></td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>sequenceName</em> = <code>KP_DEFAULT_SESSION</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TArgs &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Operation that adds extra operations to existing or new created sequences.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>
+    <tr><td class="paramname">sequenceName</td><td>The name of the sequence to be retrieved or created </td></tr>
+    <tr><td class="paramname">TArgs</td><td>Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae7a3f54442823198af724c97c87c3dc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7a3f54442823198af724c97c87c3dc6">&#9670;&nbsp;</a></span>evalOpDefault()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename... TArgs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Manager::evalOpDefault </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

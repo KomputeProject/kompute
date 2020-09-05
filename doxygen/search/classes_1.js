@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['manager_55',['Manager',['../classkp_1_1Manager.html',1,'kp']]]
+  ['manager_58',['Manager',['../classkp_1_1Manager.html',1,'kp']]]
 ];

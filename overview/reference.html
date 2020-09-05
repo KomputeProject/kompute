@@ -57,7 +57,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Memory Management Principles" href="memory-management.html" />
-    <link rel="prev" title="Kompute Docs Home" href="../index.html" />
+    <link rel="prev" title="Advanced Examples" href="advanced-examples.html" />
   
    
 
@@ -209,6 +209,13 @@
     <li class="md-nav__item">
     
     
+      <a href="advanced-examples.html" class="md-nav__link">Advanced Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     <label class="md-nav__link md-nav__link--active" for="__toc"> Class Reference </label>
     
@@ -323,6 +330,20 @@
 <dl class="cpp function">
 <dt id="_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs">
 <span id="_CPPv3I0DpEN2kp7Manager6evalOpENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager6evalOpENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1af5ef1e29c5c4a2af3184016dc718f022"></span>void <code class="sig-name descname">evalOp</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, std::string <em>sequenceName</em> = KP_DEFAULT_SESSION, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="kp::Manager::evalOp::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that adds extra operations to existing or new created sequences.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sequenceName</span></code>: The name of the sequence to be retrieved or created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TArgs</span></code>: Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs">
+<span id="_CPPv3I0DpEN2kp7Manager13evalOpDefaultENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager13evalOpDefaultENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1ae7a3f54442823198af724c97c87c3dc6"></span>void <code class="sig-name descname">evalOpDefault</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="kp::Manager::evalOpDefault::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Operation that adds extra operations to existing or new created sequences.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -464,8 +485,8 @@
 <dd><p>Base constructor, should not be used unless explicitly intended. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes">
-<span id="_CPPv3N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes"></span><span id="_CPPv2N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes"></span><span id="kp::Tensor::Tensor__std::vector:uint32_t:.TensorTypes"></span><span class="target" id="classkp_1_1Tensor_1a99f9f5a2f89e826291ab3fd479829e23"></span><code class="sig-name descname">Tensor</code><span class="sig-paren">(</span>std::vector&lt;uint32_t&gt; <em>data</em>, <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6TensorENSt6vectorI8uint32_tEE11TensorTypes" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor6TensorENSt6vectorIfEE11TensorTypes">
+<span id="_CPPv3N2kp6Tensor6TensorENSt6vectorIfEE11TensorTypes"></span><span id="_CPPv2N2kp6Tensor6TensorENSt6vectorIfEE11TensorTypes"></span><span id="kp::Tensor::Tensor__std::vector:float:.TensorTypes"></span><span class="target" id="classkp_1_1Tensor_1a7ebea4b9ee382932f13590f98fc2021e"></span><code class="sig-name descname">Tensor</code><span class="sig-paren">(</span>std::vector&lt;float&gt; <em>data</em>, <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6TensorENSt6vectorIfEE11TensorTypes" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Default constructor with data provided which would be used to create the respective vulkan buffer and memory.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -493,10 +514,24 @@
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp6Tensor4dataEv">
-<span id="_CPPv3N2kp6Tensor4dataEv"></span><span id="_CPPv2N2kp6Tensor4dataEv"></span><span id="kp::Tensor::data"></span><span class="target" id="classkp_1_1Tensor_1a8a2b1f7900a6cc0fa903fdd0242109ba"></span>std::vector&lt;uint32_t&gt; <code class="sig-name descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4dataEv" title="Permalink to this definition">¶</a><br/></dt>
+<span id="_CPPv3N2kp6Tensor4dataEv"></span><span id="_CPPv2N2kp6Tensor4dataEv"></span><span id="kp::Tensor::data"></span><span class="target" id="classkp_1_1Tensor_1a858f9a010a112983244cdf16ea0e5308"></span>std::vector&lt;float&gt; &amp;<code class="sig-name descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4dataEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Returns the vector of data currently contained by the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>. It is important to ensure that there is no out-of-sync data with the GPU memory.</p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Vector of elements representing the data in the tensor. </p>
+<dt><strong>Return</strong></dt><dd><p>Reference to vector of elements representing the data in the tensor. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6TensorixEi">
+<span id="_CPPv3N2kp6TensorixEi"></span><span id="_CPPv2N2kp6TensorixEi"></span><span id="kp::Tensor::subscript-operator__i"></span><span class="target" id="classkp_1_1Tensor_1a64ff1ca98d5380cc3916e13b20f7a509"></span>float &amp;<code class="sig-name descname">operator[]</code><span class="sig-paren">(</span>int <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6TensorixEi" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Overrides the subscript operator to expose the underlying data’s subscript operator which in this case would be its underlying vector’s.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Returns the element in the position requested. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code>: The index where the element will be returned from. </p></li>
+</ul>
 </dd>
 </dl>
 </p>
@@ -537,8 +572,8 @@
 <dd><p>Returns true if the tensor initialisation function has been carried out successful, which would mean that the buffer and memory will have been provisioned. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE">
-<span id="_CPPv3N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE"></span><span id="_CPPv2N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE"></span><span id="kp::Tensor::setData__std::vector:uint32_t:CR"></span><span class="target" id="classkp_1_1Tensor_1abbefa5c6b5b579f9e48dea47bdb42002"></span>void <code class="sig-name descname">setData</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7setDataERKNSt6vectorI8uint32_tEE" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor7setDataERKNSt6vectorIfEE">
+<span id="_CPPv3N2kp6Tensor7setDataERKNSt6vectorIfEE"></span><span id="_CPPv2N2kp6Tensor7setDataERKNSt6vectorIfEE"></span><span id="kp::Tensor::setData__std::vector:float:CR"></span><span class="target" id="classkp_1_1Tensor_1a3618a3e5a86cfaad31820f9910525424"></span>void <code class="sig-name descname">setData</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;float&gt; &amp;<em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7setDataERKNSt6vectorIfEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host. </p>
 </dd></dl>
 <dl class="cpp function">
@@ -736,6 +771,42 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that are to be used in this operation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copyOutputData</span></code>: Whether to map device data for all output tensors back to their host data vectors </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shaderFilePath</span></code>: Optional parameter to specify the shader to load (either in spirv or raw format) </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbNSt6stringE">
+<span id="_CPPv3N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbNSt6stringE"></span><span id="_CPPv2N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbNSt6stringE"></span><span id="kp::OpAlgoBase::OpAlgoBase__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::R.b.ss"></span><span class="target" id="classkp_1_1OpAlgoBase_1aee634391b7ec4cb81c0df3c0e831aa08"></span><code class="sig-name descname">OpAlgoBase</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, bool <em>copyOutputData</em>, std::string <em>shaderFilePath</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbNSt6stringE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Constructor that enables a file to be passed to the operation with the contents of the shader. This can be either in raw format or in compiled SPIR-V binary format.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that are to be used in this operation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copyOutputData</span></code>: Whether to map device data for all output tensors back to their host data vectors </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shaderFilePath</span></code>: Optional parameter to specify the shader to load (either in spirv or raw format) </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbRKNSt6vectorIcEE">
+<span id="_CPPv3N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbRKNSt6vectorIcEE"></span><span id="_CPPv2N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbRKNSt6vectorIcEE"></span><span id="kp::OpAlgoBase::OpAlgoBase__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::R.b.std::vector:c:CR"></span><span class="target" id="classkp_1_1OpAlgoBase_1a921f2bf9ee50d87e60b151f7273d72e7"></span><code class="sig-name descname">OpAlgoBase</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, bool <em>copyOutputData</em>, <em class="property">const</em> std::vector&lt;char&gt; &amp;<em>shaderDataRaw</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase10OpAlgoBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEbRKNSt6vectorIcEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Constructor that enables raw shader data to be passed to the main operation which can be either in raw shader glsl code or in compiled SPIR-V binary.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that are to be used in this operation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">copyOutputData</span></code>: Whether to map device data for all output tensors back to their host data vectors </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shaderDataRaw</span></code>: Optional parameter to specify the shader data either in binary or raw form </p></li>
 </ul>
 </dd>
 </dl>
@@ -863,7 +934,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="../index.html" title="Kompute Docs Home"
+            <a href="advanced-examples.html" title="Advanced Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -872,7 +943,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Kompute Docs Home </span>
+                      class="md-footer-nav__direction"> Previous </span> Advanced Examples </span>
               </div>
             </a>
           
