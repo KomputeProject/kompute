@@ -8,25 +8,7 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensor) {
     kp::Manager mgr;
 
     std::vector<float> testVecA{ 9, 8, 7 };
-
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-
-    EXPECT_TRUE(tensorA->isInit());
-
-    EXPECT_EQ(tensorA->data(), testVecA);
-
-    tensorA->freeMemoryDestroyGPUResources();
-    EXPECT_FALSE(tensorA->isInit());
-}
-
-TEST(TestOpTensorCopy, CreateMultipleTensorSingleOp) {
-
-    kp::Manager mgr;
-
-    std::vector<float> testVecA{ 9, 8, 7 };
-    std::vector<float> testVecB{ 6, 5, 4 };
+    std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
     std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
@@ -36,76 +18,101 @@ TEST(TestOpTensorCopy, CreateMultipleTensorSingleOp) {
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    EXPECT_EQ(tensorA->data(), testVecA);
-    EXPECT_EQ(tensorB->data(), testVecB);
+    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorB});
+
+    EXPECT_EQ(tensorA->data(), tensorB->data());
+
+    // Making sure the GPU holds the same data
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorB});
+    EXPECT_EQ(tensorA->data(), tensorB->data());
 }
 
-TEST(TestOpTensorCopy, CreateMultipleTensorMultipleOp) {
+TEST(TestOpTensorCopy, CopyDeviceToStagingTensor) {
 
     kp::Manager mgr;
 
     std::vector<float> testVecA{ 9, 8, 7 };
-    std::vector<float> testVecB{ 6, 5, 4 };
+    std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB, kp::Tensor::TensorTypes::eStaging)};
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorB});
+    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA, tensorB});
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    EXPECT_EQ(tensorA->data(), testVecA);
-    EXPECT_EQ(tensorB->data(), testVecB);
+    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorB});
+
+    EXPECT_EQ(tensorA->data(), tensorB->data());
+
+    // Making sure the GPU holds the same data
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorB});
+    EXPECT_EQ(tensorA->data(), tensorB->data());
 }
 
-TEST(TestOpTensorCopy, ManageTensorMemoryWhenOpTensorCreateDestroyed) {
-
-    std::vector<float> testVecA{ 9, 8, 7 };
-    std::vector<float> testVecB{ 6, 5, 4 };
-
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
-
-    {
-        kp::Manager mgr;
-        mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-        mgr.evalOpDefault<kp::OpTensorCreate>({tensorB});
-
-        EXPECT_TRUE(tensorA->isInit());
-        EXPECT_TRUE(tensorB->isInit());
-
-        EXPECT_EQ(tensorA->data(), testVecA);
-        EXPECT_EQ(tensorB->data(), testVecB);
-    }
-
-    EXPECT_FALSE(tensorA->isInit());
-    EXPECT_FALSE(tensorB->isInit());
-}
-
-TEST(TestOpTensorCopy, NoErrorIfTensorFreedBefore) {
-
-    std::vector<float> testVecA{ 9, 8, 7 };
-    std::vector<float> testVecB{ 6, 5, 4 };
-
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+TEST(TestOpTensorCopy, CopyStagingToDeviceTensor) {
 
     kp::Manager mgr;
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorB});
+    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecB{ 0, 0, 0 };
+
+    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA, kp::Tensor::TensorTypes::eStaging)};
+    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+
+    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA, tensorB});
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    EXPECT_EQ(tensorA->data(), testVecA);
-    EXPECT_EQ(tensorB->data(), testVecB);
+    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorB});
 
-    tensorA->freeMemoryDestroyGPUResources();
-    tensorB->freeMemoryDestroyGPUResources();
-    EXPECT_FALSE(tensorA->isInit());
-    EXPECT_FALSE(tensorB->isInit());
+    EXPECT_EQ(tensorA->data(), tensorB->data());
+
+    // Making sure the GPU holds the same data
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorB});
+    EXPECT_EQ(tensorA->data(), tensorB->data());
+}
+
+TEST(TestOpTensorCopy, CopyStagingToStagingTensor) {
+
+    kp::Manager mgr;
+
+    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecB{ 0, 0, 0 };
+
+    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA, kp::Tensor::TensorTypes::eStaging)};
+    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB, kp::Tensor::TensorTypes::eStaging)};
+
+    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA, tensorB});
+
+    EXPECT_TRUE(tensorA->isInit());
+    EXPECT_TRUE(tensorB->isInit());
+
+    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorB});
+
+    EXPECT_EQ(tensorA->data(), tensorB->data());
+
+    // Making sure the GPU holds the same data
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorB});
+    EXPECT_EQ(tensorA->data(), tensorB->data());
+}
+
+TEST(TestOpTensorCopy, SingleTensorShouldFail) {
+
+    kp::Manager mgr;
+
+    std::vector<float> testVecA{ 9, 8, 7 };
+
+    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA, kp::Tensor::TensorTypes::eStaging)};
+
+    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
+
+    EXPECT_TRUE(tensorA->isInit());
+
+    EXPECT_THROW(
+        mgr.evalOpDefault<kp::OpTensorCopy>({tensorA}),
+        std::runtime_error);
 }
 

@@ -18,7 +18,7 @@ TEST(TestTensor, CopyFromHostData) {
             vecA,
             kp::Tensor::TensorTypes::eStaging);
     std::shared_ptr<kp::Tensor> tensorB = std::make_shared<kp::Tensor>(
-            vecA,
+            vecB,
             kp::Tensor::TensorTypes::eStaging);
 
     kp::Manager mgr;
@@ -35,8 +35,6 @@ TEST(TestTensor, CopyFromHostData) {
         sq->end();
 
         sq->eval();
-
-        tensorB->mapDataFromHostMemory();
     }
 
     EXPECT_EQ(tensorA->data(), tensorB->data());

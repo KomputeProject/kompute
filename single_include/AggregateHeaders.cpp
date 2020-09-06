@@ -8,5 +8,7 @@
 #include "kompute/operations/OpMult.hpp"
 #include "kompute/operations/OpTensorCreate.hpp"
 #include "kompute/operations/OpTensorCopy.hpp"
+#include "kompute/operations/OpTensorSyncDevice.hpp"
+#include "kompute/operations/OpTensorSyncLocal.hpp"
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"

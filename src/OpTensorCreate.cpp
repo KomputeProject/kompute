@@ -23,13 +23,6 @@ OpTensorCreate::OpTensorCreate(
 OpTensorCreate::~OpTensorCreate()
 {
     SPDLOG_DEBUG("Kompute OpTensorCreate destructor started");
-
-    SPDLOG_DEBUG("Kompute OpTensorCreate destroying staging tensors");
-    for (size_t i = 0; i < this->mStagingTensors.size(); i++) {
-        if (this->mStagingTensors[i]) {
-            this->mStagingTensors[i]->freeMemoryDestroyGPUResources();
-        }
-    }
 }
 
 void
@@ -65,6 +58,8 @@ OpTensorCreate::init()
             tensor->init(
               this->mPhysicalDevice, this->mDevice);
 
+            tensor->mapDataIntoHostMemory();
+
             // We push a nullptr when no staging tensor is needed to match 
             // index number in array to have one to one mapping with tensors
             this->mStagingTensors.push_back(nullptr);
@@ -80,9 +75,7 @@ OpTensorCreate::record()
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
             this->mTensors[i]->recordCopyFrom(this->mCommandBuffer, this->mStagingTensors[i], false);
-        } else if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eStaging) {
-            this->mTensors[i]->mapDataIntoHostMemory();
-        }
+        } 
     }
 }
 
@@ -91,13 +84,11 @@ OpTensorCreate::postSubmit()
 {
     SPDLOG_DEBUG("Kompute OpTensorCreate postSubmit called");
 
-    for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mStagingTensors[i]->mapDataFromHostMemory();
-
-            this->mTensors[i]->setData(this->mStagingTensors[i]->data());
-        }
-    }
+    // TODO: Remove and add a test that checks that the memory in 
+    // the staging tensor is actually storing the data
+    SPDLOG_DEBUG("Kompute OpTensorCreate destroying staging tensors");
+    // TODO: This would cause issues if there is no CPU barrier
+    this->mStagingTensors.clear();
 }
 
 }

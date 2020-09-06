@@ -40,7 +40,7 @@ OpTensorCopy::init()
             throw std::runtime_error("Kompute OpTensorCopy tensor parameter has not been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
-            throw std::runtime_error("Kompute OpTensorCopy tensor parameter is of type storage and hence cannot be used to receive or pass data.");
+            throw std::runtime_error("Kompute OpTensorCopy tensor parameter is of TensorTypes::eStorage and hence cannot be used to receive or pass data.");
         }
     }
 }

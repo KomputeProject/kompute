@@ -1,43 +1,43 @@
 
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpTensorSyncDevice.hpp"
+#include "kompute/operations/OpTensorSyncLocal.hpp"
 
 namespace kp {
 
-OpTensorSyncDevice::OpTensorSyncDevice()
+OpTensorSyncLocal::OpTensorSyncLocal()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice constructor base");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal constructor base");
 }
 
-OpTensorSyncDevice::OpTensorSyncDevice(
+OpTensorSyncLocal::OpTensorSyncLocal(
   std::shared_ptr<vk::PhysicalDevice> physicalDevice,
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal constructor with params");
 }
 
-OpTensorSyncDevice::~OpTensorSyncDevice()
+OpTensorSyncLocal::~OpTensorSyncLocal()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice destructor started");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal destructor started");
 }
 
 void
-OpTensorSyncDevice::init()
+OpTensorSyncLocal::init()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice init called");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal init called");
 
     if (this->mTensors.size() < 1) {
         throw std::runtime_error(
-          "Kompute OpTensorSyncDevice called with less than 1 tensor");
+          "Kompute OpTensorSyncLocal called with less than 1 tensor");
     }
 
     for (std::shared_ptr<Tensor> tensor: this->mTensors) {
-        if (tensor->isInit()) {
-            throw std::runtime_error("Kompute OpTensorSyncDevice: Tensor has already been initialized");
+        if (!tensor->isInit()) {
+            throw std::runtime_error("Kompute OpTensorSyncLocal: Tensor has not been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
             throw std::runtime_error("Kompute OpTensorSyncLocal tensor parameter is of type TensorTypes::eStorage and hence cannot be used to receive or pass data.");
@@ -50,13 +50,9 @@ OpTensorSyncDevice::init()
             stagingTensor->init(
               this->mPhysicalDevice, this->mDevice);
 
-            stagingTensor->mapDataIntoHostMemory();
-
             this->mStagingTensors.push_back(stagingTensor);
 
         } else {
-
-            tensor->mapDataIntoHostMemory();
 
             // We push a nullptr when no staging tensor is needed to match 
             // index number in array to have one to one mapping with tensors
@@ -66,26 +62,36 @@ OpTensorSyncDevice::init()
 }
 
 void
-OpTensorSyncDevice::record()
+OpTensorSyncLocal::record()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice record called");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mTensors[i]->recordCopyFrom(this->mCommandBuffer, this->mStagingTensors[i], false);
+            this->mStagingTensors[i]->recordCopyFrom(this->mCommandBuffer, this->mTensors[i], true);
         }
     }
 }
 
 void
-OpTensorSyncDevice::postSubmit()
+OpTensorSyncLocal::postSubmit()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice postSubmit called");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal postSubmit called");
+
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
+        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
+            this->mStagingTensors[i]->mapDataFromHostMemory();
+            this->mTensors[i]->setData(this->mStagingTensors[i]->data());
+        } else {
+            this->mTensors[i]->mapDataFromHostMemory();
+        }
+    }
 
     // Remove all staging tensors as they are not required after operation
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice destroying staging tensors");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal destroying staging tensors");
     // TODO: This would cause issues if there is no CPU barrier
     this->mStagingTensors.clear();
 }
 
 }
+

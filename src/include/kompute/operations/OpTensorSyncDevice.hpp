@@ -35,21 +35,23 @@ class OpTensorSyncDevice : public OpBase
     ~OpTensorSyncDevice() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging.
+     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging. For staging tensors in host memory, the map is performed during the init function.
      */
     void init() override;
 
     /**
-     * Records the copy commands from teh first tensor into all the other tensors provided. Also optionally records a barrier.
+     * For device tensors, it records the copy command to the device tensor from the temporary staging tensor.
      */
     void record() override;
 
     /**
-     * Copies the local vectors for all the tensors to sync the data with the gpu.
+     * Does not perform any further sync functions. Frees the staging tensors together with their respective memory.
      */
     void postSubmit() override;
 
   private:
+    // Never owned resources
+    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp

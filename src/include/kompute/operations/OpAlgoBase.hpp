@@ -304,6 +304,7 @@ OpAlgoBase<tX, tY, tZ>::record()
         }
 
         // Record copy from and create barrier for STAGING tensors
+        // TODO: This only accounts for device tensors need to account for staging and storage
         for (size_t i = 0; i < this->mTensors.size(); i++) {
             this->mOutputStagingTensors[i]->recordCopyFrom(
                 this->mCommandBuffer,

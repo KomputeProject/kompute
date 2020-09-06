@@ -42,15 +42,17 @@ class OpTensorCreate : public OpBase
     /**
      * In charge of initialising the primary Tensor as well as the staging
      * tensor as required. It will only initialise a staging tensor if the
-     * Primary tensor is of type Device.
+     * Primary tensor is of type Device. For staging tensors it performs a 
+     * mapDataIntoHostMemory which would perform immediately as opposed to 
+     * on sequence eval/submission.
      */
     void init() override;
 
     /**
      * Record runs the core actions to create the tensors. For device tensors
      * it records a copyCommand to move the data from the staging tensor to the 
-     * device tensor. For staging tensors it performs a mapDataIntoHostMemory
-     * which would perform immediately as opposed to on sequence eval/submission.
+     * device tensor. The mapping for staging tensors happens in the init function
+     * not in the record function.
      */
     void record() override;
 
