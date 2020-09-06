@@ -16,7 +16,7 @@ Tensor::Tensor()
     this->mTensorType = TensorTypes::eDevice;
 }
 
-Tensor::Tensor(std::vector<float> data, TensorTypes tensorType)
+Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType)
 {
 #if DEBUG
     SPDLOG_DEBUG(

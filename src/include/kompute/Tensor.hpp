@@ -42,7 +42,7 @@ class Tensor
      *  @param data Vector of data that will be used by the tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
-    Tensor(std::vector<float> data,
+    Tensor(const std::vector<float>& data,
            TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
