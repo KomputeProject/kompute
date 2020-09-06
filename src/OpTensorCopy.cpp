@@ -21,8 +21,6 @@ OpTensorCopy::OpTensorCopy(
 OpTensorCopy::~OpTensorCopy()
 {
     SPDLOG_DEBUG("Kompute OpTensorCopy destructor started");
-
-    SPDLOG_DEBUG("Kompute OpTensorCopy destroying staging tensors");
 }
 
 void

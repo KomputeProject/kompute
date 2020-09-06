@@ -50,14 +50,9 @@ OpTensorSyncDevice::init()
             stagingTensor->init(
               this->mPhysicalDevice, this->mDevice);
 
-            stagingTensor->mapDataIntoHostMemory();
-
             this->mStagingTensors.push_back(stagingTensor);
 
         } else {
-
-            tensor->mapDataIntoHostMemory();
-
             // We push a nullptr when no staging tensor is needed to match 
             // index number in array to have one to one mapping with tensors
             this->mStagingTensors.push_back(nullptr);
