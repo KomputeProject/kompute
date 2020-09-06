@@ -121,7 +121,11 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 
 Once we re-record, all the instructions that were recorded previosuly are cleared.
 
-Because of this we can record now the new command which is just the OpAlgoBase with the LR shader.
+Because of this we can record now the new commands which will consist of the following:
+
+1. Copy the tensor data from local to device
+2. Run the logistic regression shader
+3. Copy the output data 
 
 .. code-block:: cpp
     :linenos:
@@ -131,10 +135,14 @@ Because of this we can record now the new command which is just the OpAlgoBase w
 
         sq->begin();
 
+        sq->record<kp::OpTensorSyncDevice>({wIn, bIn});
+
         sq->record<kp::OpAlgoBase<>>(
                 params, 
-                true, // Whether to copy output from device
+                false, // Whether to copy output from device
                 "test/shaders/glsl/test_logistic_regression.comp");
+
+        sq->record<kp::OpTensorSyncLocal>({wOutI, wOutJ, bOut});
 
         sq->end();
 

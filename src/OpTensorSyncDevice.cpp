@@ -36,8 +36,8 @@ OpTensorSyncDevice::init()
     }
 
     for (std::shared_ptr<Tensor> tensor: this->mTensors) {
-        if (tensor->isInit()) {
-            throw std::runtime_error("Kompute OpTensorSyncDevice: Tensor has already been initialized");
+        if (!tensor->isInit()) {
+            throw std::runtime_error("Kompute OpTensorSyncDevice: Tensor param has not been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
             throw std::runtime_error("Kompute OpTensorSyncLocal tensor parameter is of type TensorTypes::eStorage and hence cannot be used to receive or pass data.");
@@ -78,14 +78,25 @@ OpTensorSyncDevice::record()
 }
 
 void
-OpTensorSyncDevice::postSubmit()
+OpTensorSyncDevice::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice postSubmit called");
+    SPDLOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
 
-    // Remove all staging tensors as they are not required after operation
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice destroying staging tensors");
-    // TODO: This would cause issues if there is no CPU barrier
-    this->mStagingTensors.clear();
+    // Performing sync of data as eval can be called multiple times with same op
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
+        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
+            this->mStagingTensors[i]->setData(this->mTensors[i]->data());
+            this->mStagingTensors[i]->mapDataIntoHostMemory();
+        } else {
+            this->mTensors[i]->mapDataFromHostMemory();
+        }
+    }
+}
+
+void
+OpTensorSyncDevice::postEval()
+{
+    SPDLOG_DEBUG("Kompute OpTensorSyncDevice postEval called");
 }
 
 }

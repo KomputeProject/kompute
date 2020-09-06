@@ -470,11 +470,24 @@ class OpBase
     virtual void record() = 0;
 
     /**
-     * Post submit is called after the Sequence has submitted the commands to
-     * the GPU for processing, and can be used to perform any tear-down steps
-     * required as the computation iteration finishes.
+     * Pre eval is called before the Sequence has called eval and submitted the commands to
+     * the GPU for processing, and can be used to perform any per-eval setup steps
+     * required as the computation iteration begins. It's worth noting that 
+     * there are situations where eval can be called multiple times, so the 
+     * resources that are created should be idempotent in case it's called multiple
+     * times in a row.
      */
-    virtual void postSubmit() = 0;
+    virtual void preEval() = 0;
+
+    /**
+     * Post eval is called after the Sequence has called eval and submitted the commands to
+     * the GPU for processing, and can be used to perform any tear-down steps
+     * required as the computation iteration finishes. It's worth noting that 
+     * there are situations where eval can be called multiple times, so the 
+     * resources that are destroyed should not require a re-init unless explicitly
+     * provided by the user.
+     */
+    virtual void postEval() = 0;
 
   protected:
     // -------------- NEVER OWNED RESOURCES
@@ -967,11 +980,16 @@ class OpAlgoBase : public OpBase
     virtual void record() override;
 
     /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
      * Executes after the recorded commands are submitted, and performs a copy
      * of the GPU Device memory into the staging buffer so the output data can
      * be retrieved.
      */
-    virtual void postSubmit() override;
+    virtual void postEval() override;
 
   protected:
     // -------------- NEVER OWNED RESOURCES
@@ -1162,7 +1180,14 @@ OpAlgoBase<tX, tY, tZ>::record()
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpAlgoBase<tX, tY, tZ>::postSubmit()
+OpAlgoBase<tX, tY, tZ>::preEval()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase preEval called");
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::postEval()
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
 
@@ -1555,10 +1580,15 @@ class OpTensorCreate : public OpBase
     void record() override;
 
     /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
      * Performs a copy back into the main tensor to ensure that the data
      * contained is the one that is now being stored in the GPU.
      */
-    void postSubmit() override;
+    virtual void postEval() override;
 
   private:
     // Never owned resources
@@ -1606,9 +1636,14 @@ class OpTensorCopy : public OpBase
     void record() override;
 
     /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
      * Copies the local vectors for all the tensors to sync the data with the gpu.
      */
-    void postSubmit() override;
+    virtual void postEval() override;
 
   private:
 };
@@ -1654,9 +1689,14 @@ class OpTensorSyncDevice : public OpBase
     void record() override;
 
     /**
-     * Does not perform any further sync functions. Frees the staging tensors together with their respective memory.
+     * Does not perform any preEval commands.
      */
-    void postSubmit() override;
+    virtual void preEval() override;
+
+    /**
+     * Does not perform any postEval commands.
+     */
+    virtual void postEval() override;
 
   private:
     // Never owned resources
@@ -1704,9 +1744,14 @@ class OpTensorSyncLocal : public OpBase
     void record() override;
 
     /**
-     * For host tensors it performs the map command from the host memory into local memory. Frees the staging tensors together with their respective memory.
+     * Does not perform any preEval commands.
      */
-    void postSubmit() override;
+    virtual void preEval() override;
+
+    /**
+     * For host tensors it performs the map command from the host memory into local memory.
+     */
+    virtual void postEval() override;
 
   private:
     // Never owned resources

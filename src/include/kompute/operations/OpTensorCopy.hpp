@@ -45,9 +45,14 @@ class OpTensorCopy : public OpBase
     void record() override;
 
     /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
      * Copies the local vectors for all the tensors to sync the data with the gpu.
      */
-    void postSubmit() override;
+    virtual void postEval() override;
 
   private:
 };

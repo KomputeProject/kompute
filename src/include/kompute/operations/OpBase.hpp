@@ -90,11 +90,24 @@ class OpBase
     virtual void record() = 0;
 
     /**
-     * Post submit is called after the Sequence has submitted the commands to
-     * the GPU for processing, and can be used to perform any tear-down steps
-     * required as the computation iteration finishes.
+     * Pre eval is called before the Sequence has called eval and submitted the commands to
+     * the GPU for processing, and can be used to perform any per-eval setup steps
+     * required as the computation iteration begins. It's worth noting that 
+     * there are situations where eval can be called multiple times, so the 
+     * resources that are created should be idempotent in case it's called multiple
+     * times in a row.
      */
-    virtual void postSubmit() = 0;
+    virtual void preEval() = 0;
+
+    /**
+     * Post eval is called after the Sequence has called eval and submitted the commands to
+     * the GPU for processing, and can be used to perform any tear-down steps
+     * required as the computation iteration finishes. It's worth noting that 
+     * there are situations where eval can be called multiple times, so the 
+     * resources that are destroyed should not require a re-init unless explicitly
+     * provided by the user.
+     */
+    virtual void postEval() = 0;
 
   protected:
     // -------------- NEVER OWNED RESOURCES

@@ -45,9 +45,14 @@ class OpTensorSyncDevice : public OpBase
     void record() override;
 
     /**
-     * Does not perform any further sync functions. Frees the staging tensors together with their respective memory.
+     * Does not perform any preEval commands.
      */
-    void postSubmit() override;
+    virtual void preEval() override;
+
+    /**
+     * Does not perform any postEval commands.
+     */
+    virtual void postEval() override;
 
   private:
     // Never owned resources

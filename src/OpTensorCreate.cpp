@@ -80,12 +80,15 @@ OpTensorCreate::record()
 }
 
 void
-OpTensorCreate::postSubmit()
+OpTensorCreate::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCreate postSubmit called");
+    SPDLOG_DEBUG("Kompute OpTensorCreate preEval called");
+}
 
-    SPDLOG_DEBUG("Kompute OpTensorCreate destroying staging tensors");
-    this->mStagingTensors.clear();
+void
+OpTensorCreate::postEval()
+{
+    SPDLOG_DEBUG("Kompute OpTensorCreate postEval called");
 }
 
 }

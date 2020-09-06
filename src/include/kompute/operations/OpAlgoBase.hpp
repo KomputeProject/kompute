@@ -120,12 +120,18 @@ class OpAlgoBase : public OpBase
      */
     virtual void record() override;
 
+
+    /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
     /**
      * Executes after the recorded commands are submitted, and performs a copy
      * of the GPU Device memory into the staging buffer so the output data can
      * be retrieved.
      */
-    virtual void postSubmit() override;
+    virtual void postEval() override;
 
   protected:
     // -------------- NEVER OWNED RESOURCES
@@ -316,7 +322,14 @@ OpAlgoBase<tX, tY, tZ>::record()
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
 void
-OpAlgoBase<tX, tY, tZ>::postSubmit()
+OpAlgoBase<tX, tY, tZ>::preEval()
+{
+    SPDLOG_DEBUG("Kompute OpAlgoBase preEval called");
+}
+
+template<uint32_t tX, uint32_t tY, uint32_t tZ>
+void
+OpAlgoBase<tX, tY, tZ>::postEval()
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
 

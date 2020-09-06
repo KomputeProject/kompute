@@ -57,9 +57,15 @@ OpTensorCopy::record()
 }
 
 void
-OpTensorCopy::postSubmit()
+OpTensorCopy::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy postSubmit called");
+    SPDLOG_DEBUG("Kompute OpTensorCopy preEval called");
+}
+
+void
+OpTensorCopy::postEval()
+{
+    SPDLOG_DEBUG("Kompute OpTensorCopy postEval called");
 
     // Copy the data from the first tensor into all the tensors
     for (size_t i = 1; i < this->mTensors.size(); i++) {

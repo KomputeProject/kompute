@@ -74,10 +74,17 @@ OpTensorSyncLocal::record()
 }
 
 void
-OpTensorSyncLocal::postSubmit()
+OpTensorSyncLocal::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncLocal postSubmit called");
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal preEval called");
+}
 
+void
+OpTensorSyncLocal::postEval()
+{
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal postEval called");
+
+    SPDLOG_DEBUG("Kompute OpTensorSyncLocal mapping data into tensor local");
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
             this->mStagingTensors[i]->mapDataFromHostMemory();
@@ -86,10 +93,6 @@ OpTensorSyncLocal::postSubmit()
             this->mTensors[i]->mapDataFromHostMemory();
         }
     }
-
-    // Remove all staging tensors as they are not required after operation
-    SPDLOG_DEBUG("Kompute OpTensorSyncLocal destroying staging tensors");
-    this->mStagingTensors.clear();
 }
 
 }

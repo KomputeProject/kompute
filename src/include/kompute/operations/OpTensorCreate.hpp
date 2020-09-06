@@ -57,10 +57,16 @@ class OpTensorCreate : public OpBase
     void record() override;
 
     /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
      * Performs a copy back into the main tensor to ensure that the data
      * contained is the one that is now being stored in the GPU.
      */
-    void postSubmit() override;
+    virtual void postEval() override;
+
 
   private:
     // Never owned resources

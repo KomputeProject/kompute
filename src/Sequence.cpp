@@ -125,6 +125,10 @@ Sequence::eval()
         return false;
     }
 
+    for (size_t i = 0; i < this->mOperations.size(); i++) {
+        this->mOperations[i]->preEval();
+    }
+
     const vk::PipelineStageFlags waitStageMask =
       vk::PipelineStageFlagBits::eTransfer;
     vk::SubmitInfo submitInfo(
@@ -140,7 +144,7 @@ Sequence::eval()
     this->mDevice->destroy(fence);
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
-        this->mOperations[i]->postSubmit();
+        this->mOperations[i]->postEval();
     }
 
     SPDLOG_DEBUG("Kompute sequence EVAL success");

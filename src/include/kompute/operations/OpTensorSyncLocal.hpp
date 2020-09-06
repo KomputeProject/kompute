@@ -45,9 +45,15 @@ class OpTensorSyncLocal : public OpBase
     void record() override;
 
     /**
-     * For host tensors it performs the map command from the host memory into local memory. Frees the staging tensors together with their respective memory.
+     * Does not perform any preEval commands.
      */
-    void postSubmit() override;
+    virtual void preEval() override;
+
+    /**
+     * For host tensors it performs the map command from the host memory into local memory.
+     */
+    virtual void postEval() override;
+
 
   private:
     // Never owned resources
