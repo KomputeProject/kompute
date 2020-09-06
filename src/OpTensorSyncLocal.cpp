@@ -89,7 +89,6 @@ OpTensorSyncLocal::postSubmit()
 
     // Remove all staging tensors as they are not required after operation
     SPDLOG_DEBUG("Kompute OpTensorSyncLocal destroying staging tensors");
-    // TODO: This would cause issues if there is no CPU barrier
     this->mStagingTensors.clear();
 }
 

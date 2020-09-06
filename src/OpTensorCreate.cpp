@@ -84,10 +84,7 @@ OpTensorCreate::postSubmit()
 {
     SPDLOG_DEBUG("Kompute OpTensorCreate postSubmit called");
 
-    // TODO: Remove and add a test that checks that the memory in 
-    // the staging tensor is actually storing the data
     SPDLOG_DEBUG("Kompute OpTensorCreate destroying staging tensors");
-    // TODO: This would cause issues if there is no CPU barrier
     this->mStagingTensors.clear();
 }
 
