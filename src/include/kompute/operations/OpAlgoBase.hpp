@@ -260,7 +260,7 @@ OpAlgoBase<tX, tY, tZ>::init()
             std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
               tensor->data(), Tensor::TensorTypes::eStaging);
             stagingTensor->init(
-                this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+                this->mPhysicalDevice, this->mDevice);
             this->mOutputStagingTensors.push_back(stagingTensor);
         }
     }
@@ -283,6 +283,7 @@ OpAlgoBase<tX, tY, tZ>::record()
     // Barrier to ensure the data is finished writing to buffer memory
     for (std::shared_ptr<Tensor> tensor : this->mTensors) {
         tensor->recordBufferMemoryBarrier(
+          this->mCommandBuffer,
           vk::AccessFlagBits::eHostWrite,
           vk::AccessFlagBits::eShaderRead,
           vk::PipelineStageFlagBits::eHost,
@@ -295,6 +296,7 @@ OpAlgoBase<tX, tY, tZ>::record()
         // Barrier to ensure the shader code is executed before buffer read
         for (const std::shared_ptr<Tensor>& tensor : this->mTensors) {
             tensor->recordBufferMemoryBarrier(
+              this->mCommandBuffer,
               vk::AccessFlagBits::eShaderWrite,
               vk::AccessFlagBits::eTransferRead,
               vk::PipelineStageFlagBits::eComputeShader,
@@ -304,7 +306,9 @@ OpAlgoBase<tX, tY, tZ>::record()
         // Record copy from and create barrier for STAGING tensors
         for (size_t i = 0; i < this->mTensors.size(); i++) {
             this->mOutputStagingTensors[i]->recordCopyFrom(
-                this->mTensors[i], true);
+                this->mCommandBuffer,
+                this->mTensors[i], 
+                true);
         }
     }
 }

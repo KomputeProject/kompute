@@ -15,14 +15,14 @@
 <td>
 
 <h1>Vulkan Kompute</h1>
-<h3>The General Purpose Vulkan Compute Framework. </h3>
+<h3>The General Purpose Vulkan Compute Framework.</h3>
 
 </td>
 
 </tr>
 </table>
 
-<h4>Blazing fast, lightweight, easy to set up and optimized for advanced GPU processing usecases.</h4>
+<h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4>
 
 🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Import to your project](https://axsaucedo.github.io/vulkan-kompute/) ⌨ [Tutorials](https://axsaucedo.github.io/vulkan-kompute/) 💾
 
@@ -260,8 +260,6 @@ Simplified Kompute Components
 </td>
 </tr>
 </table>
-
-
 
 ## Kompute Development
 

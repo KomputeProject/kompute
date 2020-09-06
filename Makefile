@@ -73,7 +73,8 @@ mk_run_tests: mk_build_tests
 ####### Visual studio build shortcut commands #######
 
 VS_BUILD_TYPE ?= "Debug"
-VS_CMAKE_EXTRA_FLAGS ?= ""
+# Run with multiprocessin / parallel build by default
+VS_CMAKE_EXTRA_FLAGS ?= "/MP"
 
 vs_cmake:
 	$(CMAKE_BIN) \

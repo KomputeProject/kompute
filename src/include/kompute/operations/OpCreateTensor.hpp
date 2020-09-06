@@ -47,8 +47,10 @@ class OpCreateTensor : public OpBase
     void init() override;
 
     /**
-     * Records the copy command into the GPU memory from the staging or host
-     * memory depending on the type of tensor.
+     * Record runs the core actions to create the tensors. For device tensors
+     * it records a copyCommand to move the data from the staging tensor to the 
+     * device tensor. For staging tensors it performs a mapDataIntoHostMemory
+     * which would perform immediately as opposed to on sequence eval/submission.
      */
     void record() override;
 

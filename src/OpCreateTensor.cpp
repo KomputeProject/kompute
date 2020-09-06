@@ -48,13 +48,13 @@ OpCreateTensor::init()
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
             tensor->init(
-              this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+              this->mPhysicalDevice, this->mDevice);
 
             std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
               tensor->data(), Tensor::TensorTypes::eStaging);
 
             stagingTensor->init(
-              this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+              this->mPhysicalDevice, this->mDevice);
 
             stagingTensor->mapDataIntoHostMemory();
 
@@ -63,7 +63,7 @@ OpCreateTensor::init()
         } else {
 
             tensor->init(
-              this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+              this->mPhysicalDevice, this->mDevice);
 
             // We push a nullptr when no staging tensor is needed to match 
             // index number in array to have one to one mapping with tensors
@@ -79,7 +79,9 @@ OpCreateTensor::record()
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mTensors[i]->recordCopyFrom(this->mStagingTensors[i], false);
+            this->mTensors[i]->recordCopyFrom(this->mCommandBuffer, this->mStagingTensors[i], false);
+        } else if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eStaging) {
+            this->mTensors[i]->mapDataIntoHostMemory();
         }
     }
 }

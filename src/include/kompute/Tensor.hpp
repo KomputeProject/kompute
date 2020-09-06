@@ -25,9 +25,9 @@ class Tensor
      */
     enum class TensorTypes
     {
-        eDevice = 0,
-        eStaging = 1,
-        eStorage = 2,
+        eDevice = 0, ///< Type is device memory, source and destination
+        eStaging = 1, ///< Type is host memory, source and destination
+        eStorage = 2, ///< Type is Device memory (only)
     };
 
     /**
@@ -55,8 +55,7 @@ class Tensor
      * Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer);
+              std::shared_ptr<vk::Device> device);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -119,23 +118,27 @@ class Tensor
      * thensor. This is intended to pass memory into a processing, to perform
      * a staging buffer transfer, or to gather output (between others).
      *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param copyFromTensor Tensor to copy the data from
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
+    void recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                        std::shared_ptr<Tensor> copyFromTensor,
                         bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param srcAccessMask Access flags for source access mask
      * @param dstAccessMask Access flags for destination access mask
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask,
+    void recordBufferMemoryBarrier(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                                   vk::AccessFlagBits srcAccessMask,
                                    vk::AccessFlagBits dstAccessMask,
                                    vk::PipelineStageFlagBits srcStageMask,
                                    vk::PipelineStageFlagBits dstStageMask);
@@ -163,7 +166,6 @@ class Tensor
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
-    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Buffer> mBuffer;

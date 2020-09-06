@@ -218,9 +218,9 @@ class Tensor
      */
     enum class TensorTypes
     {
-        eDevice = 0,
-        eStaging = 1,
-        eStorage = 2,
+        eDevice = 0, ///< Type is device memory, source and destination
+        eStaging = 1, ///< Type is host memory, source and destination
+        eStorage = 2, ///< Type is Device memory (only)
     };
 
     /**
@@ -248,8 +248,7 @@ class Tensor
      * Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer);
+              std::shared_ptr<vk::Device> device);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -312,23 +311,27 @@ class Tensor
      * thensor. This is intended to pass memory into a processing, to perform
      * a staging buffer transfer, or to gather output (between others).
      *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param copyFromTensor Tensor to copy the data from
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFrom(std::shared_ptr<Tensor> copyFromTensor,
+    void recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                        std::shared_ptr<Tensor> copyFromTensor,
                         bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param srcAccessMask Access flags for source access mask
      * @param dstAccessMask Access flags for destination access mask
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(vk::AccessFlagBits srcAccessMask,
+    void recordBufferMemoryBarrier(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                                   vk::AccessFlagBits srcAccessMask,
                                    vk::AccessFlagBits dstAccessMask,
                                    vk::PipelineStageFlagBits srcStageMask,
                                    vk::PipelineStageFlagBits dstStageMask);
@@ -356,7 +359,6 @@ class Tensor
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
-    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Buffer> mBuffer;
@@ -1104,7 +1106,7 @@ OpAlgoBase<tX, tY, tZ>::init()
             std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
               tensor->data(), Tensor::TensorTypes::eStaging);
             stagingTensor->init(
-                this->mPhysicalDevice, this->mDevice, this->mCommandBuffer);
+                this->mPhysicalDevice, this->mDevice);
             this->mOutputStagingTensors.push_back(stagingTensor);
         }
     }
@@ -1127,6 +1129,7 @@ OpAlgoBase<tX, tY, tZ>::record()
     // Barrier to ensure the data is finished writing to buffer memory
     for (std::shared_ptr<Tensor> tensor : this->mTensors) {
         tensor->recordBufferMemoryBarrier(
+          this->mCommandBuffer,
           vk::AccessFlagBits::eHostWrite,
           vk::AccessFlagBits::eShaderRead,
           vk::PipelineStageFlagBits::eHost,
@@ -1139,6 +1142,7 @@ OpAlgoBase<tX, tY, tZ>::record()
         // Barrier to ensure the shader code is executed before buffer read
         for (const std::shared_ptr<Tensor>& tensor : this->mTensors) {
             tensor->recordBufferMemoryBarrier(
+              this->mCommandBuffer,
               vk::AccessFlagBits::eShaderWrite,
               vk::AccessFlagBits::eTransferRead,
               vk::PipelineStageFlagBits::eComputeShader,
@@ -1148,7 +1152,9 @@ OpAlgoBase<tX, tY, tZ>::record()
         // Record copy from and create barrier for STAGING tensors
         for (size_t i = 0; i < this->mTensors.size(); i++) {
             this->mOutputStagingTensors[i]->recordCopyFrom(
-                this->mTensors[i], true);
+                this->mCommandBuffer,
+                this->mTensors[i], 
+                true);
         }
     }
 }
@@ -1327,7 +1333,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::init()
         throw std::runtime_error(
           "Kompute OpAlgoLhsRhsOut called with less than 1 tensor");
     } else if (this->mTensors.size() > 3) {
-        spdlog::warn("Kompute OpAlgoLhsRhsOut called with more than 3 this->mTensors");
+        SPDLOG_WARN("Kompute OpAlgoLhsRhsOut called with more than 3 this->mTensors");
     }
 
     this->mTensorLHS = this->mTensors[0];
@@ -1552,6 +1558,55 @@ class OpCreateTensor : public OpBase
   private:
     // Never owned resources
     std::vector<std::shared_ptr<Tensor>> mStagingTensors;
+};
+
+} // End namespace kp
+
+namespace kp {
+
+/**
+    Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it.
+*/
+class OpTensorCopy : public OpBase
+{
+  public:
+    OpTensorCopy();
+
+    /**
+     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that will be used to create in operation.
+     */
+    OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                   std::shared_ptr<vk::Device> device,
+                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                   std::vector<std::shared_ptr<Tensor>> tensors);
+
+    /**
+     * Default destructor which in this case expects the parent class to free
+     * the tensors
+     */
+    ~OpTensorCopy() override;
+
+    /**
+     * TODO
+     */
+    void init() override;
+
+    /**
+     * Records the copy commands from teh first tensor into all the other tensors provided. Also optionally records a barrier.
+     */
+    void record() override;
+
+    /**
+     * Copies the local vectors for all the tensors to sync the data with the gpu.
+     */
+    void postSubmit() override;
+
+  private:
 };
 
 } // End namespace kp

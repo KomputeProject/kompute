@@ -128,7 +128,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::init()
         throw std::runtime_error(
           "Kompute OpAlgoLhsRhsOut called with less than 1 tensor");
     } else if (this->mTensors.size() > 3) {
-        spdlog::warn("Kompute OpAlgoLhsRhsOut called with more than 3 this->mTensors");
+        SPDLOG_WARN("Kompute OpAlgoLhsRhsOut called with more than 3 this->mTensors");
     }
 
     this->mTensorLHS = this->mTensors[0];

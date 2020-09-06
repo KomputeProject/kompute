@@ -30,9 +30,7 @@ TEST(TestTensor, CopyFromHostData) {
 
         sq->record<kp::OpCreateTensor>({tensorA, tensorB});
 
-        tensorA->mapDataIntoHostMemory();
-
-        tensorB->recordCopyFrom(tensorA, true);
+        sq->record<kp::OpTensorCopy>({tensorA, tensorB});
 
         sq->end();
 
