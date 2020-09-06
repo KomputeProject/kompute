@@ -2,7 +2,7 @@
 Reference
 ========
 
-This section provides a breakdown of the cpp classes and what each of their functions provide. It is partially generated and augomented from the Doxygen autodoc content. You can also go directly to the `raw doxygen docs <doxygen/annotated.html>`_.
+This section provides a breakdown of the cpp classes and what each of their functions provide. It is partially generated and augomented from the Doxygen autodoc content. You can also go directly to the `raw doxygen docs <../doxygen/annotated.html>`_.
 
 Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.
 
@@ -72,12 +72,19 @@ OpMult
 .. image:: ../images/kompute-vulkan-architecture-opmult.jpg
    :width: 100%
 
-OpCreateTensor
+OpTensorCreate
 -------
 
-.. doxygenclass:: kp::OpCreateTensor
+.. doxygenclass:: kp::OpTensorCreate
    :members:
 
 .. image:: ../images/kompute-vulkan-architecture-opcreatetensor.jpg
    :width: 100%
+
+OpTensorCreate
+-------
+
+.. doxygenclass:: kp::OpTensorCopy
+   :members:
+
 

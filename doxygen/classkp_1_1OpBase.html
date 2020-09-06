@@ -80,12 +80,13 @@ Inheritance diagram for kp::OpBase:</div>
 <div class="dyncontent">
 <div class="center"><img src="classkp_1_1OpBase__inherit__graph.png" border="0" usemap="#akp_1_1OpBase_inherit__map" alt="Inheritance graph"/></div>
 <map name="kp_1_1OpBase_inherit__map" id="akp_1_1OpBase_inherit__map">
-<area shape="rect" title=" " alt="" coords="197,5,288,32"/>
-<area shape="rect" href="classkp_1_1OpAlgoBase.html" title=" " alt="" coords="5,80,149,121"/>
-<area shape="rect" href="classkp_1_1OpCreateTensor.html" title=" " alt="" coords="173,87,312,114"/>
-<area shape="rect" href="classkp_1_1OpAlgoBase.html" title=" " alt="" coords="337,80,477,121"/>
-<area shape="rect" href="classkp_1_1OpAlgoLhsRhsOut.html" title=" " alt="" coords="247,169,399,211"/>
-<area shape="rect" href="classkp_1_1OpMult.html" title=" " alt="" coords="423,169,558,211"/>
+<area shape="rect" title=" " alt="" coords="5,97,96,123"/>
+<area shape="rect" href="classkp_1_1OpAlgoBase.html" title=" " alt="" coords="144,5,288,47"/>
+<area shape="rect" href="classkp_1_1OpTensorCopy.html" title=" " alt="" coords="151,71,281,98"/>
+<area shape="rect" href="classkp_1_1OpTensorCreate.html" title=" " alt="" coords="147,122,285,149"/>
+<area shape="rect" href="classkp_1_1OpAlgoBase.html" title=" " alt="" coords="146,173,286,215"/>
+<area shape="rect" href="classkp_1_1OpAlgoLhsRhsOut.html" title=" " alt="" coords="336,140,488,181"/>
+<area shape="rect" href="classkp_1_1OpMult.html" title=" " alt="" coords="345,205,479,247"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -269,7 +270,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 </div><div class="memdoc">
 <p>The init function is responsible for setting up all the resources and should be called after the Operation has been created. </p>
 
-<p>Implemented in <a class="el" href="classkp_1_1OpCreateTensor.html#ad0961c7a2acec064f0253964616d0762">kp::OpCreateTensor</a>, <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a06f472575822d0a7c6ee750dcb152e30">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>, <a class="el" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>, and <a class="el" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classkp_1_1OpTensorCreate.html#a5faf4a58ab30828a64a1175fd5ca28da">kp::OpTensorCreate</a>, <a class="el" href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">kp::OpTensorCopy</a>, <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a06f472575822d0a7c6ee750dcb152e30">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>, <a class="el" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>, and <a class="el" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</a>.</p>
 
 </div>
 </div>
@@ -297,7 +298,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 </div><div class="memdoc">
 <p>Post submit is called after the <a class="el" href="classkp_1_1Sequence.html">Sequence</a> has submitted the commands to the GPU for processing, and can be used to perform any tear-down steps required as the computation iteration finishes. </p>
 
-<p>Implemented in <a class="el" href="classkp_1_1OpCreateTensor.html#a43ef24dc63dc05abc8cee693f95d5b6a">kp::OpCreateTensor</a>, <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a4146a720756d1bb1b238f19d9c403b91">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>, <a class="el" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>, and <a class="el" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classkp_1_1OpTensorCreate.html#a4a1e696fd3f49c6ae04149b5223f944f">kp::OpTensorCreate</a>, <a class="el" href="classkp_1_1OpTensorCopy.html#a5d2e999a87c6c70fd074c56a948b032b">kp::OpTensorCopy</a>, <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a4146a720756d1bb1b238f19d9c403b91">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>, <a class="el" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>, and <a class="el" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</a>.</p>
 
 </div>
 </div>
@@ -325,7 +326,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 </div><div class="memdoc">
 <p>The record function is intended to only send a record command or run commands that are expected to record operations that are to be submitted as a batch into the GPU. </p>
 
-<p>Implemented in <a class="el" href="classkp_1_1OpCreateTensor.html#a42f0876e55b1f5e74fb34504d4cd6b5b">kp::OpCreateTensor</a>, <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#ad7b2bc500b8268b3840a257dda72d82d">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>, <a class="el" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>, and <a class="el" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classkp_1_1OpTensorCreate.html#a823777887f9b48a76fe94e323885f60f">kp::OpTensorCreate</a>, <a class="el" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">kp::OpTensorCopy</a>, <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#ad7b2bc500b8268b3840a257dda72d82d">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>, <a class="el" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>, and <a class="el" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</a>.</p>
 
 </div>
 </div>

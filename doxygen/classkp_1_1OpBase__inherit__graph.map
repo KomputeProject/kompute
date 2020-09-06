@@ -1,8 +1,9 @@
 <map id="kp::OpBase" name="kp::OpBase">
-<area shape="rect" id="node1" title=" " alt="" coords="197,5,288,32"/>
-<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="5,80,149,121"/>
-<area shape="rect" id="node3" href="$classkp_1_1OpCreateTensor.html" title=" " alt="" coords="173,87,312,114"/>
-<area shape="rect" id="node4" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="337,80,477,121"/>
-<area shape="rect" id="node5" href="$classkp_1_1OpAlgoLhsRhsOut.html" title=" " alt="" coords="247,169,399,211"/>
-<area shape="rect" id="node6" href="$classkp_1_1OpMult.html" title=" " alt="" coords="423,169,558,211"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,97,96,123"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="144,5,288,47"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpTensorCopy.html" title=" " alt="" coords="151,71,281,98"/>
+<area shape="rect" id="node4" href="$classkp_1_1OpTensorCreate.html" title=" " alt="" coords="147,122,285,149"/>
+<area shape="rect" id="node5" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="146,173,286,215"/>
+<area shape="rect" id="node6" href="$classkp_1_1OpAlgoLhsRhsOut.html" title=" " alt="" coords="336,140,488,181"/>
+<area shape="rect" id="node7" href="$classkp_1_1OpMult.html" title=" " alt="" coords="345,205,479,247"/>
 </map>

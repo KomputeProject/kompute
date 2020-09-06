@@ -127,9 +127,10 @@ $(function() {
 , <a class="el" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>
 , <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a06f472575822d0a7c6ee750dcb152e30">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>
 , <a class="el" href="classkp_1_1OpBase.html#af1fb6bd20031f0a70b5ef881f88de721">kp::OpBase</a>
-, <a class="el" href="classkp_1_1OpCreateTensor.html#ad0961c7a2acec064f0253964616d0762">kp::OpCreateTensor</a>
+, <a class="el" href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">kp::OpTensorCopy</a>
+, <a class="el" href="classkp_1_1OpTensorCreate.html#a5faf4a58ab30828a64a1175fd5ca28da">kp::OpTensorCreate</a>
 , <a class="el" href="classkp_1_1Sequence.html#a437ff4b49b8ce0e4fd9f80ea2d1d3593">kp::Sequence</a>
-, <a class="el" href="classkp_1_1Tensor.html#aec6bd8edf3252869d9fb5de067ede6b4">kp::Tensor</a>
+, <a class="el" href="classkp_1_1Tensor.html#abbb298bd2aea2bd9cea4eb9a741d2de3">kp::Tensor</a>
 </li>
 <li>isInit()
 : <a class="el" href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">kp::Sequence</a>
@@ -203,14 +204,17 @@ $(function() {
 <li>OpBase()
 : <a class="el" href="classkp_1_1OpBase.html#ab84b915d9e0627590c34a1f83dad0a9e">kp::OpBase</a>
 </li>
-<li>OpCreateTensor()
-: <a class="el" href="classkp_1_1OpCreateTensor.html#a1b4c0323a99f49de2805446f881b9604">kp::OpCreateTensor</a>
-</li>
 <li>operator[]()
 : <a class="el" href="classkp_1_1Tensor.html#a64ff1ca98d5380cc3916e13b20f7a509">kp::Tensor</a>
 </li>
 <li>OpMult()
 : <a class="el" href="classkp_1_1OpMult.html#a515bc68245dcb76d266237280046d965">kp::OpMult&lt; tX, tY, tZ &gt;</a>
+</li>
+<li>OpTensorCopy()
+: <a class="el" href="classkp_1_1OpTensorCopy.html#a412de294c41e5f73d6feb5fc7880182b">kp::OpTensorCopy</a>
+</li>
+<li>OpTensorCreate()
+: <a class="el" href="classkp_1_1OpTensorCreate.html#a2675d4ffa3aade69fc2404d7642905c6">kp::OpTensorCreate</a>
 </li>
 </ul>
 
@@ -220,7 +224,8 @@ $(function() {
 : <a class="el" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>
 , <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a4146a720756d1bb1b238f19d9c403b91">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>
 , <a class="el" href="classkp_1_1OpBase.html#a38e7e80ccfd7f6d1f6ccc408610bda13">kp::OpBase</a>
-, <a class="el" href="classkp_1_1OpCreateTensor.html#a43ef24dc63dc05abc8cee693f95d5b6a">kp::OpCreateTensor</a>
+, <a class="el" href="classkp_1_1OpTensorCopy.html#a5d2e999a87c6c70fd074c56a948b032b">kp::OpTensorCopy</a>
+, <a class="el" href="classkp_1_1OpTensorCreate.html#a4a1e696fd3f49c6ae04149b5223f944f">kp::OpTensorCreate</a>
 </li>
 </ul>
 
@@ -230,14 +235,15 @@ $(function() {
 : <a class="el" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</a>
 , <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#ad7b2bc500b8268b3840a257dda72d82d">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>
 , <a class="el" href="classkp_1_1OpBase.html#a242dbf4582c0b3b1d1a1f2a2207833ef">kp::OpBase</a>
-, <a class="el" href="classkp_1_1OpCreateTensor.html#a42f0876e55b1f5e74fb34504d4cd6b5b">kp::OpCreateTensor</a>
+, <a class="el" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">kp::OpTensorCopy</a>
+, <a class="el" href="classkp_1_1OpTensorCreate.html#a823777887f9b48a76fe94e323885f60f">kp::OpTensorCreate</a>
 , <a class="el" href="classkp_1_1Sequence.html#a3cf05ff800f9bbb267be2367f554c2f4">kp::Sequence</a>
 </li>
 <li>recordBufferMemoryBarrier()
-: <a class="el" href="classkp_1_1Tensor.html#a9cba0e1dc63157342c8384d97a8441e1">kp::Tensor</a>
+: <a class="el" href="classkp_1_1Tensor.html#a2b3c387940770f7d6de891ece13190bd">kp::Tensor</a>
 </li>
 <li>recordCopyFrom()
-: <a class="el" href="classkp_1_1Tensor.html#a860ac72211724dc9fd3a74cbd3e53b04">kp::Tensor</a>
+: <a class="el" href="classkp_1_1Tensor.html#a1b54d0040e09e918620fcce44651fb24">kp::Tensor</a>
 </li>
 <li>recordDispatch()
 : <a class="el" href="classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6">kp::Algorithm</a>
@@ -290,11 +296,14 @@ $(function() {
 <li>~OpBase()
 : <a class="el" href="classkp_1_1OpBase.html#aab3aa15a2a7f6482461a1ff9de3b47af">kp::OpBase</a>
 </li>
-<li>~OpCreateTensor()
-: <a class="el" href="classkp_1_1OpCreateTensor.html#a6967f68a56a0d256827d4e625124a106">kp::OpCreateTensor</a>
-</li>
 <li>~OpMult()
 : <a class="el" href="classkp_1_1OpMult.html#af4a03dea029f0aae6ef4c50f0aa91dc0">kp::OpMult&lt; tX, tY, tZ &gt;</a>
+</li>
+<li>~OpTensorCopy()
+: <a class="el" href="classkp_1_1OpTensorCopy.html#acfde203e1614298ace93389f5fdb0564">kp::OpTensorCopy</a>
+</li>
+<li>~OpTensorCreate()
+: <a class="el" href="classkp_1_1OpTensorCreate.html#abfcfc2a3a12e1acafc25cbde1243f7f7">kp::OpTensorCreate</a>
 </li>
 <li>~Sequence()
 : <a class="el" href="classkp_1_1Sequence.html#a657bf520b64ddbd42e12095c5241ef52">kp::Sequence</a>
