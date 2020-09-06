@@ -65,7 +65,7 @@ int main() {
     auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
     // Create tensors data in GPU
-    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorLhs, tensorRhs, tensorOut });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
 
     // Run Kompute operation on the parameters provided with dispatch layout
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
@@ -104,7 +104,7 @@ int main() {
     )");
 
     // Create tensor data in GPU
-    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
     // Run Kompute operation on the parameters provided with dispatch layout
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
@@ -129,7 +129,7 @@ int main() {
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
 
     // Create tensor data in GPU
-    mgr.evalOpDefault<kp::OpCreateTensor>({ tensorA, tensorB });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
     // Run Kompute operation on the parameters provided with dispatch layout
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
@@ -163,9 +163,9 @@ int main() {
         sq.begin();
 
         // Record batch commands to send to GPU
-        sq.record<kp::OpCreateTensor>({ tensorLHS });
-        sq.record<kp::OpCreateTensor>({ tensorRHS });
-        sq.record<kp::OpCreateTensor>({ tensorOutput });
+        sq.record<kp::OpTensorCreate>({ tensorLHS });
+        sq.record<kp::OpTensorCreate>({ tensorRHS });
+        sq.record<kp::OpTensorCreate>({ tensorOutput });
         sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
         // Stop recording

@@ -1,30 +1,30 @@
 
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpCreateTensor.hpp"
+#include "kompute/operations/OpTensorCreate.hpp"
 
 namespace kp {
 
-OpCreateTensor::OpCreateTensor()
+OpTensorCreate::OpTensorCreate()
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor constructor base");
+    SPDLOG_DEBUG("Kompute OpTensorCreate constructor base");
 }
 
-OpCreateTensor::OpCreateTensor(
+OpTensorCreate::OpTensorCreate(
   std::shared_ptr<vk::PhysicalDevice> physicalDevice,
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, true)
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor constructor with params");
+    SPDLOG_DEBUG("Kompute OpTensorCreate constructor with params");
 }
 
-OpCreateTensor::~OpCreateTensor()
+OpTensorCreate::~OpTensorCreate()
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor destructor started");
+    SPDLOG_DEBUG("Kompute OpTensorCreate destructor started");
 
-    SPDLOG_DEBUG("Kompute OpCreateTensor destroying staging tensors");
+    SPDLOG_DEBUG("Kompute OpTensorCreate destroying staging tensors");
     for (size_t i = 0; i < this->mStagingTensors.size(); i++) {
         if (this->mStagingTensors[i]) {
             this->mStagingTensors[i]->freeMemoryDestroyGPUResources();
@@ -33,18 +33,18 @@ OpCreateTensor::~OpCreateTensor()
 }
 
 void
-OpCreateTensor::init()
+OpTensorCreate::init()
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor init called");
+    SPDLOG_DEBUG("Kompute OpTensorCreate init called");
 
     if (this->mTensors.size() < 1) {
         throw std::runtime_error(
-          "Kompute OpCreateTensor called with less than 1 tensor");
+          "Kompute OpTensorCreate called with less than 1 tensor");
     }
 
     for (std::shared_ptr<Tensor> tensor: this->mTensors) {
         if (tensor->isInit()) {
-            throw std::runtime_error("Kompute OpCreateTensor: Tensor has already been initialized");
+            throw std::runtime_error("Kompute OpTensorCreate: Tensor has already been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
             tensor->init(
@@ -73,9 +73,9 @@ OpCreateTensor::init()
 }
 
 void
-OpCreateTensor::record()
+OpTensorCreate::record()
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor record called");
+    SPDLOG_DEBUG("Kompute OpTensorCreate record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
@@ -87,9 +87,9 @@ OpCreateTensor::record()
 }
 
 void
-OpCreateTensor::postSubmit()
+OpTensorCreate::postSubmit()
 {
-    SPDLOG_DEBUG("Kompute OpCreateTensor postSubmit called");
+    SPDLOG_DEBUG("Kompute OpTensorCreate postSubmit called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {

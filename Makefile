@@ -101,7 +101,7 @@ vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 vs_run_tests: vs_build_tests
-	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe $(FILTER_TESTS)
+	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe --gtest_filter=$(FILTER_TESTS)
 
 ####### Create release ######
 

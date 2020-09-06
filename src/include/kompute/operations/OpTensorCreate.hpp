@@ -12,10 +12,10 @@ namespace kp {
     Operation that creates tensor and manages the memory of the components
    created
 */
-class OpCreateTensor : public OpBase
+class OpTensorCreate : public OpBase
 {
   public:
-    OpCreateTensor();
+    OpTensorCreate();
 
     /**
      * Default constructor with parameters that provides the bare minimum
@@ -28,7 +28,7 @@ class OpCreateTensor : public OpBase
      * @param tensors Tensors that will be used to create in operation.
      * @param freeTensors Whether operation manages the memory of the Tensors
      */
-    OpCreateTensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpTensorCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
                    std::vector<std::shared_ptr<Tensor>> tensors);
@@ -37,7 +37,7 @@ class OpCreateTensor : public OpBase
      * Default destructor which in this case expects the parent class to free
      * the tensors
      */
-    ~OpCreateTensor() override;
+    ~OpTensorCreate() override;
 
     /**
      * In charge of initialising the primary Tensor as well as the staging

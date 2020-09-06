@@ -9,22 +9,22 @@
 namespace kp {
 
 /**
-    Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it. The operation must only receive tensors of type 
+    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the record (as opposed to during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging.
 */
-class OpTensorCopy : public OpBase
+class OpTensorSyncDevice : public OpBase
 {
   public:
-    OpTensorCopy();
+    OpTensorSyncDevice();
 
     /**
-     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation.
+     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.
      *
      * @param physicalDevice Vulkan physical device used to find device queues
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpTensorSyncDevice(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::CommandBuffer> commandBuffer,
                    std::vector<std::shared_ptr<Tensor>> tensors);
@@ -32,10 +32,10 @@ class OpTensorCopy : public OpBase
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
      */
-    ~OpTensorCopy() override;
+    ~OpTensorSyncDevice() override;
 
     /**
-     * Performs basic checks such as ensuring there are at least two tensors provided, that they are initialised and that they are not of type TensorTypes::eStorage.
+     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging.
      */
     void init() override;
 
@@ -53,4 +53,5 @@ class OpTensorCopy : public OpBase
 };
 
 } // End namespace kp
+
 

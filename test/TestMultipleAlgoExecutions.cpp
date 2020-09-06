@@ -23,7 +23,7 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord) {
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
-        sq->record<kp::OpCreateTensor>({ tensorA });
+        sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
@@ -66,7 +66,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
-        sq->record<kp::OpCreateTensor>({ tensorA });
+        sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
@@ -122,7 +122,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences) {
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
-        sq->record<kp::OpCreateTensor>({ tensorA });
+        sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
@@ -183,7 +183,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
-        sq->record<kp::OpCreateTensor>({ tensorA });
+        sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->end();
         sq->eval();

@@ -35,7 +35,7 @@ TEST(LogisticRegressionAlgorithm, TestMainLogisticRegression) {
 
             sq->begin();
 
-            sq->record<kp::OpCreateTensor>(params);
+            sq->record<kp::OpTensorCreate>(params);
 
             sq->end();
             sq->eval();
