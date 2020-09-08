@@ -116,263 +116,275 @@ $(function() {
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
 <div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">  121</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">record</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">  128</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">postSubmit</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="comment">// -------------- NEVER OWNED RESOURCES</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="comment">// -------------- OPTIONALLY OWNED RESOURCES</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    std::shared_ptr&lt;Algorithm&gt; mAlgorithm;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordtype">bool</span> mFreeAlgorithm = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="comment">// -------------- ALWAYS OWNED RESOURCES</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aee48fd16e5a139fadd776914976d608e">  138</a></span>&#160;    std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; <a class="code" href="classkp_1_1OpAlgoBase.html#aee48fd16e5a139fadd776914976d608e">mOutputStagingTensors</a>; </div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">  139</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">mCopyOutputData</a>; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    uint32_t mX;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    uint32_t mY;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    uint32_t mZ;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">  145</a></span>&#160;    std::string <a class="code" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">mShaderFilePath</a>; </div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">  146</a></span>&#160;    std::vector&lt;char&gt; <a class="code" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">mShaderDataRaw</a>; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keyword">virtual</span> std::vector&lt;char&gt; fetchSpirvBinaryData();</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;};</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#afd651188cafc351606e4baeb329ab070">  127</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpAlgoBase.html#afd651188cafc351606e4baeb329ab070">preEval</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aedceb296e3953641fb8ad41881aa3ccf">  134</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpAlgoBase.html#aedceb296e3953641fb8ad41881aa3ccf">postEval</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="comment">// -------------- NEVER OWNED RESOURCES</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="comment">// -------------- OPTIONALLY OWNED RESOURCES</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    std::shared_ptr&lt;Algorithm&gt; mAlgorithm;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordtype">bool</span> mFreeAlgorithm = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="comment">// -------------- ALWAYS OWNED RESOURCES</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aee48fd16e5a139fadd776914976d608e">  144</a></span>&#160;    std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; <a class="code" href="classkp_1_1OpAlgoBase.html#aee48fd16e5a139fadd776914976d608e">mOutputStagingTensors</a>; </div>
+<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">  145</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">mCopyOutputData</a>; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    uint32_t mX;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    uint32_t mY;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    uint32_t mZ;</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;} <span class="comment">// End namespace kp</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="comment">// Including implemenation for template class</span></div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="preprocessor">#ifndef OPALGOBASE_IMPL</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="preprocessor">#define OPALGOBASE_IMPL</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">  151</a></span>&#160;    std::string <a class="code" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">mShaderFilePath</a>; </div>
+<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">  152</a></span>&#160;    std::vector&lt;char&gt; <a class="code" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">mShaderDataRaw</a>; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">virtual</span> std::vector&lt;char&gt; fetchSpirvBinaryData();</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;};</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keyword">namespace </span>kp {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;} <span class="comment">// End namespace kp</span></div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00160"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">  160</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>()</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;{</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase constructor base&quot;</span>);</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;}</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment">// Including implemenation for template class</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">#ifndef OPALGOBASE_IMPL</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="preprocessor">#define OPALGOBASE_IMPL</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="keyword">namespace </span>kp {</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a7e7a49cb3bd4d06bd744d0c37e9a3362">  166</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                           std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                           std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                           <span class="keywordtype">bool</span> copyOutputData)</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  : <a class="code" href="classkp_1_1OpBase.html">OpBase</a>(physicalDevice, device, commandBuffer, tensors, false)</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;{</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase constructor with params numTensors: {} copyOutputData: {}, shaderFilePath: {}&quot;</span>, tensors.size(), copyOutputData);</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// The dispatch size is set up based on either explicitly provided template</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="comment">// parameters or by default it would take the shape and size of the tensors</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordflow">if</span> (tX &gt; 0) {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="comment">// If at least the x value is provided we use mainly the parameters</span></div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;        <span class="comment">// provided</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        this-&gt;mX = tX;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        this-&gt;mY = tY &gt; 0 ? tY : 1;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        this-&gt;mZ = tZ &gt; 0 ? tZ : 1;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        this-&gt;mX = tensors[0]-&gt;size();</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        this-&gt;mY = 1;</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        this-&gt;mZ = 1;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    }</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    SPDLOG_INFO(<span class="stringliteral">&quot;Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}&quot;</span>,</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                 this-&gt;mX,</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                 this-&gt;mY,</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                 this-&gt;mZ);</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">mCopyOutputData</a> = copyOutputData;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    this-&gt;mAlgorithm = std::make_shared&lt;Algorithm&gt;(device, commandBuffer);</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;}</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aee634391b7ec4cb81c0df3c0e831aa08">  199</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                           std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                           std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                           <span class="keywordtype">bool</span> copyOutputData,</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                           std::string shaderFilePath)</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  : <a class="code" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a>(physicalDevice, device, commandBuffer, tensors, copyOutputData)</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;{</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}&quot;</span>, shaderFilePath);</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">mShaderFilePath</a> = shaderFilePath;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;}</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00213"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a921f2bf9ee50d87e60b151f7273d72e7">  213</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                           std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                           std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                           <span class="keywordtype">bool</span> copyOutputData,</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;                           <span class="keyword">const</span> std::vector&lt;char&gt;&amp; shaderDataRaw)</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  : <a class="code" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a>(physicalDevice, device, commandBuffer, tensors, copyOutputData)</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;{</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase shaderFilePath constructo with shader raw data length: {}&quot;</span>, shaderDataRaw.size());</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">mShaderDataRaw</a> = shaderDataRaw;</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;}</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">  227</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">OpAlgoBase&lt;tX, tY, tZ&gt;::~OpAlgoBase</a>()</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;{</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase destructor started&quot;</span>);</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase destroying staging tensors&quot;</span>);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; stagingTensor : this-&gt;mOutputStagingTensors) {</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;            stagingTensor-&gt;freeMemoryDestroyGPUResources();</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        }</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    }</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;}</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">  241</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">OpAlgoBase&lt;tX, tY, tZ&gt;::init</a>()</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;{</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase init called&quot;</span>);</div>
+<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">  166</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>()</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;{</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase constructor base&quot;</span>);</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;}</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00172"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a7e7a49cb3bd4d06bd744d0c37e9a3362">  172</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                           std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                           std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                           <span class="keywordtype">bool</span> copyOutputData)</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  : <a class="code" href="classkp_1_1OpBase.html">OpBase</a>(physicalDevice, device, commandBuffer, tensors, false)</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;{</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase constructor with params numTensors: {} copyOutputData: {}, shaderFilePath: {}&quot;</span>, tensors.size(), copyOutputData);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="comment">// The dispatch size is set up based on either explicitly provided template</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="comment">// parameters or by default it would take the shape and size of the tensors</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    <span class="keywordflow">if</span> (tX &gt; 0) {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="comment">// If at least the x value is provided we use mainly the parameters</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="comment">// provided</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        this-&gt;mX = tX;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        this-&gt;mY = tY &gt; 0 ? tY : 1;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        this-&gt;mZ = tZ &gt; 0 ? tZ : 1;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        this-&gt;mX = tensors[0]-&gt;size();</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        this-&gt;mY = 1;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;        this-&gt;mZ = 1;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    }</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    SPDLOG_INFO(<span class="stringliteral">&quot;Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}&quot;</span>,</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                 this-&gt;mX,</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                 this-&gt;mY,</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                 this-&gt;mZ);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">mCopyOutputData</a> = copyOutputData;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    this-&gt;mAlgorithm = std::make_shared&lt;Algorithm&gt;(device, commandBuffer);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;}</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00205"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aee634391b7ec4cb81c0df3c0e831aa08">  205</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                           std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;                           std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                           <span class="keywordtype">bool</span> copyOutputData,</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                           std::string shaderFilePath)</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  : <a class="code" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a>(physicalDevice, device, commandBuffer, tensors, copyOutputData)</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;{</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}&quot;</span>, shaderFilePath);</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">mShaderFilePath</a> = shaderFilePath;</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;}</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a921f2bf9ee50d87e60b151f7273d72e7">  219</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">OpAlgoBase&lt;tX, tY, tZ&gt;::OpAlgoBase</a>(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                           std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                           std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                           <span class="keywordtype">bool</span> copyOutputData,</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                           <span class="keyword">const</span> std::vector&lt;char&gt;&amp; shaderDataRaw)</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  : <a class="code" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a>(physicalDevice, device, commandBuffer, tensors, copyOutputData)</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;{</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase shaderFilePath constructo with shader raw data length: {}&quot;</span>, shaderDataRaw.size());</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    this-&gt;<a class="code" href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">mShaderDataRaw</a> = shaderDataRaw;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;}</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">  233</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">OpAlgoBase&lt;tX, tY, tZ&gt;::~OpAlgoBase</a>()</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;{</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase destructor started&quot;</span>);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase destroying staging tensors&quot;</span>);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; stagingTensor : this-&gt;mOutputStagingTensors) {</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            stagingTensor-&gt;freeMemoryDestroyGPUResources();</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    }</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;}</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mTensors.size() &lt; 1) {</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;          <span class="stringliteral">&quot;Kompute OpAlgoBase called with less than 1 tensor&quot;</span>);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    } </div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        <span class="keywordflow">if</span>(!tensor-&gt;isInit()) {</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Kompute OpAlgoBase validation failed; all tensor parameters must be initialised.&quot;</span>);</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    }</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="keywordtype">void</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">  247</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">OpAlgoBase&lt;tX, tY, tZ&gt;::init</a>()</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;{</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase init called&quot;</span>);</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mTensors.size() &lt; 1) {</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;          <span class="stringliteral">&quot;Kompute OpAlgoBase called with less than 1 tensor&quot;</span>);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    } </div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase creating staging output tensors&quot;</span>);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            std::shared_ptr&lt;Tensor&gt; stagingTensor = std::make_shared&lt;Tensor&gt;(</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;              tensor-&gt;data(), <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5">Tensor::TensorTypes::eStaging</a>);</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            stagingTensor-&gt;init(</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                this-&gt;mPhysicalDevice, this-&gt;mDevice);</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            this-&gt;mOutputStagingTensors.push_back(stagingTensor);</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        }</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    }</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase fetching spirv data&quot;</span>);</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    std::vector&lt;char&gt;&amp; shaderFileData = this-&gt;fetchSpirvBinaryData();</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase Initialising algorithm component&quot;</span>);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">if</span>(!tensor-&gt;isInit()) {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Kompute OpAlgoBase validation failed; all tensor parameters must be initialised.&quot;</span>);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    }</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase creating staging output tensors&quot;</span>);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            std::shared_ptr&lt;Tensor&gt; stagingTensor = std::make_shared&lt;Tensor&gt;(</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;              tensor-&gt;data(), <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5">Tensor::TensorTypes::eStaging</a>);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            stagingTensor-&gt;init(</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                this-&gt;mPhysicalDevice, this-&gt;mDevice);</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            this-&gt;mOutputStagingTensors.push_back(stagingTensor);</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        }</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    }</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    this-&gt;mAlgorithm-&gt;init(shaderFileData, this-&gt;mTensors);</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;}</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00279"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">  279</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">OpAlgoBase&lt;tX, tY, tZ&gt;::record</a>()</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;{</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase record called&quot;</span>);</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase fetching spirv data&quot;</span>);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    std::vector&lt;char&gt;&amp; shaderFileData = this-&gt;fetchSpirvBinaryData();</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase Initialising algorithm component&quot;</span>);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    this-&gt;mAlgorithm-&gt;init(shaderFileData, this-&gt;mTensors);</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;}</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <span class="comment">// Barrier to ensure the data is finished writing to buffer memory</span></div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        tensor-&gt;recordBufferMemoryBarrier(</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;          this-&gt;mCommandBuffer,</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;          vk::AccessFlagBits::eHostWrite,</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;          vk::AccessFlagBits::eShaderRead,</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;          vk::PipelineStageFlagBits::eHost,</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;          vk::PipelineStageFlagBits::eComputeShader);</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    }</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    this-&gt;mAlgorithm-&gt;recordDispatch(this-&gt;mX, this-&gt;mY, this-&gt;mZ);</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        <span class="comment">// Barrier to ensure the shader code is executed before buffer read</span></div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> std::shared_ptr&lt;Tensor&gt;&amp; tensor : this-&gt;mTensors) {</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;            tensor-&gt;recordBufferMemoryBarrier(</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;              this-&gt;mCommandBuffer,</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;              vk::AccessFlagBits::eShaderWrite,</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;              vk::AccessFlagBits::eTransferRead,</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;              vk::PipelineStageFlagBits::eComputeShader,</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;              vk::PipelineStageFlagBits::eTransfer);</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        }</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        <span class="comment">// Record copy from and create barrier for STAGING tensors</span></div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; this-&gt;mTensors.size(); i++) {</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            this-&gt;mOutputStagingTensors[i]-&gt;recordCopyFrom(</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                this-&gt;mCommandBuffer,</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                this-&gt;mTensors[i], </div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        }</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    }</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;}</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160; </div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="keywordtype">void</span></div>
-<div class="line"><a name="l00318"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">  318</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">OpAlgoBase&lt;tX, tY, tZ&gt;::postSubmit</a>()</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;{</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase postSubmit called&quot;</span>);</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160; </div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; this-&gt;mTensors.size(); i++) {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            this-&gt;mOutputStagingTensors[i]-&gt;mapDataFromHostMemory();</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            this-&gt;mTensors[i]-&gt;setData(this-&gt;mOutputStagingTensors[i]-&gt;data());</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        }</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    }</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;}</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;std::vector&lt;char&gt; <a class="code" href="classkp_1_1OpAlgoBase.html">OpAlgoBase&lt;tX, tY, tZ&gt;::fetchSpirvBinaryData</a>() </div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="keywordtype">void</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">  285</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">OpAlgoBase&lt;tX, tY, tZ&gt;::record</a>()</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;{</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase record called&quot;</span>);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160; </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    <span class="comment">// Barrier to ensure the data is finished writing to buffer memory</span></div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    <span class="keywordflow">for</span> (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        tensor-&gt;recordBufferMemoryBarrier(</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;          this-&gt;mCommandBuffer,</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;          vk::AccessFlagBits::eHostWrite,</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;          vk::AccessFlagBits::eShaderRead,</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;          vk::PipelineStageFlagBits::eHost,</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;          vk::PipelineStageFlagBits::eComputeShader);</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    }</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    this-&gt;mAlgorithm-&gt;recordDispatch(this-&gt;mX, this-&gt;mY, this-&gt;mZ);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="comment">// Barrier to ensure the shader code is executed before buffer read</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> std::shared_ptr&lt;Tensor&gt;&amp; tensor : this-&gt;mTensors) {</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;            tensor-&gt;recordBufferMemoryBarrier(</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;              this-&gt;mCommandBuffer,</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;              vk::AccessFlagBits::eShaderWrite,</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;              vk::AccessFlagBits::eTransferRead,</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;              vk::PipelineStageFlagBits::eComputeShader,</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;              vk::PipelineStageFlagBits::eTransfer);</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        }</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160; </div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="comment">// Record copy from and create barrier for STAGING tensors</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <span class="comment">// TODO: This only accounts for device tensors need to account for staging and storage</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; this-&gt;mTensors.size(); i++) {</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;            this-&gt;mOutputStagingTensors[i]-&gt;recordCopyFrom(</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                this-&gt;mCommandBuffer,</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                this-&gt;mTensors[i], </div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        }</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    }</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;}</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="keywordtype">void</span></div>
+<div class="line"><a name="l00325"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#afd651188cafc351606e4baeb329ab070">  325</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#afd651188cafc351606e4baeb329ab070">OpAlgoBase&lt;tX, tY, tZ&gt;::preEval</a>()</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;{</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase preEval called&quot;</span>);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;}</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;<span class="keywordtype">void</span></div>
+<div class="line"><a name="l00332"></a><span class="lineno"><a class="line" href="classkp_1_1OpAlgoBase.html#aedceb296e3953641fb8ad41881aa3ccf">  332</a></span>&#160;<a class="code" href="classkp_1_1OpAlgoBase.html#aedceb296e3953641fb8ad41881aa3ccf">OpAlgoBase&lt;tX, tY, tZ&gt;::postEval</a>()</div>
 <div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;{</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    SPDLOG_WARN(</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;      <span class="stringliteral">&quot;Kompute OpAlgoBase Running shaders directly from spirv file&quot;</span>);</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mShaderFilePath.size()) {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        std::ifstream fileStream(this-&gt;mShaderFilePath,</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                                 std::ios::binary | std::ios::in | std::ios::ate);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        <span class="keywordflow">if</span> (!fileStream.good()) {</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Error reading file: &quot;</span> + this-&gt;mShaderFilePath);</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        }</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase postSubmit called&quot;</span>);</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mCopyOutputData) {</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; this-&gt;mTensors.size(); i++) {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            this-&gt;mOutputStagingTensors[i]-&gt;mapDataFromHostMemory();</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            this-&gt;mTensors[i]-&gt;setData(this-&gt;mOutputStagingTensors[i]-&gt;data());</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;        }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    }</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;}</div>
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="keywordtype">size_t</span> shaderFileSize = fileStream.tellg();</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        fileStream.seekg(0, std::ios::beg);</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;        <span class="keywordtype">char</span>* shaderDataRaw = <span class="keyword">new</span> <span class="keywordtype">char</span>[shaderFileSize];</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        fileStream.read(shaderDataRaw, shaderFileSize);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        fileStream.close();</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;<span class="keyword">template</span>&lt;u<span class="keywordtype">int</span>32_t tX, u<span class="keywordtype">int</span>32_t tY, u<span class="keywordtype">int</span>32_t tZ&gt;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;std::vector&lt;char&gt; <a class="code" href="classkp_1_1OpAlgoBase.html">OpAlgoBase&lt;tX, tY, tZ&gt;::fetchSpirvBinaryData</a>() </div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;{</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    SPDLOG_WARN(</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;      <span class="stringliteral">&quot;Kompute OpAlgoBase Running shaders directly from spirv file&quot;</span>);</div>
 <div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; </div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        SPDLOG_WARN(</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;          <span class="stringliteral">&quot;Kompute OpAlgoBase fetched {} bytes&quot;</span>, shaderFileSize);</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160; </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        <span class="keywordflow">return</span> std::vector&lt;char&gt;(shaderDataRaw,</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                                 shaderDataRaw + shaderFileSize);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    }</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (this-&gt;mShaderDataRaw.size()) {</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <span class="keywordflow">return</span> this-&gt;mShaderDataRaw;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    }</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Kompute OpAlgoBase Error reached fetchSpirvBinaryData but neither filepath nor data provided&quot;</span>);</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    }</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;}</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="keywordflow">if</span> (this-&gt;mShaderFilePath.size()) {</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        std::ifstream fileStream(this-&gt;mShaderFilePath,</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                                 std::ios::binary | std::ios::in | std::ios::ate);</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        <span class="keywordflow">if</span> (!fileStream.good()) {</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;            <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Error reading file: &quot;</span> + this-&gt;mShaderFilePath);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        }</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="keywordtype">size_t</span> shaderFileSize = fileStream.tellg();</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        fileStream.seekg(0, std::ios::beg);</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <span class="keywordtype">char</span>* shaderDataRaw = <span class="keyword">new</span> <span class="keywordtype">char</span>[shaderFileSize];</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        fileStream.read(shaderDataRaw, shaderFileSize);</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        fileStream.close();</div>
 <div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;}</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="preprocessor">#endif // #ifndef OPALGOBASE_IMPL</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        SPDLOG_WARN(</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;          <span class="stringliteral">&quot;Kompute OpAlgoBase fetched {} bytes&quot;</span>, shaderFileSize);</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        <span class="keywordflow">return</span> std::vector&lt;char&gt;(shaderDataRaw,</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                                 shaderDataRaw + shaderFileSize);</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    }</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (this-&gt;mShaderDataRaw.size()) {</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keywordflow">return</span> this-&gt;mShaderDataRaw;</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;Kompute OpAlgoBase Error reached fetchSpirvBinaryData but neither filepath nor data provided&quot;</span>);</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    }</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;}</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;}</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">#endif // #ifndef OPALGOBASE_IMPL</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasskp_1_1OpAlgoBase_html"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a></div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:37</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a808c93897a50514e7e6fc6bd36fd78bd"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">kp::OpAlgoBase::mShaderFilePath</a></div><div class="ttdeci">std::string mShaderFilePath</div><div class="ttdoc">Optional member variable which can be provided for the OpAlgoBase to find the data automatically and ...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:145</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a09f543be8d6a630fd789d08d62faa57d"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase::record</a></div><div class="ttdeci">virtual void record() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:279</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a2850b4021ce69814483aa5b2654ff9a9"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase()</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:160</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a873cbb7788c645bcb3c33d43052f8595"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">kp::OpAlgoBase::mCopyOutputData</a></div><div class="ttdeci">bool mCopyOutputData</div><div class="ttdoc">Configuration parameter which states whether data will be copied back to all provided tensors for con...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:139</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a2c90552db4b85ff0b503568ad98786d1"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">kp::OpAlgoBase::postSubmit</a></div><div class="ttdeci">virtual void postSubmit() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:318</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a97b9338bfea210a42fc9763054940bb0"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">kp::OpAlgoBase::~OpAlgoBase</a></div><div class="ttdeci">virtual ~OpAlgoBase() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:227</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aee48fd16e5a139fadd776914976d608e"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aee48fd16e5a139fadd776914976d608e">kp::OpAlgoBase::mOutputStagingTensors</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Tensor &gt; &gt; mOutputStagingTensors</div><div class="ttdoc">Array of output staging tensors which will be expected to be the same size as the number of inputs.</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:138</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a808c93897a50514e7e6fc6bd36fd78bd"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a808c93897a50514e7e6fc6bd36fd78bd">kp::OpAlgoBase::mShaderFilePath</a></div><div class="ttdeci">std::string mShaderFilePath</div><div class="ttdoc">Optional member variable which can be provided for the OpAlgoBase to find the data automatically and ...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:151</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a09f543be8d6a630fd789d08d62faa57d"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">kp::OpAlgoBase::record</a></div><div class="ttdeci">virtual void record() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:285</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a2850b4021ce69814483aa5b2654ff9a9"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a2850b4021ce69814483aa5b2654ff9a9">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase()</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:166</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a873cbb7788c645bcb3c33d43052f8595"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a873cbb7788c645bcb3c33d43052f8595">kp::OpAlgoBase::mCopyOutputData</a></div><div class="ttdeci">bool mCopyOutputData</div><div class="ttdoc">Configuration parameter which states whether data will be copied back to all provided tensors for con...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:145</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a97b9338bfea210a42fc9763054940bb0"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a97b9338bfea210a42fc9763054940bb0">kp::OpAlgoBase::~OpAlgoBase</a></div><div class="ttdeci">virtual ~OpAlgoBase() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:233</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aee48fd16e5a139fadd776914976d608e"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aee48fd16e5a139fadd776914976d608e">kp::OpAlgoBase::mOutputStagingTensors</a></div><div class="ttdeci">std::vector&lt; std::shared_ptr&lt; Tensor &gt; &gt; mOutputStagingTensors</div><div class="ttdoc">Array of output staging tensors which will be expected to be the same size as the number of inputs.</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:144</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_afd651188cafc351606e4baeb329ab070"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#afd651188cafc351606e4baeb329ab070">kp::OpAlgoBase::preEval</a></div><div class="ttdeci">virtual void preEval() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:325</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aedceb296e3953641fb8ad41881aa3ccf"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aedceb296e3953641fb8ad41881aa3ccf">kp::OpAlgoBase::postEval</a></div><div class="ttdeci">virtual void postEval() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:332</div></div>
 <div class="ttc" id="aclasskp_1_1OpBase_html"><div class="ttname"><a href="classkp_1_1OpBase.html">kp::OpBase</a></div><div class="ttdef"><b>Definition:</b> OpBase.hpp:18</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aee634391b7ec4cb81c0df3c0e831aa08"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aee634391b7ec4cb81c0df3c0e831aa08">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors, bool copyOutputData, std::string shaderFilePath)</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:199</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aee634391b7ec4cb81c0df3c0e831aa08"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aee634391b7ec4cb81c0df3c0e831aa08">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors, bool copyOutputData, std::string shaderFilePath)</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:205</div></div>
 <div class="ttc" id="aclasskp_1_1Tensor_html_a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5"><div class="ttname"><a href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5">kp::Tensor::TensorTypes::eStaging</a></div><div class="ttdeci">@ eStaging</div><div class="ttdoc">Type is host memory, source and destination.</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a7e7a49cb3bd4d06bd744d0c37e9a3362"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a7e7a49cb3bd4d06bd744d0c37e9a3362">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors, bool copyOutputData)</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:166</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aaa9a149f16950072fa2058b5c2cc7309"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase::init</a></div><div class="ttdeci">virtual void init() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:241</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a921f2bf9ee50d87e60b151f7273d72e7"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a921f2bf9ee50d87e60b151f7273d72e7">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors, bool copyOutputData, const std::vector&lt; char &gt; &amp;shaderDataRaw)</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:213</div></div>
-<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a7f2958ef21fe0bacd97bf12674711ecd"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">kp::OpAlgoBase::mShaderDataRaw</a></div><div class="ttdeci">std::vector&lt; char &gt; mShaderDataRaw</div><div class="ttdoc">Optional member variable which can be provided to contain either the raw shader content or the spirv ...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:146</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a7e7a49cb3bd4d06bd744d0c37e9a3362"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a7e7a49cb3bd4d06bd744d0c37e9a3362">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors, bool copyOutputData)</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:172</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_aaa9a149f16950072fa2058b5c2cc7309"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#aaa9a149f16950072fa2058b5c2cc7309">kp::OpAlgoBase::init</a></div><div class="ttdeci">virtual void init() override</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:247</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a921f2bf9ee50d87e60b151f7273d72e7"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a921f2bf9ee50d87e60b151f7273d72e7">kp::OpAlgoBase::OpAlgoBase</a></div><div class="ttdeci">OpAlgoBase(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; &amp;tensors, bool copyOutputData, const std::vector&lt; char &gt; &amp;shaderDataRaw)</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:219</div></div>
+<div class="ttc" id="aclasskp_1_1OpAlgoBase_html_a7f2958ef21fe0bacd97bf12674711ecd"><div class="ttname"><a href="classkp_1_1OpAlgoBase.html#a7f2958ef21fe0bacd97bf12674711ecd">kp::OpAlgoBase::mShaderDataRaw</a></div><div class="ttdeci">std::vector&lt; char &gt; mShaderDataRaw</div><div class="ttdoc">Optional member variable which can be provided to contain either the raw shader content or the spirv ...</div><div class="ttdef"><b>Definition:</b> OpAlgoBase.hpp:152</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20

@@ -89,24 +89,27 @@ $(function() {
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                   std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                   std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors);</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#acfde203e1614298ace93389f5fdb0564">   36</a></span>&#160;    <a class="code" href="classkp_1_1OpTensorCopy.html#acfde203e1614298ace93389f5fdb0564">~OpTensorCopy</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">   41</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">init</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">   46</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">record</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#a5d2e999a87c6c70fd074c56a948b032b">   51</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#a5d2e999a87c6c70fd074c56a948b032b">postSubmit</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;};</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;} <span class="comment">// End namespace kp</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#acfde203e1614298ace93389f5fdb0564">   35</a></span>&#160;    <a class="code" href="classkp_1_1OpTensorCopy.html#acfde203e1614298ace93389f5fdb0564">~OpTensorCopy</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">   40</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">init</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">   45</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">record</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#ab405b3c1db34b2cb9b48d36a1101baa6">   50</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#ab405b3c1db34b2cb9b48d36a1101baa6">preEval</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classkp_1_1OpTensorCopy.html#adb73b3854dcf4ecb7711cd0d9d7af3bf">   55</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classkp_1_1OpTensorCopy.html#adb73b3854dcf4ecb7711cd0d9d7af3bf">postEval</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;};</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;} <span class="comment">// End namespace kp</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasskp_1_1OpTensorCopy_html"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html">kp::OpTensorCopy</a></div><div class="ttdef"><b>Definition:</b> OpTensorCopy.hpp:15</div></div>
-<div class="ttc" id="aclasskp_1_1OpTensorCopy_html_a5d2e999a87c6c70fd074c56a948b032b"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#a5d2e999a87c6c70fd074c56a948b032b">kp::OpTensorCopy::postSubmit</a></div><div class="ttdeci">void postSubmit() override</div></div>
+<div class="ttc" id="aclasskp_1_1OpTensorCopy_html_ab405b3c1db34b2cb9b48d36a1101baa6"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#ab405b3c1db34b2cb9b48d36a1101baa6">kp::OpTensorCopy::preEval</a></div><div class="ttdeci">virtual void preEval() override</div></div>
 <div class="ttc" id="aclasskp_1_1OpTensorCopy_html_a0f2c124b5193e9f6df3485466c1dc136"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#a0f2c124b5193e9f6df3485466c1dc136">kp::OpTensorCopy::init</a></div><div class="ttdeci">void init() override</div></div>
 <div class="ttc" id="aclasskp_1_1OpTensorCopy_html_a412de294c41e5f73d6feb5fc7880182b"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#a412de294c41e5f73d6feb5fc7880182b">kp::OpTensorCopy::OpTensorCopy</a></div><div class="ttdeci">OpTensorCopy(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors)</div></div>
+<div class="ttc" id="aclasskp_1_1OpTensorCopy_html_adb73b3854dcf4ecb7711cd0d9d7af3bf"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#adb73b3854dcf4ecb7711cd0d9d7af3bf">kp::OpTensorCopy::postEval</a></div><div class="ttdeci">virtual void postEval() override</div></div>
 <div class="ttc" id="aclasskp_1_1OpTensorCopy_html_acfde203e1614298ace93389f5fdb0564"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#acfde203e1614298ace93389f5fdb0564">kp::OpTensorCopy::~OpTensorCopy</a></div><div class="ttdeci">~OpTensorCopy() override</div></div>
 <div class="ttc" id="aclasskp_1_1OpBase_html"><div class="ttname"><a href="classkp_1_1OpBase.html">kp::OpBase</a></div><div class="ttdef"><b>Definition:</b> OpBase.hpp:18</div></div>
 <div class="ttc" id="aclasskp_1_1OpTensorCopy_html_a85aa269cd3ddc507b8ae33f84ff1158b"><div class="ttname"><a href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">kp::OpTensorCopy::record</a></div><div class="ttdeci">void record() override</div></div>

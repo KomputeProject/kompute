@@ -399,7 +399,12 @@
 
 <h3 id="record-the-opalgo-with-the-logistic-regresion-shader">3. Record the OpAlgo with the Logistic Regresion shader<a class="headerlink" href="#record-the-opalgo-with-the-logistic-regresion-shader" title="Permalink to this headline">¶</a></h3>
 <p>Once we re-record, all the instructions that were recorded previosuly are cleared.</p>
-<p>Because of this we can record now the new command which is just the OpAlgoBase with the LR shader.</p>
+<p>Because of this we can record now the new commands which will consist of the following:</p>
+<ol class="arabic simple">
+<li><p>Copy the tensor data from local to device</p></li>
+<li><p>Run the logistic regression shader</p></li>
+<li><p>Copy the output data</p></li>
+</ol>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -410,15 +415,23 @@
  8
  9
 10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="c1">// ... continuing from codeblock above</span>
 
     <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
 
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">wIn</span><span class="p">,</span> <span class="n">bIn</span><span class="p">});</span>
+
     <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
             <span class="n">params</span><span class="p">,</span>
-            <span class="nb">true</span><span class="p">,</span> <span class="c1">// Whether to copy output from device</span>
+            <span class="nb">false</span><span class="p">,</span> <span class="c1">// Whether to copy output from device</span>
             <span class="s">"test/shaders/glsl/test_logistic_regression.comp"</span><span class="p">);</span>
+
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="n">wOutI</span><span class="p">,</span> <span class="n">wOutJ</span><span class="p">,</span> <span class="n">bOut</span><span class="p">});</span>
 
     <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
 </pre></div>

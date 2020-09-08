@@ -78,7 +78,7 @@ $(function() {
 Inheritance diagram for kp::OpTensorCreate:</div>
 <div class="dyncontent">
 <div class="center"><img src="classkp_1_1OpTensorCreate__inherit__graph.png" border="0" usemap="#akp_1_1OpTensorCreate_inherit__map" alt="Inheritance graph"/></div>
-<map name="kp_1_1OpTensorCreate_inherit__map" id="akp_1_1OpTensorCreate_inherit__map">
+<map name="kp_1_1OpTensorCreate_inherit__map" id="kp_1_1OpTensorCreate_inherit__map">
 <area shape="rect" title=" " alt="" coords="5,80,144,107"/>
 <area shape="rect" href="classkp_1_1OpBase.html" title=" " alt="" coords="29,5,120,32"/>
 </map>
@@ -87,7 +87,7 @@ Inheritance diagram for kp::OpTensorCreate:</div>
 Collaboration diagram for kp::OpTensorCreate:</div>
 <div class="dyncontent">
 <div class="center"><img src="classkp_1_1OpTensorCreate__coll__graph.png" border="0" usemap="#akp_1_1OpTensorCreate_coll__map" alt="Collaboration graph"/></div>
-<map name="kp_1_1OpTensorCreate_coll__map" id="akp_1_1OpTensorCreate_coll__map">
+<map name="kp_1_1OpTensorCreate_coll__map" id="kp_1_1OpTensorCreate_coll__map">
 <area shape="rect" title=" " alt="" coords="5,80,144,107"/>
 <area shape="rect" href="classkp_1_1OpBase.html" title=" " alt="" coords="29,5,120,32"/>
 </map>
@@ -103,8 +103,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5faf4a58ab30828a64a1175fd5ca28da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a823777887f9b48a76fe94e323885f60f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCreate.html#a823777887f9b48a76fe94e323885f60f">record</a> () override</td></tr>
 <tr class="separator:a823777887f9b48a76fe94e323885f60f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a1e696fd3f49c6ae04149b5223f944f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCreate.html#a4a1e696fd3f49c6ae04149b5223f944f">postSubmit</a> () override</td></tr>
-<tr class="separator:a4a1e696fd3f49c6ae04149b5223f944f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4d77a85d72981f38dc878dba4646e9f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCreate.html#ab4d77a85d72981f38dc878dba4646e9f">preEval</a> () override</td></tr>
+<tr class="separator:ab4d77a85d72981f38dc878dba4646e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4eb86a8ecd71b91eee3f0274d9dfeda"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCreate.html#af4eb86a8ecd71b91eee3f0274d9dfeda">postEval</a> () override</td></tr>
+<tr class="separator:af4eb86a8ecd71b91eee3f0274d9dfeda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classkp_1_1OpBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classkp_1_1OpBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classkp_1_1OpBase.html">kp::OpBase</a></td></tr>
 <tr class="memitem:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#ad0b568269057a48cf5c71c5616bba750">OpBase</a> ()</td></tr>
 <tr class="separator:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -236,14 +238,14 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>In charge of initialising the primary <a class="el" href="classkp_1_1Tensor.html">Tensor</a> as well as the staging tensor as required. It will only initialise a staging tensor if the Primary tensor is of type Device. </p>
+<p>In charge of initialising the primary <a class="el" href="classkp_1_1Tensor.html">Tensor</a> as well as the staging tensor as required. It will only initialise a staging tensor if the Primary tensor is of type Device. For staging tensors it performs a mapDataIntoHostMemory which would perform immediately as opposed to on sequence eval/submission. </p>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#af1fb6bd20031f0a70b5ef881f88de721">kp::OpBase</a>.</p>
 
 </div>
 </div>
-<a id="a4a1e696fd3f49c6ae04149b5223f944f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a1e696fd3f49c6ae04149b5223f944f">&#9670;&nbsp;</a></span>postSubmit()</h2>
+<a id="af4eb86a8ecd71b91eee3f0274d9dfeda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4eb86a8ecd71b91eee3f0274d9dfeda">&#9670;&nbsp;</a></span>postEval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -252,7 +254,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void kp::OpTensorCreate::postSubmit </td>
+          <td class="memname">virtual void kp::OpTensorCreate::postEval </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -266,7 +268,35 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 </div><div class="memdoc">
 <p>Performs a copy back into the main tensor to ensure that the data contained is the one that is now being stored in the GPU. </p>
 
-<p>Implements <a class="el" href="classkp_1_1OpBase.html#a38e7e80ccfd7f6d1f6ccc408610bda13">kp::OpBase</a>.</p>
+<p>Implements <a class="el" href="classkp_1_1OpBase.html#a2c4ca56bd07fa3dbf32e8edb983f50b9">kp::OpBase</a>.</p>
+
+</div>
+</div>
+<a id="ab4d77a85d72981f38dc878dba4646e9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4d77a85d72981f38dc878dba4646e9f">&#9670;&nbsp;</a></span>preEval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void kp::OpTensorCreate::preEval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Does not perform any preEval commands. </p>
+
+<p>Implements <a class="el" href="classkp_1_1OpBase.html#a88242bddb815c3775621037046bb504e">kp::OpBase</a>.</p>
 
 </div>
 </div>
@@ -292,7 +322,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Record runs the core actions to create the tensors. For device tensors it records a copyCommand to move the data from the staging tensor to the device tensor. For staging tensors it performs a mapDataIntoHostMemory which would perform immediately as opposed to on sequence eval/submission. </p>
+<p>Record runs the core actions to create the tensors. For device tensors it records a copyCommand to move the data from the staging tensor to the device tensor. The mapping for staging tensors happens in the init function not in the record function. </p>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a242dbf4582c0b3b1d1a1f2a2207833ef">kp::OpBase</a>.</p>
 

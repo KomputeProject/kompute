@@ -111,8 +111,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aaa9a149f16950072fa2058b5c2cc7309"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09f543be8d6a630fd789d08d62faa57d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a09f543be8d6a630fd789d08d62faa57d">record</a> () override</td></tr>
 <tr class="separator:a09f543be8d6a630fd789d08d62faa57d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c90552db4b85ff0b503568ad98786d1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a2c90552db4b85ff0b503568ad98786d1">postSubmit</a> () override</td></tr>
-<tr class="separator:a2c90552db4b85ff0b503568ad98786d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd651188cafc351606e4baeb329ab070"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#afd651188cafc351606e4baeb329ab070">preEval</a> () override</td></tr>
+<tr class="separator:afd651188cafc351606e4baeb329ab070"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedceb296e3953641fb8ad41881aa3ccf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#aedceb296e3953641fb8ad41881aa3ccf">postEval</a> () override</td></tr>
+<tr class="separator:aedceb296e3953641fb8ad41881aa3ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classkp_1_1OpBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classkp_1_1OpBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classkp_1_1OpBase.html">kp::OpBase</a></td></tr>
 <tr class="memitem:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#ad0b568269057a48cf5c71c5616bba750">OpBase</a> ()</td></tr>
 <tr class="separator:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -452,8 +454,8 @@ template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
 
 </div>
 </div>
-<a id="a2c90552db4b85ff0b503568ad98786d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c90552db4b85ff0b503568ad98786d1">&#9670;&nbsp;</a></span>postSubmit()</h2>
+<a id="aedceb296e3953641fb8ad41881aa3ccf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedceb296e3953641fb8ad41881aa3ccf">&#9670;&nbsp;</a></span>postEval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -464,7 +466,7 @@ template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a>&lt; tX, tY, tZ &gt;::postSubmit</td>
+          <td class="memname">void <a class="el" href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a>&lt; tX, tY, tZ &gt;::postEval</td>
         </tr>
       </table>
   </td>
@@ -475,9 +477,34 @@ template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
 </div><div class="memdoc">
 <p>Executes after the recorded commands are submitted, and performs a copy of the GPU Device memory into the staging buffer so the output data can be retrieved. </p>
 
-<p>Implements <a class="el" href="classkp_1_1OpBase.html#a38e7e80ccfd7f6d1f6ccc408610bda13">kp::OpBase</a>.</p>
+<p>Implements <a class="el" href="classkp_1_1OpBase.html#a2c4ca56bd07fa3dbf32e8edb983f50b9">kp::OpBase</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classkp_1_1OpAlgoLhsRhsOut.html#a4146a720756d1bb1b238f19d9c403b91">kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;</a>.</p>
+</div>
+</div>
+<a id="afd651188cafc351606e4baeb329ab070"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd651188cafc351606e4baeb329ab070">&#9670;&nbsp;</a></span>preEval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;uint32_t tX, uint32_t tY, uint32_t tZ&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classkp_1_1OpAlgoBase.html">kp::OpAlgoBase</a>&lt; tX, tY, tZ &gt;::preEval</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Does not perform any preEval commands. </p>
+
+<p>Implements <a class="el" href="classkp_1_1OpBase.html#a88242bddb815c3775621037046bb504e">kp::OpBase</a>.</p>
 
 </div>
 </div>

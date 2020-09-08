@@ -701,7 +701,7 @@
 <span id="_CPPv3N2kp6OpBaseE"></span><span id="_CPPv2N2kp6OpBaseE"></span><span id="kp::OpBase"></span><span class="target" id="classkp_1_1OpBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpBase</code><a class="headerlink" href="#_CPPv4N2kp6OpBaseE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Base Operation which provides the high level interface that Kompute operations implement in order to perform a set of actions in the GPU.</p>
 <p>Operations can perform actions on tensors, and optionally can also own an <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> with respective parameters. kp::Operations with kp::Algorithms would inherit from kp::OpBaseAlgo. </p>
-<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCreate"><span class="std std-ref">kp::OpTensorCreate</span></a>, <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</span></a></p>
+<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCreate"><span class="std std-ref">kp::OpTensorCreate</span></a>, kp::OpTensorSyncDevice, kp::OpTensorSyncLocal, <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
@@ -741,9 +741,14 @@
 <dd><p>The record function is intended to only send a record command or run commands that are expected to record operations that are to be submitted as a batch into the GPU. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6OpBase10postSubmitEv">
-<span id="_CPPv3N2kp6OpBase10postSubmitEv"></span><span id="_CPPv2N2kp6OpBase10postSubmitEv"></span><span id="kp::OpBase::postSubmit"></span><span class="target" id="classkp_1_1OpBase_1a38e7e80ccfd7f6d1f6ccc408610bda13"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N2kp6OpBase10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Post submit is called after the <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a> has submitted the commands to the GPU for processing, and can be used to perform any tear-down steps required as the computation iteration finishes. </p>
+<dt id="_CPPv4N2kp6OpBase7preEvalEv">
+<span id="_CPPv3N2kp6OpBase7preEvalEv"></span><span id="_CPPv2N2kp6OpBase7preEvalEv"></span><span id="kp::OpBase::preEval"></span><span class="target" id="classkp_1_1OpBase_1a88242bddb815c3775621037046bb504e"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N2kp6OpBase7preEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Pre eval is called before the <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a> has called eval and submitted the commands to the GPU for processing, and can be used to perform any per-eval setup steps required as the computation iteration begins. It’s worth noting that there are situations where eval can be called multiple times, so the resources that are created should be idempotent in case it’s called multiple times in a row. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6OpBase8postEvalEv">
+<span id="_CPPv3N2kp6OpBase8postEvalEv"></span><span id="_CPPv2N2kp6OpBase8postEvalEv"></span><span id="kp::OpBase::postEval"></span><span class="target" id="classkp_1_1OpBase_1a2c4ca56bd07fa3dbf32e8edb983f50b9"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N2kp6OpBase8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Post eval is called after the <a class="reference internal" href="#classkp_1_1Sequence"><span class="std std-ref">Sequence</span></a> has called eval and submitted the commands to the GPU for processing, and can be used to perform any tear-down steps required as the computation iteration finishes. It’s worth noting that there are situations where eval can be called multiple times, so the resources that are destroyed should not require a re-init unless explicitly provided by the user. </p>
 </dd></dl>
 </div>
 </dd></dl>
@@ -833,8 +838,13 @@
 <dd><p>This records the commands that are to be sent to the GPU. This includes the barriers that ensure the memory has been copied before going in and out of the shader, as well as the dispatch operation that sends the shader processing to the gpu. This function also records the GPU memory copy of the output data for the staging bufffer so it can be read by the host. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp10OpAlgoBase10postSubmitEv">
-<span id="_CPPv3N2kp10OpAlgoBase10postSubmitEv"></span><span id="_CPPv2N2kp10OpAlgoBase10postSubmitEv"></span><span id="kp::OpAlgoBase::postSubmit"></span><span class="target" id="classkp_1_1OpAlgoBase_1a2c90552db4b85ff0b503568ad98786d1"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp10OpAlgoBase7preEvalEv">
+<span id="_CPPv3N2kp10OpAlgoBase7preEvalEv"></span><span id="_CPPv2N2kp10OpAlgoBase7preEvalEv"></span><span id="kp::OpAlgoBase::preEval"></span><span class="target" id="classkp_1_1OpAlgoBase_1afd651188cafc351606e4baeb329ab070"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase7preEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any preEval commands. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp10OpAlgoBase8postEvalEv">
+<span id="_CPPv3N2kp10OpAlgoBase8postEvalEv"></span><span id="_CPPv2N2kp10OpAlgoBase8postEvalEv"></span><span id="kp::OpAlgoBase::postEval"></span><span class="target" id="classkp_1_1OpAlgoBase_1aedceb296e3953641fb8ad41881aa3ccf"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp10OpAlgoBase8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Executes after the recorded commands are submitted, and performs a copy of the GPU Device memory into the staging buffer so the output data can be retrieved. </p>
 </dd></dl>
 </div>
@@ -911,16 +921,21 @@
 <dl class="cpp function">
 <dt id="_CPPv4N2kp14OpTensorCreate4initEv">
 <span id="_CPPv3N2kp14OpTensorCreate4initEv"></span><span id="_CPPv2N2kp14OpTensorCreate4initEv"></span><span id="kp::OpTensorCreate::init"></span><span class="target" id="classkp_1_1OpTensorCreate_1a5faf4a58ab30828a64a1175fd5ca28da"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpTensorCreate4initEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>In charge of initialising the primary <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> as well as the staging tensor as required. It will only initialise a staging tensor if the Primary tensor is of type Device. </p>
+<dd><p>In charge of initialising the primary <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> as well as the staging tensor as required. It will only initialise a staging tensor if the Primary tensor is of type Device. For staging tensors it performs a mapDataIntoHostMemory which would perform immediately as opposed to on sequence eval/submission. </p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp14OpTensorCreate6recordEv">
 <span id="_CPPv3N2kp14OpTensorCreate6recordEv"></span><span id="_CPPv2N2kp14OpTensorCreate6recordEv"></span><span id="kp::OpTensorCreate::record"></span><span class="target" id="classkp_1_1OpTensorCreate_1a823777887f9b48a76fe94e323885f60f"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpTensorCreate6recordEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Record runs the core actions to create the tensors. For device tensors it records a copyCommand to move the data from the staging tensor to the device tensor. For staging tensors it performs a mapDataIntoHostMemory which would perform immediately as opposed to on sequence eval/submission. </p>
+<dd><p>Record runs the core actions to create the tensors. For device tensors it records a copyCommand to move the data from the staging tensor to the device tensor. The mapping for staging tensors happens in the init function not in the record function. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp14OpTensorCreate10postSubmitEv">
-<span id="_CPPv3N2kp14OpTensorCreate10postSubmitEv"></span><span id="_CPPv2N2kp14OpTensorCreate10postSubmitEv"></span><span id="kp::OpTensorCreate::postSubmit"></span><span class="target" id="classkp_1_1OpTensorCreate_1a4a1e696fd3f49c6ae04149b5223f944f"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpTensorCreate10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp14OpTensorCreate7preEvalEv">
+<span id="_CPPv3N2kp14OpTensorCreate7preEvalEv"></span><span id="_CPPv2N2kp14OpTensorCreate7preEvalEv"></span><span id="kp::OpTensorCreate::preEval"></span><span class="target" id="classkp_1_1OpTensorCreate_1ab4d77a85d72981f38dc878dba4646e9f"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpTensorCreate7preEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any preEval commands. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpTensorCreate8postEvalEv">
+<span id="_CPPv3N2kp14OpTensorCreate8postEvalEv"></span><span id="_CPPv2N2kp14OpTensorCreate8postEvalEv"></span><span id="kp::OpTensorCreate::postEval"></span><span class="target" id="classkp_1_1OpTensorCreate_1af4eb86a8ecd71b91eee3f0274d9dfeda"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpTensorCreate8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Performs a copy back into the main tensor to ensure that the data contained is the one that is now being stored in the GPU. </p>
 </dd></dl>
 </div>
@@ -932,7 +947,7 @@
 <dl class="cpp class">
 <dt id="_CPPv4N2kp12OpTensorCopyE">
 <span id="_CPPv3N2kp12OpTensorCopyE"></span><span id="_CPPv2N2kp12OpTensorCopyE"></span><span id="kp::OpTensorCopy"></span><span class="target" id="classkp_1_1OpTensorCopy"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorCopy</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopyE" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it. </p>
+<dd><p>Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it. The operation must only receive tensors of type </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
@@ -953,12 +968,12 @@
 <dl class="cpp function">
 <dt id="_CPPv4N2kp12OpTensorCopyD0Ev">
 <span id="_CPPv3N2kp12OpTensorCopyD0Ev"></span><span id="_CPPv2N2kp12OpTensorCopyD0Ev"></span><span id="kp::OpTensorCopy::~OpTensorCopy"></span><span class="target" id="classkp_1_1OpTensorCopy_1acfde203e1614298ace93389f5fdb0564"></span><code class="sig-name descname">~OpTensorCopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopyD0Ev" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Default destructor which in this case expects the parent class to free the tensors </p>
+<dd><p>Default destructor. This class does not manage memory so it won’t be expecting the parent to perform a release. </p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp12OpTensorCopy4initEv">
 <span id="_CPPv3N2kp12OpTensorCopy4initEv"></span><span id="_CPPv2N2kp12OpTensorCopy4initEv"></span><span id="kp::OpTensorCopy::init"></span><span class="target" id="classkp_1_1OpTensorCopy_1a0f2c124b5193e9f6df3485466c1dc136"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopy4initEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>TODO </p>
+<dd><p>Performs basic checks such as ensuring there are at least two tensors provided, that they are initialised and that they are not of type TensorTypes::eStorage. </p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp12OpTensorCopy6recordEv">
@@ -966,8 +981,13 @@
 <dd><p>Records the copy commands from teh first tensor into all the other tensors provided. Also optionally records a barrier. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp12OpTensorCopy10postSubmitEv">
-<span id="_CPPv3N2kp12OpTensorCopy10postSubmitEv"></span><span id="_CPPv2N2kp12OpTensorCopy10postSubmitEv"></span><span id="kp::OpTensorCopy::postSubmit"></span><span class="target" id="classkp_1_1OpTensorCopy_1a5d2e999a87c6c70fd074c56a948b032b"></span>void <code class="sig-name descname">postSubmit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopy10postSubmitEv" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp12OpTensorCopy7preEvalEv">
+<span id="_CPPv3N2kp12OpTensorCopy7preEvalEv"></span><span id="_CPPv2N2kp12OpTensorCopy7preEvalEv"></span><span id="kp::OpTensorCopy::preEval"></span><span class="target" id="classkp_1_1OpTensorCopy_1ab405b3c1db34b2cb9b48d36a1101baa6"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopy7preEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any preEval commands. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp12OpTensorCopy8postEvalEv">
+<span id="_CPPv3N2kp12OpTensorCopy8postEvalEv"></span><span id="_CPPv2N2kp12OpTensorCopy8postEvalEv"></span><span id="kp::OpTensorCopy::postEval"></span><span class="target" id="classkp_1_1OpTensorCopy_1adb73b3854dcf4ecb7711cd0d9d7af3bf"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopy8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Copies the local vectors for all the tensors to sync the data with the gpu. </p>
 </dd></dl>
 </div>

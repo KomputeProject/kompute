@@ -78,7 +78,7 @@ $(function() {
 Inheritance diagram for kp::OpTensorCopy:</div>
 <div class="dyncontent">
 <div class="center"><img src="classkp_1_1OpTensorCopy__inherit__graph.png" border="0" usemap="#akp_1_1OpTensorCopy_inherit__map" alt="Inheritance graph"/></div>
-<map name="kp_1_1OpTensorCopy_inherit__map" id="akp_1_1OpTensorCopy_inherit__map">
+<map name="kp_1_1OpTensorCopy_inherit__map" id="kp_1_1OpTensorCopy_inherit__map">
 <area shape="rect" title=" " alt="" coords="5,80,136,107"/>
 <area shape="rect" href="classkp_1_1OpBase.html" title=" " alt="" coords="25,5,116,32"/>
 </map>
@@ -87,7 +87,7 @@ Inheritance diagram for kp::OpTensorCopy:</div>
 Collaboration diagram for kp::OpTensorCopy:</div>
 <div class="dyncontent">
 <div class="center"><img src="classkp_1_1OpTensorCopy__coll__graph.png" border="0" usemap="#akp_1_1OpTensorCopy_coll__map" alt="Collaboration graph"/></div>
-<map name="kp_1_1OpTensorCopy_coll__map" id="akp_1_1OpTensorCopy_coll__map">
+<map name="kp_1_1OpTensorCopy_coll__map" id="kp_1_1OpTensorCopy_coll__map">
 <area shape="rect" title=" " alt="" coords="5,80,136,107"/>
 <area shape="rect" href="classkp_1_1OpBase.html" title=" " alt="" coords="25,5,116,32"/>
 </map>
@@ -103,8 +103,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0f2c124b5193e9f6df3485466c1dc136"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85aa269cd3ddc507b8ae33f84ff1158b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b">record</a> () override</td></tr>
 <tr class="separator:a85aa269cd3ddc507b8ae33f84ff1158b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d2e999a87c6c70fd074c56a948b032b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCopy.html#a5d2e999a87c6c70fd074c56a948b032b">postSubmit</a> () override</td></tr>
-<tr class="separator:a5d2e999a87c6c70fd074c56a948b032b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab405b3c1db34b2cb9b48d36a1101baa6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCopy.html#ab405b3c1db34b2cb9b48d36a1101baa6">preEval</a> () override</td></tr>
+<tr class="separator:ab405b3c1db34b2cb9b48d36a1101baa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb73b3854dcf4ecb7711cd0d9d7af3bf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpTensorCopy.html#adb73b3854dcf4ecb7711cd0d9d7af3bf">postEval</a> () override</td></tr>
+<tr class="separator:adb73b3854dcf4ecb7711cd0d9d7af3bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classkp_1_1OpBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classkp_1_1OpBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classkp_1_1OpBase.html">kp::OpBase</a></td></tr>
 <tr class="memitem:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#ad0b568269057a48cf5c71c5616bba750">OpBase</a> ()</td></tr>
 <tr class="separator:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,7 +136,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 <tr class="separator:abb08c638efbe48d63bc91d9c02d91519 inherit pro_attribs_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it. </p>
+<div class="textblock"><p>Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it. The operation must only receive tensors of type </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a412de294c41e5f73d6feb5fc7880182b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a412de294c41e5f73d6feb5fc7880182b">&#9670;&nbsp;</a></span>OpTensorCopy()</h2>
@@ -208,7 +210,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Default destructor which in this case expects the parent class to free the tensors </p>
+<p>Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release. </p>
 
 </div>
 </div>
@@ -235,14 +237,14 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>TODO </p>
+<p>Performs basic checks such as ensuring there are at least two tensors provided, that they are initialised and that they are not of type TensorTypes::eStorage. </p>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#af1fb6bd20031f0a70b5ef881f88de721">kp::OpBase</a>.</p>
 
 </div>
 </div>
-<a id="a5d2e999a87c6c70fd074c56a948b032b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d2e999a87c6c70fd074c56a948b032b">&#9670;&nbsp;</a></span>postSubmit()</h2>
+<a id="adb73b3854dcf4ecb7711cd0d9d7af3bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb73b3854dcf4ecb7711cd0d9d7af3bf">&#9670;&nbsp;</a></span>postEval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,7 +253,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void kp::OpTensorCopy::postSubmit </td>
+          <td class="memname">virtual void kp::OpTensorCopy::postEval </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -265,7 +267,35 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 </div><div class="memdoc">
 <p>Copies the local vectors for all the tensors to sync the data with the gpu. </p>
 
-<p>Implements <a class="el" href="classkp_1_1OpBase.html#a38e7e80ccfd7f6d1f6ccc408610bda13">kp::OpBase</a>.</p>
+<p>Implements <a class="el" href="classkp_1_1OpBase.html#a2c4ca56bd07fa3dbf32e8edb983f50b9">kp::OpBase</a>.</p>
+
+</div>
+</div>
+<a id="ab405b3c1db34b2cb9b48d36a1101baa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab405b3c1db34b2cb9b48d36a1101baa6">&#9670;&nbsp;</a></span>preEval()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void kp::OpTensorCopy::preEval </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Does not perform any preEval commands. </p>
+
+<p>Implements <a class="el" href="classkp_1_1OpBase.html#a88242bddb815c3775621037046bb504e">kp::OpBase</a>.</p>
 
 </div>
 </div>
