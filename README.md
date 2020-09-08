@@ -52,42 +52,19 @@ This project is built using cmake providing a simple way to integrate as static 
 
 ### Your first Kompute
 
-Run your tensors against default operations via the Manager.
+Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file).
 
 ```c++
 int main() {
 
-    kp::Manager mgr; // Automatically selects Device 0
-
-    // Create 3 tensors of default type float
-    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
-    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
-    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
-
-    // Create tensors data in GPU
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
-
-    // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
-        { tensorLhs, tensorRhs, tensorOut });
-
-    // Prints the output which is { 0, 4, 12 }
-    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
-}
-```
-
-Pass compute shader data (in raw or compiled SPIR-V) format for faster dev cycles.
-
-```c++
-int main() {
-
-    kp::Manager mgr(1); // Explicitly selecting device 1
+    // You can allow Kompute to create the Vulkan components, or pass your existing ones
+    kp::Manager mgr; // Selects device 0 unless explicitly requested
 
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
 
     // Define your shader as a string (using string literals for simplicity)
-    // Or pass the raw bytes of the compiled shader as uint32_t 
+    // (You can also pass the raw compiled bytes, or even path to file)
     std::string shader(R"(
         #version 450
 
@@ -118,28 +95,46 @@ int main() {
 }
 ```
 
-Pass file path for shader data (in raw or compiled SPIR-V) for faster dev cycles.
+Build your own pre-compiled operations for domain specific workflows.
+
+We also provide tools that allow you to [convert shaders into C++ headers]().
 
 ```c++
+
+template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
+class OpMyCustom : public OpAlgoBase<tX, tY, tZ>
+{
+  public:
+    OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>> tensors)
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true, "")
+    {
+        // Perform your custom steps such as reading from a shader file
+        this->mShaderFilePath = "shaders/glsl/opmult.comp";
+    }
+}
+
+
 int main() {
 
     kp::Manager mgr; // Automatically selects Device 0
 
-    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
-    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
+    // Create 3 tensors of default type float
+    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
+    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
+    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
-    // Create tensor data in GPU
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    // Create tensors data in GPU
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
 
     // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
-        { tensorLhs, tensorRhs, tensorOut }, 
-        true, // Whether to retrieve the output from GPU memory
-        "path/to/shader.comp");
+    mgr.evalOpDefault<kp::OpMyCustom<3, 1, 1>>(
+        { tensorLhs, tensorRhs, tensorOut });
 
-    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
-    std::cout << fmt::format("A: {}, B: {}", 
-        tensorA.data(), tensorB.data()) << std::endl;
+    // Prints the output which is { 0, 4, 12 }
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
 
@@ -150,9 +145,12 @@ int main() {
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2.0, 4.0, 6.0 }) };
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 1., 1., 1. }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2., 2., 2. }) };
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0., 0., 0. }) };
+
+    // Create all the tensors in memory
+    mgr.evalOpDefault<kp::OpCreateTensor>({tensorLHS, tensorRHS, tensorOutput});
 
     // Create a new sequence
     std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence();
@@ -163,18 +161,21 @@ int main() {
         sq.begin();
 
         // Record batch commands to send to GPU
-        sq.record<kp::OpTensorCreate>({ tensorLHS });
-        sq.record<kp::OpTensorCreate>({ tensorRHS });
-        sq.record<kp::OpTensorCreate>({ tensorOutput });
         sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+        sq.record<kp::OpTensorCopy>({tensorOutput, tensorLHS, tensorRHS});
 
         // Stop recording
         sq.end();
 
-        // Submit operations to GPU
-        sq.eval();
+        // Submit multiple batch operations to GPU
+        size_t ITERATIONS = 5;
+        for (size_t i = 0; i < ITERATIONS; i++) {
+            sq.eval();
+        }
     }
 
+    // Print the output which iterates through OpMult 5 times
+    // in this case the output is {32, 32 , 32}
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
@@ -184,33 +185,6 @@ int main() {
 We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.
 
 You can find these in the advanced examples documentation section, such as the [logistic regression example](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html).
-
-## Build Overview
-
-### Dependencies
-
-Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies. 
-
-#### Required dependencies
-
-The only required dependency in the build is Vulkan (vulkan.h and vulkan.hpp which are both part of the Vulkan SDK).
-
-#### Optional dependencies
-
-SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:
-
-```c++
-#ifndef KOMPUTE_LOG_OVERRIDE // Use this if you want to define custom macro overrides
-#if KOMPUTE_SPDLOG_ENABLED // Use this if you want to enable SPDLOG
-#include <spdlog/spdlog.h>
-#endif //KOMPUTE_SPDLOG_ENABLED
-// ... Otherwise it adds macros that use std::cout (and only print first element)
-#endif // KOMPUTE_LOG_OVERRIDE
-```
-
-You can choose to build with or without SPDLOG by using the cmake flag `KOMPUTE_OPT_ENABLE_SPDLOG`.
-
-Finally, remember that you will still need to set both the compile time log level with `SPDLOG_ACTIVE_LEVEL`, and the runtime log level with `spdlog::set_level(spdlog::level::debug);`.
 
 
 ## Motivations
@@ -260,6 +234,34 @@ Simplified Kompute Components
 </td>
 </tr>
 </table>
+
+## Build Overview
+
+### Dependencies
+
+Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies. 
+
+#### Required dependencies
+
+The only required dependency in the build is Vulkan (vulkan.h and vulkan.hpp which are both part of the Vulkan SDK).
+
+#### Optional dependencies
+
+SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:
+
+```c++
+#ifndef KOMPUTE_LOG_OVERRIDE // Use this if you want to define custom macro overrides
+#if KOMPUTE_SPDLOG_ENABLED // Use this if you want to enable SPDLOG
+#include <spdlog/spdlog.h>
+#endif //KOMPUTE_SPDLOG_ENABLED
+// ... Otherwise it adds macros that use std::cout (and only print first element)
+#endif // KOMPUTE_LOG_OVERRIDE
+```
+
+You can choose to build with or without SPDLOG by using the cmake flag `KOMPUTE_OPT_ENABLE_SPDLOG`.
+
+Finally, remember that you will still need to set both the compile time log level with `SPDLOG_ACTIVE_LEVEL`, and the runtime log level with `spdlog::set_level(spdlog::level::debug);`.
+
 
 ## Kompute Development
 
