@@ -105,7 +105,7 @@ template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
 class OpMyCustom : public OpAlgoBase<tX, tY, tZ>
 {
   public:
-    OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpMyCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors)
