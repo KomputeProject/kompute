@@ -60,8 +60,9 @@ int main() {
     // You can allow Kompute to create the Vulkan components, or pass your existing ones
     kp::Manager mgr; // Selects device 0 unless explicitly requested
 
-    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 0, 1, 2 }));
-    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2, 4, 6 }));
+    // Creates tensor an initializes GPU memory (below we show more granularity)
+    auto tensorA = mgr.buildTensor({ 3, 4, 5 });
+    auto tensorB = mgr.buildTensor({ 0, 0, 0 });
 
     // Define your shader as a string (using string literals for simplicity)
     // (You can also pass the raw compiled bytes, or even path to file)
@@ -80,12 +81,9 @@ int main() {
         }
     )");
 
-    // Create tensor data in GPU
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
-
     // Run Kompute operation on the parameters provided with dispatch layout
     mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
-        { tensorLhs, tensorRhs, tensorOut }, 
+        { tensorA, tensorB }, 
         true, // Whether to retrieve the output from GPU memory
         std::vector<char>(shader.begin(), shader.end()));
 
@@ -126,7 +124,7 @@ int main() {
     auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
     auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
-    // Create tensors data in GPU
+    // Create tensors data explicitly in GPU with an operation
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
 
     // Run Kompute operation on the parameters provided with dispatch layout

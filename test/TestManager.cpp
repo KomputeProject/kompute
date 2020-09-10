@@ -107,3 +107,23 @@ TEST(TestManager, TestMultipleTensorsAtOnce) {
 
     EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
 }
+
+TEST(TestManager, TestCreateInitTensor) {
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::Tensor> tensorA = mgr.buildTensor({0,1,2});
+    std::shared_ptr<kp::Tensor> tensorB = mgr.buildTensor({0,0,0});
+
+    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorB});
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorB});
+
+    EXPECT_EQ(tensorB->data(), std::vector<float>({0,1,2}));
+
+    std::shared_ptr<kp::Tensor> tensorC = mgr.buildTensor({0,0,0}, kp::Tensor::TensorTypes::eStaging);
+
+    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorC});
+
+    EXPECT_EQ(tensorC->data(), std::vector<float>({0,1,2}));
+}
+

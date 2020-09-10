@@ -6,6 +6,8 @@
 
 #include "kompute/Sequence.hpp"
 
+#include "kompute/operations/OpTensorCreate.hpp"
+
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -15,7 +17,6 @@ namespace kp {
 */
 class Manager
 {
-  private:
   public:
     /**
         Base constructor and default used which creates the base resources
@@ -110,6 +111,31 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->evalOp<T>(tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
+
+    /**
+     * Function that simplifies the common workflow of tensor creation and
+     * initialization. It will take the constructor parameters for a Tensor
+     * and will will us it to create a new Tensor and then create it using 
+     * the OpCreateTensor command.
+     *
+     * @param data The data to initialize the tensor with
+     * @param tensorType The type of tensor to initialize
+     * @returns Initialized Tensor with memory Syncd to GPU device
+     */
+    std::shared_ptr<Tensor> buildTensor(
+            const std::vector<float>& data,
+            Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        SPDLOG_DEBUG("Kompute Manager createInitTensor triggered");
+
+        SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
+        std::shared_ptr<Tensor> tensor = std::make_shared<Tensor>(kp::Tensor(data, tensorType));
+
+        this->evalOpDefault<OpTensorCreate>({tensor});
+
+        return tensor;
     }
 
   private:

@@ -651,6 +651,74 @@ class Sequence
 
 } // End namespace kp
 
+namespace kp {
+
+/**
+    Operation that creates tensor and manages the memory of the components
+   created
+*/
+class OpTensorCreate : public OpBase
+{
+  public:
+    OpTensorCreate();
+
+    /**
+     * Default constructor with parameters that provides the bare minimum
+     * requirements for the operations to be able to create and manage their
+     * sub-components.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that will be used to create in operation.
+     * @param freeTensors Whether operation manages the memory of the Tensors
+     */
+    OpTensorCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                   std::shared_ptr<vk::Device> device,
+                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                   std::vector<std::shared_ptr<Tensor>> tensors);
+
+    /**
+     * Default destructor which in this case expects the parent class to free
+     * the tensors
+     */
+    ~OpTensorCreate() override;
+
+    /**
+     * In charge of initialising the primary Tensor as well as the staging
+     * tensor as required. It will only initialise a staging tensor if the
+     * Primary tensor is of type Device. For staging tensors it performs a 
+     * mapDataIntoHostMemory which would perform immediately as opposed to 
+     * on sequence eval/submission.
+     */
+    void init() override;
+
+    /**
+     * Record runs the core actions to create the tensors. For device tensors
+     * it records a copyCommand to move the data from the staging tensor to the 
+     * device tensor. The mapping for staging tensors happens in the init function
+     * not in the record function.
+     */
+    void record() override;
+
+    /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
+     * Performs a copy back into the main tensor to ensure that the data
+     * contained is the one that is now being stored in the GPU.
+     */
+    virtual void postEval() override;
+
+  private:
+    // Never owned resources
+    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
+};
+
+} // End namespace kp
+
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -660,7 +728,6 @@ namespace kp {
 */
 class Manager
 {
-  private:
   public:
     /**
         Base constructor and default used which creates the base resources
@@ -755,6 +822,30 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->evalOp<T>(tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
+    /**
+     * Function that simplifies the common workflow of tensor creation and
+     * initialization. It will take the constructor parameters for a Tensor
+     * and will will us it to create a new Tensor and then create it using 
+     * the OpCreateTensor command.
+     *
+     * @param data The data to initialize the tensor with
+     * @param tensorType The type of tensor to initialize
+     * @returns Initialized Tensor with memory Syncd to GPU device
+     */
+    std::shared_ptr<Tensor> buildTensor(
+            const std::vector<float>& data,
+            Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        SPDLOG_DEBUG("Kompute Manager createInitTensor triggered");
+
+        SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
+        std::shared_ptr<Tensor> tensor = std::make_shared<Tensor>(kp::Tensor(data, tensorType));
+
+        this->evalOpDefault<OpTensorCreate>({tensor});
+
+        return tensor;
     }
 
   private:
@@ -1525,74 +1616,6 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
         SPDLOG_DEBUG("Kompute OpMult destructor started");
     }
 
-};
-
-} // End namespace kp
-
-namespace kp {
-
-/**
-    Operation that creates tensor and manages the memory of the components
-   created
-*/
-class OpTensorCreate : public OpBase
-{
-  public:
-    OpTensorCreate();
-
-    /**
-     * Default constructor with parameters that provides the bare minimum
-     * requirements for the operations to be able to create and manage their
-     * sub-components.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that will be used to create in operation.
-     * @param freeTensors Whether operation manages the memory of the Tensors
-     */
-    OpTensorCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
-
-    /**
-     * Default destructor which in this case expects the parent class to free
-     * the tensors
-     */
-    ~OpTensorCreate() override;
-
-    /**
-     * In charge of initialising the primary Tensor as well as the staging
-     * tensor as required. It will only initialise a staging tensor if the
-     * Primary tensor is of type Device. For staging tensors it performs a 
-     * mapDataIntoHostMemory which would perform immediately as opposed to 
-     * on sequence eval/submission.
-     */
-    void init() override;
-
-    /**
-     * Record runs the core actions to create the tensors. For device tensors
-     * it records a copyCommand to move the data from the staging tensor to the 
-     * device tensor. The mapping for staging tensors happens in the init function
-     * not in the record function.
-     */
-    void record() override;
-
-    /**
-     * Does not perform any preEval commands.
-     */
-    virtual void preEval() override;
-
-    /**
-     * Performs a copy back into the main tensor to ensure that the data
-     * contained is the one that is now being stored in the GPU.
-     */
-    virtual void postEval() override;
-
-  private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp

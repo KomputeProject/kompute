@@ -100,6 +100,9 @@ Tensor::isInit()
 void
 Tensor::setData(const std::vector<float>& data)
 {
+    if (data.size() != this->mData.size()) {
+        throw std::runtime_error("Kompute Tensor Cannot set data of different sizes");
+    }
     this->mData = data;
 }
 
