@@ -147,7 +147,7 @@ build_single_header:
 		"single_include/kompute/Kompute.hpp"
 
 format:
-	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp
+	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp test/*cpp
 
 clean:
 	find src -name "*gch" -exec rm {} \; || "No ghc files"

@@ -25,7 +25,7 @@ class Tensor
      */
     enum class TensorTypes
     {
-        eDevice = 0, ///< Type is device memory, source and destination
+        eDevice = 0,  ///< Type is device memory, source and destination
         eStaging = 1, ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
@@ -52,7 +52,10 @@ class Tensor
     ~Tensor();
 
     /**
-     * Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory.
+     * Initialiser which calls the initialisation for all the respective tensors
+     * as well as creates the respective staging tensors. The staging tensors
+     * woudl only be created for the tensors of type TensorType::eDevice as
+     * otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device);
@@ -67,7 +70,8 @@ class Tensor
      * important to ensure that there is no out-of-sync data with the GPU
      * memory.
      *
-     * @return Reference to vector of elements representing the data in the tensor.
+     * @return Reference to vector of elements representing the data in the
+     * tensor.
      */
     std::vector<float>& data();
     /**
@@ -78,7 +82,7 @@ class Tensor
      * @param i The index where the element will be returned from.
      * @return Returns the element in the position requested.
      */
-    float& operator[] (int index);
+    float& operator[](int index);
     /**
      * Returns the size/magnitude of the Tensor, which will be the total number
      * of elements across all dimensions
@@ -137,11 +141,12 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                                   vk::AccessFlagBits srcAccessMask,
-                                   vk::AccessFlagBits dstAccessMask,
-                                   vk::PipelineStageFlagBits srcStageMask,
-                                   vk::PipelineStageFlagBits dstStageMask);
+    void recordBufferMemoryBarrier(
+      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      vk::AccessFlagBits srcAccessMask,
+      vk::AccessFlagBits dstAccessMask,
+      vk::PipelineStageFlagBits srcStageMask,
+      vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify

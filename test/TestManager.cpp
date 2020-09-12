@@ -10,10 +10,10 @@ TEST(TestManager, EndToEndOpMultFlow)
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
     mgr.evalOp<kp::OpTensorCreate>({ tensorLHS });
 
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2, 4, 6 }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
     mgr.evalOp<kp::OpTensorCreate>({ tensorRHS });
 
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor( { 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
 
     mgr.evalOp<kp::OpTensorCreate>({ tensorOutput });
 
@@ -21,23 +21,22 @@ TEST(TestManager, EndToEndOpMultFlow)
 
     mgr.evalOp<kp::OpTensorSyncLocal>({ tensorOutput });
 
-    EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
+    EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
 }
 
-TEST(TestManager, OpMultSequenceFlow) {
+TEST(TestManager, OpMultSequenceFlow)
+{
 
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
-      { 0, 1, 2 }) };
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
 
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-      { 2, 4, 6 }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
 
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-      { 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
 
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
@@ -54,23 +53,24 @@ TEST(TestManager, OpMultSequenceFlow) {
     }
     sqWeakPtr.reset();
 
-    EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
+    EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
 }
 
-TEST(TestManager, TestMultipleSequences) {
+TEST(TestManager, TestMultipleSequences)
+{
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrOne = 
-        mgr.getOrCreateManagedSequence("sqOne");
+    std::weak_ptr<kp::Sequence> sqWeakPtrOne =
+      mgr.getOrCreateManagedSequence("sqOne");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrTwo = 
-        mgr.getOrCreateManagedSequence("sqTwo");
+    std::weak_ptr<kp::Sequence> sqWeakPtrTwo =
+      mgr.getOrCreateManagedSequence("sqTwo");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrOneRef = 
-        mgr.getOrCreateManagedSequence("sqOne");
+    std::weak_ptr<kp::Sequence> sqWeakPtrOneRef =
+      mgr.getOrCreateManagedSequence("sqOne");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrTwoRef = 
-        mgr.getOrCreateManagedSequence("sqTwo");
+    std::weak_ptr<kp::Sequence> sqWeakPtrTwoRef =
+      mgr.getOrCreateManagedSequence("sqTwo");
 
     EXPECT_EQ(sqWeakPtrOne.lock(), sqWeakPtrOneRef.lock());
     EXPECT_NE(sqWeakPtrTwo.lock(), sqWeakPtrOneRef.lock());
@@ -78,20 +78,19 @@ TEST(TestManager, TestMultipleSequences) {
     EXPECT_NE(sqWeakPtrOneRef.lock(), sqWeakPtrTwoRef.lock());
 }
 
-TEST(TestManager, TestMultipleTensorsAtOnce) {
+TEST(TestManager, TestMultipleTensorsAtOnce)
+{
 
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor(
-      { 0, 1, 2 }) };
+    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
 
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-      { 2, 4, 6 }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
 
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-      { 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
 
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
@@ -110,25 +109,26 @@ TEST(TestManager, TestMultipleTensorsAtOnce) {
     }
     sqWeakPtr.reset();
 
-    EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
+    EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
 }
 
-TEST(TestManager, TestCreateInitTensor) {
+TEST(TestManager, TestCreateInitTensor)
+{
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.buildTensor({0,1,2});
-    std::shared_ptr<kp::Tensor> tensorB = mgr.buildTensor({0,0,0});
+    std::shared_ptr<kp::Tensor> tensorA = mgr.buildTensor({ 0, 1, 2 });
+    std::shared_ptr<kp::Tensor> tensorB = mgr.buildTensor({ 0, 0, 0 });
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorB});
+    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorB});
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB });
 
-    EXPECT_EQ(tensorB->data(), std::vector<float>({0,1,2}));
+    EXPECT_EQ(tensorB->data(), std::vector<float>({ 0, 1, 2 }));
 
-    std::shared_ptr<kp::Tensor> tensorC = mgr.buildTensor({0,0,0}, kp::Tensor::TensorTypes::eStaging);
+    std::shared_ptr<kp::Tensor> tensorC =
+      mgr.buildTensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStaging);
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({tensorA, tensorC});
+    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorC });
 
-    EXPECT_EQ(tensorC->data(), std::vector<float>({0,1,2}));
+    EXPECT_EQ(tensorC->data(), std::vector<float>({ 0, 1, 2 }));
 }
-

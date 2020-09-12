@@ -3,11 +3,12 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestSequence, CmdBufSequenceBeginEnd) {
+TEST(TestSequence, CmdBufSequenceBeginEnd)
+{
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = 
-        mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
 
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         EXPECT_TRUE(sq->eval());
@@ -23,4 +24,3 @@ TEST(TestSequence, CmdBufSequenceBeginEnd) {
         EXPECT_TRUE(sq->eval());
     }
 }
-

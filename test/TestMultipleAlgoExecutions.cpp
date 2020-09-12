@@ -3,37 +3,35 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestMultipleAlgoExecutions, SingleSequenceRecord) {
+TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
+{
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 })};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
     std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    pa[index] = pa[index] + 1;\n"
-        "}\n"
-    );
+      "#version 450\n"
+      "layout (local_size_x = 1) in;\n"
+      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
+      "void main() {\n"
+      "    uint index = gl_GlobalInvocationID.x;\n"
+      "    pa[index] = pa[index] + 1;\n"
+      "}\n");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -42,34 +40,34 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord) {
     }
     sqWeakPtr.reset();
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
+    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
 
-TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
+TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
+{
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 })};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
     std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    pa[index] = pa[index] + 1;\n"
-        "}\n"
-    );
+      "#version 450\n"
+      "layout (local_size_x = 1) in;\n"
+      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
+      "void main() {\n"
+      "    uint index = gl_GlobalInvocationID.x;\n"
+      "    pa[index] = pa[index] + 1;\n"
+      "}\n");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
         sq->eval();
@@ -77,8 +75,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
         sq->eval();
@@ -86,112 +83,109 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
         sq->eval();
 
         sq->begin();
 
-        sq->record<kp::OpTensorSyncLocal>(
-                { tensorA });
+        sq->record<kp::OpTensorSyncLocal>({ tensorA });
 
         sq->end();
         sq->eval();
     }
     sqWeakPtr.reset();
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
-
+    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
 
-TEST(TestMultipleAlgoExecutions, MultipleSequences) {
+TEST(TestMultipleAlgoExecutions, MultipleSequences)
+{
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 })};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
     std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    pa[index] = pa[index] + 1;\n"
-        "}\n"
-    );
+      "#version 450\n"
+      "layout (local_size_x = 1) in;\n"
+      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
+      "void main() {\n"
+      "    uint index = gl_GlobalInvocationID.x;\n"
+      "    pa[index] = pa[index] + 1;\n"
+      "}\n");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA });
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr2 = mgr.getOrCreateManagedSequence("newSequence2");
+    std::weak_ptr<kp::Sequence> sqWeakPtr2 =
+      mgr.getOrCreateManagedSequence("newSequence2");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
         sq->eval();
     }
 
-
-    std::weak_ptr<kp::Sequence> sqWeakPtr3 = mgr.getOrCreateManagedSequence("newSequence3");
+    std::weak_ptr<kp::Sequence> sqWeakPtr3 =
+      mgr.getOrCreateManagedSequence("newSequence3");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr4 = mgr.getOrCreateManagedSequence("newSequence5");
+    std::weak_ptr<kp::Sequence> sqWeakPtr4 =
+      mgr.getOrCreateManagedSequence("newSequence5");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr4.lock()) {
         sq->begin();
 
-        sq->record<kp::OpTensorSyncLocal>(
-                { tensorA });
+        sq->record<kp::OpTensorSyncLocal>({ tensorA });
 
         sq->end();
         sq->eval();
     }
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
+    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
 
-TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
+TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
+{
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 })};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
     std::string shader(
-        "#version 450\n"
-        "layout (local_size_x = 1) in;\n"
-        "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-        "void main() {\n"
-        "    uint index = gl_GlobalInvocationID.x;\n"
-        "    pa[index] = pa[index] + 1;\n"
-        "}\n"
-    );
+      "#version 450\n"
+      "layout (local_size_x = 1) in;\n"
+      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
+      "void main() {\n"
+      "    uint index = gl_GlobalInvocationID.x;\n"
+      "    pa[index] = pa[index] + 1;\n"
+      "}\n");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("newSequence");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("newSequence");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
@@ -201,13 +195,13 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr2 = mgr.getOrCreateManagedSequence("newSequence2");
+    std::weak_ptr<kp::Sequence> sqWeakPtr2 =
+      mgr.getOrCreateManagedSequence("newSequence2");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
-                { tensorA }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
 
@@ -216,12 +210,12 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr3 = mgr.getOrCreateManagedSequence("newSequence3");
+    std::weak_ptr<kp::Sequence> sqWeakPtr3 =
+      mgr.getOrCreateManagedSequence("newSequence3");
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
-        sq->record<kp::OpTensorSyncLocal>(
-                { tensorA });
+        sq->record<kp::OpTensorSyncLocal>({ tensorA });
 
         sq->end();
 
@@ -230,6 +224,5 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
         sq->eval();
     }
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({3, 3, 3}));
+    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
-

@@ -30,7 +30,8 @@ Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType)
 
 Tensor::~Tensor()
 {
-    SPDLOG_DEBUG("Kompute Tensor destructor started. Type: {}", this->tensorType());
+    SPDLOG_DEBUG("Kompute Tensor destructor started. Type: {}",
+                 this->tensorType());
 
     if (this->isInit()) {
         this->freeMemoryDestroyGPUResources();
@@ -62,7 +63,7 @@ Tensor::data()
 }
 
 float&
-Tensor::operator[] (int index)
+Tensor::operator[](int index)
 {
     return this->mData[index];
 }
@@ -101,16 +102,16 @@ void
 Tensor::setData(const std::vector<float>& data)
 {
     if (data.size() != this->mData.size()) {
-        throw std::runtime_error("Kompute Tensor Cannot set data of different sizes");
+        throw std::runtime_error(
+          "Kompute Tensor Cannot set data of different sizes");
     }
     this->mData = data;
 }
 
 void
-Tensor::recordCopyFrom(
-            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-            std::shared_ptr<Tensor> copyFromTensor,
-            bool createBarrier)
+Tensor::recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                       std::shared_ptr<Tensor> copyFromTensor,
+                       bool createBarrier)
 {
     SPDLOG_DEBUG("Kompute Tensor recordCopyFrom called");
 
@@ -138,11 +139,12 @@ Tensor::recordCopyFrom(
 }
 
 void
-Tensor::recordBufferMemoryBarrier(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                                  vk::AccessFlagBits srcAccessMask,
-                                  vk::AccessFlagBits dstAccessMask,
-                                  vk::PipelineStageFlagBits srcStageMask,
-                                  vk::PipelineStageFlagBits dstStageMask)
+Tensor::recordBufferMemoryBarrier(
+  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  vk::AccessFlagBits srcAccessMask,
+  vk::AccessFlagBits dstAccessMask,
+  vk::PipelineStageFlagBits srcStageMask,
+  vk::PipelineStageFlagBits dstStageMask)
 {
     SPDLOG_DEBUG("Kompute Tensor recording buffer memory barrier");
 
@@ -157,11 +159,11 @@ Tensor::recordBufferMemoryBarrier(std::shared_ptr<vk::CommandBuffer> commandBuff
     bufferMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
     commandBuffer->pipelineBarrier(srcStageMask,
-                                          dstStageMask,
-                                          vk::DependencyFlags(),
-                                          nullptr,
-                                          bufferMemoryBarrier,
-                                          nullptr);
+                                   dstStageMask,
+                                   vk::DependencyFlags(),
+                                   nullptr,
+                                   bufferMemoryBarrier,
+                                   nullptr);
 }
 
 vk::DescriptorBufferInfo
@@ -201,9 +203,8 @@ Tensor::mapDataIntoHostMemory()
     SPDLOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
 
     if (this->mTensorType != TensorTypes::eStaging) {
-        SPDLOG_ERROR(
-          "Mapping tensor data manually to DEVICE memory instead of "
-          "using record GPU command with staging buffer");
+        SPDLOG_ERROR("Mapping tensor data manually to DEVICE memory instead of "
+                     "using record GPU command with staging buffer");
         return;
     }
 

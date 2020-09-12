@@ -8,11 +8,10 @@ OpTensorCopy::OpTensorCopy()
     SPDLOG_DEBUG("Kompute OpTensorCopy constructor base");
 }
 
-OpTensorCopy::OpTensorCopy(
-  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-  std::shared_ptr<vk::Device> device,
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
-  std::vector<std::shared_ptr<Tensor>> tensors)
+OpTensorCopy::OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                           std::shared_ptr<vk::Device> device,
+                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                           std::vector<std::shared_ptr<Tensor>> tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
     SPDLOG_DEBUG("Kompute OpTensorCopy constructor with params");
@@ -33,12 +32,15 @@ OpTensorCopy::init()
           "Kompute OpTensorCopy called with less than 2 tensor");
     }
 
-    for (std::shared_ptr<Tensor> tensor: this->mTensors) {
+    for (std::shared_ptr<Tensor> tensor : this->mTensors) {
         if (!tensor->isInit()) {
-            throw std::runtime_error("Kompute OpTensorCopy tensor parameter has not been initialized");
+            throw std::runtime_error(
+              "Kompute OpTensorCopy tensor parameter has not been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
-            throw std::runtime_error("Kompute OpTensorCopy tensor parameter is of TensorTypes::eStorage and hence cannot be used to receive or pass data.");
+            throw std::runtime_error("Kompute OpTensorCopy tensor parameter is "
+                                     "of TensorTypes::eStorage and hence "
+                                     "cannot be used to receive or pass data.");
         }
     }
 }
@@ -50,7 +52,8 @@ OpTensorCopy::record()
 
     // We iterate from the second tensor onwards and record a copy to all
     for (size_t i = 1; i < this->mTensors.size(); i++) {
-        this->mTensors[i]->recordCopyFrom(this->mCommandBuffer, this->mTensors[0], false);
+        this->mTensors[i]->recordCopyFrom(
+          this->mCommandBuffer, this->mTensors[0], false);
     }
 }
 
@@ -72,4 +75,3 @@ OpTensorCopy::postEval()
 }
 
 }
-

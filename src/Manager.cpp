@@ -215,8 +215,8 @@ Manager::createDevice()
       physicalDevice.getProperties();
 
     SPDLOG_INFO("Using physical device index {} found {}",
-                 this->mPhysicalDeviceIndex,
-                 physicalDeviceProperties.deviceName);
+                this->mPhysicalDeviceIndex,
+                physicalDeviceProperties.deviceName);
 
     // Find compute queue
     std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =

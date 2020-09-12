@@ -3,15 +3,18 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies) {
+TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
+{
     kp::Manager mgr;
 
     float TOTAL_ITER = 10;
 
-    std::vector<float> testExpectedOutVec = {TOTAL_ITER, TOTAL_ITER, TOTAL_ITER};
+    std::vector<float> testExpectedOutVec = { TOTAL_ITER,
+                                              TOTAL_ITER,
+                                              TOTAL_ITER };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 })};
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 })};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
 
     std::string shader(R"(
         #version 450
@@ -27,11 +30,10 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies) {
         }
     )");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = 
-        mgr.getOrCreateManagedSequence("default");
+    std::weak_ptr<kp::Sequence> sqWeakPtr =
+      mgr.getOrCreateManagedSequence("default");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) 
-    {
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA, tensorB });
@@ -41,18 +43,17 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies) {
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr2 = 
-        mgr.getOrCreateManagedSequence("run");
+    std::weak_ptr<kp::Sequence> sqWeakPtr2 =
+      mgr.getOrCreateManagedSequence("run");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) 
-    {
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<>>(
-                { tensorA, tensorB }, 
-                std::vector<char>(shader.begin(), shader.end()));
+          { tensorA, tensorB },
+          std::vector<char>(shader.begin(), shader.end()));
 
-        sq->record<kp::OpTensorCopy>({tensorB, tensorA});
+        sq->record<kp::OpTensorCopy>({ tensorB, tensorA });
         sq->end();
 
         for (size_t i = 0; i < TOTAL_ITER; i++) {
@@ -60,14 +61,13 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies) {
         }
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr3 = 
-        mgr.getOrCreateManagedSequence("export");
+    std::weak_ptr<kp::Sequence> sqWeakPtr3 =
+      mgr.getOrCreateManagedSequence("export");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) 
-    {
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) {
         sq->begin();
 
-        sq->record<kp::OpTensorSyncLocal>({tensorA, tensorB});
+        sq->record<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
         sq->end();
 
@@ -76,4 +76,3 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies) {
 
     EXPECT_EQ(tensorA->data(), testExpectedOutVec);
 }
-

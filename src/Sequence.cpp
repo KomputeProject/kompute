@@ -37,7 +37,7 @@ Sequence::~Sequence()
         SPDLOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
             SPDLOG_ERROR("Kompute Sequence destructor reached with null "
-                          "CommandPool pointer");
+                         "CommandPool pointer");
             return;
         }
         this->mDevice->freeCommandBuffers(
@@ -49,7 +49,7 @@ Sequence::~Sequence()
         SPDLOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
             SPDLOG_ERROR("Kompute Sequence destructor reached with null "
-                          "CommandPool pointer");
+                         "CommandPool pointer");
             return;
         }
         this->mDevice->destroy(*this->mCommandPool);
@@ -85,7 +85,7 @@ Sequence::begin()
         this->mRecording = true;
     } else {
         SPDLOG_WARN("Kompute Sequence attempted to start command recording "
-                     "but recording already started");
+                    "but recording already started");
     }
     return true;
 }
@@ -110,7 +110,7 @@ Sequence::end()
         this->mRecording = false;
     } else {
         SPDLOG_WARN("Kompute Sequence attempted to end command recording but "
-                     "recording not started");
+                    "recording not started");
     }
     return true;
 }

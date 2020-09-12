@@ -31,7 +31,8 @@ Algorithm::~Algorithm()
     if (this->mFreePipeline) {
         SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline");
         if (!this->mPipeline) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy pipeline but it is null");
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+                         "pipeline but it is null");
         }
         this->mDevice->destroy(*this->mPipeline);
     }
@@ -39,7 +40,8 @@ Algorithm::~Algorithm()
     if (this->mFreePipelineCache) {
         SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
         if (!this->mPipelineCache) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy pipeline cache but it is null");
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+                         "pipeline cache but it is null");
         }
         this->mDevice->destroy(*this->mPipelineCache);
     }
@@ -47,7 +49,8 @@ Algorithm::~Algorithm()
     if (this->mFreePipelineLayout) {
         SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
         if (!this->mPipelineLayout) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy pipeline layout but it is null");
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+                         "pipeline layout but it is null");
         }
         this->mDevice->destroy(*this->mPipelineLayout);
     }
@@ -55,7 +58,8 @@ Algorithm::~Algorithm()
     if (this->mFreeShaderModule) {
         SPDLOG_DEBUG("Kompute Algorithm Destroying shader module");
         if (!this->mShaderModule) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy shader module but it is null");
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy shader "
+                         "module but it is null");
         }
         this->mDevice->destroy(*this->mShaderModule);
     }
@@ -63,15 +67,18 @@ Algorithm::~Algorithm()
     if (this->mFreeDescriptorSet) {
         SPDLOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
         if (!this->mDescriptorSet) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to free descriptor set");
+            SPDLOG_ERROR(
+              "Kompute Algorithm Error requested to free descriptor set");
         }
-        this->mDevice->freeDescriptorSets(*this->mDescriptorPool, 1, this->mDescriptorSet.get());
+        this->mDevice->freeDescriptorSets(
+          *this->mDescriptorPool, 1, this->mDescriptorSet.get());
     }
 
     if (this->mFreeDescriptorSetLayout) {
         SPDLOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
         if (!this->mDescriptorSetLayout) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy descriptor set layout but it is null");
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+                         "descriptor set layout but it is null");
         }
         this->mDevice->destroy(*this->mDescriptorSetLayout);
     }
@@ -79,7 +86,8 @@ Algorithm::~Algorithm()
     if (this->mFreeDescriptorPool) {
         SPDLOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
         if (!this->mDescriptorPool) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy descriptor pool but it is null");
+            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+                         "descriptor pool but it is null");
         }
         this->mDevice->destroy(*this->mDescriptorPool);
     }

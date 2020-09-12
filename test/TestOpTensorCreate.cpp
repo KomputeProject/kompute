@@ -3,15 +3,16 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestOpTensorCreate, CreateSingleTensorSingleOp) {
+TEST(TestOpTensorCreate, CreateSingleTensorSingleOp)
+{
 
     kp::Manager mgr;
 
     std::vector<float> testVecA{ 9, 8, 7 };
 
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
 
     EXPECT_TRUE(tensorA->isInit());
 
@@ -21,17 +22,18 @@ TEST(TestOpTensorCreate, CreateSingleTensorSingleOp) {
     EXPECT_FALSE(tensorA->isInit());
 }
 
-TEST(TestOpTensorCreate, CreateMultipleTensorSingleOp) {
+TEST(TestOpTensorCreate, CreateMultipleTensorSingleOp)
+{
 
     kp::Manager mgr;
 
     std::vector<float> testVecA{ 9, 8, 7 };
     std::vector<float> testVecB{ 6, 5, 4 };
 
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA, tensorB});
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -40,18 +42,19 @@ TEST(TestOpTensorCreate, CreateMultipleTensorSingleOp) {
     EXPECT_EQ(tensorB->data(), testVecB);
 }
 
-TEST(TestOpTensorCreate, CreateMultipleTensorMultipleOp) {
+TEST(TestOpTensorCreate, CreateMultipleTensorMultipleOp)
+{
 
     kp::Manager mgr;
 
     std::vector<float> testVecA{ 9, 8, 7 };
     std::vector<float> testVecB{ 6, 5, 4 };
 
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorB});
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -60,18 +63,19 @@ TEST(TestOpTensorCreate, CreateMultipleTensorMultipleOp) {
     EXPECT_EQ(tensorB->data(), testVecB);
 }
 
-TEST(TestOpTensorCreate, ManageTensorMemoryWhenOpTensorCreateDestroyed) {
+TEST(TestOpTensorCreate, ManageTensorMemoryWhenOpTensorCreateDestroyed)
+{
 
     std::vector<float> testVecA{ 9, 8, 7 };
     std::vector<float> testVecB{ 6, 5, 4 };
 
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
     {
         kp::Manager mgr;
-        mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-        mgr.evalOpDefault<kp::OpTensorCreate>({tensorB});
+        mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+        mgr.evalOpDefault<kp::OpTensorCreate>({ tensorB });
 
         EXPECT_TRUE(tensorA->isInit());
         EXPECT_TRUE(tensorB->isInit());
@@ -84,18 +88,19 @@ TEST(TestOpTensorCreate, ManageTensorMemoryWhenOpTensorCreateDestroyed) {
     EXPECT_FALSE(tensorB->isInit());
 }
 
-TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore) {
+TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
+{
 
     std::vector<float> testVecA{ 9, 8, 7 };
     std::vector<float> testVecB{ 6, 5, 4 };
 
-    std::shared_ptr<kp::Tensor> tensorA{new kp::Tensor(testVecA)};
-    std::shared_ptr<kp::Tensor> tensorB{new kp::Tensor(testVecB)};
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
     kp::Manager mgr;
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorA});
-    mgr.evalOpDefault<kp::OpTensorCreate>({tensorB});
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -108,4 +113,3 @@ TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore) {
     EXPECT_FALSE(tensorA->isInit());
     EXPECT_FALSE(tensorB->isInit());
 }
-
