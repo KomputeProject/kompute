@@ -701,7 +701,7 @@
 <span id="_CPPv3N2kp6OpBaseE"></span><span id="_CPPv2N2kp6OpBaseE"></span><span id="kp::OpBase"></span><span class="target" id="classkp_1_1OpBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpBase</code><a class="headerlink" href="#_CPPv4N2kp6OpBaseE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Base Operation which provides the high level interface that Kompute operations implement in order to perform a set of actions in the GPU.</p>
 <p>Operations can perform actions on tensors, and optionally can also own an <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> with respective parameters. kp::Operations with kp::Algorithms would inherit from kp::OpBaseAlgo. </p>
-<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCreate"><span class="std std-ref">kp::OpTensorCreate</span></a>, kp::OpTensorSyncDevice, kp::OpTensorSyncLocal, <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</span></a></p>
+<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; tX, tY, tZ &gt;</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCreate"><span class="std std-ref">kp::OpTensorCreate</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorSyncDevice"><span class="std std-ref">kp::OpTensorSyncDevice</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorSyncLocal"><span class="std std-ref">kp::OpTensorSyncLocal</span></a>, <a class="reference internal" href="#classkp_1_1OpAlgoBase"><span class="std std-ref">kp::OpAlgoBase&lt; 0, 0, 0 &gt;</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
@@ -989,6 +989,108 @@
 <dt id="_CPPv4N2kp12OpTensorCopy8postEvalEv">
 <span id="_CPPv3N2kp12OpTensorCopy8postEvalEv"></span><span id="_CPPv2N2kp12OpTensorCopy8postEvalEv"></span><span id="kp::OpTensorCopy::postEval"></span><span class="target" id="classkp_1_1OpTensorCopy_1adb73b3854dcf4ecb7711cd0d9d7af3bf"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopy8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Copies the local vectors for all the tensors to sync the data with the gpu. </p>
+</dd></dl>
+</div>
+</dd></dl>
+
+
+<h2 id="optensorsynclocal">OpTensorSyncLocal<a class="headerlink" href="#optensorsynclocal" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp17OpTensorSyncLocalE">
+<span id="_CPPv3N2kp17OpTensorSyncLocalE"></span><span id="_CPPv2N2kp17OpTensorSyncLocalE"></span><span id="kp::OpTensorSyncLocal"></span><span class="target" id="classkp_1_1OpTensorSyncLocal"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncLocal</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocalE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that syncs tensor’s local data by mapping the data from device memory into the local vector. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the postSubmit (there will be no copy during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp17OpTensorSyncLocal17OpTensorSyncLocalENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE">
+<span id="_CPPv3N2kp17OpTensorSyncLocal17OpTensorSyncLocalENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="_CPPv2N2kp17OpTensorSyncLocal17OpTensorSyncLocalENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="kp::OpTensorSyncLocal::OpTensorSyncLocal__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::"></span><span class="target" id="classkp_1_1OpTensorSyncLocal_1a843ba988f4229454cfe37970120ffbb6"></span><code class="sig-name descname">OpTensorSyncLocal</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocal17OpTensorSyncLocalENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensors provided cannot be of type TensorTypes::eStorage.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that will be used to create in operation. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp17OpTensorSyncLocalD0Ev">
+<span id="_CPPv3N2kp17OpTensorSyncLocalD0Ev"></span><span id="_CPPv2N2kp17OpTensorSyncLocalD0Ev"></span><span id="kp::OpTensorSyncLocal::~OpTensorSyncLocal"></span><span class="target" id="classkp_1_1OpTensorSyncLocal_1abe9a817363d192a190b93cf520449397"></span><code class="sig-name descname">~OpTensorSyncLocal</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocalD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor. This class manages the memory of the staging tensors it owns but these are released in the postSubmit, before it arrives to the destructor. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp17OpTensorSyncLocal4initEv">
+<span id="_CPPv3N2kp17OpTensorSyncLocal4initEv"></span><span id="_CPPv2N2kp17OpTensorSyncLocal4initEv"></span><span id="kp::OpTensorSyncLocal::init"></span><span class="target" id="classkp_1_1OpTensorSyncLocal_1a912daf0e890c16937ed4ff7c93a2807c"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocal4initEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp17OpTensorSyncLocal6recordEv">
+<span id="_CPPv3N2kp17OpTensorSyncLocal6recordEv"></span><span id="_CPPv2N2kp17OpTensorSyncLocal6recordEv"></span><span id="kp::OpTensorSyncLocal::record"></span><span class="target" id="classkp_1_1OpTensorSyncLocal_1a3ff2889d246eec5b7fa45705716a1408"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocal6recordEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>For device tensors, it records the copy command into the staging tensor from the device tensor. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp17OpTensorSyncLocal7preEvalEv">
+<span id="_CPPv3N2kp17OpTensorSyncLocal7preEvalEv"></span><span id="_CPPv2N2kp17OpTensorSyncLocal7preEvalEv"></span><span id="kp::OpTensorSyncLocal::preEval"></span><span class="target" id="classkp_1_1OpTensorSyncLocal_1af10063e16f74008b714642a22ac3b6f3"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocal7preEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any preEval commands. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp17OpTensorSyncLocal8postEvalEv">
+<span id="_CPPv3N2kp17OpTensorSyncLocal8postEvalEv"></span><span id="_CPPv2N2kp17OpTensorSyncLocal8postEvalEv"></span><span id="kp::OpTensorSyncLocal::postEval"></span><span class="target" id="classkp_1_1OpTensorSyncLocal_1a8a79f05b1403f4d83c480f7f77279693"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocal8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>For host tensors it performs the map command from the host memory into local memory. </p>
+</dd></dl>
+</div>
+</dd></dl>
+
+
+<h2 id="optensorsyncdevice">OpTensorSyncDevice<a class="headerlink" href="#optensorsyncdevice" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp18OpTensorSyncDeviceE">
+<span id="_CPPv3N2kp18OpTensorSyncDeviceE"></span><span id="_CPPv2N2kp18OpTensorSyncDeviceE"></span><span id="kp::OpTensorSyncDevice"></span><span class="target" id="classkp_1_1OpTensorSyncDevice"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncDevice</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDeviceE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that syncs tensor’s device by mapping local data into the device memory. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the record (as opposed to during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp18OpTensorSyncDevice18OpTensorSyncDeviceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE">
+<span id="_CPPv3N2kp18OpTensorSyncDevice18OpTensorSyncDeviceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="_CPPv2N2kp18OpTensorSyncDevice18OpTensorSyncDeviceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE"></span><span id="kp::OpTensorSyncDevice::OpTensorSyncDevice__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::CommandBuffer:.std::vector:std::shared_ptr:Tensor::"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1aedd10f74c3d10b5e182501c9b4c24516"></span><code class="sig-name descname">OpTensorSyncDevice</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::CommandBuffer&gt; <em>commandBuffer</em>, std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice18OpTensorSyncDeviceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device used to find device queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device for passing to <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that will be used to create in operation. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp18OpTensorSyncDeviceD0Ev">
+<span id="_CPPv3N2kp18OpTensorSyncDeviceD0Ev"></span><span id="_CPPv2N2kp18OpTensorSyncDeviceD0Ev"></span><span id="kp::OpTensorSyncDevice::~OpTensorSyncDevice"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1a990df433f503d85828392e4d50db77c1"></span><code class="sig-name descname">~OpTensorSyncDevice</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDeviceD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor. This class does not manage memory so it won’t be expecting the parent to perform a release. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp18OpTensorSyncDevice4initEv">
+<span id="_CPPv3N2kp18OpTensorSyncDevice4initEv"></span><span id="_CPPv2N2kp18OpTensorSyncDevice4initEv"></span><span id="kp::OpTensorSyncDevice::init"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1ae53cab8c44f3c68d71a591f7c17029be"></span>void <code class="sig-name descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice4initEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging. For staging tensors in host memory, the map is performed during the init function. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp18OpTensorSyncDevice6recordEv">
+<span id="_CPPv3N2kp18OpTensorSyncDevice6recordEv"></span><span id="_CPPv2N2kp18OpTensorSyncDevice6recordEv"></span><span id="kp::OpTensorSyncDevice::record"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1a84ffa11a9fe3a43e594b8e10c085583d"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice6recordEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>For device tensors, it records the copy command to the device tensor from the temporary staging tensor. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp18OpTensorSyncDevice7preEvalEv">
+<span id="_CPPv3N2kp18OpTensorSyncDevice7preEvalEv"></span><span id="_CPPv2N2kp18OpTensorSyncDevice7preEvalEv"></span><span id="kp::OpTensorSyncDevice::preEval"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1a0f5a3ab84329a32aeb23bbd99cec9467"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice7preEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any preEval commands. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp18OpTensorSyncDevice8postEvalEv">
+<span id="_CPPv3N2kp18OpTensorSyncDevice8postEvalEv"></span><span id="_CPPv2N2kp18OpTensorSyncDevice8postEvalEv"></span><span id="kp::OpTensorSyncDevice::postEval"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1a2124d84d6c3d4f00e8a8adcf3d6e018f"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any postEval commands. </p>
 </dd></dl>
 </div>
 </dd></dl>

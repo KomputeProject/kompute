@@ -307,8 +307,12 @@
     <span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
 
-    <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span> <span class="p">}));</span>
+    <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
+    <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span> <span class="p">}));</span>
+    <span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
+
+    <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
 
     <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
     <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
@@ -327,14 +331,13 @@
 <span class="s">        }</span>
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="c1">// Create tensor data in GPU</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
-
     <span class="c1">// Run Kompute operation on the parameters provided with dispatch layout</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">},</span>
-        <span class="nb">true</span><span class="p">,</span> <span class="c1">// Whether to retrieve the output from GPU memory</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+        <span class="p">{</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">},</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+
+    <span class="c1">// Sync the GPU memory back to the local tensor</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
 
     <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
@@ -352,7 +355,7 @@
            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">Device</span><span class="o">&gt;</span> <span class="n">device</span><span class="p">,</span>
            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">CommandBuffer</span><span class="o">&gt;</span> <span class="n">commandBuffer</span><span class="p">,</span>
            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="c1">// Perform your custom steps such as reading from a shader file</span>
         <span class="k">this</span><span class="o">-&gt;</span><span class="n">mShaderFilePath</span> <span class="o">=</span> <span class="s">"shaders/glsl/opmult.comp"</span><span class="p">;</span>
@@ -369,7 +372,7 @@
     <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span> <span class="p">}));</span>
     <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
 
-    <span class="c1">// Create tensors data in GPU</span>
+    <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
 
     <span class="c1">// Run Kompute operation on the parameters provided with dispatch layout</span>
@@ -387,7 +390,7 @@
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
 
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorLHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">})</span> <span class="p">};</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorRHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span> <span class="p">{</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">})</span> <span class="p">};</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorRHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">})</span> <span class="p">};</span>
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorOutput</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">})</span> <span class="p">};</span>
 
     <span class="c1">// Create all the tensors in memory</span>
@@ -402,17 +405,23 @@
         <span class="n">sq</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
 
         <span class="c1">// Record batch commands to send to GPU</span>
-        <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
-        <span class="n">sq</span><span class="p">.</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCopy</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorOutput</span><span class="p">,</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">});</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCopy</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorOutput</span><span class="p">,</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">});</span>
 
         <span class="c1">// Stop recording</span>
-        <span class="n">sq</span><span class="p">.</span><span class="n">end</span><span class="p">();</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
 
         <span class="c1">// Submit multiple batch operations to GPU</span>
         <span class="kt">size_t</span> <span class="n">ITERATIONS</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
         <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ITERATIONS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">sq</span><span class="p">.</span><span class="n">eval</span><span class="p">();</span>
+            <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
         <span class="p">}</span>
+
+        <span class="c1">// Sync GPU memory back to local tensor</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorOutput</span><span class="p">});</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="c1">// Print the output which iterates through OpMult 5 times</span>

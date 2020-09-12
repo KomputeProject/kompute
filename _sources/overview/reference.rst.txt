@@ -87,4 +87,18 @@ OpTensorCreate
 .. doxygenclass:: kp::OpTensorCopy
    :members:
 
+OpTensorSyncLocal
+-------
+
+.. doxygenclass:: kp::OpTensorSyncLocal
+   :members:
+
+OpTensorSyncDevice
+-------
+
+.. doxygenclass:: kp::OpTensorSyncDevice
+   :members:
+
+
+
 
