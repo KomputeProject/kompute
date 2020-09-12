@@ -9,7 +9,7 @@
 #else
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
 #endif
-#endif 
+#endif
 
 #ifndef KOMPUTE_LOG_OVERRIDE
 #if KOMPUTE_ENABLE_SPDLOG
@@ -19,7 +19,8 @@
 #if SPDLOG_ACTIVE_LEVEL > 1
 #define SPDLOG_DEBUG(message, ...)
 #else
-#define SPDLOG_DEBUG(message, ...) std::cout << "DEBUG: " << message << std::endl
+#define SPDLOG_DEBUG(message, ...)                                             \
+    std::cout << "DEBUG: " << message << std::endl
 #endif // SPDLOG_ACTIVE_LEVEL > 1
 #if SPDLOG_ACTIVE_LEVEL > 2
 #define SPDLOG_INFO(message, ...)
@@ -29,14 +30,16 @@
 #if SPDLOG_ACTIVE_LEVEL > 3
 #define SPDLOG_WARN(message, ...)
 #else
-#define SPDLOG_WARN(message, ...) std::cout << "WARNING: " << message << std::endl
+#define SPDLOG_WARN(message, ...)                                              \
+    std::cout << "WARNING: " << message << std::endl
 #endif // SPDLOG_ACTIVE_LEVEL > 3
 #if SPDLOG_ACTIVE_LEVEL > 4
 #define SPDLOG_ERROR(message, ...)
 #else
-#define SPDLOG_ERROR(message, ...) std::cout << "ERROR: " << message << std::endl
+#define SPDLOG_ERROR(message, ...)                                             \
+    std::cout << "ERROR: " << message << std::endl
 #endif // SPDLOG_ACTIVE_LEVEL > 4
-#endif //KOMPUTE_SPDLOG_ENABLED
+#endif // KOMPUTE_SPDLOG_ENABLED
 #endif // KOMPUTE_LOG_OVERRIDE
 
 /*
@@ -218,7 +221,7 @@ class Tensor
      */
     enum class TensorTypes
     {
-        eDevice = 0, ///< Type is device memory, source and destination
+        eDevice = 0,  ///< Type is device memory, source and destination
         eStaging = 1, ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
@@ -245,7 +248,10 @@ class Tensor
     ~Tensor();
 
     /**
-     * Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors woudl only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory.
+     * Initialiser which calls the initialisation for all the respective tensors
+     * as well as creates the respective staging tensors. The staging tensors
+     * woudl only be created for the tensors of type TensorType::eDevice as
+     * otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device);
@@ -260,7 +266,8 @@ class Tensor
      * important to ensure that there is no out-of-sync data with the GPU
      * memory.
      *
-     * @return Reference to vector of elements representing the data in the tensor.
+     * @return Reference to vector of elements representing the data in the
+     * tensor.
      */
     std::vector<float>& data();
     /**
@@ -271,7 +278,7 @@ class Tensor
      * @param i The index where the element will be returned from.
      * @return Returns the element in the position requested.
      */
-    float& operator[] (int index);
+    float& operator[](int index);
     /**
      * Returns the size/magnitude of the Tensor, which will be the total number
      * of elements across all dimensions
@@ -330,11 +337,12 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                                   vk::AccessFlagBits srcAccessMask,
-                                   vk::AccessFlagBits dstAccessMask,
-                                   vk::PipelineStageFlagBits srcStageMask,
-                                   vk::PipelineStageFlagBits dstStageMask);
+    void recordBufferMemoryBarrier(
+      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      vk::AccessFlagBits srcAccessMask,
+      vk::AccessFlagBits dstAccessMask,
+      vk::PipelineStageFlagBits srcStageMask,
+      vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
@@ -818,16 +826,17 @@ class Manager
      */
     template<typename T, typename... TArgs>
     void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
-                TArgs&&... params)
+                       TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
-        this->evalOp<T>(tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+        this->evalOp<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
     }
 
     /**
      * Function that simplifies the common workflow of tensor creation and
      * initialization. It will take the constructor parameters for a Tensor
-     * and will will us it to create a new Tensor and then create it using 
+     * and will will us it to create a new Tensor and then create it using
      * the OpCreateTensor command.
      *
      * @param data The data to initialize the tensor with
@@ -835,15 +844,16 @@ class Manager
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
     std::shared_ptr<Tensor> buildTensor(
-            const std::vector<float>& data,
-            Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      const std::vector<float>& data,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         SPDLOG_DEBUG("Kompute Manager createInitTensor triggered");
 
         SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
-        std::shared_ptr<Tensor> tensor = std::make_shared<Tensor>(kp::Tensor(data, tensorType));
+        std::shared_ptr<Tensor> tensor =
+          std::make_shared<Tensor>(kp::Tensor(data, tensorType));
 
-        this->evalOpDefault<OpTensorCreate>({tensor});
+        this->evalOpDefault<OpTensorCreate>({ tensor });
 
         return tensor;
     }
