@@ -12,8 +12,8 @@ layout(set = 0, binding = 4) buffer bwouti { float wouti[]; };
 layout(set = 0, binding = 5) buffer bwoutj { float woutj[]; };
 layout(set = 0, binding = 6) buffer bbin { float bin[]; };
 layout(set = 0, binding = 7) buffer bbout { float bout[]; };
+layout(set = 0, binding = 8) buffer blout { float lout[]; };
 
-float learningRate = 0.1;
 float m = float(M);
 
 float sigmoid(float z) {
@@ -21,7 +21,9 @@ float sigmoid(float z) {
 }
 
 float inference(vec2 x, vec2 w, float b) {
+    // Compute the linear mapping function
     float z = dot(w, x) + b;
+    // Calculate the y-hat with sigmoid 
     float yHat = sigmoid(z);
     return yHat;
 }
@@ -40,13 +42,14 @@ void main() {
     float yCurr = y[idx];
 
     float yHat = inference(xCurr, wCurr, bCurr);
-    float loss = calculateLoss(yHat, yCurr);
 
     float dZ = yHat - yCurr;
     vec2 dW = (1. / m) * xCurr * dZ;
     float dB = (1. / m) * dZ;
-    wouti[idx] = learningRate * dW.x;
-    woutj[idx] = learningRate * dW.y;
-    bout[idx] = learningRate * dB;
+    wouti[idx] = dW.x;
+    woutj[idx] = dW.y;
+    bout[idx] = dB;
+
+    lout[idx] = calculateLoss(yHat, yCurr);
 }
 
