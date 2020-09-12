@@ -10,14 +10,14 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
-    std::string shader(
-      "#version 450\n"
-      "layout (local_size_x = 1) in;\n"
-      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-      "void main() {\n"
-      "    uint index = gl_GlobalInvocationID.x;\n"
-      "    pa[index] = pa[index] + 1;\n"
-      "}\n");
+    std::string shader(R"(
+      #version 450
+      layout (local_size_x = 1) in;
+      layout(set = 0, binding = 0) buffer a { float pa[]; };
+      void main() {
+          uint index = gl_GlobalInvocationID.x;
+          pa[index] = pa[index] + 1;
+      })");
 
     std::weak_ptr<kp::Sequence> sqWeakPtr =
       mgr.getOrCreateManagedSequence("newSequence");
@@ -50,14 +50,14 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
-    std::string shader(
-      "#version 450\n"
-      "layout (local_size_x = 1) in;\n"
-      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-      "void main() {\n"
-      "    uint index = gl_GlobalInvocationID.x;\n"
-      "    pa[index] = pa[index] + 1;\n"
-      "}\n");
+    std::string shader(R"(
+      #version 450
+      layout (local_size_x = 1) in;
+      layout(set = 0, binding = 0) buffer a { float pa[]; };
+      void main() {
+          uint index = gl_GlobalInvocationID.x;
+          pa[index] = pa[index] + 1;
+      })");
 
     std::weak_ptr<kp::Sequence> sqWeakPtr =
       mgr.getOrCreateManagedSequence("newSequence");
@@ -107,14 +107,14 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
-    std::string shader(
-      "#version 450\n"
-      "layout (local_size_x = 1) in;\n"
-      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-      "void main() {\n"
-      "    uint index = gl_GlobalInvocationID.x;\n"
-      "    pa[index] = pa[index] + 1;\n"
-      "}\n");
+    std::string shader(R"(
+      #version 450
+      layout (local_size_x = 1) in;
+      layout(set = 0, binding = 0) buffer a { float pa[]; };
+      void main() {
+          uint index = gl_GlobalInvocationID.x;
+          pa[index] = pa[index] + 1;
+      })");
 
     std::weak_ptr<kp::Sequence> sqWeakPtr =
       mgr.getOrCreateManagedSequence("newSequence");
@@ -175,14 +175,14 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
 
-    std::string shader(
-      "#version 450\n"
-      "layout (local_size_x = 1) in;\n"
-      "layout(set = 0, binding = 0) buffer a { float pa[]; };\n"
-      "void main() {\n"
-      "    uint index = gl_GlobalInvocationID.x;\n"
-      "    pa[index] = pa[index] + 1;\n"
-      "}\n");
+    std::string shader(R"(
+      #version 450
+      layout (local_size_x = 1) in;
+      layout(set = 0, binding = 0) buffer a { float pa[]; };
+      void main() {
+          uint index = gl_GlobalInvocationID.x;
+          pa[index] = pa[index] + 1;
+      })");
 
     std::weak_ptr<kp::Sequence> sqWeakPtr =
       mgr.getOrCreateManagedSequence("newSequence");
@@ -225,4 +225,80 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
     }
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+}
+
+TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
+{
+
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::Tensor> tensorInA{ new kp::Tensor({ 2.0, 4.0, 6.0 }) };
+    std::shared_ptr<kp::Tensor> tensorInB{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
+    std::shared_ptr<kp::Tensor> tensorOut{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
+
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorInA, tensorInB, tensorOut });
+
+    std::string shader(R"(
+        // The version to use 
+        #version 450
+
+        // The execution structure
+        layout (local_size_x = 1) in;
+
+        // The buffers are provided via the tensors
+        layout(binding = 0) buffer bufA { float a[]; };
+        layout(binding = 1) buffer bufB { float b[]; };
+        layout(binding = 2) buffer bufOut { float o[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+
+            o[index] = a[index] * b[index];
+        }
+      )");
+
+    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+            { tensorInA, tensorInB, tensorOut },
+            std::vector<char>(shader.begin(), shader.end()));
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorOut});
+
+    EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
+}
+
+TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
+{
+
+    kp::Manager mgr;
+
+    auto tensorInA = mgr.buildTensor({ 2.0, 4.0, 6.0 });
+    auto tensorInB = mgr.buildTensor({ 0.0, 1.0, 2.0 });
+    auto tensorOut = mgr.buildTensor({ 0.0, 0.0, 0.0 });
+
+    std::string shader(R"(
+        // The version to use 
+        #version 450
+
+        // The execution structure
+        layout (local_size_x = 1) in;
+
+        // The buffers are provided via the tensors
+        layout(binding = 0) buffer bufA { float a[]; };
+        layout(binding = 1) buffer bufB { float b[]; };
+        layout(binding = 2) buffer bufOut { float o[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+
+            o[index] = a[index] * b[index];
+        }
+      )");
+
+    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+            { tensorInA, tensorInB, tensorOut },
+            std::vector<char>(shader.begin(), shader.end()));
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorOut});
+
+    EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
 }
