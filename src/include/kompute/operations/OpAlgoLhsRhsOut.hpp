@@ -107,7 +107,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice>
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in 
   // a granular way.
-  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, false)
+  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor with params");
 }

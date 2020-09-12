@@ -50,7 +50,6 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies) {
 
         sq->record<kp::OpAlgoBase<>>(
                 { tensorA, tensorB }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
 
         sq->record<kp::OpTensorCopy>({tensorB, tensorA});

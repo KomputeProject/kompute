@@ -47,7 +47,7 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors)
-      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true, "")
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
     {
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 

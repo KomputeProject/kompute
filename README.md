@@ -61,8 +61,11 @@ int main() {
     kp::Manager mgr; // Selects device 0 unless explicitly requested
 
     // Creates tensor an initializes GPU memory (below we show more granularity)
-    auto tensorA = mgr.buildTensor({ 3, 4, 5 });
-    auto tensorB = mgr.buildTensor({ 0, 0, 0 });
+    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 3., 4., 5. }));
+    auto tensorB = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
+
+    // Create tensors data explicitly in GPU with an operation
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
     // Define your shader as a string (using string literals for simplicity)
     // (You can also pass the raw compiled bytes, or even path to file)
@@ -82,10 +85,12 @@ int main() {
     )");
 
     // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOpDefault<kp::OpMult<3, 1, 1>>(
+    mgr.evalOpDefault<kp::OpAlgoBase<3, 1, 1>>(
         { tensorA, tensorB }, 
-        true, // Whether to retrieve the output from GPU memory
         std::vector<char>(shader.begin(), shader.end()));
+
+    // Sync the GPU memory back to the local tensor
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
     // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
     std::cout << fmt::format("A: {}, B: {}", 
@@ -107,7 +112,7 @@ class OpMyCustom : public OpAlgoBase<tX, tY, tZ>
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors)
-      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true, "")
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
     {
         // Perform your custom steps such as reading from a shader file
         this->mShaderFilePath = "shaders/glsl/opmult.comp";
@@ -144,7 +149,7 @@ int main() {
     kp::Manager mgr;
 
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 1., 1., 1. }) };
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2., 2., 2. }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2., 2., 2. }) };
     std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0., 0., 0. }) };
 
     // Create all the tensors in memory
@@ -159,17 +164,23 @@ int main() {
         sq.begin();
 
         // Record batch commands to send to GPU
-        sq.record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
-        sq.record<kp::OpTensorCopy>({tensorOutput, tensorLHS, tensorRHS});
+        sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+        sq->record<kp::OpTensorCopy>({tensorOutput, tensorLHS, tensorRHS});
 
         // Stop recording
-        sq.end();
+        sq->end();
 
         // Submit multiple batch operations to GPU
         size_t ITERATIONS = 5;
         for (size_t i = 0; i < ITERATIONS; i++) {
-            sq.eval();
+            sq->eval();
         }
+
+        // Sync GPU memory back to local tensor
+        sq->begin();
+        sq->record<kp::OpTensorSyncLocal>({tensorOutput});
+        sq->end();
+        sq->eval();
     }
 
     // Print the output which iterates through OpMult 5 times

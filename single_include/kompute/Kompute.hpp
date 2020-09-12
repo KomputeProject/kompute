@@ -971,11 +971,6 @@ namespace kp {
  *
  * All of these tensors are expected to be initlaised and this is checked with throw std exception in the init function.
  *
- * It is possible to also choose if the user requires all of the tensors to be
- * copied from device memory to their host data. This can be disabled by either
- * passing the copyOutputData constructor parameter and/or by overriding the 
- * functions to carry out copy commands accordingly. 
- *
  * See OpLhsRhsOut for an example implementation on a more specific granularity on tensor parameters.
  * 
  * The template parameters specify the processing GPU layout number of
@@ -1000,14 +995,12 @@ class OpAlgoBase : public OpBase
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param copyOutputData Whether to map device data for all output tensors back to their host data vectors
      * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
      */
     OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool copyOutputData);
+           std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Constructor that enables a file to be passed to the operation with
@@ -1018,14 +1011,12 @@ class OpAlgoBase : public OpBase
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param copyOutputData Whether to map device data for all output tensors back to their host data vectors
      * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
      */
     OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool copyOutputData,
            std::string shaderFilePath);
 
     /**
@@ -1036,14 +1027,12 @@ class OpAlgoBase : public OpBase
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param copyOutputData Whether to map device data for all output tensors back to their host data vectors
      * @param shaderDataRaw Optional parameter to specify the shader data either in binary or raw form
      */
     OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool copyOutputData,
            const std::vector<char>& shaderDataRaw);
 
     /**
@@ -1090,8 +1079,6 @@ class OpAlgoBase : public OpBase
     bool mFreeAlgorithm = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mOutputStagingTensors; ///< Array of output staging tensors which will be expected to be the same size as the number of inputs.
-    bool mCopyOutputData; ///< Configuration parameter which states whether data will be copied back to all provided tensors for convenience. This can be deactivated by setting this flag and or overriding the functions provided.
 
     uint32_t mX;
     uint32_t mY;
@@ -1121,11 +1108,10 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool copyOutputData)
+                           std::vector<std::shared_ptr<Tensor>>& tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} copyOutputData: {}, shaderFilePath: {}", tensors.size(), copyOutputData);
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} , shaderFilePath: {}", tensors.size());
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -1145,8 +1131,6 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                  this->mY,
                  this->mZ);
 
-    this->mCopyOutputData = copyOutputData;
-
     this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
 }
 
@@ -1155,9 +1139,8 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
                            std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool copyOutputData,
                            std::string shaderFilePath)
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, copyOutputData)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}", shaderFilePath);
 
@@ -1169,9 +1152,8 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                            std::shared_ptr<vk::Device> device,
                            std::shared_ptr<vk::CommandBuffer> commandBuffer,
                            std::vector<std::shared_ptr<Tensor>>& tensors,
-                           bool copyOutputData,
                            const std::vector<char>& shaderDataRaw)
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, copyOutputData)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shader raw data length: {}", shaderDataRaw.size());
 
@@ -1182,13 +1164,6 @@ template<uint32_t tX, uint32_t tY, uint32_t tZ>
 OpAlgoBase<tX, tY, tZ>::~OpAlgoBase()
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase destructor started");
-
-    if (this->mCopyOutputData) {
-        SPDLOG_DEBUG("Kompute OpAlgoBase destroying staging tensors");
-        for (std::shared_ptr<Tensor> stagingTensor : this->mOutputStagingTensors) {
-            stagingTensor->freeMemoryDestroyGPUResources();
-        }
-    }
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -1205,18 +1180,6 @@ OpAlgoBase<tX, tY, tZ>::init()
     for (std::shared_ptr<Tensor> tensor : this->mTensors) {
         if(!tensor->isInit()) {
             throw std::runtime_error("Kompute OpAlgoBase validation failed; all tensor parameters must be initialised.");
-        }
-    }
-
-    if (this->mCopyOutputData) {
-        SPDLOG_DEBUG("Kompute OpAlgoBase creating staging output tensors");
-
-        for (std::shared_ptr<Tensor> tensor : this->mTensors) {
-            std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
-              tensor->data(), Tensor::TensorTypes::eStaging);
-            stagingTensor->init(
-                this->mPhysicalDevice, this->mDevice);
-            this->mOutputStagingTensors.push_back(stagingTensor);
         }
     }
 
@@ -1246,27 +1209,6 @@ OpAlgoBase<tX, tY, tZ>::record()
     }
 
     this->mAlgorithm->recordDispatch(this->mX, this->mY, this->mZ);
-
-    if (this->mCopyOutputData) {
-        // Barrier to ensure the shader code is executed before buffer read
-        for (const std::shared_ptr<Tensor>& tensor : this->mTensors) {
-            tensor->recordBufferMemoryBarrier(
-              this->mCommandBuffer,
-              vk::AccessFlagBits::eShaderWrite,
-              vk::AccessFlagBits::eTransferRead,
-              vk::PipelineStageFlagBits::eComputeShader,
-              vk::PipelineStageFlagBits::eTransfer);
-        }
-
-        // Record copy from and create barrier for STAGING tensors
-        // TODO: This only accounts for device tensors need to account for staging and storage
-        for (size_t i = 0; i < this->mTensors.size(); i++) {
-            this->mOutputStagingTensors[i]->recordCopyFrom(
-                this->mCommandBuffer,
-                this->mTensors[i], 
-                true);
-        }
-    }
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -1281,14 +1223,6 @@ void
 OpAlgoBase<tX, tY, tZ>::postEval()
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
-
-    if (this->mCopyOutputData) {
-        for (size_t i = 0; i < this->mTensors.size(); i++) {
-            this->mOutputStagingTensors[i]->mapDataFromHostMemory();
-
-            this->mTensors[i]->setData(this->mOutputStagingTensors[i]->data());
-        }
-    }
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
@@ -1429,7 +1363,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice>
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in 
   // a granular way.
-  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, false)
+  : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor with params");
 }
@@ -1575,7 +1509,7 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors)
-      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, true, "")
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
     {
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 

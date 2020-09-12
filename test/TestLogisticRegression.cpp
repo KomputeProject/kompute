@@ -48,7 +48,6 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression) {
 
             sq->record<kp::OpAlgoBase<>>(
                     params, 
-                    false, // Whether to copy output from device
                     "test/shaders/glsl/test_logistic_regression.comp");
 
             sq->record<kp::OpTensorSyncLocal>({wOutI, wOutJ, bOut});
@@ -125,8 +124,9 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy) {
 
             sq->record<kp::OpAlgoBase<>>(
                     params, 
-                    true, // Whether to copy output from device
                     "test/shaders/glsl/test_logistic_regression.comp");
+
+            sq->record<kp::OpTensorSyncLocal>({wOutI, wOutJ, bOut});
 
             sq->end();
 

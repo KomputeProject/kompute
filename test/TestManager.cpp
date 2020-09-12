@@ -10,15 +10,16 @@ TEST(TestManager, EndToEndOpMultFlow)
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
     mgr.evalOp<kp::OpTensorCreate>({ tensorLHS });
 
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor(
-      { 2, 4, 6 }) };
+    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor( { 2, 4, 6 }) };
     mgr.evalOp<kp::OpTensorCreate>({ tensorRHS });
 
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor(
-      { 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor( { 0, 0, 0 }) };
+
     mgr.evalOp<kp::OpTensorCreate>({ tensorOutput });
 
     mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+
+    mgr.evalOp<kp::OpTensorSyncLocal>({ tensorOutput });
 
     EXPECT_EQ(tensorOutput->data(), std::vector<float>({0, 4, 12}));
 }
@@ -45,6 +46,8 @@ TEST(TestManager, OpMultSequenceFlow) {
         sq->record<kp::OpTensorCreate>({ tensorOutput });
 
         sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+
+        sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
 
         sq->end();
         sq->eval();
@@ -99,6 +102,8 @@ TEST(TestManager, TestMultipleTensorsAtOnce) {
         EXPECT_TRUE(tensorOutput->isInit());
 
         sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+
+        sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
 
         sq->end();
         sq->eval();

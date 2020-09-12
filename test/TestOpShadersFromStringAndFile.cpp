@@ -29,8 +29,9 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor) {
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
             { tensorA, tensorB }, 
-            true, // Whether to copy output from device
             std::vector<char>(shader.begin(), shader.end()));
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorA, tensorB});
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({0, 1, 2}));
     EXPECT_EQ(tensorB->data(), std::vector<float>({3, 4, 5}));
@@ -45,11 +46,12 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromConstructor) {
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
             { tensorA, tensorB }, 
-            true, // Whether to copy output from device
             std::vector<char>(
                 kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
                 kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv +
                 kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv_len));
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorA, tensorB});
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({0, 1, 2}));
     EXPECT_EQ(tensorB->data(), std::vector<float>({3, 4, 5}));
@@ -64,8 +66,9 @@ TEST(TestOpAlgoBase, ShaderRawDataFromFile) {
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
             { tensorA, tensorB }, 
-            true, // Whether to copy output from device
             "test/shaders/glsl/test_op_custom_shader.comp");
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorA, tensorB});
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({0, 1, 2}));
     EXPECT_EQ(tensorB->data(), std::vector<float>({3, 4, 5}));
@@ -80,8 +83,9 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromFile) {
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
             { tensorA, tensorB }, 
-            true, // Whether to copy output from device
             "test/shaders/glsl/test_op_custom_shader.comp.spv");
+
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorA, tensorB});
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({0, 1, 2}));
     EXPECT_EQ(tensorB->data(), std::vector<float>({3, 4, 5}));

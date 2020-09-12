@@ -27,16 +27,15 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord) {
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                false, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                false, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
+
+        sq->record<kp::OpTensorSyncLocal>({ tensorA });
 
         sq->end();
         sq->eval();
@@ -70,7 +69,6 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                false, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -80,7 +78,6 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                false, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -90,8 +87,15 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords) {
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
+
+        sq->end();
+        sq->eval();
+
+        sq->begin();
+
+        sq->record<kp::OpTensorSyncLocal>(
+                { tensorA });
 
         sq->end();
         sq->eval();
@@ -126,7 +130,6 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences) {
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -134,12 +137,11 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences) {
     }
 
     std::weak_ptr<kp::Sequence> sqWeakPtr2 = mgr.getOrCreateManagedSequence("newSequence2");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -148,13 +150,23 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences) {
 
 
     std::weak_ptr<kp::Sequence> sqWeakPtr3 = mgr.getOrCreateManagedSequence("newSequence3");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
+
+        sq->end();
+        sq->eval();
+    }
+
+    std::weak_ptr<kp::Sequence> sqWeakPtr4 = mgr.getOrCreateManagedSequence("newSequence5");
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr4.lock()) {
+        sq->begin();
+
+        sq->record<kp::OpTensorSyncLocal>(
+                { tensorA });
 
         sq->end();
         sq->eval();
@@ -190,13 +202,26 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval) {
     }
 
     std::weak_ptr<kp::Sequence> sqWeakPtr2 = mgr.getOrCreateManagedSequence("newSequence2");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
         sq->record<kp::OpAlgoBase<3, 1, 1>>(
                 { tensorA }, 
-                true, // Whether to copy output from device
                 std::vector<char>(shader.begin(), shader.end()));
+
+        sq->end();
+
+        sq->eval();
+        sq->eval();
+        sq->eval();
+    }
+
+    std::weak_ptr<kp::Sequence> sqWeakPtr3 = mgr.getOrCreateManagedSequence("newSequence3");
+    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
+        sq->begin();
+
+        sq->record<kp::OpTensorSyncLocal>(
+                { tensorA });
 
         sq->end();
 
