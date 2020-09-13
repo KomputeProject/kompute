@@ -100,7 +100,7 @@ int main() {
 
 Build your own pre-compiled operations for domain specific workflows.
 
-We also provide tools that allow you to [convert shaders into C++ headers]().
+We also provide tools that allow you to [convert shaders into C++ headers](https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40).
 
 ```c++
 
@@ -231,7 +231,7 @@ Simplified Kompute Components
 
 <br>
 <br>
-(very tiny, check the docs to for details)
+(very tiny, check the [full reference diagram in docs for details](https://ethicalml.github.io/vulkan-kompute/overview/reference.html))
 <br>
 <br>
 
