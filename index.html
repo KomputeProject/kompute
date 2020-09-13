@@ -278,7 +278,7 @@
 <h3>The General Purpose Vulkan Compute Framework.</h3>
 </td>
 </tr>
-</table><h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4><p>🔋 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Documentation</a> 💻 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Import to your project</a> ⌨ <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Tutorials</a> 💾</p>
+</table><h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4><p>🔋 <a class="reference external" href="https://axsaucedo.github.io/vulkan-kompute/">Documentation</a> 💻 <a class="reference external" href="https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a> ⌨ <a class="reference external" href="https://github.com/axsaucedo/vulkan-kompute#your-first-kompute">Examples</a> 💾</p>
 
 <h2 id="principles-features">Principles &amp; Features<a class="headerlink" href="#principles-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -479,6 +479,50 @@ Simplified Kompute Components
 </table>
 
 <h2 id="build-overview">Build Overview<a class="headerlink" href="#build-overview" title="Permalink to this headline">¶</a></h2>
+<p>The build system provided is <code class="docutils literal notranslate"><span class="pre">cmake</span></code> which allows for cross platform builds. Below is a brief overview of the build system.</p>
+
+<h3 id="build-parameters-cmake">Build parameters (cmake)<a class="headerlink" href="#build-parameters-cmake" title="Permalink to this headline">¶</a></h3>
+<p>The recommended approach to build the project is as out-of-source build in the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder. This project comes with a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> that provides a set of commands that help with developer workflows. You can see some of the commands if you want to add some of the more advanced commands.</p>
+<p>For a base build you just have to run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">Bbuild</span>
+</pre></div>
+</div>
+<p>This by default configures without any of the extra build tasks (such as building shaders) and compiles without the optional dependencies. The table below provides more detail.</p>
+<table>
+<colgroup>
+<col style="width: 50%"/>
+<col style="width: 50%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
+<td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DCMAKE_INSTALL_PREFIX=”build/src/CMakefiles/Export/”</p></td>
+<td><p>Enables local installation (which won’t require admin privileges)</p></td>
+</tr>
+<tr class="row-even"><td><p>-DCMAKE_TOOLCHAIN_FILE=”…”</p></td>
+<td><p>This is the path for your package manager if you use it such as vcpkg</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=1</p></td>
+<td><p>Enable if you wish to build and run the tests (must have deps installed.</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
+<td><p>Enable if you wish to build the docs (must have docs deps installed)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1</p></td>
+<td><p>Option to build the single header file using “quom” utility</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
+<td><p>Allows you to pass extra config flags to compiler</p></td>
+</tr>
+</tbody>
+</table>
+
 
 <h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
 <p>Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies.</p>

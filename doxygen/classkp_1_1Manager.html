@@ -93,6 +93,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae7a3f54442823198af724c97c87c3dc6"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:ae7a3f54442823198af724c97c87c3dc6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">evalOpDefault</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:ae7a3f54442823198af724c97c87c3dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13e7b747a19ca43f32024f6b4347b642"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a13e7b747a19ca43f32024f6b4347b642">buildTensor</a> (const std::vector&lt; float &gt; &amp;data, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
+<tr class="separator:a13e7b747a19ca43f32024f6b4347b642"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base orchestrator which creates and manages device and child components </p>
@@ -200,6 +202,51 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a13e7b747a19ca43f32024f6b4347b642"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13e7b747a19ca43f32024f6b4347b642">&#9670;&nbsp;</a></span>buildTensor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1Tensor.html">Tensor</a>&gt; kp::Manager::buildTensor </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a>&#160;</td>
+          <td class="paramname"><em>tensorType</em> = <code><a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that simplifies the common workflow of tensor creation and initialization. It will take the constructor parameters for a <a class="el" href="classkp_1_1Tensor.html">Tensor</a> and will will us it to create a new <a class="el" href="classkp_1_1Tensor.html">Tensor</a> and then create it using the OpCreateTensor command.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>The data to initialize the tensor with </td></tr>
+    <tr><td class="paramname">tensorType</td><td>The type of tensor to initialize </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Initialized <a class="el" href="classkp_1_1Tensor.html">Tensor</a> with memory Syncd to GPU device </dd></dl>
+
+</div>
+</div>
 <a id="af5ef1e29c5c4a2af3184016dc718f022"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af5ef1e29c5c4a2af3184016dc718f022">&#9670;&nbsp;</a></span>evalOp()</h2>
 

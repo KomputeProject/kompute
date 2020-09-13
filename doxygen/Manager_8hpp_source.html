@@ -77,96 +77,117 @@ $(function() {
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;kompute/Sequence.hpp&quot;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define KP_DEFAULT_SESSION &quot;DEFAULT&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;kompute/operations/OpTensorCreate.hpp&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>kp {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#define KP_DEFAULT_SESSION &quot;DEFAULT&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html">   16</a></span>&#160;<span class="keyword">class </span><a class="code" href="classkp_1_1Manager.html">Manager</a></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;{</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">   24</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">Manager</a>();</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">   30</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">Manager</a>(uint32_t physicalDeviceIndex);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">   41</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">Manager</a>(std::shared_ptr&lt;vk::Instance&gt; instance,</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            std::shared_ptr&lt;vk::Device&gt; device,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            uint32_t physicalDeviceIndex);</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">   50</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">~Manager</a>();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">   61</a></span>&#160;    std::weak_ptr&lt;Sequence&gt; <a class="code" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a>(</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      std::string sequenceName);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... TArgs&gt;</div>
-<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">   74</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">evalOp</a>(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors,</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                std::string sequenceName = KP_DEFAULT_SESSION,</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                TArgs&amp;&amp;... params)</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp triggered&quot;</span>);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::weak_ptr&lt;Sequence&gt; sqWeakPtr =</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;          this-&gt;<a class="code" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a>(sequenceName);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">if</span> (std::shared_ptr&lt;kp::Sequence&gt; sq = sqWeakPtr.lock()) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence BEGIN&quot;</span>);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            sq-&gt;begin();</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence RECORD&quot;</span>);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            sq-&gt;record&lt;T&gt;(tensors, std::forward&lt;TArgs&gt;(params)...);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence END&quot;</span>);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            sq-&gt;end();</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence EVAL&quot;</span>);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            sq-&gt;eval();</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence SUCCESS&quot;</span>);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    }</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... TArgs&gt;</div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">  108</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">evalOpDefault</a>(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors,</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                TArgs&amp;&amp;... params)</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    {</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp Default triggered&quot;</span>);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        this-&gt;evalOp&lt;T&gt;(tensors, KP_DEFAULT_SESSION, std::forward&lt;TArgs&gt;(params)...);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="comment">// -------------- OPTIONALLY OWNED RESOURCES</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    std::shared_ptr&lt;vk::Instance&gt; mInstance = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordtype">bool</span> mFreeInstance = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    uint32_t mPhysicalDeviceIndex = -1;</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">bool</span> mFreeDevice = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    uint32_t mComputeQueueFamilyIndex = -1;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    std::shared_ptr&lt;vk::Queue&gt; mComputeQueue = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="comment">// -------------- ALWAYS OWNED RESOURCES</span></div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    std::unordered_map&lt;std::string, std::shared_ptr&lt;Sequence&gt;&gt;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      mManagedSequences;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">#if DEBUG</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    vk::DebugReportCallbackEXT mDebugReportCallback;</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    vk::DispatchLoaderDynamic mDebugDispatcher;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="comment">// Create functions</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <span class="keywordtype">void</span> createInstance();</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">void</span> createDevice();</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;};</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;} <span class="comment">// End namespace kp</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>kp {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html">   18</a></span>&#160;<span class="keyword">class </span><a class="code" href="classkp_1_1Manager.html">Manager</a></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;{</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;  <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">   25</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">Manager</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">   31</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">Manager</a>(uint32_t physicalDeviceIndex);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">   42</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">Manager</a>(std::shared_ptr&lt;vk::Instance&gt; instance,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            std::shared_ptr&lt;vk::Device&gt; device,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            uint32_t physicalDeviceIndex);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">   51</a></span>&#160;    <a class="code" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">~Manager</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">   62</a></span>&#160;    std::weak_ptr&lt;Sequence&gt; <a class="code" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a>(</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;      std::string sequenceName);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... TArgs&gt;</div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">   75</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">evalOp</a>(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors,</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                std::string sequenceName = KP_DEFAULT_SESSION,</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                TArgs&amp;&amp;... params)</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp triggered&quot;</span>);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        std::weak_ptr&lt;Sequence&gt; sqWeakPtr =</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;          this-&gt;<a class="code" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a>(sequenceName);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordflow">if</span> (std::shared_ptr&lt;kp::Sequence&gt; sq = sqWeakPtr.lock()) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence BEGIN&quot;</span>);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            sq-&gt;begin();</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence RECORD&quot;</span>);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            sq-&gt;record&lt;T&gt;(tensors, std::forward&lt;TArgs&gt;(params)...);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence END&quot;</span>);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            sq-&gt;end();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence EVAL&quot;</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            sq-&gt;eval();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp running sequence SUCCESS&quot;</span>);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... TArgs&gt;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">  109</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">evalOpDefault</a>(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors,</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                       TArgs&amp;&amp;... params)</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager evalOp Default triggered&quot;</span>);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        this-&gt;evalOp&lt;T&gt;(</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;          tensors, KP_DEFAULT_SESSION, std::forward&lt;TArgs&gt;(params)...);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    }</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classkp_1_1Manager.html#a13e7b747a19ca43f32024f6b4347b642">  127</a></span>&#160;    std::shared_ptr&lt;Tensor&gt; <a class="code" href="classkp_1_1Manager.html#a13e7b747a19ca43f32024f6b4347b642">buildTensor</a>(</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      <span class="keyword">const</span> std::vector&lt;float&gt;&amp; data,</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType = <a class="code" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager createInitTensor triggered&quot;</span>);</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute Manager creating new tensor shared ptr&quot;</span>);</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        std::shared_ptr&lt;Tensor&gt; tensor =</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;          std::make_shared&lt;Tensor&gt;(<a class="code" href="classkp_1_1Tensor.html">kp::Tensor</a>(data, tensorType));</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        this-&gt;evalOpDefault&lt;OpTensorCreate&gt;({ tensor });</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keywordflow">return</span> tensor;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="comment">// -------------- OPTIONALLY OWNED RESOURCES</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    std::shared_ptr&lt;vk::Instance&gt; mInstance = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keywordtype">bool</span> mFreeInstance = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    uint32_t mPhysicalDeviceIndex = -1;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    std::shared_ptr&lt;vk::Device&gt; mDevice = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordtype">bool</span> mFreeDevice = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    uint32_t mComputeQueueFamilyIndex = -1;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    std::shared_ptr&lt;vk::Queue&gt; mComputeQueue = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="comment">// -------------- ALWAYS OWNED RESOURCES</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    std::unordered_map&lt;std::string, std::shared_ptr&lt;Sequence&gt;&gt;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      mManagedSequences;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="preprocessor">#if DEBUG</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    vk::DebugReportCallbackEXT mDebugReportCallback;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    vk::DispatchLoaderDynamic mDebugDispatcher;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="comment">// Create functions</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keywordtype">void</span> createInstance();</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordtype">void</span> createDevice();</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;};</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;} <span class="comment">// End namespace kp</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclasskp_1_1Manager_html_ae7a3f54442823198af724c97c87c3dc6"><div class="ttname"><a href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">kp::Manager::evalOpDefault</a></div><div class="ttdeci">void evalOpDefault(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, TArgs &amp;&amp;... params)</div><div class="ttdef"><b>Definition:</b> Manager.hpp:108</div></div>
+<div class="ttc" id="aclasskp_1_1Manager_html_ae7a3f54442823198af724c97c87c3dc6"><div class="ttname"><a href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">kp::Manager::evalOpDefault</a></div><div class="ttdeci">void evalOpDefault(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, TArgs &amp;&amp;... params)</div><div class="ttdef"><b>Definition:</b> Manager.hpp:109</div></div>
+<div class="ttc" id="aclasskp_1_1Tensor_html_a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f"><div class="ttname"><a href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">kp::Tensor::TensorTypes::eDevice</a></div><div class="ttdeci">@ eDevice</div><div class="ttdoc">Type is device memory, source and destination.</div></div>
+<div class="ttc" id="aclasskp_1_1Manager_html_a13e7b747a19ca43f32024f6b4347b642"><div class="ttname"><a href="classkp_1_1Manager.html#a13e7b747a19ca43f32024f6b4347b642">kp::Manager::buildTensor</a></div><div class="ttdeci">std::shared_ptr&lt; Tensor &gt; buildTensor(const std::vector&lt; float &gt; &amp;data, Tensor::TensorTypes tensorType=Tensor::TensorTypes::eDevice)</div><div class="ttdef"><b>Definition:</b> Manager.hpp:127</div></div>
+<div class="ttc" id="aclasskp_1_1Tensor_html"><div class="ttname"><a href="classkp_1_1Tensor.html">kp::Tensor</a></div><div class="ttdef"><b>Definition:</b> Tensor.hpp:18</div></div>
 <div class="ttc" id="aclasskp_1_1Manager_html_a2750eee25b482b114a8032a35664de27"><div class="ttname"><a href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">kp::Manager::Manager</a></div><div class="ttdeci">Manager(uint32_t physicalDeviceIndex)</div></div>
 <div class="ttc" id="aclasskp_1_1Manager_html_af9b31d91851f8b7bb8d95c32a905b1ad"><div class="ttname"><a href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">kp::Manager::~Manager</a></div><div class="ttdeci">~Manager()</div></div>
-<div class="ttc" id="aclasskp_1_1Manager_html"><div class="ttname"><a href="classkp_1_1Manager.html">kp::Manager</a></div><div class="ttdef"><b>Definition:</b> Manager.hpp:17</div></div>
+<div class="ttc" id="aclasskp_1_1Tensor_html_a1b2af1c0e8dc0f154e11780e7103beb4"><div class="ttname"><a href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">kp::Tensor::TensorTypes</a></div><div class="ttdeci">TensorTypes</div><div class="ttdef"><b>Definition:</b> Tensor.hpp:27</div></div>
+<div class="ttc" id="aclasskp_1_1Manager_html"><div class="ttname"><a href="classkp_1_1Manager.html">kp::Manager</a></div><div class="ttdef"><b>Definition:</b> Manager.hpp:19</div></div>
 <div class="ttc" id="aclasskp_1_1Manager_html_a55d0744536347209bb88250b2e276d1a"><div class="ttname"><a href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">kp::Manager::getOrCreateManagedSequence</a></div><div class="ttdeci">std::weak_ptr&lt; Sequence &gt; getOrCreateManagedSequence(std::string sequenceName)</div></div>
 <div class="ttc" id="aclasskp_1_1Manager_html_a43cc11ff353b2b0775e6a204c8395d97"><div class="ttname"><a href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">kp::Manager::Manager</a></div><div class="ttdeci">Manager()</div></div>
 <div class="ttc" id="aclasskp_1_1Manager_html_a81eb45116fae9ae3a34d22cf7a238b54"><div class="ttname"><a href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">kp::Manager::Manager</a></div><div class="ttdeci">Manager(std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, uint32_t physicalDeviceIndex)</div></div>
-<div class="ttc" id="aclasskp_1_1Manager_html_af5ef1e29c5c4a2af3184016dc718f022"><div class="ttname"><a href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">kp::Manager::evalOp</a></div><div class="ttdeci">void evalOp(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, std::string sequenceName=KP_DEFAULT_SESSION, TArgs &amp;&amp;... params)</div><div class="ttdef"><b>Definition:</b> Manager.hpp:74</div></div>
+<div class="ttc" id="aclasskp_1_1Manager_html_af5ef1e29c5c4a2af3184016dc718f022"><div class="ttname"><a href="classkp_1_1Manager.html#af5ef1e29c5c4a2af3184016dc718f022">kp::Manager::evalOp</a></div><div class="ttdeci">void evalOp(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, std::string sequenceName=KP_DEFAULT_SESSION, TArgs &amp;&amp;... params)</div><div class="ttdef"><b>Definition:</b> Manager.hpp:75</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.8.20
