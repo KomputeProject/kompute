@@ -259,22 +259,15 @@ cmake -Bbuild
 
 This by default configures without any of the extra build tasks (such as building shaders) and compiles without the optional dependencies. The table below provides more detail.
 
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DKOMPUTE_ENABLE_SPDLOG=1           | Enables the build with SPDLOG and FMT dependencies (must be installed)   |
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DCMAKE_INSTALL_PREFIX=\            | Enables local installation (which won't require admin privileges)        |
-| "build/src/CMakefiles/Export/"      | This can be used for the standalone samples in the examples folder       |
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DCMAKE_TOOLCHAIN_FILE="..."        | This is the path for your package manager if you use it such as vcpkg    |
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DKOMPUTE_OPT_BUILD_TESTS=1         | Enable if you wish to build and run the tests (must have deps installed. |
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DKOMPUTE_OPT_BUILD_DOCS=1          | Enable if you wish to build the docs (must have docs deps installed)     |
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 | Option to build the single header file using "quom" utility              |
-|-------------------------------------|--------------------------------------------------------------------------|
-| -DKOMPUTE_EXTRA_CXX_FLAGS="..."     | Allows you to pass extra config flags to compiler                        |
-|-------------------------------------|--------------------------------------------------------------------------|
+| Flag                                                  | Description                                                              |
+|-------------------------------------------------------|--------------------------------------------------------------------------|
+| -DKOMPUTE_ENABLE_SPDLOG=1                             | Enables the build with SPDLOG and FMT dependencies (must be installed)   |
+| -DCMAKE_INSTALL_PREFIX="build/src/CMakefiles/Export/" | Enables local installation (which won't require admin privileges)        |
+| -DCMAKE_TOOLCHAIN_FILE="..."                          | This is the path for your package manager if you use it such as vcpkg    |
+| -DKOMPUTE_OPT_BUILD_TESTS=1                           | Enable if you wish to build and run the tests (must have deps installed. |
+| -DKOMPUTE_OPT_BUILD_DOCS=1                            | Enable if you wish to build the docs (must have docs deps installed)     |
+| -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1                   | Option to build the single header file using "quom" utility              |
+| -DKOMPUTE_EXTRA_CXX_FLAGS="..."                       | Allows you to pass extra config flags to compiler                        |
 
 
 ### Dependencies
