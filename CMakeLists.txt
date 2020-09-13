@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17.0)
-project(kompute VERSION 0.1.0)
+project(kompute VERSION 0.3.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -9,7 +9,6 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 # Enable or disable targets
 option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 1)
 option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 1)
-option(KOMPUTE_OPT_DEBUG_SYMBOLS "Enable if you want to build debug with symbols" 0)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 1)
 
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")

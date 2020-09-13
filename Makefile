@@ -41,12 +41,14 @@ clean_cmake:
 ####### Visual studio build shortcut commands #######
 
 MK_BUILD_TYPE ?= "Release"
+MK_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 mk_cmake:
 	cmake \
 		-Bbuild \
 		-DCMAKE_BUILD_TYPE=$(MK_BUILD_TYPE) \
 		-DKOMPUTE_OPT_BUILD_DOCS=0 \
+		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_UNIX_PATH) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Unix Makefiles"
@@ -74,7 +76,9 @@ mk_run_tests: mk_build_tests
 
 VS_BUILD_TYPE ?= "Debug"
 # Run with multiprocessin / parallel build by default
-VS_CMAKE_EXTRA_FLAGS ?= "/MP"
+VS_CMAKE_EXTRA_FLAGS ?= ""
+VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MP"
+VS_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 vs_cmake:
 	$(CMAKE_BIN) \
@@ -82,7 +86,10 @@ vs_cmake:
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_WIN_PATH) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		$(VS_CMAKE_EXTRA_FLAGS) \
+		-DKOMPUTE_EXTRA_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
+		-DCMAKE_INSTALL_PREFIX=$(VS_INSTALL_PATH) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+		-DCMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD=ON \
 		-G "Visual Studio 16 2019"
 
 vs_build_all:
@@ -90,6 +97,9 @@ vs_build_all:
 
 vs_build_docs:
 	$(MSBUILD_BIN) build/docs/gendocsall.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+
+vs_install_kompute:
+	$(MSBUILD_BIN) build/src/INSTALL.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
 
 vs_build_kompute:
 	$(MSBUILD_BIN) build/src/kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)

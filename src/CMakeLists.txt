@@ -46,7 +46,6 @@ add_dependencies(kompute
 
 add_library(kompute::kompute ALIAS kompute)
 
-
 install(TARGETS kompute EXPORT KomputeTargets
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
@@ -54,8 +53,11 @@ install(TARGETS kompute EXPORT KomputeTargets
 
 install(DIRECTORY include/ DESTINATION include)
 
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/single_include/
+    DESTINATION include)
+
 install(EXPORT KomputeTargets
-    FILE KomputeTargets.cmake
-    NAMESPACE kp::
+    FILE komputeConfig.cmake
+    NAMESPACE kompute::
     DESTINATION lib/cmake/kompute)
 
