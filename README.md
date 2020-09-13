@@ -24,7 +24,7 @@
 
 <h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4>
 
-🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Import to your project](https://axsaucedo.github.io/vulkan-kompute/) ⌨ [Tutorials](https://axsaucedo.github.io/vulkan-kompute/) 💾
+🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](https://github.com/axsaucedo/vulkan-kompute#your-first-kompute) 💾
 
 
 ## Principles & Features
