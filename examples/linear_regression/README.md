@@ -36,9 +36,10 @@ cmake \
     -Bbuild
 ```
 
-If you wish to install with spdlog support you just have to pass `-DKOMPUTE_ENABLE_SPDLOG=1`.
-
-If you wish to perform the installation on the local folder instead of in your system you can use `-DCMAKE_INSTALL_PREFIX="build/src/CMakeFiles/Export/"` which will basically ensure that the final files are created in the local directory.
+You can pass the following optional parameters based on your desired configuration:
+* If you wish to install with spdlog support you just have to pass `-DKOMPUTE_ENABLE_SPDLOG=1`.
+* If you wish to perform the installation on the local folder instead of in your system you can use `-DCMAKE_INSTALL_PREFIX="build/src/CMakeFiles/Export/"` which will basically ensure that the final files are created in the local directory.
+* If you are using a package manager such as `vcpkg` make sure you pass the `-DCMAKE_TOOLCHAIN_FILE=` parameter 
 
 Then you can proceed to run the installation:
 
@@ -64,6 +65,7 @@ Make sure to pass the required flags depending on the configuration above:
 * If you built with Debug make sure you build your example with Debug as well
 * If you installed in the local folder, make sure you pass the CMAKE_PREFIX_PATH pointing to the respective folder (e.g. `-DCMAKE_PREFIX_PATH=../../build/src/CMakeFiles/Export/lib/cmake/kompute/` if parent folder is main repo).
 * If you built Vulkan Kompute with spdlog enabled, make sure to pass `-DKOMPUTE_OPT_ENABLE_SPDLOG=1`
+* If you are using a package manager such as `vcpkg` make sure you pass the `-DCMAKE_TOOLCHAIN_FILE=` parameter 
 
 Now you just have to build your application as above:
 
