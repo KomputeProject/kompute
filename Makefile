@@ -42,6 +42,8 @@ clean_cmake:
 
 MK_BUILD_TYPE ?= "Release"
 MK_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
+MK_CMAKE_EXTRA_FLAGS ?= ""
+MK_KOMPUTE_EXTRA_CXX_FLAGS ?= ""
 
 mk_cmake:
 	cmake \
@@ -50,6 +52,8 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_DOCS=0 \
 		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_UNIX_PATH) \
+		-DKOMPUTE_EXTRA_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
+		$(MK_CMAKE_EXTRA_FLAGS) \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=1 \
 		-G "Unix Makefiles"
 
@@ -77,7 +81,7 @@ mk_run_tests: mk_build_tests
 VS_BUILD_TYPE ?= "Debug"
 # Run with multiprocessin / parallel build by default
 VS_CMAKE_EXTRA_FLAGS ?= ""
-VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MP"
+VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MP" # Adding multiprocessing by default
 VS_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 vs_cmake:
