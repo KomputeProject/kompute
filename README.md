@@ -9,7 +9,7 @@
 <tr>
 
 <td width="20%">
-<img src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/kompute.jpg">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute.jpg">
 </td>
 
 <td>
@@ -24,21 +24,21 @@
 
 <h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4>
 
-🔋 [Documentation](https://axsaucedo.github.io/vulkan-kompute/) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](https://github.com/axsaucedo/vulkan-kompute#your-first-kompute) 💾
+🔋 [Documentation](https://ethicalml.github.io/vulkan-kompute/) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](https://github.com/EthicalML/vulkan-kompute#your-first-kompute) 💾
 
 
 ## Principles & Features
 
 * [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
-* [Documentation](https://axsaucedo.github.io/vulkan-kompute/) leveraging doxygen and sphinx 
+* [Documentation](https://ethicalml.github.io/vulkan-kompute/) leveraging doxygen and sphinx 
 * BYOV: Bring-your-own-Vulkan design to play nice with existing Vulkan applications
 * Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components
 * Fast development cycles with shader tooling, but robust static shader binary bundles for prod
 * Explicit relationships for GPU and host memory ownership and memory management
-* Providing [simple usecases]() as well as [advanced machine learning & data processing](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html) examples
+* Providing [simple usecases]() as well as [advanced machine learning & data processing](https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html) examples
 
 
-![](https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/komputer-2.gif)
+![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif)
 
 
 ## Getting Started
@@ -193,7 +193,7 @@ int main() {
 
 We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.
 
-You can find these in the advanced examples documentation section, such as the [logistic regression example](https://axsaucedo.github.io/vulkan-kompute/overview/advanced-examples.html).
+You can find these in the advanced examples documentation section, such as the [logistic regression example](https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html).
 
 
 ## Motivations
@@ -227,7 +227,7 @@ Simplified Kompute Components
 <td width=30%>
 
 
-<img width="100%" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/kompute-vulkan-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/kompute-vulkan-architecture.jpg">
 
 <br>
 <br>
@@ -235,11 +235,11 @@ Simplified Kompute Components
 <br>
 <br>
 
-<img width="100%" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/suspicious.jfif">
+<img width="100%" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/suspicious.jfif">
 
 </td>
 <td>
-<img width="100%" src="https://raw.githubusercontent.com/axsaucedo/vulkan-kompute/master/docs/images/kompute-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/kompute-architecture.jpg">
 </td>
 </tr>
 </table>

@@ -68,7 +68,7 @@ if html_theme == 'sphinx_material':
         #'base_url': 'https://project.github.io/project',
         'color_primary': 'red',
         'color_accent': 'light-blue',
-        'repo_url': 'https://github.com/axsaucedo/vulkan-kompute/',
+        'repo_url': 'https://github.com/EthicalML/vulkan-kompute/',
         'repo_name': 'Vulkan Kompute',
         'globaltoc_depth': 3,
         'globaltoc_collapse': False,
