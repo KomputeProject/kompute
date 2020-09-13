@@ -7,12 +7,17 @@ endif()
 
 find_package(Vulkan REQUIRED)
 
-# In production builds all shaders are compiled into cpp files
-kompute_make(build_shaders 
-    OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
-# In production builds all headers are compiled into a single header
-kompute_make(build_single_header
-    OUTPUT ${PROJECT_SOURCE_DIR}/single_include)
+if(KOMPUTE_OPT_BUILD_SHADERS)
+# all shaders are compiled into cpp files
+    kompute_make(build_shaders 
+        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+endif()
+
+if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
+# all headers are compiled into a single header
+    kompute_make(build_single_header
+        OUTPUT ${PROJECT_SOURCE_DIR}/single_include)
+endif()
 
 file(GLOB kompute_CPP
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
@@ -40,9 +45,15 @@ if(KOMPUTE_OPT_ENABLE_SPDLOG)
     )
 endif()
 
-add_dependencies(kompute
-    build_shaders
-    build_single_header)
+if(KOMPUTE_OPT_BUILD_SHADERS)
+    add_dependencies(kompute
+        build_shaders)
+endif()
+
+if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
+    add_dependencies(kompute
+        build_single_header)
+endif()
 
 add_library(kompute::kompute ALIAS kompute)
 

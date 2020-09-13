@@ -3,7 +3,7 @@ project(kompute_linear_reg VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 17)
 
-option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 1)
+option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
@@ -16,8 +16,11 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EX
 
 find_package(kompute REQUIRED)
 find_package(Vulkan REQUIRED)
-find_package(spdlog REQUIRED)
-find_package(fmt REQUIRED)
+
+if(KOMPUTE_OPT_ENABLE_SPDLOG)
+    find_package(spdlog REQUIRED)
+    find_package(fmt REQUIRED)
+endif()
 
 add_executable(kompute_linear_reg
     src/Main.cpp)
@@ -25,7 +28,13 @@ add_executable(kompute_linear_reg
 target_link_libraries(kompute_linear_reg
     kompute::kompute
     Vulkan::Vulkan
-    fmt::fmt
-    spdlog::spdlog
 )
+
+if(KOMPUTE_OPT_ENABLE_SPDLOG)
+    target_link_libraries(kompute_linear_reg
+        kompute::kompute
+        fmt::fmt
+        spdlog::spdlog
+    )
+endif()
 

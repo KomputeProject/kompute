@@ -7,9 +7,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 # Enable or disable targets
-option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 1)
-option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 1)
-option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 1)
+option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 0)
+option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 0)
+option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" 0)
+option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" 0)
+option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
 
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
