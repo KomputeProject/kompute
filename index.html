@@ -345,8 +345,18 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+
+
+
+<h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
+<p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, between others, have either integrated or are looking to integrate the Vulkan GPU SDK to add mobile GPU (and cross-vendor GPU) support.</p>
+<p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan, although it’s not always the case, this can result in slower development cycles, and opportunities for bugs to be introduced.</p>
+<p>We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it’s incredibly well designed) but to augment it with a direct focus on Vulkan’s GPU computing capabilities. <a class="reference external" href="https://medium.com/swlh/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">This article</a> provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.</p>
+
+
+<h2 id="more-examples">More examples<a class="headerlink" href="#more-examples" title="Permalink to this headline">¶</a></h2>
 <p>Build your own pre-compiled operations for domain specific workflows.</p>
-<p>We also provide tools that allow you to <a href="#id4"><span class="problematic" id="id5">`convert shaders into C++ headers &lt;&gt;`_</span></a>.</p>
+<p>We also provide tools that allow you to <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40">convert shaders into C++ headers</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="kt">uint32_t</span> <span class="n">tX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tZ</span> <span class="o">=</span> <span class="mi">0</span><span class="o">&gt;</span>
 <span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -432,16 +442,9 @@
 </div>
 
 
-
 <h2 id="advanced-examples">Advanced Examples<a class="headerlink" href="#advanced-examples" title="Permalink to this headline">¶</a></h2>
 <p>We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.</p>
 <p>You can find these in the advanced examples documentation section, such as the <a class="reference external" href="https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html">logistic regression example</a>.</p>
-
-
-<h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
-<p>Vulkan Kompute was created after identifying the challenge most GPU processing projects with Vulkan undergo - namely having to build extensive boilerplate for Vulkan and create abstractions and interfaces that expose the core compute capabilities. It is only after a few thousand lines of code that it’s possible to start building the application-specific logic.</p>
-<p>We believe Vulkan has an excellent design in its way to interact with the GPU, so by no means we aim to abstract or hide any complexity, but instead we want to provide a baseline of tools and interfaces that allow Vulkan Compute developers to focus on the higher level computational complexities of the application.</p>
-<p>It is because of this that we have adopted development principles for the project that ensure the Vulkan API is augmented specifically for computation, whilst speeding development iterations and opening the doors to further use-cases.</p>
 
 
 <h2 id="components-architecture">Components &amp; Architecture<a class="headerlink" href="#components-architecture" title="Permalink to this headline">¶</a></h2>
@@ -467,7 +470,7 @@ Simplified Kompute Components
 <img src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/kompute-vulkan-architecture.jpg" width="100%"/>
 <br/>
 <br/>
-(very tiny, check the docs to for details)
+(very tiny, check the <a href="https://ethicalml.github.io/vulkan-kompute/overview/reference.html">full reference diagram in docs for details</a>)
 <br/>
 <br/>
 <img src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/suspicious.jfif" width="100%"/>
