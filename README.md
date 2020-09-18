@@ -232,7 +232,7 @@ Simplified Kompute Components
 
 <br>
 <br>
-(very tiny, check the [full reference diagram in docs for details](https://ethicalml.github.io/vulkan-kompute/overview/reference.html))
+(very tiny, check the <a href="https://ethicalml.github.io/vulkan-kompute/overview/reference.html">full reference diagram in docs for details</a>)
 <br>
 <br>
 
