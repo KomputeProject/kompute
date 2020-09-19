@@ -177,11 +177,13 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::record()
 
     // Barrier to ensure the data is finished writing to buffer memory
     this->mTensorLHS->recordBufferMemoryBarrier(
+      this->mCommandBuffer,
       vk::AccessFlagBits::eHostWrite,
       vk::AccessFlagBits::eShaderRead,
       vk::PipelineStageFlagBits::eHost,
       vk::PipelineStageFlagBits::eComputeShader);
     this->mTensorRHS->recordBufferMemoryBarrier(
+      this->mCommandBuffer,
       vk::AccessFlagBits::eHostWrite,
       vk::AccessFlagBits::eShaderRead,
       vk::PipelineStageFlagBits::eHost,
@@ -191,6 +193,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::record()
 
     // Barrier to ensure the shader code is executed before buffer read
     this->mTensorOutput->recordBufferMemoryBarrier(
+      this->mCommandBuffer,
       vk::AccessFlagBits::eShaderWrite,
       vk::AccessFlagBits::eTransferRead,
       vk::PipelineStageFlagBits::eComputeShader,
