@@ -1464,7 +1464,10 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::record()
       vk::PipelineStageFlagBits::eComputeShader,
       vk::PipelineStageFlagBits::eTransfer);
 
-    this->mTensorOutputStaging->recordCopyFrom(this->mTensorOutput, true);
+    this->mTensorOutputStaging->recordCopyFrom(
+            this->mCommandBuffer,
+            this->mTensorOutput,
+            true);
 }
 
 template<uint32_t tX, uint32_t tY, uint32_t tZ>
