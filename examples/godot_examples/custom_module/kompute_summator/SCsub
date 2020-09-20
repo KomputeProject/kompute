@@ -6,9 +6,8 @@ dir_path = os.getcwd()
 
 # Kompute & Vulkan header files
 env.Append(CPPPATH = ['include/'])
-env.Append(CPPPATH = ['src/'])
 
-env.add_source_files(env.modules_sources, "src/*.cpp")
+env.add_source_files(env.modules_sources, "*.cpp")
 
 # Kompute & Vulkan libraries
 env.Append(LIBS=[

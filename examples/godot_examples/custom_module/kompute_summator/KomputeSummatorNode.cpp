@@ -2,13 +2,13 @@
 
 #include <vector>
 
-#include "KomputeSummator.hpp"
+#include "KomputeSummatorNode.h"
 
-KomputeSummator::KomputeSummator() {
+KomputeSummatorNode::KomputeSummatorNode() {
     this->_init();
 }
 
-void KomputeSummator::add(float value) {
+void KomputeSummatorNode::add(float value) {
     // Set the new data in the local device
     this->mSecondaryTensor->setData({value});
     // Execute recorded sequence
@@ -20,14 +20,14 @@ void KomputeSummator::add(float value) {
     }
 }
 
-void KomputeSummator::reset() {
+void KomputeSummatorNode::reset() {
 }
 
-float KomputeSummator::get_total() const {
+float KomputeSummatorNode::get_total() const {
     return this->mPrimaryTensor->data()[0];
 }
 
-void KomputeSummator::_init() {
+void KomputeSummatorNode::_init() {
     std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.buildTensor({ 0.0 });
@@ -74,16 +74,16 @@ void KomputeSummator::_init() {
     }
 }
 
-void KomputeSummator::_process(float delta) {
+void KomputeSummatorNode::_process(float delta) {
 
 }
 
-void KomputeSummator::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("_process", "delta"), &KomputeSummator::_process);
-    ClassDB::bind_method(D_METHOD("_init"), &KomputeSummator::_init);
+void KomputeSummatorNode::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("_process", "delta"), &KomputeSummatorNode::_process);
+    ClassDB::bind_method(D_METHOD("_init"), &KomputeSummatorNode::_init);
 
-    ClassDB::bind_method(D_METHOD("add", "value"), &KomputeSummator::add);
-    ClassDB::bind_method(D_METHOD("reset"), &KomputeSummator::reset);
-    ClassDB::bind_method(D_METHOD("get_total"), &KomputeSummator::get_total);
+    ClassDB::bind_method(D_METHOD("add", "value"), &KomputeSummatorNode::add);
+    ClassDB::bind_method(D_METHOD("reset"), &KomputeSummatorNode::reset);
+    ClassDB::bind_method(D_METHOD("get_total"), &KomputeSummatorNode::get_total);
 }
 

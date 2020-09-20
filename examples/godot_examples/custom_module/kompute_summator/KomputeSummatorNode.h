@@ -4,13 +4,13 @@
 
 #include "kompute/Kompute.hpp"
 
-#include "scene/main/node_2d.h"
+#include "scene/main/node.h"
 
-class KomputeSummator : public Node2D {
-    GDCLASS(KomputeSummator, Node2D);
+class KomputeSummatorNode : public Node {
+    GDCLASS(KomputeSummatorNode, Node);
 
 public:
-    KomputeSummator();
+    KomputeSummatorNode();
 
     void add(float value);
     void reset();

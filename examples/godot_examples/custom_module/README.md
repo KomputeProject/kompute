@@ -42,4 +42,24 @@ Now to build godot you will need to set up a couple of things for the Scons file
 * Copy the `kompute.lib` library from the Kompute build to `lib/kompute.lib`
 * Make sure the versions above match as we provide the headers in the `include` folder - if you used different versions make sure these match as well
 
+### Clone godot repository
+
+Now we can clone the godot repository - it must be on a separate repository, so you can use the parent directory if you are on the Kompute repo.
+
+```
+cd ../../godot_engine
+
+git clone --branch 3.2.3-stable https://github.com/godotengine/godot
+
+cd godot/
+```
+
+And now we can build against our module
+
+```
+wscons -j16 custom_modules=../../custom_module/ platform=windows target=release_debug
+```
+
+
+
 
