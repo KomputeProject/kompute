@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon.png-410975027061d785c4229e33fe5ba462.stex"
+path="res://.import/icon.png-dceb2295401b72087458cab0725ade4f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://godot_resources/icon.png"
-dest_files=[ "res://.import/icon.png-410975027061d785c4229e33fe5ba462.stex" ]
+source_file="res://godot_resources/assets/icon.png"
+dest_files=[ "res://.import/icon.png-dceb2295401b72087458cab0725ade4f.stex" ]
 
 [params]
 

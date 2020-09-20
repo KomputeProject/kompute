@@ -3,16 +3,16 @@
 #include <vector>
 #include <iostream>
 
-#include "summator.h"
+#include "KomputeSummator.hpp"
 
 namespace godot {
 
-Summator::Summator() {
+KomputeSummator::KomputeSummator() {
     std::cout << "CALLING CONSTRUCTOR" << std::endl;
     this->_init();
 }
 
-void Summator::add(float value) {
+void KomputeSummator::add(float value) {
     // Set the new data in the local device
     this->mSecondaryTensor->setData({value});
     // Execute recorded sequence
@@ -24,14 +24,14 @@ void Summator::add(float value) {
     }
 }
 
-void Summator::reset() {
+void KomputeSummator::reset() {
 }
 
-float Summator::get_total() const {
+float KomputeSummator::get_total() const {
     return this->mPrimaryTensor->data()[0];
 }
 
-void Summator::_init() {
+void KomputeSummator::_init() {
     std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.buildTensor({ 0.0 });
@@ -78,24 +78,18 @@ void Summator::_init() {
     }
 }
 
-void Summator::_process(float delta) {
-    std::cout << "CALLING PROCESS" << std::endl;
+void KomputeSummator::_process(float delta) {
 
 }
 
-void Summator::_register_methods() {
-    register_method((char *)"_process", &Summator::_process);
-    register_method((char *)"_init", &Summator::_init);
-    register_method((char *)"add", &Summator::add);
-    register_method((char *)"reset", &Summator::reset);
-    register_method((char *)"get_total", &Summator::get_total);
-}
+void KomputeSummator::_register_methods() {
+    register_method((char *)"_process", &KomputeSummator::_process);
+    register_method((char *)"_init", &KomputeSummator::_init);
 
-//void Summator::_bind_methods() {
-//    ClassDB::bind_method(D_METHOD("add", "value"), &Summator::add);
-//    ClassDB::bind_method(D_METHOD("reset"), &Summator::reset);
-//    ClassDB::bind_method(D_METHOD("get_total"), &Summator::get_total);
-//}
+    register_method((char *)"add", &KomputeSummator::add);
+    register_method((char *)"reset", &KomputeSummator::reset);
+    register_method((char *)"get_total", &KomputeSummator::get_total);
+}
 
 }
 

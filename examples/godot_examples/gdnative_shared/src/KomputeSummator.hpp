@@ -8,12 +8,12 @@
 #include "kompute/Kompute.hpp"
 
 namespace godot {
-class Summator : public Node2D {
+class KomputeSummator : public Node2D {
 private:
-    GODOT_CLASS(Summator, Node2D);
+    GODOT_CLASS(KomputeSummator, Node2D);
 
 public:
-    Summator();
+    KomputeSummator();
 
     void add(float value);
     void reset();
