@@ -1,10 +1,38 @@
 /* summator.cpp */
 
 #include <vector>
+#include <iostream>
 
 #include "summator.h"
 
+namespace godot {
+
 Summator::Summator() {
+    std::cout << "CALLING CONSTRUCTOR" << std::endl;
+    this->_init();
+}
+
+void Summator::add(float value) {
+    // Set the new data in the local device
+    this->mSecondaryTensor->setData({value});
+    // Execute recorded sequence
+    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
+        sq->eval();
+    }
+    else {
+        throw std::runtime_error("Sequence pointer no longer available");
+    }
+}
+
+void Summator::reset() {
+}
+
+float Summator::get_total() const {
+    return this->mPrimaryTensor->data()[0];
+}
+
+void Summator::_init() {
+    std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSequence = this->mManager.getOrCreateManagedSequence("AdditionSeq");
@@ -50,28 +78,24 @@ Summator::Summator() {
     }
 }
 
-void Summator::add(float value) {
-    // Set the new data in the local device
-    this->mSecondaryTensor->setData({value});
-    // Execute recorded sequence
-    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
-        sq->eval();
-    }
-    else {
-        throw std::runtime_error("Sequence pointer no longer available");
-    }
+void Summator::_process(float delta) {
+    std::cout << "CALLING PROCESS" << std::endl;
+
 }
 
-void Summator::reset() {
+void Summator::_register_methods() {
+    register_method((char *)"_process", &Summator::_process);
+    register_method((char *)"_init", &Summator::_init);
+    register_method((char *)"add", &Summator::add);
+    register_method((char *)"reset", &Summator::reset);
+    register_method((char *)"get_total", &Summator::get_total);
 }
 
-float Summator::get_total() const {
-    return this->mPrimaryTensor->data()[0];
-}
+//void Summator::_bind_methods() {
+//    ClassDB::bind_method(D_METHOD("add", "value"), &Summator::add);
+//    ClassDB::bind_method(D_METHOD("reset"), &Summator::reset);
+//    ClassDB::bind_method(D_METHOD("get_total"), &Summator::get_total);
+//}
 
-void Summator::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("add", "value"), &Summator::add);
-    ClassDB::bind_method(D_METHOD("reset"), &Summator::reset);
-    ClassDB::bind_method(D_METHOD("get_total"), &Summator::get_total);
 }
 

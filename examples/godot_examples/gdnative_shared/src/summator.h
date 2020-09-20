@@ -1,16 +1,16 @@
-/* summator.h */
+#pragma once
 
-#ifndef SUMMATOR_H
-#define SUMMATOR_H
+#include <Godot.hpp>
+#include <Node2D.hpp>
 
 #include <memory>
 
 #include "kompute/Kompute.hpp"
 
-#include "scene/main/node.h"
-
-class Summator : public Node {
-    GDCLASS(Summator, Node);
+namespace godot {
+class Summator : public Node2D {
+private:
+    GODOT_CLASS(Summator, Node2D);
 
 public:
     Summator();
@@ -19,8 +19,13 @@ public:
     void reset();
     float get_total() const;
 
+    void _process(float delta);
+    void _init();
+
+    static void _register_methods();
+
 protected:
-    static void _bind_methods();
+    //static void _bind_methods();
 
 private:
     kp::Manager mManager;
@@ -29,4 +34,4 @@ private:
     std::shared_ptr<kp::Tensor> mSecondaryTensor;
 };
 
-#endif // SUMMATOR_H
+}
