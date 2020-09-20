@@ -1,23 +1,23 @@
-/* summator.h */
-
-#ifndef SUMMATOR_H
-#define SUMMATOR_H
+#pragma once
 
 #include <memory>
 
 #include "kompute/Kompute.hpp"
 
-#include "scene/main/node.h"
+#include "scene/main/node_2d.h"
 
-class Summator : public Node {
-    GDCLASS(Summator, Node);
+class KomputeSummator : public Node2D {
+    GDCLASS(KomputeSummator, Node2D);
 
 public:
-    Summator();
+    KomputeSummator();
 
     void add(float value);
     void reset();
     float get_total() const;
+
+    void _process(float delta);
+    void _init();
 
 protected:
     static void _bind_methods();
@@ -29,4 +29,3 @@ private:
     std::shared_ptr<kp::Tensor> mSecondaryTensor;
 };
 
-#endif // SUMMATOR_H

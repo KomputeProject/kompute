@@ -24,9 +24,6 @@ public:
 
     static void _register_methods();
 
-protected:
-    //static void _bind_methods();
-
 private:
     kp::Manager mManager;
     std::weak_ptr<kp::Sequence> mSequence;

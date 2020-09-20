@@ -2,9 +2,33 @@
 
 #include <vector>
 
-#include "summator.h"
+#include "KomputeSummator.hpp"
 
-Summator::Summator() {
+KomputeSummator::KomputeSummator() {
+    this->_init();
+}
+
+void KomputeSummator::add(float value) {
+    // Set the new data in the local device
+    this->mSecondaryTensor->setData({value});
+    // Execute recorded sequence
+    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
+        sq->eval();
+    }
+    else {
+        throw std::runtime_error("Sequence pointer no longer available");
+    }
+}
+
+void KomputeSummator::reset() {
+}
+
+float KomputeSummator::get_total() const {
+    return this->mPrimaryTensor->data()[0];
+}
+
+void KomputeSummator::_init() {
+    std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSequence = this->mManager.getOrCreateManagedSequence("AdditionSeq");
@@ -50,28 +74,16 @@ Summator::Summator() {
     }
 }
 
-void Summator::add(float value) {
-    // Set the new data in the local device
-    this->mSecondaryTensor->setData({value});
-    // Execute recorded sequence
-    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
-        sq->eval();
-    }
-    else {
-        throw std::runtime_error("Sequence pointer no longer available");
-    }
+void KomputeSummator::_process(float delta) {
+
 }
 
-void Summator::reset() {
-}
+void KomputeSummator::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("_process", "delta"), &KomputeSummator::_process);
+    ClassDB::bind_method(D_METHOD("_init"), &KomputeSummator::_init);
 
-float Summator::get_total() const {
-    return this->mPrimaryTensor->data()[0];
-}
-
-void Summator::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("add", "value"), &Summator::add);
-    ClassDB::bind_method(D_METHOD("reset"), &Summator::reset);
-    ClassDB::bind_method(D_METHOD("get_total"), &Summator::get_total);
+    ClassDB::bind_method(D_METHOD("add", "value"), &KomputeSummator::add);
+    ClassDB::bind_method(D_METHOD("reset"), &KomputeSummator::reset);
+    ClassDB::bind_method(D_METHOD("get_total"), &KomputeSummator::get_total);
 }
 

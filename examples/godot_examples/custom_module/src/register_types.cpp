@@ -3,10 +3,10 @@
 #include "register_types.h"
 
 #include "core/class_db.h"
-#include "summator.h"
+#include "KomputeSummator.hpp"
 
 void register_summator_types() {
-    ClassDB::register_class<Summator>();
+    ClassDB::register_class<KomputeSummator>();
 }
 
 void unregister_summator_types() {
