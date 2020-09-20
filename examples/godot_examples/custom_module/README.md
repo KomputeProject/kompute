@@ -60,6 +60,7 @@ And now we can build against our module
 wscons -j16 custom_modules=../../custom_module/ platform=windows target=release_debug
 ```
 
+Once we have built it we can now run the generated godot engine in the `bin/` folder, and we will be able to access the custom module from anywhere in the project, as well as creating new nodes from the user interface.
 
 
 
