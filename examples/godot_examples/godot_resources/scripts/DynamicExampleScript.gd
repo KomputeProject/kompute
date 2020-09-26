@@ -8,10 +8,10 @@ func _ready():
     # Use existing node
     print($KomputeNode.get_total())
 
-    $KomputeNode.add([10.0, 20.0])
+    $KomputeNode.add(10)
     print($KomputeNode.get_total())
 
-    $KomputeNode.add([10.0, 20.0])
+    $KomputeNode.add(10)
     print($KomputeNode.get_total())
 
     # Create new instance
@@ -21,9 +21,9 @@ func _ready():
     print(s.get_total())
 
     # Now we can again send further commands
-    s.add([10.0, 20.0])
+    s.add(10)
     print(s.get_total())
 
-    s.add([10.0, 20.0])
+    s.add(10)
     print(s.get_total())
 

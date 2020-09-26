@@ -2,7 +2,6 @@
 
 #include <Godot.hpp>
 #include <Node2D.hpp>
-#include <Array.hpp>
 
 #include <memory>
 
@@ -16,7 +15,7 @@ private:
 public:
     KomputeSummator();
 
-    void add(Array data);
+    void add(float value);
     void reset();
     float get_total() const;
 

@@ -12,22 +12,15 @@ KomputeSummator::KomputeSummator() {
     this->_init();
 }
 
-void KomputeSummator::add(Array data) {
-
-    for (size_t i = 0; i < data.size(); i++) {
-
-        assert(var.get_type() == Variant::Type::REAL);
-        float value = data[i];
-
-        // Set the new data in the local device
-        this->mSecondaryTensor->setData({value});
-        // Execute recorded sequence
-        if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
-            sq->eval();
-        }
-        else {
-            throw std::runtime_error("Sequence pointer no longer available");
-        }
+void KomputeSummator::add(float value) {
+    // Set the new data in the local device
+    this->mSecondaryTensor->setData({value});
+    // Execute recorded sequence
+    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
+        sq->eval();
+    }
+    else {
+        throw std::runtime_error("Sequence pointer no longer available");
     }
 }
 
