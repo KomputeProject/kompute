@@ -9,8 +9,7 @@
 namespace godot {
 
 KomputeSummator::KomputeSummator() {
-    std::cout << "CALLING CONSTRUCTOR" << std::endl;
-    this->_init();
+
 }
 
 void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
@@ -23,7 +22,7 @@ void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
     std::vector<float> xJData;
     std::vector<float> zerosData;
 
-    for (size_t i = 0; i < yArr.size(); i++) {
+    for (int i = 0; i < yArr.size(); i++) {
         yData.push_back(yArr[i]);
         xIData.push_back(xIArr[i]);
         xJData.push_back(xJArr[i]);
@@ -77,11 +76,11 @@ void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
             sq->end();
 
             // Iterate across all expected iterations
-            for (size_t i = 0; i < ITERATIONS; i++) {
+            for (int i = 0; i < ITERATIONS; i++) {
 
                 sq->eval();
 
-                for (size_t j = 0; j < bOut->size(); j++) {
+                for (int j = 0; j < bOut->size(); j++) {
                     wIn->data()[0] -= learningRate * wOutI->data()[j];
                     wIn->data()[1] -= learningRate * wOutJ->data()[j];
                     bIn->data()[0] -= learningRate * bOut->data()[j];
@@ -107,7 +106,7 @@ Array KomputeSummator::predict(Array xI, Array xJ) {
     // We run the inference in the CPU for simplicity
     // BUt you can also implement the inference on GPU 
     // GPU implementation would speed up minibatching
-    for (size_t i = 0; i < xI.size(); i++) {
+    for (int i = 0; i < xI.size(); i++) {
         float xIVal = xI[i];
         float xJVal = xJ[i];
         float result = (xIVal * this->mWeights.data()[0]
@@ -122,18 +121,7 @@ Array KomputeSummator::predict(Array xI, Array xJ) {
     return retArray;
 }
 
-void KomputeSummator::_init() {
-    std::cout << "CALLING INIT" << std::endl;
-}
-
-void KomputeSummator::_process(float delta) {
-
-}
-
 void KomputeSummator::_register_methods() {
-    register_method((char *)"_process", &KomputeSummator::_process);
-    register_method((char *)"_init", &KomputeSummator::_init);
-
     register_method((char *)"train", &KomputeSummator::train);
     register_method((char *)"predict", &KomputeSummator::predict);
 }

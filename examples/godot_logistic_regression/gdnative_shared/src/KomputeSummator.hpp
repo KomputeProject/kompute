@@ -19,9 +19,6 @@ public:
     void train(Array y, Array xI, Array xJ);
     Array predict(Array xI, Array xJ);
 
-    void _process(float delta);
-    void _init();
-
     static void _register_methods();
 
 private:
