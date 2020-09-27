@@ -73,7 +73,7 @@ class Manager
      */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sequenceName = KP_DEFAULT_SESSION,
+                std::string sequenceName,
                 TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
