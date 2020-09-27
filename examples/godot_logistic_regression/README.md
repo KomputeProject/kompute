@@ -4,6 +4,6 @@ This repository contains the accompanying code for the Blog post ["Supercharging
 
 This example folder contains three key components:
 * The Godot Project to run the example
-* The [instructions for the Custom Module](./custom_module/README.md) implementation
-* The [instructions for the GdNative Library](./gdnative_shared/README.md) implementation
+* The [instructions for the Custom Module](./custom_module/) implementation
+* The [instructions for the GdNative Library](./gdnative_shared/) implementation
 
