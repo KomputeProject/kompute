@@ -3,6 +3,6 @@
 [ext_resource path="res://godot_resources/scripts/KomputeNativeLibrary.gdnlib" type="GDNativeLibrary" id=1]
 
 [resource]
-class_name = "KomputeSummator"
+class_name = "KomputeModelML"
 library = ExtResource( 1 )
-script_class_name = "KomputeSummator"
+script_class_name = "KomputeModelML"

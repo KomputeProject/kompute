@@ -9,15 +9,21 @@
 #include "kompute/Kompute.hpp"
 
 namespace godot {
-class KomputeSummator : public Node2D {
+class KomputeModelML : public Node2D {
 private:
-    GODOT_CLASS(KomputeSummator, Node2D);
+    GODOT_CLASS(KomputeModelML, Node2D);
 
 public:
-    KomputeSummator();
+    KomputeModelML();
 
     void train(Array y, Array xI, Array xJ);
+
     Array predict(Array xI, Array xJ);
+
+    Array get_params();
+
+    void _process(float delta);
+    void _init();
 
     static void _register_methods();
 

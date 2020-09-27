@@ -16,7 +16,7 @@ find_package(Vulkan REQUIRED)
 
 add_library(kompute_godot
     SHARED
-    src/KomputeSummator.cpp
+    src/KomputeModelML.cpp
     src/KomputeGdNative.cpp)
 
 target_include_directories(

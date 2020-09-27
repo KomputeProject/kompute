@@ -1,29 +1,36 @@
 extends Node2D
 
+onready var xi_node = $UI/UIVBoxContainer/XIHBoxContainer/LineEdit
+onready var xj_node = $UI/UIVBoxContainer/XJHBoxContainer/LineEdit
+onready var y_node = $UI/UIVBoxContainer/XJHBoxContainer/LineEdit
+onready var preds_node = $UI/UIVBoxContainer/Panel/VBoxContainer/PredHBoxContainer2/PredictionsLabel
+onready var w1_node = $UI/UIVBoxContainer/Panel/VBoxContainer/PredHBoxContainer/Weight1Label
+onready var w2_node = $UI/UIVBoxContainer/Panel/VBoxContainer/PredHBoxContainer/Weight2Label
+onready var bias_node = $UI/UIVBoxContainer/Panel/VBoxContainer/PredHBoxContainer/BiasLabel
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+    pass
 
-    var xi = [0, 1, 1, 1, 1, 1]
-    var xj = [0, 0, 0, 1, 1, 1]
+func compute_ml():
 
-    var y_train_1 = [0, 0, 0, 1, 1, 1]
+    var xi = str2var(xi_node.text)
+    var xj = str2var(xj_node.text)
+    var y = str2var(y_node.text)
 
-    print("Training with " + str(y_train_1))
-    $KomputeNode.train(y_train_1, xi, xj)
+    var s = KomputeModelML.new()
 
-    print("Now running prediction with " + str(xi) + " and " + str(xj))
-    print($KomputeNode.predict(xi, xj))
+    s.train(y, xi, xj)
 
-    # We can also reference the class as named in editor
-    # and create a new instance
-    var s = KomputeSummator.new()
+    var preds = s.predict(xi, xj)
 
-    # We can use a new prediciton value to see how weights change
-    var y_train_2 = [0, 0, 1, 1, 1, 1]
+    preds_node.text = str(preds)
 
-    print("\nTraining with " + str(y_train_2))
-    s.train(y_train_2, xi, xj)
+    var params = s.get_params()
 
-    print("Now running prediction with " + str(xi) + " and " + str(xj))
-    print(s.predict(xi, xj))
+    w1_node.set_text(str(params[0]))
+    w2_node.set_text(str(params[1]))
+    bias_node.set_text(str(params[2]))
+
+
 

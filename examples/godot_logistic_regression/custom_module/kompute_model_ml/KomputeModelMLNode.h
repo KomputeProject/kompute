@@ -6,11 +6,11 @@
 
 #include "scene/main/node.h"
 
-class KomputeSummatorNode : public Node {
-    GDCLASS(KomputeSummatorNode, Node);
+class KomputeModelMLNode : public Node {
+    GDCLASS(KomputeModelMLNode, Node);
 
 public:
-    KomputeSummatorNode();
+    KomputeModelMLNode();
 
     void add(float value);
     void reset();

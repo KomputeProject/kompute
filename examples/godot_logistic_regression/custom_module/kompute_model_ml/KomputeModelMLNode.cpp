@@ -2,13 +2,13 @@
 
 #include <vector>
 
-#include "KomputeSummatorNode.h"
+#include "KomputeModelMLNode.h"
 
-KomputeSummatorNode::KomputeSummatorNode() {
+KomputeModelMLNode::KomputeModelMLNode() {
     this->_init();
 }
 
-void KomputeSummatorNode::add(float value) {
+void KomputeModelMLNode::add(float value) {
     // Set the new data in the local device
     this->mSecondaryTensor->setData({value});
     // Execute recorded sequence
@@ -20,14 +20,14 @@ void KomputeSummatorNode::add(float value) {
     }
 }
 
-void KomputeSummatorNode::reset() {
+void KomputeModelMLNode::reset() {
 }
 
-float KomputeSummatorNode::get_total() const {
+float KomputeModelMLNode::get_total() const {
     return this->mPrimaryTensor->data()[0];
 }
 
-void KomputeSummatorNode::_init() {
+void KomputeModelMLNode::_init() {
     std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.buildTensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.buildTensor({ 0.0 });
@@ -74,16 +74,16 @@ void KomputeSummatorNode::_init() {
     }
 }
 
-void KomputeSummatorNode::_process(float delta) {
+void KomputeModelMLNode::_process(float delta) {
 
 }
 
-void KomputeSummatorNode::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("_process", "delta"), &KomputeSummatorNode::_process);
-    ClassDB::bind_method(D_METHOD("_init"), &KomputeSummatorNode::_init);
+void KomputeModelMLNode::_bind_methods() {
+    ClassDB::bind_method(D_METHOD("_process", "delta"), &KomputeModelMLNode::_process);
+    ClassDB::bind_method(D_METHOD("_init"), &KomputeModelMLNode::_init);
 
-    ClassDB::bind_method(D_METHOD("add", "value"), &KomputeSummatorNode::add);
-    ClassDB::bind_method(D_METHOD("reset"), &KomputeSummatorNode::reset);
-    ClassDB::bind_method(D_METHOD("get_total"), &KomputeSummatorNode::get_total);
+    ClassDB::bind_method(D_METHOD("add", "value"), &KomputeModelMLNode::add);
+    ClassDB::bind_method(D_METHOD("reset"), &KomputeModelMLNode::reset);
+    ClassDB::bind_method(D_METHOD("get_total"), &KomputeModelMLNode::get_total);
 }
 

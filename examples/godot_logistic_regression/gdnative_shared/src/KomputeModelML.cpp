@@ -4,15 +4,16 @@
 #include <string>
 #include <iostream>
 
-#include "KomputeSummator.hpp"
+#include "KomputeModelML.hpp"
 
 namespace godot {
 
-KomputeSummator::KomputeSummator() {
-
+KomputeModelML::KomputeModelML() {
+    std::cout << "CALLING CONSTRUCTOR" << std::endl;
+    this->_init();
 }
 
-void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
+void KomputeModelML::train(Array yArr, Array xIArr, Array xJArr) {
 
     assert(y.size() == xI.size());
     assert(xI.size() == xJ.size());
@@ -22,7 +23,7 @@ void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
     std::vector<float> xJData;
     std::vector<float> zerosData;
 
-    for (int i = 0; i < yArr.size(); i++) {
+    for (size_t i = 0; i < yArr.size(); i++) {
         yData.push_back(yArr[i]);
         xIData.push_back(xIArr[i]);
         xJData.push_back(xJArr[i]);
@@ -76,11 +77,11 @@ void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
             sq->end();
 
             // Iterate across all expected iterations
-            for (int i = 0; i < ITERATIONS; i++) {
+            for (size_t i = 0; i < ITERATIONS; i++) {
 
                 sq->eval();
 
-                for (int j = 0; j < bOut->size(); j++) {
+                for (size_t j = 0; j < bOut->size(); j++) {
                     wIn->data()[0] -= learningRate * wOutI->data()[j];
                     wIn->data()[1] -= learningRate * wOutJ->data()[j];
                     bIn->data()[0] -= learningRate * bOut->data()[j];
@@ -98,7 +99,7 @@ void KomputeSummator::train(Array yArr, Array xIArr, Array xJArr) {
     this->mBias = kp::Tensor(bIn->data());
 }
 
-Array KomputeSummator::predict(Array xI, Array xJ) {
+Array KomputeModelML::predict(Array xI, Array xJ) {
     assert(xI.size() == xJ.size());
 
     Array retArray;
@@ -106,7 +107,7 @@ Array KomputeSummator::predict(Array xI, Array xJ) {
     // We run the inference in the CPU for simplicity
     // BUt you can also implement the inference on GPU 
     // GPU implementation would speed up minibatching
-    for (int i = 0; i < xI.size(); i++) {
+    for (size_t i = 0; i < xI.size(); i++) {
         float xIVal = xI[i];
         float xJVal = xJ[i];
         float result = (xIVal * this->mWeights.data()[0]
@@ -121,9 +122,38 @@ Array KomputeSummator::predict(Array xI, Array xJ) {
     return retArray;
 }
 
-void KomputeSummator::_register_methods() {
-    register_method((char *)"train", &KomputeSummator::train);
-    register_method((char *)"predict", &KomputeSummator::predict);
+Array KomputeModelML::get_params() {
+    Array retArray;
+
+    SPDLOG_INFO(this->mWeights.size() + this->mBias.size());
+
+    if(this->mWeights.size() + this->mBias.size() == 0) {
+        return retArray;
+    }
+
+    retArray.push_back(this->mWeights.data()[0]);
+    retArray.push_back(this->mWeights.data()[1]);
+    retArray.push_back(this->mBias.data()[0]);
+    retArray.push_back(99.0);
+
+    return retArray;
+}
+
+void KomputeModelML::_init() {
+    std::cout << "CALLING INIT" << std::endl;
+}
+
+void KomputeModelML::_process(float delta) {
+
+}
+
+void KomputeModelML::_register_methods() {
+    register_method((char *)"_process", &KomputeModelML::_process);
+    register_method((char *)"_init", &KomputeModelML::_init);
+
+    register_method((char *)"train", &KomputeModelML::train);
+    register_method((char *)"predict", &KomputeModelML::predict);
+    register_method((char *)"get_params", &KomputeModelML::get_params);
 }
 
 }

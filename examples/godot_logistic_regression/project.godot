@@ -9,13 +9,13 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "",
-"class": "KomputeSummator",
+"base": "Node2D",
+"class": "KomputeModelML",
 "language": "NativeScript",
 "path": "res://godot_resources/scripts/KomputeNativeClass.gdns"
 } ]
 _global_script_class_icons={
-"KomputeSummator": ""
+"KomputeModelML": ""
 }
 
 [application]

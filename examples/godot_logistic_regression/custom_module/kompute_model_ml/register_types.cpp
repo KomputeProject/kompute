@@ -3,10 +3,10 @@
 #include "register_types.h"
 
 #include "core/class_db.h"
-#include "KomputeSummatorNode.h"
+#include "KomputeModelMLNode.h"
 
 void register_kompute_summator_types() {
-    ClassDB::register_class<KomputeSummatorNode>();
+    ClassDB::register_class<KomputeModelMLNode>();
 }
 
 void unregister_kompute_summator_types() {
