@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.17.0)
-project(kompute_godot VERSION 0.1.0)
+project(kompute_array_mult VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -13,15 +13,10 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EX
 find_package(kompute REQUIRED)
 find_package(Vulkan REQUIRED)
 
-add_executable(kompute_godot
+add_executable(kompute_array_mult
     src/Main.cpp)
 
-target_link_libraries(kompute_godot
+target_link_libraries(kompute_array_mult
     kompute::kompute
     Vulkan::Vulkan
 )
-
-target_link_libraries(kompute_godot
-    "lib/godot.windows.tools.64.lib"
-)
-

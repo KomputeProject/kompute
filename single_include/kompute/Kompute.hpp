@@ -792,7 +792,7 @@ class Manager
      */
     template<typename T, typename... TArgs>
     void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sequenceName = KP_DEFAULT_SESSION,
+                std::string sequenceName,
                 TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
@@ -1195,7 +1195,7 @@ OpAlgoBase<tX, tY, tZ>::init()
 
     SPDLOG_DEBUG("Kompute OpAlgoBase fetching spirv data");
 
-    std::vector<char>& shaderFileData = this->fetchSpirvBinaryData();
+    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
 
     SPDLOG_DEBUG("Kompute OpAlgoBase Initialising algorithm component");
 
@@ -1427,7 +1427,7 @@ OpAlgoLhsRhsOut<tX, tY, tZ>::init()
 
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut fetching spirv data");
 
-    std::vector<char>& shaderFileData = this->fetchSpirvBinaryData();
+    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
 
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut Initialising algorithm component");
 

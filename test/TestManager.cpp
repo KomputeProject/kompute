@@ -8,18 +8,18 @@ TEST(TestManager, EndToEndOpMultFlow)
     kp::Manager mgr;
 
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
-    mgr.evalOp<kp::OpTensorCreate>({ tensorLHS });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLHS });
 
     std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
-    mgr.evalOp<kp::OpTensorCreate>({ tensorRHS });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorRHS });
 
     std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
 
-    mgr.evalOp<kp::OpTensorCreate>({ tensorOutput });
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorOutput });
 
-    mgr.evalOp<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+    mgr.evalOpDefault<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
 
-    mgr.evalOp<kp::OpTensorSyncLocal>({ tensorOutput });
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOutput });
 
     EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
 }
