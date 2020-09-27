@@ -1,6 +1,6 @@
 # Vulkan Kompute Godot Example
 
-![](../../docs/images/kompute-godot-4.gif)
+![](https://github.com/EthicalML/vulkan-kompute/raw/master/docs/images/komputer-godot-4.gif)
 
 ## Set Up Dependencies
 
