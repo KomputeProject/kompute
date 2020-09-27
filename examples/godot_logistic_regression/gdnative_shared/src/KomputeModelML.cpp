@@ -1,4 +1,4 @@
-/* summator.cpp */
+#pragma once
 
 #include <vector>
 #include <string>
@@ -15,8 +15,8 @@ KomputeModelML::KomputeModelML() {
 
 void KomputeModelML::train(Array yArr, Array xIArr, Array xJArr) {
 
-    assert(y.size() == xI.size());
-    assert(xI.size() == xJ.size());
+    assert(yArr.size() == xIArr.size());
+    assert(xIArr.size() == xJArr.size());
 
     std::vector<float> yData;
     std::vector<float> xIData;

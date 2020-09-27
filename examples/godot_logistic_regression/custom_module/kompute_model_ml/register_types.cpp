@@ -5,10 +5,10 @@
 #include "core/class_db.h"
 #include "KomputeModelMLNode.h"
 
-void register_kompute_summator_types() {
+void register_kompute_model_ml_types() {
     ClassDB::register_class<KomputeModelMLNode>();
 }
 
-void unregister_kompute_summator_types() {
+void unregister_kompute_model_ml_types() {
    // Nothing to do here in this example.
 }

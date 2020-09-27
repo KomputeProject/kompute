@@ -2,27 +2,27 @@ extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-    print("hello")
+    var xi = [0, 1, 1, 1, 1, 1]
+    var xj = [0, 0, 0, 0, 1, 1]
+    var y = [0, 0, 0, 0, 1, 1]
 
-    # Use existing node
-    print($CustomKomputeNode.get_total())
+    print("Running training and predict on existing node")
 
-    $CustomKomputeNode.add(10)
-    print($CustomKomputeNode.get_total())
+    $EditorKomputeModelMLNode.train(y, xi, xj)
 
-    $CustomKomputeNode.add(10)
-    print($CustomKomputeNode.get_total())
+    var preds = $EditorKomputeModelMLNode.predict(xi, xj)
+
+    print(preds)
+
+    print("Running training and predict on new instance")
 
     # Create new instance
-    var s = KomputeSummatorNode.new()
+    var s = KomputeModelMLNode.new()
 
-    # This will print 0 as it's a new instance
-    print(s.get_total())
+    s.train(y, xi, xj)
+    print("")
 
-    # Now we can again send further commands
-    s.add(10)
-    print(s.get_total())
+    preds = s.predict(xi, xj)
 
-    s.add(10)
-    print(s.get_total())
+    print(preds)
 
