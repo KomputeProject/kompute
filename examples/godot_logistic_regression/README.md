@@ -1,5 +1,7 @@
 # Godot Kompute ML Example
 
+![](../../docs/images/kompute-godot-4.gif)
+
 This repository contains the accompanying code for the Blog post ["Supercharging Game Development with GPU Accelerated Machine Learning"](https://medium.com/@AxSaucedo/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
 
 This example folder contains three key components:

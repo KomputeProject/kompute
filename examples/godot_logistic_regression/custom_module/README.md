@@ -1,5 +1,7 @@
 # Vulkan Kompute Godot Example
 
+![](../../docs/images/kompute-godot-4.gif)
+
 ## Set Up Dependencies
 
 ### Vulkan
