@@ -236,7 +236,7 @@ OpAlgoBase<tX, tY, tZ>::init()
 
     SPDLOG_DEBUG("Kompute OpAlgoBase fetching spirv data");
 
-    std::vector<char>& shaderFileData = this->fetchSpirvBinaryData();
+    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
 
     SPDLOG_DEBUG("Kompute OpAlgoBase Initialising algorithm component");
 
