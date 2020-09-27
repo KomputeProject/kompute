@@ -9,6 +9,7 @@ You will need the Vulkan SDK, in this case we use version `1.2.148.1`, which you
 This will have the following contents that will be required later on:
 
 * The VulkanSDK static library `vulkan-1`
+* The Vulkan headers in the `include/` folder
 
 ### Kompute
 
@@ -40,6 +41,8 @@ Now to build godot you will need to set up a couple of things for the Scons file
 
 * Copy the `vulkan-1` library from your vulkan sdk folder to `lib/vulkan-1.lib`
 * Copy the `kompute.lib` library from the Kompute build to `lib/kompute.lib`
+* Copy the `include/vulkan/` folder to the `./include/` folder
+* Copy the `single_include/kompute/` to the `./include/` folder
 * Make sure the versions above match as we provide the headers in the `include` folder - if you used different versions make sure these match as well
 
 ### Clone godot repository
