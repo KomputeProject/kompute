@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.google.vulkan.tutorial.one"
+        package="com.ethicalml.kompute.examples.android"
         android:versionCode="1"
         android:versionName="1.0">
 
@@ -15,7 +15,7 @@
                 android:configChanges="orientation|keyboardHidden">
             <!-- Tell NativeActivity the name of or .so -->
             <meta-data android:name="android.app.lib_name"
-                    android:value="vktuts" />
+                    android:value="kompute_android" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
