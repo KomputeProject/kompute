@@ -17,7 +17,7 @@ android {
         externalNativeBuild {
             cmake {
                 abiFilters "armeabi-v7a", 'arm64-v8a', 'x86', 'x86_64'
-                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static', '-DKOMPUTE_OPT_ANDOID_BUILD=1', '-DKOMPUTE_OPT_INSTALL=0'
+                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_STL=c++_static', '-DKOMPUTE_OPT_ANDOID_BUILD=1', '-DKOMPUTE_OPT_INSTALL=0', '-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1'
             }
         }
     }

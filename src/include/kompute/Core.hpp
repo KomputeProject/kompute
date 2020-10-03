@@ -12,9 +12,9 @@
 #define RELEASE 1
 #endif
 //#define USE_DEBUG_EXTENTIONS
-//#include <kompute_vulkan_wrapper.hpp>
+#include <kompute_vulkan_wrapper.hpp>
 
-//#undef VK_NO_PROTOTYPES
+#undef VK_NO_PROTOTYPES
 #include <vulkan/vulkan.hpp>
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import

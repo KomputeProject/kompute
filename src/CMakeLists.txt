@@ -48,14 +48,14 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
     #    ${VK_ANDROID_COMMON_DIR}/vulkan_wrapper.cpp)
 endif()
 
-if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
+if(KOMPUTE_OPT_ANDOID_BUILD)
+    add_library(kompute
+        ${kompute_CPP}
+        ${PROJECT_SOURCE_DIR}/vulkan_ndk_patch_include/kompute_vulkan_wrapper.cpp)
+else()
     add_library(kompute
         ${kompute_CPP})
 endif()
-
-add_library(kompute
-    ${kompute_CPP}
-    ${PROJECT_SOURCE_DIR}/vulkan_ndk_patch_include/kompute_vulkan_wrapper.cpp)
 
 target_include_directories(
     kompute PUBLIC
