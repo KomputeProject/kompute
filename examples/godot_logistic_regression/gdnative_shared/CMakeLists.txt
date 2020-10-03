@@ -15,7 +15,7 @@ find_package(kompute REQUIRED)
 find_package(Vulkan REQUIRED)
 
 add_library(kompute_godot
-    SHARED
+    STATIC
     src/KomputeModelML.cpp
     src/KomputeGdNative.cpp)
 
