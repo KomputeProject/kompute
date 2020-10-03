@@ -1,5 +1,4 @@
 
-
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     find_package(spdlog REQUIRED)
     find_package(fmt REQUIRED)
@@ -32,7 +31,7 @@ file(GLOB kompute_CPP
 if(KOMPUTE_OPT_ANDOID_BUILD)
     set(ANDROID_APP_GLUE_DIR ${ANDROID_NDK}/sources/android/native_app_glue)
     set(VK_ANDROID_COMMON_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/common)
-    set(VK_ANDROID_PATCH_DIR ${PROJECT_SOURCE_DIR}/vulkan_ndk_patch_include/)
+    set(VK_ANDROID_PATCH_DIR ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/)
     set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
 
     include_directories(
@@ -44,17 +43,12 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
     add_library(android_app_glue STATIC
         ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
 
-    add_library(android_vulkan_wrapper STATIC
-        ${PROJECT_SOURCE_DIR}/vulkan_ndk_patch_include/kompute_vulkan_wrapper.cpp)
+    add_library(kompute_vk_ndk_wrapper STATIC
+        ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
 endif()
 
-if(KOMPUTE_OPT_ANDOID_BUILD)
-    add_library(kompute
-        ${kompute_CPP})
-else()
-    add_library(kompute
-        ${kompute_CPP})
-endif()
+add_library(kompute
+    ${kompute_CPP})
 
 target_include_directories(
     kompute PUBLIC
@@ -86,7 +80,7 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
         kompute 
         android_app_glue
-        android_vulkan_wrapper
+        kompute_vk_ndk_wrapper
         log
         android
     )
