@@ -1,5 +1,20 @@
+#pragma once
 
-#include <vulkan/vulkan.h>
+#if defined(VK_USE_PLATFORM_ANDROID_KHR)
+#include <android/log.h>
+#include <android_native_app_glue.h>
+#endif
+
+//#define VK_NO_PROTOTYPES 1
+//#undef VK_NO_PROTOTYPES
+#undef DEBUG
+#ifndef RELEASE
+#define RELEASE 1
+#endif
+//#define USE_DEBUG_EXTENTIONS
+//#include <kompute_vulkan_wrapper.hpp>
+
+//#undef VK_NO_PROTOTYPES
 #include <vulkan/vulkan.hpp>
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
