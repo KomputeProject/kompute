@@ -1,20 +1,23 @@
 
 
-#if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#include <android/log.h>
-#include <android_native_app_glue.h>
-#endif
-
 //#define VK_NO_PROTOTYPES 1
 //#undef VK_NO_PROTOTYPES
-#undef DEBUG
-#ifndef RELEASE
-#define RELEASE 1
-#endif
+//#undef DEBUG
+//#ifndef RELEASE
+//#define RELEASE 1
+//#endif
 //#define USE_DEBUG_EXTENTIONS
+
+#ifdef VK_USE_PLATFORM_ANDROID_KHR
+#include <android/log.h>
+#include <android_native_app_glue.h>
 #include <kompute_vulkan_wrapper.hpp>
 
+// VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp
 #undef VK_NO_PROTOTYPES
+#define DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#endif
+
 #include <vulkan/vulkan.hpp>
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
@@ -888,8 +891,10 @@ class Manager
       mManagedSequences;
 
 #if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     vk::DebugReportCallbackEXT mDebugReportCallback;
     vk::DispatchLoaderDynamic mDebugDispatcher;
+#endif
 #endif
 
     // Create functions
