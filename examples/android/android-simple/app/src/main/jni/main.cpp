@@ -21,7 +21,6 @@
 #include <memory>
 #include <vector>
 #include <unistd.h>
-//#include "TutorialValLayer.hpp"
 
 #include "kompute/Kompute.hpp"
 
@@ -43,12 +42,6 @@ static const char* kTAG = "Vulkan-Tutorial01";
                         __LINE__);                                    \
     assert(false);                                                    \
   }
-
-// Global variables
-VkInstance tutorialInstance;
-VkPhysicalDevice tutorialGpu;
-VkDevice tutorialDevice;
-VkSurfaceKHR tutorialSurface;
 
 // We will call this function the window is opened.
 // This is where we will initialise everything
@@ -75,147 +68,14 @@ void android_main(struct android_app* app) {
 }
 
 bool initialize(android_app* app) {
-//    // Load Android vulkan and retrieve vulkan API function pointers
-    LOGI("Initialising vulkan");
-//    sleep(1);
 
+    LOGI("Initialising vulkan");
     if (!InitVulkan()) {
         LOGE("Vulkan is unavailable, install vulkan and re-start");
         return false;
     }
 
-    LOGI("Starting");
-//    sleep(1);
-    VkApplicationInfo appInfo = {
-            .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
-            .pNext = nullptr,
-            .apiVersion = VK_MAKE_VERSION(1, 0, 0),
-            .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
-            .engineVersion = VK_MAKE_VERSION(1, 0, 0),
-            .pApplicationName = "tutorial01_load_vulkan",
-            .pEngineName = "tutorial",
-    };
-    LOGI("Created");
-//    sleep(1);
-
-    // prepare necessary extensions: Vulkan on Android need these to function
-    std::vector<const char *> instanceExt, deviceExt;
-    instanceExt.push_back("VK_KHR_surface");
-    instanceExt.push_back("VK_KHR_android_surface");
-    deviceExt.push_back("VK_KHR_swapchain");
-
-    LOGI("Creating instance");
-//    sleep(1);
-    // Create the Vulkan instance
-    VkInstanceCreateInfo instanceCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
-            .pNext = nullptr,
-            .pApplicationInfo = &appInfo,
-            .enabledExtensionCount = static_cast<uint32_t>(instanceExt.size()),
-            .ppEnabledExtensionNames = instanceExt.data(),
-            .enabledLayerCount = 0,
-            .ppEnabledLayerNames = nullptr,
-    };
-    CALL_VK(vkCreateInstance(&instanceCreateInfo, nullptr, &tutorialInstance));
-
-    LOGI("Creating createinfo");
-//    sleep(1);
-    // if we create a surface, we need the surface extension
-    VkAndroidSurfaceCreateInfoKHR createInfo{
-            .sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
-            .pNext = nullptr,
-            .flags = 0,
-            .window = app->window};
-    CALL_VK(vkCreateAndroidSurfaceKHR(tutorialInstance, &createInfo, nullptr,
-                                      &tutorialSurface));
-
-    // Find one GPU to use:
-    // On Android, every GPU device is equal -- supporting
-    // graphics/compute/present
-    // for this sample, we use the very first GPU device found on the system
-    uint32_t gpuCount = 0;
-    CALL_VK(vkEnumeratePhysicalDevices(tutorialInstance, &gpuCount, nullptr));
-    VkPhysicalDevice tmpGpus[gpuCount];
-    CALL_VK(vkEnumeratePhysicalDevices(tutorialInstance, &gpuCount, tmpGpus));
-    tutorialGpu = tmpGpus[0];  // Pick up the first GPU Device
-
-    // check for vulkan info on this GPU device
-    VkPhysicalDeviceProperties gpuProperties;
-    vkGetPhysicalDeviceProperties(tutorialGpu, &gpuProperties);
-    LOGI("Vulkan Physical Device Name: %s", gpuProperties.deviceName);
-    LOGI("Vulkan Physical Device Info: apiVersion: %x \n\t driverVersion: %x",
-         gpuProperties.apiVersion, gpuProperties.driverVersion);
-    LOGI("API Version Supported: %d.%d.%d",
-         VK_VERSION_MAJOR(gpuProperties.apiVersion),
-         VK_VERSION_MINOR(gpuProperties.apiVersion),
-         VK_VERSION_PATCH(gpuProperties.apiVersion));
-
-    VkSurfaceCapabilitiesKHR surfaceCapabilities;
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(tutorialGpu, tutorialSurface,
-                                              &surfaceCapabilities);
-
-    LOGI("Vulkan Surface Capabilities:\n");
-    LOGI("\timage count: %u - %u\n", surfaceCapabilities.minImageCount,
-         surfaceCapabilities.maxImageCount);
-    LOGI("\tarray layers: %u\n", surfaceCapabilities.maxImageArrayLayers);
-    LOGI("\timage size (now): %dx%d\n", surfaceCapabilities.currentExtent.width,
-         surfaceCapabilities.currentExtent.height);
-    LOGI("\timage size (extent): %dx%d - %dx%d\n",
-         surfaceCapabilities.minImageExtent.width,
-         surfaceCapabilities.minImageExtent.height,
-         surfaceCapabilities.maxImageExtent.width,
-         surfaceCapabilities.maxImageExtent.height);
-    LOGI("\tusage: %x\n", surfaceCapabilities.supportedUsageFlags);
-    LOGI("\tcurrent transform: %u\n", surfaceCapabilities.currentTransform);
-    LOGI("\tallowed transforms: %x\n", surfaceCapabilities.supportedTransforms);
-    LOGI("\tcomposite alpha flags: %u\n", surfaceCapabilities.currentTransform);
-
-    // Find a GFX queue family
-    uint32_t queueFamilyCount;
-    vkGetPhysicalDeviceQueueFamilyProperties(tutorialGpu, &queueFamilyCount, nullptr);
-    assert(queueFamilyCount);
-    std::vector<VkQueueFamilyProperties>  queueFamilyProperties(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(tutorialGpu, &queueFamilyCount,
-                                             queueFamilyProperties.data());
-
-    uint32_t queueFamilyIndex;
-    for (queueFamilyIndex=0; queueFamilyIndex < queueFamilyCount;
-         queueFamilyIndex++) {
-        if (queueFamilyProperties[queueFamilyIndex].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            break;
-        }
-    }
-    assert(queueFamilyIndex < queueFamilyCount);
-
-    // Create a logical device from GPU we picked
-    float priorities[] = {
-            1.0f,
-    };
-    VkDeviceQueueCreateInfo queueCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-            .pNext = nullptr,
-            .flags = 0,
-            .queueCount = 1,
-            .queueFamilyIndex = queueFamilyIndex,
-            .pQueuePriorities = priorities,
-    };
-
-    VkDeviceCreateInfo deviceCreateInfo{
-            .sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-            .pNext = nullptr,
-            .queueCreateInfoCount = 1,
-            .pQueueCreateInfos = &queueCreateInfo,
-            .enabledLayerCount = 0,
-            .ppEnabledLayerNames = nullptr,
-            .enabledExtensionCount = static_cast<uint32_t>(deviceExt.size()),
-            .ppEnabledExtensionNames = deviceExt.data(),
-            .pEnabledFeatures = nullptr,
-    };
-
-    CALL_VK(
-            vkCreateDevice(tutorialGpu, &deviceCreateInfo, nullptr, &tutorialDevice));
-
-    LOGI("BEFORE RUNNING");
+    LOGI("Creating manager");
 
     kp::Manager mgr;
 
@@ -223,6 +83,7 @@ bool initialize(android_app* app) {
     auto tensorB = mgr.buildTensor({0,1,2});
     auto tensorC = mgr.buildTensor({1,2,3});
 
+    LOGI("Result before:");
     for(const float & i : tensorC->data()) {
         LOGI("%f ", i);
     }
@@ -230,8 +91,7 @@ bool initialize(android_app* app) {
     mgr.evalOpDefault<kp::OpMult<>>({tensorA, tensorB, tensorC});
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorC});
 
-    LOGI("HERE IS THE INFORMATION:");
-
+    LOGI("Result after:");
     for(const float & i : tensorC->data()) {
         LOGI("%f ", i);
     }
@@ -242,10 +102,6 @@ bool initialize(android_app* app) {
 }
 
 void terminate(void) {
-//    vkDestroySurfaceKHR(tutorialInstance, tutorialSurface, nullptr);
-//    vkDestroyDevice(tutorialDevice, nullptr);
-//    vkDestroyInstance(tutorialInstance, nullptr);
-
     initialized_ = false;
 }
 
