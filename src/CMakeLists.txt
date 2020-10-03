@@ -44,14 +44,13 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
     add_library(android_app_glue STATIC
         ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
 
-    #add_library(android_vulkan_wrapper STATIC
-    #    ${VK_ANDROID_COMMON_DIR}/vulkan_wrapper.cpp)
+    add_library(android_vulkan_wrapper STATIC
+        ${PROJECT_SOURCE_DIR}/vulkan_ndk_patch_include/kompute_vulkan_wrapper.cpp)
 endif()
 
 if(KOMPUTE_OPT_ANDOID_BUILD)
     add_library(kompute
-        ${kompute_CPP}
-        ${PROJECT_SOURCE_DIR}/vulkan_ndk_patch_include/kompute_vulkan_wrapper.cpp)
+        ${kompute_CPP})
 else()
     add_library(kompute
         ${kompute_CPP})
@@ -87,6 +86,7 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
         kompute 
         android_app_glue
+        android_vulkan_wrapper
         log
         android
     )

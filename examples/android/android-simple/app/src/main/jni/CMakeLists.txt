@@ -13,13 +13,13 @@ add_library(app-glue STATIC
 
 # build vulkan app
 add_library(kompute_android SHARED
-            main.cpp
-            ${VK_ANDROID_COMMON_DIR}/vulkan_wrapper.cpp)
+            main.cpp)
 
 include_directories(
         ${VK_ANDROID_COMMON_DIR}
         ${VK_ANDROID_INCLUDE_DIR}
-        ../../../../../../../single_include/)
+        ../../../../../../../single_include/
+        ../../../../../../../vulkan_ndk_patch_include/)
 
 # TODO: Explore:
 # * -DVK_NO_PROTOTYPES
@@ -35,5 +35,5 @@ target_link_libraries(kompute_android
         kompute
         app-glue
         log
-        "libvulkan.so"
+        android_vulkan_wrapper
         android)

@@ -22,10 +22,8 @@
 #include <vector>
 #include <unistd.h>
 //#include "TutorialValLayer.hpp"
-//#include "vulkan_wrapper.h"
 
 #include "kompute/Kompute.hpp"
-
 
 
 // Android log function wrappers
@@ -78,13 +76,16 @@ void android_main(struct android_app* app) {
 
 bool initialize(android_app* app) {
 //    // Load Android vulkan and retrieve vulkan API function pointers
-//    if (!InitVulkan()) {
-//        LOGE("Vulkan is unavailable, install vulkan and re-start");
-//        return false;
-//    }
+    LOGI("Initialising vulkan");
+//    sleep(1);
+
+    if (!InitVulkan()) {
+        LOGE("Vulkan is unavailable, install vulkan and re-start");
+        return false;
+    }
 
     LOGI("Starting");
-    sleep(1);
+//    sleep(1);
     VkApplicationInfo appInfo = {
             .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
             .pNext = nullptr,
@@ -95,7 +96,7 @@ bool initialize(android_app* app) {
             .pEngineName = "tutorial",
     };
     LOGI("Created");
-    sleep(1);
+//    sleep(1);
 
     // prepare necessary extensions: Vulkan on Android need these to function
     std::vector<const char *> instanceExt, deviceExt;
@@ -104,7 +105,7 @@ bool initialize(android_app* app) {
     deviceExt.push_back("VK_KHR_swapchain");
 
     LOGI("Creating instance");
-    sleep(1);
+//    sleep(1);
     // Create the Vulkan instance
     VkInstanceCreateInfo instanceCreateInfo{
             .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
@@ -118,7 +119,7 @@ bool initialize(android_app* app) {
     CALL_VK(vkCreateInstance(&instanceCreateInfo, nullptr, &tutorialInstance));
 
     LOGI("Creating createinfo");
-    sleep(1);
+//    sleep(1);
     // if we create a surface, we need the surface extension
     VkAndroidSurfaceCreateInfoKHR createInfo{
             .sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
@@ -226,20 +227,24 @@ bool initialize(android_app* app) {
 
     LOGI("BEFORE RUNNING");
 
-//    kp::Manager mgr;
+    kp::Manager mgr;
 
-//    auto tensorA = mgr.buildTensor({0,1,2});
-//    auto tensorB = mgr.buildTensor({0,1,2});
-//    auto tensorC = mgr.buildTensor({0,0,0});
+    auto tensorA = mgr.buildTensor({0,1,2});
+    auto tensorB = mgr.buildTensor({0,1,2});
+    auto tensorC = mgr.buildTensor({1,2,3});
 
-//    mgr.evalOpDefault<kp::OpMult<>>({tensorA, tensorB, tensorC});
-//    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorC});
-//
-//    LOGI("HERE IS THE INFORMATION:");
-//
-//    for(const float & i : tensorC->data()) {
-//        LOGI("%u ", i);
-//    }
+    for(const float & i : tensorC->data()) {
+        LOGI("%f ", i);
+    }
+
+    mgr.evalOpDefault<kp::OpMult<>>({tensorA, tensorB, tensorC});
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorC});
+
+    LOGI("HERE IS THE INFORMATION:");
+
+    for(const float & i : tensorC->data()) {
+        LOGI("%f ", i);
+    }
 
     initialized_ = true;
 
