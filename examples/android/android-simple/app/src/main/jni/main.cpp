@@ -215,16 +215,6 @@ bool initialize(android_app* app) {
     CALL_VK(
             vkCreateDevice(tutorialGpu, &deviceCreateInfo, nullptr, &tutorialDevice));
 
-    VkInstance tutorialInstance;
-    VkPhysicalDevice tutorialGpu;
-    VkDevice tutorialDevice;
-
-    std::shared_ptr<vk::Instance> tutorialInstanceHpp = std::make_shared<vk::Instance>(tutorialInstance);
-    std::shared_ptr<vk::PhysicalDevice> tutorialGpuHpp = std::make_shared<vk::PhysicalDevice>(tutorialGpu);
-    std::shared_ptr<vk::Device> tutorialDeviceHpp = std::make_shared<vk::Device>(tutorialDevice);
-//
-//    kp::Manager mgr(tutorialInstanceHpp, tutorialGpuHpp, tutorialDeviceHpp, 0);
-
     LOGI("BEFORE RUNNING");
 
     kp::Manager mgr;

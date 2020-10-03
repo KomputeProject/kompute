@@ -26,7 +26,7 @@ include_directories(
 # * -DUSE_DEBUG_EXTENTIONS
 # * -Wno-unused-variable
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14      \
-                     -DVK_USE_PLATFORM_ANDROID_KHR -DUSE_DEBUG_EXTENTIONS")
+                     -DVK_USE_PLATFORM_ANDROID_KHR=1 -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
 
 set(CMAKE_SHARED_LINKER_FLAGS
         "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
