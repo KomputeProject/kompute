@@ -5,23 +5,35 @@
         android:versionCode="1"
         android:versionName="1.0">
 
-    <application android:label="@string/app_name"
-      android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-
-        <!-- Our activity is the built-in NativeActivity framework class.
-             This will take care of integrating with our NDK code. -->
-        <activity android:name="android.app.NativeActivity"
-                android:label="@string/app_name"
-                android:configChanges="orientation|keyboardHidden">
-            <!-- Tell NativeActivity the name of or .so -->
-            <meta-data android:name="android.app.lib_name"
-                    android:value="kompute_android" />
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
+<!--    <application android:label="@string/app_name"-->
+<!--      android:theme="@android:style/Theme.NoTitleBar.Fullscreen">-->
+<!--        &lt;!&ndash; Our activity is the built-in NativeActivity framework class.-->
+<!--             This will take care of integrating with our NDK code. &ndash;&gt;-->
+<!--        <activity android:name="android.app.NativeActivity"-->
+<!--                android:label="@string/app_name"-->
+<!--                android:configChanges="orientation|keyboardHidden">-->
+<!--            &lt;!&ndash; Tell NativeActivity the name of or .so &ndash;&gt;-->
+<!--            <meta-data android:name="android.app.lib_name"-->
+<!--                    android:value="kompute_android" />-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+<!--        </application>-->
+        <application
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+            <activity android:name=".KomputeJni">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+            </activity>
+        </application>
 
 </manifest>
 <!-- END_INCLUDE(manifest) -->

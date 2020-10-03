@@ -6,14 +6,14 @@ set(ANDROID_APP_GLUE_DIR ${ANDROID_NDK}/sources/android/native_app_glue)
 set(VK_ANDROID_COMMON_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/common)
 set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
 
-# build native_app_glue as a static lib
-include_directories(${ANDROID_APP_GLUE_DIR})
-add_library(app-glue STATIC
-        ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
+## build native_app_glue as a static lib
+#include_directories(${ANDROID_APP_GLUE_DIR})
+#add_library(app-glue STATIC
+#        ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
 
 # build vulkan app
 add_library(kompute_android SHARED
-            main.cpp)
+        KomputeJniNative.cpp)
 
 include_directories(
         ${VK_ANDROID_COMMON_DIR}
@@ -29,7 +29,7 @@ set(CMAKE_SHARED_LINKER_FLAGS
 
 target_link_libraries(kompute_android
         kompute
-        app-glue
+#        app-glue
         log
         kompute_vk_ndk_wrapper
         android)

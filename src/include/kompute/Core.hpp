@@ -9,8 +9,8 @@
 //#define USE_DEBUG_EXTENTIONS
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
-#include <android/log.h>
-#include <android_native_app_glue.h>
+//#include <android/log.h>
+//#include <android_native_app_glue.h>
 #include <kompute_vk_ndk_wrapper.hpp>
 
 // VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp

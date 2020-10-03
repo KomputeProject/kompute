@@ -29,19 +29,19 @@ file(GLOB kompute_CPP
 )
 
 if(KOMPUTE_OPT_ANDOID_BUILD)
-    set(ANDROID_APP_GLUE_DIR ${ANDROID_NDK}/sources/android/native_app_glue)
+    #set(ANDROID_APP_GLUE_DIR ${ANDROID_NDK}/sources/android/native_app_glue)
     set(VK_ANDROID_COMMON_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/common)
     set(VK_ANDROID_PATCH_DIR ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/)
     set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
 
     include_directories(
-        ${ANDROID_APP_GLUE_DIR}
+        #${ANDROID_APP_GLUE_DIR}
         ${VK_ANDROID_COMMON_DIR}
         ${VK_ANDROID_PATCH_DIR}
         ${VK_ANDROID_INCLUDE_DIR})
 
-    add_library(android_app_glue STATIC
-        ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
+    #add_library(android_app_glue STATIC
+    #    ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
 
     add_library(kompute_vk_ndk_wrapper STATIC
         ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
@@ -79,7 +79,7 @@ endif()
 if(KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
         kompute 
-        android_app_glue
+        #android_app_glue
         kompute_vk_ndk_wrapper
         log
         android
