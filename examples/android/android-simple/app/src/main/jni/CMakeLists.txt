@@ -19,12 +19,8 @@ include_directories(
         ${VK_ANDROID_COMMON_DIR}
         ${VK_ANDROID_INCLUDE_DIR}
         ../../../../../../../single_include/
-        ../../../../../../../vulkan_ndk_patch_include/)
+        ../../../../../../../vk_ndk_wrapper_include/)
 
-# TODO: Explore:
-# * -DVK_NO_PROTOTYPES
-# * -DUSE_DEBUG_EXTENTIONS
-# * -Wno-unused-variable
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14      \
                      -DVK_USE_PLATFORM_ANDROID_KHR=1 -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
 
@@ -35,5 +31,5 @@ target_link_libraries(kompute_android
         kompute
         app-glue
         log
-        android_vulkan_wrapper
+        kompute_vk_ndk_wrapper
         android)
