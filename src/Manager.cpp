@@ -7,6 +7,7 @@
 namespace kp {
 
 #if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 debugMessageCallback(VkDebugReportFlagsEXT flags,
                      VkDebugReportObjectTypeEXT objectType,
@@ -20,6 +21,7 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
     SPDLOG_DEBUG("[VALIDATION]: {} - {}", pLayerPrefix, pMessage);
     return VK_FALSE;
 }
+#endif
 #endif
 
 Manager::Manager()
@@ -73,11 +75,13 @@ Manager::~Manager()
     }
 
 #if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     if (this->mDebugReportCallback) {
         this->mInstance->destroyDebugReportCallbackEXT(
           this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
         SPDLOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
     }
+#endif
 #endif
 
     if (this->mFreeInstance) {
@@ -133,6 +137,7 @@ Manager::createInstance()
     }
 
 #if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     SPDLOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
     std::vector<const char*> validLayerNames;
@@ -161,6 +166,7 @@ Manager::createInstance()
         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
     }
 #endif
+#endif
 
     this->mInstance = std::make_shared<vk::Instance>();
     vk::createInstance(
@@ -168,6 +174,7 @@ Manager::createInstance()
     SPDLOG_DEBUG("Kompute Manager Instance Created");
 
 #if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     SPDLOG_DEBUG("Kompute Manager adding debug callbacks");
     if (validLayerNames.size() > 0) {
         vk::DebugReportFlagsEXT debugFlags =
@@ -183,6 +190,7 @@ Manager::createInstance()
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
     }
+#endif
 #endif
 }
 
