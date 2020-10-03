@@ -12,8 +12,8 @@ set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include
 #        ${ANDROID_APP_GLUE_DIR}/android_native_app_glue.c)
 
 # build vulkan app
-add_library(kompute_android SHARED
-        KomputeJniNative.cpp)
+add_library(kompute-jni SHARED
+        kompute-jni.cpp)
 
 include_directories(
         ${VK_ANDROID_COMMON_DIR}
@@ -24,10 +24,10 @@ include_directories(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14      \
                      -DVK_USE_PLATFORM_ANDROID_KHR=1 -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
 
-set(CMAKE_SHARED_LINKER_FLAGS
-        "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
+#set(CMAKE_SHARED_LINKER_FLAGS
+#        "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
 
-target_link_libraries(kompute_android
+target_link_libraries(kompute-jni
         kompute
 #        app-glue
         log

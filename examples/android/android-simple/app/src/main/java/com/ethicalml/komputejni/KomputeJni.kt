@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ethicalml.kompute.examples.android
+package com.ethicalml.komputejni
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.ethicalml.kompute.examples.android.databinding.ActivityHelloJniBinding
+import com.ethicalml.komputejni.databinding.ActivityKomputeJniBinding
 
 class KomputeJni : AppCompatActivity() {
 
@@ -28,9 +28,9 @@ class KomputeJni : AppCompatActivity() {
          * the text is retrieved by calling a native
          * function.
          */
-        val binding = ActivityHelloJniBinding.inflate(layoutInflater)
+        val binding = ActivityKomputeJniBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.helloTextview.text = stringFromJNI()
+        binding.komputeJniTextview.text = stringFromJNI()
     }
 
     /*
@@ -61,7 +61,7 @@ class KomputeJni : AppCompatActivity() {
          * at the installation time by the package manager.
          */
         init {
-            System.loadLibrary("kompute_android")
+            System.loadLibrary("kompute-jni")
         }
     }
 }

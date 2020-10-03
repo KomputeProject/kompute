@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(manifest) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.ethicalml.kompute.examples.android"
-        android:versionCode="1"
-        android:versionName="1.0">
+        package="com.ethicalml.komputejni">
 
 <!--    <application android:label="@string/app_name"-->
 <!--      android:theme="@android:style/Theme.NoTitleBar.Fullscreen">-->
