@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.4.1)
 project(kompute VERSION 0.3.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE on)
@@ -11,13 +11,20 @@ option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 0)
 option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 0)
 option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" 0)
 option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" 0)
+option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 1)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
+option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
 
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_ENABLE_SPDLOG=1")
 endif()
+
+if(KOMPUTE_OPT_ANDOID_BUILD)
+    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DVK_USE_PLATFORM_ANDROID_KHR")
+endif()
+
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 ${KOMPUTE_EXTRA_CXX_FLAGS}")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EXTRA_CXX_FLAGS}")
