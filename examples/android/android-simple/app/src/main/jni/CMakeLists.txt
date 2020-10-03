@@ -13,20 +13,20 @@ add_library(app-glue STATIC
 
 # build vulkan app
 add_library(kompute_android SHARED
-            TutorialValLayer.cpp
             main.cpp
             ${VK_ANDROID_COMMON_DIR}/vulkan_wrapper.cpp)
 
 include_directories(
         ${VK_ANDROID_COMMON_DIR}
-        ${VK_ANDROID_INCLUDE_DIR})
+        ${VK_ANDROID_INCLUDE_DIR}
+        ../../../../../../../single_include/)
 
 # TODO: Explore:
 # * -DVK_NO_PROTOTYPES
 # * -DUSE_DEBUG_EXTENTIONS
 # * -Wno-unused-variable
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Werror       \
-                     -DVK_USE_PLATFORM_ANDROID_KHR -DVK_NO_PROTOTYPES")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14      \
+                     -DVK_USE_PLATFORM_ANDROID_KHR -DUSE_DEBUG_EXTENTIONS")
 
 set(CMAKE_SHARED_LINKER_FLAGS
         "${CMAKE_SHARED_LINKER_FLAGS} -u ANativeActivity_onCreate")
@@ -35,4 +35,5 @@ target_link_libraries(kompute_android
         kompute
         app-glue
         log
+        "libvulkan.so"
         android)

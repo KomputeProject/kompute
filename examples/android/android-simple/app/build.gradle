@@ -6,12 +6,12 @@ def ndkDir = properties.getProperty('ndk.dir')
 def valLayerBinDir = "${ndkDir}/sources/third_party/vulkan/src/build-android/jniLibs"
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 26
 
     defaultConfig {
         applicationId "com.ethicalml.kompute.examples.android"
-        minSdkVersion 24
-        targetSdkVersion 24
+        minSdkVersion 26
+        targetSdkVersion 26
         versionCode = 1
         versionName = "0.0.1"
         externalNativeBuild {

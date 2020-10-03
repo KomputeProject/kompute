@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "TutorialValLayer.hpp"
+#include "vulkan/vulkan.h"
 #include <android/log.h>
 #include <cassert>
+
+
 
 // Android log function wrappers
 static const char* kTAG = "Vulkan-Tutorial02";
