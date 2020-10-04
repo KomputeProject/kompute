@@ -51,9 +51,6 @@ class KomputeJni : AppCompatActivity() {
 
     fun KomputeButtonOnClick(v: View) {
 
-//        val binding = ActivityKomputeJniBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-
         val xiEditText = findViewById<EditText>(R.id.XIEditText)
         val xjEditText = findViewById<EditText>(R.id.XJEditText)
         val yEditText = findViewById<EditText>(R.id.YEditText)

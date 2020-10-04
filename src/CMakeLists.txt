@@ -64,7 +64,6 @@ if(NOT KOMPUTE_OPT_ANDOID_BUILD)
 else()
     target_link_libraries(
         kompute 
-        "libvulkan.so"
     )
 endif()
 

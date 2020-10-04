@@ -66,9 +66,11 @@ Java_com_ethicalml_kompute_KomputeJni_initVulkan(JNIEnv *env, jobject thiz) {
     uint32_t totalRetries = 0;
 
     while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
+        LOGI("VULKAN LOAD TRY NUMBER: %u", totalRetries);
         if(InitVulkan()) {
             break;
         }
+        sleep(1);
         totalRetries++;
     }
 

@@ -122,7 +122,9 @@ Manager::createInstance()
     vk::ApplicationInfo applicationInfo;
     applicationInfo.pApplicationName = "Vulkan Kompute";
     applicationInfo.pEngineName = "VulkanKompute";
-    applicationInfo.apiVersion = VK_API_VERSION_1_1;
+    applicationInfo.apiVersion = KOMPUTE_VK_API_VERSION;
+    applicationInfo.engineVersion = KOMPUTE_VK_API_VERSION;
+    applicationInfo.applicationVersion = KOMPUTE_VK_API_VERSION;
 
     std::vector<const char*> applicationExtensions;
     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
