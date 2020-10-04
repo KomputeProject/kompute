@@ -35,7 +35,7 @@
 * Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components
 * Fast development cycles with shader tooling, but robust static shader binary bundles for prod
 * Explicit relationships for GPU and host memory ownership and memory management
-* Providing [simple usecases]() as well as [advanced machine learning & data processing](https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html) examples
+* Advanced examples for [machine learning](https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression), [mobile development](), [game development](https://github.com/EthicalML/vulkan-kompute/tree/master/examples/godot_logistic_regression) and [more](https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression).
 
 
 ![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif)
@@ -46,7 +46,7 @@
 
 Kompute is provided as a single header file [`Kompute.hpp`](single_include/kompute/Kompute.hpp) that can be simply included in your code and integrated with the shared library.
 
-This project is built using cmake providing a simple way to integrate as static or shared library.
+This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms.
 
 
 ### Your first Kompute
@@ -269,6 +269,11 @@ This by default configures without any of the extra build tasks (such as buildin
 | -DKOMPUTE_OPT_BUILD_DOCS=1                            | Enable if you wish to build the docs (must have docs deps installed)     |
 | -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1                   | Option to build the single header file using "quom" utility              |
 | -DKOMPUTE_EXTRA_CXX_FLAGS="..."                       | Allows you to pass extra config flags to compiler                        |
+| -DKOMPUTE_OPT_INSTALL=0                               | Disables the install step in the cmake file (useful for android build)   |
+| -DKOMPUTE_OPT_ANDROID_BUILD=1                         | Enables android build which includes and excludes relevant libraries     |
+| -DKOMPUTE_VK_API_VERSION="..."                        | Sets the default api version to use for vulkan kompute api               |
+| -DKOMPUTE_VK_API_MAJOR_VERSION=1                      | Major version to use for the Vulkan API                                  |
+| -DKOMPUTE_VK_API_MINOR_VERSION=1                      | Minor version to use for the Vulkan API                                  |
 
 
 ### Dependencies

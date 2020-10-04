@@ -5,7 +5,6 @@
 #include <kompute_vk_ndk_wrapper.hpp>
 // VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp
 #undef VK_NO_PROTOTYPES
-#define DVULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
 static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #endif
 
