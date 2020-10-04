@@ -1,5 +1,7 @@
+#pragma once
 #include "kompute/Core.hpp"
 #include "kompute/shaders/shaderopmult.hpp"
+#include "kompute/shaders/shaderlogisticregression.hpp"
 #include "kompute/Manager.hpp"
 #include "kompute/Sequence.hpp"
 #include "kompute/operations/OpBase.hpp"
