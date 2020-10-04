@@ -40,6 +40,22 @@ static const char* kTAG = "KomputeJni";
 #define LOGE(...) \
   ((void)__android_log_print(ANDROID_LOG_ERROR, kTAG, __VA_ARGS__))
 
+static std::vector<float> jfloatArrayToVector(JNIEnv *env, const jfloatArray & fromArray) {
+    float *inCArray = env->GetFloatArrayElements(fromArray, NULL);
+    if (NULL == inCArray) return std::vector<float>();
+    int32_t length = env->GetArrayLength(fromArray);
+
+    std::vector<float> outVector(inCArray, inCArray + length);
+    return outVector;
+}
+
+static jfloatArray vectorToJFloatArray(JNIEnv *env, const std::vector<float> & fromVector) {
+    jfloatArray ret = env->NewFloatArray(fromVector.size());
+    if (NULL == ret) return NULL;
+    env->SetFloatArrayRegion(ret, 0, fromVector.size(), fromVector.data());
+    return ret;
+}
+
 extern "C" {
 
 JNIEXPORT jboolean JNICALL
@@ -60,16 +76,25 @@ Java_com_ethicalml_kompute_KomputeJni_initVulkan(JNIEnv *env, jobject thiz) {
 }
 
 
-JNIEXPORT jstring JNICALL
-Java_com_ethicalml_kompute_KomputeJni_stringFromJNI(JNIEnv *env, jobject thiz) {
+JNIEXPORT jfloatArray JNICALL
+Java_com_ethicalml_kompute_KomputeJni_kompute(
+        JNIEnv *env,
+        jobject thiz,
+        jfloatArray xiJFloatArr,
+        jfloatArray xjJFloatArr,
+        jfloatArray yJFloatArr) {
 
     LOGI("Creating manager");
 
+    std::vector<float> xiVector = jfloatArrayToVector(env, xiJFloatArr);
+    std::vector<float> xjVector = jfloatArrayToVector(env, xjJFloatArr);
+    std::vector<float> yVector = jfloatArrayToVector(env, yJFloatArr);
+
     kp::Manager mgr;
 
-    auto tensorA = mgr.buildTensor({0,1,2});
-    auto tensorB = mgr.buildTensor({0,1,2});
-    auto tensorC = mgr.buildTensor({1,2,3});
+    auto tensorA = mgr.buildTensor(xiVector);
+    auto tensorB = mgr.buildTensor(xjVector);
+    auto tensorC = mgr.buildTensor(yVector);
 
     LOGI("Result before:");
     for(const float & i : tensorC->data()) {
@@ -84,6 +109,6 @@ Java_com_ethicalml_kompute_KomputeJni_stringFromJNI(JNIEnv *env, jobject thiz) {
         LOGI("%f ", i);
     }
 
-    return env->NewStringUTF("Result is: ");
+    return vectorToJFloatArray(env, tensorC->data());
 }
 }
