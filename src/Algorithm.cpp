@@ -268,11 +268,6 @@ Algorithm::createPipeline(std::vector<uint32_t> specializationData)
       this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
     this->mFreePipeline = true;
 
-    //if (pipelineResult.result != vk::Result::eSuccess) {
-    //    throw std::runtime_error("Failed to create pipeline result: " +
-    //                             vk::to_string(pipelineResult.result));
-    //}
-
     this->mFreePipeline = true;
     this->mPipeline = std::make_shared<vk::Pipeline>(pipelineResult);
 }
