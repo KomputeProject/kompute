@@ -46,7 +46,7 @@ class KomputeJni : AppCompatActivity() {
         }
         Log.i("KomputeJni", "Vulkan Result: " + successVulkanInit)
 
-        binding.komputeJniTextview.text = "N/A"
+        binding.predictionTextView.text = "N/A"
     }
 
     fun KomputeButtonOnClick(v: View) {
@@ -54,7 +54,12 @@ class KomputeJni : AppCompatActivity() {
         val xiEditText = findViewById<EditText>(R.id.XIEditText)
         val xjEditText = findViewById<EditText>(R.id.XJEditText)
         val yEditText = findViewById<EditText>(R.id.YEditText)
-        val komputeJniTextview = findViewById<TextView>(R.id.kompute_jni_textview)
+
+        val wOneEditText = findViewById<TextView>(R.id.wOneTextView)
+        val wTwoEditText = findViewById<TextView>(R.id.wTwoTextView)
+        val biasEditText = findViewById<TextView>(R.id.biasTextView)
+
+        val komputeJniTextview = findViewById<TextView>(R.id.predictionTextView)
 
         val xi = xiEditText.text.removeSurrounding("[", "]").split(",").map { it.toFloat() }.toFloatArray()
         val xj = xjEditText.text.removeSurrounding("[", "]").split(",").map { it.toFloat() }.toFloatArray()
@@ -66,11 +71,22 @@ class KomputeJni : AppCompatActivity() {
         Log.i("KomputeJni", out.contentToString())
 
         komputeJniTextview.text = out.contentToString()
+
+        val params = komputeParams(xi, xj, y)
+
+        Log.i("KomputeJni", "Params:")
+        Log.i("KomputeJni", params.contentToString())
+
+        wOneEditText.text = params[0].toString()
+        wTwoEditText.text = params[1].toString()
+        biasEditText.text = params[2].toString()
     }
 
     external fun initVulkan(): Boolean
 
     external fun kompute(xi: FloatArray, xj: FloatArray, y: FloatArray): FloatArray
+
+    external fun komputeParams(xi: FloatArray, xj: FloatArray, y: FloatArray): FloatArray
 
     companion object {
         init {

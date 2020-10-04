@@ -88,4 +88,27 @@ Java_com_ethicalml_kompute_KomputeJni_kompute(
 
     return vectorToJFloatArray(env, pred);
 }
+
+JNIEXPORT jfloatArray JNICALL
+Java_com_ethicalml_kompute_KomputeJni_komputeParams(
+        JNIEnv *env,
+        jobject thiz,
+        jfloatArray xiJFloatArr,
+        jfloatArray xjJFloatArr,
+        jfloatArray yJFloatArr) {
+
+    SPDLOG_INFO("Creating manager");
+
+    std::vector<float> xiVector = jfloatArrayToVector(env, xiJFloatArr);
+    std::vector<float> xjVector = jfloatArrayToVector(env, xjJFloatArr);
+    std::vector<float> yVector = jfloatArrayToVector(env, yJFloatArr);
+
+    KomputeModelML kml;
+    kml.train(yVector, xiVector, xjVector);
+
+    std::vector<float> params = kml.get_params();
+
+    return vectorToJFloatArray(env, params);
+}
+
 }
