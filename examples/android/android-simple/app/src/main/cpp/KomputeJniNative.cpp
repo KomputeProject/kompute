@@ -16,10 +16,6 @@
 #define RELEASE 1
 
 #include <android/log.h>
-//#include <android_native_app_glue.h>
-//#include <cassert>
-//#include <memory>
-//#include <vector>
 #include <unistd.h>
 
 #include <string.h>
@@ -27,18 +23,11 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "KomputeModelML.hpp"
+
 #ifndef KOMPUTE_VK_INIT_RETRIES
 #define KOMPUTE_VK_INIT_RETRIES 5
 #endif
-
-// Android log function wrappers
-static const char* kTAG = "KomputeJni";
-#define LOGI(...) \
-  ((void)__android_log_print(ANDROID_LOG_INFO, kTAG, __VA_ARGS__))
-#define LOGW(...) \
-  ((void)__android_log_print(ANDROID_LOG_WARN, kTAG, __VA_ARGS__))
-#define LOGE(...) \
-  ((void)__android_log_print(ANDROID_LOG_ERROR, kTAG, __VA_ARGS__))
 
 static std::vector<float> jfloatArrayToVector(JNIEnv *env, const jfloatArray & fromArray) {
     float *inCArray = env->GetFloatArrayElements(fromArray, NULL);
@@ -61,12 +50,12 @@ extern "C" {
 JNIEXPORT jboolean JNICALL
 Java_com_ethicalml_kompute_KomputeJni_initVulkan(JNIEnv *env, jobject thiz) {
 
-    LOGI("Initialising vulkan");
+    SPDLOG_INFO("Initialising vulkan");
 
     uint32_t totalRetries = 0;
 
     while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
-        LOGI("VULKAN LOAD TRY NUMBER: %u", totalRetries);
+        SPDLOG_INFO("VULKAN LOAD TRY NUMBER: %u", totalRetries);
         if(InitVulkan()) {
             break;
         }
@@ -86,31 +75,17 @@ Java_com_ethicalml_kompute_KomputeJni_kompute(
         jfloatArray xjJFloatArr,
         jfloatArray yJFloatArr) {
 
-    LOGI("Creating manager");
+    SPDLOG_INFO("Creating manager");
 
     std::vector<float> xiVector = jfloatArrayToVector(env, xiJFloatArr);
     std::vector<float> xjVector = jfloatArrayToVector(env, xjJFloatArr);
     std::vector<float> yVector = jfloatArrayToVector(env, yJFloatArr);
 
-    kp::Manager mgr;
+    KomputeModelML kml;
+    kml.train(yVector, xiVector, xjVector);
 
-    auto tensorA = mgr.buildTensor(xiVector);
-    auto tensorB = mgr.buildTensor(xjVector);
-    auto tensorC = mgr.buildTensor(yVector);
+    std::vector<float> pred = kml.predict(xiVector, xjVector);
 
-    LOGI("Result before:");
-    for(const float & i : tensorC->data()) {
-        LOGI("%f ", i);
-    }
-
-    mgr.evalOpDefault<kp::OpMult<>>({tensorA, tensorB, tensorC});
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorC});
-
-    LOGI("Result after:");
-    for(const float & i : tensorC->data()) {
-        LOGI("%f ", i);
-    }
-
-    return vectorToJFloatArray(env, tensorC->data());
+    return vectorToJFloatArray(env, pred);
 }
 }

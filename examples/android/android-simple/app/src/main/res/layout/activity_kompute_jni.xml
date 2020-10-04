@@ -9,7 +9,7 @@
     tools:context="com.ethicalml.kompute.KomputeJni">
 
     <LinearLayout
-        android:layout_width="409dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -67,7 +67,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="[ 1, 2, 3 ]" />
+                android:text="[ 0, 1, 1, 1, 1, 1 ]" />
         </LinearLayout>
 
         <Space
@@ -93,7 +93,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="[ 1, 2, 3 ]" />
+                android:text="[ 0, 0, 0, 1, 1, 1 ]" />
 
         </LinearLayout>
 
@@ -120,7 +120,7 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="[ 1, 2, 3 ]" />
+                android:text="[ 0, 0, 0, 1, 1, 1 ]" />
 
         </LinearLayout>
 
