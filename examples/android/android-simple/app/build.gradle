@@ -2,11 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-//Properties properties = new Properties()
-//properties.load(project.rootProject.file('local.properties').newDataInputStream())
-//def ndkDir = properties.getProperty('ndk.dir')
-//def valLayerBinDir = "${ndkDir}/sources/third_party/vulkan/src/build-android/jniLibs"
-
 android {
     compileSdkVersion 29
     ndkVersion '21.2.6472646'
@@ -46,15 +41,6 @@ android {
         }
     }
 
-//    sourceSets {
-//        main {
-//            jniLibs {
-//                // Must have ndk-r12 or better which including layer binaries
-//                srcDirs = ["${valLayerBinDir}"]
-//            }
-//        }
-//    }
-
     flavorDimensions 'cpuArch'
     productFlavors {
         arm8 {
@@ -81,5 +67,4 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-//    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

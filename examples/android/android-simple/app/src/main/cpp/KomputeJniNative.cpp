@@ -27,12 +27,9 @@
 
 #include "kompute/Kompute.hpp"
 
-
-// Functions interacting with Android native activity
-//void android_main(struct android_app* state);
-//void terminate(void);
-//void handle_cmd(android_app* app, int32_t cmd);
-
+#ifndef KOMPUTE_VK_INIT_RETRIES
+#define KOMPUTE_VK_INIT_RETRIES 5
+#endif
 
 // Android log function wrappers
 static const char* kTAG = "KomputeJni";
@@ -44,50 +41,27 @@ static const char* kTAG = "KomputeJni";
   ((void)__android_log_print(ANDROID_LOG_ERROR, kTAG, __VA_ARGS__))
 
 extern "C" {
-JNIEXPORT jstring JNICALL
-Java_com_ethicalml_komputejni_KomputeJni_stringFromJNI(JNIEnv *env, jobject thiz) {
-#if defined(__arm__)
-#if defined(__ARM_ARCH_7A__)
-#if defined(__ARM_NEON__)
-#if defined(__ARM_PCS_VFP)
-#define ABI "armeabi-v7a/NEON (hard-float)"
-#else
-#define ABI "armeabi-v7a/NEON"
-#endif
-#else
-#if defined(__ARM_PCS_VFP)
-#define ABI "armeabi-v7a (hard-float)"
-#else
-#define ABI "armeabi-v7a"
-#endif
-#endif
-#else
-#define ABI "armeabi"
-#endif
-#elif defined(__i386__)
-#define ABI "x86"
-#elif defined(__x86_64__)
-#define ABI "x86_64"
-#elif defined(__mips64)  /* mips64el-* toolchain defines __mips__ too */
-#define ABI "mips64"
-#elif defined(__mips__)
-#define ABI "mips"
-#elif defined(__aarch64__)
-#define ABI "arm64-v8a"
-#else
-#define ABI "unknown"
-#endif
 
+JNIEXPORT jboolean JNICALL
+Java_com_ethicalml_kompute_KomputeJni_initVulkan(JNIEnv *env, jobject thiz) {
 
     LOGI("Initialising vulkan");
-    // TODO: This optionally to be initialized from Kompute
-    if(!InitVulkan()) {
-        sleep(1);
-        if (!InitVulkan()) {
-            LOGE("Vulkan is unavailable, install vulkan and re-start");
-            return (*env).NewStringUTF("ERROR");
+
+    uint32_t totalRetries = 0;
+
+    while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
+        if(InitVulkan()) {
+            break;
         }
+        totalRetries++;
     }
+
+    return totalRetries < KOMPUTE_VK_INIT_RETRIES;
+}
+
+
+JNIEXPORT jstring JNICALL
+Java_com_ethicalml_kompute_KomputeJni_stringFromJNI(JNIEnv *env, jobject thiz) {
 
     LOGI("Creating manager");
 
@@ -110,6 +84,6 @@ Java_com_ethicalml_komputejni_KomputeJni_stringFromJNI(JNIEnv *env, jobject thiz
         LOGI("%f ", i);
     }
 
-    return (*env).NewStringUTF("SUCCESS");
+    return env->NewStringUTF("Result is: ");
 }
 }
