@@ -69,8 +69,19 @@ void KomputeModelML::train(Array yArr, Array xIArr, Array xJArr) {
 
             sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
+#ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
+            // Newer versions of Android are able to use shaderc to read raw string
             sq->record<kp::OpAlgoBase<>>(
-              params, std::vector<char>(LR_SHADER.begin(), LR_SHADER.end()));
+                    params, std::vector<char>(LR_SHADER.begin(), LR_SHADER.end()));
+#else
+            // Older versions of Android require the SPIRV binary directly
+            sq->record<kp::OpAlgoBase<>>(
+                    params, std::vector<char>(
+                            kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+                            kp::shader_data::shaders_glsl_logisticregression_comp_spv
+                                + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len
+                    ));
+#endif
 
             sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
