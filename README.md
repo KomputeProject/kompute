@@ -262,7 +262,6 @@ This by default configures without any of the extra build tasks (such as buildin
 
 | Flag                                                  | Description                                                              |
 |-------------------------------------------------------|--------------------------------------------------------------------------|
-| -DKOMPUTE_ENABLE_SPDLOG=1                             | Enables the build with SPDLOG and FMT dependencies (must be installed)   |
 | -DCMAKE_INSTALL_PREFIX="build/src/CMakefiles/Export/" | Enables local installation (which won't require admin privileges)        |
 | -DCMAKE_TOOLCHAIN_FILE="..."                          | This is the path for your package manager if you use it such as vcpkg    |
 | -DKOMPUTE_OPT_BUILD_TESTS=1                           | Enable if you wish to build and run the tests (must have deps installed. |
@@ -271,10 +270,23 @@ This by default configures without any of the extra build tasks (such as buildin
 | -DKOMPUTE_EXTRA_CXX_FLAGS="..."                       | Allows you to pass extra config flags to compiler                        |
 | -DKOMPUTE_OPT_INSTALL=0                               | Disables the install step in the cmake file (useful for android build)   |
 | -DKOMPUTE_OPT_ANDROID_BUILD=1                         | Enables android build which includes and excludes relevant libraries     |
-| -DKOMPUTE_VK_API_VERSION="..."                        | Sets the default api version to use for vulkan kompute api               |
-| -DKOMPUTE_VK_API_MAJOR_VERSION=1                      | Major version to use for the Vulkan API                                  |
-| -DKOMPUTE_VK_API_MINOR_VERSION=1                      | Minor version to use for the Vulkan API                                  |
 
+#### Compile Flags
+
+
+| Flag                                 | Description                                                                             |
+|--------------------------------------|-----------------------------------------------------------------------------------------|
+| KOMPUTE_CREATE_PIPELINE_RESULT_VALUE | Ensure the return value of createPipeline is processed as ResultValue instead of Result |
+| -DKOMPUTE_VK_API_VERSION="..."       | Sets the default api version to use for vulkan kompute api                              |
+| -DKOMPUTE_VK_API_MAJOR_VERSION=1     | Major version to use for the Vulkan API                                                 |
+| -DKOMPUTE_VK_API_MINOR_VERSION=1     | Minor version to use for the Vulkan API                                                 |
+| -DKOMPUTE_ENABLE_SPDLOG=1            | Enables the build with SPDLOG and FMT dependencies (must be installed)                  |
+| -DKOMPUTE_LOG_VERRIDE=1              | Does not define the SPDLOG_<LEVEL> macros if these are to be overriden                  |
+| -DSPDLOG_ACTIVE_LEVEL                | The level for the log level on compile level (whether spdlog is enabled)                |
+| -DVVK_USE_PLATFORM_ANDROID_KHR       | Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)    |
+| -DRELEASE=1                          | Enable release build (enabled by cmake release build)                                   |
+| -DDEBUG=1                            | Enable debug build including debug flags (enabled by cmake debug build)                 |
+| -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS    | Disable the debug Vulkan layers, mainly used for android builds                         |
 
 ### Dependencies
 
