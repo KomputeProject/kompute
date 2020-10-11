@@ -288,7 +288,7 @@
 <li><p>Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components</p></li>
 <li><p>Fast development cycles with shader tooling, but robust static shader binary bundles for prod</p></li>
 <li><p>Explicit relationships for GPU and host memory ownership and memory management</p></li>
-<li><p>Providing <a href="#id2"><span class="problematic" id="id3">`simple usecases &lt;&gt;`_</span></a> as well as <a class="reference external" href="https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html">advanced machine learning &amp; data processing</a> examples</p></li>
+<li><p>Advanced examples for <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression">machine learning</a>, <a href="#id2"><span class="problematic" id="id3">`mobile development &lt;&gt;`_</span></a>, <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/examples/godot_logistic_regression">game development</a> and <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression">more</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
@@ -297,7 +297,7 @@
 
 <h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
 <p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;single_include/kompute/Kompute.hpp&gt;`_ that can be simply included in your code and integrated with the shared library.</p>
-<p>This project is built using cmake providing a simple way to integrate as static or shared library.</p>
+<p>This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms.</p>
 
 
 <h3 id="your-first-kompute">Your first Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h3>
@@ -502,29 +502,81 @@ Simplified Kompute Components
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
-<td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DCMAKE_INSTALL_PREFIX=”build/src/CMakefiles/Export/”</p></td>
+<tr class="row-even"><td><p>-DCMAKE_INSTALL_PREFIX=”build/src/CMakefiles/Export/”</p></td>
 <td><p>Enables local installation (which won’t require admin privileges)</p></td>
 </tr>
-<tr class="row-even"><td><p>-DCMAKE_TOOLCHAIN_FILE=”…”</p></td>
+<tr class="row-odd"><td><p>-DCMAKE_TOOLCHAIN_FILE=”…”</p></td>
 <td><p>This is the path for your package manager if you use it such as vcpkg</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=1</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=1</p></td>
 <td><p>Enable if you wish to build and run the tests (must have deps installed.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
 <td><p>Enable if you wish to build the docs (must have docs deps installed)</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1</p></td>
 <td><p>Option to build the single header file using “quom” utility</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
 <td><p>Allows you to pass extra config flags to compiler</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_INSTALL=0</p></td>
+<td><p>Disables the install step in the cmake file (useful for android build)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_ANDROID_BUILD=1</p></td>
+<td><p>Enables android build which includes and excludes relevant libraries</p></td>
 </tr>
 </tbody>
 </table>
+
+<h4 id="compile-flags">Compile Flags<a class="headerlink" href="#compile-flags" title="Permalink to this headline">¶</a></h4>
+<table>
+<colgroup>
+<col style="width: 50%"/>
+<col style="width: 50%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>KOMPUTE_CREATE_PIPELINE_RESULT_VALUE</p></td>
+<td><p>Ensure the return value of createPipeline is processed as ResultValue instead of Result</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_VK_API_VERSION=”…”</p></td>
+<td><p>Sets the default api version to use for vulkan kompute api</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_VK_API_MAJOR_VERSION=1</p></td>
+<td><p>Major version to use for the Vulkan API</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_VK_API_MINOR_VERSION=1</p></td>
+<td><p>Minor version to use for the Vulkan API</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
+<td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_LOG_VERRIDE=1</p></td>
+<td><p>Does not define the <a href="#id4"><span class="problematic" id="id5">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overriden</p></td>
+</tr>
+<tr class="row-even"><td><p>-DSPDLOG_ACTIVE_LEVEL</p></td>
+<td><p>The level for the log level on compile level (whether spdlog is enabled)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DVVK_USE_PLATFORM_ANDROID_KHR</p></td>
+<td><p>Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)</p></td>
+</tr>
+<tr class="row-even"><td><p>-DRELEASE=1</p></td>
+<td><p>Enable release build (enabled by cmake release build)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DDEBUG=1</p></td>
+<td><p>Enable debug build including debug flags (enabled by cmake debug build)</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_DISABLE_VK_DEBUG_LAYERS</p></td>
+<td><p>Disable the debug Vulkan layers, mainly used for android builds</p></td>
+</tr>
+</tbody>
+</table>
+
 
 
 <h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
