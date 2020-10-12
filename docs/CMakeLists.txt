@@ -55,11 +55,16 @@ add_custom_target(gensphinx ALL
     DEPENDS gendoxygen
     COMMENT "Generating documentation with Sphinx")
 
-# For completeness we also copy the output doxygen html files
+# Copy the output doxygen html files
 add_custom_target(gendocsall ALL
     COMMAND ${CMAKE_COMMAND}
         -E copy_directory
         ${DOXYGEN_OUTPUT_DIR}/html/
         ${SPHINX_BUILD}/doxygen/
+# Copy the CNAME file from the repo
+    COMMAND ${CMAKE_COMMAND}
+        -E copy
+        ${PROJECT_SOURCE_DIR}/CNAME
+        ${SPHINX_BUILD}/CNAME
     DEPENDS gensphinx)
 
