@@ -12,13 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#undef DEBUG
-#define RELEASE 1
-
-#include <android/log.h>
 #include <unistd.h>
 
-#include <string.h>
 #include <jni.h>
 
 #include "kompute/Kompute.hpp"
