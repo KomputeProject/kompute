@@ -186,7 +186,7 @@ int main() {
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock())
     {
         // Begin recording commands
-        sq.begin();
+        sq->begin();
 
         // Record batch commands to send to GPU
         sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
