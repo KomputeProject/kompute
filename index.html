@@ -288,7 +288,7 @@
 <li><p>Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components</p></li>
 <li><p>Fast development cycles with shader tooling, but robust static shader binary bundles for prod</p></li>
 <li><p>Explicit relationships for GPU and host memory ownership and memory management</p></li>
-<li><p>Advanced examples for <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression">machine learning</a>, <a href="#id2"><span class="problematic" id="id3">`mobile development &lt;&gt;`_</span></a>, <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/examples/godot_logistic_regression">game development</a> and <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression">more</a>.</p></li>
+<li><p>End-to-end examples for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development</a>, <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
@@ -296,12 +296,11 @@
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 
 <h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
-<p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;single_include/kompute/Kompute.hpp&gt;`_ that can be simply included in your code and integrated with the shared library.</p>
-<p>This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms.</p>
+<p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;#setup&gt;`_ that can be simply included in your code and integrated with the shared library.</p>
+<p>This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms - see <a class="reference external" href="#build-overview">build-system section</a> for more details.</p>
 
-
-<h3 id="your-first-kompute">Your first Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h3>
-<p>Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file).</p>
+<h4 id="your-first-kompute">Your First Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h4>
+<p>Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file) - <a class="reference external" href="#more-examples">view more examples</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
@@ -348,6 +347,7 @@
 
 
 
+
 <h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
 <p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, between others, have either integrated or are looking to integrate the Vulkan GPU SDK to add mobile GPU (and cross-vendor GPU) support.</p>
 <p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan, although it’s not always the case, this can result in slower development cycles, and opportunities for bugs to be introduced.</p>
@@ -355,6 +355,24 @@
 
 
 <h2 id="more-examples">More examples<a class="headerlink" href="#more-examples" title="Permalink to this headline">¶</a></h2>
+
+<h3 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="#your-first-kompute">Pass shader as raw string</a></p></li>
+<li><p><a class="reference external" href="#your-custom-kompute-operation">Create your custom Kompute Operations</a></p></li>
+<li><p><a class="reference external" href="#record-batch-commands-with-a-kompute-sequence">Record batch commands with a Kompute Sequence</a></p></li>
+</ul>
+
+
+<h3 id="end-to-end-examples">End-to-end examples<a class="headerlink" href="#end-to-end-examples" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Machine Learning Logistic Regression Implementation</a></p></li>
+<li><p><a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Android NDK Mobile Kompute ML Application</a></p></li>
+<li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
+</ul>
+
+
+<h3 id="your-custom-kompute-operation">Your Custom Kompute Operation<a class="headerlink" href="#your-custom-kompute-operation" title="Permalink to this headline">¶</a></h3>
 <p>Build your own pre-compiled operations for domain specific workflows.</p>
 <p>We also provide tools that allow you to <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40">convert shaders into C++ headers</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="kt">uint32_t</span> <span class="n">tX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tZ</span> <span class="o">=</span> <span class="mi">0</span><span class="o">&gt;</span>
@@ -394,6 +412,8 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+
+<h4 id="id2">Record batch commands with a Kompute Sequence<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <p>Record commands in a single submit by using a Sequence to send in batch to GPU.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
@@ -442,9 +462,11 @@
 </div>
 
 
+
+
 <h2 id="advanced-examples">Advanced Examples<a class="headerlink" href="#advanced-examples" title="Permalink to this headline">¶</a></h2>
 <p>We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.</p>
-<p>You can find these in the advanced examples documentation section, such as the <a class="reference external" href="https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html">logistic regression example</a>.</p>
+<p>You can find these in the end to end examples <a class="reference external" href="#end-to-end-examples">section</a>.</p>
 
 
 <h2 id="components-architecture">Components &amp; Architecture<a class="headerlink" href="#components-architecture" title="Permalink to this headline">¶</a></h2>
@@ -557,7 +579,7 @@ Simplified Kompute Components
 <td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_LOG_VERRIDE=1</p></td>
-<td><p>Does not define the <a href="#id4"><span class="problematic" id="id5">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overriden</p></td>
+<td><p>Does not define the <a href="#id3"><span class="problematic" id="id4">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overriden</p></td>
 </tr>
 <tr class="row-even"><td><p>-DSPDLOG_ACTIVE_LEVEL</p></td>
 <td><p>The level for the log level on compile level (whether spdlog is enabled)</p></td>
