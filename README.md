@@ -1,3 +1,4 @@
+
 ![GitHub](https://img.shields.io/badge/Release-ALPHA-yellow.svg)
 ![GitHub](https://img.shields.io/badge/Version-0.1.0-green.svg)
 ![GitHub](https://img.shields.io/badge/C++-11—20-purple.svg)
@@ -35,8 +36,7 @@
 * Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components
 * Fast development cycles with shader tooling, but robust static shader binary bundles for prod
 * Explicit relationships for GPU and host memory ownership and memory management
-* Advanced examples for [machine learning](https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression), [mobile development](), [game development](https://github.com/EthicalML/vulkan-kompute/tree/master/examples/godot_logistic_regression) and [more](https://github.com/EthicalML/vulkan-kompute/tree/master/examples/logistic_regression).
-
+* End-to-end examples for [machine learning](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617), [game development](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
 
 ![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif)
 
@@ -44,14 +44,14 @@
 
 ### Setup
 
-Kompute is provided as a single header file [`Kompute.hpp`](single_include/kompute/Kompute.hpp) that can be simply included in your code and integrated with the shared library.
+Kompute is provided as a single header file [`Kompute.hpp`](#setup) that can be simply included in your code and integrated with the shared library.
 
-This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms.
+This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms - see [build-system section](#build-overview) for more details.
 
 
-### Your first Kompute
+#### Your First Kompute
 
-Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file).
+Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file) - [view more examples](#more-examples).
 
 ```c++
 int main() {
@@ -107,6 +107,20 @@ We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface 
 
 ## More examples
 
+### Simple examples
+
+* [Pass shader as raw string](#your-first-kompute)
+* [Create your custom Kompute Operations](#your-custom-kompute-operation)
+* [Record batch commands with a Kompute Sequence](#record-batch-commands-with-a-kompute-sequence)
+
+### End-to-end examples
+
+* [Machine Learning Logistic Regression Implementation](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a)
+* [Android NDK Mobile Kompute ML Application](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617)
+* [Game Development Kompute ML in Godot Engine](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0)
+
+### Your Custom Kompute Operation
+
 Build your own pre-compiled operations for domain specific workflows.
 
 We also provide tools that allow you to [convert shaders into C++ headers](https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40).
@@ -149,6 +163,8 @@ int main() {
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
+
+#### Record batch commands with a Kompute Sequence
 
 Record commands in a single submit by using a Sequence to send in batch to GPU.
 
@@ -202,7 +218,7 @@ int main() {
 
 We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.
 
-You can find these in the advanced examples documentation section, such as the [logistic regression example](https://ethicalml.github.io/vulkan-kompute/overview/advanced-examples.html).
+You can find these in the end to end examples [section](#end-to-end-examples).
 
 
 ## Components & Architecture
