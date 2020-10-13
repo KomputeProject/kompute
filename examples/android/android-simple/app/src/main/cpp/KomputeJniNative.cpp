@@ -12,13 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <unistd.h>
 
+// Includes the Jni utilities for Android to be able to create the 
+// relevant bindings for java, including JNIEXPORT, JNICALL , and 
+// other "j-variables".
 #include <jni.h>
 
-#include "kompute/Kompute.hpp"
-
+// The ML class exposing the Kompute ML workflow for training and 
+// prediction of inference data.
 #include "KomputeModelML.hpp"
+
+// Allows us to use the C++ sleep function to wait when loading the 
+// Vulkan library in android
+#include <unistd.h>
 
 #ifndef KOMPUTE_VK_INIT_RETRIES
 #define KOMPUTE_VK_INIT_RETRIES 5
