@@ -101,6 +101,63 @@ class Manager
      * sequences.
      *
      * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     * @param TArgs Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpAsync(std::vector<std::shared_ptr<Tensor>> tensors,
+                std::string sequenceName,
+                TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOp triggered");
+        std::weak_ptr<Sequence> sqWeakPtr =
+          this->getOrCreateManagedSequence(sequenceName);
+
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+            sq->begin();
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+            sq->record<T>(tensors, std::forward<TArgs>(params)...);
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+            sq->end();
+
+            SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+            sq->evalAsync();
+        }
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
+    }
+
+    /**
+     * Operation that adds extra operations to existing or new created
+     * sequences.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     * @param TArgs Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered");
+        std::weak_ptr<Sequence> sqWeakPtr =
+          this->getOrCreateManagedSequence(sequenceName);
+
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+            SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence EVAL AWAIT");
+            sq->evalAwait(waitFor);
+        }
+        SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
+    }
+
+    /**
+     * Operation that adds extra operations to existing or new created
+     * sequences.
+     *
+     * @param tensors The tensors to be used in the operation recorded
      * @param TArgs Template parameters that will be used to initialise
      * Operation to allow for extensible configurations on initialisation
      */
