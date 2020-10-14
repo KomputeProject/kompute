@@ -1,10 +1,12 @@
 
+# Kompute Mobile App Integration (Android)
+
+This is the accompanying code for the Blog post ["Supercharging your Mobile Apps with On-Device GPU Accelerated Machine Learning using the Android NDK & Vulkan Kompute"](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617). 
+
 <table>
 <tr>
 
-
 <td width="70%">
-<h1>Vulkan Kompute Android</h1>
 <h3>Example Running Logistic Regression with Vulkan Kompute in Android Phones</h3>
 
 <p>
@@ -14,6 +16,9 @@ The example uses the Kompute build in the relative folder to build the respectiv
 
 The build structure provides a range of options to build in different Android hardware. This example was tested in various emulators including Pixel 2, and a physical Samsung S7 phone.
 </p>
+
+<br>
+
 <img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/android-example/docs/images/android-editor.jpg">
 
 </td>

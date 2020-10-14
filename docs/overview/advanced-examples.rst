@@ -2,8 +2,15 @@
 Advanced Examples
 ==================
 
-The power of Kompute comes in when the interface is used for complex computations. In this section we cover a set of advanced examples including machine learning and data processing applications that showcase the more advanced capabilities of Kompute.
+The power of Kompute comes in when the interface is used for complex computations. This section contains an outline of the advanced / end-to-end examples available.
 
+Currently the advanced examples available include:
+
+* `Machine Learning Logistic Regression Implementation <https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a`_
+* `Android NDK Mobile Kompute ML Application <https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617`_
+* `Game Development Kompute ML in Godot Engine <https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0`_
+
+Below there is also a simple implementation of the logistic regression algorithm using Vulkan Kompute.
 
 Logistic Regression Example
 ------------------

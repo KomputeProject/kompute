@@ -1,4 +1,5 @@
-# Godot Kompute ML Example
+
+# Kompute Game Engine Integration (Godot)
 
 ![](https://github.com/EthicalML/vulkan-kompute/raw/master/docs/images/komputer-godot-4.gif)
 

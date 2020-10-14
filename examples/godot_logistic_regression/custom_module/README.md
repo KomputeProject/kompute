@@ -1,4 +1,9 @@
-# Vulkan Kompute Godot Example
+
+## Godot Engine Integration: Godot Engine Source Module
+
+This is the accompanying code for the Blog post ["Supercharging Game Development with GPU Accelerated Machine Learning"](https://medium.com/@AxSaucedo/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0). 
+
+This section contains the implementation of the Kompute module as a statically compile module built with the Godot engine source code. This approach requires re-compiling the Godot engine source code.
 
 ![](https://github.com/EthicalML/vulkan-kompute/raw/master/docs/images/komputer-godot-4.gif)
 

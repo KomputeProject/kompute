@@ -25,13 +25,13 @@
 
 <h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4>
 
-🔋 [Documentation](https://ethicalml.github.io/vulkan-kompute/) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](https://github.com/EthicalML/vulkan-kompute#your-first-kompute) 💾
+🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
 
 
 ## Principles & Features
 
 * [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
-* [Documentation](https://ethicalml.github.io/vulkan-kompute/) leveraging doxygen and sphinx 
+* [Documentation](https://kompute.cc) leveraging doxygen and sphinx 
 * BYOV: Bring-your-own-Vulkan design to play nice with existing Vulkan applications
 * Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components
 * Fast development cycles with shader tooling, but robust static shader binary bundles for prod
@@ -51,7 +51,7 @@ This project is built using cmake, providing a simple way to integrate as static
 
 #### Your First Kompute
 
-Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file) - [view more examples](#more-examples).
+Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file). View [more examples](#simple-examples).
 
 ```c++
 int main() {
@@ -103,7 +103,7 @@ This project started after seeing that a lot of new and renowned ML & DL project
 
 The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan, although it's not always the case, this can result in slower development cycles, and opportunities for bugs to be introduced.
 
-We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://medium.com/swlh/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
+We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
 
 ## More examples
 
@@ -111,7 +111,7 @@ We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface 
 
 * [Pass shader as raw string](#your-first-kompute)
 * [Create your custom Kompute Operations](#your-custom-kompute-operation)
-* [Record batch commands with a Kompute Sequence](#record-batch-commands-with-a-kompute-sequence)
+* [Record batch commands with a Kompute Sequence](#record-batch-commands)
 
 ### End-to-end examples
 
@@ -121,7 +121,7 @@ We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface 
 
 ### Your Custom Kompute Operation
 
-Build your own pre-compiled operations for domain specific workflows.
+Build your own pre-compiled operations for domain specific workflows. Back to [more examples](#simple-examples)
 
 We also provide tools that allow you to [convert shaders into C++ headers](https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40).
 
@@ -164,9 +164,9 @@ int main() {
 }
 ```
 
-#### Record batch commands with a Kompute Sequence
+#### Record batch commands
 
-Record commands in a single submit by using a Sequence to send in batch to GPU.
+Record commands in a single submit by using a Sequence to send in batch to GPU. Back to [more examples](#simple-examples)
 
 ```c++
 int main() {
@@ -213,13 +213,6 @@ int main() {
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
-
-## Advanced Examples
-
-We cover more advanced examples and applications of Vulkan Kompute, such as machine learning algorithms built on top of Kompute.
-
-You can find these in the end to end examples [section](#end-to-end-examples).
-
 
 ## Components & Architecture
 
