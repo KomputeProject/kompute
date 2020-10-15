@@ -89,6 +89,13 @@ class Sequence
     bool isRecording();
 
     /**
+     * Returns true if the sequence is currently running - mostly used for async workloads.
+     *
+     * @return Boolean stating if currently running.
+     */
+    bool isRunning();
+
+    /**
      * Returns true if the sequence has been successfully initialised.
      *
      * @return Boolean stating if sequence has been initialised.
@@ -164,7 +171,7 @@ class Sequence
     // State
     bool mIsInit = false;
     bool mRecording = false;
-    bool mEvalBusy = false;
+    bool mIsRunning = false;
 
     // Create functions
     void createCommandPool();

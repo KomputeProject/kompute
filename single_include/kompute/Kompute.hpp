@@ -1033,18 +1033,41 @@ class Sequence
     /**
      * Begins recording commands for commands to be submitted into the command
      * buffer.
+     *
+     * @return Boolean stating whether execution was successful.
      */
     bool begin();
+
     /**
      * Ends the recording and stops recording commands when the record command
      * is sent.
+     *
+     * @return Boolean stating whether execution was successful.
      */
     bool end();
+
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
+     *
+     * @return Boolean stating whether execution was successful.
      */
     bool eval();
+
+    /**
+     * Eval Async sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. EvalAwait() must be called after to ensure the sequence is terminated correctly.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
+    bool evalAsync();
+
+    /**
+     * Eval Await waits for the fence to finish processing and then once it finishes, it runs the postEval of all operations.
+     *
+     * @param waitFor Number of milliseconds to wait before timing out.
+     * @return Boolean stating whether execution was successful.
+     */
+    bool evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
      * Returns true if the sequence is currently in recording activated.
@@ -1052,6 +1075,13 @@ class Sequence
      * @return Boolean stating if recording ongoing.
      */
     bool isRecording();
+
+    /**
+     * Returns true if the sequence is currently running - mostly used for async workloads.
+     *
+     * @return Boolean stating if currently running.
+     */
+    bool isRunning();
 
     /**
      * Returns true if the sequence has been successfully initialised.
@@ -1122,12 +1152,14 @@ class Sequence
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer = nullptr;
     bool mFreeCommandBuffer = false;
 
-    // Base op objects
+    // -------------- ALWAYS OWNED RESOURCES
+    vk::Fence mFence;
     std::vector<std::unique_ptr<OpBase>> mOperations;
 
     // State
     bool mIsInit = false;
     bool mRecording = false;
+    bool mIsRunning = false;
 
     // Create functions
     void createCommandPool();
@@ -1290,6 +1322,68 @@ class Manager
             sq->eval();
         }
         SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
+    }
+
+    /**
+     * Operation that adds extra operations to existing or new created
+     * sequences.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     * @param params Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpAsync(std::vector<std::shared_ptr<Tensor>> tensors,
+                std::string sequenceName,
+                TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
+        std::weak_ptr<Sequence> sqWeakPtr =
+          this->getOrCreateManagedSequence(sequenceName);
+
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
+            sq->begin();
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
+            sq->record<T>(tensors, std::forward<TArgs>(params)...);
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
+            sq->end();
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
+            sq->evalAsync();
+        }
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
+    }
+
+    /**
+     * Operation that adds extra operations to existing or new created
+     * sequences.
+     *
+     * @param sequenceName The name of the sequence to wait for termination
+     * @param waitFor The amount of time to wait before timing out
+     */
+    template<typename... TArgs>
+    void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered");
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
+        this->mManagedSequences.find(sequenceName);
+
+        if (found != this->mManagedSequences.end()) {
+            if (std::shared_ptr<kp::Sequence> sq = found->second) {
+                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence Sequence EVAL AWAIT");
+                if (sq->isRunning()) {
+                    sq->evalAwait(waitFor);
+                }
+            }
+            SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
+        }
+        else {
+            SPDLOG_ERROR("Sequence not found");
+ 		}
     }
 
     /**
@@ -1599,7 +1693,7 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                            std::vector<std::shared_ptr<Tensor>>& tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} , shaderFilePath: {}", tensors.size());
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}", tensors.size());
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors

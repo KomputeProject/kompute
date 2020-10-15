@@ -140,12 +140,12 @@ Sequence::evalAsync()
         SPDLOG_WARN("Kompute Sequence evalAsync called when still recording");
         return false;
     }
-    if (this->mEvalBusy) {
+    if (this->mIsRunning) {
         SPDLOG_WARN("Kompute Sequence evalAsync called when an eval async was called without successful wait");
         return false;
     }
 
-    this->mEvalBusy = true;
+    this->mIsRunning = true;
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
         this->mOperations[i]->preEval();
@@ -154,7 +154,7 @@ Sequence::evalAsync()
     const vk::PipelineStageFlags waitStageMask =
       vk::PipelineStageFlagBits::eTransfer & vk::PipelineStageFlagBits::eComputeShader;
     vk::SubmitInfo submitInfo(
-      0, nullptr, &waitStageMask, 1, this->mCommandBuffer.get());
+      0, nullptr, nullptr, 1, this->mCommandBuffer.get());
 
     this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
 
@@ -162,12 +162,14 @@ Sequence::evalAsync()
       "Kompute sequence submitting command buffer into compute queue");
 
     this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+
+    return true;
 }
 
 bool
 Sequence::evalAwait(uint64_t waitFor)
 {
-    if (!this->mEvalBusy) {
+    if (!this->mIsRunning) {
         SPDLOG_WARN("Kompute Sequence evalAwait called without existing eval");
         return false;
     }
@@ -177,7 +179,7 @@ Sequence::evalAwait(uint64_t waitFor)
 
     if (result == vk::Result::eTimeout) {
         SPDLOG_WARN("Kompute Sequence evalAwait timed out");
-        this->mEvalBusy = false;
+        this->mIsRunning = false;
         return false;
     }
 
@@ -185,7 +187,14 @@ Sequence::evalAwait(uint64_t waitFor)
         this->mOperations[i]->postEval();
     }
 
-    this->mEvalBusy = false;
+    this->mIsRunning = false;
+
+    return true;
+}
+
+bool
+Sequence::isRunning() {
+    return this->mIsRunning;
 }
 
 bool

@@ -102,7 +102,7 @@ class Manager
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
-     * @param TArgs Template parameters that will be used to initialise
+     * @param params Template parameters that will be used to initialise
      * Operation to allow for extensible configurations on initialisation
      */
     template<typename T, typename... TArgs>
@@ -110,49 +110,52 @@ class Manager
                 std::string sequenceName,
                 TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOp triggered");
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
         std::weak_ptr<Sequence> sqWeakPtr =
           this->getOrCreateManagedSequence(sequenceName);
 
         if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
             sq->begin();
 
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
             sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
             sq->end();
 
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
             sq->evalAsync();
         }
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
     }
 
     /**
      * Operation that adds extra operations to existing or new created
      * sequences.
      *
-     * @param tensors The tensors to be used in the operation recorded
-     * @param sequenceName The name of the sequence to be retrieved or created
-     * @param TArgs Template parameters that will be used to initialise
-     * Operation to allow for extensible configurations on initialisation
+     * @param sequenceName The name of the sequence to wait for termination
+     * @param waitFor The amount of time to wait before timing out
      */
-    template<typename T, typename... TArgs>
+    template<typename... TArgs>
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered");
         std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
-              this->mManagedSequences.find(sequenceName);
+        this->mManagedSequences.find(sequenceName);
 
-        if (found == this->mManagedSequences.end()) {
+        if (found != this->mManagedSequences.end()) {
             if (std::shared_ptr<kp::Sequence> sq = found->second) {
                 SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence Sequence EVAL AWAIT");
-                sq->evalAwait(waitFor);
+                if (sq->isRunning()) {
+                    sq->evalAwait(waitFor);
+                }
             }
             SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
         }
+        else {
+            SPDLOG_ERROR("Sequence not found");
+ 		}
     }
 
     /**

@@ -162,7 +162,7 @@ OpAlgoBase<tX, tY, tZ>::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalD
                            std::vector<std::shared_ptr<Tensor>>& tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors, false)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {} , shaderFilePath: {}", tensors.size());
+    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}", tensors.size());
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
