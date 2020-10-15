@@ -1253,19 +1253,22 @@ class Manager
     Manager();
 
     /**
-        Similar to base constructor but allows the user to provide the device
-       they would like to create the resources on.
+      * Similar to base constructor but allows the user to provide the device
+      * they would like to create the resources on.
+      *
+      * @param physicalDeviceIndex The index of the physical device to use
+      * @param totalQueues The total number of compute queues to create.
     */
-    Manager(uint32_t physicalDeviceIndex);
+    Manager(uint32_t physicalDeviceIndex, uint32_t totalComputeQueues = 1);
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
      * with the vulkan kompute use.
      *
      * @param instance Vulkan compute instance to base this application
-     * @physicalDevice Vulkan physical device to use for application
-     * @device Vulkan logical device to use for all base resources
-     * @physicalDeviceIndex Index for vulkan physical device used
+     * @param physicalDevice Vulkan physical device to use for application
+     * @param device Vulkan logical device to use for all base resources
+     * @param physicalDeviceIndex Index for vulkan physical device used
      */
     Manager(std::shared_ptr<vk::Instance> instance,
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -1289,6 +1292,16 @@ class Manager
      */
     std::weak_ptr<Sequence> getOrCreateManagedSequence(
       std::string sequenceName);
+
+    /**
+     * Create a new managed Kompute sequence so it's available within the manager.
+     *
+     * @param sequenceName The name for the named sequence to be created
+     * @param queueIndex The queue to use from the available queues
+     * @return Weak pointer to the manager owned sequence resource
+     */
+    std::weak_ptr<Sequence> createManagedSequence(
+      std::string sequenceName, uint32_t queueIndex = 0);
 
     /**
      * Operation that adds extra operations to existing or new created
@@ -1342,7 +1355,12 @@ class Manager
         std::weak_ptr<Sequence> sqWeakPtr =
           this->getOrCreateManagedSequence(sequenceName);
 
-        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
+          this->mManagedSequences.find(sequenceName);
+
+        if (found == this->mManagedSequences.end()) {
+            std::shared_ptr<Sequence> sq = found->second;
+
             SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
             sq->begin();
 
@@ -1354,6 +1372,9 @@ class Manager
 
             SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
             sq->evalAsync();
+        }
+        else {
+            SPDLOG_ERROR("Kompute Manager evalOpAsync sequence [{}] not found", sequenceName);
         }
         SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
     }
@@ -1382,7 +1403,7 @@ class Manager
             SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
         }
         else {
-            SPDLOG_ERROR("Sequence not found");
+            SPDLOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
  		}
     }
 
@@ -1437,7 +1458,7 @@ class Manager
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
     uint32_t mComputeQueueFamilyIndex = -1;
-    std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
+    std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
@@ -1452,7 +1473,7 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice();
+    void createDevice(uint32_t totalComputeQueues);
 };
 
 } // End namespace kp

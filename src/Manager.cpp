@@ -25,15 +25,15 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
 #endif
 
 Manager::Manager()
-  : Manager(0)
+  : Manager(0, 1)
 {}
 
-Manager::Manager(uint32_t physicalDeviceIndex)
+Manager::Manager(uint32_t physicalDeviceIndex, uint32_t totalComputeQueues)
 {
     this->mPhysicalDeviceIndex = physicalDeviceIndex;
 
     this->createInstance();
-    this->createDevice();
+    this->createDevice(totalComputeQueues);
 }
 
 Manager::Manager(std::shared_ptr<vk::Instance> instance,
@@ -98,17 +98,25 @@ Manager::getOrCreateManagedSequence(std::string sequenceName)
       this->mManagedSequences.find(sequenceName);
 
     if (found == this->mManagedSequences.end()) {
-        std::shared_ptr<Sequence> sq =
-          std::make_shared<Sequence>(this->mPhysicalDevice,
-                                     this->mDevice,
-                                     this->mComputeQueue,
-                                     this->mComputeQueueFamilyIndex);
-        sq->init();
-        this->mManagedSequences.insert({ sequenceName, sq });
-        return sq;
+        return this->createManagedSequence(sequenceName);
     } else {
         return found->second;
     }
+}
+
+std::weak_ptr<Sequence>
+Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex) {
+
+    SPDLOG_DEBUG("Kompute Manager createManagedSequence with sequenceName: {} and queueIndex: {}", sequenceName, queueIndex);
+
+    std::shared_ptr<Sequence> sq =
+      std::make_shared<Sequence>(this->mPhysicalDevice,
+                                 this->mDevice,
+                                 this->mComputeQueues[queueIndex],
+                                 this->mComputeQueueFamilyIndex);
+    sq->init();
+    this->mManagedSequences.insert({ sequenceName, sq });
+    return sq;
 }
 
 void
@@ -197,7 +205,7 @@ Manager::createInstance()
 }
 
 void
-Manager::createDevice()
+Manager::createDevice(uint32_t totalComputeQueues)
 {
 
     SPDLOG_DEBUG("Kompute Manager creating Device");
@@ -248,7 +256,7 @@ Manager::createDevice()
     }
 
     const float defaultQueuePriority(0.0f);
-    const uint32_t defaultQueueCount(1);
+    const uint32_t defaultQueueCount(totalComputeQueues);
     vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
       vk::DeviceQueueCreateFlags(),
       this->mComputeQueueFamilyIndex,
@@ -264,9 +272,16 @@ Manager::createDevice()
       &deviceCreateInfo, nullptr, this->mDevice.get());
     SPDLOG_DEBUG("Kompute Manager device created");
 
-    this->mComputeQueue = std::make_shared<vk::Queue>();
-    this->mDevice->getQueue(
-      this->mComputeQueueFamilyIndex, 0, this->mComputeQueue.get());
+    for (uint32_t i = 0; i < totalComputeQueues; i++) 
+    {
+        std::shared_ptr<vk::Queue> currQueue = std::make_shared<vk::Queue>();
+
+        this->mDevice->getQueue(
+          this->mComputeQueueFamilyIndex, i, currQueue.get());
+
+        this->mComputeQueues.push_back(currQueue);
+    }
+
     SPDLOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
