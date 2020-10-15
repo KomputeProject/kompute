@@ -9,6 +9,8 @@ TEST(TestAsyncOperations, TestManagerAsync)
 {
     uint32_t size = 100000;
 
+    uint32_t numParallel = 6;
+
     std::string shader(R"(
         #version 450
 
@@ -20,91 +22,90 @@ TEST(TestAsyncOperations, TestManagerAsync)
         void main() {
             uint index = gl_GlobalInvocationID.x;
 
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 pa[index] += 1.0;
             }
 
             pb[index] = pa[index];
+            pa[index] = 0;
         }
     )");
 
     std::vector<float> data(size, 0.0);
-    std::vector<float> resultSync(size, 100000);
-    std::vector<float> resultAsync(size, 100000);
-
-    std::shared_ptr<kp::Tensor> tensorSyncA{ new kp::Tensor(data) };
-    std::shared_ptr<kp::Tensor> tensorSyncB{ new kp::Tensor(data) };
-    std::shared_ptr<kp::Tensor> tensorSyncC{ new kp::Tensor(data) };
-    std::shared_ptr<kp::Tensor> tensorSyncD{ new kp::Tensor(data) };
-    std::shared_ptr<kp::Tensor> tensorSyncE{ new kp::Tensor(data) };
-    std::shared_ptr<kp::Tensor> tensorSyncF{ new kp::Tensor(data) };
+    std::vector<float> resultSync(size, 10000);
+    std::vector<float> resultAsync(size, 10000);
 
     kp::Manager mgr;
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorSyncA, tensorSyncB, tensorSyncC, tensorSyncD, tensorSyncE, tensorSyncF });
+    std::vector<std::shared_ptr<kp::Tensor>> inputsSyncA;
+    std::vector<std::shared_ptr<kp::Tensor>> inputsSyncB;
+
+    for (uint32_t i = 0; i < numParallel; i++) {
+        inputsSyncA.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+        inputsSyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+    }
+
+    mgr.evalOpDefault<kp::OpTensorCreate>(inputsSyncA);
+    mgr.evalOpDefault<kp::OpTensorCreate>(inputsSyncB);
 
     auto startSync = std::chrono::high_resolution_clock::now();
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
-      { tensorSyncA, tensorSyncB }, std::vector<char>(shader.begin(), shader.end()));
+    for (uint32_t i = 0; i < numParallel; i++) {
+        mgr.evalOpDefault<kp::OpAlgoBase<>>(
+          { inputsSyncA[i],  inputsSyncB[i] }, 
+          std::vector<char>(shader.begin(), shader.end()));
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
-      { tensorSyncC, tensorSyncD }, std::vector<char>(shader.begin(), shader.end()));
+    }
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
-      { tensorSyncE, tensorSyncF }, std::vector<char>(shader.begin(), shader.end()));
-
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorSyncB, tensorSyncD, tensorSyncF });
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>(inputsSyncB);
 
     auto endSync = std::chrono::high_resolution_clock::now();
     auto durationSync = std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync).count();
 
-    EXPECT_EQ(tensorSyncB->data(), resultSync);
-    EXPECT_EQ(tensorSyncD->data(), resultSync);
-    EXPECT_EQ(tensorSyncF->data(), resultSync);
+    for (uint32_t i = 0; i < numParallel; i++) {
+        EXPECT_EQ(inputsSyncB[i]->data(), resultSync);
+    }
 
-    //std::shared_ptr<kp::Tensor> tensorAsyncA{ new kp::Tensor(data) };
-    //std::shared_ptr<kp::Tensor> tensorAsyncB{ new kp::Tensor(data) };
-    //std::shared_ptr<kp::Tensor> tensorAsyncC{ new kp::Tensor(data) };
-    //std::shared_ptr<kp::Tensor> tensorAsyncD{ new kp::Tensor(data) };
-    //std::shared_ptr<kp::Tensor> tensorAsyncE{ new kp::Tensor(data) };
-    //std::shared_ptr<kp::Tensor> tensorAsyncF{ new kp::Tensor(data) };
+    kp::Manager mgrAsync(0, numParallel);
 
-    //kp::Manager mgrAsync(0, 1);
+    std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncA;
+    std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
 
-    //mgrAsync.evalOpDefault<kp::OpTensorCreate>({ tensorAsyncA, tensorAsyncB, tensorAsyncC, tensorAsyncD, tensorAsyncE, tensorAsyncF });
+    for (uint32_t i = 0; i < numParallel; i++) {
+        inputsAsyncA.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+        inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+    }
 
-    //mgrAsync.createManagedSequence("async0", 0);
-    ////mgrAsync.createManagedSequence("async1", 1);
-    ////mgrAsync.createManagedSequence("async2", 2);
+    mgrAsync.evalOpDefault<kp::OpTensorCreate>(inputsAsyncA);
+    mgrAsync.evalOpDefault<kp::OpTensorCreate>(inputsAsyncB);
 
-    //auto startAsync = std::chrono::high_resolution_clock::now();
+    for (uint32_t i = 0; i < numParallel; i++) {
+        mgrAsync.createManagedSequence("async" + std::to_string(i), i);
+    }
 
-    //mgrAsync.evalOpAsync<kp::OpAlgoBase<>>(
-    //  { tensorAsyncA, tensorAsyncB }, "async0", std::vector<char>(shader.begin(), shader.end()));
+    auto startAsync = std::chrono::high_resolution_clock::now();
 
-    ////mgrAsync.evalOpAsync<kp::OpAlgoBase<>>(
-    ////  { tensorAsyncC, tensorAsyncD }, "async1", std::vector<char>(shader.begin(), shader.end()));
+    for (uint32_t i = 0; i < numParallel; i++) {
+        mgrAsync.evalOpAsync<kp::OpAlgoBase<>>(
+          { inputsAsyncA[i], inputsAsyncB[i] }, 
+          "async" + std::to_string(i), 
+          std::vector<char>(shader.begin(), shader.end()));
+    }
 
-    ////mgrAsync.evalOpAsync<kp::OpAlgoBase<>>(
-    ////  { tensorAsyncE, tensorAsyncF }, "async2", std::vector<char>(shader.begin(), shader.end()));
+    for (uint32_t i = 0; i < numParallel; i++) {
+        mgrAsync.evalOpAwait("async" + std::to_string(i));
+    }
 
-    //mgrAsync.evalOpAwait("async0");
-    ////mgrAsync.evalOpAwait("async1");
-    ////mgrAsync.evalOpAwait("async2");
+    mgrAsync.evalOpDefault<kp::OpTensorSyncLocal>({ inputsAsyncB });
 
-    //mgrAsync.evalOpDefault<kp::OpTensorSyncLocal>({ tensorAsyncB });
-    ////mgrAsync.evalOpDefault<kp::OpTensorSyncLocal>({ tensorAsyncD });
-    ////mgrAsync.evalOpDefault<kp::OpTensorSyncLocal>({ tensorAsyncF });
+    auto endAsync = std::chrono::high_resolution_clock::now();
+    auto durationAsync = std::chrono::duration_cast<std::chrono::microseconds>(endAsync - startAsync).count();
 
-    //auto endAsync = std::chrono::high_resolution_clock::now();
-    //auto durationAsync = std::chrono::duration_cast<std::chrono::microseconds>(endAsync - startAsync).count();
+    for (uint32_t i = 0; i < numParallel; i++) {
+        EXPECT_EQ(inputsAsyncB[i]->data(), resultAsync);
+    }
 
-    //EXPECT_EQ(tensorAsyncB->data(), resultAsync);
-    ////EXPECT_EQ(tensorAsyncD->data(), resultAsync);
-    ////EXPECT_EQ(tensorAsyncF->data(), resultAsync);
-
-    ////SPDLOG_DEBUG("Total Sync: {}", durationSync);
-    //SPDLOG_DEBUG("Total Async: {}", durationAsync);
+    SPDLOG_ERROR("Total Sync: {}", durationSync);
+    SPDLOG_ERROR("Total Async: {}", durationAsync);
 }

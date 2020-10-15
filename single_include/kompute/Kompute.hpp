@@ -1358,7 +1358,7 @@ class Manager
         std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
           this->mManagedSequences.find(sequenceName);
 
-        if (found == this->mManagedSequences.end()) {
+        if (found != this->mManagedSequences.end()) {
             std::shared_ptr<Sequence> sq = found->second;
 
             SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
