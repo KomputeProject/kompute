@@ -143,14 +143,16 @@ class Manager
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered");
-        std::weak_ptr<Sequence> sqWeakPtr =
-          this->getOrCreateManagedSequence(sequenceName);
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
+              this->mManagedSequences.find(sequenceName);
 
-        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
-            SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence EVAL AWAIT");
-            sq->evalAwait(waitFor);
+        if (found == this->mManagedSequences.end()) {
+            if (std::shared_ptr<kp::Sequence> sq = found->second) {
+                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence Sequence EVAL AWAIT");
+                sq->evalAwait(waitFor);
+            }
+            SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
         }
-        SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
     }
 
     /**
