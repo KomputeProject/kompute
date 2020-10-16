@@ -151,8 +151,6 @@ Sequence::evalAsync()
         this->mOperations[i]->preEval();
     }
 
-    const vk::PipelineStageFlags waitStageMask =
-      vk::PipelineStageFlagBits::eTransfer & vk::PipelineStageFlagBits::eComputeShader;
     vk::SubmitInfo submitInfo(
       0, nullptr, nullptr, 1, this->mCommandBuffer.get());
 
