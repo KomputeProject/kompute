@@ -7,6 +7,9 @@
 
 TEST(TestAsyncOperations, TestManagerAsync)
 {
+    // This test is built for NVIDIA 1650. It assumes:
+    // * Queue family 0 and 2 have compute capabilities
+    // * GPU is able to process parallel shader code across different families
     uint32_t size = 10;
 
     uint32_t numParallel = 2;
