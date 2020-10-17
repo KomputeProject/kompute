@@ -266,8 +266,7 @@ Algorithm::createPipeline(std::vector<uint32_t> specializationData)
 
 #ifdef KOMPUTE_CREATE_PIPELINE_RESULT_VALUE
     vk::ResultValue<vk::Pipeline> pipelineResult =
-      this->mDevice->createComputePipeline(*this->mPipelineCache,
-pipelineInfo);
+      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
 
     if (pipelineResult.result != vk::Result::eSuccess) {
         throw std::runtime_error("Failed to create pipeline result: " +

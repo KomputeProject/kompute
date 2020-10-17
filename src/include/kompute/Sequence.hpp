@@ -67,14 +67,17 @@ class Sequence
     bool eval();
 
     /**
-     * Eval Async sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. EvalAwait() must be called after to ensure the sequence is terminated correctly.
+     * Eval Async sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier. EvalAwait() must
+     * be called after to ensure the sequence is terminated correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
     bool evalAsync();
 
     /**
-     * Eval Await waits for the fence to finish processing and then once it finishes, it runs the postEval of all operations.
+     * Eval Await waits for the fence to finish processing and then once it
+     * finishes, it runs the postEval of all operations.
      *
      * @param waitFor Number of milliseconds to wait before timing out.
      * @return Boolean stating whether execution was successful.
@@ -89,7 +92,8 @@ class Sequence
     bool isRecording();
 
     /**
-     * Returns true if the sequence is currently running - mostly used for async workloads.
+     * Returns true if the sequence is currently running - mostly used for async
+     * workloads.
      *
      * @return Boolean stating if currently running.
      */

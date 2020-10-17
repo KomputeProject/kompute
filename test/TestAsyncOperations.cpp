@@ -72,13 +72,14 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgr.evalOpDefault<kp::OpAlgoBase<>>(
-          { inputsSyncA[i],  inputsSyncB[i] }, 
+          { inputsSyncA[i], inputsSyncB[i] },
           std::vector<char>(shader.begin(), shader.end()));
-
     }
 
     auto endSync = std::chrono::high_resolution_clock::now();
-    auto durationSync = std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync).count();
+    auto durationSync =
+      std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync)
+        .count();
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>(inputsSyncB);
 
@@ -86,7 +87,7 @@ TEST(TestAsyncOperations, TestManagerAsync)
         EXPECT_EQ(inputsSyncB[i]->data(), resultSync);
     }
 
-    kp::Manager mgrAsync(0, {0, 2});
+    kp::Manager mgrAsync(0, { 0, 2 });
 
     std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncA;
     std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
@@ -107,8 +108,8 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgrAsync.evalOpAsync<kp::OpAlgoBase<>>(
-          { inputsAsyncA[i], inputsAsyncB[i] }, 
-          "async" + std::to_string(i), 
+          { inputsAsyncA[i], inputsAsyncB[i] },
+          "async" + std::to_string(i),
           std::vector<char>(shader.begin(), shader.end()));
     }
 
@@ -117,7 +118,9 @@ TEST(TestAsyncOperations, TestManagerAsync)
     }
 
     auto endAsync = std::chrono::high_resolution_clock::now();
-    auto durationAsync = std::chrono::duration_cast<std::chrono::microseconds>(endAsync - startAsync).count();
+    auto durationAsync = std::chrono::duration_cast<std::chrono::microseconds>(
+                           endAsync - startAsync)
+                           .count();
 
     mgrAsync.evalOpDefault<kp::OpTensorSyncLocal>({ inputsAsyncB });
 
@@ -128,6 +131,6 @@ TEST(TestAsyncOperations, TestManagerAsync)
     SPDLOG_ERROR("sync {}", durationSync);
     SPDLOG_ERROR("async {}", durationAsync);
 
-    // The speedup should be at least 40% 
+    // The speedup should be at least 40%
     EXPECT_LT(durationAsync, durationSync * 0.6);
 }

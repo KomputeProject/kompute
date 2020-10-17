@@ -141,7 +141,8 @@ Sequence::evalAsync()
         return false;
     }
     if (this->mIsRunning) {
-        SPDLOG_WARN("Kompute Sequence evalAsync called when an eval async was called without successful wait");
+        SPDLOG_WARN("Kompute Sequence evalAsync called when an eval async was "
+                    "called without successful wait");
         return false;
     }
 
@@ -172,7 +173,8 @@ Sequence::evalAwait(uint64_t waitFor)
         return false;
     }
 
-    vk::Result result = this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
+    vk::Result result =
+      this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
     this->mDevice->destroy(this->mFence);
 
     if (result == vk::Result::eTimeout) {
@@ -191,7 +193,8 @@ Sequence::evalAwait(uint64_t waitFor)
 }
 
 bool
-Sequence::isRunning() {
+Sequence::isRunning()
+{
     return this->mIsRunning;
 }
 
