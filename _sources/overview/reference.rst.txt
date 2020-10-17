@@ -1,5 +1,5 @@
 
-Reference
+Class Documentation and C++ Reference
 ========
 
 This section provides a breakdown of the cpp classes and what each of their functions provide. It is partially generated and augomented from the Doxygen autodoc content. You can also go directly to the `raw doxygen docs <../doxygen/annotated.html>`_.

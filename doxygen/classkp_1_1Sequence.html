@@ -91,8 +91,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac51befb176acd2064d3e85133bf66ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0b36564769ba25a43a38e14a2d510dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#aa0b36564769ba25a43a38e14a2d510dc">eval</a> ()</td></tr>
 <tr class="separator:aa0b36564769ba25a43a38e14a2d510dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a682cba00ed524212503f0b977f98fc56"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a682cba00ed524212503f0b977f98fc56">evalAsync</a> ()</td></tr>
+<tr class="separator:a682cba00ed524212503f0b977f98fc56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cd3819206f56734876873656085c824"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a9cd3819206f56734876873656085c824">evalAwait</a> (uint64_t waitFor=UINT64_MAX)</td></tr>
+<tr class="separator:a9cd3819206f56734876873656085c824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6400fc9c0fb879e1131157fef8b2e85"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85">isRecording</a> ()</td></tr>
 <tr class="separator:ac6400fc9c0fb879e1131157fef8b2e85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a783a310d7373588277df4ba6dc30da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a1a783a310d7373588277df4ba6dc30da">isRunning</a> ()</td></tr>
+<tr class="separator:a1a783a310d7373588277df4ba6dc30da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84ff30d6164cc730bd554dcdfd423f74"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">isInit</a> ()</td></tr>
 <tr class="separator:a84ff30d6164cc730bd554dcdfd423f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
@@ -203,7 +209,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Begins recording commands for commands to be submitted into the command buffer. </p>
+<p>Begins recording commands for commands to be submitted into the command buffer.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating whether execution was successful. </dd></dl>
 
 </div>
 </div>
@@ -221,7 +228,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Ends the recording and stops recording commands when the record command is sent. </p>
+<p>Ends the recording and stops recording commands when the record command is sent.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating whether execution was successful. </dd></dl>
 
 </div>
 </div>
@@ -239,7 +247,53 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. </p>
+<p>Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating whether execution was successful. </dd></dl>
+
+</div>
+</div>
+<a id="a682cba00ed524212503f0b977f98fc56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a682cba00ed524212503f0b977f98fc56">&#9670;&nbsp;</a></span>evalAsync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool kp::Sequence::evalAsync </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Eval Async sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. EvalAwait() must be called after to ensure the sequence is terminated correctly.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating whether execution was successful. </dd></dl>
+
+</div>
+</div>
+<a id="a9cd3819206f56734876873656085c824"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cd3819206f56734876873656085c824">&#9670;&nbsp;</a></span>evalAwait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool kp::Sequence::evalAwait </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>waitFor</em> = <code>UINT64_MAX</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Eval Await waits for the fence to finish processing and then once it finishes, it runs the postEval of all operations.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">waitFor</td><td>Number of milliseconds to wait before timing out. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating whether execution was successful. </dd></dl>
 
 </div>
 </div>
@@ -296,6 +350,25 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns true if the sequence is currently in recording activated.</p>
 <dl class="section return"><dt>Returns</dt><dd>Boolean stating if recording ongoing. </dd></dl>
+
+</div>
+</div>
+<a id="a1a783a310d7373588277df4ba6dc30da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a783a310d7373588277df4ba6dc30da">&#9670;&nbsp;</a></span>isRunning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool kp::Sequence::isRunning </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns true if the sequence is currently running - mostly used for async workloads.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating if currently running. </dd></dl>
 
 </div>
 </div>

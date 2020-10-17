@@ -79,20 +79,32 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a43cc11ff353b2b0775e6a204c8395d97"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">Manager</a> ()</td></tr>
 <tr class="separator:a43cc11ff353b2b0775e6a204c8395d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2750eee25b482b114a8032a35664de27"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a2750eee25b482b114a8032a35664de27">Manager</a> (uint32_t physicalDeviceIndex)</td></tr>
-<tr class="separator:a2750eee25b482b114a8032a35664de27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1ff5822c401ee72f26fb8d054db17c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ae1ff5822c401ee72f26fb8d054db17c1">Manager</a> (uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndeces={})</td></tr>
+<tr class="separator:ae1ff5822c401ee72f26fb8d054db17c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">Manager</a> (std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, uint32_t physicalDeviceIndex)</td></tr>
 <tr class="separator:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">~Manager</a> ()</td></tr>
 <tr class="separator:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55d0744536347209bb88250b2e276d1a"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a> (std::string sequenceName)</td></tr>
 <tr class="separator:a55d0744536347209bb88250b2e276d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a096a74f1cdf3a4d421edea3dacfc4f71"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a096a74f1cdf3a4d421edea3dacfc4f71">createManagedSequence</a> (std::string sequenceName, uint32_t queueIndex=0)</td></tr>
+<tr class="separator:a096a74f1cdf3a4d421edea3dacfc4f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb89ce2a56d09d056561f021132a5469"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:aeb89ce2a56d09d056561f021132a5469"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#aeb89ce2a56d09d056561f021132a5469">evalOp</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sequenceName, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:aeb89ce2a56d09d056561f021132a5469"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7a3f54442823198af724c97c87c3dc6"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:ae7a3f54442823198af724c97c87c3dc6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6">evalOpDefault</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:ae7a3f54442823198af724c97c87c3dc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a130cd4fbb2b13770aa8016aa0579755a"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
+<tr class="memitem:a130cd4fbb2b13770aa8016aa0579755a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a130cd4fbb2b13770aa8016aa0579755a">evalOpAsync</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sequenceName, TArgs &amp;&amp;... params)</td></tr>
+<tr class="separator:a130cd4fbb2b13770aa8016aa0579755a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af448f96285731d412c4c54e86536d012"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
+<tr class="memitem:af448f96285731d412c4c54e86536d012"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#af448f96285731d412c4c54e86536d012">evalOpAsyncDefault</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, TArgs &amp;&amp;... params)</td></tr>
+<tr class="separator:af448f96285731d412c4c54e86536d012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a568ba498f48ea25ed0e9b319412d4b76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a568ba498f48ea25ed0e9b319412d4b76">evalOpAwait</a> (std::string sequenceName, uint64_t waitFor=UINT64_MAX)</td></tr>
+<tr class="separator:a568ba498f48ea25ed0e9b319412d4b76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7353b924a9945093ea382b6e9780dba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ab7353b924a9945093ea382b6e9780dba">evalOpAwaitDefault</a> (uint64_t waitFor=UINT64_MAX)</td></tr>
+<tr class="separator:ab7353b924a9945093ea382b6e9780dba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13e7b747a19ca43f32024f6b4347b642"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a13e7b747a19ca43f32024f6b4347b642">buildTensor</a> (const std::vector&lt; float &gt; &amp;data, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
 <tr class="separator:a13e7b747a19ca43f32024f6b4347b642"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -117,8 +129,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a2750eee25b482b114a8032a35664de27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2750eee25b482b114a8032a35664de27">&#9670;&nbsp;</a></span>Manager() <span class="overload">[2/3]</span></h2>
+<a id="ae1ff5822c401ee72f26fb8d054db17c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1ff5822c401ee72f26fb8d054db17c1">&#9670;&nbsp;</a></span>Manager() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -127,12 +139,30 @@ Public Member Functions</h2></td></tr>
           <td class="memname">kp::Manager::Manager </td>
           <td>(</td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>physicalDeviceIndex</em></td><td>)</td>
+          <td class="paramname"><em>physicalDeviceIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::vector&lt; uint32_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>familyQueueIndeces</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Similar to base constructor but allows the user to provide the device they would like to create the resources on. </p>
+<p>Similar to base constructor but allows the user to provide the device they would like to create the resources on.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">physicalDeviceIndex</td><td>The index of the physical device to use </td></tr>
+    <tr><td class="paramname">familyQueueIndeces</td><td>(Optional) List of queue indeces to add for explicit allocation </td></tr>
+    <tr><td class="paramname">totalQueues</td><td>The total number of compute queues to create. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -176,7 +206,10 @@ Public Member Functions</h2></td></tr>
 <p><a class="el" href="classkp_1_1Manager.html">Manager</a> constructor which allows your own vulkan application to integrate with the vulkan kompute use.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">instance</td><td>Vulkan compute instance to base this application @physicalDevice Vulkan physical device to use for application @device Vulkan logical device to use for all base resources @physicalDeviceIndex Index for vulkan physical device used </td></tr>
+    <tr><td class="paramname">instance</td><td>Vulkan compute instance to base this application </td></tr>
+    <tr><td class="paramname">physicalDevice</td><td>Vulkan physical device to use for application </td></tr>
+    <tr><td class="paramname">device</td><td>Vulkan logical device to use for all base resources </td></tr>
+    <tr><td class="paramname">physicalDeviceIndex</td><td>Index for vulkan physical device used </td></tr>
   </table>
   </dd>
 </dl>
@@ -247,6 +280,43 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a096a74f1cdf3a4d421edea3dacfc4f71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a096a74f1cdf3a4d421edea3dacfc4f71">&#9670;&nbsp;</a></span>createManagedSequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::weak_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::createManagedSequence </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sequenceName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>queueIndex</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Create a new managed Kompute sequence so it's available within the manager.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequenceName</td><td>The name for the named sequence to be created </td></tr>
+    <tr><td class="paramname">queueIndex</td><td>The queue to use from the available queues </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Weak pointer to the manager owned sequence resource </dd></dl>
+
+</div>
+</div>
 <a id="aeb89ce2a56d09d056561f021132a5469"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb89ce2a56d09d056561f021132a5469">&#9670;&nbsp;</a></span>evalOp()</h2>
 
@@ -288,12 +358,189 @@ template&lt;typename T , typename... TArgs&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Operation that adds extra operations to existing or new created sequences.</p>
+<p>Function that evaluates operation against named sequence.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>
     <tr><td class="paramname">sequenceName</td><td>The name of the sequence to be retrieved or created </td></tr>
     <tr><td class="paramname">TArgs</td><td>Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a130cd4fbb2b13770aa8016aa0579755a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a130cd4fbb2b13770aa8016aa0579755a">&#9670;&nbsp;</a></span>evalOpAsync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename... TArgs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Manager::evalOpAsync </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sequenceName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TArgs &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Function that evaluates operation against named sequence asynchronously.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>
+    <tr><td class="paramname">sequenceName</td><td>The name of the sequence to be retrieved or created </td></tr>
+    <tr><td class="paramname">params</td><td>Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="af448f96285731d412c4c54e86536d012"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af448f96285731d412c4c54e86536d012">&#9670;&nbsp;</a></span>evalOpAsyncDefault()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename... TArgs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Manager::evalOpAsyncDefault </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">TArgs &amp;&amp;...&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Operation that evaluates operation against default sequence asynchronously.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>
+    <tr><td class="paramname">params</td><td>Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a568ba498f48ea25ed0e9b319412d4b76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a568ba498f48ea25ed0e9b319412d4b76">&#9670;&nbsp;</a></span>evalOpAwait()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Manager::evalOpAwait </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sequenceName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>waitFor</em> = <code>UINT64_MAX</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Operation that awaits for named sequence to finish.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sequenceName</td><td>The name of the sequence to wait for termination </td></tr>
+    <tr><td class="paramname">waitFor</td><td>The amount of time to wait before timing out </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab7353b924a9945093ea382b6e9780dba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7353b924a9945093ea382b6e9780dba">&#9670;&nbsp;</a></span>evalOpAwaitDefault()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Manager::evalOpAwaitDefault </td>
+          <td>(</td>
+          <td class="paramtype">uint64_t&#160;</td>
+          <td class="paramname"><em>waitFor</em> = <code>UINT64_MAX</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Operation that awaits for default sequence to finish.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>
+    <tr><td class="paramname">params</td><td>Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </td></tr>
   </table>
   </dd>
 </dl>
@@ -335,7 +582,7 @@ template&lt;typename T , typename... TArgs&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Operation that adds extra operations to existing or new created sequences.</p>
+<p>Function that evaluates operation against default sequence.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>

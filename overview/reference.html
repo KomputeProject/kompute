@@ -46,7 +46,7 @@
   
   
   
-    <title>Reference &#8212; Vulkan Kompute 0.3.2 documentation</title>
+    <title>Class Documentation and C++ Reference &#8212; Vulkan Kompute 0.3.2 documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -56,8 +56,8 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Memory Management Principles" href="memory-management.html" />
-    <link rel="prev" title="Converting Shaders to C++ Headers" href="shaders-to-headers.html" />
+    <link rel="next" title="Advanced Examples" href="advanced-examples.html" />
+    <link rel="prev" title="Kompute Docs Home" href="../index.html" />
   
    
 
@@ -94,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Vulkan Kompute</span>
-          <span class="md-header-nav__topic"> Reference </span>
+          <span class="md-header-nav__topic"> Class Documentation and C++ Reference </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -209,38 +209,10 @@
     <li class="md-nav__item">
     
     
-      <a href="advanced-examples.html" class="md-nav__link">Advanced Examples</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="mobile-android.html" class="md-nav__link">Mobile App Intergration (Android)</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="game-engine-godot.html" class="md-nav__link">Game Engine Integration (Godot Engine)</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="shaders-to-headers.html" class="md-nav__link">Converting GLSL/HLSL Shaders to C++ Headers</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Class Reference </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Class Documentation and C++ Reference </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">Class Reference</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Class Documentation and C++ Reference</a>
       
         
 <nav class="md-nav md-nav--secondary">
@@ -256,7 +228,42 @@
     <li class="md-nav__item">
     
     
-      <a href="memory-management.html" class="md-nav__link">Memory management principles</a>
+      <a href="advanced-examples.html" class="md-nav__link">Advanced Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="async-parallel.html" class="md-nav__link">Asynchronous & Parallel Operations</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="memory-management.html" class="md-nav__link">Memory Management Principles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="shaders-to-headers.html" class="md-nav__link">Converting GLSL/HLSL Shaders to C++ Headers</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="mobile-android.html" class="md-nav__link">Mobile App Intergration (Android)</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="game-engine-godot.html" class="md-nav__link">Game Engine Integration (Godot Engine)</a>
       
     
     </li>
@@ -295,7 +302,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="overview-reference--page-root">Reference<a class="headerlink" href="#overview-reference--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="overview-reference--page-root">Class Documentation and C++ Reference<a class="headerlink" href="#overview-reference--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section provides a breakdown of the cpp classes and what each of their functions provide. It is partially generated and augomented from the Doxygen autodoc content. You can also go directly to the <a class="reference external" href="../doxygen/annotated.html">raw doxygen docs</a>.</p>
 <p>Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture.jpg"><img alt="../_images/kompute-vulkan-architecture.jpg" src="../_images/kompute-vulkan-architecture.jpg" style="width: 100%;"/></a>
@@ -313,9 +320,18 @@
 <dd><p>Base constructor and default used which creates the base resources including choosing the device 0 by default. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp7Manager7ManagerE8uint32_t">
-<span id="_CPPv3N2kp7Manager7ManagerE8uint32_t"></span><span id="_CPPv2N2kp7Manager7ManagerE8uint32_t"></span><span id="kp::Manager::Manager__uint32_t"></span><span class="target" id="classkp_1_1Manager_1a2750eee25b482b114a8032a35664de27"></span><code class="sig-name descname">Manager</code><span class="sig-paren">(</span>uint32_t <em>physicalDeviceIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager7ManagerE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Similar to base constructor but allows the user to provide the device they would like to create the resources on. </p>
+<dt id="_CPPv4N2kp7Manager7ManagerE8uint32_tRKNSt6vectorI8uint32_tEE">
+<span id="_CPPv3N2kp7Manager7ManagerE8uint32_tRKNSt6vectorI8uint32_tEE"></span><span id="_CPPv2N2kp7Manager7ManagerE8uint32_tRKNSt6vectorI8uint32_tEE"></span><span id="kp::Manager::Manager__uint32_t.std::vector:uint32_t:CR"></span><span class="target" id="classkp_1_1Manager_1ae1ff5822c401ee72f26fb8d054db17c1"></span><code class="sig-name descname">Manager</code><span class="sig-paren">(</span>uint32_t <em>physicalDeviceIndex</em>, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>familyQueueIndeces</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager7ManagerE8uint32_tRKNSt6vectorI8uint32_tEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Similar to base constructor but allows the user to provide the device they would like to create the resources on.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDeviceIndex</span></code>: The index of the physical device to use </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">familyQueueIndeces</span></code>: (Optional) List of queue indeces to add for explicit allocation </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">totalQueues</span></code>: The total number of compute queues to create. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp7Manager7ManagerENSt10shared_ptrIN2vk8InstanceEEENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEE8uint32_t">
@@ -323,7 +339,10 @@
 <dd><p><a class="reference internal" href="#classkp_1_1Manager"><span class="std std-ref">Manager</span></a> constructor which allows your own vulkan application to integrate with the vulkan kompute use.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">instance</span></code>: Vulkan compute instance to base this application @physicalDevice Vulkan physical device to use for application @device Vulkan logical device to use for all base resources @physicalDeviceIndex Index for vulkan physical device used </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">instance</span></code>: Vulkan compute instance to base this application </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDevice</span></code>: Vulkan physical device to use for application </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device to use for all base resources </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">physicalDeviceIndex</span></code>: Index for vulkan physical device used </p></li>
 </ul>
 </dd>
 </dl>
@@ -349,9 +368,24 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager21createManagedSequenceENSt6stringE8uint32_t">
+<span id="_CPPv3N2kp7Manager21createManagedSequenceENSt6stringE8uint32_t"></span><span id="_CPPv2N2kp7Manager21createManagedSequenceENSt6stringE8uint32_t"></span><span id="kp::Manager::createManagedSequence__ss.uint32_t"></span><span class="target" id="classkp_1_1Manager_1a096a74f1cdf3a4d421edea3dacfc4f71"></span>std::weak_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp8SequenceE" title="kp::Sequence">Sequence</a>&gt; <code class="sig-name descname">createManagedSequence</code><span class="sig-paren">(</span>std::string <em>sequenceName</em>, uint32_t <em>queueIndex</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager21createManagedSequenceENSt6stringE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Create a new managed Kompute sequence so it’s available within the manager.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Weak pointer to the manager owned sequence resource </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sequenceName</span></code>: The name for the named sequence to be created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">queueIndex</span></code>: The queue to use from the available queues </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
 <dt id="_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs">
 <span id="_CPPv3I0DpEN2kp7Manager6evalOpENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager6evalOpENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1aeb89ce2a56d09d056561f021132a5469"></span>void <code class="sig-name descname">evalOp</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, std::string <em>sequenceName</em>, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="kp::Manager::evalOp::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Operation that adds extra operations to existing or new created sequences.</p>
+<dd><p>Function that evaluates operation against named sequence.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
@@ -365,11 +399,64 @@
 <dl class="cpp function">
 <dt id="_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs">
 <span id="_CPPv3I0DpEN2kp7Manager13evalOpDefaultENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager13evalOpDefaultENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1ae7a3f54442823198af724c97c87c3dc6"></span>void <code class="sig-name descname">evalOpDefault</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="kp::Manager::evalOpDefault::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Operation that adds extra operations to existing or new created sequences.</p>
+<dd><p>Function that evaluates operation against default sequence.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">TArgs</span></code>: Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN2kp7Manager11evalOpAsyncEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs">
+<span id="_CPPv3I0DpEN2kp7Manager11evalOpAsyncENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager11evalOpAsyncENSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1a130cd4fbb2b13770aa8016aa0579755a"></span>void <code class="sig-name descname">evalOpAsync</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, std::string <em>sequenceName</em>, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager11evalOpAsyncEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="kp::Manager::evalOpAsync::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager11evalOpAsyncEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Function that evaluates operation against named sequence asynchronously.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sequenceName</span></code>: The name of the sequence to be retrieved or created </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0DpEN2kp7Manager18evalOpAsyncDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs">
+<span id="_CPPv3I0DpEN2kp7Manager18evalOpAsyncDefaultENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span><span id="_CPPv2I0DpEN2kp7Manager18evalOpAsyncDefaultENSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs"></span>template&lt;typename <code class="sig-name descname">T</code>, typename ...<code class="sig-name descname">TArgs</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1af448f96285731d412c4c54e86536d012"></span>void <code class="sig-name descname">evalOpAsyncDefault</code><span class="sig-paren">(</span>std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; <em>tensors</em>, <a class="reference internal" href="#_CPPv4I0DpEN2kp7Manager18evalOpAsyncDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="kp::Manager::evalOpAsyncDefault::TArgs">TArgs</a>&amp;&amp;... <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0DpEN2kp7Manager18evalOpAsyncDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that evaluates operation against default sequence asynchronously.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager11evalOpAwaitENSt6stringE8uint64_t">
+<span id="_CPPv3N2kp7Manager11evalOpAwaitENSt6stringE8uint64_t"></span><span id="_CPPv2N2kp7Manager11evalOpAwaitENSt6stringE8uint64_t"></span><span id="kp::Manager::evalOpAwait__ss.uint64_t"></span><span class="target" id="classkp_1_1Manager_1a568ba498f48ea25ed0e9b319412d4b76"></span>void <code class="sig-name descname">evalOpAwait</code><span class="sig-paren">(</span>std::string <em>sequenceName</em>, uint64_t <em>waitFor</em> = UINT64_MAX<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager11evalOpAwaitENSt6stringE8uint64_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that awaits for named sequence to finish.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sequenceName</span></code>: The name of the sequence to wait for termination </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">waitFor</span></code>: The amount of time to wait before timing out </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp7Manager18evalOpAwaitDefaultE8uint64_t">
+<span id="_CPPv3N2kp7Manager18evalOpAwaitDefaultE8uint64_t"></span><span id="_CPPv2N2kp7Manager18evalOpAwaitDefaultE8uint64_t"></span><span id="kp::Manager::evalOpAwaitDefault__uint64_t"></span><span class="target" id="classkp_1_1Manager_1ab7353b924a9945093ea382b6e9780dba"></span>void <code class="sig-name descname">evalOpAwaitDefault</code><span class="sig-paren">(</span>uint64_t <em>waitFor</em> = UINT64_MAX<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager18evalOpAwaitDefaultE8uint64_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that awaits for default sequence to finish.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to be used in the operation recorded </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">params</span></code>: Template parameters that will be used to initialise Operation to allow for extensible configurations on initialisation </p></li>
 </ul>
 </dd>
 </dl>
@@ -435,17 +522,56 @@
 <dl class="cpp function">
 <dt id="_CPPv4N2kp8Sequence5beginEv">
 <span id="_CPPv3N2kp8Sequence5beginEv"></span><span id="_CPPv2N2kp8Sequence5beginEv"></span><span id="kp::Sequence::begin"></span><span class="target" id="classkp_1_1Sequence_1a9b4922affdae332381e14c7c555bdfc4"></span>bool <code class="sig-name descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence5beginEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Begins recording commands for commands to be submitted into the command buffer. </p>
+<dd><p>Begins recording commands for commands to be submitted into the command buffer.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating whether execution was successful. </p>
+</dd>
+</dl>
+</p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp8Sequence3endEv">
 <span id="_CPPv3N2kp8Sequence3endEv"></span><span id="_CPPv2N2kp8Sequence3endEv"></span><span id="kp::Sequence::end"></span><span class="target" id="classkp_1_1Sequence_1ac51befb176acd2064d3e85133bf66ada"></span>bool <code class="sig-name descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence3endEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Ends the recording and stops recording commands when the record command is sent. </p>
+<dd><p>Ends the recording and stops recording commands when the record command is sent.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating whether execution was successful. </p>
+</dd>
+</dl>
+</p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp8Sequence4evalEv">
 <span id="_CPPv3N2kp8Sequence4evalEv"></span><span id="_CPPv2N2kp8Sequence4evalEv"></span><span id="kp::Sequence::eval"></span><span class="target" id="classkp_1_1Sequence_1aa0b36564769ba25a43a38e14a2d510dc"></span>bool <code class="sig-name descname">eval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence4evalEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. </p>
+<dd><p>Eval sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating whether execution was successful. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence9evalAsyncEv">
+<span id="_CPPv3N2kp8Sequence9evalAsyncEv"></span><span id="_CPPv2N2kp8Sequence9evalAsyncEv"></span><span id="kp::Sequence::evalAsync"></span><span class="target" id="classkp_1_1Sequence_1a682cba00ed524212503f0b977f98fc56"></span>bool <code class="sig-name descname">evalAsync</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence9evalAsyncEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Eval Async sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. EvalAwait() must be called after to ensure the sequence is terminated correctly.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating whether execution was successful. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence9evalAwaitE8uint64_t">
+<span id="_CPPv3N2kp8Sequence9evalAwaitE8uint64_t"></span><span id="_CPPv2N2kp8Sequence9evalAwaitE8uint64_t"></span><span id="kp::Sequence::evalAwait__uint64_t"></span><span class="target" id="classkp_1_1Sequence_1a9cd3819206f56734876873656085c824"></span>bool <code class="sig-name descname">evalAwait</code><span class="sig-paren">(</span>uint64_t <em>waitFor</em> = UINT64_MAX<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence9evalAwaitE8uint64_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Eval Await waits for the fence to finish processing and then once it finishes, it runs the postEval of all operations.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating whether execution was successful. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">waitFor</span></code>: Number of milliseconds to wait before timing out. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp8Sequence11isRecordingEv">
@@ -453,6 +579,16 @@
 <dd><p>Returns true if the sequence is currently in recording activated.</p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Boolean stating if recording ongoing. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence9isRunningEv">
+<span id="_CPPv3N2kp8Sequence9isRunningEv"></span><span id="_CPPv2N2kp8Sequence9isRunningEv"></span><span id="kp::Sequence::isRunning"></span><span class="target" id="classkp_1_1Sequence_1a1a783a310d7373588277df4ba6dc30da"></span>bool <code class="sig-name descname">isRunning</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence9isRunningEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns true if the sequence is currently running - mostly used for async workloads.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Boolean stating if currently running. </p>
 </dd>
 </dl>
 </p>
@@ -1138,7 +1274,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="shaders-to-headers.html" title="Converting Shaders to C++ Headers"
+            <a href="../index.html" title="Kompute Docs Home"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -1147,17 +1283,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Converting Shaders to C++ Headers </span>
+                      class="md-footer-nav__direction"> Previous </span> Kompute Docs Home </span>
               </div>
             </a>
           
           
-            <a href="memory-management.html" title="Memory Management Principles"
+            <a href="advanced-examples.html" title="Advanced Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Memory Management Principles </span>
+                class="md-footer-nav__direction"> Next </span> Advanced Examples </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

@@ -158,7 +158,7 @@ $(function() {
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                           std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  : <a class="code" href="classkp_1_1OpBase.html">OpBase</a>(physicalDevice, device, commandBuffer, tensors, false)</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;{</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase constructor with params numTensors: {} , shaderFilePath: {}&quot;</span>, tensors.size());</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    SPDLOG_DEBUG(<span class="stringliteral">&quot;Kompute OpAlgoBase constructor with params numTensors: {}&quot;</span>, tensors.size());</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="comment">// The dispatch size is set up based on either explicitly provided template</span></div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="comment">// parameters or by default it would take the shape and size of the tensors</span></div>
