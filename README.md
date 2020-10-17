@@ -32,7 +32,7 @@
 
 * [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
 * [Documentation](https://kompute.cc) leveraging doxygen and sphinx 
-* [Asynchronous & parallel processing](#asynchronous-parallel-operations) capabilities with multi-queue command submission
+* [Asynchronous & parallel processing](#asynchronous-and-parallel-operations) capabilities with multi-queue command submission
 * [Non-Vulkan naming conventions](#architectural-overview) to disambiguate Vulkan vs Kompute components
 * BYOV: [Bring-your-own-Vulkan design](#motivations) to play nice with existing Vulkan applications
 * Explicit relationships for GPU and host [memory ownership and memory management](https://kompute.cc/overview/memory-management.html)
