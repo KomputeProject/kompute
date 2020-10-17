@@ -30,7 +30,7 @@
 
 ## Principles & Features
 
-* [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
+* [Single header](#setup) library for simple import to your project
 * [Documentation](https://kompute.cc) leveraging doxygen and sphinx 
 * [Asynchronous & parallel processing](#asynchronous-and-parallel-operations) capabilities with multi-queue command submission
 * [Non-Vulkan naming conventions](#architectural-overview) to disambiguate Vulkan vs Kompute components
@@ -101,12 +101,12 @@ int main() {
 
 ### Simple examples
 
-* [Pass shader as raw string](https://kompute.cc/overview/advanced-examples.html#your-first-kompute)
+* [Pass shader as raw string](https://kompute.cc/overview/advanced-examples.html#simple-shader-example)
 * [Record batch commands with a Kompute Sequence](https://kompute.cc/overview/advanced-examples.html#record-batch-commands)
 * [Run Asynchronous Operations](https://kompute.cc/overview/advanced-examples.html#asynchronous-operations)
 * [Run Parallel Operations Across Multiple GPU Queues](https://kompute.cc/overview/advanced-examples.html#parallel-operations)
 * [Create your custom Kompute Operations](https://kompute.cc/overview/advanced-examples.html#your-custom-kompute-operation)
-* [Implementing logistic regression from scratch](https://kompute.cc/overview/advanced-examples.html)
+* [Implementing logistic regression from scratch](https://kompute.cc/overview/advanced-examples.html#logistic-regression-example)
 
 ### End-to-end examples
 
