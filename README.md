@@ -117,14 +117,13 @@ int main() {
 ## Architectural Overview
 
 The core architecture of Kompute include the following:
-* Kompute Manager - Base orchestrator which creates and manages device and child components
-* Kompute Sequence - Container of operations that can be sent to GPU as batch
-* Kompute Operation - Individual operation which performs actions on top of tensors and (opt) algorithms
-* Kompute Tensor - Tensor structured data used in GPU operations
-* Kompute Algorithm - Abstraction for (shader) code executed in the GPU
-* Kompute ParameterGroup - Container that can group tensors to be fed into an algorithm
+* [Kompute Manager](https://kompute.cc/overview/reference.html#manager) - Base orchestrator which creates and manages device and child components
+* [Kompute Sequence](https://kompute.cc/overview/reference.html#sequence) - Container of operations that can be sent to GPU as batch
+* [Kompute Operation (Base)](https://kompute.cc/overview/reference.html#algorithm) - Individual operation which performs actions on top of tensors and (opt) algorithms
+* [Kompute Tensor](https://kompute.cc/overview/reference.html#tensor) - Tensor structured data used in GPU operations
+* [Kompute Algorithm](https://kompute.cc/overview/reference.html#algorithm) - Abstraction for (shader) code executed in the GPU
 
-To see a full breakdown you can read further in the documentation.
+To see a full breakdown you can read further in the [C++ Class Reference](https://kompute.cc/overview/reference.html).
 
 <table>
 <th>
