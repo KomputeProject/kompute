@@ -5,7 +5,7 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestAsyncOperations, TestManagerAsync)
+TEST(TestAsyncOperations, TestManagerParallelExecution)
 {
     // This test is built for NVIDIA 1650. It assumes:
     // * Queue family 0 and 2 have compute capabilities
@@ -108,9 +108,57 @@ TEST(TestAsyncOperations, TestManagerAsync)
         EXPECT_EQ(inputsAsyncB[i]->data(), resultAsync);
     }
 
-    SPDLOG_ERROR("sync {}", durationSync);
-    SPDLOG_ERROR("async {}", durationAsync);
-
     // The speedup should be at least 40%
     EXPECT_LT(durationAsync, durationSync * 0.6);
+}
+
+TEST(TestAsyncOperations, TestManagerAsyncExecution)
+{
+    uint32_t size = 10;
+
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer b { float pb[]; };
+
+        shared uint sharedTotal[1];
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+
+            sharedTotal[0] = 0;
+
+            for (int i = 0; i < 100000000; i++)
+            {
+                atomicAdd(sharedTotal[0], 1);
+            }
+
+            pb[index] = sharedTotal[0];
+        }
+    )");
+
+    std::vector<float> data(size, 0.0);
+    std::vector<float> resultAsync(size, 100000000);
+
+    kp::Manager mgrAsync(0);
+
+    std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
+
+    inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+
+    mgrAsync.evalOpAsyncDefault<kp::OpTensorCreate>(inputsAsyncB);
+    mgrAsync.evalOpAwaitDefault();
+
+    mgrAsync.evalOpAsyncDefault<kp::OpAlgoBase<>>(
+      { inputsAsyncB[0] },
+      std::vector<char>(shader.begin(), shader.end()));
+
+    mgrAsync.evalOpAwaitDefault();
+
+    mgrAsync.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ inputsAsyncB });
+    mgrAsync.evalOpAwaitDefault();
+
+    EXPECT_EQ(inputsAsyncB[0]->data(), resultAsync);
 }
