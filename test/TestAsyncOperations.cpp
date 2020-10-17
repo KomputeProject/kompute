@@ -9,7 +9,7 @@ TEST(TestAsyncOperations, TestManagerAsync)
 {
     uint32_t size = 10;
 
-    uint32_t numParallel = 6;
+    uint32_t numParallel = 2;
 
     std::string shader(R"(
         #version 450
@@ -83,7 +83,7 @@ TEST(TestAsyncOperations, TestManagerAsync)
         EXPECT_EQ(inputsSyncB[i]->data(), resultSync);
     }
 
-    kp::Manager mgrAsync(0, numParallel);
+    kp::Manager mgrAsync(0, {0, 2});
 
     std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncA;
     std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
@@ -109,6 +109,8 @@ TEST(TestAsyncOperations, TestManagerAsync)
           std::vector<char>(shader.begin(), shader.end()));
     }
 
+    // TODO: Add function to print device details (or link)
+    // TODO: Seems to fail if await called twice
     for (uint32_t i = 0; i < numParallel; i++) {
         mgrAsync.evalOpAwait("async" + std::to_string(i));
     }
@@ -122,6 +124,6 @@ TEST(TestAsyncOperations, TestManagerAsync)
         EXPECT_EQ(inputsAsyncB[i]->data(), resultAsync);
     }
 
-    SPDLOG_ERROR("Total Sync: {}", durationSync);
-    SPDLOG_ERROR("Total Async: {}", durationAsync);
+    // The speedup should be at least 40% 
+    EXPECT_LT(durationAsync, durationSync * 0.6);
 }
