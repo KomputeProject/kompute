@@ -316,7 +316,7 @@
 <li><p><a class="reference external" href="#architectural-overview">Non-Vulkan naming conventions</a> to disambiguate Vulkan vs Kompute components</p></li>
 <li><p>BYOV: <a class="reference external" href="#motivations">Bring-your-own-Vulkan design</a> to play nice with existing Vulkan applications</p></li>
 <li><p>Explicit relationships for GPU and host <a class="reference external" href="https://kompute.cc/overview/memory-management.html">memory ownership and memory management</a></p></li>
-<li><p>Complete <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html">examples of features</a> and end-to-end examples for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a>, <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
+<li><p>Complete <a class="reference external" href="#more-examples">examples of features</a> and end-to-end examples for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a>, <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
@@ -401,14 +401,13 @@
 <h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
 <p>The core architecture of Kompute include the following:</p>
 <ul class="simple">
-<li><p>Kompute Manager - Base orchestrator which creates and manages device and child components</p></li>
-<li><p>Kompute Sequence - Container of operations that can be sent to GPU as batch</p></li>
-<li><p>Kompute Operation - Individual operation which performs actions on top of tensors and (opt) algorithms</p></li>
-<li><p>Kompute Tensor - Tensor structured data used in GPU operations</p></li>
-<li><p>Kompute Algorithm - Abstraction for (shader) code executed in the GPU</p></li>
-<li><p>Kompute ParameterGroup - Container that can group tensors to be fed into an algorithm</p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#manager">Kompute Manager</a> - Base orchestrator which creates and manages device and child components</p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#sequence">Kompute Sequence</a> - Container of operations that can be sent to GPU as batch</p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#algorithm">Kompute Operation (Base)</a> - Individual operation which performs actions on top of tensors and (opt) algorithms</p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#tensor">Kompute Tensor</a> - Tensor structured data used in GPU operations</p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#algorithm">Kompute Algorithm</a> - Abstraction for (shader) code executed in the GPU</p></li>
 </ul>
-<p>To see a full breakdown you can read further in the documentation.</p>
+<p>To see a full breakdown you can read further in the <a class="reference external" href="https://kompute.cc/overview/reference.html">C++ Class Reference</a>.</p>
 <table>
 <th>
 Full Vulkan Components
