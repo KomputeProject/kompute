@@ -19,8 +19,7 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
         layout (local_size_x = 1) in;
 
-        layout(set = 0, binding = 0) buffer a { float pa[]; };
-        layout(set = 0, binding = 1) buffer b { float pb[]; };
+        layout(set = 0, binding = 0) buffer b { float pb[]; };
 
         shared uint sharedTotal[1];
 
@@ -29,25 +28,12 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
             sharedTotal[0] = 0;
 
-            barrier();
-            memoryBarrierShared();
-
             for (int i = 0; i < 100000000; i++)
             {
                 atomicAdd(sharedTotal[0], 1);
-                atomicAdd(sharedTotal[0], -1);
-                atomicAdd(sharedTotal[0], 1);
-                atomicAdd(sharedTotal[0], -1);
-                atomicAdd(sharedTotal[0], 1);
-                atomicAdd(sharedTotal[0], -1);
-                atomicAdd(sharedTotal[0], 1);
             }
 
-            barrier();
-            memoryBarrierShared();
-
             pb[index] = sharedTotal[0];
-            pa[index] = 0;
         }
     )");
 
@@ -57,22 +43,19 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
     kp::Manager mgr;
 
-    std::vector<std::shared_ptr<kp::Tensor>> inputsSyncA;
     std::vector<std::shared_ptr<kp::Tensor>> inputsSyncB;
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        inputsSyncA.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
         inputsSyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
     }
 
-    mgr.evalOpDefault<kp::OpTensorCreate>(inputsSyncA);
     mgr.evalOpDefault<kp::OpTensorCreate>(inputsSyncB);
 
     auto startSync = std::chrono::high_resolution_clock::now();
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgr.evalOpDefault<kp::OpAlgoBase<>>(
-          { inputsSyncA[i], inputsSyncB[i] },
+          { inputsSyncB[i] },
           std::vector<char>(shader.begin(), shader.end()));
     }
 
@@ -89,15 +72,12 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
     kp::Manager mgrAsync(0, { 0, 2 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncA;
     std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        inputsAsyncA.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
         inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
     }
 
-    mgrAsync.evalOpDefault<kp::OpTensorCreate>(inputsAsyncA);
     mgrAsync.evalOpDefault<kp::OpTensorCreate>(inputsAsyncB);
 
     for (uint32_t i = 0; i < numParallel; i++) {
@@ -108,7 +88,7 @@ TEST(TestAsyncOperations, TestManagerAsync)
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgrAsync.evalOpAsync<kp::OpAlgoBase<>>(
-          { inputsAsyncA[i], inputsAsyncB[i] },
+          { inputsAsyncB[i] },
           "async" + std::to_string(i),
           std::vector<char>(shader.begin(), shader.end()));
     }
