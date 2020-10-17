@@ -57,7 +57,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Memory Management Principles" href="memory-management.html" />
-    <link rel="prev" title="Advanced Examples" href="advanced-examples.html" />
+    <link rel="prev" title="Examples" href="advanced-examples.html" />
   
    
 
@@ -310,6 +310,7 @@
 <li><p>Asynchronous operation submission</p></li>
 <li><p>Parallel processing of operations</p></li>
 </ul>
+<a class="reference internal image-reference" href="../_images/queue-allocation.jpg"><img alt="../_images/queue-allocation.jpg" src="../_images/queue-allocation.jpg" style="width: 100%;"/></a>
 
 <h2 id="asynchronous-operation-submission">Asynchronous operation submission<a class="headerlink" href="#asynchronous-operation-submission" title="Permalink to this headline">¶</a></h2>
 <p>As the name implies, this refers to the asynchronous submission of operations. This means that operations can be submitted to the GPU, and the C++ / host CPU can continue performing tasks, until when the user desires to run <cite>await</cite> to wait until the operation finishes.</p>
@@ -317,12 +318,199 @@
 <p>It is important that submitting tasks asynchronously, does not mean that these will be executed in parallel. Parallel execution of operations will be covered in the following section.</p>
 <p>Asynchronous operation submission can be achieved through the kp::Manager, or directly through the kp::Sequence. Below is an example using the Kompute manager.</p>
 
-<h3 id="async-await-example">Async/Await Example<a class="headerlink" href="#async-await-example" title="Permalink to this headline">¶</a></h3>
+<h3 id="conceptual-overview">Conceptual Overview<a class="headerlink" href="#conceptual-overview" title="Permalink to this headline">¶</a></h3>
 <p>Asynchronous job submission is done using <cite>evalOpAsync</cite> and <cite>evalOpAwait</cite> functions.</p>
 <p>For simplicity the <cite>evalOpAsyncDefault</cite> and <cite>evalOpAwaitDefault</cite> functions are provided, which can be used similar to the synchronous counterparts (which basically use the default named sequence).</p>
-<p>A simple example of asynchronous submission can be found below.</p>
 <p>One important thing to bare in mind when using asynchronous submissions, is that you should make sure that any overlapping asynchronous functions are run in separate sequences.</p>
 <p>The reason why this is important is that the Await function not only waits for the fence, but also runs the <cite>postEval</cite> functions across all operations, which is required for several operations.</p>
+
+
+<h3 id="async-await-example">Async/Await Example<a class="headerlink" href="#async-await-example" title="Permalink to this headline">¶</a></h3>
+<p>A simple example of asynchronous submission can be found below.</p>
+<p>First we are able to create the manager as we normally would.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
+<span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
+
+<span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
+<span class="k">auto</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
+</pre></div>
+</td></tr></table></div>
+<p>We can now run our first asynchronous command, which in this case we can use the default sequence.</p>
+<p>Sequences can be executed in synchronously or asynchronously without having to change anything.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Create tensors data explicitly in GPU with an operation</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+</pre></div>
+</td></tr></table></div>
+<p>While this is running we can actually do other things like in this case create the shader we’ll be using.</p>
+<p>In this case we create a shader that shoudl take a couple of milliseconds to run.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
+<span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+<span class="s">    #version 450</span>
+
+<span class="s">    layout (local_size_x = 1) in;</span>
+
+<span class="s">    layout(set = 0, binding = 0) buffer b { float pb[]; };</span>
+
+<span class="s">    shared uint sharedTotal[1];</span>
+
+<span class="s">    void main() {</span>
+<span class="s">        uint index = gl_GlobalInvocationID.x;</span>
+
+<span class="s">        sharedTotal[0] = 0;</span>
+
+<span class="s">        // Iterating to simulate longer process</span>
+<span class="s">        for (int i = 0; i &lt; 100000000; i++)</span>
+<span class="s">        {</span>
+<span class="s">            atomicAdd(sharedTotal[0], 1);</span>
+<span class="s">        }</span>
+
+<span class="s">        pb[index] = sharedTotal[0];</span>
+<span class="s">    }</span>
+<span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>Now we are able to run the await function on the default sequence.</p>
+<p>If we are using the manager, we need to make sure that we are awaiting the same named sequence that was triggered asynchronously.</p>
+<p>If the sequence is not running or has finished running, it would return immediately.</p>
+<p>The parameter provided is the maximum amount of time to wait in nanoseconds. When the timeout expires, the sequence would return (with false value), but it does not stop the processing in the GPU - the processing would continue as normal.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// We can now await for the previous submitted command</span>
+<span class="c1">// The first parameter can be the amount of time to wait</span>
+<span class="c1">// The time provided is in nanoseconds</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>Similar to above we can run other commands such as the <cite>OpAlgoBase</cite> asynchronously.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Run Async Kompute operation on the parameters provided</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="p">{</span> <span class="n">tensor</span> <span class="p">},</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+
+<span class="c1">// Here we can do other work</span>
+
+<span class="c1">// When we're ready we can wait</span>
+<span class="c1">// The default wait time is UINT64_MAX</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Finally, below you can see that we can also run syncrhonous commands without having to change anything.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Sync the GPU memory back to the local tensor</span>
+<span class="c1">// We can still run synchronous jobs in our created sequence</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+
+<span class="c1">// Prints the output: B: { 100000000, ... }</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"B: {}"</span><span class="p">,</span>
+    <span class="n">tensor</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div>
+</td></tr></table></div>
+
+
+
+<h2 id="parallel-operation-submission">Parallel Operation Submission<a class="headerlink" href="#parallel-operation-submission" title="Permalink to this headline">¶</a></h2>
+<p>In order to work with parallel execution of tasks, it is important that you understand some of the core GPU processing limitations, as these can be quite broad and hardware dependent, which means they will vary across NVIDIA / AMD / ETC video cards.</p>
+
+<h3 id="id1">Conceptual Overview<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>If you are familiar with Vulkan, you will have experience that the first few things you do is fetching the physical Queues from the device. The queues themselves tend to have three main particular features - they can be GRAPHICS, TRANSFER and COMPUTE (between a few others we’ll skip for simplicity).</p>
+<p>Queues can have multiple properties - namely a queue can be of type GRAPHICS+TRANSFER+COMPUTE, etc. Now here comes the key point: the underlying hardware may (or may not) support parallelized processing at multiple levels.</p>
+<p>Let’s take a tangible example. The [NVIDIA 1650](<a class="reference external" href="http://vulkan.gpuinfo.org/displayreport.php?id=9700#queuefamilies">http://vulkan.gpuinfo.org/displayreport.php?id=9700#queuefamilies</a>) for example has 16 <cite>GRAPHICS+TRANSFER+COMPUTE</cite> queues on <cite>familyIndex 0</cite>, then 2 <cite>TRANSFER</cite> queues in <cite>familyIndex 1</cite> and finally 8 <cite>COMPUTE+TRANSFER</cite> queues in <cite>familyIndex 2</cite>.</p>
+<p>With this in mind, the NVIDIA 1650 as of today does not support intra-family parallelization, which means that if you were to submit commands in multiple queues of the same family, these would still be exectured synchronously.</p>
+<p>However the NVIDIA 1650 does support inter-family parallelization, which menas that if we were to submit commands across multiple queues from different families, these would execute in parallel.</p>
+<p>This means that we would be able to execute parallel workloads as long as we’re running them across multiple queue families. This is one of the reasons why Vulkan Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.</p>
+<p>It is important that you understand what are the capabilities and limitations of your hardware, as parallelization capabilities can vary, so you will want to make sure you account for potential discrepancies in processing structures, mainyl to avoid undesired/unexpected race conditions.</p>
+
+
+<h3 id="parallel-execution-example">Parallel Execution Example<a class="headerlink" href="#parallel-execution-example" title="Permalink to this headline">¶</a></h3>
+<p>In this example we will demonstrate how you can set up parallel processing across two compute families to achieve 2x speedups when running processing workloads.</p>
+<p>To start, you will see that we do have to create the manager with extra parameters. This includes the GPU device index we want to use, together with the array of the queues that we want to enable.</p>
+<p>In this case we are using only two queues, which as per the section above, these would be familyIndex 0 which is of type <cite>GRAPHICS+COMPUTE+TRANSFER</cite> and familyIndex 2 which is of type <cite>COMPUTE+TRANSFER</cite>.</p>
+<p>In this case based on the specifications of the NVIDIA 1650 we could define up to 16 graphics queues (familyIndex 0), 2 transfer queues (familyIndex 1), and 8 compute queues (familyIndex 2) in no particular order. This means that we could have something like <cite>{ 0, 1, 1, 2, 2, 2, 0, … }</cite> as our initialization value.</p>
+<p>You will want to keep track of the indices you initialize your manager, as you will be referring back to this ordering when creating sequences with particular queues.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// In this case we select device 0, and for queues, one queue from familyIndex 0</span>
+<span class="c1">// and one queue from familyIndex 2</span>
+<span class="kt">uint32_t</span> <span class="nf">deviceIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">familyIndeces</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
+
+<span class="c1">// We create a manager with device index, and queues by queue family index</span>
+<span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">,</span> <span class="n">familyIndeces</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>We are now able to create sequences with a particular queue.</p>
+<p>By default the Kompute Manager is created with device 0, and with a single queue of the first compatible familyIndex. Similarly, by default sequences are created with the first available queue.</p>
+<p>In this case we are able to specify which queue we want to use. Below we initialize “queueOne” named sequence with the graphics family queue, and “queueTwo” with the compute family queue.</p>
+<p>It’s worth mentioning you can have multiple sequences referencing the same queue.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// We need to create explicit sequences with their respective queues</span>
+<span class="c1">// The second parameter is the index in the familyIndex array which is relative</span>
+<span class="c1">//      to the vector we created the manager with.</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">createManagedSequence</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">createManagedSequence</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>We create the tensors without modifications.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
+<span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
+<span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
+</pre></div>
+</td></tr></table></div>
+<p>Similar to the asyncrhonous usecase above, we can still run synchronous commands without modifications.</p>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -350,44 +538,8 @@
 25
 26
 27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
-<span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
-
-<span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
-<span class="k">auto</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
-
-<span class="c1">// Create tensors data explicitly in GPU with an operation</span>
-<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+28</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// We run the first step synchronously on the default sequence</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
 
 <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
 <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
@@ -414,38 +566,60 @@
 <span class="s">        pb[index] = sharedTotal[0];</span>
 <span class="s">    }</span>
 <span class="dl">)</span><span class="s">"</span><span class="p">);</span>
-
-<span class="c1">// We can now await for the previous submitted command</span>
-<span class="c1">// The first parameter can be the amount of time to wait</span>
-<span class="c1">// The time provided is in nanoseconds</span>
-<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
-
-<span class="c1">// Run Async Kompute operation on the parameters provided</span>
-<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
-    <span class="p">{</span> <span class="n">tensor</span> <span class="p">},</span>
+</pre></div>
+</td></tr></table></div>
+<p>Now we can actually trigger the parallel processing, running two OpAlgoBase Operations - each in a different sequence / queue.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Run the first parallel operation in the `queueOne` sequence</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="p">{</span> <span class="n">tensorA</span> <span class="p">},</span>
+    <span class="s">"queueOne"</span><span class="p">,</span>
     <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
-<span class="c1">// Here we can do other work</span>
+<span class="c1">// Run the second parallel operation in the `queueTwo` sequence</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="p">{</span> <span class="n">tensorB</span> <span class="p">},</span>
+    <span class="s">"queueTwo"</span><span class="p">,</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+</pre></div>
+</td></tr></table></div>
+<p>Similar to the asynchronous example above, we are able to do other work whilst the tasks are executing.</p>
+<p>We are able to wait for the tasks to complete by triggering the <cite>evalOpAwait</cite> on the respective sequence.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Here we can do other work</span>
 
-<span class="c1">// When we're ready we can wait</span>
-<span class="c1">// The default wait time is UINT64_MAX</span>
-<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">()</span>
+<span class="c1">// We can now wait for thw two parallel tasks to finish</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">)</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">)</span>
 
 <span class="c1">// Sync the GPU memory back to the local tensor</span>
-<span class="c1">// We can still run synchronous jobs in our created sequence</span>
-<span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+<span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
 
-<span class="c1">// Prints the output: B: { 100000000, ... }</span>
-<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"B: {}"</span><span class="p">,</span>
-    <span class="n">tensor</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="c1">// Prints the output: A: 100000000 B: 100000000</span>
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
+    <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
 
-
-
-<h2 id="parallel-operation-submission">Parallel Operation Submission<a class="headerlink" href="#parallel-operation-submission" title="Permalink to this headline">¶</a></h2>
-<p>In order to work with parallel execution of tasks, it is important that you understand some of the core GPU processing limitations, as these can be quite broad and hardware dependent, which means they will vary across NVIDIA / AMD / ETC video cards.</p>
-<p>GPUs by default will optimize towards GPU</p>
 
 
 
@@ -459,7 +633,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="advanced-examples.html" title="Advanced Examples"
+            <a href="advanced-examples.html" title="Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -468,7 +642,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Advanced Examples </span>
+                      class="md-footer-nav__direction"> Previous </span> Examples </span>
               </div>
             </a>
           

@@ -312,12 +312,11 @@
 <ul class="simple">
 <li><p><a class="reference external" href="single_include/kompute/Kompute.hpp">Single header</a> library for simple import to your project</p></li>
 <li><p><a class="reference external" href="https://kompute.cc">Documentation</a> leveraging doxygen and sphinx</p></li>
-<li><p>BYOV: Bring-your-own-Vulkan design to play nice with existing Vulkan applications</p></li>
-<li><p>Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components</p></li>
-<li><p>Asynchronous processing capabilities with granular mult-queue workload processing</p></li>
-<li><p>Fast development cycles with shader tooling, but robust static shader binary bundles for prod</p></li>
-<li><p>Explicit relationships for GPU and host memory ownership and memory management</p></li>
-<li><p>End-to-end examples for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a>, <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
+<li><p><a class="reference external" href="#asynchronous-and-parallel-operations">Asynchronous &amp; parallel processing</a> capabilities with multi-queue command submission</p></li>
+<li><p><a class="reference external" href="#architectural-overview">Non-Vulkan naming conventions</a> to disambiguate Vulkan vs Kompute components</p></li>
+<li><p>BYOV: <a class="reference external" href="#motivations">Bring-your-own-Vulkan design</a> to play nice with existing Vulkan applications</p></li>
+<li><p>Explicit relationships for GPU and host <a class="reference external" href="https://kompute.cc/overview/memory-management.html">memory ownership and memory management</a></p></li>
+<li><p>Complete <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html">examples of features</a> and end-to-end examples for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a>, <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
@@ -329,7 +328,7 @@
 <p>This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms - see <a class="reference external" href="#build-overview">build-system section</a> for more details.</p>
 
 <h4 id="your-first-kompute">Your First Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h4>
-<p>Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file). View <a class="reference external" href="#simple-examples">more examples</a>.</p>
+<p>Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file). View <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-examples">more examples</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
@@ -377,21 +376,16 @@
 
 
 
-<h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
-<p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, between others, have either integrated or are looking to integrate the Vulkan GPU SDK to add mobile GPU (and cross-vendor GPU) support.</p>
-<p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan, although it’s not always the case, this can result in slower development cycles, and opportunities for bugs to be introduced.</p>
-<p>We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it’s incredibly well designed) but to augment it with a direct focus on Vulkan’s GPU computing capabilities. <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">This article</a> provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.</p>
-
-
 <h2 id="id2">More examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 
 <h3 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><a class="reference external" href="#your-first-kompute">Pass shader as raw string</a></p></li>
-<li><p><a class="reference external" href="#record-batch-commands">Record batch commands with a Kompute Sequence</a></p></li>
-<li><p><a class="reference external" href="#asynchronous-operations">Run Asynchronous Operations</a></p></li>
-<li><p><a class="reference external" href="#parallel-operations">Run Parallel Operations Across Multiple GPU Queues</a></p></li>
-<li><p><a class="reference external" href="#your-custom-kompute-operation">Create your custom Kompute Operations</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#your-first-kompute">Pass shader as raw string</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#record-batch-commands">Record batch commands with a Kompute Sequence</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#asynchronous-operations">Run Asynchronous Operations</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">Run Parallel Operations Across Multiple GPU Queues</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#your-custom-kompute-operation">Create your custom Kompute Operations</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html">Implementing logistic regression from scratch</a></p></li>
 </ul>
 
 
@@ -402,250 +396,9 @@
 <li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
 </ul>
 
-<h4 id="record-batch-commands">Record batch commands<a class="headerlink" href="#record-batch-commands" title="Permalink to this headline">¶</a></h4>
-<p>Record commands in a single submit by using a Sequence to send in batch to GPU. Back to <a class="reference external" href="#simple-examples">more examples</a></p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
-
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorLHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span> <span class="p">})</span> <span class="p">};</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorRHS</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">})</span> <span class="p">};</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensorOutput</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">})</span> <span class="p">};</span>
-
-    <span class="c1">// Create all the tensors in memory</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">});</span>
-
-    <span class="c1">// Create a new sequence</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sqWeakPtr</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">getOrCreateManagedSequence</span><span class="p">();</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">sqWeakPtr</span><span class="p">.</span><span class="n">lock</span><span class="p">())</span>
-    <span class="p">{</span>
-        <span class="c1">// Begin recording commands</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
-
-        <span class="c1">// Record batch commands to send to GPU</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCopy</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorOutput</span><span class="p">,</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">});</span>
-
-        <span class="c1">// Stop recording</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
-
-        <span class="c1">// Submit multiple batch operations to GPU</span>
-        <span class="kt">size_t</span> <span class="n">ITERATIONS</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ITERATIONS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
-        <span class="p">}</span>
-
-        <span class="c1">// Sync GPU memory back to local tensor</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorOutput</span><span class="p">});</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="c1">// Print the output which iterates through OpMult 5 times</span>
-    <span class="c1">// in this case the output is {32, 32 , 32}</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 
 
-<h4 id="asynchronous-operations">Asynchronous Operations<a class="headerlink" href="#asynchronous-operations" title="Permalink to this headline">¶</a></h4>
-<p>You can submit operations asynchronously with the async/await commands in the kp::Manager and kp::Sequence, which provides granularity on waiting on the vk::Fence. Back to <a class="reference external" href="#simple-examples">more examples</a></p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
-
-    <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
-    <span class="k">auto</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
-
-    <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
-
-    <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
-    <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
-<span class="s">        #version 450</span>
-
-<span class="s">        layout (local_size_x = 1) in;</span>
-
-<span class="s">        layout(set = 0, binding = 0) buffer b { float pb[]; };</span>
-
-<span class="s">        shared uint sharedTotal[1];</span>
-
-<span class="s">        void main() {</span>
-<span class="s">            uint index = gl_GlobalInvocationID.x;</span>
-
-<span class="s">            sharedTotal[0] = 0;</span>
-
-<span class="s">            // Iterating to simulate longer process</span>
-<span class="s">            for (int i = 0; i &lt; 100000000; i++)</span>
-<span class="s">            {</span>
-<span class="s">                atomicAdd(sharedTotal[0], 1);</span>
-<span class="s">            }</span>
-
-<span class="s">            pb[index] = sharedTotal[0];</span>
-<span class="s">        }</span>
-<span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
-
-    <span class="c1">// We can now await for the previous submitted command</span>
-    <span class="c1">// The first parameter can be the amount of time to wait</span>
-    <span class="c1">// The time provided is in nanoseconds</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
-
-    <span class="c1">// Run Async Kompute operation on the parameters provided</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensor</span> <span class="p">},</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
-
-    <span class="c1">// Here we can do other work</span>
-
-    <span class="c1">// When we're ready we can wait</span>
-    <span class="c1">// The default wait time is UINT64_MAX</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">()</span>
-
-    <span class="c1">// Sync the GPU memory back to the local tensor</span>
-    <span class="c1">// We can still run synchronous jobs in our created sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
-
-    <span class="c1">// Prints the output: B: { 100000000, ... }</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"B: {}"</span><span class="p">,</span>
-        <span class="n">tensor</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-
-
-<h4 id="parallel-operations">Parallel Operations<a class="headerlink" href="#parallel-operations" title="Permalink to this headline">¶</a></h4>
-<p>Besides being able to submit asynchronous operations, you can also leverage the underlying GPU compute queues to process operations in parallel.</p>
-<p>This will depend on your underlying graphics card, but for example in NVIDIA graphics cards the operations submitted across queues in one family are not parallelizable, but operations submitted across queueFamilies can be parallelizable.</p>
-<p>Below we show how you can parallelize operations in an <a class="reference external" href="http://vulkan.gpuinfo.org/displayreport.php?id=9700#queuefamilies">NVIDIA 1650</a>, which has a <code class="docutils literal notranslate"><span class="pre">GRAPHICS+COMPUTE</span></code> family on <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">0</span></code>, and <code class="docutils literal notranslate"><span class="pre">COMPUTE</span></code> family on <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">2</span></code>.</p>
-<p>Back to <a class="reference external" href="#simple-examples">more examples</a></p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="c1">// In this case we select device 0, and for queues, one queue from familyIndex 0</span>
-    <span class="c1">// and one queue from familyIndex 2</span>
-    <span class="kt">uint32_t</span> <span class="n">deviceIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">familyIndeces</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
-
-    <span class="c1">// We create a manager with device index, and queues by queue family index</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">,</span> <span class="n">familyIndeces</span><span class="p">);</span>
-
-    <span class="c1">// We need to create explicit sequences with their respective queues</span>
-    <span class="c1">// The second parameter is the index in the familyIndex array which is relative</span>
-    <span class="c1">//      to the vector we created the manager with.</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">createManagedSequence</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">createManagedSequence</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-
-    <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
-    <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
-    <span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
-
-    <span class="c1">// We run the first step synchronously on the default sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
-
-    <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
-    <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
-<span class="s">        #version 450</span>
-
-<span class="s">        layout (local_size_x = 1) in;</span>
-
-<span class="s">        layout(set = 0, binding = 0) buffer b { float pb[]; };</span>
-
-<span class="s">        shared uint sharedTotal[1];</span>
-
-<span class="s">        void main() {</span>
-<span class="s">            uint index = gl_GlobalInvocationID.x;</span>
-
-<span class="s">            sharedTotal[0] = 0;</span>
-
-<span class="s">            // Iterating to simulate longer process</span>
-<span class="s">            for (int i = 0; i &lt; 100000000; i++)</span>
-<span class="s">            {</span>
-<span class="s">                atomicAdd(sharedTotal[0], 1);</span>
-<span class="s">            }</span>
-
-<span class="s">            pb[index] = sharedTotal[0];</span>
-<span class="s">        }</span>
-<span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
-
-    <span class="c1">// Run the first parallel operation in the `queueOne` sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorA</span> <span class="p">},</span>
-        <span class="s">"queueOne"</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
-
-    <span class="c1">// Run the second parallel operation in the `queueTwo` sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorB</span> <span class="p">},</span>
-        <span class="s">"queueTwo"</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
-
-    <span class="c1">// Here we can do other work</span>
-
-    <span class="c1">// We can now wait for thw two parallel tasks to finish</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">)</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">)</span>
-
-    <span class="c1">// Sync the GPU memory back to the local tensor</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOp</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
-
-    <span class="c1">// Prints the output: A: 100000000 B: 100000000</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
-        <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-
-
-
-<h3 id="your-custom-kompute-operation">Your Custom Kompute Operation<a class="headerlink" href="#your-custom-kompute-operation" title="Permalink to this headline">¶</a></h3>
-<p>Build your own pre-compiled operations for domain specific workflows. Back to <a class="reference external" href="#simple-examples">more examples</a></p>
-<p>We also provide tools that allow you to <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40">convert shaders into C++ headers</a>.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="kt">uint32_t</span> <span class="n">tX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tZ</span> <span class="o">=</span> <span class="mi">0</span><span class="o">&gt;</span>
-<span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span>
-<span class="p">{</span>
-  <span class="k">public</span><span class="o">:</span>
-    <span class="n">OpMyCustom</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">PhysicalDevice</span><span class="o">&gt;</span> <span class="n">physicalDevice</span><span class="p">,</span>
-           <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">Device</span><span class="o">&gt;</span> <span class="n">device</span><span class="p">,</span>
-           <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">CommandBuffer</span><span class="o">&gt;</span> <span class="n">commandBuffer</span><span class="p">,</span>
-           <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// Perform your custom steps such as reading from a shader file</span>
-        <span class="k">this</span><span class="o">-&gt;</span><span class="n">mShaderFilePath</span> <span class="o">=</span> <span class="s">"shaders/glsl/opmult.comp"</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-
-<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
-
-    <span class="c1">// Create 3 tensors of default type float</span>
-    <span class="k">auto</span> <span class="n">tensorLhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
-
-    <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
-
-    <span class="c1">// Run Kompute operation on the parameters provided with dispatch layout</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMyCustom</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
-
-    <span class="c1">// Prints the output which is { 0, 4, 12 }</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-
-
-
-<h2 id="components-architecture">Components &amp; Architecture<a class="headerlink" href="#components-architecture" title="Permalink to this headline">¶</a></h2>
+<h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
 <p>The core architecture of Kompute include the following:</p>
 <ul class="simple">
 <li><p>Kompute Manager - Base orchestrator which creates and manages device and child components</p></li>
@@ -678,6 +431,19 @@ Simplified Kompute Components
 </td>
 </tr>
 </table>
+
+<h2 id="asynchronous-and-parallel-operations">Asynchronous and Parallel Operations<a class="headerlink" href="#asynchronous-and-parallel-operations" title="Permalink to this headline">¶</a></h2>
+<p>Kompute provides flexibility to run operations in an asynrchonous way through Vulkan Fences. Furthermore, Kompute enables for explicit allocation of queues, which allow for parallel execution of operations across queue families.</p>
+<p>The image below provides an intuition how Kompute Sequences can be allocated to different queues for to enable parallel execution based on hardware. This allows for workloads to be run in parallel across the graphics and compute queue families.</p>
+<p>You can see the <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">hands on example</a>, as well as the <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">detailed documentation page</a> describing how it would work using an NVIDIA 1650 as example.</p>
+<a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"/></a>
+
+
+<h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
+<p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, between others, have either integrated or are looking to integrate the Vulkan GPU SDK to add mobile GPU (and cross-vendor GPU) support.</p>
+<p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan, although it’s not always the case, this can result in slower development cycles, and opportunities for bugs to be introduced.</p>
+<p>We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it’s incredibly well designed) but to augment it with a direct focus on Vulkan’s GPU computing capabilities. <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">This article</a> provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.</p>
+
 
 <h2 id="build-overview">Build Overview<a class="headerlink" href="#build-overview" title="Permalink to this headline">¶</a></h2>
 <p>The build system provided is <code class="docutils literal notranslate"><span class="pre">cmake</span></code> which allows for cross platform builds. Below is a brief overview of the build system.</p>
@@ -755,7 +521,7 @@ Simplified Kompute Components
 <td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_LOG_VERRIDE=1</p></td>
-<td><p>Does not define the <a href="#id7"><span class="problematic" id="id8">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overriden</p></td>
+<td><p>Does not define the <a href="#id3"><span class="problematic" id="id4">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overriden</p></td>
 </tr>
 <tr class="row-even"><td><p>-DSPDLOG_ACTIVE_LEVEL</p></td>
 <td><p>The level for the log level on compile level (whether spdlog is enabled)</p></td>
