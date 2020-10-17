@@ -18,7 +18,9 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #ifndef KOMPUTE_VK_API_MINOR_VERSION
 #define KOMPUTE_VK_API_MINOR_VERSION 1
 #endif // KOMPUTE_VK_API_MINOR_VERSION
-#define KOMPUTE_VK_API_VERSION VK_MAKE_VERSION(KOMPUTE_VK_API_MAJOR_VERSION, KOMPUTE_VK_API_MINOR_VERSION, 0)
+#define KOMPUTE_VK_API_VERSION                                                 \
+    VK_MAKE_VERSION(                                                           \
+      KOMPUTE_VK_API_MAJOR_VERSION, KOMPUTE_VK_API_MINOR_VERSION, 0)
 #endif // KOMPUTE_VK_API_VERSION
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
@@ -39,7 +41,8 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #define SPDLOG_DEBUG(message, ...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_DEBUG(message, ...) ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, message))
+#define SPDLOG_DEBUG(message, ...)                                             \
+    ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, message))
 #else
 #define SPDLOG_DEBUG(message, ...)                                             \
     std::cout << "DEBUG: " << message << std::endl
@@ -49,7 +52,8 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #define SPDLOG_INFO(message, ...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_INFO(message, ...) ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+#define SPDLOG_INFO(message, ...)                                              \
+    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
 #else
 #define SPDLOG_INFO(message, ...) std::cout << "INFO: " << message << std::endl
 #endif // VK_USE_PLATFORM_ANDROID_KHR
@@ -58,7 +62,8 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #define SPDLOG_WARN(message, ...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_WARN(message, ...) ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+#define SPDLOG_WARN(message, ...)                                              \
+    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
 #else
 #define SPDLOG_WARN(message, ...)                                              \
     std::cout << "WARNING: " << message << std::endl
@@ -68,7 +73,8 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #define SPDLOG_ERROR(message, ...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_ERROR(message, ...) ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+#define SPDLOG_ERROR(message, ...)                                             \
+    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
 #else
 #define SPDLOG_ERROR(message, ...)                                             \
     std::cout << "ERROR: " << message << std::endl
@@ -1055,14 +1061,17 @@ class Sequence
     bool eval();
 
     /**
-     * Eval Async sends all the recorded and stored operations in the vector of operations into the gpu as a submit job with a barrier. EvalAwait() must be called after to ensure the sequence is terminated correctly.
+     * Eval Async sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier. EvalAwait() must
+     * be called after to ensure the sequence is terminated correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
     bool evalAsync();
 
     /**
-     * Eval Await waits for the fence to finish processing and then once it finishes, it runs the postEval of all operations.
+     * Eval Await waits for the fence to finish processing and then once it
+     * finishes, it runs the postEval of all operations.
      *
      * @param waitFor Number of milliseconds to wait before timing out.
      * @return Boolean stating whether execution was successful.
@@ -1077,7 +1086,8 @@ class Sequence
     bool isRecording();
 
     /**
-     * Returns true if the sequence is currently running - mostly used for async workloads.
+     * Returns true if the sequence is currently running - mostly used for async
+     * workloads.
      *
      * @return Boolean stating if currently running.
      */
@@ -1245,7 +1255,7 @@ namespace kp {
 */
 class Manager
 {
-public:
+  public:
     /**
         Base constructor and default used which creates the base resources
        including choosing the device 0 by default.
@@ -1253,14 +1263,16 @@ public:
     Manager();
 
     /**
-      * Similar to base constructor but allows the user to provide the device
-      * they would like to create the resources on.
-      *
-      * @param physicalDeviceIndex The index of the physical device to use
-      * @param familyQueueIndeces (Optional) List of queue indeces to add for explicit allocation
-      * @param totalQueues The total number of compute queues to create.
-    */
-    Manager(uint32_t physicalDeviceIndex, const std::vector<uint32_t> & familyQueueIndeces = {});
+     * Similar to base constructor but allows the user to provide the device
+     * they would like to create the resources on.
+     *
+     * @param physicalDeviceIndex The index of the physical device to use
+     * @param familyQueueIndeces (Optional) List of queue indeces to add for
+     * explicit allocation
+     * @param totalQueues The total number of compute queues to create.
+     */
+    Manager(uint32_t physicalDeviceIndex,
+            const std::vector<uint32_t>& familyQueueIndeces = {});
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
@@ -1295,14 +1307,15 @@ public:
       std::string sequenceName);
 
     /**
-     * Create a new managed Kompute sequence so it's available within the manager.
+     * Create a new managed Kompute sequence so it's available within the
+     * manager.
      *
      * @param sequenceName The name for the named sequence to be created
      * @param queueIndex The queue to use from the available queues
      * @return Weak pointer to the manager owned sequence resource
      */
-    std::weak_ptr<Sequence> createManagedSequence(
-      std::string sequenceName, uint32_t queueIndex = 0);
+    std::weak_ptr<Sequence> createManagedSequence(std::string sequenceName,
+                                                  uint32_t queueIndex = 0);
 
     /**
      * Operation that adds extra operations to existing or new created
@@ -1349,15 +1362,15 @@ public:
      */
     template<typename T, typename... TArgs>
     void evalOpAsync(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sequenceName,
-                TArgs&&... params)
+                     std::string sequenceName,
+                     TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
         std::weak_ptr<Sequence> sqWeakPtr =
           this->getOrCreateManagedSequence(sequenceName);
 
-        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
-          this->mManagedSequences.find(sequenceName);
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
+          found = this->mManagedSequences.find(sequenceName);
 
         if (found != this->mManagedSequences.end()) {
             std::shared_ptr<Sequence> sq = found->second;
@@ -1373,9 +1386,9 @@ public:
 
             SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
             sq->evalAsync();
-        }
-        else {
-            SPDLOG_ERROR("Kompute Manager evalOpAsync sequence [{}] not found", sequenceName);
+        } else {
+            SPDLOG_ERROR("Kompute Manager evalOpAsync sequence [{}] not found",
+                         sequenceName);
         }
         SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
     }
@@ -1391,21 +1404,22 @@ public:
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered");
-        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
-        this->mManagedSequences.find(sequenceName);
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
+          found = this->mManagedSequences.find(sequenceName);
 
         if (found != this->mManagedSequences.end()) {
             if (std::shared_ptr<kp::Sequence> sq = found->second) {
-                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence Sequence EVAL AWAIT");
+                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence "
+                             "Sequence EVAL AWAIT");
                 if (sq->isRunning()) {
                     sq->evalAwait(waitFor);
                 }
             }
-            SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence SUCCESS");
-        }
-        else {
+            SPDLOG_DEBUG(
+              "Kompute Manager evalOpAwait running sequence SUCCESS");
+        } else {
             SPDLOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
- 		}
+        }
     }
 
     /**
@@ -1475,7 +1489,7 @@ public:
 
     // Create functions
     void createInstance();
-    void createDevice(const std::vector<uint32_t> & familyQueueIndeces = {});
+    void createDevice(const std::vector<uint32_t>& familyQueueIndeces = {});
 };
 
 } // End namespace kp
