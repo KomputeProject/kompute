@@ -80,8 +80,7 @@ class Manager
                                                   uint32_t queueIndex = 0);
 
     /**
-     * Operation that adds extra operations to existing or new created
-     * sequences.
+     * Function that evaluates operation against named sequence.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
@@ -114,8 +113,23 @@ class Manager
     }
 
     /**
-     * Operation that adds extra operations to existing or new created
-     * sequences.
+     * Function that evaluates operation against default sequence.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param TArgs Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
+                       TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
+        this->evalOp<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
+    /**
+     * Function that evaluates operation against named sequence asynchronously.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
@@ -156,16 +170,30 @@ class Manager
     }
 
     /**
-     * Operation that adds extra operations to existing or new created
-     * sequences.
+     * Operation that evaluates operation against default sequence asynchronously.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param params Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpAsyncDefault(std::vector<std::shared_ptr<Tensor>> tensors,
+                     TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
+        this->evalOpAsync<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
+    /**
+     * Operation that awaits for named sequence to finish.
      *
      * @param sequenceName The name of the sequence to wait for termination
      * @param waitFor The amount of time to wait before timing out
      */
-    template<typename... TArgs>
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered");
+        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}", sequenceName);
         std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
           found = this->mManagedSequences.find(sequenceName);
 
@@ -185,20 +213,16 @@ class Manager
     }
 
     /**
-     * Operation that adds extra operations to existing or new created
-     * sequences.
+     * Operation that awaits for default sequence to finish.
      *
      * @param tensors The tensors to be used in the operation recorded
-     * @param TArgs Template parameters that will be used to initialise
+     * @param params Template parameters that will be used to initialise
      * Operation to allow for extensible configurations on initialisation
      */
-    template<typename T, typename... TArgs>
-    void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
-                       TArgs&&... params)
+    void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
-        this->evalOp<T>(
-          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+        SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
+        this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
     }
 
     /**
