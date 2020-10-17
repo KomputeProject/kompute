@@ -45,18 +45,44 @@ class Sequence
     /**
      * Begins recording commands for commands to be submitted into the command
      * buffer.
+     *
+     * @return Boolean stating whether execution was successful.
      */
     bool begin();
+
     /**
      * Ends the recording and stops recording commands when the record command
      * is sent.
+     *
+     * @return Boolean stating whether execution was successful.
      */
     bool end();
+
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
+     *
+     * @return Boolean stating whether execution was successful.
      */
     bool eval();
+
+    /**
+     * Eval Async sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier. EvalAwait() must
+     * be called after to ensure the sequence is terminated correctly.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
+    bool evalAsync();
+
+    /**
+     * Eval Await waits for the fence to finish processing and then once it
+     * finishes, it runs the postEval of all operations.
+     *
+     * @param waitFor Number of milliseconds to wait before timing out.
+     * @return Boolean stating whether execution was successful.
+     */
+    bool evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
      * Returns true if the sequence is currently in recording activated.
@@ -64,6 +90,14 @@ class Sequence
      * @return Boolean stating if recording ongoing.
      */
     bool isRecording();
+
+    /**
+     * Returns true if the sequence is currently running - mostly used for async
+     * workloads.
+     *
+     * @return Boolean stating if currently running.
+     */
+    bool isRunning();
 
     /**
      * Returns true if the sequence has been successfully initialised.
@@ -134,12 +168,14 @@ class Sequence
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer = nullptr;
     bool mFreeCommandBuffer = false;
 
-    // Base op objects
+    // -------------- ALWAYS OWNED RESOURCES
+    vk::Fence mFence;
     std::vector<std::unique_ptr<OpBase>> mOperations;
 
     // State
     bool mIsInit = false;
     bool mRecording = false;
+    bool mIsRunning = false;
 
     // Create functions
     void createCommandPool();

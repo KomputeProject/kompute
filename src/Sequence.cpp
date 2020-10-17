@@ -118,38 +118,84 @@ Sequence::end()
 bool
 Sequence::eval()
 {
-    SPDLOG_DEBUG("Kompute sequence compute recording EVAL");
+    SPDLOG_DEBUG("Kompute sequence EVAL BEGIN");
 
-    if (this->isRecording()) {
-        SPDLOG_WARN("Kompute Sequence eval called when still recording");
+    bool evalResult = this->evalAsync();
+    if (!evalResult) {
+        SPDLOG_DEBUG("Kompute sequence EVAL FAILURE");
         return false;
     }
+
+    evalResult = this->evalAwait();
+
+    SPDLOG_DEBUG("Kompute sequence EVAL SUCCESS");
+
+    return evalResult;
+}
+
+bool
+Sequence::evalAsync()
+{
+    if (this->isRecording()) {
+        SPDLOG_WARN("Kompute Sequence evalAsync called when still recording");
+        return false;
+    }
+    if (this->mIsRunning) {
+        SPDLOG_WARN("Kompute Sequence evalAsync called when an eval async was "
+                    "called without successful wait");
+        return false;
+    }
+
+    this->mIsRunning = true;
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
         this->mOperations[i]->preEval();
     }
 
-    const vk::PipelineStageFlags waitStageMask =
-      vk::PipelineStageFlagBits::eTransfer;
     vk::SubmitInfo submitInfo(
-      0, nullptr, &waitStageMask, 1, this->mCommandBuffer.get());
+      0, nullptr, nullptr, 1, this->mCommandBuffer.get());
 
-    vk::Fence fence = this->mDevice->createFence(vk::FenceCreateInfo());
+    this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
 
     SPDLOG_DEBUG(
       "Kompute sequence submitting command buffer into compute queue");
 
-    this->mComputeQueue->submit(1, &submitInfo, fence);
-    this->mDevice->waitForFences(1, &fence, VK_TRUE, UINT64_MAX);
-    this->mDevice->destroy(fence);
+    this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+
+    return true;
+}
+
+bool
+Sequence::evalAwait(uint64_t waitFor)
+{
+    if (!this->mIsRunning) {
+        SPDLOG_WARN("Kompute Sequence evalAwait called without existing eval");
+        return false;
+    }
+
+    vk::Result result =
+      this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
+    this->mDevice->destroy(this->mFence);
+
+    if (result == vk::Result::eTimeout) {
+        SPDLOG_WARN("Kompute Sequence evalAwait timed out");
+        this->mIsRunning = false;
+        return false;
+    }
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
         this->mOperations[i]->postEval();
     }
 
-    SPDLOG_DEBUG("Kompute sequence EVAL success");
+    this->mIsRunning = false;
 
     return true;
+}
+
+bool
+Sequence::isRunning()
+{
+    return this->mIsRunning;
 }
 
 bool

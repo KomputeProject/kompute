@@ -25,19 +25,25 @@ class Manager
     Manager();
 
     /**
-        Similar to base constructor but allows the user to provide the device
-       they would like to create the resources on.
-    */
-    Manager(uint32_t physicalDeviceIndex);
+     * Similar to base constructor but allows the user to provide the device
+     * they would like to create the resources on.
+     *
+     * @param physicalDeviceIndex The index of the physical device to use
+     * @param familyQueueIndeces (Optional) List of queue indeces to add for
+     * explicit allocation
+     * @param totalQueues The total number of compute queues to create.
+     */
+    Manager(uint32_t physicalDeviceIndex,
+            const std::vector<uint32_t>& familyQueueIndeces = {});
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
      * with the vulkan kompute use.
      *
      * @param instance Vulkan compute instance to base this application
-     * @physicalDevice Vulkan physical device to use for application
-     * @device Vulkan logical device to use for all base resources
-     * @physicalDeviceIndex Index for vulkan physical device used
+     * @param physicalDevice Vulkan physical device to use for application
+     * @param device Vulkan logical device to use for all base resources
+     * @param physicalDeviceIndex Index for vulkan physical device used
      */
     Manager(std::shared_ptr<vk::Instance> instance,
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -63,8 +69,18 @@ class Manager
       std::string sequenceName);
 
     /**
-     * Operation that adds extra operations to existing or new created
-     * sequences.
+     * Create a new managed Kompute sequence so it's available within the
+     * manager.
+     *
+     * @param sequenceName The name for the named sequence to be created
+     * @param queueIndex The queue to use from the available queues
+     * @return Weak pointer to the manager owned sequence resource
+     */
+    std::weak_ptr<Sequence> createManagedSequence(std::string sequenceName,
+                                                  uint32_t queueIndex = 0);
+
+    /**
+     * Function that evaluates operation against named sequence.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param sequenceName The name of the sequence to be retrieved or created
@@ -97,8 +113,7 @@ class Manager
     }
 
     /**
-     * Operation that adds extra operations to existing or new created
-     * sequences.
+     * Function that evaluates operation against default sequence.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param TArgs Template parameters that will be used to initialise
@@ -111,6 +126,103 @@ class Manager
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->evalOp<T>(
           tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
+    /**
+     * Function that evaluates operation against named sequence asynchronously.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param sequenceName The name of the sequence to be retrieved or created
+     * @param params Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpAsync(std::vector<std::shared_ptr<Tensor>> tensors,
+                     std::string sequenceName,
+                     TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
+        std::weak_ptr<Sequence> sqWeakPtr =
+          this->getOrCreateManagedSequence(sequenceName);
+
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
+          found = this->mManagedSequences.find(sequenceName);
+
+        if (found != this->mManagedSequences.end()) {
+            std::shared_ptr<Sequence> sq = found->second;
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
+            sq->begin();
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
+            sq->record<T>(tensors, std::forward<TArgs>(params)...);
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
+            sq->end();
+
+            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
+            sq->evalAsync();
+        } else {
+            SPDLOG_ERROR("Kompute Manager evalOpAsync sequence [{}] not found",
+                         sequenceName);
+        }
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
+    }
+
+    /**
+     * Operation that evaluates operation against default sequence asynchronously.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param params Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    template<typename T, typename... TArgs>
+    void evalOpAsyncDefault(std::vector<std::shared_ptr<Tensor>> tensors,
+                     TArgs&&... params)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
+        this->evalOpAsync<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+    }
+
+    /**
+     * Operation that awaits for named sequence to finish.
+     *
+     * @param sequenceName The name of the sequence to wait for termination
+     * @param waitFor The amount of time to wait before timing out
+     */
+    void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}", sequenceName);
+        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
+          found = this->mManagedSequences.find(sequenceName);
+
+        if (found != this->mManagedSequences.end()) {
+            if (std::shared_ptr<kp::Sequence> sq = found->second) {
+                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence "
+                             "Sequence EVAL AWAIT");
+                if (sq->isRunning()) {
+                    sq->evalAwait(waitFor);
+                }
+            }
+            SPDLOG_DEBUG(
+              "Kompute Manager evalOpAwait running sequence SUCCESS");
+        } else {
+            SPDLOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
+        }
+    }
+
+    /**
+     * Operation that awaits for default sequence to finish.
+     *
+     * @param tensors The tensors to be used in the operation recorded
+     * @param params Template parameters that will be used to initialise
+     * Operation to allow for extensible configurations on initialisation
+     */
+    void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
+    {
+        SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
+        this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
     }
 
     /**
@@ -146,12 +258,13 @@ class Manager
     uint32_t mPhysicalDeviceIndex = -1;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
-    uint32_t mComputeQueueFamilyIndex = -1;
-    std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
+
+    std::vector<uint32_t> mComputeQueueFamilyIndeces;
+    std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
@@ -162,7 +275,7 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice();
+    void createDevice(const std::vector<uint32_t>& familyQueueIndeces = {});
 };
 
 } // End namespace kp

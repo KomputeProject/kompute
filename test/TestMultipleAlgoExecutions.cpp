@@ -258,10 +258,10 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
       )");
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
-            { tensorInA, tensorInB, tensorOut },
-            std::vector<char>(shader.begin(), shader.end()));
+      { tensorInA, tensorInB, tensorOut },
+      std::vector<char>(shader.begin(), shader.end()));
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorOut});
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOut });
 
     EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
 }
@@ -295,10 +295,10 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
       )");
 
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
-            { tensorInA, tensorInB, tensorOut },
-            std::vector<char>(shader.begin(), shader.end()));
+      { tensorInA, tensorInB, tensorOut },
+      std::vector<char>(shader.begin(), shader.end()));
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorOut});
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOut });
 
     EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
 }
