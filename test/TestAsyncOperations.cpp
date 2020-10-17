@@ -109,8 +109,6 @@ TEST(TestAsyncOperations, TestManagerAsync)
           std::vector<char>(shader.begin(), shader.end()));
     }
 
-    // TODO: Add function to print device details (or link)
-    // TODO: Seems to fail if await called twice
     for (uint32_t i = 0; i < numParallel; i++) {
         mgrAsync.evalOpAwait("async" + std::to_string(i));
     }
@@ -123,6 +121,9 @@ TEST(TestAsyncOperations, TestManagerAsync)
     for (uint32_t i = 0; i < numParallel; i++) {
         EXPECT_EQ(inputsAsyncB[i]->data(), resultAsync);
     }
+
+    SPDLOG_ERROR("sync {}", durationSync);
+    SPDLOG_ERROR("async {}", durationAsync);
 
     // The speedup should be at least 40% 
     EXPECT_LT(durationAsync, durationSync * 0.6);
