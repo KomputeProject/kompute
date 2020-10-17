@@ -33,7 +33,7 @@
 * [Single header](single_include/kompute/Kompute.hpp) library for simple import to your project
 * [Documentation](https://kompute.cc) leveraging doxygen and sphinx 
 * [Asynchronous & parallel processing](#asynchronous-parallel-operations) capabilities with multi-queue command submission
-* [Non-Vulkan naming conventions](#architectural-components) to disambiguate Vulkan vs Kompute components
+* [Non-Vulkan naming conventions](#architectural-overview) to disambiguate Vulkan vs Kompute components
 * BYOV: [Bring-your-own-Vulkan design](#motivations) to play nice with existing Vulkan applications
 * Explicit relationships for GPU and host [memory ownership and memory management](https://kompute.cc/overview/memory-management.html)
 * End-to-end examples for [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617), [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
@@ -155,7 +155,7 @@ Simplified Kompute Components
 </table>
 
 
-## Asynchronous / Parallel Operations
+## Asynchronous and Parallel Operations
 
 Kompute provides flexibility to run operations in an asynrchonous way through Vulkan Fences. Furthermore, Kompute enables for explicit allocation of queues, which allow for parallel execution of operations across queue families.
 
