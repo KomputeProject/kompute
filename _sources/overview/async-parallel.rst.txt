@@ -11,6 +11,7 @@ In this section we will cover the following points:
 * Asynchronous operation submission
 * Parallel processing of operations
 
+Below is the architecture we'll be covering further in the parallel operations section through command submission across multiple family queues.
 
 .. image:: ../images/queue-allocation.jpg
    :width: 100%
