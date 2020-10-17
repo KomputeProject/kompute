@@ -182,14 +182,11 @@ int main() {
     // You can allow Kompute to create the Vulkan components, or pass your existing ones
     kp::Manager mgr; // Selects device 0 unless explicitly requested
 
-    // For synchronous steps we must already have a sequence created
-    mgr.createManagedSequence("async");
-
     // Creates tensor an initializes GPU memory (below we show more granularity)
     auto tensor = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
 
     // Create tensors data explicitly in GPU with an operation
-    mgr.evalOpAsync<kp::OpTensorCreate>({ tensor }, "async");
+    mgr.evalOpAsyncDefault<kp::OpTensorCreate>({ tensor });
 
     // Define your shader as a string (using string literals for simplicity)
     // (You can also pass the raw compiled bytes, or even path to file)
@@ -218,25 +215,24 @@ int main() {
     )");
 
     // We can now await for the previous submitted command
-    // The second parameter can be the amount of time to wait
+    // The first parameter can be the amount of time to wait
     // The time provided is in nanoseconds
-    mgr.evalOpAwait("async", 10000);
+    mgr.evalOpAwaitDefault(10000);
 
     // Run Async Kompute operation on the parameters provided
-    mgr.evalOpAsync<kp::OpAlgoBase<>>(
+    mgr.evalOpAsyncDefault<kp::OpAlgoBase<>>(
         { tensor }, 
-        "async",
         std::vector<char>(shader.begin(), shader.end()));
 
     // Here we can do other work
 
     // When we're ready we can wait 
     // The default wait time is UINT64_MAX
-    mgr.evalOpAwait("async")
+    mgr.evalOpAwaitDefault()
 
     // Sync the GPU memory back to the local tensor
     // We can still run synchronous jobs in our created sequence
-    mgr.evalOp<kp::OpTensorSyncLocal>({ tensor }, "async");
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensor });
 
     // Prints the output: B: { 100000000, ... }
     std::cout << fmt::format("B: {}", 
