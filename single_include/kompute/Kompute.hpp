@@ -1245,7 +1245,7 @@ namespace kp {
 */
 class Manager
 {
-  public:
+public:
     /**
         Base constructor and default used which creates the base resources
        including choosing the device 0 by default.
@@ -1257,9 +1257,10 @@ class Manager
       * they would like to create the resources on.
       *
       * @param physicalDeviceIndex The index of the physical device to use
+      * @param familyQueueIndeces (Optional) List of queue indeces to add for explicit allocation
       * @param totalQueues The total number of compute queues to create.
     */
-    Manager(uint32_t physicalDeviceIndex, uint32_t totalComputeQueues = 1);
+    Manager(uint32_t physicalDeviceIndex, const std::vector<uint32_t> & familyQueueIndeces = {});
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
@@ -1457,12 +1458,13 @@ class Manager
     uint32_t mPhysicalDeviceIndex = -1;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
-    uint32_t mComputeQueueFamilyIndex = -1;
-    std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
+
+    std::vector<uint32_t> mComputeQueueFamilyIndeces;
+    std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
@@ -1473,7 +1475,7 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice(uint32_t totalComputeQueues);
+    void createDevice(const std::vector<uint32_t> & familyQueueIndeces = {});
 };
 
 } // End namespace kp
