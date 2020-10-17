@@ -23,7 +23,7 @@
 </tr>
 </table>
 
-<h4>Blazing fast, lightweight, mobile-enabled, and optimized for advanced GPU processing usecases.</h4>
+<h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.</h4>
 
 🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
 
@@ -34,6 +34,7 @@
 * [Documentation](https://kompute.cc) leveraging doxygen and sphinx 
 * BYOV: Bring-your-own-Vulkan design to play nice with existing Vulkan applications
 * Non-Vulkan core naming conventions to disambiguate Vulkan vs Kompute components
+* Asynchronous processing capabilities with granular mult-queue workload processing
 * Fast development cycles with shader tooling, but robust static shader binary bundles for prod
 * Explicit relationships for GPU and host memory ownership and memory management
 * End-to-end examples for [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617), [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
@@ -110,59 +111,16 @@ We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface 
 ### Simple examples
 
 * [Pass shader as raw string](#your-first-kompute)
-* [Create your custom Kompute Operations](#your-custom-kompute-operation)
 * [Record batch commands with a Kompute Sequence](#record-batch-commands)
+* [Run Asynchronous Operations](#asynchronous-operations)
+* [Run Parallel Operations Across Multiple GPU Queues](#parallel-operations)
+* [Create your custom Kompute Operations](#your-custom-kompute-operation)
 
 ### End-to-end examples
 
 * [Machine Learning Logistic Regression Implementation](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a)
 * [Android NDK Mobile Kompute ML Application](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617)
 * [Game Development Kompute ML in Godot Engine](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0)
-
-### Your Custom Kompute Operation
-
-Build your own pre-compiled operations for domain specific workflows. Back to [more examples](#simple-examples)
-
-We also provide tools that allow you to [convert shaders into C++ headers](https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40).
-
-```c++
-
-template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-class OpMyCustom : public OpAlgoBase<tX, tY, tZ>
-{
-  public:
-    OpMyCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>> tensors)
-      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
-    {
-        // Perform your custom steps such as reading from a shader file
-        this->mShaderFilePath = "shaders/glsl/opmult.comp";
-    }
-}
-
-
-int main() {
-
-    kp::Manager mgr; // Automatically selects Device 0
-
-    // Create 3 tensors of default type float
-    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
-    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
-    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
-
-    // Create tensors data explicitly in GPU with an operation
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
-
-    // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOpDefault<kp::OpMyCustom<3, 1, 1>>(
-        { tensorLhs, tensorRhs, tensorOut });
-
-    // Prints the output which is { 0, 4, 12 }
-    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
-}
-```
 
 #### Record batch commands
 
@@ -210,6 +168,210 @@ int main() {
 
     // Print the output which iterates through OpMult 5 times
     // in this case the output is {32, 32 , 32}
+    std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
+}
+```
+
+#### Asynchronous Operations
+
+You can submit operations asynchronously with the async/await commands in the kp::Manager and kp::Sequence, which provides granularity on waiting on the vk::Fence. Back to [more examples](#simple-examples)
+
+```c++
+int main() {
+
+    // You can allow Kompute to create the Vulkan components, or pass your existing ones
+    kp::Manager mgr; // Selects device 0 unless explicitly requested
+
+    // For synchronous steps we must already have a sequence created
+    mgr.createManagedSequence("async");
+
+    // Creates tensor an initializes GPU memory (below we show more granularity)
+    auto tensor = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
+
+    // Create tensors data explicitly in GPU with an operation
+    mgr.evalOpAsync<kp::OpTensorCreate>({ tensor }, "async");
+
+    // Define your shader as a string (using string literals for simplicity)
+    // (You can also pass the raw compiled bytes, or even path to file)
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer b { float pb[]; };
+
+        shared uint sharedTotal[1];
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+
+            sharedTotal[0] = 0;
+
+            // Iterating to simulate longer process
+            for (int i = 0; i < 100000000; i++)
+            {
+                atomicAdd(sharedTotal[0], 1);
+            }
+
+            pb[index] = sharedTotal[0];
+        }
+    )");
+
+    // We can now await for the previous submitted command
+    // The second parameter can be the amount of time to wait
+    // The time provided is in nanoseconds
+    mgr.evalOpAwait("async", 10000);
+
+    // Run Async Kompute operation on the parameters provided
+    mgr.evalOpAsync<kp::OpAlgoBase<>>(
+        { tensor }, 
+        "async",
+        std::vector<char>(shader.begin(), shader.end()));
+
+    // Here we can do other work
+
+    // When we're ready we can wait 
+    // The default wait time is UINT64_MAX
+    mgr.evalOpAwait("async")
+
+    // Sync the GPU memory back to the local tensor
+    // We can still run synchronous jobs in our created sequence
+    mgr.evalOp<kp::OpTensorSyncLocal>({ tensor }, "async");
+
+    // Prints the output: B: { 100000000, ... }
+    std::cout << fmt::format("B: {}", 
+        tensor.data()) << std::endl;
+}
+```
+
+#### Parallel Operations
+
+Besides being able to submit asynchronous operations, you can also leverage the underlying GPU compute queues to process operations in parallel.
+
+This will depend on your underlying graphics card, but for example in NVIDIA graphics cards the operations submitted across queues in one family are not parallelizable, but operations submitted across queueFamilies can be parallelizable.
+
+Below we show how you can parallelize operations in an [NVIDIA 1650](http://vulkan.gpuinfo.org/displayreport.php?id=9700#queuefamilies), which has a `GRAPHICS+COMPUTE` family on `index 0`, and `COMPUTE` family on `index 2`.
+
+Back to [more examples](#simple-examples)
+
+```c++
+int main() {
+
+    // In this case we select device 0, and for queues, one queue from familyIndex 0
+    // and one queue from familyIndex 2
+    uint32_t deviceIndex(0);
+    std::vector<uint32_t> familyIndeces = {0, 2};
+
+    // We create a manager with device index, and queues by queue family index
+    kp::Manager mgr(deviceIndex, familyIndeces);
+
+    // We need to create explicit sequences with their respective queues
+    // The second parameter is the index in the familyIndex array which is relative
+    //      to the vector we created the manager with.
+    mgr.createManagedSequence("queueOne", 0);
+    mgr.createManagedSequence("queueTwo", 1);
+
+    // Creates tensor an initializes GPU memory (below we show more granularity)
+    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
+    auto tensorB = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
+
+    // We run the first step synchronously on the default sequence
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+
+    // Define your shader as a string (using string literals for simplicity)
+    // (You can also pass the raw compiled bytes, or even path to file)
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer b { float pb[]; };
+
+        shared uint sharedTotal[1];
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+
+            sharedTotal[0] = 0;
+
+            // Iterating to simulate longer process
+            for (int i = 0; i < 100000000; i++)
+            {
+                atomicAdd(sharedTotal[0], 1);
+            }
+
+            pb[index] = sharedTotal[0];
+        }
+    )");
+
+    // Run the first parallel operation in the `queueOne` sequence
+    mgr.evalOpAsync<kp::OpAlgoBase<>>(
+        { tensorA }, 
+        "queueOne",
+        std::vector<char>(shader.begin(), shader.end()));
+
+    // Run the second parallel operation in the `queueTwo` sequence
+    mgr.evalOpAsync<kp::OpAlgoBase<>>(
+        { tensorB }, 
+        "queueTwo",
+        std::vector<char>(shader.begin(), shader.end()));
+
+    // Here we can do other work
+
+    // We can now wait for thw two parallel tasks to finish
+    mgr.evalOpAwait("queueOne")
+    mgr.evalOpAwait("queueTwo")
+
+    // Sync the GPU memory back to the local tensor
+    mgr.evalOp<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+
+    // Prints the output: A: 100000000 B: 100000000
+    std::cout << fmt::format("A: {}, B: {}", 
+        tensorA.data()[0], tensorB.data()[0]) << std::endl;
+}
+```
+
+### Your Custom Kompute Operation
+
+Build your own pre-compiled operations for domain specific workflows. Back to [more examples](#simple-examples)
+
+We also provide tools that allow you to [convert shaders into C++ headers](https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40).
+
+```c++
+
+template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
+class OpMyCustom : public OpAlgoBase<tX, tY, tZ>
+{
+  public:
+    OpMyCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           std::shared_ptr<vk::CommandBuffer> commandBuffer,
+           std::vector<std::shared_ptr<Tensor>> tensors)
+      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
+    {
+        // Perform your custom steps such as reading from a shader file
+        this->mShaderFilePath = "shaders/glsl/opmult.comp";
+    }
+}
+
+
+int main() {
+
+    kp::Manager mgr; // Automatically selects Device 0
+
+    // Create 3 tensors of default type float
+    auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
+    auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
+    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
+
+    // Create tensors data explicitly in GPU with an operation
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
+
+    // Run Kompute operation on the parameters provided with dispatch layout
+    mgr.evalOpDefault<kp::OpMyCustom<3, 1, 1>>(
+        { tensorLhs, tensorRhs, tensorOut });
+
+    // Prints the output which is { 0, 4, 12 }
     std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
 }
 ```
