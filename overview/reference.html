@@ -56,7 +56,7 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Advanced Examples" href="advanced-examples.html" />
+    <link rel="next" title="Examples" href="advanced-examples.html" />
     <link rel="prev" title="Kompute Docs Home" href="../index.html" />
   
    
@@ -308,6 +308,8 @@
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture.jpg"><img alt="../_images/kompute-vulkan-architecture.jpg" src="../_images/kompute-vulkan-architecture.jpg" style="width: 100%;"/></a>
 
 <h2 id="manager">Manager<a class="headerlink" href="#manager" title="Permalink to this headline">¶</a></h2>
+<p>The Kompute Manager provides a high level interface to simplify interaction with underlying kp::Sequences of kp::Operations.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-manager.jpg"><img alt="../_images/kompute-vulkan-architecture-manager.jpg" src="../_images/kompute-vulkan-architecture-manager.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp7ManagerE">
 <span id="_CPPv3N2kp7ManagerE"></span><span id="_CPPv2N2kp7ManagerE"></span><span id="kp::Manager"></span><span class="target" id="classkp_1_1Manager"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Manager</code><a class="headerlink" href="#_CPPv4N2kp7ManagerE" title="Permalink to this definition">¶</a><br/></dt>
@@ -479,10 +481,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-manager.jpg"><img alt="../_images/kompute-vulkan-architecture-manager.jpg" src="../_images/kompute-vulkan-architecture-manager.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="sequence">Sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
+<p>The Kompute Sequence consists of batches of kp::Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-sequence.jpg"><img alt="../_images/kompute-vulkan-architecture-sequence.jpg" src="../_images/kompute-vulkan-architecture-sequence.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp8SequenceE">
 <span id="_CPPv3N2kp8SequenceE"></span><span id="_CPPv2N2kp8SequenceE"></span><span id="kp::Sequence"></span><span class="target" id="classkp_1_1Sequence"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Sequence</code><a class="headerlink" href="#_CPPv4N2kp8SequenceE" title="Permalink to this definition">¶</a><br/></dt>
@@ -618,10 +621,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-sequence.jpg"><img alt="../_images/kompute-vulkan-architecture-sequence.jpg" src="../_images/kompute-vulkan-architecture-sequence.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="tensor">Tensor<a class="headerlink" href="#tensor" title="Permalink to this headline">¶</a></h2>
+<p>The kp::Tensor is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-tensor.jpg"><img alt="../_images/kompute-vulkan-architecture-tensor.jpg" src="../_images/kompute-vulkan-architecture-tensor.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp6TensorE">
 <span id="_CPPv3N2kp6TensorE"></span><span id="_CPPv2N2kp6TensorE"></span><span id="kp::Tensor"></span><span class="target" id="classkp_1_1Tensor"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#_CPPv4N2kp6TensorE" title="Permalink to this definition">¶</a><br/></dt>
@@ -802,10 +806,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-tensor.jpg"><img alt="../_images/kompute-vulkan-architecture-tensor.jpg" src="../_images/kompute-vulkan-architecture-tensor.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="algorithm">Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The kp::Algorithm consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan resources as outlined in the architectural diagram.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-algorithm.jpg"><img alt="../_images/kompute-vulkan-architecture-algorithm.jpg" src="../_images/kompute-vulkan-architecture-algorithm.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp9AlgorithmE">
 <span id="_CPPv3N2kp9AlgorithmE"></span><span id="_CPPv2N2kp9AlgorithmE"></span><span id="kp::Algorithm"></span><span class="target" id="classkp_1_1Algorithm"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Algorithm</code><a class="headerlink" href="#_CPPv4N2kp9AlgorithmE" title="Permalink to this definition">¶</a><br/></dt>
@@ -863,10 +868,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-algorithm.jpg"><img alt="../_images/kompute-vulkan-architecture-algorithm.jpg" src="../_images/kompute-vulkan-architecture-algorithm.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="opbase">OpBase<a class="headerlink" href="#opbase" title="Permalink to this headline">¶</a></h2>
+<p>The kp::OpBase provides a top level class for an operation in Kompute, which is the step that is executed on a GPU submission. The Kompute operations can consist of one or more kp::Tensor.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-operations.jpg"><img alt="../_images/kompute-vulkan-architecture-operations.jpg" src="../_images/kompute-vulkan-architecture-operations.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp6OpBaseE">
 <span id="_CPPv3N2kp6OpBaseE"></span><span id="_CPPv2N2kp6OpBaseE"></span><span id="kp::OpBase"></span><span class="target" id="classkp_1_1OpBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpBase</code><a class="headerlink" href="#_CPPv4N2kp6OpBaseE" title="Permalink to this definition">¶</a><br/></dt>
@@ -923,10 +929,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-operations.jpg"><img alt="../_images/kompute-vulkan-architecture-operations.jpg" src="../_images/kompute-vulkan-architecture-operations.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="opalgobase">OpAlgoBase<a class="headerlink" href="#opalgobase" title="Permalink to this headline">¶</a></h2>
+<p>The vk::OpAlgoBase extends the vk::OpBase class, and provides the base for shader-based operations. Besides of consisting of one or more vk::Tensor as per the vk::OpBase, it also contains a unique vk::Algorithm.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE">
 <span id="_CPPv3I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE"></span><span id="_CPPv2I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE"></span>template&lt;uint32_t <code class="sig-name descname">tX</code> = 0, uint32_t <code class="sig-name descname">tY</code> = 0, uint32_t <code class="sig-name descname">tZ</code> = 0&gt;<br/><span class="target" id="classkp_1_1OpAlgoBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpAlgoBase</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1016,10 +1023,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="opmult">OpMult<a class="headerlink" href="#opmult" title="Permalink to this headline">¶</a></h2>
+<p>The kp::OpMult operation is a sample implementation of the kp::OpAlgoBase class. This class shows how it is possible to create a custom vk::OpAlgoBase that can compile as part of the binary. The kp::OpMult operation uses the shader-to-cpp-header-file script to convert the script into cpp header files.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE">
 <span id="_CPPv3I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE"></span><span id="_CPPv2I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE"></span>template&lt;uint32_t <code class="sig-name descname">tX</code> = 0, uint32_t <code class="sig-name descname">tY</code> = 0, uint32_t <code class="sig-name descname">tZ</code> = 0&gt;<br/><span class="target" id="classkp_1_1OpMult"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpMult</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp10OpAlgoBaseE" title="kp::OpAlgoBase">OpAlgoBase</a>&lt;0, 0, 0&gt;<a class="headerlink" href="#_CPPv4I_8uint32_t_8uint32_t_8uint32_tEN2kp6OpMultE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1054,10 +1062,11 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
 
 
 <h2 id="optensorcreate">OpTensorCreate<a class="headerlink" href="#optensorcreate" title="Permalink to this headline">¶</a></h2>
+<p>The kp::OpTensorCreate is a tensor only operations which initialises a kp::Tensor by creating the respective vk::Buffer and vk::Memory, as well as transferring the local data into the GPU.</p>
+<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opcreatetensor.jpg"><img alt="../_images/kompute-vulkan-architecture-opcreatetensor.jpg" src="../_images/kompute-vulkan-architecture-opcreatetensor.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp14OpTensorCreateE">
 <span id="_CPPv3N2kp14OpTensorCreateE"></span><span id="_CPPv2N2kp14OpTensorCreateE"></span><span id="kp::OpTensorCreate"></span><span class="target" id="classkp_1_1OpTensorCreate"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorCreate</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp14OpTensorCreateE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1107,10 +1116,10 @@
 </dd></dl>
 </div>
 </dd></dl>
-<a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opcreatetensor.jpg"><img alt="../_images/kompute-vulkan-architecture-opcreatetensor.jpg" src="../_images/kompute-vulkan-architecture-opcreatetensor.jpg" style="width: 100%;"/></a>
 
 
-<h2 id="id1">OpTensorCreate<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2 id="optensorcopy">OpTensorCopy<a class="headerlink" href="#optensorcopy" title="Permalink to this headline">¶</a></h2>
+<p>The kp::OpTensorCopy is a tensor only operation that copies the GPU memory buffer data from one kp::Tensor to one or more subsequent tensors.</p>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp12OpTensorCopyE">
 <span id="_CPPv3N2kp12OpTensorCopyE"></span><span id="_CPPv2N2kp12OpTensorCopyE"></span><span id="kp::OpTensorCopy"></span><span class="target" id="classkp_1_1OpTensorCopy"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorCopy</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopyE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1162,6 +1171,7 @@
 
 
 <h2 id="optensorsynclocal">OpTensorSyncLocal<a class="headerlink" href="#optensorsynclocal" title="Permalink to this headline">¶</a></h2>
+<p>The kp::OpTensorSyncLocal is a tensor only operation that maps the data from the GPU device memory into the local host vector.</p>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp17OpTensorSyncLocalE">
 <span id="_CPPv3N2kp17OpTensorSyncLocalE"></span><span id="_CPPv2N2kp17OpTensorSyncLocalE"></span><span id="kp::OpTensorSyncLocal"></span><span class="target" id="classkp_1_1OpTensorSyncLocal"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncLocal</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocalE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1213,6 +1223,7 @@
 
 
 <h2 id="optensorsyncdevice">OpTensorSyncDevice<a class="headerlink" href="#optensorsyncdevice" title="Permalink to this headline">¶</a></h2>
+<p>The kp::OpTensorSyncDevice is a tensor only operation that maps the data from the local host vector into the GPU device memory.</p>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp18OpTensorSyncDeviceE">
 <span id="_CPPv3N2kp18OpTensorSyncDeviceE"></span><span id="_CPPv2N2kp18OpTensorSyncDeviceE"></span><span id="kp::OpTensorSyncDevice"></span><span class="target" id="classkp_1_1OpTensorSyncDevice"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncDevice</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDeviceE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1288,12 +1299,12 @@
             </a>
           
           
-            <a href="advanced-examples.html" title="Advanced Examples"
+            <a href="advanced-examples.html" title="Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Advanced Examples </span>
+                class="md-footer-nav__direction"> Next </span> Examples </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

@@ -69,7 +69,11 @@ Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path
             std::vector<char>(shader.begin(), shader.end()));
 
         // Sync the GPU memory back to the local tensor
-        mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+        // You can run the job asynchronously with the Async function
+        mgr.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+
+        // Await for the asynchonous default sequence to finish
+        mgr.evalOpAwaitDefault();
 
         // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
         std::cout << fmt::format("A: {}, B: {}", 

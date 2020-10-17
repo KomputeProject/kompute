@@ -316,7 +316,8 @@
 <li><p><a class="reference external" href="#architectural-overview">Non-Vulkan naming conventions</a> to disambiguate Vulkan vs Kompute components</p></li>
 <li><p>BYOV: <a class="reference external" href="#motivations">Bring-your-own-Vulkan design</a> to play nice with existing Vulkan applications</p></li>
 <li><p>Explicit relationships for GPU and host <a class="reference external" href="https://kompute.cc/overview/memory-management.html">memory ownership and memory management</a></p></li>
-<li><p>Complete <a class="reference external" href="#more-examples">examples of features</a> and end-to-end examples for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a>, <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
+<li><p><a class="reference external" href="#more-examples">Short code examples</a> showing the core features</p></li>
+<li><p>Longer tutorials for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a> and <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-2.gif"/></a>
 
@@ -324,8 +325,7 @@
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 
 <h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
-<p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;#setup&gt;`_ that can be simply included in your code and integrated with the shared library.</p>
-<p>This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms - see <a class="reference external" href="#build-overview">build-system section</a> for more details.</p>
+<p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;#setup&gt;`_. See <a class="reference external" href="#build-overview">build-system section</a> for configurations available.</p>
 
 <h4 id="your-first-kompute">Your First Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h4>
 <p>Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file). View <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-examples">more examples</a>.</p>
@@ -364,7 +364,11 @@
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
     <span class="c1">// Sync the GPU memory back to the local tensor</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
+    <span class="c1">// You can run the job asynchronously with the Async function</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
+
+    <span class="c1">// Await for the asynchonous default sequence to finish</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">();</span>
 
     <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
