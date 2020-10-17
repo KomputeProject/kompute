@@ -45,9 +45,7 @@
 
 ### Setup
 
-Kompute is provided as a single header file [`Kompute.hpp`](#setup) that can be simply included in your code and integrated with the shared library.
-
-This project is built using cmake, providing a simple way to integrate as static or shared library across multiple platforms including mobile, game engines and various other platforms - see [build-system section](#build-overview) for more details.
+Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
 
 
 #### Your First Kompute
