@@ -58,11 +58,9 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    std::shared_ptr<kp::Sequence> sqTensor = 
-      mgr.createManagedSequence().lock();
+    std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence().lock();
 
-    std::shared_ptr<kp::Sequence> sq = 
-      mgr.createManagedSequence().lock();
+    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
 
     // First create the tensor in a separate sequence
     sqTensor->begin();

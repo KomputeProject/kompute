@@ -76,7 +76,8 @@ Sequence::begin()
     }
 
     if (this->isRunning()) {
-        SPDLOG_WARN("Kompute Sequence begin called when sequence still running");
+        SPDLOG_WARN(
+          "Kompute Sequence begin called when sequence still running");
         return false;
     }
 
