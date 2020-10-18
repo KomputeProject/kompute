@@ -31,38 +31,38 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
     {
         kp::Manager mgr;
 
-        if (std::shared_ptr<kp::Sequence> sq =
-              mgr.getOrCreateManagedSequence("createTensors").lock()) {
+        std::shared_ptr<kp::Sequence> sqTensor =
+          mgr.createManagedSequence().lock();
 
-            sq->begin();
+        sqTensor->begin();
+        sqTensor->record<kp::OpTensorCreate>(params);
+        sqTensor->end();
+        sqTensor->eval();
 
-            sq->record<kp::OpTensorCreate>(params);
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.createManagedSequence().lock();
 
-            sq->end();
+        // Record op algo base
+        sq->begin();
+
+        sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
+
+        sq->record<kp::OpAlgoBase<>>(
+          params, "test/shaders/glsl/test_logistic_regression.comp");
+
+        sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+
+        sq->end();
+
+        // Iterate across all expected iterations
+        for (size_t i = 0; i < ITERATIONS; i++) {
+
             sq->eval();
 
-            // Record op algo base
-            sq->begin();
-
-            sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
-
-            sq->record<kp::OpAlgoBase<>>(
-              params, "test/shaders/glsl/test_logistic_regression.comp");
-
-            sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
-
-            sq->end();
-
-            // Iterate across all expected iterations
-            for (size_t i = 0; i < ITERATIONS; i++) {
-
-                sq->eval();
-
-                for (size_t j = 0; j < bOut->size(); j++) {
-                    wIn->data()[0] -= learningRate * wOutI->data()[j];
-                    wIn->data()[1] -= learningRate * wOutJ->data()[j];
-                    bIn->data()[0] -= learningRate * bOut->data()[j];
-                }
+            for (size_t j = 0; j < bOut->size(); j++) {
+                wIn->data()[0] -= learningRate * wOutI->data()[j];
+                wIn->data()[1] -= learningRate * wOutJ->data()[j];
+                bIn->data()[0] -= learningRate * bOut->data()[j];
             }
         }
     }
@@ -115,39 +115,39 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     {
         kp::Manager mgr;
 
-        if (std::shared_ptr<kp::Sequence> sq =
-              mgr.getOrCreateManagedSequence("createTensors").lock()) {
+        std::shared_ptr<kp::Sequence> sqTensor =
+          mgr.createManagedSequence().lock();
 
-            sq->begin();
+        sqTensor->begin();
+        sqTensor->record<kp::OpTensorCreate>(params);
+        sqTensor->end();
+        sqTensor->eval();
 
-            sq->record<kp::OpTensorCreate>(params);
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.createManagedSequence().lock();
 
-            sq->end();
+        // Record op algo base
+        sq->begin();
+
+        sq->record<kp::OpAlgoBase<>>(
+          params, "test/shaders/glsl/test_logistic_regression.comp");
+
+        sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+
+        sq->end();
+
+        // Iterate across all expected iterations
+        for (size_t i = 0; i < ITERATIONS; i++) {
+
             sq->eval();
 
-            // Record op algo base
-            sq->begin();
-
-            sq->record<kp::OpAlgoBase<>>(
-              params, "test/shaders/glsl/test_logistic_regression.comp");
-
-            sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
-
-            sq->end();
-
-            // Iterate across all expected iterations
-            for (size_t i = 0; i < ITERATIONS; i++) {
-
-                sq->eval();
-
-                for (size_t j = 0; j < bOut->size(); j++) {
-                    wIn->data()[0] -= learningRate * wOutI->data()[j];
-                    wIn->data()[1] -= learningRate * wOutJ->data()[j];
-                    bIn->data()[0] -= learningRate * bOut->data()[j];
-                }
-                wIn->mapDataIntoHostMemory();
-                bIn->mapDataIntoHostMemory();
+            for (size_t j = 0; j < bOut->size(); j++) {
+                wIn->data()[0] -= learningRate * wOutI->data()[j];
+                wIn->data()[1] -= learningRate * wOutJ->data()[j];
+                bIn->data()[0] -= learningRate * bOut->data()[j];
             }
+            wIn->mapDataIntoHostMemory();
+            bIn->mapDataIntoHostMemory();
         }
     }
 

@@ -142,23 +142,32 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     std::vector<float> data(size, 0.0);
     std::vector<float> resultAsync(size, 100000000);
 
-    kp::Manager mgrAsync(0);
+    kp::Manager mgr;
 
-    std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(data) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(data) };
 
-    inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+    mgr.createManagedSequence("asyncOne");
+    mgr.createManagedSequence("asyncTwo");
 
-    mgrAsync.evalOpAsyncDefault<kp::OpTensorCreate>(inputsAsyncB);
-    mgrAsync.evalOpAwaitDefault();
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    mgrAsync.evalOpAsyncDefault<kp::OpAlgoBase<>>(
-      { inputsAsyncB[0] },
+    mgr.evalOpAsync<kp::OpAlgoBase<>>(
+      { tensorA },
+      "asyncOne",
       std::vector<char>(shader.begin(), shader.end()));
 
-    mgrAsync.evalOpAwaitDefault();
+    mgr.evalOpAsync<kp::OpAlgoBase<>>(
+      { tensorB },
+      "asyncTwo",
+      std::vector<char>(shader.begin(), shader.end()));
 
-    mgrAsync.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ inputsAsyncB });
-    mgrAsync.evalOpAwaitDefault();
+    mgr.evalOpAwait("asyncOne");
+    mgr.evalOpAwait("asyncTwo");
 
-    EXPECT_EQ(inputsAsyncB[0]->data(), resultAsync);
+    mgr.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    mgr.evalOpAwaitDefault();
+
+    EXPECT_EQ(tensorA->data(), resultAsync);
+    EXPECT_EQ(tensorB->data(), resultAsync);
 }
