@@ -57,7 +57,7 @@ In this simple example we will:
 3. Define shader as string or spirv bytes (can also pass path to file)
 4. Run compute shader asynchronously with Async function
 5. Create managed sequence to submit batch operations to the CPU
-6. Map data back to host using the sequence showing batch operations
+6. Map data back to host by running the sequence of batch operations
 
 View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
 
@@ -111,7 +111,7 @@ int main() {
     // Before submitting sequence batch we wait for the previous async operation
     mgr.evalOpAwaitDefault();
 
-    // 6. Map data back to host using the sequence showing batch operations
+    // 6. Map data back to host by running the sequence of batch operations
     sq->eval();
 
     // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
