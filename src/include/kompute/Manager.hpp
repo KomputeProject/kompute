@@ -72,11 +72,11 @@ class Manager
      * Create a new managed Kompute sequence so it's available within the
      * manager.
      *
-     * @param sequenceName The name for the named sequence to be created
+     * @param sequenceName The name for the named sequence to be created, if empty then default indexed value is used
      * @param queueIndex The queue to use from the available queues
      * @return Weak pointer to the manager owned sequence resource
      */
-    std::weak_ptr<Sequence> createManagedSequence(std::string sequenceName,
+    std::weak_ptr<Sequence> createManagedSequence(std::string sequenceName = "",
                                                   uint32_t queueIndex = 0);
 
     /**
@@ -113,7 +113,7 @@ class Manager
     }
 
     /**
-     * Function that evaluates operation against default sequence.
+     * Function that evaluates operation against a newly created sequence.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param TArgs Template parameters that will be used to initialise
@@ -124,8 +124,9 @@ class Manager
                        TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
+        this->mCurrentSequenceIndex++;
         this->evalOp<T>(
-          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+          tensors, KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), std::forward<TArgs>(params)...);
     }
 
     /**
@@ -142,14 +143,11 @@ class Manager
                      TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
+
         std::weak_ptr<Sequence> sqWeakPtr =
           this->getOrCreateManagedSequence(sequenceName);
 
-        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
-          found = this->mManagedSequences.find(sequenceName);
-
-        if (found != this->mManagedSequences.end()) {
-            std::shared_ptr<Sequence> sq = found->second;
+        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
 
             SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
             sq->begin();
@@ -181,8 +179,9 @@ class Manager
                      TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
+        this->mCurrentSequenceIndex++;
         this->evalOpAsync<T>(
-          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
+                tensors, KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), std::forward<TArgs>(params)...);
     }
 
     /**
@@ -222,7 +221,7 @@ class Manager
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
-        this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
+        this->evalOpAwait(KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), waitFor);
     }
 
     /**
@@ -265,6 +264,8 @@ class Manager
 
     std::vector<uint32_t> mComputeQueueFamilyIndeces;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
+
+    uint32_t mCurrentSequenceIndex = -1;
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
