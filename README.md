@@ -50,23 +50,30 @@ Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-
 
 #### Your First Kompute
 
-Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file). View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
+In this simple example we will:
+
+1. Create a set of data tensors in host memory for processing
+2. Map the tensor host data into GPU memory with Kompute Operation
+3. Run shader async in glsl/hlsl string/bytes (can also pass path to file). 
+4. Create managed sequence to submit batch operations to the CPU
+5. Map data back to host using the sequence showing batch operations
+
+View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
 
 ```c++
 int main() {
 
     // You can allow Kompute to create the Vulkan components, or pass your existing ones
-    kp::Manager mgr; // Selects device 0 unless explicitly requested
+    kp::Manager mgr; // Selects device 0 and first compute queue unless explicitly requested
 
-    // Creates tensor an initializes GPU memory (below we show more granularity)
+    // 1. Create a set of data tensors in host memory for processing
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 3., 4., 5. }));
     auto tensorB = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
-    // Create tensors data explicitly in GPU with an operation
+    // 2. Map the tensor host data into GPU memory with Kompute Operation
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    // Define your shader as a string (using string literals for simplicity)
-    // (You can also pass the raw compiled bytes, or even path to file)
+    // Shader can be provided as raw string, SPIRV bytes or file path containing either
     std::string shader(R"(
         #version 450
 
@@ -82,17 +89,29 @@ int main() {
         }
     )");
 
-    // Run Kompute operation on the parameters provided with dispatch layout
-    mgr.evalOpDefault<kp::OpAlgoBase<3, 1, 1>>(
+    // 3. Run compute shader, you can run asynchronously with the async function
+    mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
         { tensorA, tensorB }, 
         std::vector<char>(shader.begin(), shader.end()));
 
-    // Sync the GPU memory back to the local tensor
-    // You can run the job asynchronously with the Async function
-    mgr.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    // 4. Create managed sequence to submit batch operations to the CPU
+    std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
 
-    // Await for the asynchonous default sequence to finish
+    // Explicitly begin recording batch commands
+    sq->begin();
+
+    // Record batch commands
+    sq->record<kp::OpTensorSyncLocal({ tensorA });
+    sq->record<kp::OpTensorSyncLocal({ tensorB });
+
+    // Explicitly stop recording batch commands
+    sq->end();
+
+    // Before submitting sequence batch we wait for the previous async operation
     mgr.evalOpAwaitDefault();
+
+    // 5. Map data back to host using the sequence showing batch operations
+    sq->eval();
 
     // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
     std::cout << fmt::format("A: {}, B: {}", 
