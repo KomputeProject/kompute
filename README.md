@@ -54,9 +54,10 @@ In this simple example we will:
 
 1. Create a set of data tensors in host memory for processing
 2. Map the tensor host data into GPU memory with Kompute Operation
-3. Run shader async in glsl/hlsl string/bytes (can also pass path to file). 
-4. Create managed sequence to submit batch operations to the CPU
-5. Map data back to host using the sequence showing batch operations
+3. Define shader as string or spirv bytes (can also pass path to file)
+4. Run compute shader asynchronously with Async function
+5. Create managed sequence to submit batch operations to the CPU
+6. Map data back to host using the sequence showing batch operations
 
 View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
 
@@ -73,7 +74,7 @@ int main() {
     // 2. Map the tensor host data into GPU memory with Kompute Operation
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    // Shader can be provided as raw string, SPIRV bytes or file path containing either
+    // 3. Define shader as string or spirv bytes (can also pass path to file)
     std::string shader(R"(
         #version 450
 
@@ -89,12 +90,12 @@ int main() {
         }
     )");
 
-    // 3. Run compute shader, you can run asynchronously with the async function
+    // 4. Run compute shader asynchronously with Async function
     mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
         { tensorA, tensorB }, 
         std::vector<char>(shader.begin(), shader.end()));
 
-    // 4. Create managed sequence to submit batch operations to the CPU
+    // 5. Create managed sequence to submit batch operations to the CPU
     std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
 
     // Explicitly begin recording batch commands
@@ -110,7 +111,7 @@ int main() {
     // Before submitting sequence batch we wait for the previous async operation
     mgr.evalOpAwaitDefault();
 
-    // 5. Map data back to host using the sequence showing batch operations
+    // 6. Map data back to host using the sequence showing batch operations
     sq->eval();
 
     // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
