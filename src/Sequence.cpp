@@ -75,8 +75,18 @@ Sequence::begin()
         return false;
     }
 
+    if (this->isRunning()) {
+        SPDLOG_WARN("Kompute Sequence begin called when sequence still running");
+        return false;
+    }
+
     if (!this->mCommandPool) {
         throw std::runtime_error("Kompute Sequence command pool is null");
+    }
+
+    if (this->mOperations.size()) {
+        SPDLOG_INFO("Kompute Sequence clearing previous operations");
+        this->mOperations.clear();
     }
 
     if (!this->mRecording) {
@@ -177,17 +187,16 @@ Sequence::evalAwait(uint64_t waitFor)
       this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
     this->mDevice->destroy(this->mFence);
 
+    this->mIsRunning = false;
+
     if (result == vk::Result::eTimeout) {
         SPDLOG_WARN("Kompute Sequence evalAwait timed out");
-        this->mIsRunning = false;
         return false;
     }
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
         this->mOperations[i]->postEval();
     }
-
-    this->mIsRunning = false;
 
     return true;
 }

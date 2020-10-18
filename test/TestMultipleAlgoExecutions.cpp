@@ -45,7 +45,6 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 
 TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 {
-
     kp::Manager mgr;
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
@@ -59,43 +58,41 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
-      mgr.getOrCreateManagedSequence("newSequence");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
-        sq->begin();
+    std::shared_ptr<kp::Sequence> sqTensor = 
+      mgr.createManagedSequence().lock();
 
-        sq->record<kp::OpTensorCreate>({ tensorA });
+    std::shared_ptr<kp::Sequence> sq = 
+      mgr.createManagedSequence().lock();
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
-          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    // First create the tensor in a separate sequence
+    sqTensor->begin();
+    sqTensor->record<kp::OpTensorCreate>({ tensorA });
+    sqTensor->end();
+    sqTensor->eval();
 
-        sq->end();
-        sq->eval();
+    // Then perform the computations
+    sq->begin();
+    sq->record<kp::OpAlgoBase<3, 1, 1>>(
+      { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->end();
+    sq->eval();
 
-        sq->begin();
+    sq->begin();
+    sq->record<kp::OpAlgoBase<3, 1, 1>>(
+      { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->end();
+    sq->eval();
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
-          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->begin();
+    sq->record<kp::OpAlgoBase<3, 1, 1>>(
+      { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->end();
+    sq->eval();
 
-        sq->end();
-        sq->eval();
-
-        sq->begin();
-
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
-          { tensorA }, std::vector<char>(shader.begin(), shader.end()));
-
-        sq->end();
-        sq->eval();
-
-        sq->begin();
-
-        sq->record<kp::OpTensorSyncLocal>({ tensorA });
-
-        sq->end();
-        sq->eval();
-    }
-    sqWeakPtr.reset();
+    sq->begin();
+    sq->record<kp::OpTensorSyncLocal>({ tensorA });
+    sq->end();
+    sq->eval();
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }

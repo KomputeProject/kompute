@@ -95,6 +95,7 @@ std::weak_ptr<Sequence>
 Manager::getOrCreateManagedSequence(std::string sequenceName)
 {
     SPDLOG_DEBUG("Kompute Manager creating Sequence object");
+
     std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
       this->mManagedSequences.find(sequenceName);
 
@@ -120,7 +121,16 @@ Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
                                  this->mComputeQueues[queueIndex],
                                  this->mComputeQueueFamilyIndeces[queueIndex]);
     sq->init();
-    this->mManagedSequences.insert({ sequenceName, sq });
+
+    if (sequenceName.empty()) {
+        this->mCurrentSequenceIndex++;
+        this->mManagedSequences.insert({ KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), sq });
+    }
+    else 
+    {
+        // TODO: Check if sequence doens't already exist
+        this->mManagedSequences.insert({ sequenceName, sq });
+    }
     return sq;
 }
 
