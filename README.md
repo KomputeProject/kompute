@@ -95,21 +95,21 @@ int main() {
         { tensorA, tensorB }, 
         std::vector<char>(shader.begin(), shader.end()));
 
+    // 4.1. Before submitting sequence batch we wait for the async operation
+    mgr.evalOpAwaitDefault();
+
     // 5. Create managed sequence to submit batch operations to the CPU
     std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
 
-    // Explicitly begin recording batch commands
+    // 5.1. Explicitly begin recording batch commands
     sq->begin();
 
-    // Record batch commands
+    // 5.2. Record batch commands
     sq->record<kp::OpTensorSyncLocal({ tensorA });
     sq->record<kp::OpTensorSyncLocal({ tensorB });
 
-    // Explicitly stop recording batch commands
+    // 5.3. Explicitly stop recording batch commands
     sq->end();
-
-    // Before submitting sequence batch we wait for the previous async operation
-    mgr.evalOpAwaitDefault();
 
     // 6. Map data back to host by running the sequence of batch operations
     sq->eval();
@@ -134,6 +134,7 @@ int main() {
 ### End-to-end examples
 
 * [Machine Learning Logistic Regression Implementation](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a)
+* [Parallelizing GPU-intensive Workloads via Multi-Queue Operations](https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc)
 * [Android NDK Mobile Kompute ML Application](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617)
 * [Game Development Kompute ML in Godot Engine](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0)
 
