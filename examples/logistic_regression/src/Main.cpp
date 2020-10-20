@@ -35,15 +35,15 @@ int main()
 
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence("createTensors");
-    std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock();
+    std::shared_ptr<kp::Sequence> sqTensor =
+      mgr.createManagedSequence().lock();
 
-    sq->begin();
+    sqTensor->begin();
+    sqTensor->record<kp::OpTensorCreate>(params);
+    sqTensor->end();
+    sqTensor->eval();
 
-    sq->record<kp::OpTensorCreate>(params);
-
-    sq->end();
-    sq->eval();
+    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
 
     // Record op algo base
     sq->begin();

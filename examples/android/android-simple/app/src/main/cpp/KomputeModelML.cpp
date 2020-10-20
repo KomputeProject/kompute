@@ -41,15 +41,17 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
     {
         kp::Manager mgr;
 
-        if (std::shared_ptr<kp::Sequence> sq =
-                    mgr.getOrCreateManagedSequence("createTensors").lock()) {
+        {
 
-            sq->begin();
+            std::shared_ptr<kp::Sequence> sqTensor =
+              mgr.createManagedSequence().lock();
 
-            sq->record<kp::OpTensorCreate>(params);
+            sqTensor->begin();
+            sqTensor->record<kp::OpTensorCreate>(params);
+            sqTensor->end();
+            sqTensor->eval();
 
-            sq->end();
-            sq->eval();
+            std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
 
             // Record op algo base
             sq->begin();
