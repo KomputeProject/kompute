@@ -1310,7 +1310,8 @@ class Manager
      * Create a new managed Kompute sequence so it's available within the
      * manager.
      *
-     * @param sequenceName The name for the named sequence to be created, if empty then default indexed value is used
+     * @param sequenceName The name for the named sequence to be created, if
+     * empty then default indexed value is used
      * @param queueIndex The queue to use from the available queues
      * @return Weak pointer to the manager owned sequence resource
      */
@@ -1363,8 +1364,10 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->mCurrentSequenceIndex++;
-        this->evalOp<T>(
-          tensors, KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), std::forward<TArgs>(params)...);
+        this->evalOp<T>(tensors,
+                        KP_DEFAULT_SESSION +
+                          std::to_string(this->mCurrentSequenceIndex),
+                        std::forward<TArgs>(params)...);
     }
 
     /**
@@ -1406,7 +1409,8 @@ class Manager
     }
 
     /**
-     * Operation that evaluates operation against default sequence asynchronously.
+     * Operation that evaluates operation against default sequence
+     * asynchronously.
      *
      * @param tensors The tensors to be used in the operation recorded
      * @param params Template parameters that will be used to initialise
@@ -1414,12 +1418,14 @@ class Manager
      */
     template<typename T, typename... TArgs>
     void evalOpAsyncDefault(std::vector<std::shared_ptr<Tensor>> tensors,
-                     TArgs&&... params)
+                            TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
         this->mCurrentSequenceIndex++;
-        this->evalOpAsync<T>(
-                tensors, KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), std::forward<TArgs>(params)...);
+        this->evalOpAsync<T>(tensors,
+                             KP_DEFAULT_SESSION +
+                               std::to_string(this->mCurrentSequenceIndex),
+                             std::forward<TArgs>(params)...);
     }
 
     /**
@@ -1430,7 +1436,8 @@ class Manager
      */
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}", sequenceName);
+        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}",
+                     sequenceName);
         std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
           found = this->mManagedSequences.find(sequenceName);
 
@@ -1459,7 +1466,9 @@ class Manager
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
-        this->evalOpAwait(KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex), waitFor);
+        this->evalOpAwait(KP_DEFAULT_SESSION +
+                            std::to_string(this->mCurrentSequenceIndex),
+                          waitFor);
     }
 
     /**
