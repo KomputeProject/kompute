@@ -23,6 +23,7 @@ End-to-end examples
 
 
 * `Machine Learning Logistic Regression Implementation <https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a>`_
+* `Parallelizing GPU-intensive Workloads via Multi-Queue Operations [https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc>`_
 * `Android NDK Mobile Kompute ML Application <https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617>`_
 * `Game Development Kompute ML in Godot Engine <https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0>`_
 
@@ -69,11 +70,7 @@ Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path
             std::vector<char>(shader.begin(), shader.end()));
 
         // Sync the GPU memory back to the local tensor
-        // You can run the job asynchronously with the Async function
-        mgr.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
-
-        // Await for the asynchonous default sequence to finish
-        mgr.evalOpAwaitDefault();
+        mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
         // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
         std::cout << fmt::format("A: {}, B: {}", 

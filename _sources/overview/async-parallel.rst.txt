@@ -11,6 +11,8 @@ In this section we will cover the following points:
 * Asynchronous operation submission
 * Parallel processing of operations
 
+You can also find the published `blog post on the topic using Kompute <https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc>`_, which covers the points discussed in this section further.
+
 Below is the architecture we'll be covering further in the parallel operations section through command submission across multiple family queues.
 
 .. image:: ../images/queue-allocation.jpg
