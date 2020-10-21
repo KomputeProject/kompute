@@ -71,7 +71,7 @@ int main() {
     // 2. Run compute shader synchronously
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
         { tensorA, tensorB }, 
-        shader); // "shader" explained below, and can be glsl/spirv string or path to file
+        shaderData); // "shaderData" defined below, and can be glsl/spirv string or path to file
 
     // 3. Map results back from GPU memory to print the results
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB })
@@ -101,7 +101,7 @@ static std::string shaderString = (R"(
         pa[index] = index;
     }
 )");
-static std::vector<char> shader(shaderString.begin(), shaderString.end());
+static std::vector<char> shaderData(shaderString.begin(), shaderString.end());
 ```
 
 #### Passing SPIR-V Bytes array 
@@ -109,15 +109,15 @@ static std::vector<char> shader(shaderString.begin(), shaderString.end());
 You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/shaders-to-headers.html) to convert your GLSL/HLSL or SPIRV shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.
 
 ```c++
-static std::vector<char> shader = { 0x03, //... spirv bytes go here)
+static std::vector<uint8_t> shaderData = { 0x03, //... spirv bytes go here)
 ```
 
 #### Path to file containing raw glsl/hlsl or SPIRV bytes
 
 ```c++
-static std::string shader = "path/to/shader.glsl";
+static std::string shaderData = "path/to/shader.glsl";
 // Or SPIR-V
-static std::string shader = "path/to/shader.glsl.spv";
+static std::string shaderData = "path/to/shader.glsl.spv";
 ```
 
 ## Architectural Overview
@@ -204,7 +204,7 @@ int main() {
     // 3. Run compute shader Asynchronously with explicit dispatch layout
     mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
         { tensorA, tensorB }, 
-        shader); // Using the same shader as above
+        shaderData); // Using the same shaderData defined above in the "simple example"
 
     // 3.1. Before submitting sequence batch we wait for the async operation
     mgr.evalOpAwaitDefault();
