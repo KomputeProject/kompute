@@ -54,7 +54,7 @@ This simple example will show the basics of Kompute through the high level API.
 
 1. Create and initialise a set of data tensors for processing
 2. Run compute shader synchronously
-3. Map data back to host by running operation
+3. Map results back from GPU memory to print the results
 
 View the [extended version](#your-first-kompute-extended) or [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
 
@@ -73,7 +73,7 @@ int main() {
         { tensorA, tensorB }, 
         shader); // "shader" explained below, and can be glsl/spirv string or path to file
 
-    // 3. Sync results from GPU memory to print the results
+    // 3. Map results back from GPU memory to print the results
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB })
 
     // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
