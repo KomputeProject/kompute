@@ -48,24 +48,96 @@
 Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
 
 
-#### Your First Kompute
+#### Your First Kompute (Simple)
 
-In this simple example we will:
+This simple example will show the basics of Kompute through the high level API, including:
 
-1. Create a set of data tensors in host memory for processing
-2. Map the tensor host data into GPU memory with Kompute Operation
-3. Define shader as string or spirv bytes (can also pass path to file)
-4. Run compute shader asynchronously with Async function
-5. Create managed sequence to submit batch operations to the CPU
-6. Map data back to host by running the sequence of batch operations
+1. Create and initialise a set of data tensors for processing
+2. Run compute shader synchronously
+3. Create managed sequence to submit batch operations to the CPU
+4. Map data back to host by running operation
 
 View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
 
 ```c++
 int main() {
 
-    // You can allow Kompute to create the Vulkan components, or pass your existing ones
-    kp::Manager mgr; // Selects device 0 and first compute queue unless explicitly requested
+    // Default manager selects device 0 and first compute queue
+    kp::Manager mgr; 
+
+    // 1. Create and initialise a set of data tensors for processing
+    auto tensorA = mgr.buildTensor({ 3., 4., 5. });
+    auto tensorB = mgr.buildTensor({ 0., 0., 0. });
+
+    // 2. Run compute shader synchronously
+    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+        { tensorA, tensorB }, 
+        shader); // "shader" explained below, and can be glsl/spirv string or path to file
+
+    // 3. Sync results from GPU memory to print the results
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB })
+
+    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
+    std::cout << fmt::format("A: {}, B: {}", 
+        tensorA.data(), tensorB.data()) << std::endl;
+}
+```
+
+Your shader can be provided as raw glsl/hlsl string, SPIR-V bytes array (using our CLI), or string path to file containing either. Below are the examples of the valid ways of providing shader.
+
+##### Raw GLSL/HLSL as std::string
+
+```c++
+static std::string shaderString = (R"(
+    #version 450
+
+    layout (local_size_x = 1) in;
+
+    layout(set = 0, binding = 0) buffer a { float pa[]; };
+    layout(set = 0, binding = 1) buffer b { float pb[]; };
+
+    void main() {
+        uint index = gl_GlobalInvocationID.x;
+        pb[index] = pa[index];
+        pa[index] = index;
+    }
+)");
+static std::vector<char> shader(shaderString.begin(), shaderString.end());
+```
+
+##### SPIR-V Bytes as uint8_t / char array (using our CLI)
+
+You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/shaders-to-headers.html) to convert your GLSL/HLSL or SPIRV shader into C++ header file (see documentation link for more info).
+
+```c++
+static std::vector<char> shader = { 0x03, //... spirv bytes go here)
+```
+
+##### File path to file containing raw glsl/hlsl or SPIRV bytes
+
+```c++
+static std::string shader = "path/to/shader.glsl";
+// Or SPIR-V
+static std::string shader = "path/to/shader.glsl.spv";
+```
+
+#### Your First Kompute (Extended)
+
+We will cover the same example as above but leveraging more advanced Kompute features:
+
+1. Create a set of data tensors in host memory for processing
+2. Map the tensor host data into GPU memory with Kompute Operation
+3. Run compute shader asynchronously with Async function
+4. Create managed sequence to submit batch operations to the CPU
+5. Map data back to host by running the sequence of batch operations
+
+View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
+
+```c++
+int main() {
+
+    // Creating manager with Device 0, and a single queue of familyIndex 2
+    kp::Manager mgr(0, { 2 });
 
     // 1. Create a set of data tensors in host memory for processing
     auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 3., 4., 5. }));
@@ -74,44 +146,28 @@ int main() {
     // 2. Map the tensor host data into GPU memory with Kompute Operation
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    // 3. Define shader as string or spirv bytes (can also pass path to file)
-    std::string shader(R"(
-        #version 450
-
-        layout (local_size_x = 1) in;
-
-        layout(set = 0, binding = 0) buffer a { float pa[]; };
-        layout(set = 0, binding = 1) buffer b { float pb[]; };
-
-        void main() {
-            uint index = gl_GlobalInvocationID.x;
-            pb[index] = pa[index];
-            pa[index] = index;
-        }
-    )");
-
-    // 4. Run compute shader asynchronously with Async function
+    // 3. Run compute shader Asynchronously with explicit dispatch layout
     mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
         { tensorA, tensorB }, 
-        std::vector<char>(shader.begin(), shader.end()));
+        shader); // Using the same shader as above
 
-    // 4.1. Before submitting sequence batch we wait for the async operation
+    // 3.1. Before submitting sequence batch we wait for the async operation
     mgr.evalOpAwaitDefault();
 
-    // 5. Create managed sequence to submit batch operations to the CPU
+    // 4. Create managed sequence to submit batch operations to the CPU
     std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
 
-    // 5.1. Explicitly begin recording batch commands
+    // 4.1. Explicitly begin recording batch commands
     sq->begin();
 
-    // 5.2. Record batch commands
+    // 4.2. Record batch commands
     sq->record<kp::OpTensorSyncLocal({ tensorA });
     sq->record<kp::OpTensorSyncLocal({ tensorB });
 
-    // 5.3. Explicitly stop recording batch commands
+    // 4.3. Explicitly stop recording batch commands
     sq->end();
 
-    // 6. Map data back to host by running the sequence of batch operations
+    // 5. Map data back to host by running the sequence of batch operations
     sq->eval();
 
     // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
@@ -143,7 +199,7 @@ int main() {
 The core architecture of Kompute include the following:
 * [Kompute Manager](https://kompute.cc/overview/reference.html#manager) - Base orchestrator which creates and manages device and child components
 * [Kompute Sequence](https://kompute.cc/overview/reference.html#sequence) - Container of operations that can be sent to GPU as batch
-* [Kompute Operation (Base)](https://kompute.cc/overview/reference.html#algorithm) - Individual operation which performs actions on top of tensors and (opt) algorithms
+* [Kompute Operation (Base)](https://kompute.cc/overview/reference.html#algorithm) - Base class from which all operations inherit
 * [Kompute Tensor](https://kompute.cc/overview/reference.html#tensor) - Tensor structured data used in GPU operations
 * [Kompute Algorithm](https://kompute.cc/overview/reference.html#algorithm) - Abstraction for (shader) code executed in the GPU
 
