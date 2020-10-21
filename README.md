@@ -48,7 +48,7 @@
 Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
 
 
-#### Your First Kompute (Simple)
+### Your First Kompute (SIMPLE)
 
 This simple example will show the basics of Kompute through the high level API, including:
 
@@ -62,7 +62,7 @@ View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-e
 ```c++
 int main() {
 
-    // Default manager selects device 0 and first compute queue
+    // Default manager selects device 0 and first available compute compatible GPU queue
     kp::Manager mgr; 
 
     // 1. Create and initialise a set of data tensors for processing
@@ -85,7 +85,7 @@ int main() {
 
 Your shader can be provided as raw glsl/hlsl string, SPIR-V bytes array (using our CLI), or string path to file containing either. Below are the examples of the valid ways of providing shader.
 
-##### Raw GLSL/HLSL as std::string
+#### Raw GLSL/HLSL as std::string
 
 ```c++
 static std::string shaderString = (R"(
@@ -105,7 +105,7 @@ static std::string shaderString = (R"(
 static std::vector<char> shader(shaderString.begin(), shaderString.end());
 ```
 
-##### SPIR-V Bytes as uint8_t / char array (using our CLI)
+#### SPIR-V Bytes as uint8_t / char array (using our CLI)
 
 You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/shaders-to-headers.html) to convert your GLSL/HLSL or SPIRV shader into C++ header file (see documentation link for more info).
 
@@ -113,7 +113,7 @@ You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/s
 static std::vector<char> shader = { 0x03, //... spirv bytes go here)
 ```
 
-##### File path to file containing raw glsl/hlsl or SPIRV bytes
+#### File path to file containing raw glsl/hlsl or SPIRV bytes
 
 ```c++
 static std::string shader = "path/to/shader.glsl";
@@ -121,7 +121,7 @@ static std::string shader = "path/to/shader.glsl";
 static std::string shader = "path/to/shader.glsl.spv";
 ```
 
-#### Your First Kompute (Extended)
+### Your First Kompute (EXTENDED)
 
 We will cover the same example as above but leveraging more advanced Kompute features:
 
