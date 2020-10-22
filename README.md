@@ -168,6 +168,34 @@ The image below provides an intuition how Kompute Sequences can be allocated to 
 
 ![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg)
 
+## Mobile Enabled
+
+Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments, together with a working [Android NDK Vulkan wrapper](https://github.com/EthicalML/vulkan-kompute/tree/master/vk_ndk_wrapper_include) for the CPP headers.
+
+<table>
+<tr>
+
+<td width="70%">
+<p>
+For a full deep dive you can read the blog post "<a href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Supercharging your Mobile Apps with On-Device GPU Accelerated Machine Learning</a>". 
+
+You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tree/v0.4.0/examples/android/android-simple">end-to-end example code</a> in the repository - this example provides an end to end example that can be run using android studio.
+
+</p>
+
+
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/android-example/docs/images/android-editor.jpg">
+
+</td>
+
+
+<td width="30%">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/android-example/docs/images/android-kompute.jpg">
+</td>
+
+</tr>
+</table>
+
 ## Motivations
 
 This project started after seeing that a lot of new and renowned ML & DL projects like Pytorch, Tensorflow, Alibaba DNN, between others, have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.
@@ -176,7 +204,7 @@ The Vulkan SDK offers a great low level interface that enables for highly specia
 
 We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
 
-### Your First Kompute (EXTENDED)
+## Your First Kompute (EXTENDED)
 
 We will now show the [same example as above](#your-first-kompute-simple) but leveraging more advanced Kompute features:
 
