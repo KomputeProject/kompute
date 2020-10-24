@@ -1,7 +1,6 @@
 
-![GitHub](https://img.shields.io/badge/Release-ALPHA-yellow.svg)
-![GitHub](https://img.shields.io/badge/Version-0.1.0-green.svg)
-![GitHub](https://img.shields.io/badge/C++-11—20-purple.svg)
+![GitHub](https://img.shields.io/badge/Version-0.4.0-green.svg)
+![GitHub](https://img.shields.io/badge/C++-14—20-purple.svg)
 ![GitHub](https://img.shields.io/badge/Build-cmake-red.svg)
 ![GitHub](https://img.shields.io/badge/Python-3.5—3.8-blue.svg)
 ![GitHub](https://img.shields.io/badge/License-Apache-black.svg)
@@ -48,7 +47,7 @@
 Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
 
 
-### Your First Kompute (SIMPLE)
+### Your First Kompute (Simple Version)
 
 This simple example will show the basics of Kompute through the high level API.
 
@@ -56,7 +55,7 @@ This simple example will show the basics of Kompute through the high level API.
 2. Run compute shader synchronously
 3. Map results back from GPU memory to print the results
 
-View the [extended version](#your-first-kompute-extended) or [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
+View the [extended version](#your-first-kompute-extended-version) or [more examples](#simple-examples).
 
 ```c++
 int main() {
@@ -92,6 +91,7 @@ static std::string shaderString = (R"(
 
     layout (local_size_x = 1) in;
 
+    // The input tensors in order provided
     layout(set = 0, binding = 0) buffer a { float pa[]; };
     layout(set = 0, binding = 1) buffer b { float pb[]; };
 
@@ -106,7 +106,7 @@ static std::vector<char> shaderData(shaderString.begin(), shaderString.end());
 
 #### Passing SPIR-V Bytes array 
 
-You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/shaders-to-headers.html) to convert your GLSL/HLSL or SPIRV shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.
+You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/shaders-to-headers.html) to convert your GLSL/HLSL or SPIR-V shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.
 
 ```c++
 static std::vector<uint8_t> shaderData = { 0x03, //... spirv bytes go here)
@@ -122,7 +122,7 @@ static std::string shaderData = "path/to/shader.glsl.spv";
 
 ## Architectural Overview
 
-The core architecture of Kompute include the following:
+The core architecture of Kompute includes the following:
 * [Kompute Manager](https://kompute.cc/overview/reference.html#manager) - Base orchestrator which creates and manages device and child components
 * [Kompute Sequence](https://kompute.cc/overview/reference.html#sequence) - Container of operations that can be sent to GPU as batch
 * [Kompute Operation (Base)](https://kompute.cc/overview/reference.html#algorithm) - Base class from which all operations inherit
@@ -204,9 +204,9 @@ The Vulkan SDK offers a great low level interface that enables for highly specia
 
 We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
 
-## Your First Kompute (EXTENDED)
+## Your First Kompute (Extended Version)
 
-We will now show the [same example as above](#your-first-kompute-simple) but leveraging more advanced Kompute features:
+We will now show the [same example as above](#your-first-kompute-simple-version) but leveraging more advanced Kompute features:
 
 1. Create a set of data tensors in host memory for processing
 2. Map the tensor host data into GPU memory with Kompute Operation
