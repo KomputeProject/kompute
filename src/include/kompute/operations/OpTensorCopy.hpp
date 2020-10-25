@@ -40,7 +40,7 @@ class OpTensorCopy : public OpBase
     void init() override;
 
     /**
-     * Records the copy commands from teh first tensor into all the other tensors provided. Also optionally records a barrier.
+     * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
      */
     void record() override;
 

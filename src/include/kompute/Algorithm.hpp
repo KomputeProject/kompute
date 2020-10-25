@@ -30,7 +30,7 @@ class Algorithm
               std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     /**
-     * Initialiser for the shader data provided to the algoithm as well as
+     * Initialiser for the shader data provided to the algorithm as well as
      * tensor parameters that will be used in shader.
      *
      * @param shaderFileData The bytes in spir-v format of the shader

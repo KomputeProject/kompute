@@ -29,12 +29,12 @@ Manager::Manager()
 {}
 
 Manager::Manager(uint32_t physicalDeviceIndex,
-                 const std::vector<uint32_t>& familyQueueIndeces)
+                 const std::vector<uint32_t>& familyQueueIndices)
 {
     this->mPhysicalDeviceIndex = physicalDeviceIndex;
 
     this->createInstance();
-    this->createDevice(familyQueueIndeces);
+    this->createDevice(familyQueueIndices);
 }
 
 Manager::Manager(std::shared_ptr<vk::Instance> instance,
@@ -119,7 +119,7 @@ Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
       std::make_shared<Sequence>(this->mPhysicalDevice,
                                  this->mDevice,
                                  this->mComputeQueues[queueIndex],
-                                 this->mComputeQueueFamilyIndeces[queueIndex]);
+                                 this->mComputeQueueFamilyIndices[queueIndex]);
     sq->init();
 
     if (sequenceName.empty()) {
@@ -128,7 +128,7 @@ Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
           { KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex),
             sq });
     } else {
-        // TODO: Check if sequence doens't already exist
+        // TODO: Check if sequence doesn't already exist
         this->mManagedSequences.insert({ sequenceName, sq });
     }
     return sq;
@@ -220,7 +220,7 @@ Manager::createInstance()
 }
 
 void
-Manager::createDevice(const std::vector<uint32_t>& familyQueueIndeces)
+Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
 {
 
     SPDLOG_DEBUG("Kompute Manager creating Device");
@@ -251,7 +251,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndeces)
                 this->mPhysicalDeviceIndex,
                 physicalDeviceProperties.deviceName);
 
-    if (!familyQueueIndeces.size()) {
+    if (!familyQueueIndices.size()) {
         // Find compute queue
         std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
           physicalDevice.getQueueFamilyProperties();
@@ -272,14 +272,14 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndeces)
             throw std::runtime_error("Compute queue is not supported");
         }
 
-        this->mComputeQueueFamilyIndeces.push_back(computeQueueFamilyIndex);
+        this->mComputeQueueFamilyIndices.push_back(computeQueueFamilyIndex);
     } else {
-        this->mComputeQueueFamilyIndeces = familyQueueIndeces;
+        this->mComputeQueueFamilyIndices = familyQueueIndices;
     }
 
     std::unordered_map<uint32_t, uint32_t> familyQueueCounts;
     std::unordered_map<uint32_t, std::vector<float>> familyQueuePriorities;
-    for (const auto& value : this->mComputeQueueFamilyIndeces) {
+    for (const auto& value : this->mComputeQueueFamilyIndices) {
         familyQueueCounts[value]++;
         familyQueuePriorities[value].push_back(1.0f);
     }
@@ -308,7 +308,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndeces)
       &deviceCreateInfo, nullptr, this->mDevice.get());
     SPDLOG_DEBUG("Kompute Manager device created");
 
-    for (const uint32_t& familyQueueIndex : this->mComputeQueueFamilyIndeces) {
+    for (const uint32_t& familyQueueIndex : this->mComputeQueueFamilyIndices) {
         std::shared_ptr<vk::Queue> currQueue = std::make_shared<vk::Queue>();
 
         this->mDevice->getQueue(familyQueueIndex,
