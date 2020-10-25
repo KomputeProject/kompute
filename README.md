@@ -326,7 +326,7 @@ Given Kompute is expected to be used across a broad range of architectures and h
 
 #### Required dependencies
 
-The only required dependency in the build is Vulkan (vulkan.h and vulkan.hpp which are both part of the Vulkan SDK).
+The only required dependency in the build is Vulkan. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven't installed the Vulkan SDK yet, you can [download it here](https://vulkan.lunarg.com/).
 
 #### Optional dependencies
 
