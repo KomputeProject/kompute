@@ -256,7 +256,7 @@
     <li class="md-nav__item">
     
     
-      <a href="mobile-android.html" class="md-nav__link">Mobile App Intergration (Android)</a>
+      <a href="mobile-android.html" class="md-nav__link">Mobile App Integration (Android)</a>
       
     
     </li>
@@ -629,10 +629,10 @@
     <span class="c1">// In this case we select device 0, and for queues, one queue from familyIndex 0</span>
     <span class="c1">// and one queue from familyIndex 2</span>
     <span class="kt">uint32_t</span> <span class="n">deviceIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">familyIndeces</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">familyIndices</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
 
     <span class="c1">// We create a manager with device index, and queues by queue family index</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">,</span> <span class="n">familyIndeces</span><span class="p">);</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">,</span> <span class="n">familyIndices</span><span class="p">);</span>
 
     <span class="c1">// We need to create explicit sequences with their respective queues</span>
     <span class="c1">// The second parameter is the index in the familyIndex array which is relative</span>
@@ -687,7 +687,7 @@
 
     <span class="c1">// Here we can do other work</span>
 
-    <span class="c1">// We can now wait for thw two parallel tasks to finish</span>
+    <span class="c1">// We can now wait for the two parallel tasks to finish</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">)</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">)</span>
 
@@ -847,7 +847,7 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 
 1. Create a Sequence to record and submit GPU commands
 2. Submit OpCreateTensor to create all the tensors
-3. Record the OpAlgo with the Logistic Regresion shader
+3. Record the OpAlgo with the Logistic Regression shader
 4. Loop across number of iterations:
    4-a. Submit algo operation on LR shader
    4-b. Re-calculate weights from loss
@@ -893,10 +893,10 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 </pre></div>
 </td></tr></table></div>
 <ol class="arabic simple">
-<li><p>Record the OpAlgo with the Logistic Regresion shader
+<li><p>Record the OpAlgo with the Logistic Regression shader
 <span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span>~~</p></li>
 </ol>
-<p>Once we re-record, all the instructions that were recorded previosuly are cleared.</p>
+<p>Once we re-record, all the instructions that were recorded previously are cleared.</p>
 <p>Because of this we can record now the new commands which will consist of the following:</p>
 <ol class="arabic simple">
 <li><p>Copy the tensor data from local to device</p></li>
@@ -974,7 +974,7 @@ Now that we have the inputs and outputs we will be able to use them in the proce
             <span class="o">//</span> <span class="n">Run</span> <span class="n">evaluation</span> <span class="n">which</span> <span class="n">passes</span> <span class="n">data</span> <span class="n">through</span> <span class="n">shader</span> <span class="n">once</span>
             <span class="n">sq</span><span class="o">-&gt;</span><span class="nb">eval</span><span class="p">();</span>
 
-            <span class="o">//</span> <span class="n">Substract</span> <span class="n">the</span> <span class="n">resulting</span> <span class="n">weights</span> <span class="ow">and</span> <span class="n">biases</span>
+            <span class="o">//</span> <span class="n">Subtract</span> <span class="n">the</span> <span class="n">resulting</span> <span class="n">weights</span> <span class="ow">and</span> <span class="n">biases</span>
             <span class="k">for</span><span class="p">(</span><span class="n">size_t</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
                 <span class="n">wInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutI</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
                 <span class="n">wInVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutJ</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>

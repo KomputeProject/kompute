@@ -243,7 +243,7 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/mobile-android.html" class="md-nav__link">Mobile App Intergration (Android)</a>
+      <a href="overview/mobile-android.html" class="md-nav__link">Mobile App Integration (Android)</a>
       
     
     </li>
@@ -290,9 +290,8 @@
             
   
 <h1 id="index--page-root">Kompute Docs Home<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://img.shields.io/badge/Release-ALPHA-yellow.svg"><img alt="GitHub" src="https://img.shields.io/badge/Release-ALPHA-yellow.svg"/></a>
-<a class="reference external image-reference" href="https://img.shields.io/badge/Version-0.1.0-green.svg"><img alt="GitHub" src="https://img.shields.io/badge/Version-0.1.0-green.svg"/></a>
-<a class="reference external image-reference" href="https://img.shields.io/badge/C++-11—20-purple.svg"><img alt="GitHub" src="https://img.shields.io/badge/C++-11—20-purple.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/Version-0.4.0-green.svg"><img alt="GitHub" src="https://img.shields.io/badge/Version-0.4.0-green.svg"/></a>
+<a class="reference external image-reference" href="https://img.shields.io/badge/C++-14—20-purple.svg"><img alt="GitHub" src="https://img.shields.io/badge/C++-14—20-purple.svg"/></a>
 <a class="reference external image-reference" href="https://img.shields.io/badge/Build-cmake-red.svg"><img alt="GitHub" src="https://img.shields.io/badge/Build-cmake-red.svg"/></a>
 <a class="reference external image-reference" href="https://img.shields.io/badge/Python-3.5—3.8-blue.svg"><img alt="GitHub" src="https://img.shields.io/badge/Python-3.5—3.8-blue.svg"/></a>
 <a class="reference external image-reference" href="https://img.shields.io/badge/License-Apache-black.svg"><img alt="GitHub" src="https://img.shields.io/badge/License-Apache-black.svg"/></a>
@@ -328,14 +327,14 @@
 <p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;#setup&gt;`_. See <a class="reference external" href="#build-overview">build-system section</a> for configurations available.</p>
 
 
-<h3 id="your-first-kompute-simple">Your First Kompute (SIMPLE)<a class="headerlink" href="#your-first-kompute-simple" title="Permalink to this headline">¶</a></h3>
+<h3 id="your-first-kompute-simple-version">Your First Kompute (Simple Version)<a class="headerlink" href="#your-first-kompute-simple-version" title="Permalink to this headline">¶</a></h3>
 <p>This simple example will show the basics of Kompute through the high level API.</p>
 <ol class="arabic simple">
 <li><p>Create and initialise a set of data tensors for processing</p></li>
 <li><p>Run compute shader synchronously</p></li>
 <li><p>Map results back from GPU memory to print the results</p></li>
 </ol>
-<p>View the <a class="reference external" href="#your-first-kompute-extended">extended version</a> or <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-examples">more examples</a>.</p>
+<p>View the <a class="reference external" href="#your-first-kompute-extended-version">extended version</a> or <a class="reference external" href="#simple-examples">more examples</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// Default manager selects device 0 and first available compute compatible GPU queue</span>
@@ -367,6 +366,7 @@
 
 <span class="s">    layout (local_size_x = 1) in;</span>
 
+<span class="s">    // The input tensors in order provided</span>
 <span class="s">    layout(set = 0, binding = 0) buffer a { float pa[]; };</span>
 <span class="s">    layout(set = 0, binding = 1) buffer b { float pb[]; };</span>
 
@@ -382,7 +382,7 @@
 
 
 <h4 id="passing-spir-v-bytes-array">Passing SPIR-V Bytes array<a class="headerlink" href="#passing-spir-v-bytes-array" title="Permalink to this headline">¶</a></h4>
-<p>You can use the Kompute <a class="reference external" href="https://kompute.cc/overview/shaders-to-headers.html">shader-to-cpp-header CLI</a> to convert your GLSL/HLSL or SPIRV shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.</p>
+<p>You can use the Kompute <a class="reference external" href="https://kompute.cc/overview/shaders-to-headers.html">shader-to-cpp-header CLI</a> to convert your GLSL/HLSL or SPIR-V shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span> <span class="n">shaderData</span> <span class="o">=</span> <span class="p">{</span> <span class="mh">0x03</span><span class="p">,</span> <span class="c1">//... spirv bytes go here)</span>
 </pre></div>
 </div>
@@ -399,7 +399,7 @@
 
 
 <h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
-<p>The core architecture of Kompute include the following:</p>
+<p>The core architecture of Kompute includes the following:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#manager">Kompute Manager</a> - Base orchestrator which creates and manages device and child components</p></li>
 <li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#sequence">Kompute Sequence</a> - Container of operations that can be sent to GPU as batch</p></li>
@@ -433,7 +433,7 @@ Simplified Kompute Components
 
 <h2 id="asynchronous-and-parallel-operations">Asynchronous and Parallel Operations<a class="headerlink" href="#asynchronous-and-parallel-operations" title="Permalink to this headline">¶</a></h2>
 <p>Kompute provides flexibility to run operations in an asynrchonous way through Vulkan Fences. Furthermore, Kompute enables for explicit allocation of queues, which allow for parallel execution of operations across queue families.</p>
-<p>The image below provides an intuition how Kompute Sequences can be allocated to different queues to enable parallel execution based on hardware. You can see the <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">hands on example</a>, as well as the <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">detailed documentation page</a> describing how it would work using an NVIDIA 1650 as example.</p>
+<p>The image below provides an intuition on how Kompute Sequences can be allocated to different queues to enable parallel execution based on hardware. You can see the <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">hands on example</a>, as well as the <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">detailed documentation page</a> describing how it would work using an NVIDIA 1650 as an example.</p>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"/></a>
 
 
@@ -445,7 +445,7 @@ Simplified Kompute Components
 <p>
 For a full deep dive you can read the blog post "<a href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Supercharging your Mobile Apps with On-Device GPU Accelerated Machine Learning</a>".
 
-You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tree/v0.4.0/examples/android/android-simple">end-to-end example code</a> in the repository - this example provides an end to end example that can be run using android studio.
+You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tree/v0.4.0/examples/android/android-simple">end-to-end example code</a> in the repository, which can be run using android studio.
 
 </p>
 <img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/android-example/docs/images/android-editor.jpg"/>
@@ -457,13 +457,13 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 </table>
 
 <h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
-<p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, between others, have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.</p>
-<p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, between others.</p>
+<p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, Tencent NCNN - among others - have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.</p>
+<p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.</p>
 <p>We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it’s incredibly well designed) but to augment it with a direct focus on Vulkan’s GPU computing capabilities. <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">This article</a> provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.</p>
 
 
-<h2 id="your-first-kompute-extended">Your First Kompute (EXTENDED)<a class="headerlink" href="#your-first-kompute-extended" title="Permalink to this headline">¶</a></h2>
-<p>We will now show the <a class="reference external" href="#your-first-kompute-simple">same example as above</a> but leveraging more advanced Kompute features:</p>
+<h2 id="your-first-kompute-extended-version">Your First Kompute (Extended Version)<a class="headerlink" href="#your-first-kompute-extended-version" title="Permalink to this headline">¶</a></h2>
+<p>We will now show the <a class="reference external" href="#your-first-kompute-simple-version">same example as above</a> but leveraging more advanced Kompute features:</p>
 <ol class="arabic simple">
 <li><p>Create a set of data tensors in host memory for processing</p></li>
 <li><p>Map the tensor host data into GPU memory with Kompute Operation</p></li>
@@ -615,7 +615,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_LOG_VERRIDE=1</p></td>
-<td><p>Does not define the <a href="#id4"><span class="problematic" id="id5">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overriden</p></td>
+<td><p>Does not define the <a href="#id4"><span class="problematic" id="id5">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overridden</p></td>
 </tr>
 <tr class="row-even"><td><p>-DSPDLOG_ACTIVE_LEVEL</p></td>
 <td><p>The level for the log level on compile level (whether spdlog is enabled)</p></td>
@@ -641,7 +641,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <p>Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies.</p>
 
 <h4 id="required-dependencies">Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h4>
-<p>The only required dependency in the build is Vulkan (vulkan.h and vulkan.hpp which are both part of the Vulkan SDK).</p>
+<p>The only required dependency in the build is Vulkan. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven’t installed the Vulkan SDK yet, you can <a class="reference external" href="https://vulkan.lunarg.com/">download it here</a>.</p>
 
 
 <h4 id="optional-dependencies">Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h4>
@@ -692,14 +692,14 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <li><p>Uses cmake as build system, and provides a top level makefile with recommended command</p></li>
 <li><p>Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files</p></li>
 <li><p>Uses doxygen and sphinx for documentation and autodocs</p></li>
-<li><p>Uses vcpkg for finding the dependencies, it’s the recommanded set up to retrieve the libraries</p></li>
+<li><p>Uses vcpkg for finding the dependencies, it’s the recommended set up to retrieve the libraries</p></li>
 </ul>
 
 <h5 id="updating-documentation">Updating documentation<a class="headerlink" href="#updating-documentation" title="Permalink to this headline">¶</a></h5>
-<p>To update the documentation will need to:</p>
+<p>To update the documentation you will need to:</p>
 <ul class="simple">
 <li><p>Run the gendoxygen target in the build system</p></li>
-<li><p>Run the gensphynx target in the buildsystem</p></li>
+<li><p>Run the gensphynx target in the build-system</p></li>
 <li><p>Push to github pages with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">push_docs_to_ghpages</span></code></p></li>
 </ul>
 
@@ -729,7 +729,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <li class="toctree-l1"><a class="reference internal" href="overview/async-parallel.html">Asynchronous &amp; Parallel Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">Memory Management Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">Converting GLSL/HLSL Shaders to C++ Headers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Intergration (Android)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Integration (Android)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/game-engine-godot.html">Game Engine Integration (Godot Engine)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Code Index</a></li>
 </ul>

@@ -79,16 +79,16 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a43cc11ff353b2b0775e6a204c8395d97"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97">Manager</a> ()</td></tr>
 <tr class="separator:a43cc11ff353b2b0775e6a204c8395d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1ff5822c401ee72f26fb8d054db17c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ae1ff5822c401ee72f26fb8d054db17c1">Manager</a> (uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndeces={})</td></tr>
-<tr class="separator:ae1ff5822c401ee72f26fb8d054db17c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bae4bd124b9d5692b62bf48cabcf804"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a7bae4bd124b9d5692b62bf48cabcf804">Manager</a> (uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndices={})</td></tr>
+<tr class="separator:a7bae4bd124b9d5692b62bf48cabcf804"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a81eb45116fae9ae3a34d22cf7a238b54">Manager</a> (std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, uint32_t physicalDeviceIndex)</td></tr>
 <tr class="separator:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">~Manager</a> ()</td></tr>
 <tr class="separator:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55d0744536347209bb88250b2e276d1a"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a> (std::string sequenceName)</td></tr>
 <tr class="separator:a55d0744536347209bb88250b2e276d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a096a74f1cdf3a4d421edea3dacfc4f71"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a096a74f1cdf3a4d421edea3dacfc4f71">createManagedSequence</a> (std::string sequenceName, uint32_t queueIndex=0)</td></tr>
-<tr class="separator:a096a74f1cdf3a4d421edea3dacfc4f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c0761ac76b562780a5cb754eff02105"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a9c0761ac76b562780a5cb754eff02105">createManagedSequence</a> (std::string sequenceName=&quot;&quot;, uint32_t queueIndex=0)</td></tr>
+<tr class="separator:a9c0761ac76b562780a5cb754eff02105"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb89ce2a56d09d056561f021132a5469"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:aeb89ce2a56d09d056561f021132a5469"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#aeb89ce2a56d09d056561f021132a5469">evalOp</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sequenceName, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:aeb89ce2a56d09d056561f021132a5469"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,8 +129,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae1ff5822c401ee72f26fb8d054db17c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1ff5822c401ee72f26fb8d054db17c1">&#9670;&nbsp;</a></span>Manager() <span class="overload">[2/3]</span></h2>
+<a id="a7bae4bd124b9d5692b62bf48cabcf804"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bae4bd124b9d5692b62bf48cabcf804">&#9670;&nbsp;</a></span>Manager() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +145,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; uint32_t &gt; &amp;&#160;</td>
-          <td class="paramname"><em>familyQueueIndeces</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>familyQueueIndices</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -158,7 +158,7 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">physicalDeviceIndex</td><td>The index of the physical device to use </td></tr>
-    <tr><td class="paramname">familyQueueIndeces</td><td>(Optional) List of queue indeces to add for explicit allocation </td></tr>
+    <tr><td class="paramname">familyQueueIndices</td><td>(Optional) List of queue indices to add for explicit allocation </td></tr>
     <tr><td class="paramname">totalQueues</td><td>The total number of compute queues to create. </td></tr>
   </table>
   </dd>
@@ -280,8 +280,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a096a74f1cdf3a4d421edea3dacfc4f71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a096a74f1cdf3a4d421edea3dacfc4f71">&#9670;&nbsp;</a></span>createManagedSequence()</h2>
+<a id="a9c0761ac76b562780a5cb754eff02105"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c0761ac76b562780a5cb754eff02105">&#9670;&nbsp;</a></span>createManagedSequence()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,7 +290,7 @@ Public Member Functions</h2></td></tr>
           <td class="memname">std::weak_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::createManagedSequence </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>sequenceName</em>, </td>
+          <td class="paramname"><em>sequenceName</em> = <code>&quot;&quot;</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -308,7 +308,7 @@ Public Member Functions</h2></td></tr>
 <p>Create a new managed Kompute sequence so it's available within the manager.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sequenceName</td><td>The name for the named sequence to be created </td></tr>
+    <tr><td class="paramname">sequenceName</td><td>The name for the named sequence to be created, if empty then default indexed value is used </td></tr>
     <tr><td class="paramname">queueIndex</td><td>The queue to use from the available queues </td></tr>
   </table>
   </dd>
@@ -582,7 +582,7 @@ template&lt;typename T , typename... TArgs&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Function that evaluates operation against default sequence.</p>
+<p>Function that evaluates operation against a newly created sequence.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tensors</td><td>The tensors to be used in the operation recorded </td></tr>

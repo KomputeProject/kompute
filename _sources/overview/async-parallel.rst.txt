@@ -69,7 +69,7 @@ Sequences can be executed in synchronously or asynchronously without having to c
 
 While this is running we can actually do other things like in this case create the shader we'll be using.
 
-In this case we create a shader that shoudl take a couple of milliseconds to run.
+In this case we create a shader that should take a couple of milliseconds to run.
 
 .. code-block:: cpp
     :linenos:
@@ -164,7 +164,7 @@ Let's take a tangible example. The [NVIDIA 1650](http://vulkan.gpuinfo.org/displ
 
 With this in mind, the NVIDIA 1650 as of today does not support intra-family parallelization, which means that if you were to submit commands in multiple queues of the same family, these would still be exectured synchronously. 
 
-However the NVIDIA 1650 does support inter-family parallelization, which menas that if we were to submit commands across multiple queues from different families, these would execute in parallel.
+However the NVIDIA 1650 does support inter-family parallelization, which means that if we were to submit commands across multiple queues from different families, these would execute in parallel.
 
 This means that we would be able to execute parallel workloads as long as we're running them across multiple queue families. This is one of the reasons why Vulkan Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.
 
@@ -189,10 +189,10 @@ You will want to keep track of the indices you initialize your manager, as you w
     // In this case we select device 0, and for queues, one queue from familyIndex 0
     // and one queue from familyIndex 2
     uint32_t deviceIndex(0);
-    std::vector<uint32_t> familyIndeces = {0, 2};
+    std::vector<uint32_t> familyIndices = {0, 2};
 
     // We create a manager with device index, and queues by queue family index
-    kp::Manager mgr(deviceIndex, familyIndeces);
+    kp::Manager mgr(deviceIndex, familyIndices);
 
 We are now able to create sequences with a particular queue. 
 
@@ -281,7 +281,7 @@ We are able to wait for the tasks to complete by triggering the `evalOpAwait` on
 
     // Here we can do other work
 
-    // We can now wait for thw two parallel tasks to finish
+    // We can now wait for the two parallel tasks to finish
     mgr.evalOpAwait("queueOne")
     mgr.evalOpAwait("queueTwo")
 
