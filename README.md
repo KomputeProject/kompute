@@ -313,7 +313,7 @@ This by default configures without any of the extra build tasks (such as buildin
 | -DKOMPUTE_VK_API_MAJOR_VERSION=1     | Major version to use for the Vulkan API                                                 |
 | -DKOMPUTE_VK_API_MINOR_VERSION=1     | Minor version to use for the Vulkan API                                                 |
 | -DKOMPUTE_ENABLE_SPDLOG=1            | Enables the build with SPDLOG and FMT dependencies (must be installed)                  |
-| -DKOMPUTE_LOG_VERRIDE=1              | Does not define the SPDLOG_<LEVEL> macros if these are to be overriden                  |
+| -DKOMPUTE_LOG_VERRIDE=1              | Does not define the SPDLOG_<LEVEL> macros if these are to be overridden                 |
 | -DSPDLOG_ACTIVE_LEVEL                | The level for the log level on compile level (whether spdlog is enabled)                |
 | -DVVK_USE_PLATFORM_ANDROID_KHR       | Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)    |
 | -DRELEASE=1                          | Enable release build (enabled by cmake release build)                                   |
@@ -368,7 +368,7 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 * Uses cmake as build system, and provides a top level makefile with recommended command
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
 * Uses doxygen and sphinx for documentation and autodocs
-* Uses vcpkg for finding the dependencies, it's the recommanded set up to retrieve the libraries
+* Uses vcpkg for finding the dependencies, it's the recommended set up to retrieve the libraries
 
 ##### Updating documentation
 

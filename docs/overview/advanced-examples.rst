@@ -276,7 +276,7 @@ Back to `examples list <#simple-examples>`_.
 
        // Here we can do other work
 
-       // We can now wait for thw two parallel tasks to finish
+       // We can now wait for the two parallel tasks to finish
        mgr.evalOpAwait("queueOne")
        mgr.evalOpAwait("queueTwo")
 
@@ -415,7 +415,7 @@ Converting to Kompute Terminology
 
    1. Create a Sequence to record and submit GPU commands
    2. Submit OpCreateTensor to create all the tensors 
-   3. Record the OpAlgo with the Logistic Regresion shader
+   3. Record the OpAlgo with the Logistic Regression shader
    4. Loop across number of iterations:
       4-a. Submit algo operation on LR shader
       4-b. Re-calculate weights from loss
@@ -454,10 +454,10 @@ Converting to Kompute Terminology
 
 
 
-#. Record the OpAlgo with the Logistic Regresion shader
+#. Record the OpAlgo with the Logistic Regression shader
    :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ ~~
 
-Once we re-record, all the instructions that were recorded previosuly are cleared.
+Once we re-record, all the instructions that were recorded previously are cleared.
 
 Because of this we can record now the new commands which will consist of the following:
 
@@ -526,7 +526,7 @@ Because of this we can record now the new commands which will consist of the fol
                // Run evaluation which passes data through shader once
                sq->eval();
 
-               // Substract the resulting weights and biases 
+               // Subtract the resulting weights and biases
                for(size_t j = 0; j < bOut->size(); j++) {
                    wInVec[0] -= wOutI->data()[j];
                    wInVec[1] -= wOutJ->data()[j];

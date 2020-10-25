@@ -690,7 +690,7 @@ namespace kp {
  *
  * Tensors are the base building block in Kompute to perform operations across
  * GPUs. Each tensor would have a respective Vulkan memory and buffer, which
- * woudl be used to store their respective data. The tensors can be used for GPU
+ * would be used to store their respective data. The tensors can be used for GPU
  * data storage or transfer.
  */
 class Tensor
@@ -733,7 +733,7 @@ class Tensor
     /**
      * Initialiser which calls the initialisation for all the respective tensors
      * as well as creates the respective staging tensors. The staging tensors
-     * woudl only be created for the tensors of type TensorType::eDevice as
+     * would only be created for the tensors of type TensorType::eDevice as
      * otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -1267,7 +1267,7 @@ class Manager
      * they would like to create the resources on.
      *
      * @param physicalDeviceIndex The index of the physical device to use
-     * @param familyQueueIndeces (Optional) List of queue indeces to add for
+     * @param familyQueueIndeces (Optional) List of queue indices to add for
      * explicit allocation
      * @param totalQueues The total number of compute queues to create.
      */
@@ -1556,7 +1556,7 @@ class Algorithm
               std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
     /**
-     * Initialiser for the shader data provided to the algoithm as well as
+     * Initialiser for the shader data provided to the algorithm as well as
      * tensor parameters that will be used in shader.
      *
      * @param shaderFileData The bytes in spir-v format of the shader
@@ -1707,7 +1707,7 @@ class OpAlgoBase : public OpBase
      * the barriers that ensure the memory has been copied before going in and
      * out of the shader, as well as the dispatch operation that sends the
      * shader processing to the gpu. This function also records the GPU memory
-     * copy of the output data for the staging bufffer so it can be read by the
+     * copy of the output data for the staging buffer so it can be read by the
      * host.
      */
     virtual void record() override;
@@ -1745,7 +1745,7 @@ class OpAlgoBase : public OpBase
 
 } // End namespace kp
 
-// Including implemenation for template class
+// Including implementation for template class
 #ifndef OPALGOBASE_IMPL
 #define OPALGOBASE_IMPL
 
@@ -1972,7 +1972,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
      * the barriers that ensure the memory has been copied before going in and
      * out of the shader, as well as the dispatch operation that sends the
      * shader processing to the gpu. This function also records the GPU memory
-     * copy of the output data for the staging bufffer so it can be read by the
+     * copy of the output data for the staging buffer so it can be read by the
      * host.
      */
     virtual void record() override;
@@ -1996,7 +1996,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
 
 } // End namespace kp
 
-// Including implemenation for template class
+// Including implementation for template class
 #ifndef OPALGOLHSRHSOUT_CPP
 #define OPALGOLHSRHSOUT_CPP
 
@@ -2247,7 +2247,7 @@ class OpTensorCopy : public OpBase
     void init() override;
 
     /**
-     * Records the copy commands from teh first tensor into all the other tensors provided. Also optionally records a barrier.
+     * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
      */
     void record() override;
 

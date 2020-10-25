@@ -11,7 +11,7 @@ namespace kp {
  *
  * Tensors are the base building block in Kompute to perform operations across
  * GPUs. Each tensor would have a respective Vulkan memory and buffer, which
- * woudl be used to store their respective data. The tensors can be used for GPU
+ * would be used to store their respective data. The tensors can be used for GPU
  * data storage or transfer.
  */
 class Tensor
@@ -54,7 +54,7 @@ class Tensor
     /**
      * Initialiser which calls the initialisation for all the respective tensors
      * as well as creates the respective staging tensors. The staging tensors
-     * woudl only be created for the tensors of type TensorType::eDevice as
+     * would only be created for the tensors of type TensorType::eDevice as
      * otherwise there is no need to copy from host memory.
      */
     void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,

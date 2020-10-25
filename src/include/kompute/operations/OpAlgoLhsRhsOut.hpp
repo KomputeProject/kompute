@@ -63,7 +63,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
      * the barriers that ensure the memory has been copied before going in and
      * out of the shader, as well as the dispatch operation that sends the
      * shader processing to the gpu. This function also records the GPU memory
-     * copy of the output data for the staging bufffer so it can be read by the
+     * copy of the output data for the staging buffer so it can be read by the
      * host.
      */
     virtual void record() override;
@@ -87,7 +87,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase<tX, tY, tZ>
 
 } // End namespace kp
 
-// Including implemenation for template class
+// Including implementation for template class
 #ifndef OPALGOLHSRHSOUT_CPP
 #define OPALGOLHSRHSOUT_CPP
 

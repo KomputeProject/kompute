@@ -29,7 +29,7 @@ class Manager
      * they would like to create the resources on.
      *
      * @param physicalDeviceIndex The index of the physical device to use
-     * @param familyQueueIndeces (Optional) List of queue indeces to add for
+     * @param familyQueueIndeces (Optional) List of queue indices to add for
      * explicit allocation
      * @param totalQueues The total number of compute queues to create.
      */
