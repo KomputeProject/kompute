@@ -218,10 +218,10 @@ Back to `examples list <#simple-examples>`_.
        // In this case we select device 0, and for queues, one queue from familyIndex 0
        // and one queue from familyIndex 2
        uint32_t deviceIndex(0);
-       std::vector<uint32_t> familyIndeces = {0, 2};
+       std::vector<uint32_t> familyIndices = {0, 2};
 
        // We create a manager with device index, and queues by queue family index
-       kp::Manager mgr(deviceIndex, familyIndeces);
+       kp::Manager mgr(deviceIndex, familyIndices);
 
        // We need to create explicit sequences with their respective queues
        // The second parameter is the index in the familyIndex array which is relative

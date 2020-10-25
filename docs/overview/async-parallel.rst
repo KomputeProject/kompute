@@ -189,10 +189,10 @@ You will want to keep track of the indices you initialize your manager, as you w
     // In this case we select device 0, and for queues, one queue from familyIndex 0
     // and one queue from familyIndex 2
     uint32_t deviceIndex(0);
-    std::vector<uint32_t> familyIndeces = {0, 2};
+    std::vector<uint32_t> familyIndices = {0, 2};
 
     // We create a manager with device index, and queues by queue family index
-    kp::Manager mgr(deviceIndex, familyIndeces);
+    kp::Manager mgr(deviceIndex, familyIndices);
 
 We are now able to create sequences with a particular queue. 
 

@@ -29,12 +29,12 @@ class Manager
      * they would like to create the resources on.
      *
      * @param physicalDeviceIndex The index of the physical device to use
-     * @param familyQueueIndeces (Optional) List of queue indices to add for
+     * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
      * @param totalQueues The total number of compute queues to create.
      */
     Manager(uint32_t physicalDeviceIndex,
-            const std::vector<uint32_t>& familyQueueIndeces = {});
+            const std::vector<uint32_t>& familyQueueIndices = {});
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
@@ -271,7 +271,7 @@ class Manager
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
 
-    std::vector<uint32_t> mComputeQueueFamilyIndeces;
+    std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
     uint32_t mCurrentSequenceIndex = -1;
@@ -285,7 +285,7 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice(const std::vector<uint32_t>& familyQueueIndeces = {});
+    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {});
 };
 
 } // End namespace kp
