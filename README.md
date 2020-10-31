@@ -68,6 +68,7 @@ int main() {
     auto tensorB = mgr.buildTensor({ 0., 0., 0. });
 
     // 2. Run compute shader synchronously
+    // Operations provide abstractions to GPU processing steps and can be extended
     mgr.evalOpDefault<kp::OpAlgoBase<>>(
         { tensorA, tensorB }, 
         shaderData); // "shaderData" defined below, and can be glsl/spirv string or path to file
