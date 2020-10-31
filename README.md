@@ -52,7 +52,7 @@ Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-
 This simple example will show the basics of Kompute through the high level API.
 
 1. Create and initialise a set of data tensors for processing
-2. Run compute shader synchronously
+2. Run multiplication operation synchronously
 3. Map results back from GPU memory to print the results
 
 View the [extended version](#your-first-kompute-extended-version) or [more examples](#simple-examples).
@@ -64,21 +64,78 @@ int main() {
     kp::Manager mgr; 
 
     // 1. Create and initialise a set of data tensors for processing
-    auto tensorA = mgr.buildTensor({ 3., 4., 5. });
-    auto tensorB = mgr.buildTensor({ 0., 0., 0. });
+    auto tensorInA = mgr.buildTensor({ 2., 2., 2. });
+    auto tensorInB = mgr.buildTensor({ 1., 2., 3. });
+    auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
 
-    // 2. Run compute shader synchronously
-    // Operations provide abstractions to GPU processing steps and can be extended
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
-        { tensorA, tensorB }, 
-        shaderData); // "shaderData" defined below, and can be glsl/spirv string or path to file
+    // 2. Run multiplication operation synchronously
+    mgr.evalOpDefault<kp::OpMult<>>(
+        { tensorA, tensorB, tensorOut })
 
     // 3. Map results back from GPU memory to print the results
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB })
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB, tensorOut })
 
-    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
-    std::cout << fmt::format("A: {}, B: {}", 
-        tensorA.data(), tensorB.data()) << std::endl;
+    // Prints the output which is Output: { 2, 4, 6 }
+    std::cout << fmt::format("Output: {}", 
+        tensorOut.data()) << std::endl;
+}
+```
+
+## Your First Kompute (Extended Version)
+
+We will now show the [same example as above](#your-first-kompute-simple-version) but leveraging more advanced Kompute features:
+
+1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2
+2. Create a set of data tensors in host memory for processing
+3. Map the tensor host data into GPU memory with Kompute Operation
+4. Run operation with custom compute shader code asynchronously
+5. Create managed sequence to submit batch operations to the CPU
+6. Map data back to host by running the sequence of batch operations
+
+View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
+
+```c++
+int main() {
+
+    // 1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2
+    kp::Manager mgr(0, { 2 });
+
+    // 2. Create a set of data tensors in host memory for processing
+    auto tensorInA = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 2., 2. }));
+    auto tensorInB = std::make_shared<kp::Tensor>(kp::Tensor({ 1., 2., 3. }));
+    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
+
+    // 3. Map the tensor host data into GPU memory with Kompute Operation
+    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorInA, tensorInB, tensorOut });
+
+    // 4. Run compute shader Asynchronously with explicit dispatch layout
+    mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
+        { tensorInA, tensorInB, tensorOut }, 
+        shaderData); // "shaderData" defined is below and can be glsl/spirv string, or path to file
+
+    // 4.1. Before submitting sequence batch we wait for the async operation
+    mgr.evalOpAwaitDefault();
+
+    // 5. Create managed sequence to submit batch operations to the CPU
+    std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
+
+    // 5.1. Explicitly begin recording batch commands
+    sq->begin();
+
+    // 5.2. Record batch commands
+    sq->record<kp::OpTensorSyncLocal({ tensorInA });
+    sq->record<kp::OpTensorSyncLocal({ tensorInB });
+    sq->record<kp::OpTensorSyncLocal({ tensorOut });
+
+    // 5.3. Explicitly stop recording batch commands
+    sq->end();
+
+    // 6. Map data back to host by running the sequence of batch operations
+    sq->eval();
+
+    // Prints the output which is Output: { 2, 4, 6 }
+    std::cout << fmt::format("Output: {}", 
+        tensorOut.data()) << std::endl;
 }
 ```
 
@@ -92,14 +149,14 @@ static std::string shaderString = (R"(
 
     layout (local_size_x = 1) in;
 
-    // The input tensors in order provided
-    layout(set = 0, binding = 0) buffer a { float pa[]; };
-    layout(set = 0, binding = 1) buffer b { float pb[]; };
+    // The input tensors bind index is relative to index in parameter passed
+    layout(set = 0, binding = 0) buffer bina { float tina[]; };
+    layout(set = 0, binding = 1) buffer binb { float tinb[]; };
+    layout(set = 0, binding = 2) buffer bout { float tout[]; };
 
     void main() {
         uint index = gl_GlobalInvocationID.x;
-        pb[index] = pa[index];
-        pa[index] = index;
+        tout[index] = tina[index] * tinb[index];
     }
 )");
 static std::vector<char> shaderData(shaderString.begin(), shaderString.end());
@@ -204,61 +261,6 @@ This project started after seeing that a lot of new and renowned ML & DL project
 The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.
 
 We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
-
-## Your First Kompute (Extended Version)
-
-We will now show the [same example as above](#your-first-kompute-simple-version) but leveraging more advanced Kompute features:
-
-1. Create a set of data tensors in host memory for processing
-2. Map the tensor host data into GPU memory with Kompute Operation
-3. Run compute shader asynchronously with Async function
-4. Create managed sequence to submit batch operations to the CPU
-5. Map data back to host by running the sequence of batch operations
-
-View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
-
-```c++
-int main() {
-
-    // Creating manager with Device 0, and a single queue of familyIndex 2
-    kp::Manager mgr(0, { 2 });
-
-    // 1. Create a set of data tensors in host memory for processing
-    auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 3., 4., 5. }));
-    auto tensorB = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
-
-    // 2. Map the tensor host data into GPU memory with Kompute Operation
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
-
-    // 3. Run compute shader Asynchronously with explicit dispatch layout
-    mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
-        { tensorA, tensorB }, 
-        shaderData); // Using the same shaderData defined above in the "simple example"
-
-    // 3.1. Before submitting sequence batch we wait for the async operation
-    mgr.evalOpAwaitDefault();
-
-    // 4. Create managed sequence to submit batch operations to the CPU
-    std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
-
-    // 4.1. Explicitly begin recording batch commands
-    sq->begin();
-
-    // 4.2. Record batch commands
-    sq->record<kp::OpTensorSyncLocal({ tensorA });
-    sq->record<kp::OpTensorSyncLocal({ tensorB });
-
-    // 4.3. Explicitly stop recording batch commands
-    sq->end();
-
-    // 5. Map data back to host by running the sequence of batch operations
-    sq->eval();
-
-    // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
-    std::cout << fmt::format("A: {}, B: {}", 
-        tensorA.data(), tensorB.data()) << std::endl;
-}
-```
 
 ## More examples
 
