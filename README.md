@@ -51,29 +51,30 @@ Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-
 
 This simple example will show the basics of Kompute through the high level API.
 
-1. Create and initialise a set of data tensors for processing
-2. Run multiplication operation synchronously
-3. Map results back from GPU memory to print the results
+1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+2. Create and initialise Kompute Tensors through manager
+3. Run multiplication operation synchronously
+4. Map results back from GPU memory to print the results
 
 View the [extended version](#your-first-kompute-extended-version) or [more examples](#simple-examples).
 
 ```c++
 int main() {
 
-    // Default manager selects device 0 and first available compute compatible GPU queue
+    // 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
     kp::Manager mgr; 
 
-    // 1. Create and initialise a set of data tensors for processing
+    // 2. Create and initialise Kompute Tensors through manager
     auto tensorInA = mgr.buildTensor({ 2., 2., 2. });
     auto tensorInB = mgr.buildTensor({ 1., 2., 3. });
     auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
 
-    // 2. Run multiplication operation synchronously
+    // 3. Run multiplication operation synchronously
     mgr.evalOpDefault<kp::OpMult<>>(
-        { tensorA, tensorB, tensorOut })
+        { tensorInA, tensorInB, tensorOut })
 
-    // 3. Map results back from GPU memory to print the results
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB, tensorOut })
+    // 4. Map results back from GPU memory to print the results
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut })
 
     // Prints the output which is Output: { 2, 4, 6 }
     std::cout << fmt::format("Output: {}", 
@@ -86,9 +87,9 @@ int main() {
 We will now show the [same example as above](#your-first-kompute-simple-version) but leveraging more advanced Kompute features:
 
 1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2
-2. Create a set of data tensors in host memory for processing
-3. Map the tensor host data into GPU memory with Kompute Operation
-4. Run operation with custom compute shader code asynchronously
+2. Explicitly create Kompute Tensors without initializing in GPU
+3. Initialise the Kompute Tensor in GPU memory and map data into GPU
+4. Run operation with custom compute shader code asynchronously with explicit dispatch layout
 5. Create managed sequence to submit batch operations to the CPU
 6. Map data back to host by running the sequence of batch operations
 
@@ -100,15 +101,15 @@ int main() {
     // 1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2
     kp::Manager mgr(0, { 2 });
 
-    // 2. Create a set of data tensors in host memory for processing
+    // 2. Explicitly create Kompute Tensors without initializing in GPU
     auto tensorInA = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 2., 2. }));
     auto tensorInB = std::make_shared<kp::Tensor>(kp::Tensor({ 1., 2., 3. }));
     auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
 
-    // 3. Map the tensor host data into GPU memory with Kompute Operation
+    // 3. Initialise the Kompute Tensor in GPU memory and map data into GPU
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorInA, tensorInB, tensorOut });
 
-    // 4. Run compute shader Asynchronously with explicit dispatch layout
+    // 4. Run operation with custom compute shader code asynchronously with explicit dispatch layout
     mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
         { tensorInA, tensorInB, tensorOut }, 
         shaderData); // "shaderData" defined is below and can be glsl/spirv string, or path to file
