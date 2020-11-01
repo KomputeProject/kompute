@@ -1,11 +1,4 @@
 
-#if DEBUG
-#if KOMPUTE_ENABLE_SPDLOG
-// Only enabled if spdlog is enabled
-#include <spdlog/fmt/bundled/ranges.h>
-#endif
-#endif
-
 #include "kompute/Tensor.hpp"
 
 namespace kp {
@@ -20,7 +13,7 @@ Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType)
 {
 #if DEBUG
     SPDLOG_DEBUG(
-      "Kompute Tensor constructor data: {}, and type: {}", data, tensorType);
+      "Kompute Tensor constructor data length: {}, and type: {}", data.size(), tensorType);
 #endif
 
     this->mData = data;
