@@ -51,6 +51,7 @@ class CMakeBuild(build_ext):
                 cmake_args += ['-A', 'x64']
             build_args += ['--', '/m']
         else:
+            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS="-fPIC"']
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j2']
 
@@ -64,13 +65,12 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
 
 setup(
-    name='cmake_example',
+    name='komputepy',
     version='0.0.1',
-    author='Dean Moldovan',
-    author_email='dean0x7d@gmail.com',
-    description='A test project using pybind11 and CMake',
+    author='Alejandro Saucedo',
+    description='Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
     long_description='',
-    ext_modules=[CMakeExtension('cmake_example')],
+    ext_modules=[CMakeExtension('komputepy')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )
