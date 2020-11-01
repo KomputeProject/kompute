@@ -125,7 +125,7 @@ vs_run_tests: vs_build_tests
 ####### Create release ######
 
 update_builder_image:
-	docker build -f Dockerfile.linux . \
+	docker build -f builders/Dockerfile.linux . \
 		-t axsauze/kompute-builder:0.1
 	docker push axsauze/kompute-builder:0.1
 
@@ -151,12 +151,6 @@ build_shaders:
 		--shader-binary $(SCMP_BIN) \
 		--header-path test/compiled_shaders_include/kompute_test/shaders/ \
 		-v
-
-docker_vulkan_build:
-	docker build . -t axsauze/vulkan-sum:0.1 
-
-push_vulkan_docker:
-	docker push axsauze/vulkan-sum:0.1
 
 build_single_header:
 	quom \
