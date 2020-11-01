@@ -27,9 +27,15 @@ Sequence::~Sequence()
 {
     SPDLOG_DEBUG("Kompute Sequence Destructor started");
 
+    if (!this->mIsInit) {
+        SPDLOG_WARN("Kompute Sequence destructor called but sequence is not initialized.");
+        return;
+    }
+
     if (!this->mDevice) {
         SPDLOG_ERROR(
           "Kompute Sequence destructor reached with null Device pointer");
+        this->mIsInit = false;
         return;
     }
 
@@ -38,6 +44,7 @@ Sequence::~Sequence()
         if (!this->mCommandBuffer) {
             SPDLOG_ERROR("Kompute Sequence destructor reached with null "
                          "CommandPool pointer");
+            this->mIsInit = false;
             return;
         }
         this->mDevice->freeCommandBuffers(
@@ -50,11 +57,14 @@ Sequence::~Sequence()
         if (this->mCommandPool == nullptr) {
             SPDLOG_ERROR("Kompute Sequence destructor reached with null "
                          "CommandPool pointer");
+            this->mIsInit = false;
             return;
         }
         this->mDevice->destroy(*this->mCommandPool, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
+
+    this->mIsInit = false;
 }
 
 void

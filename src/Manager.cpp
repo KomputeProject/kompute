@@ -59,7 +59,10 @@ Manager::~Manager()
     }
 
     if (this->mManagedSequences.size()) {
-        SPDLOG_DEBUG("Releasing managed sequence");
+        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for managed sequences");
+        for (const std::pair<std::string, std::shared_ptr<Sequence>> &sqPair : this->mManagedSequences) {
+            sqPair.second->~Sequence();
+        }
         this->mManagedSequences.clear();
     }
 
@@ -91,7 +94,7 @@ Manager::~Manager()
     }
 }
 
-std::weak_ptr<Sequence>
+std::shared_ptr<Sequence>
 Manager::getOrCreateManagedSequence(std::string sequenceName)
 {
     SPDLOG_DEBUG("Kompute Manager creating Sequence object");
@@ -106,7 +109,7 @@ Manager::getOrCreateManagedSequence(std::string sequenceName)
     }
 }
 
-std::weak_ptr<Sequence>
+std::shared_ptr<Sequence>
 Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
 {
 
