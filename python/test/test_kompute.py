@@ -12,11 +12,11 @@ def test_opmult():
 
     mgr = Manager()
 
-    mgr.evalOpDefaultTensorCreate([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.evalOpDefaultAlgoMult([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.eval_algo_mult_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.evalOpDefaultTensorSyncLocal([tensor_out])
+    mgr.eval_tensor_sync_local_def([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
 
@@ -47,11 +47,11 @@ def test_opalgobase_data():
         }
     """
 
-    mgr.evalOpDefaultTensorCreate([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.evalOpDefaultAlgoBaseData([tensor_in_a, tensor_in_b, tensor_out], list(shaderData))
+    mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderData))
 
-    mgr.evalOpDefaultTensorSyncLocal([tensor_out])
+    mgr.eval_tensor_sync_local_def([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
 
@@ -69,11 +69,11 @@ def test_opalgobase_file():
 
     shaderFilePath = "../../shaders/glsl/opmult.comp"
 
-    mgr.evalOpDefaultTensorCreate([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.evalOpDefaultAlgoBaseFile([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+    mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
 
-    mgr.evalOpDefaultTensorSyncLocal([tensor_out])
+    mgr.eval_tensor_sync_local_def([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
 
@@ -82,25 +82,27 @@ def test_sequence():
     Test basic OpAlgoBase operation
     """
 
+    mgr = Manager(0, [2])
+
     tensor_in_a = Tensor([2, 2, 2])
     tensor_in_b = Tensor([1, 2, 3])
     tensor_out = Tensor([0, 0, 0])
 
-    mgr = Manager()
+    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+
+    seq = mgr.create_sequence("op")
 
     shaderFilePath = "../../shaders/glsl/opmult.comp"
-
-    mgr.evalOpDefaultTensorCreate([tensor_in_a, tensor_in_b, tensor_out])
-
-    seq = mgr.createManagedSequence("op")
+    mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+    mgr.eval_await_def()
 
     seq.begin()
-    seq.recordOpAlgoBaseFile([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+    seq.record_tensor_sync_local([tensor_in_a])
+    seq.record_tensor_sync_local([tensor_in_b])
+    seq.record_tensor_sync_local([tensor_out])
     seq.end()
 
     seq.eval()
-
-    mgr.evalOpDefaultTensorSyncLocal([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
 
