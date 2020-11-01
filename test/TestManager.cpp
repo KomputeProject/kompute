@@ -17,7 +17,7 @@ TEST(TestManager, EndToEndOpMultFlow)
 
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorOutput });
 
-    mgr.evalOpDefault<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+    mgr.evalOpDefault<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOutput });
 
@@ -44,7 +44,7 @@ TEST(TestManager, OpMultSequenceFlow)
         sq->record<kp::OpTensorCreate>({ tensorRHS });
         sq->record<kp::OpTensorCreate>({ tensorOutput });
 
-        sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+        sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
         sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
 
@@ -100,7 +100,7 @@ TEST(TestManager, TestMultipleTensorsAtOnce)
         EXPECT_TRUE(tensorRHS->isInit());
         EXPECT_TRUE(tensorOutput->isInit());
 
-        sq->record<kp::OpMult<>>({ tensorLHS, tensorRHS, tensorOutput });
+        sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
         sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
 

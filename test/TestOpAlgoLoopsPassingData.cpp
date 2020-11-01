@@ -49,7 +49,7 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
-        sq->record<kp::OpAlgoBase<>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA, tensorB },
           std::vector<char>(shader.begin(), shader.end()));
 

@@ -26,11 +26,11 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 
         sq->record<kp::OpTensorCreate>({ tensorA });
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA });
@@ -70,19 +70,19 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     // Then perform the computations
     sq->begin();
-    sq->record<kp::OpAlgoBase<3, 1, 1>>(
+    sq->record<kp::OpAlgoBase>(
       { tensorA }, std::vector<char>(shader.begin(), shader.end()));
     sq->end();
     sq->eval();
 
     sq->begin();
-    sq->record<kp::OpAlgoBase<3, 1, 1>>(
+    sq->record<kp::OpAlgoBase>(
       { tensorA }, std::vector<char>(shader.begin(), shader.end()));
     sq->end();
     sq->eval();
 
     sq->begin();
-    sq->record<kp::OpAlgoBase<3, 1, 1>>(
+    sq->record<kp::OpAlgoBase>(
       { tensorA }, std::vector<char>(shader.begin(), shader.end()));
     sq->end();
     sq->eval();
@@ -118,7 +118,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
         sq->record<kp::OpTensorCreate>({ tensorA });
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -130,7 +130,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -142,7 +142,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) {
         sq->begin();
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -195,7 +195,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
     if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
-        sq->record<kp::OpAlgoBase<3, 1, 1>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
 
         sq->end();
@@ -252,7 +252,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
         }
       )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorInA, tensorInB, tensorOut },
       std::vector<char>(shader.begin(), shader.end()));
 
@@ -289,7 +289,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
         }
       )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorInA, tensorInB, tensorOut },
       std::vector<char>(shader.begin(), shader.end()));
 
