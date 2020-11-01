@@ -236,6 +236,13 @@
     <li class="md-nav__item">
     
     
+      <a href="overview/build-system.html" class="md-nav__link">Build System Deep Dive</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="overview/shaders-to-headers.html" class="md-nav__link">Converting GLSL/HLSL Shaders to C++ Headers</a>
       
     
@@ -330,72 +337,121 @@
 <h3 id="your-first-kompute-simple-version">Your First Kompute (Simple Version)<a class="headerlink" href="#your-first-kompute-simple-version" title="Permalink to this headline">¶</a></h3>
 <p>This simple example will show the basics of Kompute through the high level API.</p>
 <ol class="arabic simple">
-<li><p>Create and initialise a set of data tensors for processing</p></li>
-<li><p>Run compute shader synchronously</p></li>
+<li><p>Create Kompute Manager with default settings (device 0 and first compute compatible queue)</p></li>
+<li><p>Create and initialise Kompute Tensors through manager</p></li>
+<li><p>Run multiplication operation synchronously</p></li>
 <li><p>Map results back from GPU memory to print the results</p></li>
 </ol>
 <p>View the <a class="reference external" href="#your-first-kompute-extended-version">extended version</a> or <a class="reference external" href="#simple-examples">more examples</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
-    <span class="c1">// Default manager selects device 0 and first available compute compatible GPU queue</span>
+    <span class="c1">// 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)</span>
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
 
-    <span class="c1">// 1. Create and initialise a set of data tensors for processing</span>
-    <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
+    <span class="c1">// 2. Create and initialise Kompute Tensors through manager</span>
+    <span class="k">auto</span> <span class="n">tensorInA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorInB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
 
-    <span class="c1">// 2. Run compute shader synchronously</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">},</span>
-        <span class="n">shaderData</span><span class="p">);</span> <span class="c1">// "shaderData" defined below, and can be glsl/spirv string or path to file</span>
+    <span class="c1">// 3. Run multiplication operation synchronously</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+        <span class="p">{</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">})</span>
 
-    <span class="c1">// 3. Map results back from GPU memory to print the results</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">})</span>
+    <span class="c1">// 4. Map results back from GPU memory to print the results</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">})</span>
 
-    <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
-        <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="c1">// Prints the output which is Output: { 2, 4, 6 }</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span>
+        <span class="n">tensorOut</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+
+
+
+<h2 id="your-first-kompute-extended-version">Your First Kompute (Extended Version)<a class="headerlink" href="#your-first-kompute-extended-version" title="Permalink to this headline">¶</a></h2>
+<p>We will now show the <a class="reference external" href="#your-first-kompute-simple-version">same example as above</a> but leveraging more advanced Kompute features:</p>
+<ol class="arabic simple">
+<li><p>Create Kompute Manager with explicit device 0 and single queue of familyIndex 2</p></li>
+<li><p>Explicitly create Kompute Tensors without initializing in GPU</p></li>
+<li><p>Initialise the Kompute Tensor in GPU memory and map data into GPU</p></li>
+<li><p>Run operation with custom compute shader code asynchronously with explicit dispatch layout</p></li>
+<li><p>Create managed sequence to submit batch operations to the CPU</p></li>
+<li><p>Map data back to host by running the sequence of batch operations</p></li>
+</ol>
+<p>View <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-examples">more examples</a>.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+    <span class="c1">// 1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span> <span class="mi">2</span> <span class="p">});</span>
+
+    <span class="c1">// 2. Explicitly create Kompute Tensors without initializing in GPU</span>
+    <span class="k">auto</span> <span class="n">tensorInA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">}));</span>
+    <span class="k">auto</span> <span class="n">tensorInB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span> <span class="p">}));</span>
+    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
+
+    <span class="c1">// 3. Initialise the Kompute Tensor in GPU memory and map data into GPU</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
+
+    <span class="c1">// 4. Run operation with custom compute shader code asynchronously with explicit dispatch layout</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+        <span class="p">{</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">},</span>
+        <span class="n">shaderData</span><span class="p">);</span> <span class="c1">// "shaderData" defined is below and can be glsl/spirv string, or path to file</span>
+
+    <span class="c1">// 4.1. Before submitting sequence batch we wait for the async operation</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">();</span>
+
+    <span class="c1">// 5. Create managed sequence to submit batch operations to the CPU</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">getOrCreateManagedSequence</span><span class="p">(</span><span class="s">"seq"</span><span class="p">).</span><span class="n">lock</span><span class="p">();</span>
+
+    <span class="c1">// 5.1. Explicitly begin recording batch commands</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+
+    <span class="c1">// 5.2. Record batch commands</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="p">({</span> <span class="n">tensorInA</span> <span class="p">});</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="p">({</span> <span class="n">tensorInB</span> <span class="p">});</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="p">({</span> <span class="n">tensorOut</span> <span class="p">});</span>
+
+    <span class="c1">// 5.3. Explicitly stop recording batch commands</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
+
+    <span class="c1">// 6. Map data back to host by running the sequence of batch operations</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+
+    <span class="c1">// Prints the output which is Output: { 2, 4, 6 }</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span>
+        <span class="n">tensorOut</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Your shader can be provided as raw glsl/hlsl string, SPIR-V bytes array (using our CLI), or string path to file containing either. Below are the examples of the valid ways of providing shader.</p>
-
-<h4 id="passing-raw-glsl-hlsl-string">Passing raw GLSL/HLSL string<a class="headerlink" href="#passing-raw-glsl-hlsl-string" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shaderString</span> <span class="o">=</span> <span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
 <span class="s">    #version 450</span>
 
 <span class="s">    layout (local_size_x = 1) in;</span>
 
-<span class="s">    // The input tensors in order provided</span>
-<span class="s">    layout(set = 0, binding = 0) buffer a { float pa[]; };</span>
-<span class="s">    layout(set = 0, binding = 1) buffer b { float pb[]; };</span>
+<span class="s">    // The input tensors bind index is relative to index in parameter passed</span>
+<span class="s">    layout(set = 0, binding = 0) buffer bina { float tina[]; };</span>
+<span class="s">    layout(set = 0, binding = 1) buffer binb { float tinb[]; };</span>
+<span class="s">    layout(set = 0, binding = 2) buffer bout { float tout[]; };</span>
 
 <span class="s">    void main() {</span>
 <span class="s">        uint index = gl_GlobalInvocationID.x;</span>
-<span class="s">        pb[index] = pa[index];</span>
-<span class="s">        pa[index] = index;</span>
+<span class="s">        tout[index] = tina[index] * tinb[index];</span>
 <span class="s">    }</span>
 <span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">shaderData</span><span class="p">(</span><span class="n">shaderString</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shaderString</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 </pre></div>
 </div>
-
-
-<h4 id="passing-spir-v-bytes-array">Passing SPIR-V Bytes array<a class="headerlink" href="#passing-spir-v-bytes-array" title="Permalink to this headline">¶</a></h4>
 <p>You can use the Kompute <a class="reference external" href="https://kompute.cc/overview/shaders-to-headers.html">shader-to-cpp-header CLI</a> to convert your GLSL/HLSL or SPIR-V shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span> <span class="n">shaderData</span> <span class="o">=</span> <span class="p">{</span> <span class="mh">0x03</span><span class="p">,</span> <span class="c1">//... spirv bytes go here)</span>
 </pre></div>
 </div>
-
-
-<h4 id="path-to-file-containing-raw-glsl-hlsl-or-spirv-bytes">Path to file containing raw glsl/hlsl or SPIRV bytes<a class="headerlink" href="#path-to-file-containing-raw-glsl-hlsl-or-spirv-bytes" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shaderData</span> <span class="o">=</span> <span class="s">"path/to/shader.glsl"</span><span class="p">;</span>
 <span class="c1">// Or SPIR-V</span>
 <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shaderData</span> <span class="o">=</span> <span class="s">"path/to/shader.glsl.spv"</span><span class="p">;</span>
 </pre></div>
 </div>
-
-
 
 
 <h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
@@ -462,60 +518,6 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <p>We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it’s incredibly well designed) but to augment it with a direct focus on Vulkan’s GPU computing capabilities. <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">This article</a> provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.</p>
 
 
-<h2 id="your-first-kompute-extended-version">Your First Kompute (Extended Version)<a class="headerlink" href="#your-first-kompute-extended-version" title="Permalink to this headline">¶</a></h2>
-<p>We will now show the <a class="reference external" href="#your-first-kompute-simple-version">same example as above</a> but leveraging more advanced Kompute features:</p>
-<ol class="arabic simple">
-<li><p>Create a set of data tensors in host memory for processing</p></li>
-<li><p>Map the tensor host data into GPU memory with Kompute Operation</p></li>
-<li><p>Run compute shader asynchronously with Async function</p></li>
-<li><p>Create managed sequence to submit batch operations to the CPU</p></li>
-<li><p>Map data back to host by running the sequence of batch operations</p></li>
-</ol>
-<p>View <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-examples">more examples</a>.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="c1">// Creating manager with Device 0, and a single queue of familyIndex 2</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{</span> <span class="mi">2</span> <span class="p">});</span>
-
-    <span class="c1">// 1. Create a set of data tensors in host memory for processing</span>
-    <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
-
-    <span class="c1">// 2. Map the tensor host data into GPU memory with Kompute Operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
-
-    <span class="c1">// 3. Run compute shader Asynchronously with explicit dispatch layout</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">},</span>
-        <span class="n">shaderData</span><span class="p">);</span> <span class="c1">// Using the same shaderData defined above in the "simple example"</span>
-
-    <span class="c1">// 3.1. Before submitting sequence batch we wait for the async operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">();</span>
-
-    <span class="c1">// 4. Create managed sequence to submit batch operations to the CPU</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">getOrCreateManagedSequence</span><span class="p">(</span><span class="s">"seq"</span><span class="p">).</span><span class="n">lock</span><span class="p">();</span>
-
-    <span class="c1">// 4.1. Explicitly begin recording batch commands</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
-
-    <span class="c1">// 4.2. Record batch commands</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="p">({</span> <span class="n">tensorA</span> <span class="p">});</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="p">({</span> <span class="n">tensorB</span> <span class="p">});</span>
-
-    <span class="c1">// 4.3. Explicitly stop recording batch commands</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
-
-    <span class="c1">// 5. Map data back to host by running the sequence of batch operations</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
-
-    <span class="c1">// Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
-        <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-
-
 <h2 id="id3">More examples<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 
 <h3 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h3>
@@ -541,123 +543,12 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 <h2 id="build-overview">Build Overview<a class="headerlink" href="#build-overview" title="Permalink to this headline">¶</a></h2>
 <p>The build system provided uses <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, which allows for cross platform builds.</p>
-
-<h3 id="build-parameters-cmake">Build parameters (cmake)<a class="headerlink" href="#build-parameters-cmake" title="Permalink to this headline">¶</a></h3>
-<p>The recommended approach to build the project is as out-of-source build in the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder. This project comes with a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> that provides a set of commands that help with developer workflows. You can see some of the commands if you want to add some of the more advanced commands.</p>
-<p>For a base build you just have to run:</p>
+<p>The top level <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> provides a set of optimized configurations for development as well as the docker image build, but you can start a build with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">Bbuild</span>
 </pre></div>
 </div>
-<p>This by default configures without any of the extra build tasks (such as building shaders) and compiles without the optional dependencies. The table below provides more detail.</p>
-<table>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Flag</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>-DCMAKE_INSTALL_PREFIX=”build/src/CMakefiles/Export/”</p></td>
-<td><p>Enables local installation (which won’t require admin privileges)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DCMAKE_TOOLCHAIN_FILE=”…”</p></td>
-<td><p>This is the path for your package manager if you use it such as vcpkg</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=1</p></td>
-<td><p>Enable if you wish to build and run the tests (must have deps installed.</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
-<td><p>Enable if you wish to build the docs (must have docs deps installed)</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1</p></td>
-<td><p>Option to build the single header file using “quom” utility</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
-<td><p>Allows you to pass extra config flags to compiler</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_INSTALL=0</p></td>
-<td><p>Disables the install step in the cmake file (useful for android build)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_ANDROID_BUILD=1</p></td>
-<td><p>Enables android build which includes and excludes relevant libraries</p></td>
-</tr>
-</tbody>
-</table>
-
-<h4 id="compile-flags">Compile Flags<a class="headerlink" href="#compile-flags" title="Permalink to this headline">¶</a></h4>
-<table>
-<colgroup>
-<col style="width: 50%"/>
-<col style="width: 50%"/>
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Flag</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>KOMPUTE_CREATE_PIPELINE_RESULT_VALUE</p></td>
-<td><p>Ensure the return value of createPipeline is processed as ResultValue instead of Result</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_VK_API_VERSION=”…”</p></td>
-<td><p>Sets the default api version to use for vulkan kompute api</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_VK_API_MAJOR_VERSION=1</p></td>
-<td><p>Major version to use for the Vulkan API</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_VK_API_MINOR_VERSION=1</p></td>
-<td><p>Minor version to use for the Vulkan API</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
-<td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_LOG_VERRIDE=1</p></td>
-<td><p>Does not define the <a href="#id4"><span class="problematic" id="id5">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overridden</p></td>
-</tr>
-<tr class="row-even"><td><p>-DSPDLOG_ACTIVE_LEVEL</p></td>
-<td><p>The level for the log level on compile level (whether spdlog is enabled)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DVVK_USE_PLATFORM_ANDROID_KHR</p></td>
-<td><p>Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)</p></td>
-</tr>
-<tr class="row-even"><td><p>-DRELEASE=1</p></td>
-<td><p>Enable release build (enabled by cmake release build)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DDEBUG=1</p></td>
-<td><p>Enable debug build including debug flags (enabled by cmake debug build)</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_DISABLE_VK_DEBUG_LAYERS</p></td>
-<td><p>Disable the debug Vulkan layers, mainly used for android builds</p></td>
-</tr>
-</tbody>
-</table>
-
-
-
-<h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
-<p>Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies.</p>
-
-<h4 id="required-dependencies">Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h4>
-<p>The only required dependency in the build is Vulkan. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven’t installed the Vulkan SDK yet, you can <a class="reference external" href="https://vulkan.lunarg.com/">download it here</a>.</p>
-
-
-<h4 id="optional-dependencies">Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h4>
-<p>SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef KOMPUTE_LOG_OVERRIDE </span><span class="c1">// Use this if you want to define custom macro overrides</span>
-<span class="cp">#if KOMPUTE_SPDLOG_ENABLED </span><span class="c1">// Use this if you want to enable SPDLOG</span>
-<span class="cp">#include</span> <span class="cpf">&lt;spdlog/spdlog.h&gt;</span><span class="cp"></span>
-<span class="cp">#endif </span><span class="c1">//KOMPUTE_SPDLOG_ENABLED</span>
-<span class="c1">// ... Otherwise it adds macros that use std::cout (and only print first element)</span>
-<span class="cp">#endif </span><span class="c1">// KOMPUTE_LOG_OVERRIDE</span>
-</pre></div>
-</div>
-<p>You can choose to build with or without SPDLOG by using the cmake flag <code class="docutils literal notranslate"><span class="pre">KOMPUTE_OPT_ENABLE_SPDLOG</span></code>.</p>
-<p>Finally, remember that you will still need to set both the compile time log level with <code class="docutils literal notranslate"><span class="pre">SPDLOG_ACTIVE_LEVEL</span></code>, and the runtime log level with <code class="docutils literal notranslate"><span class="pre">spdlog::set_level(spdlog::level::debug);</span></code>.</p>
-
-
+<p>You also are able to add Kompute in your repo with <code class="docutils literal notranslate"><span class="pre">add_subdirectory</span></code> - the <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/blob/7c8c0eeba2cdc098349fcd999102bb2cca1bf711/examples/android/android-simple/app/src/main/cpp/CMakeLists.txt#L3">Android example CMakeLists.txt file</a> shows how this would be done.</p>
+<p>For a more advanced overview of the build configuration check out the <a class="reference external" href="https://kompute.cc/overview/build-system.html">Build System Deep Dive</a> documentation.</p>
 
 
 <h2 id="kompute-development">Kompute Development<a class="headerlink" href="#kompute-development" title="Permalink to this headline">¶</a></h2>
@@ -728,6 +619,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">Advanced Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/async-parallel.html">Asynchronous &amp; Parallel Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">Memory Management Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">Build System Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">Converting GLSL/HLSL Shaders to C++ Headers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Integration (Android)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/game-engine-godot.html">Game Engine Integration (Godot Engine)</a></li>
