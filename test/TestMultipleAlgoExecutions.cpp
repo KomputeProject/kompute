@@ -19,9 +19,10 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           pa[index] = pa[index] + 1;
       })");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
+    std::shared_ptr<kp::Sequence> sq =
       mgr.getOrCreateManagedSequence("newSequence");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+
+    {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA });
@@ -38,7 +39,6 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
         sq->end();
         sq->eval();
     }
-    sqWeakPtr.reset();
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
@@ -58,9 +58,9 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence().lock();
+    std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence();
 
-    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
+    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
     // First create the tensor in a separate sequence
     sqTensor->begin();
@@ -111,9 +111,10 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
           pa[index] = pa[index] + 1;
       })");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
-      mgr.getOrCreateManagedSequence("newSequence");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq = 
+          mgr.getOrCreateManagedSequence("newSequence");
+
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA });
@@ -125,9 +126,10 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr2 =
-      mgr.getOrCreateManagedSequence("newSequence2");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence2");
+
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
@@ -137,9 +139,10 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr3 =
-      mgr.getOrCreateManagedSequence("newSequence3");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence3");
+
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
@@ -149,9 +152,10 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr4 =
-      mgr.getOrCreateManagedSequence("newSequence5");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr4.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence5");
+
         sq->begin();
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA });
@@ -179,9 +183,10 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
           pa[index] = pa[index] + 1;
       })");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
-      mgr.getOrCreateManagedSequence("newSequence");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence");
+
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA });
@@ -190,9 +195,10 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr2 =
-      mgr.getOrCreateManagedSequence("newSequence2");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence2");
+
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
@@ -205,9 +211,11 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr3 =
-      mgr.getOrCreateManagedSequence("newSequence3");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
+
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence3");
+
         sq->begin();
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA });

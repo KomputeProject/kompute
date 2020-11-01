@@ -35,9 +35,10 @@ TEST(TestManager, OpMultSequenceFlow)
 
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
-      mgr.getOrCreateManagedSequence("newSequence");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence");
+
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorLHS });
@@ -51,7 +52,6 @@ TEST(TestManager, OpMultSequenceFlow)
         sq->end();
         sq->eval();
     }
-    sqWeakPtr.reset();
 
     EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
 }
@@ -60,22 +60,22 @@ TEST(TestManager, TestMultipleSequences)
 {
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrOne =
+    std::shared_ptr<kp::Sequence> sqOne =
       mgr.getOrCreateManagedSequence("sqOne");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrTwo =
+    std::shared_ptr<kp::Sequence> sqTwo =
       mgr.getOrCreateManagedSequence("sqTwo");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrOneRef =
+    std::shared_ptr<kp::Sequence> sqOneRef =
       mgr.getOrCreateManagedSequence("sqOne");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtrTwoRef =
+    std::shared_ptr<kp::Sequence> sqTwoRef =
       mgr.getOrCreateManagedSequence("sqTwo");
 
-    EXPECT_EQ(sqWeakPtrOne.lock(), sqWeakPtrOneRef.lock());
-    EXPECT_NE(sqWeakPtrTwo.lock(), sqWeakPtrOneRef.lock());
-    EXPECT_EQ(sqWeakPtrTwo.lock(), sqWeakPtrTwoRef.lock());
-    EXPECT_NE(sqWeakPtrOneRef.lock(), sqWeakPtrTwoRef.lock());
+    EXPECT_EQ(sqOne, sqOneRef);
+    EXPECT_NE(sqTwo, sqOneRef);
+    EXPECT_EQ(sqTwo, sqTwoRef);
+    EXPECT_NE(sqOneRef, sqTwoRef);
 }
 
 TEST(TestManager, TestMultipleTensorsAtOnce)
@@ -89,9 +89,10 @@ TEST(TestManager, TestMultipleTensorsAtOnce)
 
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
+    std::shared_ptr<kp::Sequence> sq =
       mgr.getOrCreateManagedSequence("newSequence");
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+
+    {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorLHS, tensorRHS, tensorOutput });
@@ -107,7 +108,6 @@ TEST(TestManager, TestMultipleTensorsAtOnce)
         sq->end();
         sq->eval();
     }
-    sqWeakPtr.reset();
 
     EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
 }
