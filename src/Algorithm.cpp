@@ -34,7 +34,7 @@ Algorithm::~Algorithm()
             SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "pipeline but it is null");
         }
-        this->mDevice->destroy(*this->mPipeline);
+        this->mDevice->destroy(*this->mPipeline, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreePipelineCache) {
@@ -43,7 +43,7 @@ Algorithm::~Algorithm()
             SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "pipeline cache but it is null");
         }
-        this->mDevice->destroy(*this->mPipelineCache);
+        this->mDevice->destroy(*this->mPipelineCache, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreePipelineLayout) {
@@ -52,7 +52,7 @@ Algorithm::~Algorithm()
             SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "pipeline layout but it is null");
         }
-        this->mDevice->destroy(*this->mPipelineLayout);
+        this->mDevice->destroy(*this->mPipelineLayout, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreeShaderModule) {
@@ -61,7 +61,7 @@ Algorithm::~Algorithm()
             SPDLOG_ERROR("Kompute Algorithm Error requested to destroy shader "
                          "module but it is null");
         }
-        this->mDevice->destroy(*this->mShaderModule);
+        this->mDevice->destroy(*this->mShaderModule, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreeDescriptorSet) {
@@ -80,7 +80,7 @@ Algorithm::~Algorithm()
             SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "descriptor set layout but it is null");
         }
-        this->mDevice->destroy(*this->mDescriptorSetLayout);
+        this->mDevice->destroy(*this->mDescriptorSetLayout, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreeDescriptorPool) {
@@ -89,7 +89,7 @@ Algorithm::~Algorithm()
             SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "descriptor pool but it is null");
         }
-        this->mDevice->destroy(*this->mDescriptorPool);
+        this->mDevice->destroy(*this->mDescriptorPool, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 }
 

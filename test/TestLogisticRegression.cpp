@@ -1,7 +1,7 @@
 
 #include "gtest/gtest.h"
 
-#include "fmt/ranges.h"
+#include <spdlog/fmt/bundled/ranges.h>
 #include "kompute/Kompute.hpp"
 
 TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)

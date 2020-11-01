@@ -65,7 +65,7 @@ Manager::~Manager()
 
     if (this->mFreeDevice) {
         SPDLOG_INFO("Destroying device");
-        this->mDevice->destroy();
+        this->mDevice->destroy((vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
@@ -86,7 +86,7 @@ Manager::~Manager()
 #endif
 
     if (this->mFreeInstance) {
-        this->mInstance->destroy();
+        this->mInstance->destroy((vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Manager Destroyed Instance");
     }
 }
@@ -175,7 +175,7 @@ Manager::createInstance()
         std::vector<vk::LayerProperties> availableLayerProperties =
           vk::enumerateInstanceLayerProperties();
         for (vk::LayerProperties layerProperties : availableLayerProperties) {
-            std::string layerName(layerProperties.layerName);
+            std::string layerName(layerProperties.layerName.data());
             uniqueLayerNames.insert(layerName);
         }
         for (const char* desiredLayerName : desiredLayerNames) {
