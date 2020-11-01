@@ -59,8 +59,10 @@ Manager::~Manager()
     }
 
     if (this->mManagedSequences.size()) {
-        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for managed sequences");
-        for (const std::pair<std::string, std::shared_ptr<Sequence>> &sqPair : this->mManagedSequences) {
+        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for "
+                     "managed sequences");
+        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
+             this->mManagedSequences) {
             sqPair.second->~Sequence();
         }
         this->mManagedSequences.clear();
@@ -68,7 +70,8 @@ Manager::~Manager()
 
     if (this->mFreeDevice) {
         SPDLOG_INFO("Destroying device");
-        this->mDevice->destroy((vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mDevice->destroy(
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
@@ -89,7 +92,8 @@ Manager::~Manager()
 #endif
 
     if (this->mFreeInstance) {
-        this->mInstance->destroy((vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mInstance->destroy(
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Manager Destroyed Instance");
     }
 }

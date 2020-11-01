@@ -30,7 +30,6 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         }
     )");
 
-
     {
         std::shared_ptr<kp::Sequence> sq =
           mgr.getOrCreateManagedSequence("default");

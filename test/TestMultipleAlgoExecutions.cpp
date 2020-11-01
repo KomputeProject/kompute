@@ -70,20 +70,20 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     // Then perform the computations
     sq->begin();
-    sq->record<kp::OpAlgoBase>(
-      { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->record<kp::OpAlgoBase>({ tensorA },
+                               std::vector<char>(shader.begin(), shader.end()));
     sq->end();
     sq->eval();
 
     sq->begin();
-    sq->record<kp::OpAlgoBase>(
-      { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->record<kp::OpAlgoBase>({ tensorA },
+                               std::vector<char>(shader.begin(), shader.end()));
     sq->end();
     sq->eval();
 
     sq->begin();
-    sq->record<kp::OpAlgoBase>(
-      { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+    sq->record<kp::OpAlgoBase>({ tensorA },
+                               std::vector<char>(shader.begin(), shader.end()));
     sq->end();
     sq->eval();
 
@@ -112,7 +112,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
       })");
 
     {
-        std::shared_ptr<kp::Sequence> sq = 
+        std::shared_ptr<kp::Sequence> sq =
           mgr.getOrCreateManagedSequence("newSequence");
 
         sq->begin();
@@ -210,7 +210,6 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
         sq->eval();
         sq->eval();
     }
-
 
     {
         std::shared_ptr<kp::Sequence> sq =

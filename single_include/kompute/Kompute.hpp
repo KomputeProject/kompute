@@ -1315,8 +1315,9 @@ class Manager
      * @param queueIndex The queue to use from the available queues
      * @return Weak pointer to the manager owned sequence resource
      */
-    std::shared_ptr<Sequence> createManagedSequence(std::string sequenceName = "",
-                                                  uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> createManagedSequence(
+      std::string sequenceName = "",
+      uint32_t queueIndex = 0);
 
     /**
      * Function that evaluates operation against named sequence.

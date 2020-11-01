@@ -28,7 +28,8 @@ Sequence::~Sequence()
     SPDLOG_DEBUG("Kompute Sequence Destructor started");
 
     if (!this->mIsInit) {
-        SPDLOG_WARN("Kompute Sequence destructor called but sequence is not initialized.");
+        SPDLOG_WARN("Kompute Sequence destructor called but sequence is not "
+                    "initialized.");
         return;
     }
 
@@ -60,7 +61,9 @@ Sequence::~Sequence()
             this->mIsInit = false;
             return;
         }
-        this->mDevice->destroy(*this->mCommandPool, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mDevice->destroy(
+          *this->mCommandPool,
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 
@@ -196,7 +199,8 @@ Sequence::evalAwait(uint64_t waitFor)
 
     vk::Result result =
       this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
-    this->mDevice->destroy(this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+    this->mDevice->destroy(
+      this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
 
     this->mIsRunning = false;
 
