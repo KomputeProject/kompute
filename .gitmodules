@@ -1,0 +1,12 @@
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/google/googletest
+    branch = release-1.10.0
+[submodule "external/Vulkan-Headers"]
+	path = external/Vulkan-Headers
+	url = https://github.com/KhronosGroup/Vulkan-Headers
+    branch = v1.2.158
+[submodule "external/spdlog"]
+	path = external/spdlog
+	url = https://github.com/gabime/spdlog
+    branch = v1.8.1
