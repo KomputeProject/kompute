@@ -13,6 +13,7 @@
 -DDEBUG=1
 -DKOMPUTE_INCLUDE_FOR_SYNTAX
 
+-I./python/pybind11/include/
 -I./external/Vulkan-Headers/include/
 -I./external/googletest/googletest/include/
 -I./external/spdlog/include/
