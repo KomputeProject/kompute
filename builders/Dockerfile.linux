@@ -1,15 +1,17 @@
 FROM amd64/ubuntu:20.04
 
+ARG VULKAN_SDK_VERSION=1.2.154.0
+
 # First install vulkan 
 RUN apt-get update
 RUN apt-get install -y curl unzip tar wget
-RUN wget -O VulkanSDK.tar.gz https://sdk.lunarg.com/sdk/download/1.2.141.2/linux/vulkansdk-linux-x86_64-1.2.141.2.tar.gz?u=true && \
+RUN wget -O VulkanSDK.tar.gz https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz?u=true && \
     mkdir VulkanSDK && \
     cd VulkanSDK && \
     tar xvf /VulkanSDK.tar.gz
 
-RUN	cd VulkanSDK/1.2.141.2
-ENV	VULKAN_SDK="/VulkanSDK/1.2.141.2/x86_64"
+RUN	cd VulkanSDK/${VULKAN_SDK_VERSION}
+ENV	VULKAN_SDK="/VulkanSDK/${VULKAN_SDK_VERSION}/x86_64"
 ENV	PATH="${VULKAN_SDK}/bin:${PATH}"
 ENV	LD_LIBRARY_PATH="${VULKAN_SDK}/lib"
 ENV	VK_LAYER_PATH="${VULKAN_SDK}/etc/explicit_layer.d"
@@ -53,7 +55,7 @@ ENV VCPKG_PATH=/core/vcpkg
 ENV VCPKG_ROOT=/core/vcpkg
 
 # INstall dependencies for kompute
-RUN vcpkg install catch2 fmt spdlog vulkan
+RUN /core/vcpkg/vcpkg install fmt spdlog vulkan-headers gtest
 
 RUN mkdir /workspace
 WORKDIR /workspace

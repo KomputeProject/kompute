@@ -13,7 +13,9 @@
 -DDEBUG=1
 -DKOMPUTE_INCLUDE_FOR_SYNTAX
 
--I/c/Users/axsau/Programming/lib/vcpkg/installed/x64-linux/include/
+-I./external/Vulkan-Headers/include/
+-I./external/googletest/googletest/include/
+-I./external/spdlog/include/
 -I./src/include/
 -I./single_include/
 -I./vk_ndk_wrapper_include/

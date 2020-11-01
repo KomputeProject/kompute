@@ -1,5 +1,5 @@
 
-#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 #include <kompute/Kompute.hpp>
 
@@ -7,7 +7,6 @@ int
 main(int argc, char* argv[])
 {
     testing::InitGoogleTest(&argc, argv);
-    testing::InitGoogleMock(&argc, argv);
 
 #if KOMPUTE_ENABLE_SPDLOG
     spdlog::set_level(

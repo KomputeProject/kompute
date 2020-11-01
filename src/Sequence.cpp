@@ -52,7 +52,7 @@ Sequence::~Sequence()
                          "CommandPool pointer");
             return;
         }
-        this->mDevice->destroy(*this->mCommandPool);
+        this->mDevice->destroy(*this->mCommandPool, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 }
@@ -186,7 +186,7 @@ Sequence::evalAwait(uint64_t waitFor)
 
     vk::Result result =
       this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
-    this->mDevice->destroy(this->mFence);
+    this->mDevice->destroy(this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
 
     this->mIsRunning = false;
 

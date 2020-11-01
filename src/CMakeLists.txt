@@ -1,13 +1,19 @@
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    find_package(spdlog REQUIRED)
-    find_package(fmt REQUIRED)
+    if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+        set(SPDLOG_INSTALL ON)
+        add_subdirectory(${PROJECT_SOURCE_DIR}/external/spdlog ${CMAKE_CURRENT_BINARY_DIR}/kompute_spdlog)
+    else()
+        find_package(spdlog REQUIRED)
+    endif()
 endif()
 
 if(KOMPUTE_OPT_ANDOID_BUILD)
     find_library(android android)
 endif()
 
+# We don't import Vulkan library if Android build as its build dynamically
+# Otherwise it is expected that the Vulkan SDK and dependencies are installed 
 if(NOT KOMPUTE_OPT_ANDOID_BUILD)
     find_package(Vulkan REQUIRED)
 endif()
@@ -62,10 +68,19 @@ else()
     )
 endif()
 
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+# Override the default Vulkan::Vulkan headers
+# In this case we only use the build interface due to https://github.com/KhronosGroup/Vulkan-Headers/issues/157
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/Vulkan-Headers ${CMAKE_CURRENT_BINARY_DIR}/kompute_vulkan_headers)
+    get_target_property(VULKAN_HEADERS_INCLUDES Vulkan-Headers INTERFACE_INCLUDE_DIRECTORIES)
+    target_include_directories(
+        kompute PUBLIC
+        $<BUILD_INTERFACE:${VULKAN_HEADERS_INCLUDES}>)
+endif()
+
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     target_link_libraries(
         kompute 
-        fmt::fmt
         spdlog::spdlog
     )
 endif()

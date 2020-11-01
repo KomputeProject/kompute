@@ -11,12 +11,13 @@ option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 0)
 option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 0)
 option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" 0)
 option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" 0)
-option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 1)
+option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
+# Build options
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
+option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD, "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
-# TODO: Add on docs
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
-
+# Build flags
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
