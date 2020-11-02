@@ -1,5 +1,5 @@
 
-from komputepy import Tensor, Manager, Sequence
+from kp import Tensor, Manager, Sequence
 
 def test_opmult():
     """

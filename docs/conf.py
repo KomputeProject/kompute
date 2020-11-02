@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 import sys
 import os
-import komputepy
+import kp
 
 project = 'Vulkan Kompute'
 copyright = '2020, The Institute for Ethical AI & Machine Learning'

@@ -12,9 +12,9 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 Manager
 -------
 
-The Kompute Manager provides a high level interface to simplify interaction with underlying :class:`komputepy.Sequence` of Operations.
+The Kompute Manager provides a high level interface to simplify interaction with underlying :class:`kp.Sequence` of Operations.
 
-.. autoclass:: komputepy.Manager
+.. autoclass:: kp.Manager
    :members:
 
 
@@ -23,7 +23,7 @@ Sequence
 
 The Kompute Sequence consists of batches of Kompute Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective Vulkan Fence.
 
-.. autoclass:: komputepy.Sequence
+.. autoclass:: kp.Sequence
    :members:
 
 
@@ -32,13 +32,13 @@ Tensor
 
 The Kompute Tensor is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.
 
-.. autoclass:: komputepy.Tensor
+.. autoclass:: kp.Tensor
    :members:
 
 
 TensorType
 -------
 
-.. automodule:: komputepy
+.. automodule:: kp
    :members:
 

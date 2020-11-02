@@ -65,12 +65,12 @@ class CMakeBuild(build_ext):
         subprocess.check_call(['cmake', '--build', '.'] + build_args, cwd=self.build_temp)
 
 setup(
-    name='komputepy',
+    name='kp',
     version='0.0.1',
     author='Alejandro Saucedo',
-    description='Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
+    description='Vulkan Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
     long_description='',
-    ext_modules=[CMakeExtension('komputepy')],
+    ext_modules=[CMakeExtension('kp')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
 )

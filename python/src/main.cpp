@@ -5,7 +5,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(komputepy, m) {
+PYBIND11_MODULE(kp, m) {
 
     py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", "Enum with GPU memory types for Tensor.")
         .value("device", kp::Tensor::TensorTypes::eDevice, "Tensor holding data in GPU memory.")
