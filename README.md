@@ -257,7 +257,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 ## Python Package
 
-Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality.
+Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.
 
 You can install from the repository by running:
 
@@ -265,14 +265,19 @@ You can install from the repository by running:
 pip install .
 ```
 
+For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
+
+### Python Example (Simple)
+
 Then you can interact with it from your interpreter. Below is the same sample as above "Your First Kompute (Simple Version)" but in Python:
 
 ```python
+mgr = Manager()
+
+# Can be initialized with List[] or np.Array
 tensor_in_a = Tensor([2, 2, 2])
 tensor_in_b = Tensor([1, 2, 3])
 tensor_out = Tensor([0, 0, 0])
-
-mgr = Manager()
 
 mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
@@ -290,11 +295,14 @@ mgr.eval_tensor_sync_local_def([tensor_out])
 assert tensor_out.data() == [2.0, 4.0, 6.0]
 ```
 
+### Python Example (Extended)
+
 Similarly you can find the same extended example as above:
 
 ```python
 mgr = Manager(0, [2])
 
+# Can be initialized with List[] or np.Array
 tensor_in_a = Tensor([2, 2, 2])
 tensor_in_b = Tensor([1, 2, 3])
 tensor_out = Tensor([0, 0, 0])
@@ -318,6 +326,8 @@ seq.eval()
 
 assert tensor_out.data() == [2.0, 4.0, 6.0]
 ```
+
+For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
 
 ## More examples
 
