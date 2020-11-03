@@ -63,7 +63,7 @@ Manager::~Manager()
                      "managed sequences");
         for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
              this->mManagedSequences) {
-            sqPair.second->~Sequence();
+            sqPair.second->freeMemoryDestroyGPUResources();
         }
         this->mManagedSequences.clear();
     }

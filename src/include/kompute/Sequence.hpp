@@ -107,6 +107,11 @@ class Sequence
     bool isInit();
 
     /**
+     * Destroys and frees the GPU resources which include the buffer and memory.
+     */
+    void freeMemoryDestroyGPUResources();
+
+    /**
      * Record function for operation to be added to the GPU queue in batch. This
      * template requires classes to be derived from the OpBase class. This
      * function also requires the Sequence to be recording, otherwise it will
