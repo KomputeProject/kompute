@@ -24,7 +24,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #endif // KOMPUTE_VK_API_VERSION
 
 // SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#if !defined(SPDLOG_ACTIVE_LEVEL)
+#ifndef SPDLOG_ACTIVE_LEVEL
 #if DEBUG
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #else
