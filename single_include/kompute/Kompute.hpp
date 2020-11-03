@@ -1101,7 +1101,8 @@ class Sequence
     bool isInit();
 
     /**
-     * Destroys and frees the GPU resources which include the buffer and memory.
+     * Destroys and frees the GPU resources which include the buffer and memory
+     * and sets the sequence as init=False.
      */
     void freeMemoryDestroyGPUResources();
 
