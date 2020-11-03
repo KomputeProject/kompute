@@ -1,3 +1,10 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classkp_1_1Sequence.html" title=" " alt="" coords="5,5,108,32"/>
+<area shape="rect" id="node1" href="$classkp_1_1OpBase.html" title=" " alt="" coords="5,132,96,159"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="169,31,287,57"/>
+<area shape="rect" id="node5" href="$classkp_1_1OpTensorCopy.html" title=" " alt="" coords="163,81,293,108"/>
+<area shape="rect" id="node6" href="$classkp_1_1OpTensorCreate.html" title=" " alt="" coords="159,132,297,159"/>
+<area shape="rect" id="node7" href="$classkp_1_1OpTensorSyncDevice.html" title=" " alt="" coords="144,183,312,209"/>
+<area shape="rect" id="node8" href="$classkp_1_1OpTensorSyncLocal.html" title=" " alt="" coords="147,233,309,260"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpAlgoLhsRhsOut.html" title=" " alt="" coords="360,5,512,32"/>
+<area shape="rect" id="node4" href="$classkp_1_1OpMult.html" title=" " alt="" coords="393,56,479,83"/>
 </map>

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['sequence_56',['Sequence',['../classkp_1_1Sequence.html',1,'kp::Sequence'],['../classkp_1_1Sequence.html#a7086ddbc33ffb5c99cfc83cfa926f65e',1,'kp::Sequence::Sequence()'],['../classkp_1_1Sequence.html#a83518e6c7f249680a9a0a9e7d5270b9a',1,'kp::Sequence::Sequence(std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::Queue &gt; computeQueue, uint32_t queueIndex)']]],
-  ['setdata_57',['setData',['../classkp_1_1Tensor.html#a3618a3e5a86cfaad31820f9910525424',1,'kp::Tensor']]],
-  ['shape_58',['shape',['../classkp_1_1Tensor.html#a70a95b98a2558fbc80458c22ca9e043c',1,'kp::Tensor']]],
-  ['size_59',['size',['../classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9',1,'kp::Tensor']]]
+  ['record_51',['record',['../classkp_1_1Sequence.html#a3cf05ff800f9bbb267be2367f554c2f4',1,'kp::Sequence::record()'],['../classkp_1_1OpAlgoBase.html#a56c250f754b40034116611aff7791703',1,'kp::OpAlgoBase::record()'],['../classkp_1_1OpAlgoLhsRhsOut.html#af2dc8584c9cc886a00753f9340c452ee',1,'kp::OpAlgoLhsRhsOut::record()'],['../classkp_1_1OpBase.html#a242dbf4582c0b3b1d1a1f2a2207833ef',1,'kp::OpBase::record()'],['../classkp_1_1OpTensorCopy.html#a85aa269cd3ddc507b8ae33f84ff1158b',1,'kp::OpTensorCopy::record()'],['../classkp_1_1OpTensorCreate.html#a823777887f9b48a76fe94e323885f60f',1,'kp::OpTensorCreate::record()'],['../classkp_1_1OpTensorSyncDevice.html#a84ffa11a9fe3a43e594b8e10c085583d',1,'kp::OpTensorSyncDevice::record()'],['../classkp_1_1OpTensorSyncLocal.html#a3ff2889d246eec5b7fa45705716a1408',1,'kp::OpTensorSyncLocal::record()']]],
+  ['recordbuffermemorybarrier_52',['recordBufferMemoryBarrier',['../classkp_1_1Tensor.html#a2b3c387940770f7d6de891ece13190bd',1,'kp::Tensor']]],
+  ['recordcopyfrom_53',['recordCopyFrom',['../classkp_1_1Tensor.html#a1b54d0040e09e918620fcce44651fb24',1,'kp::Tensor']]],
+  ['recorddispatch_54',['recordDispatch',['../classkp_1_1Algorithm.html#ad4bd57e0e03ccdc113c7c38b181ccbf6',1,'kp::Algorithm']]]
 ];

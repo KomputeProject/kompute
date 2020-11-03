@@ -1,5 +1,6 @@
-<map id="kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;" name="kp::OpAlgoLhsRhsOut&lt; tX, tY, tZ &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,169,157,211"/>
-<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="11,80,151,121"/>
-<area shape="rect" id="node3" href="$classkp_1_1OpBase.html" title=" " alt="" coords="36,5,127,32"/>
+<map id="kp::OpAlgoLhsRhsOut" name="kp::OpAlgoLhsRhsOut">
+<area shape="rect" id="node1" title=" " alt="" coords="69,171,221,197"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoBase.html" title=" " alt="" coords="87,95,204,121"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpBase.html" title=" " alt="" coords="5,5,96,32"/>
+<area shape="rect" id="node4" href="$structkp_1_1OpAlgoBase_1_1KomputeWorkgroup.html" title=" " alt="" coords="120,5,360,32"/>
 </map>

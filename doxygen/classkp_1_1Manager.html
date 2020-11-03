@@ -85,10 +85,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a81eb45116fae9ae3a34d22cf7a238b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#af9b31d91851f8b7bb8d95c32a905b1ad">~Manager</a> ()</td></tr>
 <tr class="separator:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55d0744536347209bb88250b2e276d1a"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a55d0744536347209bb88250b2e276d1a">getOrCreateManagedSequence</a> (std::string sequenceName)</td></tr>
-<tr class="separator:a55d0744536347209bb88250b2e276d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c0761ac76b562780a5cb754eff02105"><td class="memItemLeft" align="right" valign="top">std::weak_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a9c0761ac76b562780a5cb754eff02105">createManagedSequence</a> (std::string sequenceName=&quot;&quot;, uint32_t queueIndex=0)</td></tr>
-<tr class="separator:a9c0761ac76b562780a5cb754eff02105"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc02b9b8c43742ff72cda3deb5440cf3"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#adc02b9b8c43742ff72cda3deb5440cf3">getOrCreateManagedSequence</a> (std::string sequenceName)</td></tr>
+<tr class="separator:adc02b9b8c43742ff72cda3deb5440cf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23d658e7d7383ae64442dd0c078d9c98"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a23d658e7d7383ae64442dd0c078d9c98">createManagedSequence</a> (std::string sequenceName=&quot;&quot;, uint32_t queueIndex=0)</td></tr>
+<tr class="separator:a23d658e7d7383ae64442dd0c078d9c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb89ce2a56d09d056561f021132a5469"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:aeb89ce2a56d09d056561f021132a5469"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#aeb89ce2a56d09d056561f021132a5469">evalOp</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, std::string sequenceName, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:aeb89ce2a56d09d056561f021132a5469"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -280,14 +280,14 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a9c0761ac76b562780a5cb754eff02105"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c0761ac76b562780a5cb754eff02105">&#9670;&nbsp;</a></span>createManagedSequence()</h2>
+<a id="a23d658e7d7383ae64442dd0c078d9c98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23d658e7d7383ae64442dd0c078d9c98">&#9670;&nbsp;</a></span>createManagedSequence()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::weak_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::createManagedSequence </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::createManagedSequence </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>sequenceName</em> = <code>&quot;&quot;</code>, </td>
@@ -593,14 +593,14 @@ template&lt;typename T , typename... TArgs&gt; </div>
 
 </div>
 </div>
-<a id="a55d0744536347209bb88250b2e276d1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55d0744536347209bb88250b2e276d1a">&#9670;&nbsp;</a></span>getOrCreateManagedSequence()</h2>
+<a id="adc02b9b8c43742ff72cda3deb5440cf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc02b9b8c43742ff72cda3deb5440cf3">&#9670;&nbsp;</a></span>getOrCreateManagedSequence()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::weak_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::getOrCreateManagedSequence </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1Sequence.html">Sequence</a>&gt; kp::Manager::getOrCreateManagedSequence </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>sequenceName</em></td><td>)</td>
@@ -615,7 +615,7 @@ template&lt;typename T , typename... TArgs&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Weak pointer to the manager owned sequence resource </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Shared pointer to the manager owned sequence resource </dd></dl>
 
 </div>
 </div>

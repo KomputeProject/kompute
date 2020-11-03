@@ -101,6 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1a783a310d7373588277df4ba6dc30da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84ff30d6164cc730bd554dcdfd423f74"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74">isInit</a> ()</td></tr>
 <tr class="separator:a84ff30d6164cc730bd554dcdfd423f74"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c29f6b498c362b97f37185ffd9c0fc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a6c29f6b498c362b97f37185ffd9c0fc2">freeMemoryDestroyGPUResources</a> ()</td></tr>
+<tr class="separator:a6c29f6b498c362b97f37185ffd9c0fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memTemplParams" colspan="2">template&lt;typename T , typename... TArgs&gt; </td></tr>
 <tr class="memitem:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a3cf05ff800f9bbb267be2367f554c2f4">record</a> (std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensors, TArgs &amp;&amp;... params)</td></tr>
 <tr class="separator:a3cf05ff800f9bbb267be2367f554c2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -294,6 +296,24 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean stating whether execution was successful. </dd></dl>
+
+</div>
+</div>
+<a id="a6c29f6b498c362b97f37185ffd9c0fc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c29f6b498c362b97f37185ffd9c0fc2">&#9670;&nbsp;</a></span>freeMemoryDestroyGPUResources()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Sequence::freeMemoryDestroyGPUResources </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Destroys and frees the GPU resources which include the buffer and memory and sets the sequence as init=False. </p>
 
 </div>
 </div>

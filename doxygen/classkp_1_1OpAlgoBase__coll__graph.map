@@ -1,4 +1,5 @@
-<map id="kp::OpAlgoBase&lt; tX, tY, tZ &gt;" name="kp::OpAlgoBase&lt; tX, tY, tZ &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,149,121"/>
-<area shape="rect" id="node2" href="$classkp_1_1OpBase.html" title=" " alt="" coords="32,5,123,32"/>
+<map id="kp::OpAlgoBase" name="kp::OpAlgoBase">
+<area shape="rect" id="node1" title=" " alt="" coords="87,95,204,121"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpBase.html" title=" " alt="" coords="5,5,96,32"/>
+<area shape="rect" id="node3" href="$structkp_1_1OpAlgoBase_1_1KomputeWorkgroup.html" title=" " alt="" coords="120,5,360,32"/>
 </map>

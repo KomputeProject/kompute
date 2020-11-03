@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['manager_76',['Manager',['../classkp_1_1Manager.html',1,'kp']]]
+  ['komputeworkgroup_75',['KomputeWorkgroup',['../structkp_1_1OpAlgoBase_1_1KomputeWorkgroup.html',1,'kp::OpAlgoBase']]]
 ];
