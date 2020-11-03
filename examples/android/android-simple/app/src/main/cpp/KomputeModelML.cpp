@@ -44,14 +44,14 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
         {
 
             std::shared_ptr<kp::Sequence> sqTensor =
-              mgr.createManagedSequence().lock();
+              mgr.createManagedSequence();
 
             sqTensor->begin();
             sqTensor->record<kp::OpTensorCreate>(params);
             sqTensor->end();
             sqTensor->eval();
 
-            std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
+            std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
             // Record op algo base
             sq->begin();
@@ -60,11 +60,11 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
 
 #ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
             // Newer versions of Android are able to use shaderc to read raw string
-            sq->record<kp::OpAlgoBase<>>(
+            sq->record<kp::OpAlgoBase>(
                     params, std::vector<char>(LR_SHADER.begin(), LR_SHADER.end()));
 #else
             // Older versions of Android require the SPIRV binary directly
-            sq->record<kp::OpAlgoBase<>>(
+            sq->record<kp::OpAlgoBase>(
                     params, std::vector<char>(
                             kp::shader_data::shaders_glsl_logisticregression_comp_spv,
                             kp::shader_data::shaders_glsl_logisticregression_comp_spv
