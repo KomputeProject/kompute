@@ -87,5 +87,13 @@ The package can be installed through the top level `setup.py` by running:
 pip install .
 ```
 
+You can configure log level with the function `kp.log_level` as outlined below.
+
+The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to INFO.
+
+```
+import kp
+kp.log_level(1)
+```
 
 
