@@ -7,6 +7,20 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(kp, m) {
 
+#if KOMPUTE_ENABLE_SPDLOG
+    spdlog::set_level(
+      static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL));
+#endif
+
+    m.def("log_level", [](uint8_t logLevel) {
+#if KOMPUTE_ENABLE_SPDLOG
+            spdlog::set_level(
+              static_cast<spdlog::level::level_enum>(SPDLOG_LEVEL_INFO));
+#else
+            SPDLOG_WARN("SPDLOG not enabled so log level config function not supported");
+#endif
+        });
+
     py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", "Enum with GPU memory types for Tensor.")
         .value("device", kp::Tensor::TensorTypes::eDevice, "Tensor holding data in GPU memory.")
         .value("staging", kp::Tensor::TensorTypes::eStaging, "Tensor used for transfer of data to device.")
