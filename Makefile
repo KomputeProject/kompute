@@ -86,7 +86,7 @@ mk_run_tests: mk_build_tests
 VS_BUILD_TYPE ?= "Debug"
 # Run with multiprocessin / parallel build by default
 VS_CMAKE_EXTRA_FLAGS ?= ""
-VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MP" # Adding multiprocessing by default. You should add "/MT" for submodule builds for compatibility with gtest
+VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MP" # /MP is for faster multiprocessing builds. You should add "/MT" for submodule builds for compatibility with gtest
 VS_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 vs_cmake:
