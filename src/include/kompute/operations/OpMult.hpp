@@ -17,12 +17,9 @@ namespace kp {
 
 /**
  * Operation that performs multiplication on two tensors and outpus on third
- * tensor. The template parameters specify the processing GPU layout number of
- * iterations for each x, y, z parameter. More specifically, this will be the
- * input to ".dispatch(uint32_t tX, uint32_t tY, uint32_t, tZ)"
+ * tensor.
  */
-template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-class OpMult : public OpAlgoBase<tX, tY, tZ>
+class OpMult : public OpAlgoBase
 {
   public:
     /**
@@ -41,13 +38,14 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param freeTensors Whether operation manages the memory of the Tensors
+     * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
     OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>> tensors)
-      : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
+           std::vector<std::shared_ptr<Tensor>> tensors,
+           KomputeWorkgroup komputeWorkgroup = KomputeWorkgroup())
+      : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
     {
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
@@ -58,14 +56,8 @@ class OpMult : public OpAlgoBase<tX, tY, tZ>
 
 #if RELEASE
     /**
-     * If release it will be using the static version of the shader which is 
-     * loaded using this file directly.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     * @param freeTensors Whether operation manages the memory of the Tensors
+     * If RELEASE=1 it will be using the static version of the shader which is 
+     * loaded using this file directly. Otherwise it should not override the function.
      */
     std::vector<char> fetchSpirvBinaryData() override
     {

@@ -31,22 +31,21 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
     {
         kp::Manager mgr;
 
-        std::shared_ptr<kp::Sequence> sqTensor =
-          mgr.createManagedSequence().lock();
+        std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence();
 
         sqTensor->begin();
         sqTensor->record<kp::OpTensorCreate>(params);
         sqTensor->end();
         sqTensor->eval();
 
-        std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
+        std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
         // Record op algo base
         sq->begin();
 
         sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
-        sq->record<kp::OpAlgoBase<>>(
+        sq->record<kp::OpAlgoBase>(
           params, "test/shaders/glsl/test_logistic_regression.comp");
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
@@ -76,7 +75,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
     EXPECT_LT(bIn->data()[0], 0.0);
     EXPECT_LT(bIn->data()[0], 0.0);
 
-    //SPDLOG_WARN("Result wIn: {}, bIn: {}, loss: {}",
+    // SPDLOG_WARN("Result wIn: {}, bIn: {}, loss: {}",
     //            wIn->data(),
     //            bIn->data(),
     //            lOut->data());
@@ -114,20 +113,19 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     {
         kp::Manager mgr;
 
-        std::shared_ptr<kp::Sequence> sqTensor =
-          mgr.createManagedSequence().lock();
+        std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence();
 
         sqTensor->begin();
         sqTensor->record<kp::OpTensorCreate>(params);
         sqTensor->end();
         sqTensor->eval();
 
-        std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
+        std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
         // Record op algo base
         sq->begin();
 
-        sq->record<kp::OpAlgoBase<>>(
+        sq->record<kp::OpAlgoBase>(
           params, "test/shaders/glsl/test_logistic_regression.comp");
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
@@ -158,7 +156,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     EXPECT_GT(wIn->data()[1], 1.0);
     EXPECT_LT(bIn->data()[0], 0.0);
 
-    //SPDLOG_WARN("Result wIn: {}, bIn: {}, loss: {}",
+    // SPDLOG_WARN("Result wIn: {}, bIn: {}, loss: {}",
     //            wIn->data(),
     //            bIn->data(),
     //            lOut->data());

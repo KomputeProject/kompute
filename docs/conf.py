@@ -16,13 +16,16 @@
 
 
 # -- Project information -----------------------------------------------------
+import sys
+import os
+import kp
 
 project = 'Vulkan Kompute'
 copyright = '2020, The Institute for Ethical AI & Machine Learning'
 author = 'Alejandro Saucedo'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.0'
+release = '0.4.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -31,6 +34,7 @@ release = '0.4.0'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.autodoc",
     # Creates .nojekyll config
     'sphinx.ext.githubpages',
     # Integrates with doxygen

@@ -27,33 +27,13 @@ Sequence::~Sequence()
 {
     SPDLOG_DEBUG("Kompute Sequence Destructor started");
 
-    if (!this->mDevice) {
-        SPDLOG_ERROR(
-          "Kompute Sequence destructor reached with null Device pointer");
+    if (!this->mIsInit) {
+        SPDLOG_INFO("Kompute Sequence destructor called but sequence is not "
+                    "initialized so no need to removing GPU resources.");
         return;
     }
-
-    if (this->mFreeCommandBuffer) {
-        SPDLOG_INFO("Freeing CommandBuffer");
-        if (!this->mCommandBuffer) {
-            SPDLOG_ERROR("Kompute Sequence destructor reached with null "
-                         "CommandPool pointer");
-            return;
-        }
-        this->mDevice->freeCommandBuffers(
-          *this->mCommandPool, 1, this->mCommandBuffer.get());
-        SPDLOG_DEBUG("Kompute Sequence Freed CommandBuffer");
-    }
-
-    if (this->mFreeCommandPool) {
-        SPDLOG_INFO("Destroying CommandPool");
-        if (this->mCommandPool == nullptr) {
-            SPDLOG_ERROR("Kompute Sequence destructor reached with null "
-                         "CommandPool pointer");
-            return;
-        }
-        this->mDevice->destroy(*this->mCommandPool, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
+    else {
+        this->freeMemoryDestroyGPUResources();
     }
 }
 
@@ -186,7 +166,8 @@ Sequence::evalAwait(uint64_t waitFor)
 
     vk::Result result =
       this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
-    this->mDevice->destroy(this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+    this->mDevice->destroy(
+      this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
 
     this->mIsRunning = false;
 
@@ -218,6 +199,53 @@ bool
 Sequence::isInit()
 {
     return this->mIsInit;
+}
+
+void
+Sequence::freeMemoryDestroyGPUResources()
+{
+    if (!this->mIsInit) {
+        SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
+            "but Sequence is not initialized so there's no relevant GPU resources.");
+        return;
+    }
+
+    if (!this->mDevice) {
+        SPDLOG_ERROR(
+          "Kompute Sequence freeMemoryDestroyGPUResources called with null Device pointer");
+        this->mIsInit = false;
+        return;
+    }
+
+    if (this->mFreeCommandBuffer) {
+        SPDLOG_INFO("Freeing CommandBuffer");
+        if (!this->mCommandBuffer) {
+            SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called with null "
+                         "CommandPool pointer");
+            this->mIsInit = false;
+            return;
+        }
+        this->mDevice->freeCommandBuffers(
+          *this->mCommandPool, 1, this->mCommandBuffer.get());
+        SPDLOG_DEBUG("Kompute Sequence Freed CommandBuffer");
+    }
+
+    if (this->mFreeCommandPool) {
+        SPDLOG_INFO("Destroying CommandPool");
+        if (this->mCommandPool == nullptr) {
+            SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called with null "
+                         "CommandPool pointer");
+            this->mIsInit = false;
+            return;
+        }
+        this->mDevice->destroy(
+          *this->mCommandPool,
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
+    }
+
+    this->mIsInit = false;
+
 }
 
 void

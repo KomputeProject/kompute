@@ -18,6 +18,7 @@ int main()
     auto tensorInB = mgr.buildTensor({ 0.0, 1.0, 2.0 });
     auto tensorOut = mgr.buildTensor({ 0.0, 0.0, 0.0 });
 
+#ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
     std::string shader(R"(
         // The version to use 
         #version 450
@@ -37,9 +38,17 @@ int main()
         }
       )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
             { tensorInA, tensorInB, tensorOut },
             std::vector<char>(shader.begin(), shader.end()));
+#else
+    mgr.evalOpDefault<kp::OpAlgoBase>(
+            { tensorInA, tensorInB, tensorOut },
+            std::vector<char>(
+            kp::shader_data::shaders_glsl_opmult_comp_spv,
+            kp::shader_data::shaders_glsl_opmult_comp_spv
+                + kp::shader_data::shaders_glsl_opmult_comp_spv_len));
+#endif
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({tensorOut});
 

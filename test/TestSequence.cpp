@@ -7,10 +7,10 @@ TEST(TestSequence, CmdBufSequenceBeginEnd)
 {
     kp::Manager mgr;
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
-      mgr.getOrCreateManagedSequence("newSequence");
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("newSequence");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         EXPECT_TRUE(sq->eval());
         EXPECT_TRUE(!sq->isRecording());
         EXPECT_TRUE(sq->begin());
@@ -23,4 +23,19 @@ TEST(TestSequence, CmdBufSequenceBeginEnd)
         EXPECT_TRUE(!sq->isRecording());
         EXPECT_TRUE(sq->eval());
     }
+}
+
+TEST(TestSequence, SequenceDestructorViaManager)
+{
+    std::shared_ptr<kp::Sequence> sq = nullptr;
+
+    {
+        kp::Manager mgr;
+
+        sq = mgr.getOrCreateManagedSequence("newSequence");
+
+        EXPECT_TRUE(sq->isInit());
+    }
+
+    EXPECT_FALSE(sq->isInit());
 }

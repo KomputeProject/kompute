@@ -28,7 +28,7 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
         }
     )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB }, std::vector<char>(shader.begin(), shader.end()));
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
@@ -45,7 +45,7 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromConstructor)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB },
       std::vector<char>(
         kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
@@ -67,7 +67,7 @@ TEST(TestOpAlgoBase, ShaderRawDataFromFile)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB }, "test/shaders/glsl/test_op_custom_shader.comp");
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
@@ -84,7 +84,7 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromFile)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
-    mgr.evalOpDefault<kp::OpAlgoBase<>>(
+    mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB }, "test/shaders/glsl/test_op_custom_shader.comp.spv");
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });

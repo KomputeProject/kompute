@@ -48,7 +48,8 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
         ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
 endif()
 
-add_library(kompute
+add_library(
+    kompute STATIC
     ${kompute_CPP})
 
 target_include_directories(

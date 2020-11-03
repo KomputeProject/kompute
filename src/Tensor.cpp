@@ -12,8 +12,9 @@ Tensor::Tensor()
 Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType)
 {
 #if DEBUG
-    SPDLOG_DEBUG(
-      "Kompute Tensor constructor data length: {}, and type: {}", data.size(), tensorType);
+    SPDLOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
+                 data.size(),
+                 tensorType);
 #endif
 
     this->mData = data;
@@ -350,7 +351,9 @@ Tensor::freeMemoryDestroyGPUResources()
               "Kompose Tensor expected to free buffer but got null buffer");
         } else {
             SPDLOG_DEBUG("Kompose Tensor destroying buffer");
-            this->mDevice->destroy(*this->mBuffer, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+            this->mDevice->destroy(
+              *this->mBuffer,
+              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
             this->mBuffer = nullptr;
         }
     }
@@ -361,7 +364,9 @@ Tensor::freeMemoryDestroyGPUResources()
               "Kompose Tensor expected to free buffer but got null memory");
         } else {
             SPDLOG_DEBUG("Kompose Tensor freeing memory");
-            this->mDevice->freeMemory(*this->mMemory, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+            this->mDevice->freeMemory(
+              *this->mMemory,
+              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
             this->mDevice = nullptr;
         }
     }

@@ -63,9 +63,9 @@ class Manager
      *
      * @param sequenceName The name for the named sequence to be retrieved or
      * created
-     * @return Weak pointer to the manager owned sequence resource
+     * @return Shared pointer to the manager owned sequence resource
      */
-    std::weak_ptr<Sequence> getOrCreateManagedSequence(
+    std::shared_ptr<Sequence> getOrCreateManagedSequence(
       std::string sequenceName);
 
     /**
@@ -77,8 +77,9 @@ class Manager
      * @param queueIndex The queue to use from the available queues
      * @return Weak pointer to the manager owned sequence resource
      */
-    std::weak_ptr<Sequence> createManagedSequence(std::string sequenceName = "",
-                                                  uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> createManagedSequence(
+      std::string sequenceName = "",
+      uint32_t queueIndex = 0);
 
     /**
      * Function that evaluates operation against named sequence.
@@ -94,22 +95,21 @@ class Manager
                 TArgs&&... params)
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
-        std::weak_ptr<Sequence> sqWeakPtr =
+        std::shared_ptr<kp::Sequence> sq =
           this->getOrCreateManagedSequence(sequenceName);
 
-        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
-            sq->begin();
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+        sq->begin();
 
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
-            sq->record<T>(tensors, std::forward<TArgs>(params)...);
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+        sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
-            sq->end();
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+        sq->end();
 
-            SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
-            sq->eval();
-        }
+        SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+        sq->eval();
+
         SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
@@ -147,26 +147,21 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
 
-        std::weak_ptr<Sequence> sqWeakPtr =
+        std::shared_ptr<kp::Sequence> sq =
           this->getOrCreateManagedSequence(sequenceName);
 
-        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
+        sq->begin();
 
-            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
-            sq->begin();
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
+        sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
-            sq->record<T>(tensors, std::forward<TArgs>(params)...);
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
+        sq->end();
 
-            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
-            sq->end();
+        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
+        sq->evalAsync();
 
-            SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
-            sq->evalAsync();
-        } else {
-            SPDLOG_ERROR("Kompute Manager evalOpAsync sequence [{}] not found",
-                         sequenceName);
-        }
         SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
     }
 

@@ -24,7 +24,7 @@ TEST(TestTensor, CopyFromHostData)
     kp::Manager mgr;
 
     if (std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("new").lock()) {
+          mgr.getOrCreateManagedSequence("new")) {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA, tensorB });

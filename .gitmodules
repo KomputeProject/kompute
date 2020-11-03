@@ -10,3 +10,6 @@
 	path = external/spdlog
 	url = https://github.com/gabime/spdlog
 	branch = v1.8.1
+[submodule "python/pybind11"]
+	path = python/pybind11
+	url = https://github.com/pybind/pybind11

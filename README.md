@@ -1,5 +1,5 @@
 
-![GitHub](https://img.shields.io/badge/Version-0.4.0-green.svg)
+![GitHub](https://img.shields.io/badge/Version-0.4.1-green.svg)
 ![GitHub](https://img.shields.io/badge/C++-14—20-purple.svg)
 ![GitHub](https://img.shields.io/badge/Build-cmake-red.svg)
 ![GitHub](https://img.shields.io/badge/Python-3.5—3.8-blue.svg)
@@ -15,7 +15,7 @@
 <td>
 
 <h1>Vulkan Kompute</h1>
-<h3>The General Purpose Vulkan Compute Framework.</h3>
+<h3>The General Purpose Vulkan Compute Framework for C++ and Python.</h3>
 
 </td>
 
@@ -29,10 +29,10 @@
 
 ## Principles & Features
 
-* [Single header](#setup) library for simple import to your project
-* [Documentation](https://kompute.cc) leveraging doxygen and sphinx 
-* [Asynchronous & parallel processing](#asynchronous-and-parallel-operations) capabilities with multi-queue command submission
-* [Non-Vulkan naming conventions](#architectural-overview) to disambiguate Vulkan vs Kompute components
+* [Single header](#setup) for simple import with flexible build-system configuration
+* Multi-language support with C++ as core SDK as well as [optimized Python bindings](#python-package)
+* [Asynchronous & parallel processing](#asynchronous-and-parallel-operations) support through GPU family queues
+* [Mobile enabled](#mobile-enabled) with examples in Android studio across several architectures
 * BYOV: [Bring-your-own-Vulkan design](#motivations) to play nice with existing Vulkan applications
 * Explicit relationships for GPU and host [memory ownership and memory management](https://kompute.cc/overview/memory-management.html)
 * [Short code examples](#simple-examples) showing the core features 
@@ -118,7 +118,7 @@ int main() {
     mgr.evalOpAwaitDefault();
 
     // 5. Create managed sequence to submit batch operations to the CPU
-    std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq").lock();
+    std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq");
 
     // 5.1. Explicitly begin recording batch commands
     sq->begin();
@@ -255,13 +255,79 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 </tr>
 </table>
 
-## Motivations
+## Python Package
 
-This project started after seeing that a lot of new and renowned ML & DL projects like Pytorch, Tensorflow, Alibaba DNN, Tencent NCNN - among others - have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.
+Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.
 
-The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.
+You can install from the repository by running:
 
-We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
+```
+pip install .
+```
+
+For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
+
+### Python Example (Simple)
+
+Then you can interact with it from your interpreter. Below is the same sample as above "Your First Kompute (Simple Version)" but in Python:
+
+```python
+mgr = Manager()
+
+# Can be initialized with List[] or np.Array
+tensor_in_a = Tensor([2, 2, 2])
+tensor_in_b = Tensor([1, 2, 3])
+tensor_out = Tensor([0, 0, 0])
+
+mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+
+shaderFilePath = "shaders/glsl/opmult.comp"
+mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+
+# Alternatively can pass raw string/bytes:
+# shaderFileData = """ shader code here... """
+# mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderFileData))
+
+mgr.eval_await_def()
+
+mgr.eval_tensor_sync_local_def([tensor_out])
+
+assert tensor_out.data() == [2.0, 4.0, 6.0]
+```
+
+### Python Example (Extended)
+
+Similarly you can find the same extended example as above:
+
+```python
+mgr = Manager(0, [2])
+
+# Can be initialized with List[] or np.Array
+tensor_in_a = Tensor([2, 2, 2])
+tensor_in_b = Tensor([1, 2, 3])
+tensor_out = Tensor([0, 0, 0])
+
+shaderFilePath = "../../shaders/glsl/opmult.comp"
+
+mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+
+seq = mgr.create_sequence("op")
+
+mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+mgr.eval_await_def()
+
+seq.begin()
+seq.record_tensor_sync_local([tensor_in_a])
+seq.record_tensor_sync_local([tensor_in_b])
+seq.record_tensor_sync_local([tensor_out])
+seq.end()
+
+seq.eval()
+
+assert tensor_out.data() == [2.0, 4.0, 6.0]
+```
+
+For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
 
 ## More examples
 
@@ -280,6 +346,7 @@ We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface 
 * [Parallelizing GPU-intensive Workloads via Multi-Queue Operations](https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc)
 * [Android NDK Mobile Kompute ML Application](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617)
 * [Game Development Kompute ML in Godot Engine](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0)
+
 
 ## Build Overview
 
@@ -343,4 +410,12 @@ For unix you can run
 make mk_cmake MK_BUILD_TYPE="Release"
 make mk_run_tests
 ```
+
+## Motivations
+
+This project started after seeing that a lot of new and renowned ML & DL projects like Pytorch, Tensorflow, Alibaba DNN, Tencent NCNN - among others - have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.
+
+The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.
+
+We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
 

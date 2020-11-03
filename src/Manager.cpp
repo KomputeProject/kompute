@@ -59,13 +59,19 @@ Manager::~Manager()
     }
 
     if (this->mManagedSequences.size()) {
-        SPDLOG_DEBUG("Releasing managed sequence");
+        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for "
+                     "managed sequences");
+        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
+             this->mManagedSequences) {
+            sqPair.second->freeMemoryDestroyGPUResources();
+        }
         this->mManagedSequences.clear();
     }
 
     if (this->mFreeDevice) {
         SPDLOG_INFO("Destroying device");
-        this->mDevice->destroy((vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mDevice->destroy(
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
@@ -86,12 +92,13 @@ Manager::~Manager()
 #endif
 
     if (this->mFreeInstance) {
-        this->mInstance->destroy((vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mInstance->destroy(
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         SPDLOG_DEBUG("Kompute Manager Destroyed Instance");
     }
 }
 
-std::weak_ptr<Sequence>
+std::shared_ptr<Sequence>
 Manager::getOrCreateManagedSequence(std::string sequenceName)
 {
     SPDLOG_DEBUG("Kompute Manager creating Sequence object");
@@ -106,7 +113,7 @@ Manager::getOrCreateManagedSequence(std::string sequenceName)
     }
 }
 
-std::weak_ptr<Sequence>
+std::shared_ptr<Sequence>
 Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
 {
 

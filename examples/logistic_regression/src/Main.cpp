@@ -36,22 +36,30 @@ int main()
     kp::Manager mgr;
 
     std::shared_ptr<kp::Sequence> sqTensor =
-      mgr.createManagedSequence().lock();
+      mgr.createManagedSequence();
 
     sqTensor->begin();
     sqTensor->record<kp::OpTensorCreate>(params);
     sqTensor->end();
     sqTensor->eval();
 
-    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence().lock();
+    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
     // Record op algo base
     sq->begin();
 
     sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
-    sq->record<kp::OpAlgoBase<>>(
+#ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
+    sq->record<kp::OpAlgoBase>(
       params, "shaders/glsl/logistic_regression.comp");
+#else
+    sq->record<kp::OpAlgoBase>(
+        params, std::vector<char>(
+                kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+                kp::shader_data::shaders_glsl_logisticregression_comp_spv
+                    + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
+#endif
 
     sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 

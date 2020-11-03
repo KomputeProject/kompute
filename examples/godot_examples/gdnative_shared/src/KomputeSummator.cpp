@@ -16,12 +16,7 @@ void KomputeSummator::add(float value) {
     // Set the new data in the local device
     this->mSecondaryTensor->setData({value});
     // Execute recorded sequence
-    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
-        sq->eval();
-    }
-    else {
-        throw std::runtime_error("Sequence pointer no longer available");
-    }
+    this->mSequence->eval();
 }
 
 void KomputeSummator::reset() {
@@ -38,9 +33,7 @@ void KomputeSummator::_init() {
     this->mSequence = this->mManager.getOrCreateManagedSequence("AdditionSeq");
 
     // We now record the steps in the sequence
-    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock())
     {
-
         std::string shader(R"(
             #version 450
 
@@ -55,26 +48,23 @@ void KomputeSummator::_init() {
             }
         )");
 
-        sq->begin();
+        this->mSequence->begin();
 
         // First we ensure secondary tensor loads to GPU
         // No need to sync the primary tensor as it should not be changed
-        sq->record<kp::OpTensorSyncDevice>(
+        this->mSequence->record<kp::OpTensorSyncDevice>(
                 { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
-        sq->record<kp::OpAlgoBase<>>(
+        this->mSequence->record<kp::OpAlgoBase>(
             { this->mPrimaryTensor, this->mSecondaryTensor }, 
             std::vector<char>(shader.begin(), shader.end()));
 
         // We map the result back to local 
-        sq->record<kp::OpTensorSyncLocal>(
+        this->mSequence->record<kp::OpTensorSyncLocal>(
                 { this->mPrimaryTensor });
 
-        sq->end();
-    }
-    else {
-        throw std::runtime_error("Sequence pointer no longer available");
+        this->mSequence->end();
     }
 }
 

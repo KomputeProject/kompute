@@ -26,7 +26,7 @@ public:
 
 private:
     kp::Manager mManager;
-    std::weak_ptr<kp::Sequence> mSequence;
+    std::shared_ptr<kp::Sequence> mSequence;
     std::shared_ptr<kp::Tensor> mPrimaryTensor;
     std::shared_ptr<kp::Tensor> mSecondaryTensor;
 };

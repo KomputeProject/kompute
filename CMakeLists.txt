@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4.1)
-project(kompute VERSION 0.3.0)
+project(kompute VERSION 0.4.1)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -13,6 +13,7 @@ option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader file
 option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" 0)
 option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
 # Build options
+option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" 0)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
 option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD, "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
@@ -43,12 +44,16 @@ endfunction()
 
 add_subdirectory(src)
 
+if(KOMPUTE_OPT_BUILD_TESTS)
+    add_subdirectory(test)
+endif()
+
 if(KOMPUTE_OPT_BUILD_DOCS)
     set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/config" ${CMAKE_MODULE_PATH})
     add_subdirectory(docs)
 endif()
 
-if(KOMPUTE_OPT_BUILD_TESTS)
-    add_subdirectory(test)
+if(KOMPUTE_OPT_BUILD_PYTHON)
+    add_subdirectory(python)
 endif()
 

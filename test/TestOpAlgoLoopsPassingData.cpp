@@ -30,10 +30,10 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         }
     )");
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr =
-      mgr.getOrCreateManagedSequence("default");
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("default");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock()) {
         sq->begin();
 
         sq->record<kp::OpTensorCreate>({ tensorA, tensorB });
@@ -43,13 +43,13 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         sq->eval();
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr2 =
-      mgr.getOrCreateManagedSequence("run");
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("run");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr2.lock()) {
         sq->begin();
 
-        sq->record<kp::OpAlgoBase<>>(
+        sq->record<kp::OpAlgoBase>(
           { tensorA, tensorB },
           std::vector<char>(shader.begin(), shader.end()));
 
@@ -61,10 +61,10 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         }
     }
 
-    std::weak_ptr<kp::Sequence> sqWeakPtr3 =
-      mgr.getOrCreateManagedSequence("export");
+    {
+        std::shared_ptr<kp::Sequence> sq =
+          mgr.getOrCreateManagedSequence("export");
 
-    if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr3.lock()) {
         sq->begin();
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA, tensorB });
