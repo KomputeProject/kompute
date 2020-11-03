@@ -23,10 +23,9 @@ class CMakeBuild(build_ext):
             raise RuntimeError("CMake must be installed to build the following extensions: " +
                                ", ".join(e.name for e in self.extensions))
 
-        if platform.system() == "Windows":
-            cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
-            if cmake_version < '3.1.0':
-                raise RuntimeError("CMake >= 3.1.0 is required on Windows")
+        cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
+        if cmake_version < '3.4.1':
+            raise RuntimeError("CMake >= 3.4.1 is required")
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -39,7 +38,8 @@ class CMakeBuild(build_ext):
 
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DKOMPUTE_OPT_BUILD_PYTHON=1',
-                      '-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1',
+                      '-DKOMPUTE_OPT_ENABLE_SPDLOG=1',
+                      '-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1',
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
 
         cfg = 'Debug' if self.debug else 'Release'
