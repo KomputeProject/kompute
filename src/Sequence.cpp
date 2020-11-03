@@ -244,6 +244,11 @@ Sequence::freeMemoryDestroyGPUResources()
         SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 
+    if (this->mOperations.size()) {
+        SPDLOG_INFO("Kompute Sequence clearing operations buffer");
+        this->mOperations.clear();
+    }
+
     this->mIsInit = false;
 
 }
