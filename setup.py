@@ -8,6 +8,9 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
+curr_dir = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(curr_dir, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -46,13 +49,13 @@ class CMakeBuild(build_ext):
         build_args = ['--config', cfg]
 
         if platform.system() == "Windows":
-            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS="-DSPDLOG_ACTIVE_LEVEL=0"']
+            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS=""']
             cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
             if sys.maxsize > 2**32:
                 cmake_args += ['-A', 'x64']
             build_args += ['--', '/m']
         else:
-            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS="-fPIC -DSPDLOG_ACTIVE_LEVEL=0"']
+            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS="-fPIC"']
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j2']
 
@@ -67,11 +70,13 @@ class CMakeBuild(build_ext):
 
 setup(
     name='kp',
-    version='0.0.1',
+    version='0.4.1',
     author='Alejandro Saucedo',
     description='Vulkan Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
-    long_description='',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     ext_modules=[CMakeExtension('kp')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
+    include_package_data=True,
 )
