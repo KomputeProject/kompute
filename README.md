@@ -278,10 +278,16 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.
 
-You can install from the repository by running:
+The only dependencies are Python 3.5+ and Cmake 3.4.1+. You can install Kompute from the [Python pypi package](https://pypi.org/project/kp/) using the following command.
 
 ```
-pip install .
+pip install kp
+```
+
+You can also install from master branch using:
+
+```
+pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
 ```
 
 For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
