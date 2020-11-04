@@ -84,8 +84,22 @@ Package Installation
 The package can be installed through the top level `setup.py` by running:
 
 ```
-pip install .
+pip install kp
 ```
 
+You can also install from master branch using:
+
+```
+pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
+```
+
+You can configure log level with the function `kp.log_level` as outlined below.
+
+The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to INFO.
+
+```
+import kp
+kp.log_level(1)
+```
 
 

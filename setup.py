@@ -8,6 +8,9 @@ from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
+curr_dir = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(curr_dir, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=''):
@@ -23,10 +26,9 @@ class CMakeBuild(build_ext):
             raise RuntimeError("CMake must be installed to build the following extensions: " +
                                ", ".join(e.name for e in self.extensions))
 
-        if platform.system() == "Windows":
-            cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
-            if cmake_version < '3.1.0':
-                raise RuntimeError("CMake >= 3.1.0 is required on Windows")
+        cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
+        if cmake_version < '3.4.1':
+            raise RuntimeError("CMake >= 3.4.1 is required")
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -39,13 +41,15 @@ class CMakeBuild(build_ext):
 
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DKOMPUTE_OPT_BUILD_PYTHON=1',
-                      '-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1',
+                      '-DKOMPUTE_OPT_ENABLE_SPDLOG=1',
+                      '-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1',
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
 
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
 
         if platform.system() == "Windows":
+            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS=""']
             cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
             if sys.maxsize > 2**32:
                 cmake_args += ['-A', 'x64']
@@ -66,11 +70,13 @@ class CMakeBuild(build_ext):
 
 setup(
     name='kp',
-    version='0.0.1',
+    version='0.4.1',
     author='Alejandro Saucedo',
     description='Vulkan Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
-    long_description='',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     ext_modules=[CMakeExtension('kp')],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
+    include_package_data=True,
 )
