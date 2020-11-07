@@ -72,7 +72,7 @@ PYBIND11_MODULE(kp, m) {
             "Records operation to run multiplication compute shader to two input tensors and an output tensor")
         .def("record_algo_file", &kp::Sequence::record<kp::OpAlgoBase, std::string>,
             "Records an operation using a custom shader provided from a shader path")
-        .def("record_algo_data", &kp::Sequence::record<kp::OpAlgoBase, std::vector<char>>,
+        .def("record_algo_data", &kp::Sequence::record<kp::OpAlgoBase, py::bytes>,
             "Records an operation using a custom shader provided as raw string or spirv bytes")
         .def("record_algo_lro", &kp::Sequence::record<kp::OpAlgoLhsRhsOut>,
             "Records operation to run left right out operation with custom shader");
@@ -112,7 +112,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with new anonymous Sequence")
         .def("eval_algo_file_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, std::string>,
             "Evaluates an operation using a custom shader provided from a shader path with new anonymous Sequence")
-        .def("eval_algo_data_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, std::vector<char>>,
+        .def("eval_algo_data_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, py::bytes>,
             "Evaluates an operation using a custom shader provided as raw string or spirv bytes with new anonymous Sequence")
         .def("eval_algo_lro_def", &kp::Manager::evalOpDefault<kp::OpAlgoLhsRhsOut>,
             "Evaluates operation to run left right out operation with custom shader with new anonymous Sequence")
@@ -129,7 +129,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with explicitly named Sequence")
         .def("eval_algo_file", &kp::Manager::evalOp<kp::OpAlgoBase, std::string>,
             "Evaluates an operation using a custom shader provided from a shader path with explicitly named Sequence")
-        .def("eval_algo_data", &kp::Manager::evalOp<kp::OpAlgoBase, std::vector<char>>,
+        .def("eval_algo_data", &kp::Manager::evalOp<kp::OpAlgoBase, py::bytes>,
             "Evaluates an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence")
         .def("eval_algo_lro", &kp::Manager::evalOp<kp::OpAlgoLhsRhsOut>,
             "Evaluates operation to run left right out operation with custom shader with explicitly named Sequence")
@@ -146,7 +146,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with anonymous Sequence")
         .def("eval_async_algo_file_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, std::string>,
             "Evaluates asynchronously an operation using a custom shader provided from a shader path with anonymous Sequence")
-        .def("eval_async_algo_data_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, std::vector<char>>,
+        .def("eval_async_algo_data_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, py::bytes>,
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence")
         .def("eval_async_algo_lro_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoLhsRhsOut>,
             "Evaluates asynchronously operation to run left right out operation with custom shader with anonymous Sequence")
@@ -163,7 +163,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with explicitly named Sequence")
         .def("eval_async_algo_file", &kp::Manager::evalOpAsync<kp::OpAlgoBase, std::string>,
             "Evaluates asynchronously an operation using a custom shader provided from a shader path with explicitly named Sequence")
-        .def("eval_async_algo_data", &kp::Manager::evalOpAsync<kp::OpAlgoBase, std::vector<char>>,
+        .def("eval_async_algo_data", &kp::Manager::evalOpAsync<kp::OpAlgoBase, py::bytes>,
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence")
         .def("eval_async_algo_lro", &kp::Manager::evalOpAsync<kp::OpAlgoLhsRhsOut>,
             "Evaluates asynchronously operation to run left right out operation with custom shader with explicitly named Sequence");
