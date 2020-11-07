@@ -3,6 +3,8 @@
 
 #include <kompute/Kompute.hpp>
 
+#include "docstrings.hpp"
+
 namespace py = pybind11;
 
 PYBIND11_MODULE(kp, m) {
@@ -21,22 +23,22 @@ PYBIND11_MODULE(kp, m) {
 #endif
         });
 
-    py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", "Enum with GPU memory types for Tensor.")
+    py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", DOC(kp, Tensor, TensorTypes))
         .value("device", kp::Tensor::TensorTypes::eDevice, "Tensor holding data in GPU memory.")
         .value("staging", kp::Tensor::TensorTypes::eStaging, "Tensor used for transfer of data to device.")
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
         .export_values();
 
-    py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", "Structured data used in GPU operations.")
+    py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
         .def(py::init(
             [](const std::vector<float>& data) {
                 return std::unique_ptr<kp::Tensor>(new kp::Tensor(data));
-            }), "Initialiser with only list of data components.")
+            }), DOC(kp, Tensor, Tensor, 2))
         .def(py::init(
             [](const std::vector<float>& data, kp::Tensor::TensorTypes tensorTypes) {
                 return std::unique_ptr<kp::Tensor>(new kp::Tensor(data, tensorTypes));
             }), "Initialiser with list of data components and tensor GPU memory type.")
-        .def("data", &kp::Tensor::data, "Retrieves the data as a list containing the local Tensor memory data.")
+        .def("data", &kp::Tensor::data, DOC(kp, Tensor, data))
         .def("size", &kp::Tensor::size, "Retrieves the size of the Tensor data as per the local Tensor memory.")
         .def("tensor_type", &kp::Tensor::tensorType, "Retreves the memory type of the tensor.")
         .def("is_init", &kp::Tensor::isInit, "Checks whether the tensor GPU memory has been initialised.")
