@@ -223,6 +223,3 @@ def test_logistic_regression_pyshader():
     assert tensor_w_in.data()[1] > 1.5
     assert tensor_b_in.data()[0] < 0.7
 
-
-if __name__ == "__main__":
-    test_sequence()
