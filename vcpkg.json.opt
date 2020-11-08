@@ -1,6 +1,6 @@
 {
   "name": "example",
-  "version-string": "0.0.1",
+  "version-string": "0.5.0",
   "dependencies": [
     "fmt",
     "spdlog",
