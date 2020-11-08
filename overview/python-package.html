@@ -345,17 +345,450 @@
 <li><p>mgr.eval_async_&lt;opname&gt;_def - Runs operation asynchronously under a new anonymous sequence</p></li>
 <li><p>seq.record_&lt;opname&gt; - Records operation in sequence (requires sequence to be in recording mode)</p></li>
 </ul>
-<p>You can see these operations being used in the <a class="reference external" href="https://kompute.cc/index.html#python-example-simple">Simple Python example</a> and in the <a class="reference external" href="https://kompute.cc/index.html#python-example-extended">Extended Python Example</a>.</p>
+
+
+<h2 id="python-example-simple">Python Example (Simple)<a class="headerlink" href="#python-example-simple" title="Permalink to this headline">¶</a></h2>
+<p>Then you can interact with it from your interpreter. Below is the same sample as above “Your First Kompute (Simple Version)” but in Python:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+
+<span class="c1"># Can be initialized with List[] or np.Array</span>
+<span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">tensor_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">])</span>
+
+<span class="c1"># Define the function via PyShader or directly as glsl string or spirv bytes</span>
+<span class="nd">@python2shader</span>
+<span class="k">def</span> <span class="nf">compute_shader_multiply</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
+                            <span class="n">data1</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                            <span class="n">data2</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                            <span class="n">data3</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">))):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="c1"># Run shader operation synchronously</span>
+<span class="n">mgr</span><span class="o">.</span><span class="n">eval_algo_data_def</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
+
+<span class="c1"># Alternatively can pass raw string/bytes:</span>
+<span class="c1"># shaderFileData = """ shader code here... """</span>
+<span class="c1"># mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderFileData))</span>
+
+<span class="n">mgr</span><span class="o">.</span><span class="n">eval_await_def</span><span class="p">()</span>
+
+<span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_sync_local_def</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">])</span>
+
+<span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
+</pre></div>
+</td></tr></table></div>
+
+
+<h2 id="python-example-extended">Python Example (Extended)<a class="headerlink" href="#python-example-extended" title="Permalink to this headline">¶</a></h2>
+<p>Similarly you can find the same extended example as above:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+ <span class="c1"># Can be initialized with List[] or np.Array</span>
+ <span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+ <span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+ <span class="n">tensor_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+ <span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">])</span>
+
+ <span class="n">seq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"op"</span><span class="p">)</span>
+
+ <span class="c1"># Define the function via PyShader or directly as glsl string or spirv bytes</span>
+ <span class="nd">@python2shader</span>
+ <span class="k">def</span> <span class="nf">compute_shader_multiply</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
+                             <span class="n">data1</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                             <span class="n">data2</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                             <span class="n">data3</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">))):</span>
+     <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
+     <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+ <span class="c1"># Run shader operation asynchronously and then await</span>
+ <span class="n">mgr</span><span class="o">.</span><span class="n">eval_async_algo_data_def</span><span class="p">(</span>
+     <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
+ <span class="n">mgr</span><span class="o">.</span><span class="n">eval_await_def</span><span class="p">()</span>
+
+ <span class="n">seq</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+ <span class="n">seq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">])</span>
+ <span class="n">seq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_in_b</span><span class="p">])</span>
+ <span class="n">seq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">])</span>
+ <span class="n">seq</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+
+ <span class="n">seq</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+ <span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
+</pre></div>
+</td></tr></table></div>
 
 
 <h2 id="kompute-operation-capabilities">Kompute Operation Capabilities<a class="headerlink" href="#kompute-operation-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>Handling multiple capabilites of processing can be done by compute shaders being loaded into separate sequences. The example below shows how this can be done:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span>
+
+ <span class="c1"># We'll assume we have the shader data available</span>
+ <span class="kn">from</span> <span class="nn">my_spv_shader_data</span> <span class="kn">import</span> <span class="n">mult_shader</span><span class="p">,</span> <span class="n">sum_shader</span>
+
+ <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+
+ <span class="n">t1</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">build_tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+ <span class="n">t2</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">build_tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+ <span class="n">t3</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">build_tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+
+ <span class="c1"># Create multiple separate sequences</span>
+ <span class="n">sq_mult</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"SQ_MULT"</span><span class="p">)</span>
+ <span class="n">sq_sum</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"SQ_SUM"</span><span class="p">)</span>
+ <span class="n">sq_sync</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"SQ_SYNC"</span><span class="p">)</span>
+
+ <span class="c1"># Initialize sq_mult</span>
+ <span class="n">sq_mult</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+ <span class="n">sq_mult</span><span class="o">.</span><span class="n">record_algo_data</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">],</span> <span class="n">add_shader</span><span class="p">)</span>
+ <span class="n">sq_mult</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+
+ <span class="n">sq_sum</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+ <span class="n">sq_sum</span><span class="o">.</span><span class="n">record_algo_data</span><span class="p">([</span><span class="n">t3</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">],</span> <span class="n">sum_shader</span><span class="p">)</span>
+ <span class="n">sq_sum</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+
+ <span class="n">sq_sync</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+ <span class="n">sq_sync</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t3</span><span class="p">])</span>
+ <span class="n">sq_sync</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+
+ <span class="c1"># Run multiple iterations</span>
+ <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+     <span class="n">sq_mult</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+     <span class="n">sq_sum</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+ <span class="n">sq_sync</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+ <span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">t2</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">t3</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
+</pre></div>
+</td></tr></table></div>
+
+
+<h2 id="machine-learning-logistic-regression-implementation">Machine Learning Logistic Regression Implementation<a class="headerlink" href="#machine-learning-logistic-regression-implementation" title="Permalink to this headline">¶</a></h2>
+<p>Similar to the logistic regression implementation in the C++ examples section, below you can find the Python implementation of the Logistic Regression algorithm.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="nd">@python2shader</span>
+ <span class="k">def</span> <span class="nf">compute_shader</span><span class="p">(</span>
+         <span class="n">index</span>   <span class="o">=</span> <span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
+         <span class="n">x_i</span>     <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">x_j</span>     <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">y</span>       <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">w_in</span>    <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">w_out_i</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">w_out_j</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">b_in</span>    <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">b_out</span>   <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">l_out</span>   <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+         <span class="n">M</span>       <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">))):</span>
+
+     <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
+
+     <span class="n">m</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+     <span class="n">w_curr</span> <span class="o">=</span> <span class="n">vec2</span><span class="p">(</span><span class="n">w_in</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">w_in</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+     <span class="n">b_curr</span> <span class="o">=</span> <span class="n">b_in</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+     <span class="n">x_curr</span> <span class="o">=</span> <span class="n">vec2</span><span class="p">(</span><span class="n">x_i</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">x_j</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+     <span class="n">y_curr</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+     <span class="n">z_dot</span> <span class="o">=</span> <span class="n">w_curr</span> <span class="o">@</span> <span class="n">x_curr</span>
+     <span class="n">z</span> <span class="o">=</span> <span class="n">z_dot</span> <span class="o">+</span> <span class="n">b_curr</span>
+     <span class="n">y_hat</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">))</span>
+
+     <span class="n">d_z</span> <span class="o">=</span> <span class="n">y_hat</span> <span class="o">-</span> <span class="n">y_curr</span>
+     <span class="n">d_w</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_curr</span> <span class="o">*</span> <span class="n">d_z</span>
+     <span class="n">d_b</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">d_z</span>
+
+     <span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">y_curr</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">y_hat</span><span class="p">))</span> <span class="o">+</span> <span class="p">((</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">y_curr</span><span class="p">)</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">y_hat</span><span class="p">)))</span>
+
+     <span class="n">w_out_i</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_w</span><span class="o">.</span><span class="n">x</span>
+     <span class="n">w_out_j</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_w</span><span class="o">.</span><span class="n">y</span>
+     <span class="n">b_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_b</span>
+     <span class="n">l_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
+
+
+ <span class="c1"># First we create input and ouput tensors for shader</span>
+ <span class="n">tensor_x_i</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+ <span class="n">tensor_x_j</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+ <span class="n">tensor_y</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+ <span class="n">tensor_w_in</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">])</span>
+ <span class="n">tensor_w_out_i</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_w_out_j</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+ <span class="n">tensor_b_in</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_b_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+ <span class="n">tensor_l_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+
+ <span class="n">tensor_m</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span> <span class="mf">5.0</span> <span class="p">])</span>
+
+ <span class="c1"># We store them in an array for easier interaction</span>
+ <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor_x_i</span><span class="p">,</span> <span class="n">tensor_x_j</span><span class="p">,</span> <span class="n">tensor_y</span><span class="p">,</span> <span class="n">tensor_w_in</span><span class="p">,</span> <span class="n">tensor_w_out_i</span><span class="p">,</span>
+     <span class="n">tensor_w_out_j</span><span class="p">,</span> <span class="n">tensor_b_in</span><span class="p">,</span> <span class="n">tensor_b_out</span><span class="p">,</span> <span class="n">tensor_l_out</span><span class="p">,</span> <span class="n">tensor_m</span><span class="p">]</span>
+
+ <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+
+ <span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+ <span class="c1"># Record commands for efficient evaluation</span>
+ <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">()</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">record_tensor_sync_device</span><span class="p">([</span><span class="n">tensor_w_in</span><span class="p">,</span> <span class="n">tensor_b_in</span><span class="p">])</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">record_algo_data</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">compute_shader</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_w_out_i</span><span class="p">,</span> <span class="n">tensor_w_out_j</span><span class="p">,</span> <span class="n">tensor_b_out</span><span class="p">,</span> <span class="n">tensor_l_out</span><span class="p">])</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+
+ <span class="n">ITERATIONS</span> <span class="o">=</span> <span class="mi">100</span>
+ <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+ <span class="c1"># Perform machine learning training and inference across all input X and Y</span>
+ <span class="k">for</span> <span class="n">i_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ITERATIONS</span><span class="p">):</span>
+     <span class="n">sq</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+     <span class="c1"># Calculate the parameters based on the respective derivatives calculated</span>
+     <span class="n">w_in_i_val</span> <span class="o">=</span> <span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+     <span class="n">w_in_j_val</span> <span class="o">=</span> <span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+     <span class="n">b_in_val</span> <span class="o">=</span> <span class="n">tensor_b_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+     <span class="k">for</span> <span class="n">j_iter</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tensor_b_out</span><span class="o">.</span><span class="n">size</span><span class="p">()):</span>
+         <span class="n">w_in_i_val</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">tensor_w_out_i</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="n">j_iter</span><span class="p">]</span>
+         <span class="n">w_in_j_val</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">tensor_w_out_j</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="n">j_iter</span><span class="p">]</span>
+         <span class="n">b_in_val</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">tensor_b_out</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="n">j_iter</span><span class="p">]</span>
+
+     <span class="c1"># Update the parameters to process inference again</span>
+     <span class="n">tensor_w_in</span><span class="o">.</span><span class="n">set_data</span><span class="p">([</span><span class="n">w_in_i_val</span><span class="p">,</span> <span class="n">w_in_j_val</span><span class="p">])</span>
+     <span class="n">tensor_b_in</span><span class="o">.</span><span class="n">set_data</span><span class="p">([</span><span class="n">b_in_val</span><span class="p">])</span>
+
+ <span class="k">assert</span> <span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.01</span>
+ <span class="k">assert</span> <span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+ <span class="k">assert</span> <span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.5</span>
+ <span class="k">assert</span> <span class="n">tensor_b_in</span><span class="o">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.7</span>
+
+ <span class="c1"># Print outputs</span>
+ <span class="nb">print</span><span class="p">(</span><span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
+ <span class="nb">print</span><span class="p">(</span><span class="n">tensor_b_in</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
+</pre></div>
+</td></tr></table></div>
 
 
 <h2 id="package-installation">Package Installation<a class="headerlink" href="#package-installation" title="Permalink to this headline">¶</a></h2>
 <p>The package can be installed through the top level <cite>setup.py</cite> by running:</p>
 <p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">kp</span>
+<span class="pre">`</span></code></p>
+<p>You can also install from master branch using:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+git://github.com/EthicalML/vulkan-kompute.git@master</span>
+<span class="pre">`</span></code></p>
+<p>You can configure log level with the function <cite>kp.log_level</cite> as outlined below.</p>
+<p>The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to INFO.</p>
+<p><code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">import</span> <span class="pre">kp</span>
+<span class="pre">kp.log_level(1)</span>
 <span class="pre">`</span></code></p>
 
 

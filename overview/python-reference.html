@@ -216,7 +216,28 @@
     <li class="md-nav__item">
     
     
-      <a href="python-package.html" class="md-nav__link">Python Package Overview</a>
+      <a href="python-package.html" class="md-nav__link">Python Example (Simple)</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-package.html#python-example-extended" class="md-nav__link">Python Example (Extended)</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-package.html#kompute-operation-capabilities" class="md-nav__link">Kompute Operation Capabilities</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-package.html#package-installation" class="md-nav__link">Package Installation</a>
       
     
     </li>
@@ -620,10 +641,18 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dt id="kp.Tensor">
 <em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#kp.Tensor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Structured data used in GPU operations.</p>
+<p>Tensors are the base building block in Kompute to perform operations
+across GPUs. Each tensor would have a respective Vulkan memory and
+buffer, which would be used to store their respective data. The
+tensors can be used for GPU data storage or transfer.</p>
 <dl class="py method">
 <dt id="kp.Tensor.data">
 <code class="sig-name descname">data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → List<span class="p">[</span>float<span class="p">]</span><a class="headerlink" href="#kp.Tensor.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the data as a list containing the local Tensor memory data.</p>
+<dd><p>Returns the vector of data currently contained by the Tensor. It is
+important to ensure that there is no out-of-sync data with the GPU
+memory.</p>
+<p>@return Reference to vector of elements representing the data in the
+tensor.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Tensor.is_init">
@@ -663,10 +692,18 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dt id="id0">
 <em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Structured data used in GPU operations.</p>
+<p>Tensors are the base building block in Kompute to perform operations
+across GPUs. Each tensor would have a respective Vulkan memory and
+buffer, which would be used to store their respective data. The
+tensors can be used for GPU data storage or transfer.</p>
 <dl class="py method">
 <dt id="id1">
 <code class="sig-name descname">data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → List<span class="p">[</span>float<span class="p">]</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the data as a list containing the local Tensor memory data.</p>
+<dd><p>Returns the vector of data currently contained by the Tensor. It is
+important to ensure that there is no out-of-sync data with the GPU
+memory.</p>
+<p>@return Reference to vector of elements representing the data in the
+tensor.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="id2">
@@ -702,7 +739,10 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dl class="py class">
 <dt id="kp.TensorTypes">
 <em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">TensorTypes</code><a class="headerlink" href="#kp.TensorTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Enum with GPU memory types for Tensor.</p>
+<dd><p>Type for tensors created: Device allows memory to be transferred from
+staging buffers. Staging are host memory visible. Storage are device
+visible but are not set up to transfer or receive data (only for
+shader storage).</p>
 <p>Members:</p>
 <blockquote>
 <div><p>device : Tensor holding data in GPU memory.</p>
@@ -714,6 +754,10 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#kp.TensorTypes.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
+<dl class="py function">
+<dt id="kp.log_level">
+<code class="sig-prename descclassname">kp.</code><code class="sig-name descname">log_level</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.log_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 
 

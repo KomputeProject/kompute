@@ -468,6 +468,29 @@
 </div>
 
 
+<h2 id="id2">More examples<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+
+<h3 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-shader-example">Pass shader as raw string</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#record-batch-commands">Record batch commands with a Kompute Sequence</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#asynchronous-operations">Run Asynchronous Operations</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">Run Parallel Operations Across Multiple GPU Queues</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#your-custom-kompute-operation">Create your custom Kompute Operations</a></p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#logistic-regression-example">Implementing logistic regression from scratch</a></p></li>
+</ul>
+
+
+<h3 id="end-to-end-examples">End-to-end examples<a class="headerlink" href="#end-to-end-examples" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Machine Learning Logistic Regression Implementation</a></p></li>
+<li><p><a class="reference external" href="https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc">Parallelizing GPU-intensive Workloads via Multi-Queue Operations</a></p></li>
+<li><p><a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Android NDK Mobile Kompute ML Application</a></p></li>
+<li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
+</ul>
+
+
+
 <h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
 <p>The core architecture of Kompute includes the following:</p>
 <ul class="simple">
@@ -507,7 +530,7 @@ Simplified Kompute Components
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"/></a>
 
 
-<h2 id="id2">Mobile Enabled<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2 id="id3">Mobile Enabled<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>Kompute has been optimized to work in mobile environments. The <a class="reference external" href="#build-overview">build system</a> enables for dynamic loading of the Vulkan shared library for Android environments, together with a working <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/vk_ndk_wrapper_include">Android NDK Vulkan wrapper</a> for the CPP headers.</p>
 <table>
 <tr>
@@ -528,8 +551,12 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 <h2 id="python-package">Python Package<a class="headerlink" href="#python-package" title="Permalink to this headline">¶</a></h2>
 <p>Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.</p>
-<p>You can install from the repository by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">.</span>
+<p>The only dependencies are Python 3.5+ and Cmake 3.4.1+. You can install Kompute from the <a class="reference external" href="https://pypi.org/project/kp/">Python pypi package</a> using the following command.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">kp</span>
+</pre></div>
+</div>
+<p>You can also install from master branch using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">EthicalML</span><span class="o">/</span><span class="n">vulkan</span><span class="o">-</span><span class="n">kompute</span><span class="o">.</span><span class="n">git</span><span class="nd">@master</span>
 </pre></div>
 </div>
 <p>For further details you can read the <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python Package documentation</a> or the <a class="reference external" href="https://kompute.cc/overview/python-reference.html">Python Class Reference documentation</a>.</p>
@@ -545,8 +572,18 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 <span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">])</span>
 
-<span class="n">shaderFilePath</span> <span class="o">=</span> <span class="s2">"shaders/glsl/opmult.comp"</span>
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_async_algo_file_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">shaderFilePath</span><span class="p">)</span>
+<span class="c1"># Define the function via PyShader or directly as glsl string or spirv bytes</span>
+<span class="nd">@python2shader</span>
+<span class="k">def</span> <span class="nf">compute_shader_multiply</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
+                            <span class="n">data1</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                            <span class="n">data2</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                            <span class="n">data3</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">))):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="c1"># Run shader operation synchronously</span>
+<span class="n">mgr</span><span class="o">.</span><span class="n">eval_algo_data_def</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
 
 <span class="c1"># Alternatively can pass raw string/bytes:</span>
 <span class="c1"># shaderFileData = """ shader code here... """</span>
@@ -570,13 +607,22 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
 <span class="n">tensor_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-<span class="n">shaderFilePath</span> <span class="o">=</span> <span class="s2">"../../shaders/glsl/opmult.comp"</span>
-
 <span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">])</span>
 
 <span class="n">seq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"op"</span><span class="p">)</span>
 
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_async_algo_file_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">shaderFilePath</span><span class="p">)</span>
+<span class="c1"># Define the function via PyShader or directly as glsl string or spirv bytes</span>
+<span class="nd">@python2shader</span>
+<span class="k">def</span> <span class="nf">compute_shader_multiply</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
+                            <span class="n">data1</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                            <span class="n">data2</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
+                            <span class="n">data3</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">))):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="c1"># Run shader operation asynchronously and then await</span>
+<span class="n">mgr</span><span class="o">.</span><span class="n">eval_async_algo_data_def</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
 <span class="n">mgr</span><span class="o">.</span><span class="n">eval_await_def</span><span class="p">()</span>
 
 <span class="n">seq</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
@@ -591,29 +637,6 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 </pre></div>
 </div>
 <p>For further details you can read the <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python Package documentation</a> or the <a class="reference external" href="https://kompute.cc/overview/python-reference.html">Python Class Reference documentation</a>.</p>
-
-
-
-<h2 id="id5">More examples<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
-
-<h3 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-shader-example">Pass shader as raw string</a></p></li>
-<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#record-batch-commands">Record batch commands with a Kompute Sequence</a></p></li>
-<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#asynchronous-operations">Run Asynchronous Operations</a></p></li>
-<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">Run Parallel Operations Across Multiple GPU Queues</a></p></li>
-<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#your-custom-kompute-operation">Create your custom Kompute Operations</a></p></li>
-<li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#logistic-regression-example">Implementing logistic regression from scratch</a></p></li>
-</ul>
-
-
-<h3 id="end-to-end-examples">End-to-end examples<a class="headerlink" href="#end-to-end-examples" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Machine Learning Logistic Regression Implementation</a></p></li>
-<li><p><a class="reference external" href="https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc">Parallelizing GPU-intensive Workloads via Multi-Queue Operations</a></p></li>
-<li><p><a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Android NDK Mobile Kompute ML Application</a></p></li>
-<li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
-</ul>
 
 
 
