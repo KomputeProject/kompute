@@ -49,7 +49,7 @@ def test_opalgobase_data():
 
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderData))
+    mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderData))
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 
@@ -81,28 +81,43 @@ def test_sequence():
     """
     Test basic OpAlgoBase operation
     """
-
     mgr = Manager(0, [2])
-
     tensor_in_a = Tensor([2, 2, 2])
     tensor_in_b = Tensor([1, 2, 3])
     tensor_out = Tensor([0, 0, 0])
-
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
-
     seq = mgr.create_sequence("op")
-
     shaderFilePath = "../../shaders/glsl/opmult.comp"
     mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
     mgr.eval_await_def()
-
     seq.begin()
     seq.record_tensor_sync_local([tensor_in_a])
     seq.record_tensor_sync_local([tensor_in_b])
     seq.record_tensor_sync_local([tensor_out])
     seq.end()
-
     seq.eval()
+    assert tensor_out.data() == [2.0, 4.0, 6.0]
+
+def test_pyshader_generated():
+    from pyshader import python2shader, f32, ivec3, Array
+
+    @python2shader
+    def compute_shader_multiply(index: ("input", "GlobalInvocationId", ivec3),
+                                data1: ("buffer", 0, Array(f32)),
+                                data2: ("buffer", 1, Array(f32)),
+                                data3: ("buffer", 2, Array(f32))):
+        i = index.x
+        data3[i] = data1[i] * data2[i]
+
+    tensor_in_a = Tensor([2, 2, 2])
+    tensor_in_b = Tensor([1, 2, 3])
+    tensor_out = Tensor([0, 0, 0])
+
+    mgr = Manager()
+
+    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
+    mgr.eval_tensor_sync_local_def([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
 
