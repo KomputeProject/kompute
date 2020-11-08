@@ -99,7 +99,7 @@ PYBIND11_MODULE(kp, m) {
             }), "Manager initialiser can provide specified device and array of GPU queueFamilies to load.")
         .def("get_create_sequence", &kp::Manager::getOrCreateManagedSequence, "Get a Sequence or create a new one with given name")
         .def("create_sequence", &kp::Manager::createManagedSequence,
-                py::arg("name"), py::arg("queueIndex") = 0, "Create a sequence with specific name and specified index of available queues")
+                py::arg("name") = "", py::arg("queueIndex") = 0, "Create a sequence with specific name and specified index of available queues")
         .def("build_tensor", &kp::Manager::buildTensor, 
                 py::arg("data"), py::arg("tensorType") = kp::Tensor::TensorTypes::eDevice,
                 "Build and initialise tensor")
