@@ -1,7 +1,6 @@
 
 #include "gtest/gtest.h"
 
-//#include <spdlog/fmt/bundled/ranges.h>
 #include "kompute/Kompute.hpp"
 
 TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
@@ -73,12 +72,11 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
     EXPECT_LT(wIn->data()[0], 0.01);
     EXPECT_GT(wIn->data()[1], 1.0);
     EXPECT_LT(bIn->data()[0], 0.0);
-    EXPECT_LT(bIn->data()[0], 0.0);
 
-    // SPDLOG_WARN("Result wIn: {}, bIn: {}, loss: {}",
-    //            wIn->data(),
-    //            bIn->data(),
-    //            lOut->data());
+    SPDLOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
+               wIn->data()[0],
+               wIn->data()[1],
+               bIn->data()[0]);
 }
 
 TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
@@ -156,8 +154,8 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     EXPECT_GT(wIn->data()[1], 1.0);
     EXPECT_LT(bIn->data()[0], 0.0);
 
-    // SPDLOG_WARN("Result wIn: {}, bIn: {}, loss: {}",
-    //            wIn->data(),
-    //            bIn->data(),
-    //            lOut->data());
+    SPDLOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
+               wIn->data()[0],
+               wIn->data()[1],
+               bIn->data()[0]);
 }
