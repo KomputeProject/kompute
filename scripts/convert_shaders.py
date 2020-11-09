@@ -122,8 +122,8 @@ def run_cli(
         for file in spirv_files:
             print(xxd_cmd)
             header_data = str(run_cmd(xxd_cmd, "-i", file))
-            # Ensuring the variable is a static unsigned const
-            header_data = header_data.replace("unsigned", "static unsigned const")
+            # Ensuring the variable is a static const unsigned
+            header_data = header_data.replace("unsigned", "static const unsigned")
             if is_windows:
                 raw_file_name = file.split("\\")[-1]
             else:
