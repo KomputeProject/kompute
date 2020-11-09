@@ -1,8 +1,11 @@
+import os
 
 from pyshader import python2shader, f32, ivec3, Array
 from pyshader.stdlib import exp, log
 
 from kp import Tensor, Manager, Sequence
+
+DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 def test_opmult():
     """
@@ -70,7 +73,7 @@ def test_opalgobase_file():
 
     mgr = Manager()
 
-    shaderFilePath = "../../shaders/glsl/opmult.comp"
+    shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
 
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
@@ -85,20 +88,26 @@ def test_sequence():
     Test basic OpAlgoBase operation
     """
     mgr = Manager(0, [2])
+
     tensor_in_a = Tensor([2, 2, 2])
     tensor_in_b = Tensor([1, 2, 3])
     tensor_out = Tensor([0, 0, 0])
+
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
-    seq = mgr.create_sequence("op")
-    shaderFilePath = "../../shaders/glsl/opmult.comp"
+
+    shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
     mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+
     mgr.eval_await_def()
+
+    seq = mgr.create_sequence("op")
     seq.begin()
     seq.record_tensor_sync_local([tensor_in_a])
     seq.record_tensor_sync_local([tensor_in_b])
     seq.record_tensor_sync_local([tensor_out])
     seq.end()
     seq.eval()
+
     assert tensor_out.data() == [2.0, 4.0, 6.0]
 
 def test_pyshader_pyshader():
