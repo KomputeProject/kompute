@@ -2,7 +2,7 @@
 Python Package Overview
 ========
 
-This section provides an overview of the Python Package from a functionality perspective. If you wish to see all the classes and their respective functions you can find that in the `Python Class Reference Section <python-reference>`_.
+This section provides an overview of the Python Package from a functionality perspective. If you wish to see all the classes and their respective functions you can find that in the `Python Class Reference Section <python-reference.html>`_.
 
 Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.
 
@@ -14,15 +14,15 @@ Package Installation
 
 Once you set up the package dependencies, you can install Kompute from ```Pypi``` using ```pip``` by running:
 
-```
-pip install kp
-```
+.. code-block:: bash
+
+    pip install kp
 
 You can also install from master branch using:
 
-```
-pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
-```
+.. code-block:: python
+
+    pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
 
 Core Python Components
 ^^^^^^^^
@@ -296,6 +296,7 @@ The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to IN
 
 .. code-block:: python
    :linenos:
+
     import kp
     kp.log_level(1)
 
