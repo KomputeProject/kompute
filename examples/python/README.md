@@ -4,7 +4,9 @@ This folder contains the accompanying code for the article "High Performance Pyt
 
 The easiest way to try this example is by using the [Google Binder Notebook](https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P), which will allow you to use a GPU for free and runs without much setup.
 
+<a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">
 <img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/python_extensions/docs/images/binder-python.jpg">
+</a>
 
 Alternatively if you want to test the example yourself locally, you can get setup and started through the following links:
 
