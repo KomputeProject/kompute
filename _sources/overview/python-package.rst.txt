@@ -14,8 +14,8 @@ Package Installation
 
 Make sure you have the following dependencies installed:
 
-* CMAKE v3.41+ (install in [Windows](https://tulip.labri.fr/TulipDrupal/?q=node/1081), [Linux (Ubuntu)](https://vitux.com/how-to-install-cmake-on-ubuntu-18-04/), [Mac](https://medium.com/r?url=https%3A%2F%2Fstackoverflow.com%2Fa%2F59825656%2F1889253))
-* Vulkan SDK installed via [official website](https://vulkan.lunarg.com/sdk/home)
+* CMAKE v3.41+ (install in `Windows <https://tulip.labri.fr/TulipDrupal/?q=node/1081>`_, `Linux (Ubuntu) <https://vitux.com/how-to-install-cmake-on-ubuntu-18-04/>`_, `Mac <https://medium.com/r?url=https%3A%2F%2Fstackoverflow.com%2Fa%2F59825656%2F1889253>`_)
+* Vulkan SDK installed via `official website <https://vulkan.lunarg.com/sdk/home>`_
 * C++ compiler (eg. gcc for linux / mac, MSVC for Windows)
 
 Once you set up the package dependencies, you can install Kompute from ```Pypi``` using ```pip``` by running:
