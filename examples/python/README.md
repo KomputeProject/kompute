@@ -8,8 +8,8 @@ The easiest way to try this example is by using the [Google Binder Notebook](htt
 
 Alternatively if you want to test the example yourself you can follow the following links:
 
-1. Install the Kompute Python Package
-2. Run the Array Multiplication Code
-3. Run the Logistic Regression Code
+1. Install the [Kompute Python Package](https://kompute.cc/overview/python-package.html)
+2. Run the [Array Multiplication Code]()
+3. Run the [Logistic Regression Code]()
 
 

@@ -9,6 +9,21 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 .. image:: ../images/kompute-architecture.jpg
    :width: 70%
 
+Package Installation 
+^^^^^^^^^
+
+Once you set up the package dependencies, you can install Kompute from ```Pypi``` using ```pip``` by running:
+
+```
+pip install kp
+```
+
+You can also install from master branch using:
+
+```
+pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
+```
+
 Core Python Components
 ^^^^^^^^
 
@@ -272,28 +287,15 @@ Similar to the logistic regression implementation in the C++ examples section, b
     print(tensor_b_in.data())
 
 
-Package Installation 
-^^^^^^^^^
-
-The package can be installed through the top level `setup.py` by running:
-
-```
-pip install kp
-```
-
-You can also install from master branch using:
-
-```
-pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
-```
+Log Level Configuration
+^^^^^^
 
 You can configure log level with the function `kp.log_level` as outlined below.
 
 The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to INFO.
 
-```
-import kp
-kp.log_level(1)
-```
-
+.. code-block:: python
+   :linenos:
+    import kp
+    kp.log_level(1)
 
