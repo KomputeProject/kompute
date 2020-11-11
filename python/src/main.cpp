@@ -39,12 +39,33 @@ PYBIND11_MODULE(kp, m) {
                 return std::unique_ptr<kp::Tensor>(new kp::Tensor(data, tensorTypes));
             }), "Initialiser with list of data components and tensor GPU memory type.")
         .def("data", &kp::Tensor::data, DOC(kp, Tensor, data))
-        .def("get", [](kp::Tensor &self, uint32_t index) -> float { return self.data()[index]; },
+        .def("__getitem__", [](kp::Tensor &self, size_t index) -> float { return self.data()[index]; },
                 "When only an index is necessary")
-        .def("set", [](kp::Tensor &self, uint32_t index, float value) {
+        .def("__setitem__", [](kp::Tensor &self, size_t index, float value) {
                 self.data()[index] = value; })
-        .def("set", &kp::Tensor::setData, "Overrides the data in the local Tensor memory.")
+        .def("set_data", &kp::Tensor::setData, "Overrides the data in the local Tensor memory.")
+        .def("__iter__", [](kp::Tensor &self) {
+                return py::make_iterator(self.data().begin(), self.data().end());
+            }, py::keep_alive<0, 1>(), // Required to keep alive iterator while exists
+            "Iterator to enable looping within data structure as required.")
+        .def("__contains__", [](kp::Tensor &self, float v) {
+                for (size_t i = 0; i < self.data().size(); ++i) {
+                    if (v == self.data()[i]) {
+                            return true;
+                        }
+                    }
+                return false;
+            })
+        .def("__reversed__", [](kp::Tensor &self) { 
+                size_t size = self.data().size();
+                std::vector<float> reversed(size);
+                for (size_t i = 0; i < size; i++) {
+                    reversed[size - i - 1] = self.data()[i];
+                }
+                return reversed;
+            })
         .def("size", &kp::Tensor::size, "Retrieves the size of the Tensor data as per the local Tensor memory.")
+        .def("__len__", &kp::Tensor::size, "Retrieves the size of the Tensor data as per the local Tensor memory.")
         .def("tensor_type", &kp::Tensor::tensorType, "Retreves the memory type of the tensor.")
         .def("is_init", &kp::Tensor::isInit, "Checks whether the tensor GPU memory has been initialised.")
         .def("map_data_from_host", &kp::Tensor::mapDataFromHostMemory, "Maps data into GPU memory from tensor local data.")
