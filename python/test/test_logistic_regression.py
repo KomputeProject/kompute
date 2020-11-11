@@ -2,6 +2,7 @@ import pyshader as ps
 import kp
 
 def test_logistic_regression():
+
     @ps.python2shader
     def compute_shader(
             index   = ("input", "GlobalInvocationId", ps.ivec3),
@@ -42,6 +43,8 @@ def test_logistic_regression():
         l_out[i] = loss
 
 
+    mgr = kp.Manager(0)
+
     # First we create input and ouput tensors for shader
     tensor_x_i = kp.Tensor([0.0, 1.0, 1.0, 1.0, 1.0])
     tensor_x_j = kp.Tensor([0.0, 0.0, 0.0, 1.0, 1.0])
@@ -57,22 +60,30 @@ def test_logistic_regression():
 
     tensor_l_out = kp.Tensor([0.0, 0.0, 0.0, 0.0, 0.0])
 
-    tensor_m = kp.Tensor([ 5.0 ])
+    tensor_m = kp.Tensor([ tensor_y.size() ])
 
     # We store them in an array for easier interaction
     params = [tensor_x_i, tensor_x_j, tensor_y, tensor_w_in, tensor_w_out_i,
         tensor_w_out_j, tensor_b_in, tensor_b_out, tensor_l_out, tensor_m]
 
-    mgr = kp.Manager()
-
     mgr.eval_tensor_create_def(params)
 
-    # Record commands for efficient evaluation
+    # Create a managed sequence
     sq = mgr.create_sequence()
+
+    # Clear previous operations and begin recording for new operations
     sq.begin()
+
+    # Record operation to sync memory from local to GPU memory
     sq.record_tensor_sync_device([tensor_w_in, tensor_b_in])
+
+    # Record operation to execute GPU shader against all our parameters
     sq.record_algo_data(params, compute_shader.to_spirv())
+
+    # Record operation to sync memory from GPU to local memory
     sq.record_tensor_sync_local([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out])
+
+    # Stop recording operations
     sq.end()
 
     ITERATIONS = 100
@@ -80,6 +91,8 @@ def test_logistic_regression():
 
     # Perform machine learning training and inference across all input X and Y
     for i_iter in range(ITERATIONS):
+
+        # Execute an iteration of the algorithm
         sq.eval()
 
         # Calculate the parameters based on the respective derivatives calculated
