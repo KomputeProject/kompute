@@ -6,9 +6,6 @@ Python Class Documentation & Reference
 This section provides a breakdown of the Python classes and what each of their functions provide.
 Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.
 
-.. image:: ../images/kompute-architecture.jpg
-   :width: 70%
-
 Manager
 -------
 

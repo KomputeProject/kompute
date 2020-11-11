@@ -46,7 +46,7 @@
   
   
   
-    <title>Python Package Overview &#8212; Vulkan Kompute 0.4.1 documentation</title>
+    <title>Python Package Overview &#8212; Vulkan Kompute 0.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -81,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute 0.4.1 documentation"
+        <a href="../index.html" title="Vulkan Kompute 0.5.0 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -167,7 +167,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.4.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.5.0 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute 0.4.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute 0.5.0 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute 0.4.1 documentation">Vulkan Kompute</a>
+       title="Vulkan Kompute 0.5.0 documentation">Vulkan Kompute</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -324,11 +324,22 @@
             
   
 <h1 id="overview-python-package--page-root">Python Package Overview<a class="headerlink" href="#overview-python-package--page-root" title="Permalink to this headline">¶</a></h1>
-<p>This section provides an overview of the Python Package from a functionality perspective. If you wish to see all the classes and their respective functions you can find that in the <a class="reference external" href="python-reference">Python Class Reference Section</a>.</p>
+<p>This section provides an overview of the Python Package from a functionality perspective. If you wish to see all the classes and their respective functions you can find that in the <a class="reference external" href="python-reference.html">Python Class Reference Section</a>.</p>
 <p>Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
 <a class="reference internal image-reference" href="../_images/kompute-architecture.jpg"><img alt="../_images/kompute-architecture.jpg" src="../_images/kompute-architecture.jpg" style="width: 70%;"/></a>
 
-<h2 id="python-components">Python Components<a class="headerlink" href="#python-components" title="Permalink to this headline">¶</a></h2>
+<h2 id="package-installation">Package Installation<a class="headerlink" href="#package-installation" title="Permalink to this headline">¶</a></h2>
+<p>Once you set up the package dependencies, you can install Kompute from <code class="docutils literal notranslate"><span class="pre">`Pypi`</span></code> using <code class="docutils literal notranslate"><span class="pre">`pip`</span></code> by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install kp
+</pre></div>
+</div>
+<p>You can also install from master branch using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">EthicalML</span><span class="o">/</span><span class="n">vulkan</span><span class="o">-</span><span class="n">kompute</span><span class="o">.</span><span class="n">git</span><span class="nd">@master</span>
+</pre></div>
+</div>
+
+
+<h2 id="core-python-components">Core Python Components<a class="headerlink" href="#core-python-components" title="Permalink to this headline">¶</a></h2>
 <p>The Python package exposes three main classes:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="python-reference.html#kp.Manager" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> - Manages all high level Vulkan and Kompute resources created</p></li>
@@ -775,21 +786,14 @@
 </td></tr></table></div>
 
 
-<h2 id="package-installation">Package Installation<a class="headerlink" href="#package-installation" title="Permalink to this headline">¶</a></h2>
-<p>The package can be installed through the top level <cite>setup.py</cite> by running:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">kp</span>
-<span class="pre">`</span></code></p>
-<p>You can also install from master branch using:</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">pip</span> <span class="pre">install</span> <span class="pre">git+git://github.com/EthicalML/vulkan-kompute.git@master</span>
-<span class="pre">`</span></code></p>
+<h2 id="log-level-configuration">Log Level Configuration<a class="headerlink" href="#log-level-configuration" title="Permalink to this headline">¶</a></h2>
 <p>You can configure log level with the function <cite>kp.log_level</cite> as outlined below.</p>
 <p>The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to INFO.</p>
-<p><code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">import</span> <span class="pre">kp</span>
-<span class="pre">kp.log_level(1)</span>
-<span class="pre">`</span></code></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">import</span> <span class="nn">kp</span>
+ <span class="n">kp</span><span class="o">.</span><span class="n">log_level</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
 
 
 
