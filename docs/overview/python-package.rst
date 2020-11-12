@@ -53,7 +53,7 @@ More specifically, it can be through the following functions:
 * seq.record_<opname> - Records operation in sequence (requires sequence to be in recording mode)
 
 Python Examples
-=========
+^^^^^^^^^^^^^^^^
 
 Below we cover a broad set of examples. These use the ```pyshader``` dependency, which you can install with `pip install pyshader`.
 
