@@ -46,7 +46,7 @@
   
   
   
-    <title>Python Package Overview &#8212; Vulkan Kompute 0.5.0 documentation</title>
+    <title>Python Package Overview &#8212; Vulkan Kompute 0.5.1 documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -81,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute 0.5.0 documentation"
+        <a href="../index.html" title="Vulkan Kompute 0.5.1 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -167,7 +167,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.5.0 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.5.1 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute 0.5.0 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute 0.5.1 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute 0.5.0 documentation">Vulkan Kompute</a>
+       title="Vulkan Kompute 0.5.1 documentation">Vulkan Kompute</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -364,6 +364,10 @@
 </ul>
 
 
+<h2 id="python-examples">Python Examples<a class="headerlink" href="#python-examples" title="Permalink to this headline">¶</a></h2>
+<p>Below we cover a broad set of examples. These use the <code class="docutils literal notranslate"><span class="pre">`pyshader`</span></code> dependency, which you can install with <cite>pip install pyshader</cite>.</p>
+
+
 <h2 id="python-example-simple">Python Example (Simple)<a class="headerlink" href="#python-example-simple" title="Permalink to this headline">¶</a></h2>
 <p>Then you can interact with it from your interpreter. Below is the same sample as above “Your First Kompute (Simple Version)” but in Python:</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -396,7 +400,13 @@
 28
 29
 30
-31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+31
+32
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
+
+<span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
 
 <span class="c1"># Can be initialized with List[] or np.Array</span>
 <span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -466,7 +476,13 @@
 31
 32
 33
-34</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+34
+35
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+ <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
+
+ <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
  <span class="c1"># Can be initialized with List[] or np.Array</span>
  <span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
@@ -686,7 +702,13 @@
  99
 100
 101
-102</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="nd">@python2shader</span>
+102
+103
+104
+105</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+ <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
+
+ <span class="nd">@python2shader</span>
  <span class="k">def</span> <span class="nf">compute_shader</span><span class="p">(</span>
          <span class="n">index</span>   <span class="o">=</span> <span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
          <span class="n">x_i</span>     <span class="o">=</span> <span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
