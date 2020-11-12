@@ -52,6 +52,11 @@ More specifically, it can be through the following functions:
 * mgr.eval_async_<opname>_def - Runs operation asynchronously under a new anonymous sequence
 * seq.record_<opname> - Records operation in sequence (requires sequence to be in recording mode)
 
+Python Examples
+=========
+
+Below we cover a broad set of examples. These use the ```pyshader``` dependency, which you can install with `pip install pyshader`.
+
 Python Example (Simple)
 ^^^^^
 
@@ -59,6 +64,9 @@ Then you can interact with it from your interpreter. Below is the same sample as
 
 .. code-block:: python
    :linenos:
+
+   from kp import Manager, Tensor
+   from pyshader import python2shader, ivec3, f32, Array
 
    mgr = Manager()
 
@@ -100,6 +108,9 @@ Similarly you can find the same extended example as above:
 
 .. code-block:: python
    :linenos:
+
+    from kp import Manager, Tensor
+    from pyshader import python2shader, ivec3, f32, Array
 
     mgr = Manager(0, [2])
 
@@ -189,6 +200,9 @@ Similar to the logistic regression implementation in the C++ examples section, b
 
 .. code-block:: python
    :linenos:
+
+    from kp import Manager, Tensor
+    from pyshader import python2shader, ivec3, f32, Array
 
     @python2shader
     def compute_shader(
