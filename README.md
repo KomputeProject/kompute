@@ -46,6 +46,39 @@
 
 Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
 
+### Trying the Colab Notebook
+
+You are able to try out the interactive Colab Notebooks which allow you to use a free GPU. The available examples are the Python and C++ examples below:
+
+<table>
+<tr>
+
+<td width="50%">
+<h5>Interactive C++ Examples from <a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">Blog Post</a></h5>
+</td>
+
+<td>
+<h5>Interactive Python Examples from <a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a></h5>
+</td>
+
+</tr>
+<tr>
+
+<td width="50%">
+<a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/python_extensions/docs/images/binder-cpp.jpg">
+</a>
+</td>
+
+<td>
+<a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/python_extensions/docs/images/binder-python.jpg">
+</a>
+</td>
+
+</tr>
+</table>
+
 
 ### Your First Kompute (Simple Version)
 
