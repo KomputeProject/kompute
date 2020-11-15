@@ -66,13 +66,13 @@ You are able to try out the interactive Colab Notebooks which allow you to use a
 
 <td width="50%">
 <a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">
-<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/python_extensions/docs/images/binder-cpp.jpg">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-cpp.jpg">
 </a>
 </td>
 
 <td>
 <a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">
-<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/python_extensions/docs/images/binder-python.jpg">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-python.jpg">
 </a>
 </td>
 
