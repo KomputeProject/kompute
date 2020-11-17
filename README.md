@@ -15,7 +15,7 @@
 <td>
 
 <h1>Vulkan Kompute</h1>
-<h3>The General Purpose Vulkan Compute Framework for C++ and Python.</h3>
+<h3>The general purpose GPU compute framework for cross vendor graphics cards (AMD, Qualcomm, NVIDIA & friends).</h3>
 
 </td>
 
