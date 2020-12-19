@@ -103,7 +103,7 @@ int main() {
     auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
 
     // 3. Run multiplication operation synchronously
-    mgr.evalOpDefault<kp::OpMult<>>(
+    mgr.evalOpDefault<kp::OpMult>(
         { tensorInA, tensorInB, tensorOut })
 
     // 4. Map results back from GPU memory to print the results
