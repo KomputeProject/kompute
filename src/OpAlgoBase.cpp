@@ -137,9 +137,11 @@ OpAlgoBase::postEval()
 std::vector<char>
 OpAlgoBase::fetchSpirvBinaryData()
 {
-    SPDLOG_WARN("Kompute OpAlgoBase Running shaders directly from spirv file");
+    SPDLOG_DEBUG("Kompute OpAlgoBase Running fetchSpirvBinaryData");
 
     if (this->mShaderFilePath.size()) {
+        SPDLOG_DEBUG("Kompute OpAlgoBase Reading data from file path");
+
         std::ifstream fileStream(this->mShaderFilePath,
                                  std::ios::binary | std::ios::in |
                                    std::ios::ate);
@@ -159,6 +161,7 @@ OpAlgoBase::fetchSpirvBinaryData()
 
         return std::vector<char>(shaderDataRaw, shaderDataRaw + shaderFileSize);
     } else if (this->mShaderDataRaw.size()) {
+        SPDLOG_DEBUG("Kompute OpAlgoBase Reading data from data provided");
         return this->mShaderDataRaw;
     } else {
         throw std::runtime_error(
