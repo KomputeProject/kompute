@@ -20,8 +20,15 @@ ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 else
 	CLANG_FORMAT_BIN ?= "/home/alejandro/Programming/lib/clang+llvm-10.0.0-x86_64-linux-gnu-ubuntu-18.04/bin/clang-format"
 	CMAKE_BIN ?= "/c/Program Files/CMake/bin/cmake.exe"
-	SCMP_BIN ?= "/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe"
 	MSBUILD_BIN ?= "/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe"
+	# Choosing the binary based on whether it's on WSL or linux-native
+	KERNEL := $(shell uname -r)
+	IS_WSL := $(shell (if [[ "$(KERNEL)" =~ Microsoft$  ]]; then echo '0'; fi))
+	ifeq ($(IS_WSL),0)
+		SCMP_BIN ?= "/c/VulkanSDK/1.2.141.2/Bin32/glslangValidator.exe"
+	else
+		SCMP_BIN ?= "/usr/bin/glslangValidator"
+	endif
 endif
 
 
