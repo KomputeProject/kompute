@@ -1,1 +1,2 @@
 pyshader==0.7.0
+numpy

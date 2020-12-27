@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 
 #include <kompute/Kompute.hpp>
 
@@ -39,6 +40,20 @@ PYBIND11_MODULE(kp, m) {
                 return std::unique_ptr<kp::Tensor>(new kp::Tensor(data, tensorTypes));
             }), "Initialiser with list of data components and tensor GPU memory type.")
         .def("data", &kp::Tensor::data, DOC(kp, Tensor, data))
+        .def("numpy", [](kp::Tensor& self){
+                ssize_t              ndim    = 1;
+                std::vector<ssize_t> shape   = { self.size() };
+                std::vector<ssize_t> strides = { sizeof(float) };
+
+                return py::array(py::buffer_info(
+                    self.data().data(),
+                    sizeof(float),
+                    py::format_descriptor<float>::format(),
+                    ndim,
+                    shape,
+                    strides
+                ));
+            }, "Returns stored data as a new numpy array.")
         .def("__getitem__", [](kp::Tensor &self, size_t index) -> float { return self.data()[index]; },
                 "When only an index is necessary")
         .def("__setitem__", [](kp::Tensor &self, size_t index, float value) {
