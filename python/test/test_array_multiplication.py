@@ -1,5 +1,6 @@
 import pyshader as ps
 import kp
+import numpy as np
 
 
 def test_array_multiplication():
@@ -33,3 +34,4 @@ def test_array_multiplication():
     mgr.eval_tensor_sync_local_def([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
+    assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
