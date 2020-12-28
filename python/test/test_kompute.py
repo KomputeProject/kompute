@@ -54,7 +54,7 @@ def test_opalgobase_data():
 
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderData))
+    mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], shaderData)
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 
