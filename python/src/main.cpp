@@ -164,6 +164,13 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates an operation using a custom shader provided from a shader path with new anonymous Sequence")
         .def("eval_algo_str_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, std::vector<char>>,
             "Evaluates an operation using a custom shader provided as string provided as list of characters with new anonymous Sequence")
+        .def("eval_algo_str_def", [](kp::Manager &self,
+                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                                     const std::string& shader_str){
+                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
+                self.evalOpDefault<kp::OpAlgoBase>(tensors, shader_vec);
+        },
+            "Evaluates an operation using a custom shader provided as string with a new anonymous Sequence")
         .def("eval_algo_data_def", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     py::bytes &bytes) {
@@ -193,6 +200,14 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates an operation using a custom shader provided from a shader path with explicitly named Sequence")
         .def("eval_algo_str", &kp::Manager::evalOp<kp::OpAlgoBase, std::vector<char>>,
             "Evaluates an operation using a custom shader provided as string provided as list of characters with explicitly named Sequence")
+        .def("eval_algo_str", [](kp::Manager &self,
+                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                                    const std::string& sequenceName,
+                                    const std::string& shader_str) {
+                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
+                self.evalOp<kp::OpAlgoBase>(tensors, sequenceName, shader_vec);
+            },
+            "Evaluates an operation using a custom shader provided as string with explicitly named Sequence")
         .def("eval_algo_data", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     std::string sequenceName,
@@ -224,6 +239,13 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously an operation using a custom shader provided from a shader path with anonymous Sequence")
         .def("eval_async_algo_str_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, std::vector<char>>,
             "Evaluates Asynchronously an operation using a custom shader provided as string provided as list of characters with new anonymous Sequence")
+        .def("eval_async_algo_str_def", [](kp::Manager &self,
+                                           std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                                           const std::string& shader_str) {
+                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
+                self.evalOpAsyncDefault<kp::OpAlgoBase>(tensors, shader_vec);
+            },
+            "Evaluates Asynchronously an operation using a custom shader provided as string with new anonymous Sequence")
         .def("eval_async_algo_data_def", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     py::bytes &bytes) {
@@ -253,6 +275,14 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously an operation using a custom shader provided from a shader path with explicitly named Sequence")
         .def("eval_async_algo_str", &kp::Manager::evalOpAsync<kp::OpAlgoBase, std::vector<char>>,
             "Evaluates Asynchronous an operation using a custom shader provided as string provided as list of characters with explicitly named Sequence")
+        .def("eval_async_algo_str", [](kp::Manager &self,
+                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                                    const std::string& sequenceName,
+                                    const std::string& shader_str) {
+                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
+                self.evalOpAsync<kp::OpAlgoBase>(tensors, sequenceName, shader_vec);
+            },
+            "Evaluates Asynchronous an operation using a custom shader provided as string with explicitly named Sequence")
         .def("eval_async_algo_data", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     std::string sequenceName,

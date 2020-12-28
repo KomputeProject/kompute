@@ -354,7 +354,7 @@ mgr.eval_algo_data_def(
 
 # Alternatively can pass raw string/bytes:
 # shaderFileData = """ shader code here... """
-# mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], list(shaderFileData))
+# mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], shaderFileData)
 
 mgr.eval_await_def()
 
