@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.4.1)
-project(kompute VERSION 0.5.1)
+project(kompute VERSION 0.5.2)
 
 set(CMAKE_CXX_STANDARD 14)
 

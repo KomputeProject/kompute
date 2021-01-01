@@ -1,5 +1,5 @@
 
-![GitHub](https://img.shields.io/badge/Version-0.5.1-green.svg)
+![GitHub](https://img.shields.io/badge/Version-0.5.2-green.svg)
 ![GitHub](https://img.shields.io/badge/C++-14—20-purple.svg)
 ![GitHub](https://img.shields.io/badge/Build-cmake-red.svg)
 ![GitHub](https://img.shields.io/badge/Python-3.5—3.8-blue.svg)
