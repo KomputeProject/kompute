@@ -143,7 +143,7 @@ int main() {
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorInA, tensorInB, tensorOut });
 
     // 4. Run operation with custom compute shader code asynchronously with explicit dispatch layout
-    mgr.evalOpAsyncDefault<kp::OpAlgoBase<3, 1, 1>>(
+    mgr.evalOpAsyncDefault<kp::OpAlgoBase>(
         { tensorInA, tensorInB, tensorOut }, 
         shaderData); // "shaderData" defined is below and can be glsl/spirv string, or path to file
 
