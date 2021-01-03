@@ -110,7 +110,7 @@ int main() {
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
 
     // Prints the output which is Output: { 2, 4, 6 }
-    std::cout<< "Output: {  ";
+    std::cout << "Output: {  ";
     for (const float& elem : tensorOut->data()) {
       std::cout << elem << "  ";
     }
@@ -171,7 +171,7 @@ int main() {
     sq->eval();
 
     // Prints the output which is Output: { 2, 4, 6 }
-    std::cout<< "Output: {  ";
+    std::cout << "Output: {  ";
     for (const float& elem : tensorOut->data()) {
       std::cout << elem << "  ";
     }
