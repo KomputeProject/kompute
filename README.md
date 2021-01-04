@@ -104,14 +104,17 @@ int main() {
 
     // 3. Run multiplication operation synchronously
     mgr.evalOpDefault<kp::OpMult>(
-        { tensorInA, tensorInB, tensorOut })
+        { tensorInA, tensorInB, tensorOut });
 
     // 4. Map results back from GPU memory to print the results
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut })
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
 
     // Prints the output which is Output: { 2, 4, 6 }
-    std::cout << fmt::format("Output: {}", 
-        tensorOut.data()) << std::endl;
+    std::cout << "Output: {  ";
+    for (const float& elem : tensorOut->data()) {
+      std::cout << elem << "  ";
+    }
+    std::cout << "}" << std::endl;
 }
 ```
 
@@ -157,9 +160,9 @@ int main() {
     sq->begin();
 
     // 5.2. Record batch commands
-    sq->record<kp::OpTensorSyncLocal({ tensorInA });
-    sq->record<kp::OpTensorSyncLocal({ tensorInB });
-    sq->record<kp::OpTensorSyncLocal({ tensorOut });
+    sq->record<kp::OpTensorSyncLocal>({ tensorInA });
+    sq->record<kp::OpTensorSyncLocal>({ tensorInB });
+    sq->record<kp::OpTensorSyncLocal>({ tensorOut });
 
     // 5.3. Explicitly stop recording batch commands
     sq->end();
@@ -168,8 +171,11 @@ int main() {
     sq->eval();
 
     // Prints the output which is Output: { 2, 4, 6 }
-    std::cout << fmt::format("Output: {}", 
-        tensorOut.data()) << std::endl;
+    std::cout << "Output: {  ";
+    for (const float& elem : tensorOut->data()) {
+      std::cout << elem << "  ";
+    }
+    std::cout << "}" << std::endl;
 }
 ```
 
