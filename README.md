@@ -147,16 +147,17 @@ The Python interface provides a higher level interactive interface that enables 
 For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
 
 ```python
+# 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
 mgr = Manager()
 
-# Can be initialized with List[] or np.Array
+# 2. Create and initialise Kompute Tensors (can be initialized with List[] or np.Array)
 tensor_in_a = Tensor([2, 2, 2])
 tensor_in_b = Tensor([1, 2, 3])
 tensor_out = Tensor([0, 0, 0])
 
 mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-# Define the function via PyShader or directly as glsl string or spirv bytes
+# 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
 @python2shader
 def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
                             data1=("buffer", 0, Array(f32)),
@@ -165,19 +166,15 @@ def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
     i = index.x
     data3[i] = data1[i] * data2[i]
 
-# Run shader operation synchronously
+# 4. Run multiplication operation synchronously
 mgr.eval_algo_data_def(
     [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
 
-# Alternatively can pass raw string/bytes:
-# shaderFileData = """ shader code here... """
-# mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], shaderFileData)
-
-mgr.eval_await_def()
-
+# 5. Map results back from GPU memory to print the results
 mgr.eval_tensor_sync_local_def([tensor_out])
 
-assert tensor_out.data() == [2.0, 4.0, 6.0]
+# Prints [2.0, 4.0, 6.0]
+print(tensor_out.data())
 ```
 
 ## Architectural Overview
