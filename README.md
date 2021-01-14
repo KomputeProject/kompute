@@ -80,16 +80,23 @@ You are able to try out the interactive Colab Notebooks which allow you to use a
 </table>
 
 
-### Your First Kompute (Simple Version)
+### Your First Kompute
 
-This simple example will show the basics of Kompute through the high level API.
+Below you can find both the C++ and Python version of a simple GPU multiplication snippet with Kompute.
+
+In both examples the steps carried out will include:
 
 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
 2. Create and initialise Kompute Tensors through manager
-3. Run multiplication operation synchronously
-4. Map results back from GPU memory to print the results
+3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
+4. Run multiplication operation synchronously
+5. Map results back from GPU memory to print the results
 
-View the [extended version](#your-first-kompute-extended-version) or [more examples](#simple-examples).
+#### Simple C++ Example
+
+The C++ interface provides lower level access to the native components of Kompute and Vulkan, enabling for advanced optimizations as well as extension of components.
+
+To see a full breakdown you can read further in the [C++ Class Reference](https://kompute.cc/overview/reference.html).
 
 ```c++
 int main() {
@@ -102,140 +109,76 @@ int main() {
     auto tensorInB = mgr.buildTensor({ 1., 2., 3. });
     auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
 
+    // 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
+    std::string shaderString = (R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer bina { float tina[]; };
+        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
+        layout(set = 0, binding = 2) buffer bout { float tout[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            tout[index] = tina[index] * tinb[index];
+        }
+    )");
+
     // 3. Run multiplication operation synchronously
     mgr.evalOpDefault<kp::OpMult>(
-        { tensorInA, tensorInB, tensorOut });
+        { tensorInA, tensorInB, tensorOut },
+        std::vector<char>(shaderString.begin(), shaderString.end()));
 
     // 4. Map results back from GPU memory to print the results
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
 
     // Prints the output which is Output: { 2, 4, 6 }
-    std::cout << "Output: {  ";
-    for (const float& elem : tensorOut->data()) {
-      std::cout << elem << "  ";
-    }
-    std::cout << "}" << std::endl;
+    for (const float& elem : tensorOut->data()) std::cout << elem << "  ";
 }
+
 ```
 
-## Your First Kompute (Extended Version)
+#### Simple Python Example
 
-We will now show the [same example as above](#your-first-kompute-simple-version) but leveraging more advanced Kompute features:
+The Python interface provides a higher level interactive interface that enables for experimentation whilst ensuring high performance and fast development workflows.
 
-1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2
-2. Explicitly create Kompute Tensors without initializing in GPU
-3. Initialise the Kompute Tensor in GPU memory and map data into GPU
-4. Run operation with custom compute shader code asynchronously with explicit dispatch layout
-5. Create managed sequence to submit batch operations to the CPU
-6. Map data back to host by running the sequence of batch operations
+For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
 
-View [more examples](https://kompute.cc/overview/advanced-examples.html#simple-examples).
+```python
+mgr = Manager()
 
-```c++
-int main() {
+# Can be initialized with List[] or np.Array
+tensor_in_a = Tensor([2, 2, 2])
+tensor_in_b = Tensor([1, 2, 3])
+tensor_out = Tensor([0, 0, 0])
 
-    // 1. Create Kompute Manager with explicit device 0 and single queue of familyIndex 2
-    kp::Manager mgr(0, { 2 });
+mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    // 2. Explicitly create Kompute Tensors without initializing in GPU
-    auto tensorInA = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 2., 2. }));
-    auto tensorInB = std::make_shared<kp::Tensor>(kp::Tensor({ 1., 2., 3. }));
-    auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
+# Define the function via PyShader or directly as glsl string or spirv bytes
+@python2shader
+def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
+                            data1=("buffer", 0, Array(f32)),
+                            data2=("buffer", 1, Array(f32)),
+                            data3=("buffer", 2, Array(f32))):
+    i = index.x
+    data3[i] = data1[i] * data2[i]
 
-    // 3. Initialise the Kompute Tensor in GPU memory and map data into GPU
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorInA, tensorInB, tensorOut });
+# Run shader operation synchronously
+mgr.eval_algo_data_def(
+    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
 
-    // 4. Run operation with custom compute shader code asynchronously with explicit dispatch layout
-    mgr.evalOpAsyncDefault<kp::OpAlgoBase>(
-        { tensorInA, tensorInB, tensorOut }, 
-        shaderData); // "shaderData" defined is below and can be glsl/spirv string, or path to file
+# Alternatively can pass raw string/bytes:
+# shaderFileData = """ shader code here... """
+# mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], shaderFileData)
 
-    // 4.1. Before submitting sequence batch we wait for the async operation
-    mgr.evalOpAwaitDefault();
+mgr.eval_await_def()
 
-    // 5. Create managed sequence to submit batch operations to the CPU
-    std::shared_ptr<kp::Sequence> sq = mgr.getOrCreateManagedSequence("seq");
+mgr.eval_tensor_sync_local_def([tensor_out])
 
-    // 5.1. Explicitly begin recording batch commands
-    sq->begin();
-
-    // 5.2. Record batch commands
-    sq->record<kp::OpTensorSyncLocal>({ tensorInA });
-    sq->record<kp::OpTensorSyncLocal>({ tensorInB });
-    sq->record<kp::OpTensorSyncLocal>({ tensorOut });
-
-    // 5.3. Explicitly stop recording batch commands
-    sq->end();
-
-    // 6. Map data back to host by running the sequence of batch operations
-    sq->eval();
-
-    // Prints the output which is Output: { 2, 4, 6 }
-    std::cout << "Output: {  ";
-    for (const float& elem : tensorOut->data()) {
-      std::cout << elem << "  ";
-    }
-    std::cout << "}" << std::endl;
-}
+assert tensor_out.data() == [2.0, 4.0, 6.0]
 ```
-
-Your shader can be provided as raw glsl/hlsl string, SPIR-V bytes array (using our CLI), or string path to file containing either. Below are the examples of the valid ways of providing shader.
-
-#### Passing raw GLSL/HLSL string
-
-```c++
-static std::string shaderString = (R"(
-    #version 450
-
-    layout (local_size_x = 1) in;
-
-    // The input tensors bind index is relative to index in parameter passed
-    layout(set = 0, binding = 0) buffer bina { float tina[]; };
-    layout(set = 0, binding = 1) buffer binb { float tinb[]; };
-    layout(set = 0, binding = 2) buffer bout { float tout[]; };
-
-    void main() {
-        uint index = gl_GlobalInvocationID.x;
-        tout[index] = tina[index] * tinb[index];
-    }
-)");
-static std::vector<char> shaderData(shaderString.begin(), shaderString.end());
-```
-
-#### Passing SPIR-V Bytes array 
-
-You can use the Kompute [shader-to-cpp-header CLI](https://kompute.cc/overview/shaders-to-headers.html) to convert your GLSL/HLSL or SPIR-V shader into C++ header file (see documentation link for more info). This is useful if you want your binary to be compiled with all relevant artifacts.
-
-```c++
-static std::vector<uint8_t> shaderData = { 0x03, //... spirv bytes go here)
-```
-
-#### Path to file containing raw glsl/hlsl or SPIRV bytes
-
-```c++
-static std::string shaderData = "path/to/shader.glsl";
-// Or SPIR-V
-static std::string shaderData = "path/to/shader.glsl.spv";
-```
-
-## More examples
-
-### Simple examples
-
-* [Pass shader as raw string](https://kompute.cc/overview/advanced-examples.html#simple-shader-example)
-* [Record batch commands with a Kompute Sequence](https://kompute.cc/overview/advanced-examples.html#record-batch-commands)
-* [Run Asynchronous Operations](https://kompute.cc/overview/advanced-examples.html#asynchronous-operations)
-* [Run Parallel Operations Across Multiple GPU Queues](https://kompute.cc/overview/advanced-examples.html#parallel-operations)
-* [Create your custom Kompute Operations](https://kompute.cc/overview/advanced-examples.html#your-custom-kompute-operation)
-* [Implementing logistic regression from scratch](https://kompute.cc/overview/advanced-examples.html#logistic-regression-example)
-
-### End-to-end examples
-
-* [Machine Learning Logistic Regression Implementation](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a)
-* [Parallelizing GPU-intensive Workloads via Multi-Queue Operations](https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc)
-* [Android NDK Mobile Kompute ML Application](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617)
-* [Game Development Kompute ML in Godot Engine](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0)
-
 
 ## Architectural Overview
 
@@ -313,6 +256,24 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 </tr>
 </table>
 
+## More examples
+
+### Simple examples
+
+* [Pass shader as raw string](https://kompute.cc/overview/advanced-examples.html#simple-shader-example)
+* [Record batch commands with a Kompute Sequence](https://kompute.cc/overview/advanced-examples.html#record-batch-commands)
+* [Run Asynchronous Operations](https://kompute.cc/overview/advanced-examples.html#asynchronous-operations)
+* [Run Parallel Operations Across Multiple GPU Queues](https://kompute.cc/overview/advanced-examples.html#parallel-operations)
+* [Create your custom Kompute Operations](https://kompute.cc/overview/advanced-examples.html#your-custom-kompute-operation)
+* [Implementing logistic regression from scratch](https://kompute.cc/overview/advanced-examples.html#logistic-regression-example)
+
+### End-to-end examples
+
+* [Machine Learning Logistic Regression Implementation](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a)
+* [Parallelizing GPU-intensive Workloads via Multi-Queue Operations](https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc)
+* [Android NDK Mobile Kompute ML Application](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617)
+* [Game Development Kompute ML in Godot Engine](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0)
+
 ## Python Package
 
 Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.
@@ -331,88 +292,7 @@ pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
 
 For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
 
-### Python Example (Simple)
-
-Then you can interact with it from your interpreter. Below is the same sample as above "Your First Kompute (Simple Version)" but in Python:
-
-```python
-mgr = Manager()
-
-# Can be initialized with List[] or np.Array
-tensor_in_a = Tensor([2, 2, 2])
-tensor_in_b = Tensor([1, 2, 3])
-tensor_out = Tensor([0, 0, 0])
-
-mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
-
-# Define the function via PyShader or directly as glsl string or spirv bytes
-@python2shader
-def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
-                            data1=("buffer", 0, Array(f32)),
-                            data2=("buffer", 1, Array(f32)),
-                            data3=("buffer", 2, Array(f32))):
-    i = index.x
-    data3[i] = data1[i] * data2[i]
-
-# Run shader operation synchronously
-mgr.eval_algo_data_def(
-    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
-
-# Alternatively can pass raw string/bytes:
-# shaderFileData = """ shader code here... """
-# mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], shaderFileData)
-
-mgr.eval_await_def()
-
-mgr.eval_tensor_sync_local_def([tensor_out])
-
-assert tensor_out.data() == [2.0, 4.0, 6.0]
-```
-
-### Python Example (Extended)
-
-Similarly you can find the same extended example as above:
-
-```python
-mgr = Manager(0, [2])
-
-# Can be initialized with List[] or np.Array
-tensor_in_a = Tensor([2, 2, 2])
-tensor_in_b = Tensor([1, 2, 3])
-tensor_out = Tensor([0, 0, 0])
-
-mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
-
-seq = mgr.create_sequence("op")
-
-# Define the function via PyShader or directly as glsl string or spirv bytes
-@python2shader
-def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
-                            data1=("buffer", 0, Array(f32)),
-                            data2=("buffer", 1, Array(f32)),
-                            data3=("buffer", 2, Array(f32))):
-    i = index.x
-    data3[i] = data1[i] * data2[i]
-
-# Run shader operation asynchronously and then await
-mgr.eval_async_algo_data_def(
-    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
-mgr.eval_await_def()
-
-seq.begin()
-seq.record_tensor_sync_local([tensor_in_a])
-seq.record_tensor_sync_local([tensor_in_b])
-seq.record_tensor_sync_local([tensor_out])
-seq.end()
-
-seq.eval()
-
-assert tensor_out.data() == [2.0, 4.0, 6.0]
-```
-
-For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
-
-## Build Overview
+## C++ Build Overview
 
 The build system provided uses `cmake`, which allows for cross platform builds.
 
