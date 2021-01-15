@@ -61,10 +61,6 @@ Manager::~Manager()
     if (this->mManagedSequences.size()) {
         SPDLOG_DEBUG("Kompute Manager explicitly running destructor for "
                      "managed sequences");
-        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
-             this->mManagedSequences) {
-            sqPair.second->freeMemoryDestroyGPUResources();
-        }
         this->mManagedSequences.clear();
     }
 
