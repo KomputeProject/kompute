@@ -124,3 +124,14 @@ if(KOMPUTE_OPT_INSTALL)
         DESTINATION lib/cmake/kompute)
 endif()
 
+
+
+if(KOMPUTE_OPT_INCLUDE_GLSLANG)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang ${CMAKE_CURRENT_BINARY_DIR}/kompute_glslang)
+    target_include_directories(kompute PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/glslang>)
+
+    target_link_libraries(kompute glslang)
+    target_link_libraries(kompute MachineIndependent)
+    target_link_libraries(kompute glslang-default-resource-limits)
+    target_link_libraries(kompute SPIRV)
+endif()

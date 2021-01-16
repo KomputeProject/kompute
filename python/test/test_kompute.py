@@ -54,7 +54,8 @@ def test_opalgobase_data():
 
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], shaderData)
+    spirv = kp.compile_glsl_to_spirv(shaderData)
+    mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], spirv)
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 

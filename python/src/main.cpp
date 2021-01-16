@@ -3,6 +3,9 @@
 #include <pybind11/numpy.h>
 
 #include <kompute/Kompute.hpp>
+#if KOMPUTE_INCLUDE_GLSLANG
+    #include <kompute/GLSLCompiler.hpp>
+#endif
 
 #include "docstrings.hpp"
 
@@ -299,6 +302,14 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence")
         .def("eval_async_algo_lro", &kp::Manager::evalOpAsync<kp::OpAlgoLhsRhsOut>,
             "Evaluates asynchronously operation to run left right out operation with custom shader with explicitly named Sequence");
+    
+    #if KOMPUTE_INCLUDE_GLSLANG
+    m.def("compile_glsl_to_spirv", 
+    [](std::string glsl_source){
+        const auto spirv = GLSLCompiler::compile_to_spirv(glsl_source, "main");
+        return py::bytes(std::string(spirv.begin(), spirv.end()));
+    });
+    #endif //KOMPUTE_INCLUDE_GLSLANG
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;

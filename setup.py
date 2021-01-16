@@ -43,6 +43,7 @@ class CMakeBuild(build_ext):
                       '-DKOMPUTE_OPT_BUILD_PYTHON=1',
                       '-DKOMPUTE_OPT_ENABLE_SPDLOG=1',
                       '-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1',
+                      '-DKOMPUTE_OPT_INCLUDE_GLSLANG=1',
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
 
         cfg = 'Debug' if self.debug else 'Release'

@@ -18,12 +18,17 @@ option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for 
 option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD, "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
+option(KOMPUTE_OPT_INCLUDE_GLSLANG "Include GLSLang for runtime shader compilation")
 # Build flags
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_ENABLE_SPDLOG=1")
     set(SPDLOG_INSTALL, 1)
+endif()
+
+if(KOMPUTE_OPT_INCLUDE_GLSLANG)
+    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_INCLUDE_GLSLANG=1")
 endif()
 
 if(KOMPUTE_OPT_ANDOID_BUILD)

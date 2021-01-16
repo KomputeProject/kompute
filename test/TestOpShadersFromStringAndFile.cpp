@@ -2,6 +2,9 @@
 #include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
+#if KOMPUTE_INCLUDE_GLSLANG
+  #include "kompute/GLSLCompiler.hpp"
+#endif
 
 #include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
 
@@ -28,8 +31,13 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
         }
     )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorA, tensorB }, std::vector<char>(shader.begin(), shader.end()));
+    #if KOMPUTE_INCLUDE_GLSLANG
+      const std::vector<char> spirv = GLSLCompiler::compile_to_spirv(shader, "main");
+      mgr.evalOpDefault<kp::OpAlgoBase>( { tensorA, tensorB }, spirv );
+    #else
+      mgr.evalOpDefault<kp::OpAlgoBase>(
+        { tensorA, tensorB }, std::vector<char>(shader.begin(), shader.end()));
+    #endif
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
