@@ -1,0 +1,42 @@
+name: C++ Ubuntu
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-ubuntu:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install Dependencies
+      run: |
+        sudo apt-get install libvulkan-dev
+        #swiftshader vulkan cpu implementation
+        sudo wget https://www.dropbox.com/s/d0weho6l8dovm71/libvk_swiftshader.so?dl=1 -O /usr/lib/libvk_swiftshader.so
+        sudo mkdir -p /usr/share/vulkan/icd.d
+        sudo wget https://www.dropbox.com/s/5oly49ev3vvcfdu/vk_swiftshader_icd.json?dl=1 -O /usr/share/vulkan/icd.d/vk_swiftshader_icd.json
+    - name: configure
+      run: |
+        cmake . -Bbuild/ \
+                  -DKOMPUTE_OPT_BUILD_TESTS=1                \
+                  -DKOMPUTE_OPT_INSTALL=1                    \
+                  -DKOMPUTE_OPT_ENABLE_SPDLOG=1              \
+                  -DSPDLOG_INSTALL=1                         \
+                  -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
+                  -DKOMPUTE_OPT_BUILD_TESTS=1
+    - name: build
+      run: | 
+        make -C build/ -j
+    - name: tests
+      run: |
+        #only running tests that dont require GLSL compilation
+        ./build/test/test_kompute --gtest_filter=*Tensor*
+        ./build/test/test_kompute --gtest_filter=TestManager*
+        
