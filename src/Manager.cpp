@@ -326,4 +326,20 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
     SPDLOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
+void
+Manager::destroyNamedSequence(const std::string&  sequenceName) {
+
+    SPDLOG_DEBUG("Kompute Manager started destroying ", sequenceName, "sequence");
+    auto search = (this->mManagedSequences).find(sequenceName);
+    
+    if (search != (this->mManagedSequences).end()) {
+        (search->second)->freeMemoryDestroyGPUResources();
+        (this->mManagedSequences).erase(sequenceName);
+        SPDLOG_DEBUG("Kompute Manager destroyed ", sequenceName, " sequence");
+    } else {
+        SPDLOG_DEBUG("Kompute Manager ", sequenceName, " sequence not found");
+    }
+
+}
+
 }

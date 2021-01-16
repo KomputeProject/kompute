@@ -1497,6 +1497,15 @@ class Manager
         return tensor;
     }
 
+    /**
+     * Destroy and free a named sequence
+     *
+     * @param sequenceName The name for the named sequence to be destroyed
+     * and freed from the memory
+     */
+
+    void destroyNamedSequence(const std::string&  sequenceName);
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
