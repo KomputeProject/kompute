@@ -254,6 +254,12 @@ class Manager
     }
 
     /**
+     * Destroy and free all anonymous sequences
+     */
+
+    void destroyAllAnonSequences();
+
+    /**
      * Destroy and free a named sequence
      *
      * @param sequenceName The name for the named sequence to be destroyed

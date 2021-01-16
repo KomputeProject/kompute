@@ -327,6 +327,32 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
 }
 
 void
+Manager::destroyAllAnonSequences() {
+
+  SPDLOG_DEBUG("Kompute Manager started destroying all anonoumos sequences");
+  std::vector<std::string> _anonSequences;
+  std::unordered_map<std::string, std::shared_ptr<Sequence>>
+    new_mManagedSequences;
+  
+  
+  if (this->mManagedSequences.size()) {
+    
+    for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
+          this->mManagedSequences) {
+        if ((sqPair.first).find("DEFAULT") == std::string::npos) {
+          new_mManagedSequences.insert({sqPair.first, sqPair.second});
+        } else {
+          sqPair.second->freeMemoryDestroyGPUResources();
+        }      
+    }
+  
+  this->mManagedSequences = new_mManagedSequences;
+  SPDLOG_DEBUG("Kompute Manager has destroyed all anonoumos sequences");
+
+  }
+}
+
+void
 Manager::destroyNamedSequence(const std::string&  sequenceName) {
 
     SPDLOG_DEBUG("Kompute Manager started destroying ", sequenceName, "sequence");
