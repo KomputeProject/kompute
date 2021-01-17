@@ -32,15 +32,24 @@ PYBIND11_MODULE(kp, m) {
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
         .export_values();
 
+
+
+
+
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
         .def(py::init(
-            [](const std::vector<float>& data) {
-                return std::unique_ptr<kp::Tensor>(new kp::Tensor(data));
-            }), DOC(kp, Tensor, Tensor, 2))
-        .def(py::init(
-            [](const std::vector<float>& data, kp::Tensor::TensorTypes tensorTypes) {
-                return std::unique_ptr<kp::Tensor>(new kp::Tensor(data, tensorTypes));
-            }), "Initialiser with list of data components and tensor GPU memory type.")
+            [np](const py::array_t<float> data, kp::Tensor::TensorTypes tensor_type) {
+                const py::array_t<float> flatdata = np.attr("ravel")(data);
+                const py::buffer_info info        = flatdata.request();
+                const float* ptr                  = (float*) info.ptr;
+                return std::unique_ptr<kp::Tensor>(
+                    new kp::Tensor(std::vector<float>(ptr, ptr+flatdata.size()), tensor_type)
+                );
+            }), 
+            "Construct Tensor with an array as initial data and an optional kp.TensorType (default:device).",
+            py::arg("data"),
+            py::arg("tensor_type") = kp::Tensor::TensorTypes::eDevice
+            )
         .def("data", &kp::Tensor::data, DOC(kp, Tensor, data))
         .def("numpy", [](kp::Tensor& self) {
                 return py::array(self.data().size(), self.data().data());
@@ -82,19 +91,27 @@ PYBIND11_MODULE(kp, m) {
         .def("map_data_from_host", &kp::Tensor::mapDataFromHostMemory, "Maps data into GPU memory from tensor local data.")
         .def("map_data_into_host", &kp::Tensor::mapDataIntoHostMemory, "Maps data from GPU memory into tensor local data.");
 
+
+
+
+
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
         .def("init", &kp::Sequence::init, "Initialises Vulkan resources within sequence using provided device.")
+        
         // record
         .def("begin", &kp::Sequence::begin, "Clears previous commands and starts recording commands in sequence which can be run in batch.")
         .def("end", &kp::Sequence::end, "Stops listening and recording for new commands.")
+        
         // eval
         .def("eval", &kp::Sequence::eval, "Executes the currently recorded commands synchronously by waiting on Vulkan Fence.")
         .def("eval_async", &kp::Sequence::evalAsync, "Executes the currently recorded commands asynchronously.")
         .def("eval_await", &kp::Sequence::evalAwait, "Waits until the execution finishes using Vulkan Fence.")
+        
         // status
         .def("is_running", &kp::Sequence::isRunning, "Checks whether the Sequence operations are currently still executing.")
         .def("is_rec", &kp::Sequence::isRecording, "Checks whether the Sequence is currently in recording mode.")
         .def("is_init", &kp::Sequence::isInit, "Checks if the Sequence has been initialized")
+        
         // record
         .def("record_tensor_create", &kp::Sequence::record<kp::OpTensorCreate>,
             "Records operation to create and initialise tensor GPU memory and buffer")
@@ -106,22 +123,40 @@ PYBIND11_MODULE(kp, m) {
             "Records operation to sync tensor(s) from GPU memory to local memory using staging tensors")
         .def("record_algo_mult", &kp::Sequence::record<kp::OpMult>,
             "Records operation to run multiplication compute shader to two input tensors and an output tensor")
-        .def("record_algo_file", &kp::Sequence::record<kp::OpAlgoBase, std::string>,
-            "Records an operation using a custom shader provided from a shader path")
+        .def("record_algo_file", [](kp::Sequence &self, 
+                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                                    const std::string& file_path,
+                                    std::tuple<uint32_t,uint32_t,uint32_t> work_group) -> bool {
+                const kp::OpAlgoBase::KomputeWorkgroup wgroup{
+                    std::get<0>(work_group), std::get<1>(work_group), std::get<2>(work_group),
+                };
+                return self.record<kp::OpAlgoBase>(tensors, file_path, wgroup);
+            },
+            "Records an operation using a custom shader provided from a shader path",
+            py::arg("tensors"), py::arg("file_path"), py::arg("work_group") = std::make_tuple(0,0,0)  )
         .def("record_algo_data", [](kp::Sequence &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    py::bytes &bytes) -> float {
+                                    py::bytes &bytes,
+                                    std::tuple<uint32_t,uint32_t,uint32_t> work_group) -> bool {
                 // Bytes have to be converted into std::vector
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
+                const kp::OpAlgoBase::KomputeWorkgroup wgroup{
+                    std::get<0>(work_group), std::get<1>(work_group), std::get<2>(work_group),
+                };
                 return self.record<kp::OpAlgoBase>(
-                    tensors,
-                    std::vector<char>(data, data + length));
+                    tensors, std::vector<char>(data, data + length), wgroup
+                );
             },
-            "Records an operation using a custom shader provided as raw string or spirv bytes")
+            "Records an operation using a custom shader provided as spirv bytes",
+            py::arg("tensors"), py::arg("bytes"), py::arg("work_group") = std::make_tuple(0,0,0)  )
         .def("record_algo_lro", &kp::Sequence::record<kp::OpAlgoLhsRhsOut>,
             "Records operation to run left right out operation with custom shader");
+
+
+
+
 
     py::class_<kp::Manager>(m, "Manager")
         .def(py::init(), "Default initializer uses device 0 and first compute compatible GPU queueFamily")
@@ -139,12 +174,14 @@ PYBIND11_MODULE(kp, m) {
         .def("build_tensor", &kp::Manager::buildTensor, 
                 py::arg("data"), py::arg("tensorType") = kp::Tensor::TensorTypes::eDevice,
                 "Build and initialise tensor")
+        
         // Await functions
         .def("eval_await", &kp::Manager::evalOpAwait,
                 py::arg("sequenceName"), py::arg("waitFor") = UINT64_MAX,
                 "Awaits for asynchronous operation on a named Sequence")
         .def("eval_await_def", &kp::Manager::evalOpAwaitDefault,
                 py::arg("waitFor") = UINT64_MAX, "Awaits for asynchronous operation on the last anonymous Sequence created")
+        
         // eval default
         .def("eval_tensor_create_def", &kp::Manager::evalOpDefault<kp::OpTensorCreate>,
             "Evaluates operation to create and initialise tensor GPU memory and buffer with new anonymous Sequence")
@@ -181,6 +218,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence")
         .def("eval_algo_lro_def", &kp::Manager::evalOpDefault<kp::OpAlgoLhsRhsOut>,
             "Evaluates operation to run left right out operation with custom shader with new anonymous Sequence")
+        
         // eval
         .def("eval_tensor_create", &kp::Manager::evalOp<kp::OpTensorCreate>,
             "Evaluates operation to create and initialise tensor GPU memory and buffer with explicitly named Sequence")
@@ -220,6 +258,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence")
         .def("eval_algo_lro", &kp::Manager::evalOp<kp::OpAlgoLhsRhsOut>,
             "Evaluates operation to run left right out operation with custom shader with explicitly named Sequence")
+        
         // eval async default
         .def("eval_async_tensor_create_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorCreate>,
             "Evaluates asynchronously operation to create and initialise tensor GPU memory and buffer with anonymous Sequence")
@@ -256,6 +295,7 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence")
         .def("eval_async_algo_lro_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoLhsRhsOut>,
             "Evaluates asynchronously operation to run left right out operation with custom shader with anonymous Sequence")
+        
         // eval async
         .def("eval_async_tensor_create", &kp::Manager::evalOpAsync<kp::OpTensorCreate>,
             "Evaluates asynchronously operation to create and initialise tensor GPU memory and buffer with explicitly named Sequence")

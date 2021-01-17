@@ -110,3 +110,40 @@ def test_sequence():
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
     assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
+
+
+
+def test_workgroup():
+    mgr = kp.Manager(0)
+
+    tensor_a = kp.Tensor(np.zeros([16,8]))
+    tensor_b = kp.Tensor(np.zeros([16,8]))
+    mgr.eval_tensor_create_def([tensor_a, tensor_b])
+
+    shader_src = """
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) writeonly buffer bout  { float toutx[]; };
+        layout(set = 0, binding = 1) writeonly buffer bout2 { float touty[]; };
+
+        void main() {
+            uint index   = gl_WorkGroupID.x*gl_NumWorkGroups.y + gl_WorkGroupID.y;
+            
+            toutx[index] = gl_GlobalInvocationID.x;
+            touty[index] = gl_GlobalInvocationID.y;
+        }
+    """
+    shader_src = bytes(shader_src, encoding='utf8')
+
+    seq = mgr.create_sequence()
+    seq.begin()
+    seq.record_algo_data([tensor_a, tensor_b], shader_src, (16,8,1))
+    seq.end()
+    seq.eval()
+    
+    mgr.eval_tensor_sync_local_def([tensor_a, tensor_b])
+    assert np.all(tensor_a.numpy() == np.stack([np.arange(16)]*8, axis=1).ravel())
+    assert np.all(tensor_b.numpy() == np.stack([np.arange(8)]*16, axis=0).ravel())

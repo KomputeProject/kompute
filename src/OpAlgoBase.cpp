@@ -25,7 +25,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
         // If at least the x value is provided we use mainly the parameters
         // provided
         this->mKomputeWorkgroup = {
-            0,
+            komputeWorkgroup.x,
             komputeWorkgroup.y > 0 ? komputeWorkgroup.y : 1,
             komputeWorkgroup.z > 0 ? komputeWorkgroup.z : 1
         };
