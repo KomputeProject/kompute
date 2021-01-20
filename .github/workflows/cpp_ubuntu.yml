@@ -37,6 +37,12 @@ jobs:
     - name: tests
       run: |
         #only running tests that dont require GLSL compilation
-        ./build/test/test_kompute --gtest_filter=*Tensor*
-        ./build/test/test_kompute --gtest_filter=TestManager*
-        
+        ./build/test/test_kompute --gtest_filter="TestMainLogisticRegression.*"
+        ./build/test/test_kompute --gtest_filter="TestManager.*"
+        ./build/test/test_kompute --gtest_filter="TestOpAlgoBase.ShaderCompiledDataFromConstructor"
+        #./build/test/test_kompute --gtest_filter="TestOpAlgoBase.ShaderCompiledDataFromFile"
+        ./build/test/test_kompute --gtest_filter="TestOpTensorCopy.*"
+        ./build/test/test_kompute --gtest_filter="TestOpTensorCreate.*"
+        ./build/test/test_kompute --gtest_filter="TestOpTensorSync.*"
+        ./build/test/test_kompute --gtest_filter="TestSequence.*"
+        ./build/test/test_kompute --gtest_filter="TestTensor.*"

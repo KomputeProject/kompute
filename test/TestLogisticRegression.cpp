@@ -45,7 +45,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
         sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
         sq->record<kp::OpAlgoBase>(
-          params, "test/shaders/glsl/test_logistic_regression.comp");
+          params, "test/shaders/glsl/test_logistic_regression.comp.spv");
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
@@ -124,7 +124,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
-          params, "test/shaders/glsl/test_logistic_regression.comp");
+          params, "test/shaders/glsl/test_logistic_regression.comp.spv");
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
