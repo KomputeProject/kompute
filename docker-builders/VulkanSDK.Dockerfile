@@ -29,7 +29,7 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 RUN apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
 # Adding security repo to add cmake dependency on libssl 1.0
 RUN echo "deb http://security.ubuntu.com/ubuntu bionic-security main" | tee -a /etc/apt/sources.list.d/bionic.list
-RUN apt-get update
+RUN apt-get update --fix-missing -y
 RUN apt-get upgrade -y
 
 # Install build dependencies

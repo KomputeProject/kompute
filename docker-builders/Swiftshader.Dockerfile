@@ -29,6 +29,6 @@ RUN apt-get install -y libxext-dev
 # Run swiftshader via env VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
 RUN git clone https://github.com/google/swiftshader swiftshader-build
 RUN CC="/usr/bin/gcc-8" CXX="/usr/bin/g++-8" cmake swiftshader-build/. -Bswiftshader-build/build/
-RUN cmake --build swiftshader-build/build/. --parallel 12
+RUN cmake --build swiftshader-build/build/. --parallel
 RUN cp -r swiftshader-build/build/Linux/ swiftshader/
 
