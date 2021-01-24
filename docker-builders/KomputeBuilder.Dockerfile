@@ -26,6 +26,9 @@ RUN cmake --build swiftshader-build/build/. --parallel 12
 RUN mv swiftshader-build/build/Linux/ swiftshader/
 RUN rm -rf swiftshader-build/
 
+# Setup Python
+RUN apt-get install -y python3-pip
+
 RUN mkdir builder
 WORKDIR /builder
 
