@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build-ubuntu:
+  cpp-tests:
 
     runs-on: ubuntu-18.04
     container: axsauze/kompute-builder:0.2
