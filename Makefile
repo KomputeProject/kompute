@@ -66,6 +66,7 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
+		-DSPDLOG_INSTALL=1 \
 		-G "Unix Makefiles"
 
 mk_build_all:
@@ -92,9 +93,10 @@ mk_build_swiftshader_library:
 	CC="/usr/bin/gcc-8" CXX="/usr/bin/g++-8" cmake swiftshader/. -Bswiftshader/build/
 	cmake --build swiftshader/build/. --parallel
 
-mk_run_tests_cpu: export VK_ICD_FILENAMES=$(PWD)/swiftshader/build/Linux/vk_swiftshader_icd.json
-mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests
-	# Only run tests that don't use shader strings
+mk_run_tests_cpu: export VK_ICD_FILENAMES=$(PWD)/swiftshader/build/vk_swiftshader_icd.json
+mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_only
+
+mk_run_tests_cpu_only:
 	./build/test/test_kompute --gtest_filter="TestLogisticRegressionAlgorithm.*"
 	./build/test/test_kompute --gtest_filter="TestManager.*"
 	./build/test/test_kompute --gtest_filter="TestOpAlgoBase.ShaderCompiledDataFromConstructor"
@@ -127,6 +129,7 @@ vs_cmake:
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
+		-DSPDLOG_INSTALL=1 \
 		-G "Visual Studio 16 2019"
 
 vs_build_all:
@@ -154,8 +157,8 @@ vs_run_tests: vs_build_tests
 
 update_builder_image:
 	docker build . -f docker-builders/KomputeBuilder.Dockerfile \
-		-t axsauze/kompute-builder:0.1
-	docker push axsauze/kompute-builder:0.1
+		-t axsauze/kompute-builder:0.2
+	docker push axsauze/kompute-builder:0.2
 
 update_vulkan_sdk:
 	docker build -f builders/Dockerfile.linux . \
