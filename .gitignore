@@ -183,4 +183,7 @@ tmp/
 build/
 release/
 
+# Kompute
+swiftshader/
+
 

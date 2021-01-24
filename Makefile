@@ -56,36 +56,55 @@ mk_cmake:
 	cmake \
 		-Bbuild \
 		$(MK_CMAKE_EXTRA_FLAGS) \
-		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_UNIX_PATH) \
+		-DKOMPUTE_EXTRA_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_BUILD_TYPE=$(MK_BUILD_TYPE) \
 		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
-		-DKOMPUTE_EXTRA_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DKOMPUTE_OPT_INSTALL=1 \
-		-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=0 \
+		-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1 \
 		-DKOMPUTE_OPT_BUILD_TESTS=1 \
 		-DKOMPUTE_OPT_BUILD_DOCS=1 \
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
+		-DSPDLOG_INSTALL=1 \
 		-G "Unix Makefiles"
 
 mk_build_all:
-	make -C build/
+	cmake --build build/. --parallel
 
 mk_build_docs:
-	make -C build/ docs
+	cmake --build build/. --target docs --parallel
 
 mk_build_kompute:
-	make -C build/ kompute
+	cmake --build build/. --target kompute --parallel
 
 mk_build_tests:
-	make -C build/ test_kompute
+	cmake --build build/ --target test_kompute --parallel
 
 mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 mk_run_tests: mk_build_tests
 	./build/test/test_kompute $(FILTER_TESTS)
+
+mk_build_swiftshader_library:
+	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
+	# GCC 8 or above is required otherwise error on "filesystem" lib will appear
+	CC="/usr/bin/gcc-8" CXX="/usr/bin/g++-8" cmake swiftshader/. -Bswiftshader/build/
+	cmake --build swiftshader/build/. --parallel
+
+mk_run_tests_cpu: export VK_ICD_FILENAMES=$(PWD)/swiftshader/build/vk_swiftshader_icd.json
+mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_only
+
+mk_run_tests_cpu_only:
+	./build/test/test_kompute --gtest_filter="TestLogisticRegressionAlgorithm.*"
+	./build/test/test_kompute --gtest_filter="TestManager.*"
+	./build/test/test_kompute --gtest_filter="TestOpAlgoBase.ShaderCompiledDataFromConstructor"
+	./build/test/test_kompute --gtest_filter="TestOpTensorCopy.*"
+	./build/test/test_kompute --gtest_filter="TestOpTensorCreate.*"
+	./build/test/test_kompute --gtest_filter="TestOpTensorSync.*"
+	./build/test/test_kompute --gtest_filter="TestSequence.*"
+	./build/test/test_kompute --gtest_filter="TestTensor.*"
 
 
 ####### Visual studio build shortcut commands #######
@@ -110,6 +129,7 @@ vs_cmake:
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
+		-DSPDLOG_INSTALL=1 \
 		-G "Visual Studio 16 2019"
 
 vs_build_all:
@@ -136,15 +156,28 @@ vs_run_tests: vs_build_tests
 ####### Create release ######
 
 update_builder_image:
+	docker build . -f docker-builders/KomputeBuilder.Dockerfile \
+		-t axsauze/kompute-builder:0.2
+	docker push axsauze/kompute-builder:0.2
+
+update_vulkan_sdk:
 	docker build -f builders/Dockerfile.linux . \
-		-t axsauze/kompute-builder:0.1
-	docker push axsauze/kompute-builder:0.1
+		-t axsauze/vulkan-sdk:0.1
+	docker push axsauze/vulkan-sdk:0.1
 
 create_linux_release:
 	docker run -it \
 		-v $(pwd):/workspace \
 		axsauze/kompute-builder:0.1 \
 		/workspace/scripts/build_release_linux.sh
+
+
+####### Run CI Commands #######
+
+# This command uses act to replicate github action
+# https://github.com/nektos/act
+run_ci:
+	act
 
 ####### General project commands #######
 
