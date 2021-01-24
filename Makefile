@@ -171,6 +171,14 @@ create_linux_release:
 		axsauze/kompute-builder:0.1 \
 		/workspace/scripts/build_release_linux.sh
 
+
+####### Run CI Commands #######
+
+# This command uses act to replicate github action
+# https://github.com/nektos/act
+run_ci:
+	act -P ubuntu-18.04=nektos/act-environments-ubuntu:18.04
+
 ####### General project commands #######
 
 install_python_reqs:
