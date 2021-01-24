@@ -336,21 +336,27 @@ To update the documentation you will need to:
 
 ##### Running tests
 
-To run tests you can use the helper top level Makefile
+Running the unit tests has been significantly simplified for contributors.
 
-For visual studio you can run
-
-```
-make vs_cmake
-make vs_run_tests VS_BUILD_TYPE="Release"
-```
-
-For unix you can run
+The tests run on CPU, and can be triggered using the ACT command line interface (https://github.com/nektos/act) - once you install the command line (And start the Docker daemon) you just have to type:
 
 ```
-make mk_cmake MK_BUILD_TYPE="Release"
-make mk_run_tests
+$ act
+
+[Python Tests/python-tests] 🚀  Start image=axsauze/kompute-builder:0.2
+[C++ Tests/cpp-tests      ] 🚀  Start image=axsauze/kompute-builder:0.2
+[C++ Tests/cpp-tests      ]   🐳  docker run image=axsauze/kompute-builder:0.2 entrypoint=["/usr/bin/tail" "-f" "/dev/null"] cmd=[]
+[Python Tests/python-tests]   🐳  docker run image=axsauze/kompute-builder:0.2 entrypoint=["/usr/bin/tail" "-f" "/dev/null"] cmd=[]
+...
 ```
+
+The repository contains unit tests for the C++ and Python code, and can be found under the `test/` and `python/test` folder.
+
+The tests are currently run through the CI using Github Actions. It uses the images found in `docker-builders/`.
+
+In order to minimise hardware requirements the tests can run without a GPU, directly in the CPU using [Swiftshader](https://github.com/google/swiftshader).
+
+For more information on how the CI and tests are setup, you can go to the [CI, Docker and Tests Section](https://kompute.cc/overview/ci-tests.html) in the documentation.
 
 ## Motivations
 
