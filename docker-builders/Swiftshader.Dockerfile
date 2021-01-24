@@ -30,5 +30,5 @@ RUN apt-get install -y libxext-dev
 RUN git clone https://github.com/google/swiftshader swiftshader-build
 RUN CC="/usr/bin/gcc-8" CXX="/usr/bin/g++-8" cmake swiftshader-build/. -Bswiftshader-build/build/
 RUN cmake --build swiftshader-build/build/. --parallel 12
-COPY swiftshader-build/build/Linux/ swiftshader/
+RUN cp -r swiftshader-build/build/Linux/ swiftshader/
 

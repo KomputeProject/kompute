@@ -177,7 +177,7 @@ create_linux_release:
 # This command uses act to replicate github action
 # https://github.com/nektos/act
 run_ci:
-	act -P ubuntu-18.04=nektos/act-environments-ubuntu:18.04
+	act
 
 ####### General project commands #######
 
