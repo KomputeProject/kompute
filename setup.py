@@ -76,6 +76,9 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     ext_modules=[CMakeExtension('kp')],
+    install_requires=[
+        "numpy<2.0.0"
+    ],
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
     include_package_data=True,
