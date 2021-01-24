@@ -20,16 +20,15 @@ RUN apt update -y
 RUN apt install -y git
 RUN apt-get install -y cmake g++
 RUN apt-get install -y libvulkan-dev
-# Swiftshader dependencies
+
+# Dependencies for swiftshader
+RUN apt-get install -y g++-8 gcc-8
 RUN apt-get install -y libx11-dev zlib1g-dev
 RUN apt-get install -y libxext-dev
 
-COPY --from=axsauze/swiftshader:0.1 /swiftshader/ /swiftshader/
-
-# Setup Python
-RUN apt-get install -y python3-pip
-
-RUN mkdir builder
-WORKDIR /builder
-
+# Run swiftshader via env VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
+RUN git clone https://github.com/google/swiftshader swiftshader-build
+RUN CC="/usr/bin/gcc-8" CXX="/usr/bin/g++-8" cmake swiftshader-build/. -Bswiftshader-build/build/
+RUN cmake --build swiftshader-build/build/. --parallel 12
+COPY swiftshader-build/build/Linux/ swiftshader/
 
