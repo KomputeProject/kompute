@@ -2,7 +2,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include <AggregateHeaders.cpp>
+#include <kompute/Kompute.hpp>
 
 #include "docstrings.hpp"
 
