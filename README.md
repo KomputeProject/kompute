@@ -46,7 +46,7 @@
 
 Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
 
-### Trying the Colab Notebook
+### Interactive Notebook & Hands on Videos
 
 You are able to try out the interactive Colab Notebooks which allow you to use a free GPU. The available examples are the Python and C++ examples below:
 
@@ -73,6 +73,40 @@ You are able to try out the interactive Colab Notebooks which allow you to use a
 <td>
 <a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">
 <img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-python.jpg">
+</a>
+</td>
+
+</tr>
+</table>
+
+
+You can also check out the two following getting started videos presented at the FOSDEM 2021 conference. 
+
+Both talks have annotated sections - the intro for both is almost the same so you can skip to the more specific content.
+
+<table>
+<tr>
+
+<td width="50%">
+<h5>For <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">C++ & Vulkan SDK</a> Enthusiasts</h5>
+</td>
+
+<td>
+<h5>For <a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">Python & Machine Learning</a> Enthusiasts</h5>
+</td>
+
+</tr>
+<tr>
+
+<td width="50%">
+<a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-cpp-video.png">
+</a>
+</td>
+
+<td>
+<a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-python-video.png">
 </a>
 </td>
 
