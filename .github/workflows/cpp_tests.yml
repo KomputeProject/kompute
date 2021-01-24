@@ -1,4 +1,4 @@
-name: C++ Ubuntu
+name: C++ Tests
 
 on:
   push:
@@ -10,13 +10,13 @@ jobs:
   build-ubuntu:
 
     runs-on: ubuntu-18.04
-    container: axsauze/kompute-builder:0.1
+    container: axsauze/kompute-builder:0.2
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-    - name: configure
+    - name: configure-cpp
       run: |
         cmake -Bbuild/ \
                   -DKOMPUTE_OPT_INSTALL=0                    \
@@ -24,10 +24,10 @@ jobs:
                   -DKOMPUTE_OPT_BUILD_TESTS=1                \
                   -DKOMPUTE_OPT_ENABLE_SPDLOG=1              \
                   -DSPDLOG_INSTALL=1
-    - name: build
+    - name: build-cpp
       run: |
         make mk_build_tests
-    - name: test
+    - name: test-cpp
       run: |
         export VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
         make mk_run_tests_cpu_only
