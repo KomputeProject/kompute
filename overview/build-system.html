@@ -46,7 +46,7 @@
   
   
   
-    <title>Build System Deep Dive &#8212; Vulkan Kompute 0.5.1 documentation</title>
+    <title>C++ Build System Deep Dive &#8212; Vulkan Kompute 0.5.2 documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -81,7 +81,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute 0.5.1 documentation"
+        <a href="../index.html" title="Vulkan Kompute 0.5.2 documentation"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -94,7 +94,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Vulkan Kompute</span>
-          <span class="md-header-nav__topic"> Build System Deep Dive </span>
+          <span class="md-header-nav__topic"> C++ Build System Deep Dive </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -167,7 +167,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.5.1 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.5.2 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute 0.5.1 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute 0.5.2 documentation" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute 0.5.1 documentation">Vulkan Kompute</a>
+       title="Vulkan Kompute 0.5.2 documentation">Vulkan Kompute</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -217,13 +217,6 @@
     
     
       <a href="python-package.html" class="md-nav__link">Python Package Overview</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="python-package.html#python-examples" class="md-nav__link">Python Examples</a>
       
     
     </li>
@@ -284,6 +277,13 @@
     <li class="md-nav__item">
     
     
+      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="python-reference.html" class="md-nav__link">Python Class Documentation & Reference</a>
       
     
@@ -330,7 +330,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="overview-build-system--page-root">Build System Deep Dive<a class="headerlink" href="#overview-build-system--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="overview-build-system--page-root">C++ Build System Deep Dive<a class="headerlink" href="#overview-build-system--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The recommended approach to build the project is as out-of-source build in the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder. This project comes with a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> that provides a set of commands that help with developer workflows. You can see some of the commands if you want to add some of the more advanced commands.</p>
 <p>For a base build you just have to run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">Bbuild</span>
