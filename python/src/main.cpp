@@ -2,13 +2,25 @@
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
 
-#include <kompute/Kompute.hpp>
+#include <kompute/Core.hpp>
+#include <kompute/Manager.hpp>
+#include <kompute/operations/OpAlgoBase.hpp>
+#include <kompute/operations/OpMult.hpp>
+#include <kompute/operations/OpTensorSyncLocal.hpp>
+#include <kompute/operations/OpTensorSyncDevice.hpp>
+#include <kompute/operations/OpTensorCopy.hpp>
+#include <kompute/operations/OpAlgoLhsRhsOut.hpp>
 
 #include "docstrings.hpp"
 
 namespace py = pybind11;
+//used in Core.hpp
+py::object kp_logger;
 
 PYBIND11_MODULE(kp, m) {
+    py::module_ logging = py::module_::import("logging");
+    kp_logger           = logging.attr("getLogger")("kp");
+    logging.attr("basicConfig")();
 
     py::module_ np = py::module_::import("numpy");
 
