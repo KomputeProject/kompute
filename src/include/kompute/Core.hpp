@@ -36,7 +36,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
     #include <pybind11/pybind11.h>
     namespace py = pybind11;
     //from python/src/main.cpp
-    extern py::object kp_logger;
+    extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #endif
 
 
@@ -53,7 +53,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
                 ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, message))
             #elif defined(KOMPUTE_BUILD_PYTHON)
                 #define SPDLOG_DEBUG(message, ...)                                             \
-                kp_logger.attr("debug")(message);
+                kp_debug(message);
             #else
                 #define SPDLOG_DEBUG(message, ...)                                             \
                 std::cout << "DEBUG: " << message << std::endl
@@ -68,7 +68,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
                 ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
             #elif defined(KOMPUTE_BUILD_PYTHON)
                 #define SPDLOG_INFO(message, ...)                                              \
-                kp_logger.attr("info")(message);
+                kp_info(message);
             #else
                 #define SPDLOG_INFO(message, ...) std::cout << "INFO: " << message << std::endl
             #endif // VK_USE_PLATFORM_ANDROID_KHR
@@ -82,7 +82,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
                 ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
             #elif defined(KOMPUTE_BUILD_PYTHON)
                 #define SPDLOG_WARN(message, ...)                                              \
-                kp_logger.attr("warning")(message);
+                kp_warning(message);
             #else
                 #define SPDLOG_WARN(message, ...)                                              \
                 std::cout << "WARNING: " << message << std::endl
@@ -97,7 +97,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
                 ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
             #elif defined(KOMPUTE_BUILD_PYTHON)
                 #define SPDLOG_ERROR(message, ...)                                             \
-                kp_logger.attr("error")(message);
+                kp_error(message);
             #else
                 #define SPDLOG_ERROR(message, ...)                                             \
                 std::cout << "ERROR: " << message << std::endl
