@@ -1,5 +1,5 @@
 
-Build System Deep Dive
+C++ Build System Deep Dive
 ======================
 
 The recommended approach to build the project is as out-of-source build in the ``build`` folder. This project comes with a ``Makefile`` that provides a set of commands that help with developer workflows. You can see some of the commands if you want to add some of the more advanced commands.
