@@ -29,7 +29,7 @@ PYBIND11_MODULE(kp, m) {
     m.def("log_level", [](uint8_t logLevel) {
 #if KOMPUTE_ENABLE_SPDLOG
             spdlog::set_level(
-              static_cast<spdlog::level::level_enum>(SPDLOG_LEVEL_INFO));
+              static_cast<spdlog::level::level_enum>(logLevel));
 #else
             SPDLOG_WARN("SPDLOG not enabled so log level config function not supported");
 #endif
