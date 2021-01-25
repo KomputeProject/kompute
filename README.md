@@ -42,9 +42,88 @@
 
 ## Getting Started
 
-### Setup
+Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.
 
-Kompute is provided as a single header file [`Kompute.hpp`](#setup). See [build-system section](#build-overview) for configurations available.
+### Your First Kompute (C++)
+
+The C++ interface provides low level access to the native components of Kompute and Vulkan, enabling for [advanced optimizations](https://kompute.cc/overview/async-parallel.html) as well as [extension of components](https://kompute.cc/overview/reference.html).
+
+```c++
+int main() {
+
+    // 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+    kp::Manager mgr; 
+
+    // 2. Create and initialise Kompute Tensors through manager
+    auto tensorInA = mgr.buildTensor({ 2., 2., 2. });
+    auto tensorInB = mgr.buildTensor({ 1., 2., 3. });
+    auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
+
+    // 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
+    std::string shaderString = (R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer bina { float tina[]; };
+        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
+        layout(set = 0, binding = 2) buffer bout { float tout[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            tout[index] = tina[index] * tinb[index];
+        }
+    )");
+
+    // 3. Run operation with string shader synchronously
+    mgr.evalOpDefault<kp::OpAlgoBase>(
+        { tensorInA, tensorInB, tensorOut },
+        std::vector<char>(shaderString.begin(), shaderString.end()));
+
+    // 4. Map results back from GPU memory to print the results
+    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
+
+    // Prints the output which is Output: { 2, 4, 6 }
+    for (const float& elem : tensorOut->data()) std::cout << elem << "  ";
+}
+
+```
+
+#### Your First Kompute (Python)
+
+The [Python package](https://kompute.cc/overview/python-package.html) provides a [high level interactive interface](https://kompute.cc/overview/python-reference.html) that enables for experimentation whilst ensuring high performance and fast development workflows.
+
+```python
+# 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+mgr = Manager()
+
+# 2. Create and initialise Kompute Tensors (can be initialized with List[] or np.Array)
+tensor_in_a = Tensor([2, 2, 2])
+tensor_in_b = Tensor([1, 2, 3])
+tensor_out = Tensor([0, 0, 0])
+
+mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+
+# 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
+@python2shader
+def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
+                            data1=("buffer", 0, Array(f32)),
+                            data2=("buffer", 1, Array(f32)),
+                            data3=("buffer", 2, Array(f32))):
+    i = index.x
+    data3[i] = data1[i] * data2[i]
+
+# 4. Run multiplication operation synchronously
+mgr.eval_algo_data_def(
+    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
+
+# 5. Map results back from GPU memory to print the results
+mgr.eval_tensor_sync_local_def([tensor_out])
+
+# Prints [2.0, 4.0, 6.0]
+print(tensor_out.data())
+```
 
 ### Interactive Notebooks & Hands on Videos
 
@@ -113,103 +192,6 @@ Both talks have annotated sections - the intro for both is almost the same so yo
 </tr>
 </table>
 
-
-### Your First Kompute
-
-Below you can find both the C++ and Python version of a simple GPU multiplication snippet with Kompute.
-
-In both examples the steps carried out will include:
-
-1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
-2. Create and initialise Kompute Tensors through manager
-3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-4. Run operation with string shader synchronously
-5. Map results back from GPU memory to print the results
-
-#### Simple C++ Example
-
-The C++ interface provides lower level access to the native components of Kompute and Vulkan, enabling for advanced optimizations as well as extension of components.
-
-To see a full breakdown you can read further in the [C++ Class Reference](https://kompute.cc/overview/reference.html).
-
-```c++
-int main() {
-
-    // 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
-    kp::Manager mgr; 
-
-    // 2. Create and initialise Kompute Tensors through manager
-    auto tensorInA = mgr.buildTensor({ 2., 2., 2. });
-    auto tensorInB = mgr.buildTensor({ 1., 2., 3. });
-    auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
-
-    // 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-    std::string shaderString = (R"(
-        #version 450
-
-        layout (local_size_x = 1) in;
-
-        // The input tensors bind index is relative to index in parameter passed
-        layout(set = 0, binding = 0) buffer bina { float tina[]; };
-        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
-        layout(set = 0, binding = 2) buffer bout { float tout[]; };
-
-        void main() {
-            uint index = gl_GlobalInvocationID.x;
-            tout[index] = tina[index] * tinb[index];
-        }
-    )");
-
-    // 3. Run operation with string shader synchronously
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-        { tensorInA, tensorInB, tensorOut },
-        std::vector<char>(shaderString.begin(), shaderString.end()));
-
-    // 4. Map results back from GPU memory to print the results
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
-
-    // Prints the output which is Output: { 2, 4, 6 }
-    for (const float& elem : tensorOut->data()) std::cout << elem << "  ";
-}
-
-```
-
-#### Simple Python Example
-
-The Python interface provides a higher level interactive interface that enables for experimentation whilst ensuring high performance and fast development workflows.
-
-For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
-
-```python
-# 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
-mgr = Manager()
-
-# 2. Create and initialise Kompute Tensors (can be initialized with List[] or np.Array)
-tensor_in_a = Tensor([2, 2, 2])
-tensor_in_b = Tensor([1, 2, 3])
-tensor_out = Tensor([0, 0, 0])
-
-mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
-
-# 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-@python2shader
-def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
-                            data1=("buffer", 0, Array(f32)),
-                            data2=("buffer", 1, Array(f32)),
-                            data3=("buffer", 2, Array(f32))):
-    i = index.x
-    data3[i] = data1[i] * data2[i]
-
-# 4. Run multiplication operation synchronously
-mgr.eval_algo_data_def(
-    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
-
-# 5. Map results back from GPU memory to print the results
-mgr.eval_tensor_sync_local_def([tensor_out])
-
-# Prints [2.0, 4.0, 6.0]
-print(tensor_out.data())
-```
 
 ## Architectural Overview
 
