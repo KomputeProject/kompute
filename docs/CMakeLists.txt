@@ -66,5 +66,10 @@ add_custom_target(gendocsall ALL
         -E copy
         ${PROJECT_SOURCE_DIR}/CNAME
         ${SPHINX_BUILD}/CNAME
+# Copy the custom asset folder
+    COMMAND ${CMAKE_COMMAND}
+        -E copy_directory
+        ${PROJECT_SOURCE_DIR}/docs/assets/
+        ${SPHINX_BUILD}/_static/
     DEPENDS gensphinx)
 

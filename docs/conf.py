@@ -19,9 +19,11 @@
 import sys
 import os
 import kp
+import sphinx_material
 
 project = 'Vulkan Kompute'
 copyright = '2020, The Institute for Ethical AI & Machine Learning'
+html_title = "Vulkan Kompute Documentation (Python & C++)"
 author = 'Alejandro Saucedo'
 
 # The full version, including alpha/beta/rc tags
@@ -67,25 +69,40 @@ html_theme = 'sphinx_material'
 
 if html_theme == 'sphinx_material':
     html_theme_options = {
-        'nav_title': 'Vulkan Kompute',
-        #'google_analytics_account': 'UA-XXXXX',
-        #'base_url': 'https://project.github.io/project',
+        'google_analytics_account': 'G-F9LD9HL8LW',
+        'base_url': 'https://kompute.cc',
         'color_primary': 'red',
         'color_accent': 'light-blue',
         'repo_url': 'https://github.com/EthicalML/vulkan-kompute/',
         'repo_name': 'Vulkan Kompute',
-        'globaltoc_depth': 3,
+        'globaltoc_depth': 2,
         'globaltoc_collapse': False,
         'globaltoc_includehidden': False,
+        "repo_type": "github",
+        "nav_links": [
+            {
+                "href": "https://github.com/EthicalML/vulkan-kompute/",
+                "internal": False,
+                "title": "Kompute Repo",
+            },
+        ]
     }
 
+    extensions.append("sphinx_material")
+    html_theme_path = sphinx_material.html_theme_path()
+    html_context = sphinx_material.get_html_context()
+
 html_sidebars = {
-    "**": ["logo-text.html", "globaltoc.html", "searchbox.html"]
+    "**": ["logo-text.html", "globaltoc.html",  "localtoc.html", "searchbox.html"]
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_css_files = [
+    'custom.css',
+]
 
 
