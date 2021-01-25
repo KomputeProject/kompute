@@ -7,8 +7,17 @@
 #include "docstrings.hpp"
 
 namespace py = pybind11;
+//used in Core.hpp
+py::object kp_debug, kp_info, kp_warning, kp_error;
 
 PYBIND11_MODULE(kp, m) {
+    py::module_ logging  = py::module_::import("logging");
+    py::object kp_logger = logging.attr("getLogger")("kp");
+    kp_debug             = kp_logger.attr("debug");
+    kp_info              = kp_logger.attr("info");
+    kp_warning           = kp_logger.attr("warning");
+    kp_error             = kp_logger.attr("error");
+    logging.attr("basicConfig")();
 
     py::module_ np = py::module_::import("numpy");
 
@@ -20,7 +29,7 @@ PYBIND11_MODULE(kp, m) {
     m.def("log_level", [](uint8_t logLevel) {
 #if KOMPUTE_ENABLE_SPDLOG
             spdlog::set_level(
-              static_cast<spdlog::level::level_enum>(SPDLOG_LEVEL_INFO));
+              static_cast<spdlog::level::level_enum>(logLevel));
 #else
             SPDLOG_WARN("SPDLOG not enabled so log level config function not supported");
 #endif

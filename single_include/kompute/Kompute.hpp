@@ -32,55 +32,77 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #endif
 #endif
 
+#if defined(KOMPUTE_BUILD_PYTHON)
+    #include <pybind11/pybind11.h>
+    namespace py = pybind11;
+    //from python/src/main.cpp
+    extern py::object kp_debug, kp_info, kp_warning, kp_error;
+#endif
+
 #ifndef KOMPUTE_LOG_OVERRIDE
-#if KOMPUTE_ENABLE_SPDLOG
-#include <spdlog/spdlog.h>
-#else
-#include <iostream>
-#if SPDLOG_ACTIVE_LEVEL > 1
-#define SPDLOG_DEBUG(message, ...)
-#else
-#if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_DEBUG(message, ...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, message))
-#else
-#define SPDLOG_DEBUG(message, ...)                                             \
-    std::cout << "DEBUG: " << message << std::endl
-#endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 1
-#if SPDLOG_ACTIVE_LEVEL > 2
-#define SPDLOG_INFO(message, ...)
-#else
-#if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_INFO(message, ...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
-#else
-#define SPDLOG_INFO(message, ...) std::cout << "INFO: " << message << std::endl
-#endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 2
-#if SPDLOG_ACTIVE_LEVEL > 3
-#define SPDLOG_WARN(message, ...)
-#else
-#if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_WARN(message, ...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
-#else
-#define SPDLOG_WARN(message, ...)                                              \
-    std::cout << "WARNING: " << message << std::endl
-#endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 3
-#if SPDLOG_ACTIVE_LEVEL > 4
-#define SPDLOG_ERROR(message, ...)
-#else
-#if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_ERROR(message, ...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
-#else
-#define SPDLOG_ERROR(message, ...)                                             \
-    std::cout << "ERROR: " << message << std::endl
-#endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 4
-#endif // KOMPUTE_SPDLOG_ENABLED
+    #if KOMPUTE_ENABLE_SPDLOG
+        #include <spdlog/spdlog.h>
+    #else
+        #include <iostream>
+        #if SPDLOG_ACTIVE_LEVEL > 1
+            #define SPDLOG_DEBUG(message, ...)
+        #else
+            #if defined(VK_USE_PLATFORM_ANDROID_KHR)
+                #define SPDLOG_DEBUG(message, ...)                                             \
+                ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, message))
+            #elif defined(KOMPUTE_BUILD_PYTHON)
+                #define SPDLOG_DEBUG(message, ...)                                             \
+                kp_debug(message);
+            #else
+                #define SPDLOG_DEBUG(message, ...)                                             \
+                std::cout << "DEBUG: " << message << std::endl
+            #endif // VK_USE_PLATFORM_ANDROID_KHR
+        #endif // SPDLOG_ACTIVE_LEVEL > 1
+        
+        #if SPDLOG_ACTIVE_LEVEL > 2
+            #define SPDLOG_INFO(message, ...)
+        #else
+            #if defined(VK_USE_PLATFORM_ANDROID_KHR)
+                #define SPDLOG_INFO(message, ...)                                              \
+                ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+            #elif defined(KOMPUTE_BUILD_PYTHON)
+                #define SPDLOG_INFO(message, ...)                                              \
+                kp_info(message);
+            #else
+                #define SPDLOG_INFO(message, ...) std::cout << "INFO: " << message << std::endl
+            #endif // VK_USE_PLATFORM_ANDROID_KHR
+        #endif // SPDLOG_ACTIVE_LEVEL > 2
+    
+        #if SPDLOG_ACTIVE_LEVEL > 3
+            #define SPDLOG_WARN(message, ...)
+        #else
+            #if defined(VK_USE_PLATFORM_ANDROID_KHR)
+                #define SPDLOG_WARN(message, ...)                                              \
+                ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+            #elif defined(KOMPUTE_BUILD_PYTHON)
+                #define SPDLOG_WARN(message, ...)                                              \
+                kp_warning(message);
+            #else
+                #define SPDLOG_WARN(message, ...)                                              \
+                std::cout << "WARNING: " << message << std::endl
+            #endif // VK_USE_PLATFORM_ANDROID_KHR
+        #endif // SPDLOG_ACTIVE_LEVEL > 3
+    
+        #if SPDLOG_ACTIVE_LEVEL > 4
+            #define SPDLOG_ERROR(message, ...)
+        #else
+            #if defined(VK_USE_PLATFORM_ANDROID_KHR)
+                #define SPDLOG_ERROR(message, ...)                                             \
+                ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+            #elif defined(KOMPUTE_BUILD_PYTHON)
+                #define SPDLOG_ERROR(message, ...)                                             \
+                kp_error(message);
+            #else
+                #define SPDLOG_ERROR(message, ...)                                             \
+                std::cout << "ERROR: " << message << std::endl
+            #endif // VK_USE_PLATFORM_ANDROID_KHR
+        #endif // SPDLOG_ACTIVE_LEVEL > 4
+    #endif // KOMPUTE_SPDLOG_ENABLED
 #endif // KOMPUTE_LOG_OVERRIDE
 
 /*
