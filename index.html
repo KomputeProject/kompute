@@ -208,14 +208,56 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/advanced-examples.html" class="md-nav__link">Simple & Advanced Examples</a>
+      <a href="overview/advanced-examples.html" class="md-nav__link">C++ Simple & Advanced Examples</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="overview/python-package.html" class="md-nav__link">Python Package Overview</a>
+      <a href="overview/memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/reference.html" class="md-nav__link">C++ Class Documentation & Reference</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/python-reference.html" class="md-nav__link">Python Class Documentation & Reference</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
       
     
     </li>
@@ -223,27 +265,6 @@
     
     
       <a href="overview/async-parallel.html" class="md-nav__link">Asynchronous & Parallel Operations</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="overview/memory-management.html" class="md-nav__link">Memory Management Principles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="overview/build-system.html" class="md-nav__link">Build System Deep Dive</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="overview/shaders-to-headers.html" class="md-nav__link">Converting GLSL/HLSL Shaders to C++ Headers</a>
       
     
     </li>
@@ -258,27 +279,6 @@
     
     
       <a href="overview/game-engine-godot.html" class="md-nav__link">Game Engine Integration (Godot Engine)</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="overview/python-reference.html" class="md-nav__link">Python Class Documentation & Reference</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="overview/reference.html" class="md-nav__link">C++ Class Documentation & Reference</a>
       
     
     </li>
@@ -355,15 +355,15 @@
 <p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;#setup&gt;`_. See <a class="reference external" href="#build-overview">build-system section</a> for configurations available.</p>
 
 
-<h3 id="trying-the-colab-notebook">Trying the Colab Notebook<a class="headerlink" href="#trying-the-colab-notebook" title="Permalink to this headline">¶</a></h3>
+<h3 id="interactive-notebooks-hands-on-videos">Interactive Notebooks &amp; Hands on Videos<a class="headerlink" href="#interactive-notebooks-hands-on-videos" title="Permalink to this headline">¶</a></h3>
 <p>You are able to try out the interactive Colab Notebooks which allow you to use a free GPU. The available examples are the Python and C++ examples below:</p>
 <table>
 <tr>
 <td width="50%">
-<h5>Interactive <a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">C++ Colab</a> from <a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a></h5>
+<h5>Try the interactive <a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">C++ Colab</a> from <a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a></h5>
 </td>
 <td>
-<h5>Interactive <a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">Python Colab</a> from <a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">Blog Post</a></h5>
+<h5>Try the interactive <a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">Python Colab</a> from <a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">Blog Post</a></h5>
 </td>
 </tr>
 <tr>
@@ -378,6 +378,29 @@
 </a>
 </td>
 </tr>
+</table><p>You can also check out the two following getting started videos presented at the FOSDEM 2021 conference.</p>
+<p>Both talks have annotated sections - the intro for both is almost the same so you can skip to the more specific content.</p>
+<table>
+<tr>
+<td width="50%">
+<h5>Watch the video for <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">C++ &amp; Vulkan SDK</a> Enthusiasts</h5>
+</td>
+<td>
+<h5>Watch the video for <a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">Python &amp; Machine Learning</a> Enthusiasts</h5>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-cpp-video.png"/>
+</a>
+</td>
+<td>
+<a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-python-video.png"/>
+</a>
+</td>
+</tr>
 </table>
 
 <h3 id="your-first-kompute">Your First Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h3>
@@ -387,7 +410,7 @@
 <li><p>Create Kompute Manager with default settings (device 0 and first compute compatible queue)</p></li>
 <li><p>Create and initialise Kompute Tensors through manager</p></li>
 <li><p>Specify “multiply shader” code (can also be raw string, spir-v bytes or file path)</p></li>
-<li><p>Run multiplication operation synchronously</p></li>
+<li><p>Run operation with string shader synchronously</p></li>
 <li><p>Map results back from GPU memory to print the results</p></li>
 </ol>
 
@@ -421,8 +444,8 @@
 <span class="s">        }</span>
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="c1">// 3. Run multiplication operation synchronously</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&gt;</span><span class="p">(</span>
+    <span class="c1">// 3. Run operation with string shader synchronously</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">},</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shaderString</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shaderString</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
@@ -651,17 +674,17 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">Simple &amp; Advanced Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/python-package.html">Python Package Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Simple &amp; Advanced Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">C++ Memory Management Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">C++ Build System Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/reference.html">C++ Class Documentation &amp; Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/python-package.html">Python Package Overview &amp; Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/python-reference.html">Python Class Documentation &amp; Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images &amp; Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/async-parallel.html">Asynchronous &amp; Parallel Operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">Memory Management Principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">Build System Deep Dive</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">Converting GLSL/HLSL Shaders to C++ Headers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Integration (Android)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/game-engine-godot.html">Game Engine Integration (Godot Engine)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images &amp; Tests</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/python-reference.html">Python Class Documentation &amp; Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/reference.html">C++ Class Documentation &amp; Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Code Index</a></li>
 </ul>
 </div>
