@@ -44,11 +44,21 @@
   <meta name="theme-color" content="#3f51b5">
   <script src="../_static/javascripts/modernizr.js"></script>
   
+  <script>
+      window.ga = window.ga || function () {
+          (ga.q = ga.q || []).push(arguments)
+      };
+      ga.l = +new Date;
+      ga('create', 'G-F9LD9HL8LW', 'auto');
+      ga('send', 'pageview');
+  </script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Class Documentation and C++ Reference &#8212; Vulkan Kompute 0.5.2 documentation</title>
+    <title>Class Documentation and C++ Reference &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -56,8 +66,8 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Code index" href="../genindex.html" />
-    <link rel="prev" title="Python Class Documentation &amp; Reference" href="python-reference.html" />
+    <link rel="next" title="Python Package Overview" href="python-package.html" />
+    <link rel="prev" title="Converting Shaders to C++ Headers" href="shaders-to-headers.html" />
   
    
 
@@ -81,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute 0.5.2 documentation"
+        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -93,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute</span>
+          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Class Documentation and C++ Reference </span>
         </div>
       </div>
@@ -167,7 +177,9 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute 0.5.2 documentation</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+            
+            <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
     </div>
   </nav>
@@ -179,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute 0.5.2 documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute 0.5.2 documentation">Vulkan Kompute</a>
+       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,14 +221,117 @@
     <li class="md-nav__item">
     
     
-      <a href="advanced-examples.html" class="md-nav__link">Simple & Advanced Examples</a>
+      <a href="https://kompute.cc/" class="md-nav__link">Documentation Home</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">C++ Documentation:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="advanced-examples.html" class="md-nav__link">C++ Simple & Advanced Examples</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="python-package.html" class="md-nav__link">Python Package Overview</a>
+      <a href="memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> C++ Class Documentation & Reference </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">C++ Class Documentation & Reference</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#overview-reference--page-root" class="md-nav__link">Class Documentation and C++ Reference</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#manager" class="md-nav__link">Manager</a>
+        </li>
+        <li class="md-nav__item"><a href="#sequence" class="md-nav__link">Sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#tensor" class="md-nav__link">Tensor</a>
+        </li>
+        <li class="md-nav__item"><a href="#algorithm" class="md-nav__link">Algorithm</a>
+        </li>
+        <li class="md-nav__item"><a href="#opbase" class="md-nav__link">OpBase</a>
+        </li>
+        <li class="md-nav__item"><a href="#opalgobase" class="md-nav__link">OpAlgoBase</a>
+        </li>
+        <li class="md-nav__item"><a href="#opmult" class="md-nav__link">OpMult</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorcreate" class="md-nav__link">OpTensorCreate</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorcopy" class="md-nav__link">OpTensorCopy</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorsynclocal" class="md-nav__link">OpTensorSyncLocal</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorsyncdevice" class="md-nav__link">OpTensorSyncDevice</a>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/overview/reference.rst.txt">Show Source</a> </li>
+
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-reference.html" class="md-nav__link">Python Class Documentation & Reference</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
       
     
     </li>
@@ -224,27 +339,6 @@
     
     
       <a href="async-parallel.html" class="md-nav__link">Asynchronous & Parallel Operations</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="memory-management.html" class="md-nav__link">Memory Management Principles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="build-system.html" class="md-nav__link">Build System Deep Dive</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="shaders-to-headers.html" class="md-nav__link">Converting GLSL/HLSL Shaders to C++ Headers</a>
       
     
     </li>
@@ -259,39 +353,6 @@
     
     
       <a href="game-engine-godot.html" class="md-nav__link">Game Engine Integration (Godot Engine)</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="python-reference.html" class="md-nav__link">Python Class Documentation & Reference</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> C++ Class Documentation & Reference </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">C++ Class Documentation & Reference</a>
-      
-        
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
-    
-<li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/overview/reference.rst.txt">Show Source</a> </li>
-
-  </ul>
-</nav>
       
     
     </li>
@@ -314,7 +375,34 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#overview-reference--page-root" class="md-nav__link">Class Documentation and C++ Reference</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#manager" class="md-nav__link">Manager</a>
+        </li>
+        <li class="md-nav__item"><a href="#sequence" class="md-nav__link">Sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#tensor" class="md-nav__link">Tensor</a>
+        </li>
+        <li class="md-nav__item"><a href="#algorithm" class="md-nav__link">Algorithm</a>
+        </li>
+        <li class="md-nav__item"><a href="#opbase" class="md-nav__link">OpBase</a>
+        </li>
+        <li class="md-nav__item"><a href="#opalgobase" class="md-nav__link">OpAlgoBase</a>
+        </li>
+        <li class="md-nav__item"><a href="#opmult" class="md-nav__link">OpMult</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorcreate" class="md-nav__link">OpTensorCreate</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorcopy" class="md-nav__link">OpTensorCopy</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorsynclocal" class="md-nav__link">OpTensorSyncLocal</a>
+        </li>
+        <li class="md-nav__item"><a href="#optensorsyncdevice" class="md-nav__link">OpTensorSyncDevice</a>
+        </li></ul>
+            </nav>
+        </li>
     
 <li class="md-nav__item"><a class="md-nav__extra_link" href="../_sources/overview/reference.rst.txt">Show Source</a> </li>
 
@@ -1323,7 +1411,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="python-reference.html" title="Python Class Documentation &amp; Reference"
+            <a href="shaders-to-headers.html" title="Converting Shaders to C++ Headers"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -1332,17 +1420,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Python Class Documentation &amp; Reference </span>
+                      class="md-footer-nav__direction"> Previous </span> Converting Shaders to C++ Headers </span>
               </div>
             </a>
           
           
-            <a href="../genindex.html" title="Code index"
+            <a href="python-package.html" title="Python Package Overview"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Code index </span>
+                class="md-footer-nav__direction"> Next </span> Python Package Overview </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

@@ -44,11 +44,21 @@
   <meta name="theme-color" content="#3f51b5">
   <script src="_static/javascripts/modernizr.js"></script>
   
+  <script>
+      window.ga = window.ga || function () {
+          (ga.q = ga.q || []).push(arguments)
+      };
+      ga.l = +new Date;
+      ga('create', 'G-F9LD9HL8LW', 'auto');
+      ga('send', 'pageview');
+  </script>
+  <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Kompute Docs Home &#8212; Vulkan Kompute 0.5.2 documentation</title>
+    <title>Kompute Docs Home &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -80,7 +90,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="#" title="Vulkan Kompute 0.5.2 documentation"
+        <a href="#" title="Vulkan Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -92,7 +102,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute</span>
+          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Kompute Docs Home </span>
         </div>
       </div>
@@ -166,7 +176,9 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Vulkan Kompute 0.5.2 documentation</a></li>
+          <li class="md-tabs__item"><a href="#" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+            
+            <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
     </div>
   </nav>
@@ -178,13 +190,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="#" title="Vulkan Kompute 0.5.2 documentation" class="md-nav__button md-logo">
+    <a href="#" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="#"
-       title="Vulkan Kompute 0.5.2 documentation">Vulkan Kompute</a>
+       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -205,6 +217,18 @@
 
   
   <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="https://kompute.cc/" class="md-nav__link">Documentation Home</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">C++ Documentation:</span></span>
+    
+    </li>
     <li class="md-nav__item">
     
     
@@ -242,6 +266,11 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="overview/python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
       
@@ -252,6 +281,11 @@
     
       <a href="overview/python-reference.html" class="md-nav__link">Python Class Documentation & Reference</a>
       
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -301,7 +335,70 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Kompute Docs Home</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#principles-features" class="md-nav__link">Principles & Features</a>
+        </li>
+        <li class="md-nav__item"><a href="#getting-started" class="md-nav__link">Getting Started</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#setup" class="md-nav__link">Setup</a>
+        </li>
+        <li class="md-nav__item"><a href="#interactive-notebooks-hands-on-videos" class="md-nav__link">Interactive Notebooks & Hands on Videos</a>
+        </li>
+        <li class="md-nav__item"><a href="#your-first-kompute" class="md-nav__link">Your First Kompute</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#simple-c-example" class="md-nav__link">Simple C++ Example</a>
+        </li>
+        <li class="md-nav__item"><a href="#simple-python-example" class="md-nav__link">Simple Python Example</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#architectural-overview" class="md-nav__link">Architectural Overview</a>
+        </li>
+        <li class="md-nav__item"><a href="#asynchronous-and-parallel-operations" class="md-nav__link">Asynchronous and Parallel Operations</a>
+        </li>
+        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Mobile Enabled</a>
+        </li>
+        <li class="md-nav__item"><a href="#more-examples" class="md-nav__link">More examples</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#simple-examples" class="md-nav__link">Simple examples</a>
+        </li>
+        <li class="md-nav__item"><a href="#end-to-end-examples" class="md-nav__link">End-to-end examples</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#python-package" class="md-nav__link">Python Package</a>
+        </li>
+        <li class="md-nav__item"><a href="#c-build-overview" class="md-nav__link">C++ Build Overview</a>
+        </li>
+        <li class="md-nav__item"><a href="#kompute-development" class="md-nav__link">Kompute Development</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#contributing" class="md-nav__link">Contributing</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#dev-dependencies" class="md-nav__link">Dev Dependencies</a>
+        </li>
+        <li class="md-nav__item"><a href="#development" class="md-nav__link">Development</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#updating-documentation" class="md-nav__link">Updating documentation</a>
+        </li>
+        <li class="md-nav__item"><a href="#running-tests" class="md-nav__link">Running tests</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#motivations" class="md-nav__link">Motivations</a>
+        </li>
+        <li class="md-nav__item"><a href="#index" class="md-nav__link">Index</a>
+        </li></ul>
+            </nav>
+        </li>
     
 <li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/index.rst.txt">Show Source</a> </li>
 
@@ -674,13 +771,29 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference external" href="https://kompute.cc/">Documentation Home</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">C++ Documentation:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Simple &amp; Advanced Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">C++ Memory Management Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">C++ Build System Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/reference.html">C++ Class Documentation &amp; Reference</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Python Documentation:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/python-package.html">Python Package Overview &amp; Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/python-reference.html">Python Class Documentation &amp; Reference</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images &amp; Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/async-parallel.html">Asynchronous &amp; Parallel Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Integration (Android)</a></li>
