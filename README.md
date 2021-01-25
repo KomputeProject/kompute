@@ -123,7 +123,7 @@ In both examples the steps carried out will include:
 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
 2. Create and initialise Kompute Tensors through manager
 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-4. Run multiplication operation synchronously
+4. Run operation with string shader synchronously
 5. Map results back from GPU memory to print the results
 
 #### Simple C++ Example
@@ -160,8 +160,8 @@ int main() {
         }
     )");
 
-    // 3. Run multiplication operation synchronously
-    mgr.evalOpDefault<kp::OpMult>(
+    // 3. Run operation with string shader synchronously
+    mgr.evalOpDefault<kp::OpAlgoBase>(
         { tensorInA, tensorInB, tensorOut },
         std::vector<char>(shaderString.begin(), shaderString.end()));
 
