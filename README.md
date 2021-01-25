@@ -90,7 +90,7 @@ int main() {
 
 ```
 
-#### Your First Kompute (Python)
+### Your First Kompute (Python)
 
 The [Python package](https://kompute.cc/overview/python-package.html) provides a [high level interactive interface](https://kompute.cc/overview/python-reference.html) that enables for experimentation whilst ensuring high performance and fast development workflows.
 
