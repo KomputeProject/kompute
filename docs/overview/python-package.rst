@@ -311,13 +311,7 @@ Similar to the logistic regression implementation in the C++ examples section, b
 Log Level Configuration
 ^^^^^^
 
-You can configure log level with the function `kp.log_level` as outlined below.
+Logging inside the C++ uses the PyBind logging, which allows for all the std::cout to be passed to a python logger.
 
-The values are TRACE=0, DEBUG=1, INFO=2, WARN=3, ERROR=4. Kompute defaults to INFO.
-
-.. code-block:: python
-   :linenos:
-
-    import kp
-    kp.log_level(1)
+All python output is logged to the logger with the name `kp`.
 
