@@ -11,6 +11,8 @@ namespace py = pybind11;
 py::object kp_debug, kp_info, kp_warning, kp_error;
 
 PYBIND11_MODULE(kp, m) {
+
+    // The logging modules are used in the Kompute.hpp file
     py::module_ logging  = py::module_::import("logging");
     py::object kp_logger = logging.attr("getLogger")("kp");
     kp_debug             = kp_logger.attr("debug");
@@ -21,28 +23,12 @@ PYBIND11_MODULE(kp, m) {
 
     py::module_ np = py::module_::import("numpy");
 
-#if KOMPUTE_ENABLE_SPDLOG
-    spdlog::set_level(
-      static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL));
-#endif
-
-    m.def("log_level", [](uint8_t logLevel) {
-#if KOMPUTE_ENABLE_SPDLOG
-            spdlog::set_level(
-              static_cast<spdlog::level::level_enum>(logLevel));
-#else
-            SPDLOG_WARN("SPDLOG not enabled so log level config function not supported");
-#endif
-        });
 
     py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", DOC(kp, Tensor, TensorTypes))
         .value("device", kp::Tensor::TensorTypes::eDevice, "Tensor holding data in GPU memory.")
         .value("staging", kp::Tensor::TensorTypes::eStaging, "Tensor used for transfer of data to device.")
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
         .export_values();
-
-
-
 
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
@@ -99,9 +85,6 @@ PYBIND11_MODULE(kp, m) {
         .def("is_init", &kp::Tensor::isInit, "Checks whether the tensor GPU memory has been initialised.")
         .def("map_data_from_host", &kp::Tensor::mapDataFromHostMemory, "Maps data into GPU memory from tensor local data.")
         .def("map_data_into_host", &kp::Tensor::mapDataIntoHostMemory, "Maps data from GPU memory into tensor local data.");
-
-
-
 
 
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
@@ -162,9 +145,6 @@ PYBIND11_MODULE(kp, m) {
             py::arg("tensors"), py::arg("bytes"), py::arg("work_group") = std::make_tuple(0,0,0)  )
         .def("record_algo_lro", &kp::Sequence::record<kp::OpAlgoLhsRhsOut>,
             "Records operation to run left right out operation with custom shader");
-
-
-
 
 
     py::class_<kp::Manager>(m, "Manager")
