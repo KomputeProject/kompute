@@ -27,7 +27,7 @@ Index
     :caption: Python Documentation:
 
     Python Package Overview <overview/python-package>
-    Python Examples <overview/python-package>
+    Python Examples <overview/python-examples>
     Python Class Documentation & Reference <overview/python-reference>
 
 .. toctree::
