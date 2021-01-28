@@ -2,8 +2,8 @@
    :format: html
 
 
-Examples
-========
+C++ Examples
+=================
 
 The power of Kompute comes in when the interface is used for complex computations. This section contains an outline of the advanced / end-to-end examples available.
 

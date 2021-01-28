@@ -16,7 +16,7 @@ Index
     :titlesonly:
     :caption: C++ Documentation:
 
-    C++ Simple & Advanced Examples <overview/advanced-examples>
+    C++ Examples <overview/advanced-examples>
     C++ Memory Management Principles <overview/memory-management>
     C++ Build System Deep Dive <overview/build-system>
     C++ Converting GLSL/HLSL Shaders to Cpp Headers <overview/shaders-to-headers>
@@ -26,7 +26,8 @@ Index
     :titlesonly:
     :caption: Python Documentation:
 
-    Python Package Overview & Examples <overview/python-package>
+    Python Package Overview <overview/python-package>
+    Python Examples <overview/python-package>
     Python Class Documentation & Reference <overview/python-reference>
 
 .. toctree::
