@@ -313,5 +313,33 @@ Log Level Configuration
 
 Logging inside the C++ uses the PyBind logging, which allows for all the std::cout to be passed to a python logger.
 
-All python output is logged to the logger with the name `kp`.
+All python output is logged to the logger with the name `kp`. You can interact with the logger similar to any python logging as per the example below:
 
+
+.. code-block:: python
+   :linenos:
+
+    >>> import kp
+    >>> import logging
+    >>>
+    >>> kp_logger = logging.getLogger("kp")
+    >>> kp_logger.setLevel(logging.INFO)
+    >>>
+    >>> kp.Manager()
+    INFO:kp:Using physical device index {} found {}
+    <kp.Manager object at 0x7f2ac075ca30>
+
+    >>> kp_logger.setLevel(logging.DEBUG)
+    >>>
+    >>> kp.Manager()
+    DEBUG:kp:Kompute Manager creating instance
+    DEBUG:kp:Kompute Manager Instance Created
+    DEBUG:kp:Kompute Manager creating Device
+    INFO:kp:Using physical device index {} found {}
+    DEBUG:kp:Kompute Manager device created
+    DEBUG:kp:Kompute Manager compute queue obtained
+    DEBUG:kp:Kompute Manager Destructor started
+    INFO:kp:Destroying device
+    DEBUG:kp:Kompute Manager Destroyed Device
+    DEBUG:kp:Kompute Manager Destroyed Instance
+    <kp.Manager object at 0x7f2af6109e30>
