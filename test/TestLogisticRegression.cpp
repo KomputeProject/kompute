@@ -55,8 +55,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
           std::vector<char>(
             kp::shader_data::shaders_glsl_logisticregression_comp_spv,
             kp::shader_data::shaders_glsl_logisticregression_comp_spv +
-              kp::shader_data::
-                shaders_glsl_logisticregression_comp_spv_len));
+              kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 #endif
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
@@ -86,9 +85,9 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
     EXPECT_LT(bIn->data()[0], 0.0);
 
     SPDLOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
-               wIn->data()[0],
-               wIn->data()[1],
-               bIn->data()[0]);
+                wIn->data()[0],
+                wIn->data()[1],
+                bIn->data()[0]);
 }
 
 TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
@@ -144,8 +143,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
           std::vector<char>(
             kp::shader_data::shaders_glsl_logisticregression_comp_spv,
             kp::shader_data::shaders_glsl_logisticregression_comp_spv +
-              kp::shader_data::
-                shaders_glsl_logisticregression_comp_spv_len));
+              kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 #endif
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
@@ -177,7 +175,7 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     EXPECT_LT(bIn->data()[0], 0.0);
 
     SPDLOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
-               wIn->data()[0],
-               wIn->data()[1],
-               bIn->data()[0]);
+                wIn->data()[0],
+                wIn->data()[1],
+                bIn->data()[0]);
 }

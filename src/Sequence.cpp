@@ -31,8 +31,7 @@ Sequence::~Sequence()
         SPDLOG_INFO("Kompute Sequence destructor called but sequence is not "
                     "initialized so no need to removing GPU resources.");
         return;
-    }
-    else {
+    } else {
         this->freeMemoryDestroyGPUResources();
     }
 }
@@ -206,13 +205,14 @@ Sequence::freeMemoryDestroyGPUResources()
 {
     if (!this->mIsInit) {
         SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
-            "but Sequence is not initialized so there's no relevant GPU resources.");
+                     "but Sequence is not initialized so there's no relevant "
+                     "GPU resources.");
         return;
     }
 
     if (!this->mDevice) {
-        SPDLOG_ERROR(
-          "Kompute Sequence freeMemoryDestroyGPUResources called with null Device pointer");
+        SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
+                     "with null Device pointer");
         this->mIsInit = false;
         return;
     }
@@ -220,8 +220,9 @@ Sequence::freeMemoryDestroyGPUResources()
     if (this->mFreeCommandBuffer) {
         SPDLOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called with null "
-                         "CommandPool pointer");
+            SPDLOG_ERROR(
+              "Kompute Sequence freeMemoryDestroyGPUResources called with null "
+              "CommandPool pointer");
             this->mIsInit = false;
             return;
         }
@@ -233,8 +234,9 @@ Sequence::freeMemoryDestroyGPUResources()
     if (this->mFreeCommandPool) {
         SPDLOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called with null "
-                         "CommandPool pointer");
+            SPDLOG_ERROR(
+              "Kompute Sequence freeMemoryDestroyGPUResources called with null "
+              "CommandPool pointer");
             this->mIsInit = false;
             return;
         }
@@ -250,7 +252,6 @@ Sequence::freeMemoryDestroyGPUResources()
     }
 
     this->mIsInit = false;
-
 }
 
 void
