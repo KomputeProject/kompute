@@ -153,24 +153,6 @@ vs_run_docs: vs_build_docs
 vs_run_tests: vs_build_tests
 	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe --gtest_filter=$(FILTER_TESTS)
 
-####### Create release ######
-
-update_builder_image:
-	docker build . -f docker-builders/KomputeBuilder.Dockerfile \
-		-t axsauze/kompute-builder:0.2
-	docker push axsauze/kompute-builder:0.2
-
-update_vulkan_sdk:
-	docker build -f builders/Dockerfile.linux . \
-		-t axsauze/vulkan-sdk:0.1
-	docker push axsauze/vulkan-sdk:0.1
-
-create_linux_release:
-	docker run -it \
-		-v $(pwd):/workspace \
-		axsauze/kompute-builder:0.1 \
-		/workspace/scripts/build_release_linux.sh
-
 
 ####### Run CI Commands #######
 
@@ -206,10 +188,6 @@ build_single_header:
 format:
 	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp test/*cpp
 
-clean:
-	find src -name "*gch" -exec rm {} \; || "No ghc files"
-	rm ./bin/main.exe || echo "No main.exe"
-
-run:
-	./bin/main.exe;
+build_changelog:
+	docker run -it --rm -v "$(pwd)":/usr/local/src/your-app ferrarimarco/github-changelog-generator:1.15.2 -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}
 

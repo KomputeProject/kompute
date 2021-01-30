@@ -75,3 +75,29 @@ Once this installed:
 * You can build the documentation using the `gendocsall` cmake target
 * You can serve the documentation locally using the `mk_run_docs` command in the Makefile
 
+Performing Release
+~~~~~~~~~~~~
+
+In order to perform the release the following steps need to be carried out:
+
+* Build changelog
+    * Generate latest changelog `make `
+* Python Release
+    * Build dependency:
+        * Intsall dependency: `pip install .`
+        * Ensure all tests pass in GPU and CPU: `python -m pytest`
+        * Build distribution `python setup.py sdist bdist_wheel`
+    * Test repo:
+        * Push to test repo `python -m twine upload --repository testpypi dist/*`
+        * Install python dependency: `python -m pip install --index-url https://test.pypi.org/simple/ --no-deps kp`
+        * Ensure all tests pass in GPU and CPU: `python -m pytest`
+    * Prod repo:
+        * Push to test repo `python -m twine upload dist/*`
+        * Install package from prod pypi `pip install kp`
+        * Ensure all tests pass in GPU and CPU: `python -m pytest`
+
+
+```
+```
+
+
