@@ -2,9 +2,7 @@
 Kompute Docs Home
 ==========================================
 
-.. mdinclude:: ../README.md
-
-Index
+Documentation Index (as per sidebar)
 --------
 
 .. toctree::
@@ -40,4 +38,6 @@ Index
     Mobile App Integration (Android) <overview/mobile-android>
     Game Engine Integration (Godot Engine) <overview/game-engine-godot>
     Code Index <genindex>
+
+.. mdinclude:: ../README.md
 
