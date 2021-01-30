@@ -113,3 +113,21 @@ TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
     EXPECT_FALSE(tensorA->isInit());
     EXPECT_FALSE(tensorB->isInit());
 }
+
+
+TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
+{
+    std::vector<float> testVecA;
+
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
+
+    kp::Manager mgr;
+
+    try{
+        mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+    } catch( const std::runtime_error& err ) {
+         // check exception
+        ASSERT_STREQ("Kompute Tensor attempted to create a zero-sized buffer", err.what() );
+    }
+
+}
