@@ -73,7 +73,7 @@ mk_build_all:
 	cmake --build build/. --parallel
 
 mk_build_docs:
-	cmake --build build/. --target docs --parallel
+	cmake --build build/. --target gendocsall --parallel
 
 mk_build_kompute:
 	cmake --build build/. --target kompute --parallel
