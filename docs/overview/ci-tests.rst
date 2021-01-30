@@ -1,5 +1,5 @@
 
-CI, Docker Images & Tests
+CI, Docker Images, Docs & Tests
 ======================
 
 This section contains an overview of the steps run on CI, as well as the tools used to simplify the testing (such as running Vulkan on CPU).
@@ -63,4 +63,15 @@ The dockerfiles created provide functionality to simplify the interaction with t
      - Image contained a linux build of the full Vulkan SDK to reduce time via multi-staged builds
 
 
+Running / Building Documentation
+~~~~~~~~~~~~~
+
+In order to build the documentation you will need the following dependencies:
+
+* Install CI dependencies under `scripts/requirements.txt`
+
+Once this installed:
+
+* You can build the documentation using the `gendocsall` cmake target
+* You can serve the documentation locally using the `mk_run_docs` command in the Makefile
 

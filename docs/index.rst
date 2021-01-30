@@ -20,6 +20,7 @@ Index
     C++ Memory Management Principles <overview/memory-management>
     C++ Build System Deep Dive <overview/build-system>
     C++ Converting GLSL/HLSL Shaders to Cpp Headers <overview/shaders-to-headers>
+    C++ Extending Kompute with Custom Operations <overview/custom-operations>
     C++ Class Documentation & Reference <overview/reference>
 
 .. toctree::
@@ -34,7 +35,7 @@ Index
     :titlesonly:
     :caption: Concepts & Deep Dives:
 
-    CI, Docker Images & Tests <overview/ci-tests.rst>
+    CI, Docker Images Docs & Tests <overview/ci-tests.rst>
     Asynchronous & Parallel Operations <overview/async-parallel>
     Mobile App Integration (Android) <overview/mobile-android>
     Game Engine Integration (Godot Engine) <overview/game-engine-godot>
