@@ -39,5 +39,8 @@ Documentation Index (as per sidebar)
     Game Engine Integration (Godot Engine) <overview/game-engine-godot>
     Code Index <genindex>
 
+High Level Overview (from README)
+--------
+
 .. mdinclude:: ../README.md
 
