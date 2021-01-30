@@ -58,7 +58,7 @@
     <title>Python Class Documentation &amp; Reference &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -66,8 +66,8 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="CI, Docker Images &amp; Tests" href="ci-tests.html" />
-    <link rel="prev" title="Python Package Overview" href="python-package.html" />
+    <link rel="next" title="CI, Docker Images, Docs &amp; Tests" href="ci-tests.html" />
+    <link rel="prev" title="Python Examples" href="python-examples.html" />
   
    
 
@@ -233,7 +233,7 @@
     <li class="md-nav__item">
     
     
-      <a href="advanced-examples.html" class="md-nav__link">C++ Simple & Advanced Examples</a>
+      <a href="advanced-examples.html" class="md-nav__link">C++ Examples</a>
       
     
     </li>
@@ -273,7 +273,14 @@
     <li class="md-nav__item">
     
     
-      <a href="python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      <a href="python-package.html" class="md-nav__link">Python Package Overview</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-examples.html" class="md-nav__link">Python Examples</a>
       
     
     </li>
@@ -317,7 +324,7 @@
     <li class="md-nav__item">
     
     
-      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
+      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
       
     
     </li>
@@ -406,18 +413,18 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.create_sequence">
-<code class="sig-name descname">create_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">queueIndex</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#kp.Manager.create_sequence" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">queueIndex</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#kp.Manager.create_sequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a sequence with specific name and specified index of available queues</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_algo_data">
-<code class="sig-name descname">eval_algo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">arg2</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_algo_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence</p>
+<code class="sig-name descname">eval_algo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">arg2</span><span class="p">:</span> <span class="n">bytes</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_algo_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_algo_data_def">
-<code class="sig-name descname">eval_algo_data_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_algo_data_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates an operation using a custom shader provided as raw string or spirv bytes with new anonymous Sequence</p>
+<code class="sig-name descname">eval_algo_data_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">bytes</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_algo_data_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_algo_file">
@@ -450,13 +457,39 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dd><p>Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with new anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
+<dt id="kp.Manager.eval_algo_str">
+<code class="sig-name descname">eval_algo_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.eval_algo_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>eval_algo_str(self: kp.Manager, arg0: List[kp.Tensor], arg1: str, arg2: List[str]) -&gt; None</p></li>
+</ol>
+<p>Evaluates an operation using a custom shader provided as string provided as list of characters with explicitly named Sequence</p>
+<ol class="arabic simple" start="2">
+<li><p>eval_algo_str(self: kp.Manager, arg0: List[kp.Tensor], arg1: str, arg2: str) -&gt; None</p></li>
+</ol>
+<p>Evaluates an operation using a custom shader provided as string with explicitly named Sequence</p>
+</dd></dl>
+<dl class="py method">
+<dt id="kp.Manager.eval_algo_str_def">
+<code class="sig-name descname">eval_algo_str_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.eval_algo_str_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>eval_algo_str_def(self: kp.Manager, arg0: List[kp.Tensor], arg1: List[str]) -&gt; None</p></li>
+</ol>
+<p>Evaluates an operation using a custom shader provided as string provided as list of characters with new anonymous Sequence</p>
+<ol class="arabic simple" start="2">
+<li><p>eval_algo_str_def(self: kp.Manager, arg0: List[kp.Tensor], arg1: str) -&gt; None</p></li>
+</ol>
+<p>Evaluates an operation using a custom shader provided as string with a new anonymous Sequence</p>
+</dd></dl>
+<dl class="py method">
 <dt id="kp.Manager.eval_async_algo_data">
-<code class="sig-name descname">eval_async_algo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">arg2</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_algo_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">eval_async_algo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">arg2</span><span class="p">:</span> <span class="n">bytes</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_algo_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_async_algo_data_def">
-<code class="sig-name descname">eval_async_algo_data_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_algo_data_def" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">eval_async_algo_data_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">bytes</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_algo_data_def" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
@@ -488,6 +521,32 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dt id="kp.Manager.eval_async_algo_mult_def">
 <code class="sig-name descname">eval_async_algo_mult_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_algo_mult_def" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with anonymous Sequence</p>
+</dd></dl>
+<dl class="py method">
+<dt id="kp.Manager.eval_async_algo_str">
+<code class="sig-name descname">eval_async_algo_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.eval_async_algo_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>eval_async_algo_str(self: kp.Manager, arg0: List[kp.Tensor], arg1: str, arg2: List[str]) -&gt; None</p></li>
+</ol>
+<p>Evaluates Asynchronous an operation using a custom shader provided as string provided as list of characters with explicitly named Sequence</p>
+<ol class="arabic simple" start="2">
+<li><p>eval_async_algo_str(self: kp.Manager, arg0: List[kp.Tensor], arg1: str, arg2: str) -&gt; None</p></li>
+</ol>
+<p>Evaluates Asynchronous an operation using a custom shader provided as string with explicitly named Sequence</p>
+</dd></dl>
+<dl class="py method">
+<dt id="kp.Manager.eval_async_algo_str_def">
+<code class="sig-name descname">eval_async_algo_str_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.eval_async_algo_str_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>eval_async_algo_str_def(self: kp.Manager, arg0: List[kp.Tensor], arg1: List[str]) -&gt; None</p></li>
+</ol>
+<p>Evaluates Asynchronously an operation using a custom shader provided as string provided as list of characters with new anonymous Sequence</p>
+<ol class="arabic simple" start="2">
+<li><p>eval_async_algo_str_def(self: kp.Manager, arg0: List[kp.Tensor], arg1: str) -&gt; None</p></li>
+</ol>
+<p>Evaluates Asynchronously an operation using a custom shader provided as string with new anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_async_tensor_copy">
@@ -639,12 +698,12 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.record_algo_data">
-<code class="sig-name descname">record_algo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_algo_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Records an operation using a custom shader provided as raw string or spirv bytes</p>
+<code class="sig-name descname">record_algo_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">bytes</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="n">work_group</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0, 0, 0</span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_algo_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Records an operation using a custom shader provided as spirv bytes</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.record_algo_file">
-<code class="sig-name descname">record_algo_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_algo_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">record_algo_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">file_path</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">work_group</span><span class="p">:</span> <span class="n">Tuple<span class="p">[</span>int<span class="p">, </span>int<span class="p">, </span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0, 0, 0</span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_algo_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Records an operation using a custom shader provided from a shader path</p>
 </dd></dl>
 <dl class="py method">
@@ -715,8 +774,13 @@ tensor.</p>
 <dd><p>Maps data from GPU memory into tensor local data.</p>
 </dd></dl>
 <dl class="py method">
+<dt id="kp.Tensor.numpy">
+<code class="sig-name descname">numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → numpy.ndarray<a class="headerlink" href="#kp.Tensor.numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns stored data as a new numpy array.</p>
+</dd></dl>
+<dl class="py method">
 <dt id="kp.Tensor.set_data">
-<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Tensor.set_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">numpy.ndarray<span class="p">[</span>numpy.float32<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Tensor.set_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overrides the data in the local Tensor memory.</p>
 </dd></dl>
 <dl class="py method">
@@ -767,17 +831,22 @@ tensor.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="id5">
-<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overrides the data in the local Tensor memory.</p>
+<code class="sig-name descname">numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → numpy.ndarray<a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns stored data as a new numpy array.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="id6">
-<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → int<a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieves the size of the Tensor data as per the local Tensor memory.</p>
+<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">numpy.ndarray<span class="p">[</span>numpy.float32<span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the data in the local Tensor memory.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="id7">
-<code class="sig-name descname">tensor_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.TensorTypes" title="kp.TensorTypes">kp.TensorTypes</a><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → int<a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the size of the Tensor data as per the local Tensor memory.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="id8">
+<code class="sig-name descname">tensor_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.TensorTypes" title="kp.TensorTypes">kp.TensorTypes</a><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retreves the memory type of the tensor.</p>
 </dd></dl>
 </dd></dl>
@@ -799,10 +868,6 @@ shader storage).</p>
 <em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#kp.TensorTypes.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
-<dl class="py function">
-<dt id="kp.log_level">
-<code class="sig-prename descclassname">kp.</code><code class="sig-name descname">log_level</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.log_level" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 
 
@@ -816,7 +881,7 @@ shader storage).</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="python-package.html" title="Python Package Overview"
+            <a href="python-examples.html" title="Python Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -825,17 +890,17 @@ shader storage).</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Python Package Overview </span>
+                      class="md-footer-nav__direction"> Previous </span> Python Examples </span>
               </div>
             </a>
           
           
-            <a href="ci-tests.html" title="CI, Docker Images &amp; Tests"
+            <a href="ci-tests.html" title="CI, Docker Images, Docs &amp; Tests"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> CI, Docker Images &amp; Tests </span>
+                class="md-footer-nav__direction"> Next </span> CI, Docker Images, Docs &amp; Tests </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

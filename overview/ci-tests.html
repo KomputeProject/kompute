@@ -55,10 +55,10 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>CI, Docker Images &amp; Tests &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>CI, Docker Images, Docs &amp; Tests &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -104,7 +104,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
-          <span class="md-header-nav__topic"> CI, Docker Images &amp; Tests </span>
+          <span class="md-header-nav__topic"> CI, Docker Images, Docs &amp; Tests </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -233,7 +233,7 @@
     <li class="md-nav__item">
     
     
-      <a href="advanced-examples.html" class="md-nav__link">C++ Simple & Advanced Examples</a>
+      <a href="advanced-examples.html" class="md-nav__link">C++ Examples</a>
       
     
     </li>
@@ -273,7 +273,14 @@
     <li class="md-nav__item">
     
     
-      <a href="python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      <a href="python-package.html" class="md-nav__link">Python Package Overview</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-examples.html" class="md-nav__link">Python Examples</a>
       
     
     </li>
@@ -293,21 +300,23 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> CI, Docker Images & Tests </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> CI, Docker Images Docs & Tests </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">CI, Docker Images & Tests</a>
+      <a href="#" class="md-nav__link md-nav__link--active">CI, Docker Images Docs & Tests</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images & Tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images, Docs & Tests</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#ci-commands-triggered" class="md-nav__link">CI Commands Triggered</a>
         </li>
         <li class="md-nav__item"><a href="#running-vulkan-on-the-cpu" class="md-nav__link">Running Vulkan on the CPU</a>
         </li>
         <li class="md-nav__item"><a href="#dockerfiles" class="md-nav__link">Dockerfiles</a>
+        </li>
+        <li class="md-nav__item"><a href="#running-building-documentation" class="md-nav__link">Running / Building Documentation</a>
         </li></ul>
             </nav>
         </li>
@@ -361,13 +370,15 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images & Tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images, Docs & Tests</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#ci-commands-triggered" class="md-nav__link">CI Commands Triggered</a>
         </li>
         <li class="md-nav__item"><a href="#running-vulkan-on-the-cpu" class="md-nav__link">Running Vulkan on the CPU</a>
         </li>
         <li class="md-nav__item"><a href="#dockerfiles" class="md-nav__link">Dockerfiles</a>
+        </li>
+        <li class="md-nav__item"><a href="#running-building-documentation" class="md-nav__link">Running / Building Documentation</a>
         </li></ul>
             </nav>
         </li>
@@ -386,7 +397,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="overview-ci-tests--page-root">CI, Docker Images &amp; Tests<a class="headerlink" href="#overview-ci-tests--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="overview-ci-tests--page-root">CI, Docker Images, Docs &amp; Tests<a class="headerlink" href="#overview-ci-tests--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section contains an overview of the steps run on CI, as well as the tools used to simplify the testing (such as running Vulkan on CPU).</p>
 <p>We use Github Actions to run the tests, which simplifies the workflows significantly for contributors.</p>
 <p>The tests run on CPU, and can be triggered using the ACT command line interface (<a class="reference external" href="https://github.com/nektos/act">https://github.com/nektos/act</a>) - once you install the command line (And start the Docker daemon) you just have to type:</p>
@@ -444,6 +455,18 @@
 </tr>
 </tbody>
 </table>
+
+
+<h2 id="running-building-documentation">Running / Building Documentation<a class="headerlink" href="#running-building-documentation" title="Permalink to this headline">¶</a></h2>
+<p>In order to build the documentation you will need the following dependencies:</p>
+<ul class="simple">
+<li><p>Install CI dependencies under <cite>scripts/requirements.txt</cite></p></li>
+</ul>
+<p>Once this installed:</p>
+<ul class="simple">
+<li><p>You can build the documentation using the <cite>gendocsall</cite> cmake target</p></li>
+<li><p>You can serve the documentation locally using the <cite>mk_run_docs</cite> command in the Makefile</p></li>
+</ul>
 
 
 

@@ -58,7 +58,7 @@
     <title>Kompute Docs Home &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/assets/custom.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -66,7 +66,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="overview/advanced-examples.html" />
+    <link rel="next" title="C++ Examples" href="overview/advanced-examples.html" />
   
    
 
@@ -232,7 +232,7 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/advanced-examples.html" class="md-nav__link">C++ Simple & Advanced Examples</a>
+      <a href="overview/advanced-examples.html" class="md-nav__link">C++ Examples</a>
       
     
     </li>
@@ -260,6 +260,13 @@
     <li class="md-nav__item">
     
     
+      <a href="overview/custom-operations.html" class="md-nav__link">C++ Extending Kompute with Custom Operations</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="overview/reference.html" class="md-nav__link">C++ Class Documentation & Reference</a>
       
     
@@ -272,7 +279,14 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      <a href="overview/python-package.html" class="md-nav__link">Python Package Overview</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/python-examples.html" class="md-nav__link">Python Examples</a>
       
     
     </li>
@@ -291,7 +305,7 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
+      <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
       
     
     </li>
@@ -343,17 +357,11 @@
         </li>
         <li class="md-nav__item"><a href="#getting-started" class="md-nav__link">Getting Started</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#setup" class="md-nav__link">Setup</a>
+        <li class="md-nav__item"><a href="#your-first-kompute-c" class="md-nav__link">Your First Kompute (C++)</a>
+        </li>
+        <li class="md-nav__item"><a href="#your-first-kompute-python" class="md-nav__link">Your First Kompute (Python)</a>
         </li>
         <li class="md-nav__item"><a href="#interactive-notebooks-hands-on-videos" class="md-nav__link">Interactive Notebooks & Hands on Videos</a>
-        </li>
-        <li class="md-nav__item"><a href="#your-first-kompute" class="md-nav__link">Your First Kompute</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#simple-c-example" class="md-nav__link">Simple C++ Example</a>
-        </li>
-        <li class="md-nav__item"><a href="#simple-python-example" class="md-nav__link">Simple Python Example</a>
-        </li></ul>
-            </nav>
         </li></ul>
             </nav>
         </li>
@@ -361,7 +369,7 @@
         </li>
         <li class="md-nav__item"><a href="#asynchronous-and-parallel-operations" class="md-nav__link">Asynchronous and Parallel Operations</a>
         </li>
-        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Mobile Enabled</a>
+        <li class="md-nav__item"><a href="#id1" class="md-nav__link">Mobile Enabled</a>
         </li>
         <li class="md-nav__item"><a href="#more-examples" class="md-nav__link">More examples</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -371,7 +379,7 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#python-package" class="md-nav__link">Python Package</a>
+        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Python Package</a>
         </li>
         <li class="md-nav__item"><a href="#c-build-overview" class="md-nav__link">C++ Build Overview</a>
         </li>
@@ -434,86 +442,22 @@
 
 <h2 id="principles-features">Principles &amp; Features<a class="headerlink" href="#principles-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="#setup">Single header</a> for simple import with flexible build-system configuration</p></li>
-<li><p>Multi-language support with C++ as core SDK as well as <a class="reference external" href="#python-package">optimized Python bindings</a></p></li>
+<li><p>Low level extensible <a class="reference external" href="#your-first-kompute-c">C++ SDK</a> with high level optimized <a class="reference external" href="#your-first-kompute-python">Python module</a></p></li>
 <li><p><a class="reference external" href="#asynchronous-and-parallel-operations">Asynchronous &amp; parallel processing</a> support through GPU family queues</p></li>
-<li><p><a class="reference external" href="#mobile-enabled">Mobile enabled</a> with examples in Android studio across several architectures</p></li>
+<li><p><a class="reference external" href="#mobile-enabled">Mobile enabled</a> with examples via Android NDK across several architectures</p></li>
 <li><p>BYOV: <a class="reference external" href="#motivations">Bring-your-own-Vulkan design</a> to play nice with existing Vulkan applications</p></li>
 <li><p>Explicit relationships for GPU and host <a class="reference external" href="https://kompute.cc/overview/memory-management.html">memory ownership and memory management</a></p></li>
-<li><p><a class="reference external" href="#simple-examples">Short code examples</a> showing the core features</p></li>
+<li><p><a class="reference external" href="#simple-examples">Hands on examples</a> showing the core features</p></li>
 <li><p>Longer tutorials for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a> and <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif"/></a>
 
 
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p>Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.</p>
 
-<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
-<p>Kompute is provided as a single header file <cite>``Kompute.hpp`</cite> &lt;#setup&gt;`_. See <a class="reference external" href="#build-overview">build-system section</a> for configurations available.</p>
-
-
-<h3 id="interactive-notebooks-hands-on-videos">Interactive Notebooks &amp; Hands on Videos<a class="headerlink" href="#interactive-notebooks-hands-on-videos" title="Permalink to this headline">¶</a></h3>
-<p>You are able to try out the interactive Colab Notebooks which allow you to use a free GPU. The available examples are the Python and C++ examples below:</p>
-<table>
-<tr>
-<td width="50%">
-<h5>Try the interactive <a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">C++ Colab</a> from <a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a></h5>
-</td>
-<td>
-<h5>Try the interactive <a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">Python Colab</a> from <a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">Blog Post</a></h5>
-</td>
-</tr>
-<tr>
-<td width="50%">
-<a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">
-<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-cpp.jpg"/>
-</a>
-</td>
-<td>
-<a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">
-<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-python.jpg"/>
-</a>
-</td>
-</tr>
-</table><p>You can also check out the two following getting started videos presented at the FOSDEM 2021 conference.</p>
-<p>Both talks have annotated sections - the intro for both is almost the same so you can skip to the more specific content.</p>
-<table>
-<tr>
-<td width="50%">
-<h5>Watch the video for <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">C++ &amp; Vulkan SDK</a> Enthusiasts</h5>
-</td>
-<td>
-<h5>Watch the video for <a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">Python &amp; Machine Learning</a> Enthusiasts</h5>
-</td>
-</tr>
-<tr>
-<td width="50%">
-<a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">
-<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-cpp-video.png"/>
-</a>
-</td>
-<td>
-<a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">
-<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-python-video.png"/>
-</a>
-</td>
-</tr>
-</table>
-
-<h3 id="your-first-kompute">Your First Kompute<a class="headerlink" href="#your-first-kompute" title="Permalink to this headline">¶</a></h3>
-<p>Below you can find both the C++ and Python version of a simple GPU multiplication snippet with Kompute.</p>
-<p>In both examples the steps carried out will include:</p>
-<ol class="arabic simple">
-<li><p>Create Kompute Manager with default settings (device 0 and first compute compatible queue)</p></li>
-<li><p>Create and initialise Kompute Tensors through manager</p></li>
-<li><p>Specify “multiply shader” code (can also be raw string, spir-v bytes or file path)</p></li>
-<li><p>Run operation with string shader synchronously</p></li>
-<li><p>Map results back from GPU memory to print the results</p></li>
-</ol>
-
-<h4 id="simple-c-example">Simple C++ Example<a class="headerlink" href="#simple-c-example" title="Permalink to this headline">¶</a></h4>
-<p>The C++ interface provides lower level access to the native components of Kompute and Vulkan, enabling for advanced optimizations as well as extension of components.</p>
-<p>To see a full breakdown you can read further in the <a class="reference external" href="https://kompute.cc/overview/reference.html">C++ Class Reference</a>.</p>
+<h3 id="your-first-kompute-c">Your First Kompute (C++)<a class="headerlink" href="#your-first-kompute-c" title="Permalink to this headline">¶</a></h3>
+<p>The C++ interface provides low level access to the native components of Kompute and Vulkan, enabling for <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">advanced optimizations</a> as well as <a class="reference external" href="https://kompute.cc/overview/reference.html">extension of components</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)</span>
@@ -556,9 +500,8 @@
 </div>
 
 
-<h4 id="simple-python-example">Simple Python Example<a class="headerlink" href="#simple-python-example" title="Permalink to this headline">¶</a></h4>
-<p>The Python interface provides a higher level interactive interface that enables for experimentation whilst ensuring high performance and fast development workflows.</p>
-<p>For further details you can read the <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python Package documentation</a> or the <a class="reference external" href="https://kompute.cc/overview/python-reference.html">Python Class Reference documentation</a>.</p>
+<h3 id="your-first-kompute-python">Your First Kompute (Python)<a class="headerlink" href="#your-first-kompute-python" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python package</a> provides a <a class="reference external" href="https://kompute.cc/overview/python-reference.html">high level interactive interface</a> that enables for experimentation whilst ensuring high performance and fast development workflows.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)</span>
 <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
 
@@ -591,6 +534,53 @@
 </div>
 
 
+<h3 id="interactive-notebooks-hands-on-videos">Interactive Notebooks &amp; Hands on Videos<a class="headerlink" href="#interactive-notebooks-hands-on-videos" title="Permalink to this headline">¶</a></h3>
+<p>You are able to try out the interactive Colab Notebooks which allow you to use a free GPU. The available examples are the Python and C++ examples below:</p>
+<table>
+<tr>
+<td width="50%">
+<h5>Try the interactive <a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">C++ Colab</a> from <a href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a></h5>
+</td>
+<td>
+<h5>Try the interactive <a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">Python Colab</a> from <a href="https://towardsdatascience.com/beyond-cuda-gpu-accelerated-python-for-machine-learning-in-cross-vendor-graphics-cards-made-simple-6cc828a45cc3">Blog Post</a></h5>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-cpp.jpg"/>
+</a>
+</td>
+<td>
+<a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/binder-python.jpg"/>
+</a>
+</td>
+</tr>
+</table><p>You can also check out the two following talks presented at the FOSDEM 2021 conference.</p>
+<p>Both videos have timestamps which will allow you to skip to the most relevant section for you - the intro &amp; motivations for both is almost the same so you can skip to the more specific content.</p>
+<table>
+<tr>
+<td width="50%">
+<h5>Watch the video for <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">C++ &amp; Vulkan SDK</a> Enthusiasts</h5>
+</td>
+<td>
+<h5>Watch the video for <a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">Python &amp; Machine Learning</a> Enthusiasts</h5>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-cpp-video.png"/>
+</a>
+</td>
+<td>
+<a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">
+<img src="https://raw.githubusercontent.com/EthicalML/vulkan-kompute/master/docs/images/kompute-python-video.png"/>
+</a>
+</td>
+</tr>
+</table>
 
 
 <h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
@@ -632,7 +622,7 @@ Simplified Kompute Components
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg"/></a>
 
 
-<h2 id="id2">Mobile Enabled<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2 id="id1">Mobile Enabled<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>Kompute has been optimized to work in mobile environments. The <a class="reference external" href="#build-overview">build system</a> enables for dynamic loading of the Vulkan shared library for Android environments, together with a working <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/tree/master/vk_ndk_wrapper_include">Android NDK Vulkan wrapper</a> for the CPP headers.</p>
 <table>
 <tr>
@@ -674,7 +664,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 
 
-<h2 id="python-package">Python Package<a class="headerlink" href="#python-package" title="Permalink to this headline">¶</a></h2>
+<h2 id="id2">Python Package<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.</p>
 <p>The only dependencies are Python 3.5+ and Cmake 3.4.1+. You can install Kompute from the <a class="reference external" href="https://pypi.org/project/kp/">Python pypi package</a> using the following command.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">kp</span>
@@ -777,24 +767,26 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">C++ Documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Simple &amp; Advanced Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">C++ Memory Management Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">C++ Build System Deep Dive</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/custom-operations.html">C++ Extending Kompute with Custom Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/reference.html">C++ Class Documentation &amp; Reference</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Python Documentation:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview/python-package.html">Python Package Overview &amp; Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/python-package.html">Python Package Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/python-examples.html">Python Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/python-reference.html">Python Class Documentation &amp; Reference</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images &amp; Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images Docs &amp; Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/async-parallel.html">Asynchronous &amp; Parallel Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Integration (Android)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/game-engine-godot.html">Game Engine Integration (Godot Engine)</a></li>
@@ -815,12 +807,12 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="overview/advanced-examples.html" title="Examples"
+            <a href="overview/advanced-examples.html" title="C++ Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Examples </span>
+                class="md-footer-nav__direction"> Next </span> C++ Examples </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

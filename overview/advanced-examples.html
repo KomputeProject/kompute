@@ -55,10 +55,10 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Examples &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>C++ Examples &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
@@ -104,7 +104,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
-          <span class="md-header-nav__topic"> Examples </span>
+          <span class="md-header-nav__topic"> C++ Examples </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -234,15 +234,15 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> C++ Simple & Advanced Examples </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> C++ Examples </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">C++ Simple & Advanced Examples</a>
+      <a href="#" class="md-nav__link md-nav__link--active">C++ Examples</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#overview-advanced-examples--page-root" class="md-nav__link">Examples</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#overview-advanced-examples--page-root" class="md-nav__link">C++ Examples</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#simple-examples" class="md-nav__link">Simple examples</a>
         </li>
@@ -308,7 +308,14 @@
     <li class="md-nav__item">
     
     
-      <a href="python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      <a href="python-package.html" class="md-nav__link">Python Package Overview</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-examples.html" class="md-nav__link">Python Examples</a>
       
     
     </li>
@@ -327,7 +334,7 @@
     <li class="md-nav__item">
     
     
-      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
+      <a href="ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
       
     
     </li>
@@ -373,7 +380,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#overview-advanced-examples--page-root" class="md-nav__link">Examples</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#overview-advanced-examples--page-root" class="md-nav__link">C++ Examples</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#simple-examples" class="md-nav__link">Simple examples</a>
         </li>
@@ -410,7 +417,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="overview-advanced-examples--page-root">Examples<a class="headerlink" href="#overview-advanced-examples--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="overview-advanced-examples--page-root">C++ Examples<a class="headerlink" href="#overview-advanced-examples--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The power of Kompute comes in when the interface is used for complex computations. This section contains an outline of the advanced / end-to-end examples available.</p>
 
 <h2 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h2>
@@ -632,7 +639,7 @@
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAwaitDefault</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
 
     <span class="c1">// Run Async Kompute operation on the parameters provided</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensor</span> <span class="p">},</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
@@ -782,13 +789,13 @@
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
     <span class="c1">// Run the first parallel operation in the `queueOne` sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensorA</span> <span class="p">},</span>
         <span class="s">"queueOne"</span><span class="p">,</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
 
     <span class="c1">// Run the second parallel operation in the `queueTwo` sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensorB</span> <span class="p">},</span>
         <span class="s">"queueTwo"</span><span class="p">,</span>
         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
@@ -847,16 +854,14 @@
 31
 32
 33
-34
-35</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">template</span><span class="o">&lt;</span><span class="kt">uint32_t</span> <span class="n">tX</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tY</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">tZ</span> <span class="o">=</span> <span class="mi">0</span><span class="o">&gt;</span>
-<span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span>
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoBase</span>
 <span class="p">{</span>
   <span class="k">public</span><span class="o">:</span>
     <span class="n">OpMyCustom</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">PhysicalDevice</span><span class="o">&gt;</span> <span class="n">physicalDevice</span><span class="p">,</span>
            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">Device</span><span class="o">&gt;</span> <span class="n">device</span><span class="p">,</span>
            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">CommandBuffer</span><span class="o">&gt;</span> <span class="n">commandBuffer</span><span class="p">,</span>
            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="o">&lt;</span><span class="n">tX</span><span class="p">,</span> <span class="n">tY</span><span class="p">,</span> <span class="n">tZ</span><span class="o">&gt;</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
+      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="c1">// Perform your custom steps such as reading from a shader file</span>
         <span class="k">this</span><span class="o">-&gt;</span><span class="n">mShaderFilePath</span> <span class="o">=</span> <span class="s">"shaders/glsl/opmult.comp"</span><span class="p">;</span>
@@ -900,70 +905,78 @@
 <li><p>Optimize the function simplified as <code class="docutils literal notranslate"><span class="pre">Y</span> <span class="pre">=</span> <span class="pre">WX</span> <span class="pre">+</span> <span class="pre">b</span></code></p></li>
 <li><p>We’ll want our program to learn the parameters <code class="docutils literal notranslate"><span class="pre">W</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code></p></li>
 </ul>
-<p>Converting to Kompute Terminology</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>We will have to convert this into Kompute terminology.
+<p>We will have to convert this into Kompute terminology.</p>
+<p>First specifically around the inputs, we will be using the following:</p>
+<ul class="simple">
+<li><p>Two vertors for the variable <cite>X</cite>, vector <cite>Xi</cite> and <cite>Xj</cite></p></li>
+<li><p>One vector <cite>Y</cite> for the true predictions</p></li>
+<li><p>A vector <cite>W</cite> containing the two input weight values to use for inference</p></li>
+<li><p>A vector <cite>B</cite> containing a single input parameter for <cite>b</cite></p></li>
+</ul>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">wInVec</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span> <span class="p">};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">bInVec</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
 
-First specifically around the inputs, we will be using the following:
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">xI</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">})};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">xJ</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">})};</span>
 
-* Two vertors for the variable `X`, vector `Xi` and `Xj`
-* One vector `Y` for the true predictions
-* A vector `W` containing the two input weight values to use for inference
-* A vector `B` containing a single input parameter for `b`
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">y</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">})};</span>
 
-.. code-block:: cpp
-    :linenos:
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">wIn</span><span class="p">{</span>
+    <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wInVec</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorTypes</span><span class="o">::</span><span class="n">eStaging</span><span class="p">)};</span>
 
-    std::vector&lt;float&gt; wInVec = { 0.001, 0.001 };
-    std::vector&lt;float&gt; bInVec = { 0 };
-
-    std::shared_ptr&lt;kp::Tensor&gt; xI{ new kp::Tensor({ 0, 1, 1, 1, 1 })};
-    std::shared_ptr&lt;kp::Tensor&gt; xJ{ new kp::Tensor({ 0, 0, 0, 1, 1 })};
-
-    std::shared_ptr&lt;kp::Tensor&gt; y{ new kp::Tensor({ 0, 0, 0, 1, 1 })};
-
-    std::shared_ptr&lt;kp::Tensor&gt; wIn{
-        new kp::Tensor(wInVec, kp::Tensor::TensorTypes::eStaging)};
-
-    std::shared_ptr&lt;kp::Tensor&gt; bIn{
-        new kp::Tensor(bInVec, kp::Tensor::TensorTypes::eStaging)};
-
-
-We will have the following output vectors:
-
-* Two output vectors `Wi` and `Wj` to store all the deltas to perform gradient descent on W
-* One output vector `Bout` to store all the deltas to perform gradient descent on B
-
-.. code-block:: cpp
-    :linenos:
-
-    std::shared_ptr&lt;kp::Tensor&gt; wOutI{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
-    std::shared_ptr&lt;kp::Tensor&gt; wOutJ{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
-
-    std::shared_ptr&lt;kp::Tensor&gt; bOut{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
-
-
-For simplicity we will store all the tensors inside a params variable:
-
-.. code-block:: cpp
-    :linenos:
-
-    std::vector&lt;std::shared_ptr&lt;kp::Tensor&gt;&gt; params =
-        {xI, xJ, y, wIn, wOutI, wOutJ, bIn, bOut};
-
-
-Now that we have the inputs and outputs we will be able to use them in the processing. The workflow we will be using is the following:
-
-1. Create a Sequence to record and submit GPU commands
-2. Submit OpCreateTensor to create all the tensors
-3. Record the OpAlgo with the Logistic Regression shader
-4. Loop across number of iterations:
-   4-a. Submit algo operation on LR shader
-   4-b. Re-calculate weights from loss
-5. Print output weights and bias
-
-1. Create a sequence to record and submit GPU commands
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">bIn</span><span class="p">{</span>
+    <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">bInVec</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorTypes</span><span class="o">::</span><span class="n">eStaging</span><span class="p">)};</span>
 </pre></div>
-</div>
+</td></tr></table></div>
+<p>We will have the following output vectors:</p>
+<ul class="simple">
+<li><p>Two output vectors <cite>Wi</cite> and <cite>Wj</cite> to store all the deltas to perform gradient descent on W</p></li>
+<li><p>One output vector <cite>Bout</cite> to store all the deltas to perform gradient descent on B</p></li>
+</ul>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">wOutI</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">})};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">wOutJ</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">})};</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">bOut</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">})};</span>
+</pre></div>
+</td></tr></table></div>
+<p>For simplicity we will store all the tensors inside a params variable:</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span>
+    <span class="p">{</span><span class="n">xI</span><span class="p">,</span> <span class="n">xJ</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wIn</span><span class="p">,</span> <span class="n">wOutI</span><span class="p">,</span> <span class="n">wOutJ</span><span class="p">,</span> <span class="n">bIn</span><span class="p">,</span> <span class="n">bOut</span><span class="p">};</span>
+</pre></div>
+</td></tr></table></div>
+<p>Now that we have the inputs and outputs we will be able to use them in the processing. The workflow we will be using is the following:</p>
+<ol class="arabic simple">
+<li><p>Create a Sequence to record and submit GPU commands</p></li>
+<li><p>Submit OpCreateTensor to create all the tensors</p></li>
+<li><p>Record the OpAlgo with the Logistic Regression shader</p></li>
+<li><p>Loop across number of iterations:</p></li>
+</ol>
+<blockquote>
+<div><p>4-a. Submit algo operation on LR shader
+4-b. Re-calculate weights from loss</p>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Print output weights and bias</p></li>
+</ol>
+<ol class="arabic simple">
+<li><p>Create a sequence to record and submit GPU commands</p></li>
+</ol>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -977,10 +990,7 @@ Now that we have the inputs and outputs we will be able to use them in the proce
     <span class="c1">// ...</span>
 </pre></div>
 </td></tr></table></div>
-<ol class="arabic simple">
-<li><p>Submit OpCreateTensor to create all the tensors
-<span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span>~~</p></li>
-</ol>
+<p>Submit OpCreateTensor to create all the tensors</p>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -1000,17 +1010,9 @@ Now that we have the inputs and outputs we will be able to use them in the proce
     <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
-<ol class="arabic simple">
-<li><p>Record the OpAlgo with the Logistic Regression shader
-<span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span>~~</p></li>
-</ol>
+<p>Record the OpAlgo with the Logistic Regression shader</p>
 <p>Once we re-record, all the instructions that were recorded previously are cleared.</p>
 <p>Because of this we can record now the new commands which will consist of the following:</p>
-<ol class="arabic simple">
-<li><p>Copy the tensor data from local to device</p></li>
-<li><p>Run the logistic regression shader</p></li>
-<li><p>Copy the output data</p></li>
-</ol>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -1032,7 +1034,7 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 
     <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">wIn</span><span class="p">,</span> <span class="n">bIn</span><span class="p">});</span>
 
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&lt;&gt;&gt;</span><span class="p">(</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
             <span class="n">params</span><span class="p">,</span>
             <span class="nb">false</span><span class="p">,</span> <span class="c1">// Whether to copy output from device</span>
             <span class="s">"test/shaders/glsl/test_logistic_regression.comp"</span><span class="p">);</span>
@@ -1042,10 +1044,7 @@ Now that we have the inputs and outputs we will be able to use them in the proce
     <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
-<ol class="arabic simple">
-<li><p>Loop across number of iterations + 4-a. Submit algo operation on LR shader
-<span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span><span class="raw-html-m2r"><del>~</del></span>~~</p></li>
-</ol>
+<p>Loop across number of iterations + 4-a. Submit algo operation on LR shader</p>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -1066,36 +1065,50 @@ Now that we have the inputs and outputs we will be able to use them in the proce
 </pre></div>
 </td></tr></table></div>
 <p>4-b. Re-calculate weights from loss</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Once</span> <span class="n">the</span> <span class="n">shader</span> <span class="n">code</span> <span class="ow">is</span> <span class="n">executed</span><span class="p">,</span> <span class="n">we</span> <span class="n">are</span> <span class="n">able</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">outputs</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">shader</span> <span class="n">calculation</span><span class="o">.</span>
-
-<span class="n">In</span> <span class="n">this</span> <span class="n">case</span> <span class="n">we</span> <span class="n">want</span> <span class="n">to</span> <span class="n">basically</span> <span class="n">add</span> <span class="nb">all</span> <span class="n">the</span> <span class="n">calculated</span> <span class="n">weights</span> <span class="ow">and</span> <span class="n">bias</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">back</span><span class="o">-</span><span class="n">prop</span> <span class="n">step</span><span class="o">.</span>
-
-<span class="o">..</span> <span class="n">code</span><span class="o">-</span><span class="n">block</span><span class="p">::</span> <span class="n">cpp</span>
-    <span class="p">:</span><span class="n">linenos</span><span class="p">:</span>
-
+<p>Once the shader code is executed, we are able to use the outputs from the shader calculation.</p>
+<p>In this case we want to basically add all the calculated weights and bias from the back-prop step.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="c1">// ...</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ITERATIONS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="o">//</span> <span class="o">...</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ITERATIONS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="o">//</span> <span class="o">...</span> <span class="n">continuing</span> <span class="kn">from</span> <span class="nn">codeblock</span> <span class="n">above</span>
+        <span class="c1">// ... continuing from codeblock above</span>
 
-            <span class="o">//</span> <span class="n">Run</span> <span class="n">evaluation</span> <span class="n">which</span> <span class="n">passes</span> <span class="n">data</span> <span class="n">through</span> <span class="n">shader</span> <span class="n">once</span>
-            <span class="n">sq</span><span class="o">-&gt;</span><span class="nb">eval</span><span class="p">();</span>
+        <span class="c1">// Run evaluation which passes data through shader once</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
 
-            <span class="o">//</span> <span class="n">Subtract</span> <span class="n">the</span> <span class="n">resulting</span> <span class="n">weights</span> <span class="ow">and</span> <span class="n">biases</span>
-            <span class="k">for</span><span class="p">(</span><span class="n">size_t</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">wInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutI</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
-                <span class="n">wInVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutJ</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
-                <span class="n">bInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
-            <span class="p">}</span>
-            <span class="o">//</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">data</span> <span class="k">for</span> <span class="n">the</span> <span class="n">GPU</span> <span class="n">to</span> <span class="n">use</span> <span class="ow">in</span> <span class="n">the</span> <span class="nb">next</span> <span class="n">iteration</span>
-            <span class="n">wIn</span><span class="o">-&gt;</span><span class="n">mapDataIntoHostMemory</span><span class="p">();</span>
-            <span class="n">bIn</span><span class="o">-&gt;</span><span class="n">mapDataIntoHostMemory</span><span class="p">();</span>
+        <span class="c1">// Subtract the resulting weights and biases</span>
+        <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">wInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutI</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
+            <span class="n">wInVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutJ</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
+            <span class="n">bInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
         <span class="p">}</span>
-
-<span class="mf">5.</span> <span class="n">Print</span> <span class="n">output</span> <span class="n">weights</span> <span class="ow">and</span> <span class="n">bias</span>
+        <span class="c1">// Set the data for the GPU to use in the next iteration</span>
+        <span class="n">wIn</span><span class="o">-&gt;</span><span class="n">mapDataIntoHostMemory</span><span class="p">();</span>
+        <span class="n">bIn</span><span class="o">-&gt;</span><span class="n">mapDataIntoHostMemory</span><span class="p">();</span>
+    <span class="p">}</span>
 </pre></div>
-</div>
+</td></tr></table></div>
+<ol class="arabic simple" start="5">
+<li><p>Print output weights and bias</p></li>
+</ol>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Weight i: "</span> <span class="o">&lt;&lt;</span> <span class="n">wIn</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>

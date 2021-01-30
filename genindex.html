@@ -58,7 +58,7 @@
     <title>Index &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="_static/assets/custom.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -231,7 +231,7 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/advanced-examples.html" class="md-nav__link">C++ Simple & Advanced Examples</a>
+      <a href="overview/advanced-examples.html" class="md-nav__link">C++ Examples</a>
       
     
     </li>
@@ -259,6 +259,13 @@
     <li class="md-nav__item">
     
     
+      <a href="overview/custom-operations.html" class="md-nav__link">C++ Extending Kompute with Custom Operations</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="overview/reference.html" class="md-nav__link">C++ Class Documentation & Reference</a>
       
     
@@ -271,7 +278,14 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/python-package.html" class="md-nav__link">Python Package Overview & Examples</a>
+      <a href="overview/python-package.html" class="md-nav__link">Python Package Overview</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/python-examples.html" class="md-nav__link">Python Examples</a>
       
     
     </li>
@@ -290,7 +304,7 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images & Tests</a>
+      <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
       
     
     </li>
@@ -370,7 +384,6 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
- | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#R"><strong>R</strong></a>
@@ -429,6 +442,10 @@
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_algo_mult_def">eval_algo_mult_def() (kp.Manager method)</a>
 </li>
+      <li><a href="overview/python-reference.html#kp.Manager.eval_algo_str">eval_algo_str() (kp.Manager method)</a>
+</li>
+      <li><a href="overview/python-reference.html#kp.Manager.eval_algo_str_def">eval_algo_str_def() (kp.Manager method)</a>
+</li>
       <li><a href="overview/python-reference.html#kp.Sequence.eval_async">eval_async() (kp.Sequence method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_data">eval_async_algo_data() (kp.Manager method)</a>
@@ -449,6 +466,10 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_str">eval_async_algo_str() (kp.Manager method)</a>
+</li>
+      <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_str_def">eval_async_algo_str_def() (kp.Manager method)</a>
+</li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_copy">eval_async_tensor_copy() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_copy_def">eval_async_tensor_copy_def() (kp.Manager method)</a>
@@ -731,14 +752,6 @@
   </ul></td>
 </tr></table>
 
-<h2 id="L">L</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#kp.log_level">log_level() (in module kp)</a>
-</li>
-  </ul></td>
-</tr></table>
-
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -764,6 +777,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#kp.TensorTypes.name">name() (kp.TensorTypes property)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="overview/python-reference.html#id5">numpy() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.numpy">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -799,9 +816,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id5">set_data() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.set_data">[1]</a>
+      <li><a href="overview/python-reference.html#id6">set_data() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.set_data">[1]</a>
 </li>
-      <li><a href="overview/python-reference.html#id6">size() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.size">[1]</a>
+      <li><a href="overview/python-reference.html#id7">size() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.size">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -813,7 +830,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id7">tensor_type() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.tensor_type">[1]</a>
+      <li><a href="overview/python-reference.html#id8">tensor_type() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.tensor_type">[1]</a>
 </li>
       <li><a href="overview/python-reference.html#kp.TensorTypes">TensorTypes (class in kp)</a>
 </li>

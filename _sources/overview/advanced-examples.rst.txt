@@ -2,8 +2,8 @@
    :format: html
 
 
-Examples
-========
+C++ Examples
+=================
 
 The power of Kompute comes in when the interface is used for complex computations. This section contains an outline of the advanced / end-to-end examples available.
 
@@ -65,7 +65,7 @@ Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path
         )");
 
         // Run Kompute operation on the parameters provided with dispatch layout
-        mgr.evalOpDefault<kp::OpAlgoBase<3, 1, 1>>(
+        mgr.evalOpDefault<kp::OpAlgoBase>(
             { tensorA, tensorB }, 
             std::vector<char>(shader.begin(), shader.end()));
 
@@ -180,7 +180,7 @@ You can submit operations asynchronously with the async/await commands in the kp
        mgr.evalOpAwaitDefault(10000);
 
        // Run Async Kompute operation on the parameters provided
-       mgr.evalOpAsyncDefault<kp::OpAlgoBase<>>(
+       mgr.evalOpAsyncDefault<kp::OpAlgoBase>(
            { tensor }, 
            std::vector<char>(shader.begin(), shader.end()));
 
@@ -263,13 +263,13 @@ Back to `examples list <#simple-examples>`_.
        )");
 
        // Run the first parallel operation in the `queueOne` sequence
-       mgr.evalOpAsync<kp::OpAlgoBase<>>(
+       mgr.evalOpAsync<kp::OpAlgoBase>(
            { tensorA }, 
            "queueOne",
            std::vector<char>(shader.begin(), shader.end()));
 
        // Run the second parallel operation in the `queueTwo` sequence
-       mgr.evalOpAsync<kp::OpAlgoBase<>>(
+       mgr.evalOpAsync<kp::OpAlgoBase>(
            { tensorB }, 
            "queueTwo",
            std::vector<char>(shader.begin(), shader.end()));
@@ -298,15 +298,14 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
 .. code-block:: cpp
    :linenos:
 
-   template<uint32_t tX = 0, uint32_t tY = 0, uint32_t tZ = 0>
-   class OpMyCustom : public OpAlgoBase<tX, tY, tZ>
+   class OpMyCustom : public OpAlgoBase
    {
      public:
        OpMyCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
               std::shared_ptr<vk::Device> device,
               std::shared_ptr<vk::CommandBuffer> commandBuffer,
               std::vector<std::shared_ptr<Tensor>> tensors)
-         : OpAlgoBase<tX, tY, tZ>(physicalDevice, device, commandBuffer, tensors, "")
+         : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "")
        {
            // Perform your custom steps such as reading from a shader file
            this->mShaderFilePath = "shaders/glsl/opmult.comp";
@@ -352,76 +351,70 @@ In summary, we have:
 
 With this we will:
 
-
 * Optimize the function simplified as ``Y = WX + b``
 * We'll want our program to learn the parameters ``W`` and ``b``
 
-Converting to Kompute Terminology
+We will have to convert this into Kompute terminology.
 
-.. code-block::
+First specifically around the inputs, we will be using the following:
 
+* Two vertors for the variable `X`, vector `Xi` and `Xj`
+* One vector `Y` for the true predictions
+* A vector `W` containing the two input weight values to use for inference
+* A vector `B` containing a single input parameter for `b`
 
-   We will have to convert this into Kompute terminology.
+.. code-block:: cpp
+   :linenos:
 
-   First specifically around the inputs, we will be using the following:
+   std::vector<float> wInVec = { 0.001, 0.001 };
+   std::vector<float> bInVec = { 0 };
 
-   * Two vertors for the variable `X`, vector `Xi` and `Xj`
-   * One vector `Y` for the true predictions
-   * A vector `W` containing the two input weight values to use for inference
-   * A vector `B` containing a single input parameter for `b`
+   std::shared_ptr<kp::Tensor> xI{ new kp::Tensor({ 0, 1, 1, 1, 1 })};
+   std::shared_ptr<kp::Tensor> xJ{ new kp::Tensor({ 0, 0, 0, 1, 1 })};
 
-   .. code-block:: cpp
-       :linenos:
+   std::shared_ptr<kp::Tensor> y{ new kp::Tensor({ 0, 0, 0, 1, 1 })};
 
-       std::vector<float> wInVec = { 0.001, 0.001 };
-       std::vector<float> bInVec = { 0 };
+   std::shared_ptr<kp::Tensor> wIn{ 
+       new kp::Tensor(wInVec, kp::Tensor::TensorTypes::eStaging)};
 
-       std::shared_ptr<kp::Tensor> xI{ new kp::Tensor({ 0, 1, 1, 1, 1 })};
-       std::shared_ptr<kp::Tensor> xJ{ new kp::Tensor({ 0, 0, 0, 1, 1 })};
-
-       std::shared_ptr<kp::Tensor> y{ new kp::Tensor({ 0, 0, 0, 1, 1 })};
-
-       std::shared_ptr<kp::Tensor> wIn{ 
-           new kp::Tensor(wInVec, kp::Tensor::TensorTypes::eStaging)};
-
-       std::shared_ptr<kp::Tensor> bIn{ 
-           new kp::Tensor(bInVec, kp::Tensor::TensorTypes::eStaging)};
+   std::shared_ptr<kp::Tensor> bIn{ 
+       new kp::Tensor(bInVec, kp::Tensor::TensorTypes::eStaging)};
 
 
-   We will have the following output vectors:
+We will have the following output vectors:
 
-   * Two output vectors `Wi` and `Wj` to store all the deltas to perform gradient descent on W
-   * One output vector `Bout` to store all the deltas to perform gradient descent on B
+* Two output vectors `Wi` and `Wj` to store all the deltas to perform gradient descent on W
+* One output vector `Bout` to store all the deltas to perform gradient descent on B
 
-   .. code-block:: cpp
-       :linenos:
+.. code-block:: cpp
+   :linenos:
 
-       std::shared_ptr<kp::Tensor> wOutI{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
-       std::shared_ptr<kp::Tensor> wOutJ{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
+   std::shared_ptr<kp::Tensor> wOutI{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
+   std::shared_ptr<kp::Tensor> wOutJ{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
 
-       std::shared_ptr<kp::Tensor> bOut{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
-
-
-   For simplicity we will store all the tensors inside a params variable:
-
-   .. code-block:: cpp
-       :linenos:
-
-       std::vector<std::shared_ptr<kp::Tensor>> params = 
-           {xI, xJ, y, wIn, wOutI, wOutJ, bIn, bOut};
+   std::shared_ptr<kp::Tensor> bOut{ new kp::Tensor({ 0, 0, 0, 0, 0 })};
 
 
-   Now that we have the inputs and outputs we will be able to use them in the processing. The workflow we will be using is the following:
+For simplicity we will store all the tensors inside a params variable:
 
-   1. Create a Sequence to record and submit GPU commands
-   2. Submit OpCreateTensor to create all the tensors 
-   3. Record the OpAlgo with the Logistic Regression shader
-   4. Loop across number of iterations:
-      4-a. Submit algo operation on LR shader
-      4-b. Re-calculate weights from loss
-   5. Print output weights and bias
+.. code-block:: cpp
+   :linenos:
 
-   1. Create a sequence to record and submit GPU commands
+   std::vector<std::shared_ptr<kp::Tensor>> params = 
+       {xI, xJ, y, wIn, wOutI, wOutJ, bIn, bOut};
+
+
+Now that we have the inputs and outputs we will be able to use them in the processing. The workflow we will be using is the following:
+
+1. Create a Sequence to record and submit GPU commands
+2. Submit OpCreateTensor to create all the tensors 
+3. Record the OpAlgo with the Logistic Regression shader
+4. Loop across number of iterations:
+  4-a. Submit algo operation on LR shader
+  4-b. Re-calculate weights from loss
+5. Print output weights and bias
+
+1. Create a sequence to record and submit GPU commands
 
 .. code-block:: cpp
     :linenos:
@@ -435,8 +428,7 @@ Converting to Kompute Terminology
 
 
 
-#. Submit OpCreateTensor to create all the tensors
-   :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ ~~
+Submit OpCreateTensor to create all the tensors
 
 .. code-block:: cpp
     :linenos:
@@ -452,19 +444,12 @@ Converting to Kompute Terminology
         sq->eval();
 
 
-
-
-#. Record the OpAlgo with the Logistic Regression shader
-   :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ ~~
+Record the OpAlgo with the Logistic Regression shader
 
 Once we re-record, all the instructions that were recorded previously are cleared.
 
 Because of this we can record now the new commands which will consist of the following:
 
-
-#. Copy the tensor data from local to device
-#. Run the logistic regression shader
-#. Copy the output data 
 
 .. code-block:: cpp
     :linenos:
@@ -476,7 +461,7 @@ Because of this we can record now the new commands which will consist of the fol
 
         sq->record<kp::OpTensorSyncDevice>({wIn, bIn});
 
-        sq->record<kp::OpAlgoBase<>>(
+        sq->record<kp::OpAlgoBase>(
                 params, 
                 false, // Whether to copy output from device
                 "test/shaders/glsl/test_logistic_regression.comp");
@@ -487,8 +472,7 @@ Because of this we can record now the new commands which will consist of the fol
 
 
 
-#. Loop across number of iterations + 4-a. Submit algo operation on LR shader
-   :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ :raw-html-m2r:`<del>~</del>`\ ~~
+Loop across number of iterations + 4-a. Submit algo operation on LR shader
 
 .. code-block:: cpp
     :linenos:
@@ -507,37 +491,35 @@ Because of this we can record now the new commands which will consist of the fol
 
 4-b. Re-calculate weights from loss
 
-.. code-block::
 
+Once the shader code is executed, we are able to use the outputs from the shader calculation.
 
-   Once the shader code is executed, we are able to use the outputs from the shader calculation.
+In this case we want to basically add all the calculated weights and bias from the back-prop step.
 
-   In this case we want to basically add all the calculated weights and bias from the back-prop step.
+.. code-block:: cpp
+   :linenos:
 
-   .. code-block:: cpp
-       :linenos:
-
+   {
+       // ... 
+       for (size_t i = 0; i < ITERATIONS; i++) 
        {
-           // ... 
-           for (size_t i = 0; i < ITERATIONS; i++) 
-           {
-               // ... continuing from codeblock above
+           // ... continuing from codeblock above
 
-               // Run evaluation which passes data through shader once
-               sq->eval();
+           // Run evaluation which passes data through shader once
+           sq->eval();
 
-               // Subtract the resulting weights and biases
-               for(size_t j = 0; j < bOut->size(); j++) {
-                   wInVec[0] -= wOutI->data()[j];
-                   wInVec[1] -= wOutJ->data()[j];
-                   bInVec[0] -= bOut->data()[j];
-               }
-               // Set the data for the GPU to use in the next iteration
-               wIn->mapDataIntoHostMemory();
-               bIn->mapDataIntoHostMemory();
+           // Subtract the resulting weights and biases
+           for(size_t j = 0; j < bOut->size(); j++) {
+               wInVec[0] -= wOutI->data()[j];
+               wInVec[1] -= wOutJ->data()[j];
+               bInVec[0] -= bOut->data()[j];
            }
+           // Set the data for the GPU to use in the next iteration
+           wIn->mapDataIntoHostMemory();
+           bIn->mapDataIntoHostMemory();
+       }
 
-   5. Print output weights and bias
+5. Print output weights and bias
 
 .. code-block:: cpp
     :linenos:
