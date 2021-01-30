@@ -1,3 +1,12 @@
+
+@media (max-width: 1200px) {
+.md-header-nav__button {
+    color: #ef5350;
+    background-color: white;
+    border-radius: 5px;
+}
+}
+
 .md-nav__title--site {
     display: none;
 }
