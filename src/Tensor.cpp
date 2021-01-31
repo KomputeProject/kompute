@@ -268,10 +268,14 @@ Tensor::createBuffer()
         throw std::runtime_error("Kompute Tensor device is null");
     }
 
-    this->mFreeBuffer = true;
 
     vk::BufferUsageFlags usageFlags = this->getBufferUsageFlags();
     vk::DeviceSize bufferSize = this->memorySize();
+    if(bufferSize<1){
+        throw std::runtime_error("Kompute Tensor attempted to create a zero-sized buffer");
+    }
+    
+    this->mFreeBuffer = true;
 
     SPDLOG_DEBUG("Kompute Tensor creating buffer with memory size: {}, and "
                  "usage flags: {}",
