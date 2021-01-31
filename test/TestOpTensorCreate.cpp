@@ -127,7 +127,7 @@ TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
         mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
     } catch( const std::runtime_error& err ) {
          // check exception
-        ASSERT_STREQ("Kompute Tensor attempted to create a zero-sized buffer", err.what() );
+        ASSERT_TRUE( std::string(err.what()).find("zero-sized") != std::string::npos );
     }
 
 }

@@ -39,7 +39,7 @@ class Tensor
      *  Default constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
-     *  @param data Vector of data that will be used by the tensor
+     *  @param data Non-zero-sized vector of data that will be used by the tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
     Tensor(const std::vector<float>& data,
