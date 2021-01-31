@@ -39,6 +39,9 @@ Thumbs.db
 # Python
 __pycache__
 *.pyc
+dist/
+kp.egg-info/
+
 
 # Logs
 logs

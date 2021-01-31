@@ -81,7 +81,8 @@ Performing Release
 In order to perform the release the following steps need to be carried out:
 
 * Build changelog
-    * Generate latest changelog `make `
+    * Generate latest changelog `make build_changelog`
+    * Update latest tag in new CHANGELOG.md to be the vesion to release 
 * Python Release
     * Build dependency:
         * Intsall dependency: `pip install .`

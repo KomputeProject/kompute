@@ -27,7 +27,7 @@ html_title = "Vulkan Kompute Documentation (Python & C++)"
 author = 'Alejandro Saucedo'
 
 # The full version, including alpha/beta/rc tags
-release = '0.5.2'
+release = '0.6.0'
 
 
 # -- General configuration ---------------------------------------------------

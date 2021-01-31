@@ -7,6 +7,8 @@
 # support the builds for linux-native compilations and these are the commands
 # starting with mk_.
 
+VERSION := $(shell cat ./VERSION)
+
 VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
@@ -189,5 +191,6 @@ format:
 	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp test/*cpp
 
 build_changelog:
-	docker run -it --rm -v "$(pwd)":/usr/local/src/your-app ferrarimarco/github-changelog-generator:1.15.2 -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN}
-
+	docker run --rm -it -v "$(PWD)":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN} ferrarimarco/github-changelog-generator:1.15.2 -u EthicalML -p vulkan-kompute
+	chmod 664 CHANGELOG.md # (Read+Write, Read+Write, Read)
+	sed -i -e 's/\(HEAD\|Unreleased\)/v0.6.0/g' CHANGELOG.md # Replacing unreleased version with latest tag

@@ -70,7 +70,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='kp',
-    version='0.5.2',
+    version='0.6.0',
     author='Alejandro Saucedo',
     description='Vulkan Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
     long_description=long_description,
