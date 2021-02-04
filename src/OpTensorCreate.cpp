@@ -44,7 +44,7 @@ OpTensorCreate::init()
             tensor->init(this->mPhysicalDevice, this->mDevice);
 
             std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
-              tensor->data(), Tensor::TensorTypes::eStaging);
+              tensor->data_sp(), Tensor::TensorTypes::eStaging);
 
             stagingTensor->init(this->mPhysicalDevice, this->mDevice);
 

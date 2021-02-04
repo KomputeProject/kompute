@@ -49,7 +49,7 @@ OpTensorSyncLocal::init()
         if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
 
             std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
-              tensor->data(), Tensor::TensorTypes::eStaging);
+              tensor->data_sp(), Tensor::TensorTypes::eStaging);
 
             stagingTensor->init(this->mPhysicalDevice, this->mDevice);
 

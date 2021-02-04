@@ -9,18 +9,28 @@ Tensor::Tensor()
     this->mTensorType = TensorTypes::eDevice;
 }
 
-Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType)
+Tensor::Tensor(const std::shared_ptr<std::vector<float>>& data, TensorTypes tensorType)
 {
 #if DEBUG
-    SPDLOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
-                 data.size(),
+    SPDLOG_DEBUG("Kompute Tensor shared_ptr constructor data length: {}, and type: {}",
+                 data->size(),
                  tensorType);
 #endif
 
     this->mData = data;
-    this->mShape = { static_cast<uint32_t>(data.size()) };
+    this->mShape = { static_cast<uint32_t>(data->size()) };
     this->mTensorType = tensorType;
 }
+
+
+Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType):
+    Tensor(std::make_shared<std::vector<float>>(data), tensorType)
+{}
+
+Tensor::Tensor(std::initializer_list<float> data, TensorTypes tensorType):
+    Tensor(std::make_shared<std::vector<float>>(data), tensorType)
+{}
+
 
 Tensor::~Tensor()
 {
@@ -39,8 +49,8 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device)
 {
     SPDLOG_DEBUG("Kompute Tensor running init with Vulkan params and num data "
-                 "elementS: {}",
-                 this->mData.size());
+                 "elements: {}",
+                 this->mData->size());
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
@@ -53,13 +63,20 @@ Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 std::vector<float>&
 Tensor::data()
 {
+    return *this->mData;
+}
+
+std::shared_ptr<std::vector<float>>
+Tensor::data_sp()
+{
     return this->mData;
 }
+
 
 float&
 Tensor::operator[](int index)
 {
-    return this->mData[index];
+    return this->mData->at(index);
 }
 
 uint64_t
@@ -95,11 +112,11 @@ Tensor::isInit()
 void
 Tensor::setData(const std::vector<float>& data)
 {
-    if (data.size() != this->mData.size()) {
+    if (data.size() != this->mData->size()) {
         throw std::runtime_error(
           "Kompute Tensor Cannot set data of different sizes");
     }
-    this->mData = data;
+    this->mData = std::make_shared<std::vector<float>>(data);
 }
 
 void
@@ -186,7 +203,7 @@ Tensor::mapDataFromHostMemory()
       *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
     vk::MappedMemoryRange mappedMemoryRange(*this->mMemory, 0, bufferSize);
     this->mDevice->invalidateMappedMemoryRanges(mappedMemoryRange);
-    memcpy(this->mData.data(), mapped, bufferSize);
+    memcpy(this->mData->data(), mapped, bufferSize);
     this->mDevice->unmapMemory(*this->mMemory);
 }
 
@@ -206,7 +223,7 @@ Tensor::mapDataIntoHostMemory()
 
     void* mapped = this->mDevice->mapMemory(
       *this->mMemory, 0, bufferSize, vk::MemoryMapFlags());
-    memcpy(mapped, this->mData.data(), bufferSize);
+    memcpy(mapped, this->mData->data(), bufferSize);
     vk::MappedMemoryRange mappedRange(*this->mMemory, 0, bufferSize);
     this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
     this->mDevice->unmapMemory(*this->mMemory);

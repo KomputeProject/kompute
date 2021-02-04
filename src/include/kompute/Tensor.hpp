@@ -44,6 +44,28 @@ class Tensor
      */
     Tensor(const std::vector<float>& data,
            TensorTypes tensorType = TensorTypes::eDevice);
+    
+    /**
+     * Constructor with a shared pointer to data provided which would be used to create the
+     * respective vulkan buffer and memory.
+     *
+     *  @param data Shared pointer to a non-zero-sized vector of data that will be used by the tensor
+     *  @param tensorType Type for the tensor which is of type TensorTypes
+     */
+    Tensor(const std::shared_ptr<std::vector<float>>& data,
+           TensorTypes tensorType = TensorTypes::eDevice);
+
+
+    /**
+     * Constructor with an initializer list which would be used to create the
+     * respective vulkan buffer and memory.
+     *
+     *  @param data Shared pointer to a non-zero-sized vector of data that will be used by the tensor
+     *  @param tensorType Type for the tensor which is of type TensorTypes
+     */
+    Tensor(std::initializer_list<float> data,
+           TensorTypes tensorType = TensorTypes::eDevice);
+
 
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
@@ -74,6 +96,17 @@ class Tensor
      * tensor.
      */
     std::vector<float>& data();
+
+    /**
+     * Returns a shared pointer to the vector of data currently contained 
+     * by the Tensor. It is important to ensure that there is no out-of-sync
+     * data with the GPU memory.
+     *
+     * @return Reference to vector of elements representing the data in the
+     * tensor.
+     */
+    std::shared_ptr<std::vector<float>> data_sp();
+
     /**
      * Overrides the subscript operator to expose the underlying data's
      * subscript operator which in this case would be its underlying
@@ -178,8 +211,9 @@ class Tensor
     std::shared_ptr<vk::DeviceMemory> mMemory;
     bool mFreeMemory;
 
+    std::shared_ptr<std::vector<float>> mData;
+
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<float> mData;
 
     TensorTypes mTensorType = TensorTypes::eDevice;
 
