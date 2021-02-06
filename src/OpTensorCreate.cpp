@@ -23,6 +23,16 @@ OpTensorCreate::OpTensorCreate(
 OpTensorCreate::~OpTensorCreate()
 {
     SPDLOG_DEBUG("Kompute OpTensorCreate destructor started");
+
+    SPDLOG_DEBUG("Kompute OpBase freeing staging tensors");
+    for (std::shared_ptr<Tensor> tensor : this->mStagingTensors) {
+        if (tensor && tensor->isInit()) {
+            tensor->freeMemoryDestroyGPUResources();
+        } else {
+            SPDLOG_ERROR("Kompute OpBase expected to free "
+                          "tensor but has already been freed.");
+        }
+    }
 }
 
 void
