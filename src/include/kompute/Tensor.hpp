@@ -26,7 +26,7 @@ class Tensor
     enum class TensorTypes
     {
         eDevice = 0,  ///< Type is device memory, source and destination
-        eStaging = 1, ///< Type is host memory, source and destination
+        eHost = 1, ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
 
@@ -173,10 +173,14 @@ class Tensor
     std::shared_ptr<vk::Device> mDevice;
 
     // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<vk::Buffer> mBuffer;
-    bool mFreeBuffer;
-    std::shared_ptr<vk::DeviceMemory> mMemory;
-    bool mFreeMemory;
+    std::shared_ptr<vk::Buffer> mPrimaryBuffer;
+    bool mFreePrimaryBuffer;
+    std::shared_ptr<vk::Buffer> mStagingBuffer;
+    bool mFreeStagingBuffer;
+    std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
+    bool mFreePrimaryMemory;
+    std::shared_ptr<vk::DeviceMemory> mStagingMemory;
+    bool mFreeStagingMemory;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<float> mData;
@@ -186,11 +190,15 @@ class Tensor
     std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
     bool mIsInit = false;
 
-    void createBuffer(); // Creates the vulkan buffer
+    void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+    void createBuffer(std::shared_ptr<vk::Buffer> buffer, vk::BufferUsageFlags bufferUsageFlags);
+    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<vk::DeviceMemory> memory, vk::MemoryPropertyFlags memoryPropertyFlags);
 
     // Private util functions
-    vk::BufferUsageFlags getBufferUsageFlags();
-    vk::MemoryPropertyFlags getMemoryPropertyFlags();
+    vk::BufferUsageFlags getPrimaryBufferUsageFlags();
+    vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
+    vk::BufferUsageFlags getStagingBufferUsageFlags();
+    vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
     uint64_t memorySize();
 };
 
