@@ -5,20 +5,19 @@
 
 TEST(TestOpTensorCreate, CreateSingleTensorSingleOp)
 {
-
-    kp::Manager mgr;
-
     std::vector<float> testVecA{ 9, 8, 7 };
-
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
 
-    mgr.rebuildTensors({ tensorA });
+    {
+        kp::Manager mgr;
 
-    EXPECT_TRUE(tensorA->isInit());
+        mgr.rebuildTensors({ tensorA });
 
-    EXPECT_EQ(tensorA->data(), testVecA);
+        EXPECT_TRUE(tensorA->isInit());
 
-    tensorA->freeMemoryDestroyGPUResources();
+        EXPECT_EQ(tensorA->data(), testVecA);
+    }
+
     EXPECT_FALSE(tensorA->isInit());
 }
 
