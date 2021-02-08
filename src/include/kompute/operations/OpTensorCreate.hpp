@@ -69,8 +69,6 @@ class OpTensorCreate : public OpBase
 
 
   private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp

@@ -132,6 +132,26 @@ class Tensor
                         bool createBarrier);
 
     /**
+     * Records a copy from the internal staging memory to the device memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
+     */
+    void recordCopyFromStagingToDevice(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                        bool createBarrier);
+
+    /**
+     * Records a copy from the internal device memory to the staging memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
+     */
+    void recordCopyFromDeviceToStaging(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                        bool createBarrier);
+
+    /**
      * Records the buffer memory barrier into the command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
@@ -174,13 +194,13 @@ class Tensor
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Buffer> mPrimaryBuffer;
-    bool mFreePrimaryBuffer;
+    bool mFreePrimaryBuffer = false;
     std::shared_ptr<vk::Buffer> mStagingBuffer;
-    bool mFreeStagingBuffer;
+    bool mFreeStagingBuffer = false;
     std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
-    bool mFreePrimaryMemory;
+    bool mFreePrimaryMemory = false;
     std::shared_ptr<vk::DeviceMemory> mStagingMemory;
-    bool mFreeStagingMemory;
+    bool mFreeStagingMemory = false;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<float> mData;
@@ -193,6 +213,7 @@ class Tensor
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer, vk::BufferUsageFlags bufferUsageFlags);
     void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<vk::DeviceMemory> memory, vk::MemoryPropertyFlags memoryPropertyFlags);
+    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer, std::shared_ptr<vk::Buffer> bufferFrom, std::shared_ptr<vk::Buffer> bufferTo, vk::DeviceSize bufferSize, vk::BufferCopy copyRegion, bool createBarrier);
 
     // Private util functions
     vk::BufferUsageFlags getPrimaryBufferUsageFlags();

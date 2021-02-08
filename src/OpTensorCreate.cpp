@@ -23,16 +23,6 @@ OpTensorCreate::OpTensorCreate(
 OpTensorCreate::~OpTensorCreate()
 {
     SPDLOG_DEBUG("Kompute OpTensorCreate destructor started");
-
-    SPDLOG_DEBUG("Kompute OpTensorCreate freeing staging tensors");
-    for (std::shared_ptr<Tensor> tensor : this->mStagingTensors) {
-        if (tensor && tensor->isInit()) {
-            tensor->freeMemoryDestroyGPUResources();
-        } else {
-            SPDLOG_ERROR("Kompute OpTensorCreate expected to free "
-                          "tensor but has already been freed.");
-        }
-    }
 }
 
 void
@@ -50,27 +40,10 @@ OpTensorCreate::init()
             throw std::runtime_error(
               "Kompute OpTensorCreate: Tensor has already been initialized");
         }
-        if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
-            tensor->init(this->mPhysicalDevice, this->mDevice);
-
-            std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
-              tensor->data(), Tensor::TensorTypes::eStaging);
-
-            stagingTensor->init(this->mPhysicalDevice, this->mDevice);
-
-            stagingTensor->mapDataIntoHostMemory();
-
-            this->mStagingTensors.push_back(stagingTensor);
-
-        } else {
-
+        if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
             tensor->init(this->mPhysicalDevice, this->mDevice);
 
             tensor->mapDataIntoHostMemory();
-
-            // We push a nullptr when no staging tensor is needed to match
-            // index number in array to have one to one mapping with tensors
-            this->mStagingTensors.push_back(nullptr);
         }
     }
 }
@@ -82,8 +55,8 @@ OpTensorCreate::record()
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mTensors[i]->recordCopyFrom(
-              this->mCommandBuffer, this->mStagingTensors[i], false);
+            this->mTensors[i]->recordCopyFromStagingToDevice(
+              this->mCommandBuffer, false);
         }
     }
 }

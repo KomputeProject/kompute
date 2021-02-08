@@ -9,7 +9,7 @@
 namespace kp {
 
 /**
-    Operation that syncs tensor's local data by mapping the data from device memory into the local vector. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the postSubmit (there will be no copy during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging.
+    Operation that syncs tensor's local memory by mapping device data into the local CPU memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
 */
 class OpTensorSyncLocal : public OpBase
 {
@@ -30,17 +30,17 @@ class OpTensorSyncLocal : public OpBase
                    std::vector<std::shared_ptr<Tensor>> tensors);
 
     /**
-     * Default destructor. This class manages the memory of the staging tensors it owns but these are released in the postSubmit, before it arrives to the destructor.
+     * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
      */
     ~OpTensorSyncLocal() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging.
+     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
      */
     void init() override;
 
     /**
-     * For device tensors, it records the copy command into the staging tensor from the device tensor.
+     * For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory.
      */
     void record() override;
 
@@ -56,8 +56,6 @@ class OpTensorSyncLocal : public OpBase
 
 
   private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp
