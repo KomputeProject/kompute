@@ -723,7 +723,7 @@ class Tensor
     enum class TensorTypes
     {
         eDevice = 0,  ///< Type is device memory, source and destination
-        eStaging = 1, ///< Type is host memory, source and destination
+        eHost = 1, ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
 
@@ -829,6 +829,26 @@ class Tensor
                         bool createBarrier);
 
     /**
+     * Records a copy from the internal staging memory to the device memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
+     */
+    void recordCopyFromStagingToDevice(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                        bool createBarrier);
+
+    /**
+     * Records a copy from the internal device memory to the staging memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
+     */
+    void recordCopyFromDeviceToStaging(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                        bool createBarrier);
+
+    /**
      * Records the buffer memory barrier into the command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
@@ -870,10 +890,14 @@ class Tensor
     std::shared_ptr<vk::Device> mDevice;
 
     // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<vk::Buffer> mBuffer;
-    bool mFreeBuffer;
-    std::shared_ptr<vk::DeviceMemory> mMemory;
-    bool mFreeMemory;
+    std::shared_ptr<vk::Buffer> mPrimaryBuffer;
+    bool mFreePrimaryBuffer = false;
+    std::shared_ptr<vk::Buffer> mStagingBuffer;
+    bool mFreeStagingBuffer = false;
+    std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
+    bool mFreePrimaryMemory = false;
+    std::shared_ptr<vk::DeviceMemory> mStagingMemory;
+    bool mFreeStagingMemory = false;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<float> mData;
@@ -883,11 +907,16 @@ class Tensor
     std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
     bool mIsInit = false;
 
-    void createBuffer(); // Creates the vulkan buffer
+    void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+    void createBuffer(std::shared_ptr<vk::Buffer> buffer, vk::BufferUsageFlags bufferUsageFlags);
+    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<vk::DeviceMemory> memory, vk::MemoryPropertyFlags memoryPropertyFlags);
+    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer, std::shared_ptr<vk::Buffer> bufferFrom, std::shared_ptr<vk::Buffer> bufferTo, vk::DeviceSize bufferSize, vk::BufferCopy copyRegion, bool createBarrier);
 
     // Private util functions
-    vk::BufferUsageFlags getBufferUsageFlags();
-    vk::MemoryPropertyFlags getMemoryPropertyFlags();
+    vk::BufferUsageFlags getPrimaryBufferUsageFlags();
+    vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
+    vk::BufferUsageFlags getStagingBufferUsageFlags();
+    vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
     uint64_t memorySize();
 };
 
@@ -958,7 +987,7 @@ class OpBase
                 if (tensor && tensor->isInit()) {
                     tensor->freeMemoryDestroyGPUResources();
                 } else {
-                    SPDLOG_ERROR("Kompute OpBase expected to free "
+                    SPDLOG_WARN("Kompute OpBase expected to free "
                                   "tensor but has already been freed.");
                 }
             }
@@ -1264,8 +1293,6 @@ class OpTensorCreate : public OpBase
     virtual void postEval() override;
 
   private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp
@@ -1836,9 +1863,6 @@ class OpAlgoLhsRhsOut : public OpAlgoBase
     std::shared_ptr<Tensor> mTensorLHS; ///< Reference to the parameter used in the left hand side equation of the shader
     std::shared_ptr<Tensor> mTensorRHS; ///< Reference to the parameter used in the right hand side equation of the shader
     std::shared_ptr<Tensor> mTensorOutput; ///< Reference to the parameter used in the output of the shader and will be copied with a staging vector
-
-    // -------------- ALWAYS OWNED RESOURCES
-    std::shared_ptr<Tensor> mTensorOutputStaging; ///< Staging temporary tensor user do to copy the output of the tensor
 };
 
 } // End namespace kp
@@ -1976,7 +2000,7 @@ class OpTensorCopy : public OpBase
 namespace kp {
 
 /**
-    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the record (as opposed to during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging.
+    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
 */
 class OpTensorSyncDevice : public OpBase
 {
@@ -2002,12 +2026,12 @@ class OpTensorSyncDevice : public OpBase
     ~OpTensorSyncDevice() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging. For staging tensors in host memory, the map is performed during the init function.
+     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
      */
     void init() override;
 
     /**
-     * For device tensors, it records the copy command to the device tensor from the temporary staging tensor.
+     * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
      */
     void record() override;
 
@@ -2022,8 +2046,6 @@ class OpTensorSyncDevice : public OpBase
     virtual void postEval() override;
 
   private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp
@@ -2031,7 +2053,7 @@ class OpTensorSyncDevice : public OpBase
 namespace kp {
 
 /**
-    Operation that syncs tensor's local data by mapping the data from device memory into the local vector. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the postSubmit (there will be no copy during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging.
+    Operation that syncs tensor's local memory by mapping device data into the local CPU memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
 */
 class OpTensorSyncLocal : public OpBase
 {
@@ -2052,17 +2074,17 @@ class OpTensorSyncLocal : public OpBase
                    std::vector<std::shared_ptr<Tensor>> tensors);
 
     /**
-     * Default destructor. This class manages the memory of the staging tensors it owns but these are released in the postSubmit, before it arrives to the destructor.
+     * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
      */
     ~OpTensorSyncLocal() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging.
+     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
      */
     void init() override;
 
     /**
-     * For device tensors, it records the copy command into the staging tensor from the device tensor.
+     * For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory.
      */
     void record() override;
 
@@ -2077,8 +2099,6 @@ class OpTensorSyncLocal : public OpBase
     virtual void postEval() override;
 
   private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp
