@@ -113,45 +113,65 @@ Tensor::recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
 
     SPDLOG_DEBUG("Kompute Tensor recordCopyFrom data size {}.", bufferSize);
 
-    this->copyBuffer(commandBuffer, copyFromTensor->mPrimaryBuffer, this->mPrimaryBuffer, bufferSize, copyRegion, createBarrier);
-
+    this->copyBuffer(commandBuffer,
+                     copyFromTensor->mPrimaryBuffer,
+                     this->mPrimaryBuffer,
+                     bufferSize,
+                     copyRegion,
+                     createBarrier);
 }
 
 void
-Tensor::recordCopyFromStagingToDevice(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                       bool createBarrier)
+Tensor::recordCopyFromStagingToDevice(
+  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  bool createBarrier)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
 
     SPDLOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
-    this->copyBuffer(commandBuffer, this->mStagingBuffer, this->mPrimaryBuffer, bufferSize, copyRegion, createBarrier);
+    this->copyBuffer(commandBuffer,
+                     this->mStagingBuffer,
+                     this->mPrimaryBuffer,
+                     bufferSize,
+                     copyRegion,
+                     createBarrier);
 }
 
 void
-Tensor::recordCopyFromDeviceToStaging(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                       bool createBarrier)
+Tensor::recordCopyFromDeviceToStaging(
+  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  bool createBarrier)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
 
     SPDLOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
-    this->copyBuffer(commandBuffer, this->mPrimaryBuffer, this->mStagingBuffer, bufferSize, copyRegion, createBarrier);
-
+    this->copyBuffer(commandBuffer,
+                     this->mPrimaryBuffer,
+                     this->mStagingBuffer,
+                     bufferSize,
+                     copyRegion,
+                     createBarrier);
 }
 
 void
-Tensor::copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer, std::shared_ptr<vk::Buffer> bufferFrom, std::shared_ptr<vk::Buffer> bufferTo, vk::DeviceSize bufferSize, vk::BufferCopy copyRegion, bool createBarrier) {
+Tensor::copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                   std::shared_ptr<vk::Buffer> bufferFrom,
+                   std::shared_ptr<vk::Buffer> bufferTo,
+                   vk::DeviceSize bufferSize,
+                   vk::BufferCopy copyRegion,
+                   bool createBarrier)
+{
 
     if (!this->mIsInit) {
         throw std::runtime_error(
           "Kompute Tensor attempted to run copyBuffer without init");
     }
 
-    commandBuffer->copyBuffer(
-      *bufferFrom, *bufferTo, copyRegion);
+    commandBuffer->copyBuffer(*bufferFrom, *bufferTo, copyRegion);
 
     if (createBarrier) {
         // Buffer to ensure wait until data is copied to staging buffer
@@ -209,8 +229,7 @@ Tensor::mapDataFromHostMemory()
 
     if (this->mTensorType == TensorTypes::eHost) {
         hostVisibleMemory = this->mPrimaryMemory;
-    }
-    else {
+    } else {
         hostVisibleMemory = this->mStagingMemory;
     }
 
@@ -233,8 +252,7 @@ Tensor::mapDataIntoHostMemory()
 
     if (this->mTensorType == TensorTypes::eHost) {
         hostVisibleMemory = this->mPrimaryMemory;
-    }
-    else {
+    } else {
         hostVisibleMemory = this->mStagingMemory;
     }
 
@@ -333,20 +351,26 @@ Tensor::allocateMemoryCreateGPUResources()
     SPDLOG_DEBUG("Kompute Tensor creating primary buffer and memory");
 
     this->mPrimaryBuffer = std::make_shared<vk::Buffer>();
-    this->createBuffer(this->mPrimaryBuffer, this->getPrimaryBufferUsageFlags());
+    this->createBuffer(this->mPrimaryBuffer,
+                       this->getPrimaryBufferUsageFlags());
     this->mFreePrimaryBuffer = true;
     this->mPrimaryMemory = std::make_shared<vk::DeviceMemory>();
-    this->allocateBindMemory(this->mPrimaryBuffer, this->mPrimaryMemory, this->getPrimaryMemoryPropertyFlags());
+    this->allocateBindMemory(this->mPrimaryBuffer,
+                             this->mPrimaryMemory,
+                             this->getPrimaryMemoryPropertyFlags());
     this->mFreePrimaryMemory = true;
 
     if (this->mTensorType == TensorTypes::eDevice) {
         SPDLOG_DEBUG("Kompute Tensor creating staging buffer and memory");
 
         this->mStagingBuffer = std::make_shared<vk::Buffer>();
-        this->createBuffer(this->mStagingBuffer, this->getStagingBufferUsageFlags());
+        this->createBuffer(this->mStagingBuffer,
+                           this->getStagingBufferUsageFlags());
         this->mFreeStagingBuffer = true;
         this->mStagingMemory = std::make_shared<vk::DeviceMemory>();
-        this->allocateBindMemory(this->mStagingBuffer, this->mStagingMemory, this->getStagingMemoryPropertyFlags());
+        this->allocateBindMemory(this->mStagingBuffer,
+                                 this->mStagingMemory,
+                                 this->getStagingMemoryPropertyFlags());
         this->mFreeStagingMemory = true;
     }
 
@@ -354,15 +378,16 @@ Tensor::allocateMemoryCreateGPUResources()
 }
 
 void
-Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer, vk::BufferUsageFlags bufferUsageFlags) {
-
+Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer,
+                     vk::BufferUsageFlags bufferUsageFlags)
+{
 
     vk::DeviceSize bufferSize = this->memorySize();
 
-    if(bufferSize<1){
-        throw std::runtime_error("Kompute Tensor attempted to create a zero-sized buffer");
+    if (bufferSize < 1) {
+        throw std::runtime_error(
+          "Kompute Tensor attempted to create a zero-sized buffer");
     }
-    
 
     SPDLOG_DEBUG("Kompute Tensor creating buffer with memory size: {}, and "
                  "usage flags: {}",
@@ -376,11 +401,13 @@ Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer, vk::BufferUsageFlags bu
                                     vk::SharingMode::eExclusive);
 
     this->mDevice->createBuffer(&bufferInfo, nullptr, buffer.get());
-
 }
 
 void
-Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<vk::DeviceMemory> memory, vk::MemoryPropertyFlags memoryPropertyFlags) {
+Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
+                           std::shared_ptr<vk::DeviceMemory> memory,
+                           vk::MemoryPropertyFlags memoryPropertyFlags)
+{
 
     SPDLOG_DEBUG("Kompute Tensor allocating and binding memory");
 
@@ -393,7 +420,8 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<v
     uint32_t memoryTypeIndex = -1;
     for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
         if (memoryRequirements.memoryTypeBits & (1 << i)) {
-            if (((memoryProperties.memoryTypes[i]).propertyFlags & memoryPropertyFlags) == memoryPropertyFlags) {
+            if (((memoryProperties.memoryTypes[i]).propertyFlags &
+                 memoryPropertyFlags) == memoryPropertyFlags) {
                 memoryTypeIndex = i;
                 break;
             }
@@ -413,8 +441,7 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<v
     vk::MemoryAllocateInfo memoryAllocateInfo(memoryRequirements.size,
                                               memoryTypeIndex);
 
-    this->mDevice->allocateMemory(
-      &memoryAllocateInfo, nullptr, memory.get());
+    this->mDevice->allocateMemory(&memoryAllocateInfo, nullptr, memory.get());
 
     this->mDevice->bindBufferMemory(*buffer, *memory, 0);
 }
@@ -434,8 +461,8 @@ Tensor::freeMemoryDestroyGPUResources()
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
-            SPDLOG_ERROR(
-              "Kompose Tensor expected to destroy primary buffer but got null buffer");
+            SPDLOG_ERROR("Kompose Tensor expected to destroy primary buffer "
+                         "but got null buffer");
         } else {
             SPDLOG_DEBUG("Kompose Tensor destroying primary buffer");
             this->mDevice->destroy(
@@ -447,8 +474,8 @@ Tensor::freeMemoryDestroyGPUResources()
 
     if (this->mFreeStagingBuffer) {
         if (!this->mStagingBuffer) {
-            SPDLOG_ERROR(
-              "Kompose Tensor expected to destroy staging buffer but got null buffer");
+            SPDLOG_ERROR("Kompose Tensor expected to destroy staging buffer "
+                         "but got null buffer");
         } else {
             SPDLOG_DEBUG("Kompose Tensor destroying staging buffer");
             this->mDevice->destroy(
@@ -460,8 +487,8 @@ Tensor::freeMemoryDestroyGPUResources()
 
     if (this->mFreePrimaryMemory) {
         if (!this->mPrimaryMemory) {
-            SPDLOG_ERROR(
-              "Kompose Tensor expected to free primary memory but got null memory");
+            SPDLOG_ERROR("Kompose Tensor expected to free primary memory but "
+                         "got null memory");
         } else {
             SPDLOG_DEBUG("Kompose Tensor freeing primary memory");
             this->mDevice->freeMemory(
@@ -473,8 +500,8 @@ Tensor::freeMemoryDestroyGPUResources()
 
     if (this->mFreeStagingMemory) {
         if (!this->mStagingMemory) {
-            SPDLOG_ERROR(
-              "Kompose Tensor expected to free staging memory but got null memory");
+            SPDLOG_ERROR("Kompose Tensor expected to free staging memory but "
+                         "got null memory");
         } else {
             SPDLOG_DEBUG("Kompose Tensor freeing staging memory");
             this->mDevice->freeMemory(

@@ -114,7 +114,6 @@ TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
     EXPECT_FALSE(tensorB->isInit());
 }
 
-
 TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
 {
     std::vector<float> testVecA;
@@ -123,11 +122,11 @@ TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
 
     kp::Manager mgr;
 
-    try{
+    try {
         mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
-    } catch( const std::runtime_error& err ) {
-         // check exception
-        ASSERT_TRUE( std::string(err.what()).find("zero-sized") != std::string::npos );
+    } catch (const std::runtime_error& err) {
+        // check exception
+        ASSERT_TRUE(std::string(err.what()).find("zero-sized") !=
+                    std::string::npos);
     }
-
 }

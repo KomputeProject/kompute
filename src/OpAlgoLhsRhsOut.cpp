@@ -106,8 +106,8 @@ OpAlgoLhsRhsOut::record()
       vk::PipelineStageFlagBits::eTransfer);
 
     if (this->mTensorOutput->tensorType() == Tensor::TensorTypes::eDevice) {
-        this->mTensorOutput->recordCopyFromDeviceToStaging(
-          this->mCommandBuffer, true);
+        this->mTensorOutput->recordCopyFromDeviceToStaging(this->mCommandBuffer,
+                                                           true);
     }
 }
 
