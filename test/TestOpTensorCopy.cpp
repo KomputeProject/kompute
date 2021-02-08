@@ -58,7 +58,7 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensorMulti)
     EXPECT_EQ(tensorA->data(), tensorC->data());
 }
 
-TEST(TestOpTensorCopy, CopyDeviceToStagingTensor)
+TEST(TestOpTensorCopy, CopyDeviceToHostTensor)
 {
 
     kp::Manager mgr;
@@ -68,7 +68,7 @@ TEST(TestOpTensorCopy, CopyDeviceToStagingTensor)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
-      testVecB, kp::Tensor::TensorTypes::eStaging) };
+      testVecB, kp::Tensor::TensorTypes::eHost) };
 
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
@@ -84,7 +84,7 @@ TEST(TestOpTensorCopy, CopyDeviceToStagingTensor)
     EXPECT_EQ(tensorA->data(), tensorB->data());
 }
 
-TEST(TestOpTensorCopy, CopyStagingToDeviceTensor)
+TEST(TestOpTensorCopy, CopyHostToDeviceTensor)
 {
 
     kp::Manager mgr;
@@ -93,7 +93,7 @@ TEST(TestOpTensorCopy, CopyStagingToDeviceTensor)
     std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
-      testVecA, kp::Tensor::TensorTypes::eStaging) };
+      testVecA, kp::Tensor::TensorTypes::eHost) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
@@ -110,7 +110,7 @@ TEST(TestOpTensorCopy, CopyStagingToDeviceTensor)
     EXPECT_EQ(tensorA->data(), tensorB->data());
 }
 
-TEST(TestOpTensorCopy, CopyStagingToStagingTensor)
+TEST(TestOpTensorCopy, CopyHostToHostTensor)
 {
 
     kp::Manager mgr;
@@ -119,9 +119,9 @@ TEST(TestOpTensorCopy, CopyStagingToStagingTensor)
     std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
-      testVecA, kp::Tensor::TensorTypes::eStaging) };
+      testVecA, kp::Tensor::TensorTypes::eHost) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
-      testVecB, kp::Tensor::TensorTypes::eStaging) };
+      testVecB, kp::Tensor::TensorTypes::eHost) };
 
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
 
@@ -145,7 +145,7 @@ TEST(TestOpTensorCopy, SingleTensorShouldFail)
     std::vector<float> testVecA{ 9, 8, 7 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
-      testVecA, kp::Tensor::TensorTypes::eStaging) };
+      testVecA, kp::Tensor::TensorTypes::eHost) };
 
     mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
 

@@ -105,12 +105,12 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     std::shared_ptr<kp::Tensor> y{ new kp::Tensor({ 0, 0, 0, 1, 1 }) };
 
     std::shared_ptr<kp::Tensor> wIn{ new kp::Tensor(
-      wInVec, kp::Tensor::TensorTypes::eStaging) };
+      wInVec, kp::Tensor::TensorTypes::eHost) };
     std::shared_ptr<kp::Tensor> wOutI{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
     std::shared_ptr<kp::Tensor> wOutJ{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
 
     std::shared_ptr<kp::Tensor> bIn{ new kp::Tensor(
-      bInVec, kp::Tensor::TensorTypes::eStaging) };
+      bInVec, kp::Tensor::TensorTypes::eHost) };
     std::shared_ptr<kp::Tensor> bOut{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
 
     std::shared_ptr<kp::Tensor> lOut{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
