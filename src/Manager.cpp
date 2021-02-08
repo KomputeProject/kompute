@@ -143,8 +143,7 @@ Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
     if (sequenceName.empty()) {
         this->mCurrentSequenceIndex++;
         this->mManagedSequences.insert(
-          { KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex),
-            sq });
+          { KP_DEFAULT_SESSION, sq });
     } else {
         // TODO: Check if sequence doesn't already exist
         this->mManagedSequences.insert({ sequenceName, sq });

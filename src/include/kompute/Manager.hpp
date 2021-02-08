@@ -126,8 +126,7 @@ class Manager
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->mCurrentSequenceIndex++;
         this->evalOp<T>(tensors,
-                        KP_DEFAULT_SESSION +
-                          std::to_string(this->mCurrentSequenceIndex),
+                        KP_DEFAULT_SESSION,
                         std::forward<TArgs>(params)...);
     }
 
@@ -179,8 +178,7 @@ class Manager
         SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
         this->mCurrentSequenceIndex++;
         this->evalOpAsync<T>(tensors,
-                             KP_DEFAULT_SESSION +
-                               std::to_string(this->mCurrentSequenceIndex),
+                             KP_DEFAULT_SESSION,
                              std::forward<TArgs>(params)...);
     }
 
@@ -222,8 +220,7 @@ class Manager
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
-        this->evalOpAwait(KP_DEFAULT_SESSION +
-                            std::to_string(this->mCurrentSequenceIndex),
+        this->evalOpAwait(KP_DEFAULT_SESSION,
                           waitFor);
     }
 
