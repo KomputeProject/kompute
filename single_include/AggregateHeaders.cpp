@@ -8,7 +8,6 @@
 #include "kompute/operations/OpAlgoBase.hpp"
 #include "kompute/operations/OpAlgoLhsRhsOut.hpp"
 #include "kompute/operations/OpMult.hpp"
-#include "kompute/operations/OpTensorCreate.hpp"
 #include "kompute/operations/OpTensorCopy.hpp"
 #include "kompute/operations/OpTensorSyncDevice.hpp"
 #include "kompute/operations/OpTensorSyncLocal.hpp"

@@ -698,6 +698,7 @@ static const unsigned int shaders_glsl_logisticregression_comp_spv_len = 4920;
 #endif // define SHADEROP_SHADERLOGISTICREGRESSION_HPP
 
 #include <unordered_map>
+#include <set>
 
 #define KP_MAX_DIM_SIZE 1
 
@@ -723,7 +724,7 @@ class Tensor
     enum class TensorTypes
     {
         eDevice = 0,  ///< Type is device memory, source and destination
-        eHost = 1, ///< Type is host memory, source and destination
+        eHost = 1,    ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
 
@@ -736,7 +737,8 @@ class Tensor
      *  Default constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
-     *  @param data Non-zero-sized vector of data that will be used by the tensor
+     *  @param data Non-zero-sized vector of data that will be used by the
+     * tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
     Tensor(const std::vector<float>& data,
@@ -829,24 +831,30 @@ class Tensor
                         bool createBarrier);
 
     /**
-     * Records a copy from the internal staging memory to the device memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.
+     * Records a copy from the internal staging memory to the device memory
+     * using an optional barrier to wait for the operation. This function would
+     * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFromStagingToDevice(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                        bool createBarrier);
+    void recordCopyFromStagingToDevice(
+      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      bool createBarrier);
 
     /**
-     * Records a copy from the internal device memory to the staging memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.
+     * Records a copy from the internal device memory to the staging memory
+     * using an optional barrier to wait for the operation. This function would
+     * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFromDeviceToStaging(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                        bool createBarrier);
+    void recordCopyFromDeviceToStaging(
+      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which
@@ -908,9 +916,17 @@ class Tensor
     bool mIsInit = false;
 
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
-    void createBuffer(std::shared_ptr<vk::Buffer> buffer, vk::BufferUsageFlags bufferUsageFlags);
-    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer, std::shared_ptr<vk::DeviceMemory> memory, vk::MemoryPropertyFlags memoryPropertyFlags);
-    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer, std::shared_ptr<vk::Buffer> bufferFrom, std::shared_ptr<vk::Buffer> bufferTo, vk::DeviceSize bufferSize, vk::BufferCopy copyRegion, bool createBarrier);
+    void createBuffer(std::shared_ptr<vk::Buffer> buffer,
+                      vk::BufferUsageFlags bufferUsageFlags);
+    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
+                            std::shared_ptr<vk::DeviceMemory> memory,
+                            vk::MemoryPropertyFlags memoryPropertyFlags);
+    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                    std::shared_ptr<vk::Buffer> bufferFrom,
+                    std::shared_ptr<vk::Buffer> bufferTo,
+                    vk::DeviceSize bufferSize,
+                    vk::BufferCopy copyRegion,
+                    bool createBarrier);
 
     // Private util functions
     vk::BufferUsageFlags getPrimaryBufferUsageFlags();
@@ -949,13 +965,11 @@ class OpBase
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param freeTensors Whether operation manages the memory of the Tensors
      */
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool freeTensors)
+           std::vector<std::shared_ptr<Tensor>>& tensors)
     {
         SPDLOG_DEBUG("Compute OpBase constructor with params");
 
@@ -963,14 +977,12 @@ class OpBase
         this->mDevice = device;
         this->mCommandBuffer = commandBuffer;
         this->mTensors = tensors;
-        this->mFreeTensors = freeTensors;
     }
 
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
      * always be called to destroy and free owned resources unless it is
-     * intended to destroy the resources in the parent class. This can be done
-     * by passing the mFreeTensors=false.
+     * intended to destroy the resources in the parent class.
      */
     virtual ~OpBase()
     {
@@ -1231,72 +1243,6 @@ class Sequence
 
 } // End namespace kp
 
-namespace kp {
-
-/**
-    Operation that creates tensor and manages the memory of the components
-   created
-*/
-class OpTensorCreate : public OpBase
-{
-  public:
-    OpTensorCreate();
-
-    /**
-     * Default constructor with parameters that provides the bare minimum
-     * requirements for the operations to be able to create and manage their
-     * sub-components.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that will be used to create in operation.
-     * @param freeTensors Whether operation manages the memory of the Tensors
-     */
-    OpTensorCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
-
-    /**
-     * Default destructor which in this case expects the parent class to free
-     * the tensors
-     */
-    ~OpTensorCreate() override;
-
-    /**
-     * In charge of initialising the primary Tensor as well as the staging
-     * tensor as required. It will only initialise a staging tensor if the
-     * Primary tensor is of type Device. For staging tensors it performs a 
-     * mapDataIntoHostMemory which would perform immediately as opposed to 
-     * on sequence eval/submission.
-     */
-    void init() override;
-
-    /**
-     * Record runs the core actions to create the tensors. For device tensors
-     * it records a copyCommand to move the data from the staging tensor to the 
-     * device tensor. The mapping for staging tensors happens in the init function
-     * not in the record function.
-     */
-    void record() override;
-
-    /**
-     * Does not perform any preEval commands.
-     */
-    virtual void preEval() override;
-
-    /**
-     * Performs a copy back into the main tensor to ensure that the data
-     * contained is the one that is now being stored in the GPU.
-     */
-    virtual void postEval() override;
-
-  private:
-};
-
-} // End namespace kp
-
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -1520,8 +1466,8 @@ class Manager
     /**
      * Function that simplifies the common workflow of tensor creation and
      * initialization. It will take the constructor parameters for a Tensor
-     * and will will us it to create a new Tensor and then create it using
-     * the OpCreateTensor command.
+     * and will will us it to create a new Tensor and then create it. The
+     * tensor memory will then be managed and owned by the manager.
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
@@ -1531,15 +1477,47 @@ class Manager
       const std::vector<float>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        SPDLOG_DEBUG("Kompute Manager createInitTensor triggered");
+        SPDLOG_DEBUG("Kompute Manager buildTensor triggered");
 
         SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
         std::shared_ptr<Tensor> tensor =
           std::make_shared<Tensor>(kp::Tensor(data, tensorType));
 
-        this->evalOpDefault<OpTensorCreate>({ tensor });
+        tensor->init(this->mPhysicalDevice, this->mDevice);
+        if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
+            tensor->mapDataIntoHostMemory();
+        }
+        this->mManagedTensors.insert(tensor);
 
         return tensor;
+    }
+
+    /**
+     * Function that simplifies the common workflow of tensor initialisation. It will take the constructor parameters for a Tensor and will will us it to create a new Tensor. The tensor memory will then be managed and owned by the manager.
+     *
+     * @param data The data to initialize the tensor with
+     * @param tensorType The type of tensor to initialize
+     * @returns Initialized Tensor with memory Syncd to GPU device
+     */
+    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors)
+    {
+        SPDLOG_DEBUG("Kompute Manager rebuildTensors triggered");
+        for (std::shared_ptr<Tensor> tensor : tensors) {
+
+            if (tensor->isInit()) {
+                tensor->freeMemoryDestroyGPUResources();
+            }
+
+            tensor->init(this->mPhysicalDevice, this->mDevice);
+            if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
+                tensor->mapDataIntoHostMemory();
+            }
+
+            std::set<std::shared_ptr<Tensor>>::iterator it = this->mManagedTensors.find(tensor);
+            if (it == this->mManagedTensors.end()) {
+                this->mManagedTensors.insert(tensor);
+            }
+        }
     }
 
   private:
@@ -1552,6 +1530,8 @@ class Manager
     bool mFreeDevice = false;
 
     // -------------- ALWAYS OWNED RESOURCES
+    std::set<std::shared_ptr<Tensor>> mManagedTensors;
+
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
 
