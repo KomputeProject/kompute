@@ -11,7 +11,7 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuildTensors({ tensorA, tensorB });
 
     std::string shader(R"(
         #version 450
@@ -28,6 +28,8 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
         }
     )");
 
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA, tensorB });
+
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB }, std::vector<char>(shader.begin(), shader.end()));
 
@@ -43,7 +45,9 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromConstructor)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuildTensors({ tensorA, tensorB });
+
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB },
@@ -65,7 +69,9 @@ TEST(TestOpAlgoBase, ShaderRawDataFromFile)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuildTensors({ tensorA, tensorB });
+
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB }, "test/shaders/glsl/test_op_custom_shader.comp");
@@ -82,7 +88,9 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromFile)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuildTensors({ tensorA, tensorB });
+
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB }, "test/shaders/glsl/test_op_custom_shader.comp.spv");

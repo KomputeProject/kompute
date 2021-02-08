@@ -49,7 +49,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         inputsSyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
     }
 
-    mgr.evalOpDefault<kp::OpTensorCreate>(inputsSyncB);
+    mgr.rebuildTensors(inputsSyncB);
 
     auto startSync = std::chrono::high_resolution_clock::now();
 
@@ -77,7 +77,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
     }
 
-    mgrAsync.evalOpDefault<kp::OpTensorCreate>(inputsAsyncB);
+    mgrAsync.rebuildTensors(inputsAsyncB);
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgrAsync.createManagedSequence("async" + std::to_string(i), i);
@@ -149,7 +149,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     mgr.createManagedSequence("asyncOne");
     mgr.createManagedSequence("asyncTwo");
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuildTensors({ tensorA, tensorB });
 
     mgr.evalOpAsync<kp::OpAlgoBase>(
       { tensorA }, "asyncOne", std::vector<char>(shader.begin(), shader.end()));

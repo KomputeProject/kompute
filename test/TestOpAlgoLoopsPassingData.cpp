@@ -30,13 +30,15 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         }
     )");
 
+    mgr.rebuildTensors({ tensorA, tensorB });
+
     {
         std::shared_ptr<kp::Sequence> sq =
           mgr.getOrCreateManagedSequence("default");
 
         sq->begin();
 
-        sq->record<kp::OpTensorCreate>({ tensorA, tensorB });
+        sq->record<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
         sq->end();
 
