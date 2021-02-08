@@ -7,6 +7,8 @@
 
 #include "kompute/Sequence.hpp"
 
+#include "kompute/operations/OpTensorSyncDevice.hpp"
+
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -229,11 +231,13 @@ class Manager
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
+     * @param syncDataToGPU Whether to sync the data to GPU memory
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
     std::shared_ptr<Tensor> buildTensor(
       const std::vector<float>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
+      bool syncDataToGPU = true)
     {
         SPDLOG_DEBUG("Kompute Manager buildTensor triggered");
 
@@ -242,10 +246,12 @@ class Manager
           std::make_shared<Tensor>(kp::Tensor(data, tensorType));
 
         tensor->init(this->mPhysicalDevice, this->mDevice);
-        if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
-            tensor->mapDataIntoHostMemory();
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>({tensor});
         }
         this->mManagedTensors.insert(tensor);
+
 
         return tensor;
     }
@@ -258,9 +264,10 @@ class Manager
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
+     * @param syncDataToGPU Whether to sync the data to GPU memory
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
-    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors)
+    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors, bool syncDataToGPU = true)
     {
         SPDLOG_DEBUG("Kompute Manager rebuildTensors triggered");
         for (std::shared_ptr<Tensor> tensor : tensors) {
@@ -270,15 +277,16 @@ class Manager
             }
 
             tensor->init(this->mPhysicalDevice, this->mDevice);
-            if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
-                tensor->mapDataIntoHostMemory();
-            }
 
             std::set<std::shared_ptr<Tensor>>::iterator it =
               this->mManagedTensors.find(tensor);
             if (it == this->mManagedTensors.end()) {
                 this->mManagedTensors.insert(tensor);
             }
+        }
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>(tensors);
         }
     }
 
