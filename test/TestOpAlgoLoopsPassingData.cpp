@@ -30,7 +30,7 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         }
     )");
 
-    mgr.rebuildTensors({ tensorA, tensorB });
+    mgr.rebuildTensors({ tensorA, tensorB }, false);
 
     {
         std::shared_ptr<kp::Sequence> sq =

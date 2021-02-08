@@ -17,9 +17,6 @@ TEST(TestManager, EndToEndOpMultFlow)
 
     mgr.rebuildTensors({ tensorOutput });
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>(
-      { tensorLHS, tensorRHS, tensorOutput });
-
     mgr.evalOpDefault<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOutput });
@@ -45,10 +42,6 @@ TEST(TestManager, OpMultSequenceFlow)
           mgr.getOrCreateManagedSequence("newSequence");
 
         sq->begin();
-
-        sq->record<kp::OpTensorSyncDevice>({ tensorLHS });
-        sq->record<kp::OpTensorSyncDevice>({ tensorRHS });
-        sq->record<kp::OpTensorSyncDevice>({ tensorOutput });
 
         sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
@@ -106,9 +99,6 @@ TEST(TestManager, TestMultipleTensorsAtOnce)
 
         sq->begin();
 
-        sq->record<kp::OpTensorSyncDevice>(
-          { tensorLHS, tensorRHS, tensorOutput });
-
         sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
         sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
@@ -126,10 +116,6 @@ TEST(TestManager, TestCreateInitTensor)
 
     std::shared_ptr<kp::Tensor> tensorA = mgr.buildTensor({ 0, 1, 2 });
     std::shared_ptr<kp::Tensor> tensorB = mgr.buildTensor({ 0, 0, 0 });
-
-    mgr.rebuildTensors({ tensorA, tensorB });
-
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
     mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
 

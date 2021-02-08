@@ -24,7 +24,6 @@ TEST(TestTensor, CopyFromHostData)
     kp::Manager mgr;
 
     mgr.rebuildTensors({ tensorA, tensorB });
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
     if (std::shared_ptr<kp::Sequence> sq =
           mgr.getOrCreateManagedSequence("new")) {

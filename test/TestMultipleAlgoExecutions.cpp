@@ -27,8 +27,6 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
     {
         sq->begin();
 
-        sq->record<kp::OpTensorSyncDevice>({ tensorA });
-
         sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
         sq->record<kp::OpAlgoBase>(
@@ -60,7 +58,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuildTensors({ tensorA });
+    mgr.rebuildTensors({ tensorA }, false);
 
     std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence();
 
@@ -122,8 +120,6 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
           mgr.getOrCreateManagedSequence("newSequence");
 
         sq->begin();
-
-        sq->record<kp::OpTensorSyncDevice>({ tensorA });
 
         sq->record<kp::OpAlgoBase>(
           { tensorA }, std::vector<char>(shader.begin(), shader.end()));
@@ -189,7 +185,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuildTensors({ tensorA });
+    mgr.rebuildTensors({ tensorA }, false);
 
     {
         std::shared_ptr<kp::Sequence> sq =
@@ -248,9 +244,6 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
 
     mgr.rebuildTensors({ tensorInA, tensorInB, tensorOut });
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>(
-      { tensorInA, tensorInB, tensorOut });
-
     std::string shader(R"(
         // The version to use 
         #version 450
@@ -284,9 +277,9 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
 
     kp::Manager mgr;
 
-    auto tensorInA = mgr.buildTensor({ 2.0, 4.0, 6.0 });
-    auto tensorInB = mgr.buildTensor({ 0.0, 1.0, 2.0 });
-    auto tensorOut = mgr.buildTensor({ 0.0, 0.0, 0.0 });
+    auto tensorInA = mgr.buildTensor({ 2.0, 4.0, 6.0 }, kp::Tensor::TensorTypes::eDevice, false);
+    auto tensorInB = mgr.buildTensor({ 0.0, 1.0, 2.0 }, kp::Tensor::TensorTypes::eDevice, false);
+    auto tensorOut = mgr.buildTensor({ 0.0, 0.0, 0.0 }, kp::Tensor::TensorTypes::eDevice, false);
 
     std::string shader(R"(
         // The version to use 

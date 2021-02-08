@@ -33,7 +33,6 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
         kp::Manager mgr;
 
         mgr.rebuildTensors(params);
-        mgr.evalOpDefault<kp::OpTensorSyncDevice>(params);
 
         std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
@@ -119,7 +118,6 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
         kp::Manager mgr;
 
         mgr.rebuildTensors(params);
-        mgr.evalOpDefault<kp::OpTensorSyncDevice>(params);
 
         std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
 
