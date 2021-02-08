@@ -1243,6 +1243,59 @@ class Sequence
 
 } // End namespace kp
 
+namespace kp {
+
+/**
+    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
+*/
+class OpTensorSyncDevice : public OpBase
+{
+  public:
+    OpTensorSyncDevice();
+
+    /**
+     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.
+     *
+     * @param physicalDevice Vulkan physical device used to find device queues
+     * @param device Vulkan logical device for passing to Algorithm
+     * @param commandBuffer Vulkan Command Buffer to record commands into
+     * @param tensors Tensors that will be used to create in operation.
+     */
+    OpTensorSyncDevice(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                   std::shared_ptr<vk::Device> device,
+                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                   std::vector<std::shared_ptr<Tensor>> tensors);
+
+    /**
+     * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
+     */
+    ~OpTensorSyncDevice() override;
+
+    /**
+     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
+     */
+    void init() override;
+
+    /**
+     * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
+     */
+    void record() override;
+
+    /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
+    /**
+     * Does not perform any postEval commands.
+     */
+    virtual void postEval() override;
+
+  private:
+};
+
+} // End namespace kp
+
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -1465,11 +1518,13 @@ class Manager
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
+     * @param syncDataToGPU Whether to sync the data to GPU memory
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
     std::shared_ptr<Tensor> buildTensor(
       const std::vector<float>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
+      bool syncDataToGPU = true)
     {
         SPDLOG_DEBUG("Kompute Manager buildTensor triggered");
 
@@ -1478,8 +1533,9 @@ class Manager
           std::make_shared<Tensor>(kp::Tensor(data, tensorType));
 
         tensor->init(this->mPhysicalDevice, this->mDevice);
-        if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
-            tensor->mapDataIntoHostMemory();
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>({tensor});
         }
         this->mManagedTensors.insert(tensor);
 
@@ -1494,9 +1550,10 @@ class Manager
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
+     * @param syncDataToGPU Whether to sync the data to GPU memory
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
-    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors)
+    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors, bool syncDataToGPU = true)
     {
         SPDLOG_DEBUG("Kompute Manager rebuildTensors triggered");
         for (std::shared_ptr<Tensor> tensor : tensors) {
@@ -1506,15 +1563,16 @@ class Manager
             }
 
             tensor->init(this->mPhysicalDevice, this->mDevice);
-            if (tensor->tensorType() != Tensor::TensorTypes::eStorage) {
-                tensor->mapDataIntoHostMemory();
-            }
 
             std::set<std::shared_ptr<Tensor>>::iterator it =
               this->mManagedTensors.find(tensor);
             if (it == this->mManagedTensors.end()) {
                 this->mManagedTensors.insert(tensor);
             }
+        }
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>(tensors);
         }
     }
 
@@ -1967,59 +2025,6 @@ class OpTensorCopy : public OpBase
 
     /**
      * Copies the local vectors for all the tensors to sync the data with the gpu.
-     */
-    virtual void postEval() override;
-
-  private:
-};
-
-} // End namespace kp
-
-namespace kp {
-
-/**
-    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
-*/
-class OpTensorSyncDevice : public OpBase
-{
-  public:
-    OpTensorSyncDevice();
-
-    /**
-     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that will be used to create in operation.
-     */
-    OpTensorSyncDevice(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
-
-    /**
-     * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
-     */
-    ~OpTensorSyncDevice() override;
-
-    /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
-     */
-    void init() override;
-
-    /**
-     * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
-     */
-    void record() override;
-
-    /**
-     * Does not perform any preEval commands.
-     */
-    virtual void preEval() override;
-
-    /**
-     * Does not perform any postEval commands.
      */
     virtual void postEval() override;
 
