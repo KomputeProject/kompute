@@ -248,7 +248,8 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
 
     mgr.rebuildTensors({ tensorInA, tensorInB, tensorOut });
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorInA, tensorInB, tensorOut });
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>(
+      { tensorInA, tensorInB, tensorOut });
 
     std::string shader(R"(
         // The version to use 
@@ -306,7 +307,8 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
         }
       )");
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorInA, tensorInB, tensorOut });
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>(
+      { tensorInA, tensorInB, tensorOut });
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorInA, tensorInB, tensorOut },

@@ -17,7 +17,8 @@ TEST(TestManager, EndToEndOpMultFlow)
 
     mgr.rebuildTensors({ tensorOutput });
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorLHS, tensorRHS, tensorOutput });
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>(
+      { tensorLHS, tensorRHS, tensorOutput });
 
     mgr.evalOpDefault<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
@@ -105,7 +106,8 @@ TEST(TestManager, TestMultipleTensorsAtOnce)
 
         sq->begin();
 
-        sq->record<kp::OpTensorSyncDevice>({ tensorLHS, tensorRHS, tensorOutput });
+        sq->record<kp::OpTensorSyncDevice>(
+          { tensorLHS, tensorRHS, tensorOutput });
 
         sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 

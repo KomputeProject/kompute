@@ -697,8 +697,8 @@ static const unsigned int shaders_glsl_logisticregression_comp_spv_len = 4920;
 }
 #endif // define SHADEROP_SHADERLOGISTICREGRESSION_HPP
 
-#include <unordered_map>
 #include <set>
+#include <unordered_map>
 
 #define KP_MAX_DIM_SIZE 1
 
@@ -1361,10 +1361,8 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->mCurrentSequenceIndex++;
-        this->evalOp<T>(tensors,
-                        KP_DEFAULT_SESSION +
-                          std::to_string(this->mCurrentSequenceIndex),
-                        std::forward<TArgs>(params)...);
+        this->evalOp<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
     }
 
     /**
@@ -1414,10 +1412,8 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
         this->mCurrentSequenceIndex++;
-        this->evalOpAsync<T>(tensors,
-                             KP_DEFAULT_SESSION +
-                               std::to_string(this->mCurrentSequenceIndex),
-                             std::forward<TArgs>(params)...);
+        this->evalOpAsync<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
     }
 
     /**
@@ -1458,9 +1454,7 @@ class Manager
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
-        this->evalOpAwait(KP_DEFAULT_SESSION +
-                            std::to_string(this->mCurrentSequenceIndex),
-                          waitFor);
+        this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
     }
 
     /**
@@ -1493,7 +1487,10 @@ class Manager
     }
 
     /**
-     * Function that simplifies the common workflow of tensor initialisation. It will take the constructor parameters for a Tensor and will will us it to create a new Tensor. The tensor memory will then be managed and owned by the manager.
+     * Function that simplifies the common workflow of tensor initialisation. It
+     * will take the constructor parameters for a Tensor and will will us it to
+     * create a new Tensor. The tensor memory will then be managed and owned by
+     * the manager.
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
@@ -1513,7 +1510,8 @@ class Manager
                 tensor->mapDataIntoHostMemory();
             }
 
-            std::set<std::shared_ptr<Tensor>>::iterator it = this->mManagedTensors.find(tensor);
+            std::set<std::shared_ptr<Tensor>>::iterator it =
+              this->mManagedTensors.find(tensor);
             if (it == this->mManagedTensors.end()) {
                 this->mManagedTensors.insert(tensor);
             }

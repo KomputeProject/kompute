@@ -232,7 +232,8 @@ Tensor::mapDataFromHostMemory()
     } else if (this->mTensorType == TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
-        SPDLOG_WARN("Kompute Tensor mapping data not supported on storage tensor");
+        SPDLOG_WARN(
+          "Kompute Tensor mapping data not supported on storage tensor");
         return;
     }
 
@@ -258,7 +259,8 @@ Tensor::mapDataIntoHostMemory()
     } else if (this->mTensorType == TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
-        SPDLOG_WARN("Kompute Tensor mapping data not supported on storage tensor");
+        SPDLOG_WARN(
+          "Kompute Tensor mapping data not supported on storage tensor");
         return;
     }
 

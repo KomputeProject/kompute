@@ -62,7 +62,8 @@ Manager::~Manager()
         SPDLOG_DEBUG("Kompute Manager explicitly freeing tensors");
         for (const std::shared_ptr<Tensor>& tensor : this->mManagedTensors) {
             if (!tensor->isInit()) {
-                SPDLOG_ERROR("Kompute Manager attempted to free managed tensor but not tensor is not initialised");
+                SPDLOG_ERROR("Kompute Manager attempted to free managed tensor "
+                             "but not tensor is not initialised");
             }
             tensor->freeMemoryDestroyGPUResources();
         }
@@ -142,8 +143,7 @@ Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
 
     if (sequenceName.empty()) {
         this->mCurrentSequenceIndex++;
-        this->mManagedSequences.insert(
-          { KP_DEFAULT_SESSION, sq });
+        this->mManagedSequences.insert({ KP_DEFAULT_SESSION, sq });
     } else {
         // TODO: Check if sequence doesn't already exist
         this->mManagedSequences.insert({ sequenceName, sq });
