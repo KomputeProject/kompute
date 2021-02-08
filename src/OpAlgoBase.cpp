@@ -14,7 +14,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
                        KomputeWorkgroup komputeWorkgroup)
-  : OpBase(physicalDevice, device, commandBuffer, tensors, false)
+  : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}",
                  tensors.size());

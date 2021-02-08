@@ -31,13 +31,11 @@ class OpBase
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param freeTensors Whether operation manages the memory of the Tensors
      */
     OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           bool freeTensors)
+           std::vector<std::shared_ptr<Tensor>>& tensors)
     {
         SPDLOG_DEBUG("Compute OpBase constructor with params");
 
@@ -45,14 +43,12 @@ class OpBase
         this->mDevice = device;
         this->mCommandBuffer = commandBuffer;
         this->mTensors = tensors;
-        this->mFreeTensors = freeTensors;
     }
 
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
      * always be called to destroy and free owned resources unless it is
-     * intended to destroy the resources in the parent class. This can be done
-     * by passing the mFreeTensors=false.
+     * intended to destroy the resources in the parent class.
      */
     virtual ~OpBase()
     {
