@@ -277,9 +277,12 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
 
     kp::Manager mgr;
 
-    auto tensorInA = mgr.buildTensor({ 2.0, 4.0, 6.0 }, kp::Tensor::TensorTypes::eDevice, false);
-    auto tensorInB = mgr.buildTensor({ 0.0, 1.0, 2.0 }, kp::Tensor::TensorTypes::eDevice, false);
-    auto tensorOut = mgr.buildTensor({ 0.0, 0.0, 0.0 }, kp::Tensor::TensorTypes::eDevice, false);
+    auto tensorInA = mgr.buildTensor(
+      { 2.0, 4.0, 6.0 }, kp::Tensor::TensorTypes::eDevice, false);
+    auto tensorInB = mgr.buildTensor(
+      { 0.0, 1.0, 2.0 }, kp::Tensor::TensorTypes::eDevice, false);
+    auto tensorOut = mgr.buildTensor(
+      { 0.0, 0.0, 0.0 }, kp::Tensor::TensorTypes::eDevice, false);
 
     std::string shader(R"(
         // The version to use 

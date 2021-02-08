@@ -248,10 +248,9 @@ class Manager
         tensor->init(this->mPhysicalDevice, this->mDevice);
 
         if (syncDataToGPU) {
-            this->evalOpDefault<OpTensorSyncDevice>({tensor});
+            this->evalOpDefault<OpTensorSyncDevice>({ tensor });
         }
         this->mManagedTensors.insert(tensor);
-
 
         return tensor;
     }
@@ -267,7 +266,8 @@ class Manager
      * @param syncDataToGPU Whether to sync the data to GPU memory
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
-    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors, bool syncDataToGPU = true)
+    void rebuildTensors(std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                        bool syncDataToGPU = true)
     {
         SPDLOG_DEBUG("Kompute Manager rebuildTensors triggered");
         for (std::shared_ptr<Tensor> tensor : tensors) {
