@@ -156,6 +156,11 @@ vs_run_tests: vs_build_tests
 	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe --gtest_filter=$(FILTER_TESTS)
 
 
+#### PYTHONG ####
+
+test_python:
+	python -m pytest -s --log-cli-level=DEBUG -v python/test/
+
 ####### Run CI Commands #######
 
 # This command uses act to replicate github action
