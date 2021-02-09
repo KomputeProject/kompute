@@ -42,14 +42,7 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
         kp::Manager mgr;
 
         {
-
-            std::shared_ptr<kp::Sequence> sqTensor =
-              mgr.sequence();
-
-            sqTensor->begin();
-            sqTensor->record<kp::OpTensorCreate>(params);
-            sqTensor->end();
-            sqTensor->eval();
+            mgr.rebuild(params);
 
             std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 

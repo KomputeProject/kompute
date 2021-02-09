@@ -55,13 +55,7 @@ void KomputeModelML::train(Array yArr, Array xIArr, Array xJArr) {
         kp::Manager mgr;
 
         {
-            std::shared_ptr<kp::Sequence> sqTensor =
-              mgr.sequence();
-
-            sqTensor->begin();
-            sqTensor->record<kp::OpTensorCreate>(params);
-            sqTensor->end();
-            sqTensor->eval();
+            mgr.rebuild(params);
 
             std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 

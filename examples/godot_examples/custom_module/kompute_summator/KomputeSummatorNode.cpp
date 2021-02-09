@@ -12,7 +12,7 @@ void KomputeSummatorNode::add(float value) {
     // Set the new data in the local device
     this->mSecondaryTensor->setData({value});
     // Execute recorded sequence
-    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock()) {
+    if (std::shared_ptr<kp::Sequence> sq = this->mSequence) {
         sq->eval();
     }
     else {
@@ -34,7 +34,7 @@ void KomputeSummatorNode::_init() {
     this->mSequence = this->mManager.sequence("AdditionSeq");
 
     // We now record the steps in the sequence
-    if (std::shared_ptr<kp::Sequence> sq = this->mSequence.lock())
+    if (std::shared_ptr<kp::Sequence> sq = this->mSequence)
     {
 
         std::string shader(R"(
@@ -59,7 +59,7 @@ void KomputeSummatorNode::_init() {
                 { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
-        sq->record<kp::OpAlgoBase<>>(
+        sq->record<kp::OpAlgoBase>(
             { this->mPrimaryTensor, this->mSecondaryTensor }, 
             std::vector<char>(shader.begin(), shader.end()));
 
