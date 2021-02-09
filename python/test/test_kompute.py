@@ -17,7 +17,7 @@ def test_opmult():
 
     mgr = kp.Manager()
 
-    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
     mgr.eval_algo_mult_def([tensor_in_a, tensor_in_b, tensor_out])
 
@@ -42,7 +42,7 @@ def test_opalgobase_data():
 
         layout (local_size_x = 1) in;
 
-        // The input tensors bind index is relative to index in parameter passed
+        // The input rebuild bind index is relative to index in parameter passed
         layout(set = 0, binding = 0) buffer bina { float tina[]; };
         layout(set = 0, binding = 1) buffer binb { float tinb[]; };
         layout(set = 0, binding = 2) buffer bout { float tout[]; };
@@ -53,7 +53,7 @@ def test_opalgobase_data():
         }
     """
 
-    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
     mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], shaderData)
 
@@ -76,7 +76,7 @@ def test_opalgobase_file():
 
     shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
 
-    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
     mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
 
@@ -94,14 +94,14 @@ def test_sequence():
     tensor_in_b = kp.Tensor([1, 2, 3])
     tensor_out = kp.Tensor([0, 0, 0])
 
-    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
     shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
     mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
 
     mgr.eval_await_def()
 
-    seq = mgr.create_sequence("op")
+    seq = mgr.sequence("op")
     seq.begin()
     seq.record_tensor_sync_local([tensor_in_a])
     seq.record_tensor_sync_local([tensor_in_b])
@@ -120,14 +120,14 @@ def test_workgroup():
     tensor_a = kp.Tensor(np.zeros([16,8]))
     tensor_b = kp.Tensor(np.zeros([16,8]))
 
-    mgr.rebuild_tensors([tensor_a, tensor_b])
+    mgr.rebuild([tensor_a, tensor_b])
 
     shader_src = """
         #version 450
 
         layout (local_size_x = 1) in;
 
-        // The input tensors bind index is relative to index in parameter passed
+        // The input rebuild bind index is relative to index in parameter passed
         layout(set = 0, binding = 0) writeonly buffer bout  { float toutx[]; };
         layout(set = 0, binding = 1) writeonly buffer bout2 { float touty[]; };
 
@@ -140,7 +140,7 @@ def test_workgroup():
     """
     shader_src = bytes(shader_src, encoding='utf8')
 
-    seq = mgr.create_sequence("new")
+    seq = mgr.sequence("new")
     seq.begin()
     seq.record_algo_data([tensor_a, tensor_b], shader_src, (16,8,1))
     seq.end()
