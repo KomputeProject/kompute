@@ -20,7 +20,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
-    this->mIsInit = true;
+    this->mIsInit = false;
 }
 
 Sequence::~Sequence()
@@ -203,6 +203,8 @@ Sequence::isInit()
 void
 Sequence::freeMemoryDestroyGPUResources()
 {
+    SPDLOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
+
     if (!this->mIsInit) {
         SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
                      "but Sequence is not initialized so there's no relevant "

@@ -58,6 +58,16 @@ Manager::~Manager()
         return;
     }
 
+    if (this->mManagedSequences.size()) {
+        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for "
+                     "managed sequences");
+        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
+             this->mManagedSequences) {
+            sqPair.second->freeMemoryDestroyGPUResources();
+        }
+        this->mManagedSequences.clear();
+    }
+
     if (this->mManagedTensors.size()) {
         SPDLOG_DEBUG("Kompute Manager explicitly freeing tensors");
         for (const std::shared_ptr<Tensor>& tensor : this->mManagedTensors) {
@@ -68,16 +78,6 @@ Manager::~Manager()
             tensor->freeMemoryDestroyGPUResources();
         }
         this->mManagedTensors.clear();
-    }
-
-    if (this->mManagedSequences.size()) {
-        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for "
-                     "managed sequences");
-        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
-             this->mManagedSequences) {
-            sqPair.second->freeMemoryDestroyGPUResources();
-        }
-        this->mManagedSequences.clear();
     }
 
     if (this->mFreeDevice) {
