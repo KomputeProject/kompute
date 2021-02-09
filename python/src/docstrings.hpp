@@ -513,10 +513,10 @@ function not in the record function.)doc";
 static const char *__doc_kp_OpTensorSyncDevice =
 R"doc(Operation that syncs tensor's device by mapping local data into the
 device memory. For TensorTypes::eDevice it will use a staging tensor
-to perform the copy. For TensorTypes::eStaging it will only copy the
+to perform the copy. For TensorTypes::eHost it will only copy the
 data and perform a map, which will be executed during the record (as
 opposed to during the sequence eval/submit). This function cannot be
-carried out for TensorTypes::eStaging.)doc";
+carried out for TensorTypes::eHost.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_OpTensorSyncDevice = R"doc()doc";
 
@@ -533,7 +533,7 @@ queues @param device Vulkan logical device for passing to Algorithm
 static const char *__doc_kp_OpTensorSyncDevice_init =
 R"doc(Performs basic checks such as ensuring that there is at least one
 tensor provided, that they are initialized and that they are not of
-type TensorTpes::eStaging. For staging tensors in host memory, the map
+type TensorTpes::eHost. For staging tensors in host memory, the map
 is performed during the init function.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_mStagingTensors = R"doc()doc";
@@ -549,11 +549,11 @@ from the temporary staging tensor.)doc";
 static const char *__doc_kp_OpTensorSyncLocal =
 R"doc(Operation that syncs tensor's local data by mapping the data from
 device memory into the local vector. For TensorTypes::eDevice it will
-use a staging tensor to perform the copy. For TensorTypes::eStaging it
+use a staging tensor to perform the copy. For TensorTypes::eHost it
 will only copy the data and perform a map, which will be executed
 during the postSubmit (there will be no copy during the sequence
 eval/submit). This function cannot be carried out for
-TensorTypes::eStaging.)doc";
+TensorTypes::eHost.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_OpTensorSyncLocal = R"doc()doc";
 
@@ -570,7 +570,7 @@ queues @param device Vulkan logical device for passing to Algorithm
 static const char *__doc_kp_OpTensorSyncLocal_init =
 R"doc(Performs basic checks such as ensuring that there is at least one
 tensor provided, that they are initialized and that they are not of
-type TensorTpes::eStaging.)doc";
+type TensorTpes::eHost.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_mStagingTensors = R"doc()doc";
 
@@ -719,7 +719,7 @@ shader storage).)doc";
 
 static const char *__doc_kp_Tensor_TensorTypes_eDevice = R"doc(< Type is device memory, source and destination)doc";
 
-static const char *__doc_kp_Tensor_TensorTypes_eStaging = R"doc(< Type is host memory, source and destination)doc";
+static const char *__doc_kp_Tensor_TensorTypes_eHost = R"doc(< Type is host memory, source and destination)doc";
 
 static const char *__doc_kp_Tensor_TensorTypes_eStorage = R"doc(< Type is Device memory (only))doc";
 

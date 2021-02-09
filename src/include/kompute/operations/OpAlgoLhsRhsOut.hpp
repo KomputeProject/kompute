@@ -78,9 +78,6 @@ class OpAlgoLhsRhsOut : public OpAlgoBase
     std::shared_ptr<Tensor> mTensorLHS; ///< Reference to the parameter used in the left hand side equation of the shader
     std::shared_ptr<Tensor> mTensorRHS; ///< Reference to the parameter used in the right hand side equation of the shader
     std::shared_ptr<Tensor> mTensorOutput; ///< Reference to the parameter used in the output of the shader and will be copied with a staging vector
-
-    // -------------- ALWAYS OWNED RESOURCES
-    std::shared_ptr<Tensor> mTensorOutputStaging; ///< Staging temporary tensor user do to copy the output of the tensor
 };
 
 } // End namespace kp

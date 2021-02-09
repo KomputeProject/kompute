@@ -41,24 +41,10 @@ OpTensorSyncDevice::init()
                                      "has not been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
-            throw std::runtime_error(
+            SPDLOG_WARN(
               "Kompute OpTensorSyncLocal tensor parameter is of type "
               "TensorTypes::eStorage and hence cannot be used to receive or "
               "pass data.");
-        }
-        if (tensor->tensorType() == Tensor::TensorTypes::eDevice) {
-
-            std::shared_ptr<Tensor> stagingTensor = std::make_shared<Tensor>(
-              tensor->data(), Tensor::TensorTypes::eStaging);
-
-            stagingTensor->init(this->mPhysicalDevice, this->mDevice);
-
-            this->mStagingTensors.push_back(stagingTensor);
-
-        } else {
-            // We push a nullptr when no staging tensor is needed to match
-            // index number in array to have one to one mapping with tensors
-            this->mStagingTensors.push_back(nullptr);
         }
     }
 }
@@ -70,8 +56,8 @@ OpTensorSyncDevice::record()
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mTensors[i]->recordCopyFrom(
-              this->mCommandBuffer, this->mStagingTensors[i], false);
+            this->mTensors[i]->recordCopyFromStagingToDevice(
+              this->mCommandBuffer, false);
         }
     }
 }
@@ -83,11 +69,8 @@ OpTensorSyncDevice::preEval()
 
     // Performing sync of data as eval can be called multiple times with same op
     for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mStagingTensors[i]->setData(this->mTensors[i]->data());
-            this->mStagingTensors[i]->mapDataIntoHostMemory();
-        } else {
-            this->mTensors[i]->mapDataFromHostMemory();
+        if (this->mTensors[i]->tensorType() != Tensor::TensorTypes::eStorage) {
+            this->mTensors[i]->mapDataIntoHostMemory();
         }
     }
 }

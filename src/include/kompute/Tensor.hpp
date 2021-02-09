@@ -26,7 +26,7 @@ class Tensor
     enum class TensorTypes
     {
         eDevice = 0,  ///< Type is device memory, source and destination
-        eStaging = 1, ///< Type is host memory, source and destination
+        eHost = 1,    ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
 
@@ -39,7 +39,8 @@ class Tensor
      *  Default constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
-     *  @param data Non-zero-sized vector of data that will be used by the tensor
+     *  @param data Non-zero-sized vector of data that will be used by the
+     * tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
     Tensor(const std::vector<float>& data,
@@ -132,6 +133,32 @@ class Tensor
                         bool createBarrier);
 
     /**
+     * Records a copy from the internal staging memory to the device memory
+     * using an optional barrier to wait for the operation. This function would
+     * only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
+     */
+    void recordCopyFromStagingToDevice(
+      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      bool createBarrier);
+
+    /**
+     * Records a copy from the internal device memory to the staging memory
+     * using an optional barrier to wait for the operation. This function would
+     * only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param createBarrier Whether to create a barrier that ensures the data is
+     * copied before further operations. Default is true.
+     */
+    void recordCopyFromDeviceToStaging(
+      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      bool createBarrier);
+
+    /**
      * Records the buffer memory barrier into the command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
@@ -173,10 +200,14 @@ class Tensor
     std::shared_ptr<vk::Device> mDevice;
 
     // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<vk::Buffer> mBuffer;
-    bool mFreeBuffer;
-    std::shared_ptr<vk::DeviceMemory> mMemory;
-    bool mFreeMemory;
+    std::shared_ptr<vk::Buffer> mPrimaryBuffer;
+    bool mFreePrimaryBuffer = false;
+    std::shared_ptr<vk::Buffer> mStagingBuffer;
+    bool mFreeStagingBuffer = false;
+    std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
+    bool mFreePrimaryMemory = false;
+    std::shared_ptr<vk::DeviceMemory> mStagingMemory;
+    bool mFreeStagingMemory = false;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<float> mData;
@@ -186,11 +217,24 @@ class Tensor
     std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
     bool mIsInit = false;
 
-    void createBuffer(); // Creates the vulkan buffer
+    void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+    void createBuffer(std::shared_ptr<vk::Buffer> buffer,
+                      vk::BufferUsageFlags bufferUsageFlags);
+    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
+                            std::shared_ptr<vk::DeviceMemory> memory,
+                            vk::MemoryPropertyFlags memoryPropertyFlags);
+    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+                    std::shared_ptr<vk::Buffer> bufferFrom,
+                    std::shared_ptr<vk::Buffer> bufferTo,
+                    vk::DeviceSize bufferSize,
+                    vk::BufferCopy copyRegion,
+                    bool createBarrier);
 
     // Private util functions
-    vk::BufferUsageFlags getBufferUsageFlags();
-    vk::MemoryPropertyFlags getMemoryPropertyFlags();
+    vk::BufferUsageFlags getPrimaryBufferUsageFlags();
+    vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
+    vk::BufferUsageFlags getStagingBufferUsageFlags();
+    vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
     uint64_t memorySize();
 };
 

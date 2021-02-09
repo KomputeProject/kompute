@@ -69,7 +69,7 @@ class OpBase
                 if (tensor && tensor->isInit()) {
                     tensor->freeMemoryDestroyGPUResources();
                 } else {
-                    SPDLOG_ERROR("Kompute OpBase expected to free "
+                    SPDLOG_WARN("Kompute OpBase expected to free "
                                   "tensor but has already been freed.");
                 }
             }

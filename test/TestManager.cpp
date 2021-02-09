@@ -126,7 +126,7 @@ TEST(TestManager, TestCreateInitTensor)
     EXPECT_EQ(tensorB->data(), std::vector<float>({ 0, 1, 2 }));
 
     std::shared_ptr<kp::Tensor> tensorC =
-      mgr.buildTensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStaging);
+      mgr.buildTensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eHost);
 
     mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorC });
 

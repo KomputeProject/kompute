@@ -17,9 +17,9 @@ TEST(TestTensor, CopyFromHostData)
     std::vector<float> vecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA =
-      std::make_shared<kp::Tensor>(vecA, kp::Tensor::TensorTypes::eStaging);
+      std::make_shared<kp::Tensor>(vecA, kp::Tensor::TensorTypes::eHost);
     std::shared_ptr<kp::Tensor> tensorB =
-      std::make_shared<kp::Tensor>(vecB, kp::Tensor::TensorTypes::eStaging);
+      std::make_shared<kp::Tensor>(vecB, kp::Tensor::TensorTypes::eHost);
 
     kp::Manager mgr;
 

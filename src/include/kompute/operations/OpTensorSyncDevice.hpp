@@ -9,7 +9,7 @@
 namespace kp {
 
 /**
-    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the record (as opposed to during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging.
+    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
 */
 class OpTensorSyncDevice : public OpBase
 {
@@ -35,12 +35,12 @@ class OpTensorSyncDevice : public OpBase
     ~OpTensorSyncDevice() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging. For staging tensors in host memory, the map is performed during the init function.
+     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
      */
     void init() override;
 
     /**
-     * For device tensors, it records the copy command to the device tensor from the temporary staging tensor.
+     * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
      */
     void record() override;
 
@@ -55,8 +55,6 @@ class OpTensorSyncDevice : public OpBase
     virtual void postEval() override;
 
   private:
-    // Never owned resources
-    std::vector<std::shared_ptr<Tensor>> mStagingTensors;
 };
 
 } // End namespace kp

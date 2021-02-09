@@ -26,7 +26,7 @@ PYBIND11_MODULE(kp, m) {
 
     py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", DOC(kp, Tensor, TensorTypes))
         .value("device", kp::Tensor::TensorTypes::eDevice, "Tensor holding data in GPU memory.")
-        .value("staging", kp::Tensor::TensorTypes::eStaging, "Tensor used for transfer of data to device.")
+        .value("host", kp::Tensor::TensorTypes::eHost, "Tensor used for CPU visible GPU data.")
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
         .export_values();
 
@@ -112,7 +112,7 @@ PYBIND11_MODULE(kp, m) {
         .def("record_tensor_sync_device", &kp::Sequence::record<kp::OpTensorSyncDevice>,
             "Records operation to sync tensor from local memory to GPU memory")
         .def("record_tensor_sync_local", &kp::Sequence::record<kp::OpTensorSyncLocal>,
-            "Records operation to sync tensor(s) from GPU memory to local memory using staging tensors")
+            "Records operation to sync tensor(s) from GPU memory to local memory")
         .def("record_algo_mult", &kp::Sequence::record<kp::OpMult>,
             "Records operation to run multiplication compute shader to two input tensors and an output tensor")
         .def("record_algo_file", [](kp::Sequence &self, 
@@ -179,7 +179,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_tensor_sync_device_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncDevice>,
             "Evaluates operation to sync tensor from local memory to GPU memory with new anonymous Sequence")
         .def("eval_tensor_sync_local_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncLocal>,
-            "Evaluates operation to sync tensor(s) from GPU memory to local memory using staging tensors with new anonymous Sequence")
+            "Evaluates operation to sync tensor(s) from GPU memory to local memory with new anonymous Sequence")
         .def("eval_algo_mult_def", &kp::Manager::evalOpDefault<kp::OpMult>,
             "Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with new anonymous Sequence")
         .def("eval_algo_file_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, std::string>,
@@ -216,7 +216,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_tensor_sync_device", &kp::Manager::evalOp<kp::OpTensorSyncDevice>,
             "Evaluates operation to sync tensor from local memory to GPU memory with explicitly named Sequence")
         .def("eval_tensor_sync_local", &kp::Manager::evalOp<kp::OpTensorSyncLocal>,
-            "Evaluates operation to sync tensor(s) from GPU memory to local memory using staging tensors with explicitly named Sequence")
+            "Evaluates operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
         .def("eval_algo_mult", &kp::Manager::evalOp<kp::OpMult>,
             "Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with explicitly named Sequence")
         .def("eval_algo_file", &kp::Manager::evalOp<kp::OpAlgoBase, std::string>,
@@ -256,7 +256,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_async_tensor_sync_device_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncDevice>,
             "Evaluates asynchronously operation to sync tensor from local memory to GPU memory with anonymous Sequence")
         .def("eval_async_tensor_sync_local_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncLocal>,
-            "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory using staging tensors with anonymous Sequence")
+            "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with anonymous Sequence")
         .def("eval_async_algo_mult_def", &kp::Manager::evalOpAsyncDefault<kp::OpMult>,
             "Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with anonymous Sequence")
         .def("eval_async_algo_file_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, std::string>,
@@ -293,7 +293,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_async_tensor_sync_device", &kp::Manager::evalOpAsync<kp::OpTensorSyncDevice>,
             "Evaluates asynchronously operation to sync tensor from local memory to GPU memory with explicitly named Sequence")
         .def("eval_async_tensor_sync_local", &kp::Manager::evalOpAsync<kp::OpTensorSyncLocal>,
-            "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory using staging tensors with explicitly named Sequence")
+            "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
         .def("eval_async_algo_mult", &kp::Manager::evalOpAsync<kp::OpMult>,
             "Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with explicitly named Sequence")
         .def("eval_async_algo_file", &kp::Manager::evalOpAsync<kp::OpAlgoBase, std::string>,
