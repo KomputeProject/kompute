@@ -54,9 +54,9 @@ int main() {
     kp::Manager mgr; 
 
     // 2. Create and initialise Kompute Tensors through manager
-    auto tensorInA = mgr.buildTensor({ 2., 2., 2. });
-    auto tensorInB = mgr.buildTensor({ 1., 2., 3. });
-    auto tensorOut = mgr.buildTensor({ 0., 0., 0. });
+    auto tensorInA = mgr.tensor({ 2., 2., 2. });
+    auto tensorInB = mgr.tensor({ 1., 2., 3. });
+    auto tensorOut = mgr.tensor({ 0., 0., 0. });
 
     // 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
     std::string shaderString = (R"(
