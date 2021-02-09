@@ -28,9 +28,9 @@ float KomputeSummator::get_total() const {
 
 void KomputeSummator::_init() {
     std::cout << "CALLING INIT" << std::endl;
-    this->mPrimaryTensor = this->mManager.buildTensor({ 0.0 });
-    this->mSecondaryTensor = this->mManager.buildTensor({ 0.0 });
-    this->mSequence = this->mManager.getOrCreateManagedSequence("AdditionSeq");
+    this->mPrimaryTensor = this->mManager.tensor({ 0.0 });
+    this->mSecondaryTensor = this->mManager.tensor({ 0.0 });
+    this->mSequence = this->mManager.sequence("AdditionSeq");
 
     // We now record the steps in the sequence
     {

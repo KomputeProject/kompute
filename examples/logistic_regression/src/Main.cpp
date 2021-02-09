@@ -36,14 +36,14 @@ int main()
     kp::Manager mgr;
 
     std::shared_ptr<kp::Sequence> sqTensor =
-      mgr.createManagedSequence();
+      mgr.sequence();
 
     sqTensor->begin();
     sqTensor->record<kp::OpTensorCreate>(params);
     sqTensor->end();
     sqTensor->eval();
 
-    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
     // Record op algo base
     sq->begin();
