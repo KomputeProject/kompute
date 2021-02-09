@@ -314,3 +314,39 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
 
     EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
 }
+
+TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
+{
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
+
+    std::string shader(R"(
+      #version 450
+      layout (local_size_x = 1) in;
+      layout(set = 0, binding = 0) buffer a { float pa[]; };
+      void main() {
+          uint index = gl_GlobalInvocationID.x;
+          pa[index] = pa[index] + 1;
+      })");
+
+    {
+        std::shared_ptr<kp::Sequence> sq = nullptr;
+
+        {
+            kp::Manager mgr;
+
+            mgr.rebuildTensors({ tensorA });
+
+            sq = mgr.createManagedSequence();
+
+            sq->begin();
+            sq->record<kp::OpAlgoBase>(
+              { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+            sq->end();
+
+            sq->eval();
+
+            mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
+        }
+    }
+    EXPECT_EQ(tensorA->data(), std::vector<float>({ 1, 1, 1 }));
+}

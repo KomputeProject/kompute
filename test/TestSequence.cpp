@@ -39,3 +39,4 @@ TEST(TestSequence, SequenceDestructorViaManager)
 
     EXPECT_FALSE(sq->isInit());
 }
+
