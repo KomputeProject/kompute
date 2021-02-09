@@ -155,14 +155,16 @@ PYBIND11_MODULE(kp, m) {
             [](uint32_t physicalDeviceIndex, const std::vector<uint32_t>& familyQueueIndices) {
                 return std::unique_ptr<kp::Manager>(new kp::Manager(physicalDeviceIndex, familyQueueIndices));
             }), "Manager initialiser can provide specified device and array of GPU queueFamilies to load.")
-        .def("get_create_sequence", &kp::Manager::getOrCreateManagedSequence, "Get a Sequence or create a new one with given name")
-        .def("create_sequence", &kp::Manager::createManagedSequence,
-                py::arg("name") = "", py::arg("queueIndex") = 0, "Create a sequence with specific name and specified index of available queues")
-        .def("build_tensor", &kp::Manager::buildTensor, 
+        .def("sequence", &kp::Manager::sequence,
+                py::arg("name") = "", py::arg("queueIndex") = 0, "Get or create a sequence with specific name and specified index of available queues")
+        .def("tensor", &kp::Manager::tensor, 
                 py::arg("data"), py::arg("tensorType") = kp::Tensor::TensorTypes::eDevice, py::arg("syncDataToGPU") = true,
                 "Build and initialise tensor")
-        .def("rebuild_tensors", &kp::Manager::rebuildTensors, 
+        .def("rebuild", py::overload_cast<std::vector<std::shared_ptr<kp::Tensor>>, bool>(&kp::Manager::rebuild),
                 py::arg("tensors"), py::arg("syncDataToGPU") = true,
+                "Build and initialise list of tensors")
+        .def("rebuild", py::overload_cast<std::shared_ptr<kp::Tensor>, bool>(&kp::Manager::rebuild),
+                py::arg("tensor"), py::arg("syncDataToGPU") = true,
                 "Build and initialise tensor")
         
         // Await functions

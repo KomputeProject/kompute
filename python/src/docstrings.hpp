@@ -119,7 +119,7 @@ integrate with the vulkan kompute use.
 @param device Vulkan logical device to use for all base resources
 @param physicalDeviceIndex Index for vulkan physical device used)doc";
 
-static const char *__doc_kp_Manager_buildTensor =
+static const char *__doc_kp_Manager_tensor =
 R"doc(Function that simplifies the common workflow of tensor creation and
 initialization. It will take the constructor parameters for a Tensor
 and will will us it to create a new Tensor and then create it using
@@ -132,15 +132,6 @@ memory Syncd to GPU device)doc";
 static const char *__doc_kp_Manager_createDevice = R"doc()doc";
 
 static const char *__doc_kp_Manager_createInstance = R"doc()doc";
-
-static const char *__doc_kp_Manager_createManagedSequence =
-R"doc(Create a new managed Kompute sequence so it's available within the
-manager.
-
-@param sequenceName The name for the named sequence to be created, if
-empty then default indexed value is used @param queueIndex The queue
-to use from the available queues @return Weak pointer to the manager
-owned sequence resource)doc";
 
 static const char *__doc_kp_Manager_evalOp =
 R"doc(Function that evaluates operation against named sequence.
@@ -187,7 +178,7 @@ R"doc(Function that evaluates operation against a newly created sequence.
 TArgs Template parameters that will be used to initialise Operation to
 allow for extensible configurations on initialisation)doc";
 
-static const char *__doc_kp_Manager_getOrCreateManagedSequence =
+static const char *__doc_kp_Manager_sequence =
 R"doc(Get or create a managed Sequence that will be contained by this
 manager. If the named sequence does not currently exist, it would be
 created and initialised.
