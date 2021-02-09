@@ -208,8 +208,8 @@ It's worth mentioning you can have multiple sequences referencing the same queue
     // We need to create explicit sequences with their respective queues
     // The second parameter is the index in the familyIndex array which is relative
     //      to the vector we created the manager with.
-    mgr.createManagedSequence("queueOne", 0);
-    mgr.createManagedSequence("queueTwo", 1);
+    mgr.sequence("queueOne", 0);
+    mgr.sequence("queueTwo", 1);
 
 We create the tensors without modifications.
 
