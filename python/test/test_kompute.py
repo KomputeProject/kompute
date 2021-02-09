@@ -2,6 +2,7 @@ import os
 
 import kp
 import numpy as np
+import logging
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,7 +17,7 @@ def test_opmult():
 
     mgr = kp.Manager()
 
-    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
 
     mgr.eval_algo_mult_def([tensor_in_a, tensor_in_b, tensor_out])
 
@@ -52,7 +53,7 @@ def test_opalgobase_data():
         }
     """
 
-    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
 
     mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], shaderData)
 
@@ -75,7 +76,7 @@ def test_opalgobase_file():
 
     shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
 
-    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
 
     mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
 
@@ -93,7 +94,7 @@ def test_sequence():
     tensor_in_b = kp.Tensor([1, 2, 3])
     tensor_out = kp.Tensor([0, 0, 0])
 
-    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
 
     shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
     mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
@@ -118,7 +119,8 @@ def test_workgroup():
 
     tensor_a = kp.Tensor(np.zeros([16,8]))
     tensor_b = kp.Tensor(np.zeros([16,8]))
-    mgr.eval_tensor_create_def([tensor_a, tensor_b])
+
+    mgr.rebuild_tensors([tensor_a, tensor_b])
 
     shader_src = """
         #version 450
@@ -131,19 +133,21 @@ def test_workgroup():
 
         void main() {
             uint index   = gl_WorkGroupID.x*gl_NumWorkGroups.y + gl_WorkGroupID.y;
-            
+
             toutx[index] = gl_GlobalInvocationID.x;
             touty[index] = gl_GlobalInvocationID.y;
         }
     """
     shader_src = bytes(shader_src, encoding='utf8')
 
-    seq = mgr.create_sequence()
+    seq = mgr.create_sequence("new")
     seq.begin()
     seq.record_algo_data([tensor_a, tensor_b], shader_src, (16,8,1))
     seq.end()
     seq.eval()
-    
+
     mgr.eval_tensor_sync_local_def([tensor_a, tensor_b])
+
     assert np.all(tensor_a.numpy() == np.stack([np.arange(16)]*8, axis=1).ravel())
     assert np.all(tensor_b.numpy() == np.stack([np.arange(8)]*16, axis=0).ravel())
+

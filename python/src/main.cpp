@@ -105,8 +105,6 @@ PYBIND11_MODULE(kp, m) {
         .def("is_init", &kp::Sequence::isInit, "Checks if the Sequence has been initialized")
         
         // record
-        .def("record_tensor_create", &kp::Sequence::record<kp::OpTensorCreate>,
-            "Records operation to create and initialise tensor GPU memory and buffer")
         .def("record_tensor_copy", &kp::Sequence::record<kp::OpTensorCopy>,
             "Records operation to copy one tensor to one or many tensors")
         .def("record_tensor_sync_device", &kp::Sequence::record<kp::OpTensorSyncDevice>,
@@ -161,7 +159,10 @@ PYBIND11_MODULE(kp, m) {
         .def("create_sequence", &kp::Manager::createManagedSequence,
                 py::arg("name") = "", py::arg("queueIndex") = 0, "Create a sequence with specific name and specified index of available queues")
         .def("build_tensor", &kp::Manager::buildTensor, 
-                py::arg("data"), py::arg("tensorType") = kp::Tensor::TensorTypes::eDevice,
+                py::arg("data"), py::arg("tensorType") = kp::Tensor::TensorTypes::eDevice, py::arg("syncDataToGPU") = true,
+                "Build and initialise tensor")
+        .def("rebuild_tensors", &kp::Manager::rebuildTensors, 
+                py::arg("tensors"), py::arg("syncDataToGPU") = true,
                 "Build and initialise tensor")
         
         // Await functions
@@ -172,8 +173,6 @@ PYBIND11_MODULE(kp, m) {
                 py::arg("waitFor") = UINT64_MAX, "Awaits for asynchronous operation on the last anonymous Sequence created")
         
         // eval default
-        .def("eval_tensor_create_def", &kp::Manager::evalOpDefault<kp::OpTensorCreate>,
-            "Evaluates operation to create and initialise tensor GPU memory and buffer with new anonymous Sequence")
         .def("eval_tensor_copy_def", &kp::Manager::evalOpDefault<kp::OpTensorCopy>,
             "Evaluates operation to copy one tensor to one or many tensors with new anonymous Sequence")
         .def("eval_tensor_sync_device_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncDevice>,
@@ -209,8 +208,6 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates operation to run left right out operation with custom shader with new anonymous Sequence")
         
         // eval
-        .def("eval_tensor_create", &kp::Manager::evalOp<kp::OpTensorCreate>,
-            "Evaluates operation to create and initialise tensor GPU memory and buffer with explicitly named Sequence")
         .def("eval_tensor_copy", &kp::Manager::evalOp<kp::OpTensorCopy>,
             "Evaluates operation to copy one tensor to one or many tensors with explicitly named Sequence")
         .def("eval_tensor_sync_device", &kp::Manager::evalOp<kp::OpTensorSyncDevice>,
@@ -249,8 +246,6 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates operation to run left right out operation with custom shader with explicitly named Sequence")
         
         // eval async default
-        .def("eval_async_tensor_create_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorCreate>,
-            "Evaluates asynchronously operation to create and initialise tensor GPU memory and buffer with anonymous Sequence")
         .def("eval_async_tensor_copy_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorCopy>,
             "Evaluates asynchronously operation to copy one tensor to one or many tensors with anonymous Sequence")
         .def("eval_async_tensor_sync_device_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncDevice>,
@@ -286,8 +281,6 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously operation to run left right out operation with custom shader with anonymous Sequence")
         
         // eval async
-        .def("eval_async_tensor_create", &kp::Manager::evalOpAsync<kp::OpTensorCreate>,
-            "Evaluates asynchronously operation to create and initialise tensor GPU memory and buffer with explicitly named Sequence")
         .def("eval_async_tensor_copy", &kp::Manager::evalOpAsync<kp::OpTensorCopy>,
             "Evaluates asynchronously operation to copy one tensor to one or many tensors with explicitly named Sequence")
         .def("eval_async_tensor_sync_device", &kp::Manager::evalOpAsync<kp::OpTensorSyncDevice>,

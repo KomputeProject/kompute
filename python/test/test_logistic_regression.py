@@ -66,7 +66,7 @@ def test_logistic_regression():
     params = [tensor_x_i, tensor_x_j, tensor_y, tensor_w_in, tensor_w_out_i,
         tensor_w_out_j, tensor_b_in, tensor_b_out, tensor_l_out, tensor_m]
 
-    mgr.eval_tensor_create_def(params)
+    mgr.rebuild_tensors(params)
 
     # Create a managed sequence
     sq = mgr.create_sequence()

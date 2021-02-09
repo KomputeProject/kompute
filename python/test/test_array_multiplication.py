@@ -14,7 +14,7 @@ def test_array_multiplication():
     tensor_out = kp.Tensor([0, 0, 0])
 
     # 3. Initialise the Kompute Tensors in the GPU
-    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    mgr.rebuild_tensors([tensor_in_a, tensor_in_b, tensor_out])
 
     # 4. Define the multiplication shader code to run on the GPU
     @ps.python2shader
