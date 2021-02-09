@@ -49,7 +49,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         inputsSyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
     }
 
-    mgr.rebuildTensors(inputsSyncB);
+    mgr.rebuild(inputsSyncB);
 
     auto startSync = std::chrono::high_resolution_clock::now();
 
@@ -77,10 +77,10 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
     }
 
-    mgrAsync.rebuildTensors(inputsAsyncB);
+    mgrAsync.rebuild(inputsAsyncB);
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        mgrAsync.createManagedSequence("async" + std::to_string(i), i);
+        mgrAsync.sequence("async" + std::to_string(i), i);
     }
 
     auto startAsync = std::chrono::high_resolution_clock::now();
@@ -146,10 +146,10 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(data) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(data) };
 
-    mgr.createManagedSequence("asyncOne");
-    mgr.createManagedSequence("asyncTwo");
+    mgr.sequence("asyncOne");
+    mgr.sequence("asyncTwo");
 
-    mgr.rebuildTensors({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     mgr.evalOpAsync<kp::OpAlgoBase>(
       { tensorA }, "asyncOne", std::vector<char>(shader.begin(), shader.end()));

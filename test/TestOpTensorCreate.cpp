@@ -11,7 +11,7 @@ TEST(TestOpTensorCreate, CreateSingleTensorSingleOp)
     {
         kp::Manager mgr;
 
-        mgr.rebuildTensors({ tensorA });
+        mgr.rebuild({ tensorA });
 
         EXPECT_TRUE(tensorA->isInit());
 
@@ -32,7 +32,7 @@ TEST(TestOpTensorCreate, CreateMultipleTensorSingleOp)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.rebuildTensors({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -52,8 +52,8 @@ TEST(TestOpTensorCreate, CreateMultipleTensorMultipleOp)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.rebuildTensors({ tensorA });
-    mgr.rebuildTensors({ tensorB });
+    mgr.rebuild({ tensorA });
+    mgr.rebuild({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -73,8 +73,8 @@ TEST(TestOpTensorCreate, TestTensorMemoryManagedByManagerDestroyed)
 
     {
         kp::Manager mgr;
-        mgr.rebuildTensors({ tensorA });
-        mgr.rebuildTensors({ tensorB });
+        mgr.rebuild({ tensorA });
+        mgr.rebuild({ tensorB });
 
         EXPECT_TRUE(tensorA->isInit());
         EXPECT_TRUE(tensorB->isInit());
@@ -99,8 +99,8 @@ TEST(TestOpTensorCreate, TestTensorMemoryManagedByManagerNOTDestroyed)
     kp::Manager mgr;
 
     {
-        mgr.rebuildTensors({ tensorA });
-        mgr.rebuildTensors({ tensorB });
+        mgr.rebuild({ tensorA });
+        mgr.rebuild({ tensorB });
 
         EXPECT_TRUE(tensorA->isInit());
         EXPECT_TRUE(tensorB->isInit());
@@ -124,8 +124,8 @@ TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
 
     kp::Manager mgr;
 
-    mgr.rebuildTensors({ tensorA });
-    mgr.rebuildTensors({ tensorB });
+    mgr.rebuild({ tensorA });
+    mgr.rebuild({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -148,7 +148,7 @@ TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
     kp::Manager mgr;
 
     try {
-        mgr.rebuildTensors({ tensorA });
+        mgr.rebuild({ tensorA });
     } catch (const std::runtime_error& err) {
         // check exception
         ASSERT_TRUE(std::string(err.what()).find("zero-sized") !=

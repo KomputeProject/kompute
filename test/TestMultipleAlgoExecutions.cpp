@@ -19,10 +19,10 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuildTensors({ tensorA });
+    mgr.rebuild({ tensorA });
 
     std::shared_ptr<kp::Sequence> sq =
-      mgr.getOrCreateManagedSequence("newSequence");
+      mgr.sequence("newSequence");
 
     {
         sq->begin();
@@ -58,11 +58,11 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuildTensors({ tensorA }, false);
+    mgr.rebuild({ tensorA }, false);
 
-    std::shared_ptr<kp::Sequence> sqTensor = mgr.createManagedSequence();
+    std::shared_ptr<kp::Sequence> sqTensor = mgr.sequence();
 
-    std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
     // First create the tensor in a separate sequence
     sqTensor->begin();
@@ -113,11 +113,11 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuildTensors({ tensorA });
+    mgr.rebuild({ tensorA });
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence");
+          mgr.sequence("newSequence");
 
         sq->begin();
 
@@ -130,7 +130,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence2");
+          mgr.sequence("newSequence2");
 
         sq->begin();
 
@@ -143,7 +143,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence3");
+          mgr.sequence("newSequence3");
 
         sq->begin();
 
@@ -156,7 +156,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence5");
+          mgr.sequence("newSequence5");
 
         sq->begin();
 
@@ -185,11 +185,11 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuildTensors({ tensorA }, false);
+    mgr.rebuild({ tensorA }, false);
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence");
+          mgr.sequence("newSequence");
 
         sq->begin();
 
@@ -201,7 +201,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence2");
+          mgr.sequence("newSequence2");
 
         sq->begin();
 
@@ -217,7 +217,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence3");
+          mgr.sequence("newSequence3");
 
         sq->begin();
 
@@ -242,7 +242,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
     std::shared_ptr<kp::Tensor> tensorInB{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
     std::shared_ptr<kp::Tensor> tensorOut{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
 
-    mgr.rebuildTensors({ tensorInA, tensorInB, tensorOut });
+    mgr.rebuild({ tensorInA, tensorInB, tensorOut });
 
     std::string shader(R"(
         // The version to use 
@@ -277,11 +277,11 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
 
     kp::Manager mgr;
 
-    auto tensorInA = mgr.buildTensor(
+    auto tensorInA = mgr.tensor(
       { 2.0, 4.0, 6.0 }, kp::Tensor::TensorTypes::eDevice, false);
-    auto tensorInB = mgr.buildTensor(
+    auto tensorInB = mgr.tensor(
       { 0.0, 1.0, 2.0 }, kp::Tensor::TensorTypes::eDevice, false);
-    auto tensorOut = mgr.buildTensor(
+    auto tensorOut = mgr.tensor(
       { 0.0, 0.0, 0.0 }, kp::Tensor::TensorTypes::eDevice, false);
 
     std::string shader(R"(
@@ -334,9 +334,9 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
         {
             kp::Manager mgr;
 
-            mgr.rebuildTensors({ tensorA });
+            mgr.rebuild({ tensorA });
 
-            sq = mgr.createManagedSequence();
+            sq = mgr.sequence();
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(

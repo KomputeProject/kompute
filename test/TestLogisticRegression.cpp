@@ -32,9 +32,9 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
     {
         kp::Manager mgr;
 
-        mgr.rebuildTensors(params);
+        mgr.rebuild(params);
 
-        std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
+        std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
         // Record op algo base
         sq->begin();
@@ -117,9 +117,9 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegressionManualCopy)
     {
         kp::Manager mgr;
 
-        mgr.rebuildTensors(params);
+        mgr.rebuild(params);
 
-        std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
+        std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
         // Record op algo base
         sq->begin();

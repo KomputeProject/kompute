@@ -14,7 +14,7 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensor)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.rebuildTensors({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -41,7 +41,7 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensorMulti)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
     std::shared_ptr<kp::Tensor> tensorC{ new kp::Tensor(testVecC) };
 
-    mgr.rebuildTensors({ tensorA, tensorB, tensorC });
+    mgr.rebuild({ tensorA, tensorB, tensorC });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -70,7 +70,7 @@ TEST(TestOpTensorCopy, CopyDeviceToHostTensor)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
       testVecB, kp::Tensor::TensorTypes::eHost) };
 
-    mgr.rebuildTensors({ tensorA, tensorB }, false);
+    mgr.rebuild({ tensorA, tensorB }, false);
 
     //  Only calling sync on device type tensor
     mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA });
@@ -99,7 +99,7 @@ TEST(TestOpTensorCopy, CopyHostToDeviceTensor)
       testVecA, kp::Tensor::TensorTypes::eHost) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.rebuildTensors({ tensorA, tensorB }, false);
+    mgr.rebuild({ tensorA, tensorB }, false);
 
     //  Only calling sync on device type tensor
     mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorB });
@@ -129,7 +129,7 @@ TEST(TestOpTensorCopy, CopyHostToHostTensor)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
       testVecB, kp::Tensor::TensorTypes::eHost) };
 
-    mgr.rebuildTensors({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -153,7 +153,7 @@ TEST(TestOpTensorCopy, SingleTensorShouldFail)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
       testVecA, kp::Tensor::TensorTypes::eHost) };
 
-    mgr.rebuildTensors({ tensorA }, false);
+    mgr.rebuild({ tensorA }, false);
 
     EXPECT_TRUE(tensorA->isInit());
 

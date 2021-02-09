@@ -23,10 +23,10 @@ TEST(TestTensor, CopyFromHostData)
 
     kp::Manager mgr;
 
-    mgr.rebuildTensors({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     if (std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("new")) {
+          mgr.sequence("new")) {
         sq->begin();
 
         sq->record<kp::OpTensorCopy>({ tensorA, tensorB });

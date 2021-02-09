@@ -8,14 +8,14 @@ TEST(TestManager, EndToEndOpMultFlow)
     kp::Manager mgr;
 
     std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
-    mgr.rebuildTensors({ tensorLHS });
+    mgr.rebuild({ tensorLHS });
 
     std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
-    mgr.rebuildTensors({ tensorRHS });
+    mgr.rebuild({ tensorRHS });
 
     std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
 
-    mgr.rebuildTensors({ tensorOutput });
+    mgr.rebuild({ tensorOutput });
 
     mgr.evalOpDefault<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
 
@@ -36,10 +36,10 @@ TEST(TestManager, OpMultSequenceFlow)
     kp::Manager mgr;
 
     {
-        mgr.rebuildTensors({ tensorLHS, tensorRHS, tensorOutput });
+        mgr.rebuild({ tensorLHS, tensorRHS, tensorOutput });
 
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence");
+          mgr.sequence("newSequence");
 
         sq->begin();
 
@@ -59,16 +59,16 @@ TEST(TestManager, TestMultipleSequences)
     kp::Manager mgr;
 
     std::shared_ptr<kp::Sequence> sqOne =
-      mgr.getOrCreateManagedSequence("sqOne");
+      mgr.sequence("sqOne");
 
     std::shared_ptr<kp::Sequence> sqTwo =
-      mgr.getOrCreateManagedSequence("sqTwo");
+      mgr.sequence("sqTwo");
 
     std::shared_ptr<kp::Sequence> sqOneRef =
-      mgr.getOrCreateManagedSequence("sqOne");
+      mgr.sequence("sqOne");
 
     std::shared_ptr<kp::Sequence> sqTwoRef =
-      mgr.getOrCreateManagedSequence("sqTwo");
+      mgr.sequence("sqTwo");
 
     EXPECT_EQ(sqOne, sqOneRef);
     EXPECT_NE(sqTwo, sqOneRef);
@@ -88,10 +88,10 @@ TEST(TestManager, TestMultipleTensorsAtOnce)
     kp::Manager mgr;
 
     std::shared_ptr<kp::Sequence> sq =
-      mgr.getOrCreateManagedSequence("newSequence");
+      mgr.sequence("newSequence");
 
     {
-        mgr.rebuildTensors({ tensorLHS, tensorRHS, tensorOutput });
+        mgr.rebuild({ tensorLHS, tensorRHS, tensorOutput });
 
         EXPECT_TRUE(tensorLHS->isInit());
         EXPECT_TRUE(tensorRHS->isInit());
@@ -114,8 +114,8 @@ TEST(TestManager, TestCreateInitTensor)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.buildTensor({ 0, 1, 2 });
-    std::shared_ptr<kp::Tensor> tensorB = mgr.buildTensor({ 0, 0, 0 });
+    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 1, 2 });
+    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
 
     mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
 
@@ -124,7 +124,7 @@ TEST(TestManager, TestCreateInitTensor)
     EXPECT_EQ(tensorB->data(), std::vector<float>({ 0, 1, 2 }));
 
     std::shared_ptr<kp::Tensor> tensorC =
-      mgr.buildTensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eHost);
+      mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eHost);
 
     mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorC });
 
