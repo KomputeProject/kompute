@@ -9,7 +9,7 @@ TEST(TestSequence, CmdBufSequenceBeginEnd)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("newSequence");
+          mgr.sequence("newSequence");
 
         EXPECT_TRUE(sq->eval());
         EXPECT_TRUE(!sq->isRecording());
@@ -32,10 +32,11 @@ TEST(TestSequence, SequenceDestructorViaManager)
     {
         kp::Manager mgr;
 
-        sq = mgr.getOrCreateManagedSequence("newSequence");
+        sq = mgr.sequence("newSequence");
 
         EXPECT_TRUE(sq->isInit());
     }
 
     EXPECT_FALSE(sq->isInit());
 }
+

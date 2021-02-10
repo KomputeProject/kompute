@@ -15,7 +15,7 @@ OpTensorSyncDevice::OpTensorSyncDevice(
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors, false)
+  : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
 }

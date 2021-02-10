@@ -8,13 +8,13 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensor)
 
     kp::Manager mgr;
 
-    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecA{ 1, 2, 3 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -33,7 +33,7 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensorMulti)
 
     kp::Manager mgr;
 
-    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecA{ 2, 3, 4 };
     std::vector<float> testVecB{ 0, 0, 0 };
     std::vector<float> testVecC{ 0, 0, 0 };
 
@@ -41,7 +41,7 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensorMulti)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
     std::shared_ptr<kp::Tensor> tensorC{ new kp::Tensor(testVecC) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB, tensorC });
+    mgr.rebuild({ tensorA, tensorB, tensorC });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -63,14 +63,17 @@ TEST(TestOpTensorCopy, CopyDeviceToHostTensor)
 
     kp::Manager mgr;
 
-    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecA{ 3, 4, 5 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
       testVecB, kp::Tensor::TensorTypes::eHost) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB }, false);
+
+    //  Only calling sync on device type tensor
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -89,14 +92,20 @@ TEST(TestOpTensorCopy, CopyHostToDeviceTensor)
 
     kp::Manager mgr;
 
-    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecA{ 4, 5, 6 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
       testVecA, kp::Tensor::TensorTypes::eHost) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB }, false);
+
+    // Manually copy data into host memory of Tensor
+    tensorA->mapDataIntoHostMemory();
+
+    //  Only calling sync on device type tensor
+    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -115,7 +124,7 @@ TEST(TestOpTensorCopy, CopyHostToHostTensor)
 
     kp::Manager mgr;
 
-    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecA{ 5, 6, 7 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
@@ -123,7 +132,7 @@ TEST(TestOpTensorCopy, CopyHostToHostTensor)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
       testVecB, kp::Tensor::TensorTypes::eHost) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -142,12 +151,12 @@ TEST(TestOpTensorCopy, SingleTensorShouldFail)
 
     kp::Manager mgr;
 
-    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecA{ 6, 7, 8 };
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
       testVecA, kp::Tensor::TensorTypes::eHost) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+    mgr.rebuild({ tensorA }, false);
 
     EXPECT_TRUE(tensorA->isInit());
 

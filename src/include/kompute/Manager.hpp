@@ -1,12 +1,13 @@
 #pragma once
 
+#include <set>
 #include <unordered_map>
 
 #include "kompute/Core.hpp"
 
 #include "kompute/Sequence.hpp"
 
-#include "kompute/operations/OpTensorCreate.hpp"
+#include "kompute/operations/OpTensorSyncDevice.hpp"
 
 #define KP_DEFAULT_SESSION "DEFAULT"
 
@@ -63,23 +64,12 @@ class Manager
      *
      * @param sequenceName The name for the named sequence to be retrieved or
      * created
+     * @param queueIndex The queue to use from the available queues
      * @return Shared pointer to the manager owned sequence resource
      */
-    std::shared_ptr<Sequence> getOrCreateManagedSequence(
-      std::string sequenceName);
-
-    /**
-     * Create a new managed Kompute sequence so it's available within the
-     * manager.
-     *
-     * @param sequenceName The name for the named sequence to be created, if
-     * empty then default indexed value is used
-     * @param queueIndex The queue to use from the available queues
-     * @return Weak pointer to the manager owned sequence resource
-     */
-    std::shared_ptr<Sequence> createManagedSequence(
-      std::string sequenceName = "",
-      uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> sequence(
+            std::string sequenceName = KP_DEFAULT_SESSION,
+            uint32_t queueIndex = 0);
 
     /**
      * Function that evaluates operation against named sequence.
@@ -96,7 +86,7 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOp triggered");
         std::shared_ptr<kp::Sequence> sq =
-          this->getOrCreateManagedSequence(sequenceName);
+          this->sequence(sequenceName);
 
         SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
         sq->begin();
@@ -126,10 +116,8 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->mCurrentSequenceIndex++;
-        this->evalOp<T>(tensors,
-                        KP_DEFAULT_SESSION +
-                          std::to_string(this->mCurrentSequenceIndex),
-                        std::forward<TArgs>(params)...);
+        this->evalOp<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
     }
 
     /**
@@ -148,7 +136,7 @@ class Manager
         SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
 
         std::shared_ptr<kp::Sequence> sq =
-          this->getOrCreateManagedSequence(sequenceName);
+          this->sequence(sequenceName);
 
         SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
         sq->begin();
@@ -179,10 +167,8 @@ class Manager
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
         this->mCurrentSequenceIndex++;
-        this->evalOpAsync<T>(tensors,
-                             KP_DEFAULT_SESSION +
-                               std::to_string(this->mCurrentSequenceIndex),
-                             std::forward<TArgs>(params)...);
+        this->evalOpAsync<T>(
+          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
     }
 
     /**
@@ -223,34 +209,96 @@ class Manager
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
         SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
-        this->evalOpAwait(KP_DEFAULT_SESSION +
-                            std::to_string(this->mCurrentSequenceIndex),
-                          waitFor);
+        this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
     }
 
     /**
      * Function that simplifies the common workflow of tensor creation and
      * initialization. It will take the constructor parameters for a Tensor
-     * and will will us it to create a new Tensor and then create it using
-     * the OpCreateTensor command.
+     * and will will us it to create a new Tensor and then create it. The
+     * tensor memory will then be managed and owned by the manager.
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
+     * @param syncDataToGPU Whether to sync the data to GPU memory
      * @returns Initialized Tensor with memory Syncd to GPU device
      */
-    std::shared_ptr<Tensor> buildTensor(
+    std::shared_ptr<Tensor> tensor(
       const std::vector<float>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
+      bool syncDataToGPU = true)
     {
-        SPDLOG_DEBUG("Kompute Manager createInitTensor triggered");
+        SPDLOG_DEBUG("Kompute Manager tensor triggered");
 
         SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
         std::shared_ptr<Tensor> tensor =
           std::make_shared<Tensor>(kp::Tensor(data, tensorType));
 
-        this->evalOpDefault<OpTensorCreate>({ tensor });
+        tensor->init(this->mPhysicalDevice, this->mDevice);
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>({ tensor });
+        }
+        this->mManagedTensors.insert(tensor);
 
         return tensor;
+    }
+
+    /**
+     * Function that simplifies the common workflow of tensor initialisation. It
+     * will take the constructor parameters for a Tensor and will will us it to
+     * create a new Tensor. The tensor memory will then be managed and owned by
+     * the manager.
+     *
+     * @param tensors Array of tensors to rebuild
+     * @param syncDataToGPU Whether to sync the data to GPU memory
+     * @returns Initialized Tensor with memory Syncd to GPU device
+     */
+    void rebuild(std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                        bool syncDataToGPU = true)
+    {
+        SPDLOG_DEBUG("Kompute Manager rebuild triggered");
+        for (std::shared_ptr<Tensor> tensor : tensors) {
+
+            // False syncData to run all tensors at once instead one by one
+            this->rebuild(tensor, false);
+        }
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>(tensors);
+        }
+    }
+
+    /**
+     * Function that simplifies the common workflow of tensor initialisation. It
+     * will take the constructor parameters for a Tensor and will will us it to
+     * create a new Tensor. The tensor memory will then be managed and owned by
+     * the manager.
+     *
+     * @param tensors Single tensor to rebuild
+     * @param syncDataToGPU Whether to sync the data to GPU memory
+     * @returns Initialized Tensor with memory Syncd to GPU device
+     */
+    void rebuild(std::shared_ptr<kp::Tensor> tensor,
+                        bool syncDataToGPU = true)
+    {
+        SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+
+        if (tensor->isInit()) {
+            tensor->freeMemoryDestroyGPUResources();
+        }
+
+        tensor->init(this->mPhysicalDevice, this->mDevice);
+
+        std::set<std::shared_ptr<Tensor>>::iterator it =
+          this->mManagedTensors.find(tensor);
+        if (it == this->mManagedTensors.end()) {
+            this->mManagedTensors.insert(tensor);
+        }
+
+        if (syncDataToGPU) {
+            this->evalOpDefault<OpTensorSyncDevice>({ tensor });
+        }
     }
 
   private:
@@ -263,6 +311,8 @@ class Manager
     bool mFreeDevice = false;
 
     // -------------- ALWAYS OWNED RESOURCES
+    std::set<std::shared_ptr<Tensor>> mManagedTensors;
+
     std::unordered_map<std::string, std::shared_ptr<Sequence>>
       mManagedSequences;
 

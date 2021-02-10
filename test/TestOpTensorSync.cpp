@@ -13,7 +13,7 @@ TEST(TestOpTensorSync, SyncToDeviceMemorySingleTensor)
 
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecPreA) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+    mgr.rebuild({ tensorA }, false);
 
     EXPECT_TRUE(tensorA->isInit());
 
@@ -37,7 +37,7 @@ TEST(TestOpTensorSync, SyncToDeviceMemoryMultiTensor)
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
     std::shared_ptr<kp::Tensor> tensorC{ new kp::Tensor({ 0, 0, 0 }) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB, tensorC });
+    mgr.rebuild({ tensorA, tensorB, tensorC }, false);
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());

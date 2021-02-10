@@ -30,13 +30,15 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
         }
     )");
 
+    mgr.rebuild({ tensorA, tensorB }, false);
+
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("default");
+          mgr.sequence("default");
 
         sq->begin();
 
-        sq->record<kp::OpTensorCreate>({ tensorA, tensorB });
+        sq->record<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
         sq->end();
 
@@ -45,7 +47,7 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("run");
+          mgr.sequence("run");
 
         sq->begin();
 
@@ -63,7 +65,7 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
 
     {
         std::shared_ptr<kp::Sequence> sq =
-          mgr.getOrCreateManagedSequence("export");
+          mgr.sequence("export");
 
         sq->begin();
 

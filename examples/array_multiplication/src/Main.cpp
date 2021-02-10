@@ -14,9 +14,9 @@ int main()
 
     kp::Manager mgr;
 
-    auto tensorInA = mgr.buildTensor({ 2.0, 4.0, 6.0 });
-    auto tensorInB = mgr.buildTensor({ 0.0, 1.0, 2.0 });
-    auto tensorOut = mgr.buildTensor({ 0.0, 0.0, 0.0 });
+    auto tensorInA = mgr.tensor({ 2.0, 4.0, 6.0 });
+    auto tensorInB = mgr.tensor({ 0.0, 1.0, 2.0 });
+    auto tensorOut = mgr.tensor({ 0.0, 0.0, 0.0 });
 
 #ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
     std::string shader(R"(

@@ -42,16 +42,9 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
         kp::Manager mgr;
 
         {
+            mgr.rebuild(params);
 
-            std::shared_ptr<kp::Sequence> sqTensor =
-              mgr.createManagedSequence();
-
-            sqTensor->begin();
-            sqTensor->record<kp::OpTensorCreate>(params);
-            sqTensor->end();
-            sqTensor->eval();
-
-            std::shared_ptr<kp::Sequence> sq = mgr.createManagedSequence();
+            std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
             // Record op algo base
             sq->begin();

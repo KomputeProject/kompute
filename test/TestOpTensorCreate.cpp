@@ -5,20 +5,19 @@
 
 TEST(TestOpTensorCreate, CreateSingleTensorSingleOp)
 {
-
-    kp::Manager mgr;
-
     std::vector<float> testVecA{ 9, 8, 7 };
-
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+    {
+        kp::Manager mgr;
 
-    EXPECT_TRUE(tensorA->isInit());
+        mgr.rebuild({ tensorA });
 
-    EXPECT_EQ(tensorA->data(), testVecA);
+        EXPECT_TRUE(tensorA->isInit());
 
-    tensorA->freeMemoryDestroyGPUResources();
+        EXPECT_EQ(tensorA->data(), testVecA);
+    }
+
     EXPECT_FALSE(tensorA->isInit());
 }
 
@@ -33,7 +32,7 @@ TEST(TestOpTensorCreate, CreateMultipleTensorSingleOp)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -53,8 +52,8 @@ TEST(TestOpTensorCreate, CreateMultipleTensorMultipleOp)
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
     std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorB });
+    mgr.rebuild({ tensorA });
+    mgr.rebuild({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -63,7 +62,7 @@ TEST(TestOpTensorCreate, CreateMultipleTensorMultipleOp)
     EXPECT_EQ(tensorB->data(), testVecB);
 }
 
-TEST(TestOpTensorCreate, ManageTensorMemoryWhenOpTensorCreateDestroyed)
+TEST(TestOpTensorCreate, TestTensorMemoryManagedByManagerDestroyed)
 {
 
     std::vector<float> testVecA{ 9, 8, 7 };
@@ -74,8 +73,8 @@ TEST(TestOpTensorCreate, ManageTensorMemoryWhenOpTensorCreateDestroyed)
 
     {
         kp::Manager mgr;
-        mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
-        mgr.evalOpDefault<kp::OpTensorCreate>({ tensorB });
+        mgr.rebuild({ tensorA });
+        mgr.rebuild({ tensorB });
 
         EXPECT_TRUE(tensorA->isInit());
         EXPECT_TRUE(tensorB->isInit());
@@ -86,6 +85,32 @@ TEST(TestOpTensorCreate, ManageTensorMemoryWhenOpTensorCreateDestroyed)
 
     EXPECT_FALSE(tensorA->isInit());
     EXPECT_FALSE(tensorB->isInit());
+}
+
+TEST(TestOpTensorCreate, TestTensorMemoryManagedByManagerNOTDestroyed)
+{
+
+    std::vector<float> testVecA{ 9, 8, 7 };
+    std::vector<float> testVecB{ 6, 5, 4 };
+
+    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
+    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
+
+    kp::Manager mgr;
+
+    {
+        mgr.rebuild({ tensorA });
+        mgr.rebuild({ tensorB });
+
+        EXPECT_TRUE(tensorA->isInit());
+        EXPECT_TRUE(tensorB->isInit());
+
+        EXPECT_EQ(tensorA->data(), testVecA);
+        EXPECT_EQ(tensorB->data(), testVecB);
+    }
+
+    EXPECT_TRUE(tensorA->isInit());
+    EXPECT_TRUE(tensorB->isInit());
 }
 
 TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
@@ -99,8 +124,8 @@ TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
 
     kp::Manager mgr;
 
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorB });
+    mgr.rebuild({ tensorA });
+    mgr.rebuild({ tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -123,7 +148,7 @@ TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
     kp::Manager mgr;
 
     try {
-        mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA });
+        mgr.rebuild({ tensorA });
     } catch (const std::runtime_error& err) {
         // check exception
         ASSERT_TRUE(std::string(err.what()).find("zero-sized") !=

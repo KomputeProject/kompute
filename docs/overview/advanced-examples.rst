@@ -97,7 +97,7 @@ Record commands in a single submit by using a Sequence to send in batch to GPU. 
        mgr.evalOpDefault<kp::OpCreateTensor>({tensorLHS, tensorRHS, tensorOutput});
 
        // Create a new sequence
-       std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.getOrCreateManagedSequence();
+       std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.sequence();
 
        if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock())
        {
@@ -226,8 +226,8 @@ Back to `examples list <#simple-examples>`_.
        // We need to create explicit sequences with their respective queues
        // The second parameter is the index in the familyIndex array which is relative
        //      to the vector we created the manager with.
-       mgr.createManagedSequence("queueOne", 0);
-       mgr.createManagedSequence("queueTwo", 1);
+       mgr.sequence("queueOne", 0);
+       mgr.sequence("queueTwo", 1);
 
        // Creates tensor an initializes GPU memory (below we show more granularity)
        auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
@@ -422,7 +422,7 @@ Now that we have the inputs and outputs we will be able to use them in the proce
     kp::Manager mgr;
 
     if (std::shared_ptr<kp::Sequence> sq = 
-            mgr.getOrCreateManagedSequence("createTensors").lock()) 
+            mgr.sequence("createTensors").lock()) 
     {
         // ...
 

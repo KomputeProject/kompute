@@ -68,6 +68,18 @@ Manager::~Manager()
         this->mManagedSequences.clear();
     }
 
+    if (this->mManagedTensors.size()) {
+        SPDLOG_DEBUG("Kompute Manager explicitly freeing tensors");
+        for (const std::shared_ptr<Tensor>& tensor : this->mManagedTensors) {
+            if (!tensor->isInit()) {
+                SPDLOG_ERROR("Kompute Manager attempted to free managed tensor "
+                             "but not tensor is not initialised");
+            }
+            tensor->freeMemoryDestroyGPUResources();
+        }
+        this->mManagedTensors.clear();
+    }
+
     if (this->mFreeDevice) {
         SPDLOG_INFO("Destroying device");
         this->mDevice->destroy(
@@ -99,46 +111,32 @@ Manager::~Manager()
 }
 
 std::shared_ptr<Sequence>
-Manager::getOrCreateManagedSequence(std::string sequenceName)
+Manager::sequence(std::string sequenceName, uint32_t queueIndex)
 {
-    SPDLOG_DEBUG("Kompute Manager creating Sequence object");
+    SPDLOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
+                 "and queueIndex: {}",
+                 sequenceName,
+                 queueIndex);
+
+    std::shared_ptr<Sequence> sq = nullptr;
 
     std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
       this->mManagedSequences.find(sequenceName);
 
     if (found == this->mManagedSequences.end()) {
-        return this->createManagedSequence(sequenceName);
+        std::shared_ptr<Sequence> sq =
+          std::make_shared<Sequence>(this->mPhysicalDevice,
+                                     this->mDevice,
+                                     this->mComputeQueues[queueIndex],
+                                     this->mComputeQueueFamilyIndices[queueIndex]);
+        sq->init();
+
+        this->mManagedSequences.insert({ sequenceName, sq });
+
+        return sq;
     } else {
         return found->second;
     }
-}
-
-std::shared_ptr<Sequence>
-Manager::createManagedSequence(std::string sequenceName, uint32_t queueIndex)
-{
-
-    SPDLOG_DEBUG("Kompute Manager createManagedSequence with sequenceName: {} "
-                 "and queueIndex: {}",
-                 sequenceName,
-                 queueIndex);
-
-    std::shared_ptr<Sequence> sq =
-      std::make_shared<Sequence>(this->mPhysicalDevice,
-                                 this->mDevice,
-                                 this->mComputeQueues[queueIndex],
-                                 this->mComputeQueueFamilyIndices[queueIndex]);
-    sq->init();
-
-    if (sequenceName.empty()) {
-        this->mCurrentSequenceIndex++;
-        this->mManagedSequences.insert(
-          { KP_DEFAULT_SESSION + std::to_string(this->mCurrentSequenceIndex),
-            sq });
-    } else {
-        // TODO: Check if sequence doesn't already exist
-        this->mManagedSequences.insert({ sequenceName, sq });
-    }
-    return sq;
 }
 
 void
