@@ -88,25 +88,24 @@ PYBIND11_MODULE(kp, m) {
 
 
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
-        .def("init", &kp::Sequence::init, "Initialises Vulkan resources within sequence using provided device.")
+        .def("init", &kp::Sequence::init, DOC(kp, Sequence, init))
         
         // record
-        .def("begin", &kp::Sequence::begin, "Clears previous commands and starts recording commands in sequence which can be run in batch.")
-        .def("end", &kp::Sequence::end, "Stops listening and recording for new commands.")
+        .def("begin", &kp::Sequence::begin, DOC(kp, Sequence, begin))
+        .def("end", &kp::Sequence::end, DOC(kp, Sequence, end))
         
         // eval
-        .def("eval", &kp::Sequence::eval, "Executes the currently recorded commands synchronously by waiting on Vulkan Fence.")
-        .def("eval_async", &kp::Sequence::evalAsync, "Executes the currently recorded commands asynchronously.")
-        .def("eval_await", &kp::Sequence::evalAwait, "Waits until the execution finishes using Vulkan Fence.")
+        .def("eval", &kp::Sequence::eval, DOC(kp, Sequence, eval))
+        .def("eval_async", &kp::Sequence::evalAsync, DOC(kp, Sequence, evalAsync))
+        .def("eval_await", &kp::Sequence::evalAwait, DOC(kp, Sequence, evalAwait))
         
         // status
-        .def("is_running", &kp::Sequence::isRunning, "Checks whether the Sequence operations are currently still executing.")
-        .def("is_rec", &kp::Sequence::isRecording, "Checks whether the Sequence is currently in recording mode.")
-        .def("is_init", &kp::Sequence::isInit, "Checks if the Sequence has been initialized")
+        .def("is_running", &kp::Sequence::isRunning, DOC(kp, Sequence, isRunning))
+        .def("is_rec", &kp::Sequence::isRecording, DOC(kp, Sequence, isRecording))
+        .def("is_init", &kp::Sequence::isInit, DOC(kp, Sequence, isInit))
         
         // record
-        .def("record_tensor_copy", &kp::Sequence::record<kp::OpTensorCopy>,
-            "Records operation to copy one tensor to one or many tensors")
+        .def("record_tensor_copy", &kp::Sequence::record<kp::OpTensorCopy>, DOC(kp, Sequence, record))
         .def("record_tensor_sync_device", &kp::Sequence::record<kp::OpTensorSyncDevice>,
             "Records operation to sync tensor from local memory to GPU memory")
         .def("record_tensor_sync_local", &kp::Sequence::record<kp::OpTensorSyncLocal>,
@@ -166,7 +165,19 @@ PYBIND11_MODULE(kp, m) {
         .def("rebuild", py::overload_cast<std::shared_ptr<kp::Tensor>, bool>(&kp::Manager::rebuild),
                 py::arg("tensor"), py::arg("syncDataToGPU") = true,
                 "Build and initialise tensor")
-        
+        .def("destroy", py::overload_cast<std::shared_ptr<kp::Tensor>>(&kp::Manager::destroy),
+                py::arg("tensor"), DOC(kp, Manager, destroy))
+        .def("destroy", py::overload_cast<std::vector<std::shared_ptr<kp::Tensor>>>(&kp::Manager::destroy),
+                py::arg("tensors"), DOC(kp, Manager, destroy, 2))
+        .def("destroy", py::overload_cast<std::vector<std::shared_ptr<kp::Sequence>>>(&kp::Manager::destroy),
+                py::arg("sequences"), DOC(kp, Manager, destroy, 3))
+        .def("destroy", py::overload_cast<std::shared_ptr<kp::Sequence>>(&kp::Manager::destroy),
+                py::arg("sequence"), DOC(kp, Manager, destroy, 4))
+        .def("destroy", py::overload_cast<const std::string &>(&kp::Manager::destroy),
+                py::arg("sequenceName"), DOC(kp, Manager, destroy, 5))
+        .def("destroy", py::overload_cast<const std::vector<std::string>&>(&kp::Manager::destroy),
+                py::arg("sequenceNames"), DOC(kp, Manager, destroy, 6))
+
         // Await functions
         .def("eval_await", &kp::Manager::evalOpAwait,
                 py::arg("sequenceName"), py::arg("waitFor") = UINT64_MAX,

@@ -170,6 +170,12 @@ run_ci:
 
 ####### General project commands #######
 
+generate_python_docstrings:
+	python -m pybind11_mkdoc \
+		-o python/src/docstrings.hpp \
+		single_include/kompute/Kompute.hpp \
+		-I/usr/include/c++/7.5.0/
+
 install_python_reqs:
 	python3 -m pip install -r scripts/requirements.txt
 
