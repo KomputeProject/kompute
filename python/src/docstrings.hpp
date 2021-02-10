@@ -119,19 +119,47 @@ integrate with the vulkan kompute use.
 @param device Vulkan logical device to use for all base resources
 @param physicalDeviceIndex Index for vulkan physical device used)doc";
 
-static const char *__doc_kp_Manager_tensor =
-R"doc(Function that simplifies the common workflow of tensor creation and
-initialization. It will take the constructor parameters for a Tensor
-and will will us it to create a new Tensor and then create it using
-the OpCreateTensor command.
-
-@param data The data to initialize the tensor with @param tensorType
-The type of tensor to initialize @returns Initialized Tensor with
-memory Syncd to GPU device)doc";
-
 static const char *__doc_kp_Manager_createDevice = R"doc()doc";
 
 static const char *__doc_kp_Manager_createInstance = R"doc()doc";
+
+static const char *__doc_kp_Manager_destroy =
+R"doc(Destroy owned Vulkan GPU resources and free GPU memory for single
+tensor.
+
+@param tensors Single tensor to rebuild)doc";
+
+static const char *__doc_kp_Manager_destroy_2 =
+R"doc(Destroy owned Vulkan GPU resources and free GPU memory for vector of
+tensors.
+
+@param tensors Single tensor to rebuild)doc";
+
+static const char *__doc_kp_Manager_destroy_3 =
+R"doc(Destroy owned Vulkan GPU resources and free GPU memory for vector of
+sequences. Destroying by sequence name is more efficent and hence
+recommended instead of by object.
+
+@param sequences Vector for shared ptrs with sequences to destroy)doc";
+
+static const char *__doc_kp_Manager_destroy_4 =
+R"doc(Destroy owned Vulkan GPU resources and free GPU memory for single
+sequence. Destroying by sequence name is more efficent and hence
+recommended instead of by object.
+
+@param sequences Single sequence to rebuild)doc";
+
+static const char *__doc_kp_Manager_destroy_5 =
+R"doc(Destroy owned Vulkan GPU resources and free GPU memory for sequence by
+name.
+
+@param sequenceName Single name of named sequence to destroy)doc";
+
+static const char *__doc_kp_Manager_destroy_6 =
+R"doc(Destroy owned Vulkan GPU resources and free GPU memory for sequences
+using vector of named sequence names.
+
+@param sequenceName Vector of sequence names to destroy)doc";
 
 static const char *__doc_kp_Manager_evalOp =
 R"doc(Function that evaluates operation against named sequence.
@@ -178,14 +206,6 @@ R"doc(Function that evaluates operation against a newly created sequence.
 TArgs Template parameters that will be used to initialise Operation to
 allow for extensible configurations on initialisation)doc";
 
-static const char *__doc_kp_Manager_sequence =
-R"doc(Get or create a managed Sequence that will be contained by this
-manager. If the named sequence does not currently exist, it would be
-created and initialised.
-
-@param sequenceName The name for the named sequence to be retrieved or
-created @return Shared pointer to the manager owned sequence resource)doc";
-
 static const char *__doc_kp_Manager_mComputeQueueFamilyIndices = R"doc()doc";
 
 static const char *__doc_kp_Manager_mComputeQueues = R"doc()doc";
@@ -202,9 +222,49 @@ static const char *__doc_kp_Manager_mInstance = R"doc()doc";
 
 static const char *__doc_kp_Manager_mManagedSequences = R"doc()doc";
 
+static const char *__doc_kp_Manager_mManagedTensors = R"doc()doc";
+
 static const char *__doc_kp_Manager_mPhysicalDevice = R"doc()doc";
 
 static const char *__doc_kp_Manager_mPhysicalDeviceIndex = R"doc()doc";
+
+static const char *__doc_kp_Manager_rebuild =
+R"doc(Function that simplifies the common workflow of tensor initialisation.
+It will take the constructor parameters for a Tensor and will will us
+it to create a new Tensor. The tensor memory will then be managed and
+owned by the manager.
+
+@param tensors Array of tensors to rebuild @param syncDataToGPU
+Whether to sync the data to GPU memory)doc";
+
+static const char *__doc_kp_Manager_rebuild_2 =
+R"doc(Function that simplifies the common workflow of tensor initialisation.
+It will take the constructor parameters for a Tensor and will will us
+it to create a new Tensor. The tensor memory will then be managed and
+owned by the manager.
+
+@param tensors Single tensor to rebuild @param syncDataToGPU Whether
+to sync the data to GPU memory)doc";
+
+static const char *__doc_kp_Manager_sequence =
+R"doc(Get or create a managed Sequence that will be contained by this
+manager. If the named sequence does not currently exist, it would be
+created and initialised.
+
+@param sequenceName The name for the named sequence to be retrieved or
+created @param queueIndex The queue to use from the available queues
+@return Shared pointer to the manager owned sequence resource)doc";
+
+static const char *__doc_kp_Manager_tensor =
+R"doc(Function that simplifies the common workflow of tensor creation and
+initialization. It will take the constructor parameters for a Tensor
+and will will us it to create a new Tensor and then create it. The
+tensor memory will then be managed and owned by the manager.
+
+@param data The data to initialize the tensor with @param tensorType
+The type of tensor to initialize @param syncDataToGPU Whether to sync
+the data to GPU memory @returns Initialized Tensor with memory Syncd
+to GPU device)doc";
 
 static const char *__doc_kp_OpAlgoBase =
 R"doc(Operation that provides a general abstraction that simplifies the use
@@ -334,8 +394,6 @@ static const char *__doc_kp_OpAlgoLhsRhsOut_mTensorOutput =
 R"doc(< Reference to the parameter used in the output of the shader and will
 be copied with a staging vector)doc";
 
-static const char *__doc_kp_OpAlgoLhsRhsOut_mTensorOutputStaging = R"doc(< Staging temporary tensor user do to copy the output of the tensor)doc";
-
 static const char *__doc_kp_OpAlgoLhsRhsOut_mTensorRHS =
 R"doc(< Reference to the parameter used in the right hand side equation of
 the shader)doc";
@@ -371,8 +429,7 @@ sub-components.
 @param physicalDevice Vulkan physical device used to find device
 queues @param device Vulkan logical device for passing to Algorithm
 @param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that are to be used in this operation @param
-freeTensors Whether operation manages the memory of the Tensors)doc";
+@param tensors Tensors that are to be used in this operation)doc";
 
 static const char *__doc_kp_OpBase_init =
 R"doc(The init function is responsible for setting up all the resources and
@@ -463,51 +520,15 @@ static const char *__doc_kp_OpTensorCopy_record =
 R"doc(Records the copy commands from the first tensor into all the other
 tensors provided. Also optionally records a barrier.)doc";
 
-static const char *__doc_kp_OpTensorCreate =
-R"doc(Operation that creates tensor and manages the memory of the components
-created)doc";
-
-static const char *__doc_kp_OpTensorCreate_OpTensorCreate = R"doc()doc";
-
-static const char *__doc_kp_OpTensorCreate_OpTensorCreate_2 =
-R"doc(Default constructor with parameters that provides the bare minimum
-requirements for the operations to be able to create and manage their
-sub-components.
-
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that will be used to create in operation.
-@param freeTensors Whether operation manages the memory of the Tensors)doc";
-
-static const char *__doc_kp_OpTensorCreate_init =
-R"doc(In charge of initialising the primary Tensor as well as the staging
-tensor as required. It will only initialise a staging tensor if the
-Primary tensor is of type Device. For staging tensors it performs a
-mapDataIntoHostMemory which would perform immediately as opposed to on
-sequence eval/submission.)doc";
-
-static const char *__doc_kp_OpTensorCreate_mStagingTensors = R"doc()doc";
-
-static const char *__doc_kp_OpTensorCreate_postEval =
-R"doc(Performs a copy back into the main tensor to ensure that the data
-contained is the one that is now being stored in the GPU.)doc";
-
-static const char *__doc_kp_OpTensorCreate_preEval = R"doc(Does not perform any preEval commands.)doc";
-
-static const char *__doc_kp_OpTensorCreate_record =
-R"doc(Record runs the core actions to create the tensors. For device tensors
-it records a copyCommand to move the data from the staging tensor to
-the device tensor. The mapping for staging tensors happens in the init
-function not in the record function.)doc";
-
 static const char *__doc_kp_OpTensorSyncDevice =
 R"doc(Operation that syncs tensor's device by mapping local data into the
-device memory. For TensorTypes::eDevice it will use a staging tensor
-to perform the copy. For TensorTypes::eHost it will only copy the
-data and perform a map, which will be executed during the record (as
-opposed to during the sequence eval/submit). This function cannot be
-carried out for TensorTypes::eHost.)doc";
+device memory. For TensorTypes::eDevice it will use a record operation
+for the memory to be syncd into GPU memory which means that the
+operation will be done in sync with GPU commands. For
+TensorTypes::eStaging it will only map the data into host memory which
+will happen during preEval before the recorded commands are
+dispatched. This operation won't have any effect on
+TensorTypes::eStaging.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_OpTensorSyncDevice = R"doc()doc";
 
@@ -523,28 +544,25 @@ queues @param device Vulkan logical device for passing to Algorithm
 
 static const char *__doc_kp_OpTensorSyncDevice_init =
 R"doc(Performs basic checks such as ensuring that there is at least one
-tensor provided, that they are initialized and that they are not of
-type TensorTpes::eHost. For staging tensors in host memory, the map
-is performed during the init function.)doc";
-
-static const char *__doc_kp_OpTensorSyncDevice_mStagingTensors = R"doc()doc";
+tensor provided with min memory of 1 element.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_postEval = R"doc(Does not perform any postEval commands.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_preEval = R"doc(Does not perform any preEval commands.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_record =
-R"doc(For device tensors, it records the copy command to the device tensor
-from the temporary staging tensor.)doc";
+R"doc(For device tensors, it records the copy command for the tensor to copy
+the data from its staging to device memory.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal =
-R"doc(Operation that syncs tensor's local data by mapping the data from
-device memory into the local vector. For TensorTypes::eDevice it will
-use a staging tensor to perform the copy. For TensorTypes::eHost it
-will only copy the data and perform a map, which will be executed
-during the postSubmit (there will be no copy during the sequence
-eval/submit). This function cannot be carried out for
-TensorTypes::eHost.)doc";
+R"doc(Operation that syncs tensor's local memory by mapping device data into
+the local CPU memory. For TensorTypes::eDevice it will use a record
+operation for the memory to be syncd into GPU memory which means that
+the operation will be done in sync with GPU commands. For
+TensorTypes::eStaging it will only map the data into host memory which
+will happen during preEval before the recorded commands are
+dispatched. This operation won't have any effect on
+TensorTypes::eStaging.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_OpTensorSyncLocal = R"doc()doc";
 
@@ -560,10 +578,7 @@ queues @param device Vulkan logical device for passing to Algorithm
 
 static const char *__doc_kp_OpTensorSyncLocal_init =
 R"doc(Performs basic checks such as ensuring that there is at least one
-tensor provided, that they are initialized and that they are not of
-type TensorTpes::eHost.)doc";
-
-static const char *__doc_kp_OpTensorSyncLocal_mStagingTensors = R"doc()doc";
+tensor provided with min memory of 1 element.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_postEval =
 R"doc(For host tensors it performs the map command from the host memory into
@@ -572,8 +587,8 @@ local memory.)doc";
 static const char *__doc_kp_OpTensorSyncLocal_preEval = R"doc(Does not perform any preEval commands.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_record =
-R"doc(For device tensors, it records the copy command into the staging
-tensor from the device tensor.)doc";
+R"doc(For device tensors, it records the copy command for the tensor to copy
+the data from its device to staging memory.)doc";
 
 static const char *__doc_kp_Sequence = R"doc(Container of operations that can be sent to GPU as batch)doc";
 
@@ -699,8 +714,9 @@ static const char *__doc_kp_Tensor_Tensor_2 =
 R"doc(Default constructor with data provided which would be used to create
 the respective vulkan buffer and memory.
 
-@param data Vector of data that will be used by the tensor @param
-tensorType Type for the tensor which is of type TensorTypes)doc";
+@param data Non-zero-sized vector of data that will be used by the
+tensor @param tensorType Type for the tensor which is of type
+TensorTypes)doc";
 
 static const char *__doc_kp_Tensor_TensorTypes =
 R"doc(Type for tensors created: Device allows memory to be transferred from
@@ -714,12 +730,18 @@ static const char *__doc_kp_Tensor_TensorTypes_eHost = R"doc(< Type is host memo
 
 static const char *__doc_kp_Tensor_TensorTypes_eStorage = R"doc(< Type is Device memory (only))doc";
 
+static const char *__doc_kp_Tensor_allocateBindMemory = R"doc()doc";
+
+static const char *__doc_kp_Tensor_allocateMemoryCreateGPUResources = R"doc()doc";
+
 static const char *__doc_kp_Tensor_constructDescriptorBufferInfo =
 R"doc(Constructs a vulkan descriptor buffer info which can be used to
 specify and reference the underlying buffer component of the tensor
 without exposing it.
 
 @return Descriptor buffer info with own buffer)doc";
+
+static const char *__doc_kp_Tensor_copyBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_createBuffer = R"doc()doc";
 
@@ -735,9 +757,13 @@ static const char *__doc_kp_Tensor_freeMemoryDestroyGPUResources =
 R"doc(Destroys and frees the GPU resources which include the buffer and
 memory.)doc";
 
-static const char *__doc_kp_Tensor_getBufferUsageFlags = R"doc()doc";
+static const char *__doc_kp_Tensor_getPrimaryBufferUsageFlags = R"doc()doc";
 
-static const char *__doc_kp_Tensor_getMemoryPropertyFlags = R"doc()doc";
+static const char *__doc_kp_Tensor_getPrimaryMemoryPropertyFlags = R"doc()doc";
+
+static const char *__doc_kp_Tensor_getStagingBufferUsageFlags = R"doc()doc";
+
+static const char *__doc_kp_Tensor_getStagingMemoryPropertyFlags = R"doc()doc";
 
 static const char *__doc_kp_Tensor_init =
 R"doc(Initialiser which calls the initialisation for all the respective
@@ -751,23 +777,31 @@ R"doc(Returns true if the tensor initialisation function has been carried
 out successful, which would mean that the buffer and memory will have
 been provisioned.)doc";
 
-static const char *__doc_kp_Tensor_mBuffer = R"doc()doc";
-
 static const char *__doc_kp_Tensor_mData = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mDevice = R"doc()doc";
 
-static const char *__doc_kp_Tensor_mFreeBuffer = R"doc()doc";
+static const char *__doc_kp_Tensor_mFreePrimaryBuffer = R"doc()doc";
 
-static const char *__doc_kp_Tensor_mFreeMemory = R"doc()doc";
+static const char *__doc_kp_Tensor_mFreePrimaryMemory = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mFreeStagingBuffer = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mFreeStagingMemory = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mIsInit = R"doc()doc";
 
-static const char *__doc_kp_Tensor_mMemory = R"doc()doc";
-
 static const char *__doc_kp_Tensor_mPhysicalDevice = R"doc()doc";
 
+static const char *__doc_kp_Tensor_mPrimaryBuffer = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mPrimaryMemory = R"doc()doc";
+
 static const char *__doc_kp_Tensor_mShape = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mStagingBuffer = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mStagingMemory = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mTensorType = R"doc()doc";
 
@@ -808,6 +842,24 @@ a staging buffer transfer, or to gather output (between others).
 @param copyFromTensor Tensor to copy the data from @param
 createBarrier Whether to create a barrier that ensures the data is
 copied before further operations. Default is true.)doc";
+
+static const char *__doc_kp_Tensor_recordCopyFromDeviceToStaging =
+R"doc(Records a copy from the internal device memory to the staging memory
+using an optional barrier to wait for the operation. This function
+would only be relevant for kp::Tensors of type eDevice.
+
+@param commandBuffer Vulkan Command Buffer to record the commands into
+@param createBarrier Whether to create a barrier that ensures the data
+is copied before further operations. Default is true.)doc";
+
+static const char *__doc_kp_Tensor_recordCopyFromStagingToDevice =
+R"doc(Records a copy from the internal staging memory to the device memory
+using an optional barrier to wait for the operation. This function
+would only be relevant for kp::Tensors of type eDevice.
+
+@param commandBuffer Vulkan Command Buffer to record the commands into
+@param createBarrier Whether to create a barrier that ensures the data
+is copied before further operations. Default is true.)doc";
 
 static const char *__doc_kp_Tensor_setData =
 R"doc(Sets / resets the vector data of the tensor. This function does not
