@@ -350,5 +350,129 @@ Manager::tensor(
     return tensor;
 }
 
+void
+Manager::rebuild(std::vector<std::shared_ptr<kp::Tensor>> tensors,
+                    bool syncDataToGPU)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild triggered");
+    for (std::shared_ptr<Tensor> tensor : tensors) {
+
+        // False syncData to run all tensors at once instead one by one
+        this->rebuild(tensor, false);
+    }
+
+    if (syncDataToGPU) {
+        this->evalOpDefault<OpTensorSyncDevice>(tensors);
+    }
+}
+
+void
+Manager::rebuild(std::shared_ptr<kp::Tensor> tensor,
+                    bool syncDataToGPU)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+
+    if (tensor->isInit()) {
+        tensor->freeMemoryDestroyGPUResources();
+    }
+
+    tensor->init(this->mPhysicalDevice, this->mDevice);
+
+    std::set<std::shared_ptr<Tensor>>::iterator it =
+      this->mManagedTensors.find(tensor);
+    if (it == this->mManagedTensors.end()) {
+        this->mManagedTensors.insert(tensor);
+    }
+
+    if (syncDataToGPU) {
+        this->evalOpDefault<OpTensorSyncDevice>({ tensor });
+    }
+}
+
+void
+Manager::destroy(std::shared_ptr<kp::Tensor> tensor)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+
+    if (tensor->isInit()) {
+        tensor->freeMemoryDestroyGPUResources();
+    }
+
+    // TODO: Confirm not limiting destroying tensors owned by this manager allowed
+    std::set<std::shared_ptr<Tensor>>::iterator it =
+      this->mManagedTensors.find(tensor);
+
+    if (it != this->mManagedTensors.end()) {
+        this->mManagedTensors.erase(tensor);
+    }
+}
+
+void
+Manager::destroy(std::vector<std::shared_ptr<kp::Tensor>> tensors)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+
+    for (std::shared_ptr<Tensor> tensor : tensors) {
+        this->destroy(tensor);
+    }
+}
+
+void
+Manager::destroy(std::vector<std::shared_ptr<kp::Sequence>> sequences)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+
+    for (std::shared_ptr<kp::Sequence> sequence : sequences) {
+        this->destroy(sequence);
+    }
+}
+
+void
+Manager::destroy(std::shared_ptr<kp::Sequence> sequence)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+
+    // Inefficient but required to delete by value
+    // Depending on the amount of named sequences created may be worth creating
+    // a set to ensure efficient delete.
+    for (std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator it = this->mManagedSequences.begin(); it != this->mManagedSequences.end(); it++) {
+        if (it->second == sequence) {
+            this->mManagedSequences.erase(it);
+            break;
+        }
+    }
+
+    if (sequence->isInit()) {
+        sequence->freeMemoryDestroyGPUResources();
+    }
+}
+
+void
+Manager::destroy(const std::string& sequenceName)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+
+    std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
+      found = this->mManagedSequences.find(sequenceName);
+
+    if (found != this->mManagedSequences.end()) {
+        // We don't call destroy(sequence) as erasing sequence by name more efficient
+        if (found->second->isInit()) {
+            found->second->freeMemoryDestroyGPUResources();
+        }
+        this->mManagedSequences.erase(sequenceName);
+    }
+}
+
+void
+Manager::destroy(const std::vector<std::string>& sequenceNames)
+{
+    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+
+    for (const std::string& sequenceName : sequenceNames) {
+        this->destroy(sequenceName);
+    }
+}
+
 
 }
