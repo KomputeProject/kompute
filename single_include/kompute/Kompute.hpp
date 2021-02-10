@@ -1513,23 +1513,7 @@ class Manager
     std::shared_ptr<Tensor> tensor(
       const std::vector<float>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
-      bool syncDataToGPU = true)
-    {
-        SPDLOG_DEBUG("Kompute Manager tensor triggered");
-
-        SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
-        std::shared_ptr<Tensor> tensor =
-          std::make_shared<Tensor>(kp::Tensor(data, tensorType));
-
-        tensor->init(this->mPhysicalDevice, this->mDevice);
-
-        if (syncDataToGPU) {
-            this->evalOpDefault<OpTensorSyncDevice>({ tensor });
-        }
-        this->mManagedTensors.insert(tensor);
-
-        return tensor;
-    }
+      bool syncDataToGPU = true);
 
     /**
      * Function that simplifies the common workflow of tensor initialisation. It
@@ -1539,22 +1523,9 @@ class Manager
      *
      * @param tensors Array of tensors to rebuild
      * @param syncDataToGPU Whether to sync the data to GPU memory
-     * @returns Initialized Tensor with memory Syncd to GPU device
      */
     void rebuild(std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                        bool syncDataToGPU = true)
-    {
-        SPDLOG_DEBUG("Kompute Manager rebuild triggered");
-        for (std::shared_ptr<Tensor> tensor : tensors) {
-
-            // False syncData to run all tensors at once instead one by one
-            this->rebuild(tensor, false);
-        }
-
-        if (syncDataToGPU) {
-            this->evalOpDefault<OpTensorSyncDevice>(tensors);
-        }
-    }
+                        bool syncDataToGPU = true);
 
     /**
      * Function that simplifies the common workflow of tensor initialisation. It
@@ -1564,29 +1535,59 @@ class Manager
      *
      * @param tensors Single tensor to rebuild
      * @param syncDataToGPU Whether to sync the data to GPU memory
-     * @returns Initialized Tensor with memory Syncd to GPU device
      */
     void rebuild(std::shared_ptr<kp::Tensor> tensor,
-                        bool syncDataToGPU = true)
-    {
-        SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+                        bool syncDataToGPU = true);
 
-        if (tensor->isInit()) {
-            tensor->freeMemoryDestroyGPUResources();
-        }
+    /**
+     * Destroy owned Vulkan GPU resources and free GPU memory for
+     * single tensor.
+     *
+     * @param tensors Single tensor to rebuild
+     */
+    void destroy(std::shared_ptr<kp::Tensor> tensor);
 
-        tensor->init(this->mPhysicalDevice, this->mDevice);
+    /**
+     * Destroy owned Vulkan GPU resources and free GPU memory for
+     * vector of tensors.
+     *
+     * @param tensors Single tensor to rebuild
+     */
+    void destroy(std::vector<std::shared_ptr<kp::Tensor>> tensors);
 
-        std::set<std::shared_ptr<Tensor>>::iterator it =
-          this->mManagedTensors.find(tensor);
-        if (it == this->mManagedTensors.end()) {
-            this->mManagedTensors.insert(tensor);
-        }
+    /**
+     * Destroy owned Vulkan GPU resources and free GPU memory for
+     * vector of sequences. Destroying by sequence name is more efficent
+     * and hence recommended instead of by object.
+     *
+     * @param sequences Vector for shared ptrs with sequences to destroy
+     */
+    void destroy(std::vector<std::shared_ptr<kp::Sequence>> sequences);
 
-        if (syncDataToGPU) {
-            this->evalOpDefault<OpTensorSyncDevice>({ tensor });
-        }
-    }
+    /**
+     * Destroy owned Vulkan GPU resources and free GPU memory for
+     * single sequence. Destroying by sequence name is more efficent
+     * and hence recommended instead of by object.
+     *
+     * @param sequences Single sequence to rebuild
+     */
+    void destroy(std::shared_ptr<kp::Sequence> sequence);
+
+    /**
+     * Destroy owned Vulkan GPU resources and free GPU memory for
+     * sequence by name.
+     *
+     * @param sequenceName Single name of named sequence to destroy
+     */
+    void destroy(const std::string& sequenceName);
+
+    /**
+     * Destroy owned Vulkan GPU resources and free GPU memory for
+     * sequences using vector of named sequence names.
+     *
+     * @param sequenceName Vector of sequence names to destroy
+     */
+    void destroy(const std::vector<std::string>& sequenceNames);
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
