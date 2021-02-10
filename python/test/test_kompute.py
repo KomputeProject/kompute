@@ -109,10 +109,19 @@ def test_sequence():
     seq.end()
     seq.eval()
 
+    mgr.destroy("op")
+
+    assert seq.is_init() == False
+
     assert tensor_out.data() == [2.0, 4.0, 6.0]
     assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
 
+    mgr.destroy(tensor_in_a)
+    mgr.destroy([tensor_in_b, tensor_out])
 
+    assert tensor_in_a.is_init() == False
+    assert tensor_in_b.is_init() == False
+    assert tensor_out.is_init() == False
 
 def test_workgroup():
     mgr = kp.Manager(0)
@@ -146,8 +155,17 @@ def test_workgroup():
     seq.end()
     seq.eval()
 
+    mgr.destroy(seq)
+
+    assert seq.is_init() == False
+
     mgr.eval_tensor_sync_local_def([tensor_a, tensor_b])
 
     assert np.all(tensor_a.numpy() == np.stack([np.arange(16)]*8, axis=1).ravel())
     assert np.all(tensor_b.numpy() == np.stack([np.arange(8)]*16, axis=0).ravel())
+
+    mgr.destroy([tensor_a, tensor_b])
+
+    assert tensor_a.is_init() == False
+    assert tensor_b.is_init() == False
 
