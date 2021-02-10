@@ -328,4 +328,27 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
     SPDLOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
+std::shared_ptr<Tensor>
+Manager::tensor(
+  const std::vector<float>& data,
+  Tensor::TensorTypes tensorType,
+  bool syncDataToGPU)
+{
+    SPDLOG_DEBUG("Kompute Manager tensor triggered");
+
+    SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
+    std::shared_ptr<Tensor> tensor =
+      std::make_shared<Tensor>(kp::Tensor(data, tensorType));
+
+    tensor->init(this->mPhysicalDevice, this->mDevice);
+
+    if (syncDataToGPU) {
+        this->evalOpDefault<OpTensorSyncDevice>({ tensor });
+    }
+    this->mManagedTensors.insert(tensor);
+
+    return tensor;
+}
+
+
 }
