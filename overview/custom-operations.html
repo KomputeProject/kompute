@@ -301,6 +301,13 @@
     </li>
     <li class="md-nav__item">
     
+    
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
     
     </li>
@@ -617,9 +624,6 @@
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">mTensorLHS</span><span class="p">;</span> <span class="c1">///&lt; Reference to the parameter used in the left hand side equation of the shader</span>
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">mTensorRHS</span><span class="p">;</span> <span class="c1">///&lt; Reference to the parameter used in the right hand side equation of the shader</span>
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">mTensorOutput</span><span class="p">;</span> <span class="c1">///&lt; Reference to the parameter used in the output of the shader and will be copied with a staging vector</span>
-
-    <span class="c1">// -------------- ALWAYS OWNED RESOURCES</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">mTensorOutputStaging</span><span class="p">;</span> <span class="c1">///&lt; Staging temporary tensor user do to copy the output of the tensor</span>
 <span class="p">};</span>
 
 <span class="p">}</span> <span class="c1">// End namespace kp</span>
@@ -694,11 +698,6 @@
           <span class="s">" Output: "</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()));</span>
     <span class="p">}</span>
 
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutputStaging</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span>
-      <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">(),</span> <span class="n">Tensor</span><span class="o">::</span><span class="n">TensorTypes</span><span class="o">::</span><span class="n">eStaging</span><span class="p">);</span>
-
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutputStaging</span><span class="o">-&gt;</span><span class="n">init</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mPhysicalDevice</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">mDevice</span><span class="p">);</span>
-
     <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut fetching spirv data"</span><span class="p">);</span>
 
     <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">shaderFileData</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">fetchSpirvBinaryData</span><span class="p">();</span>
@@ -739,8 +738,10 @@
       <span class="n">vk</span><span class="o">::</span><span class="n">PipelineStageFlagBits</span><span class="o">::</span><span class="n">eComputeShader</span><span class="p">,</span>
       <span class="n">vk</span><span class="o">::</span><span class="n">PipelineStageFlagBits</span><span class="o">::</span><span class="n">eTransfer</span><span class="p">);</span>
 
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutputStaging</span><span class="o">-&gt;</span><span class="n">recordCopyFrom</span><span class="p">(</span>
-      <span class="k">this</span><span class="o">-&gt;</span><span class="n">mCommandBuffer</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">tensorType</span><span class="p">()</span> <span class="o">==</span> <span class="n">Tensor</span><span class="o">::</span><span class="n">TensorTypes</span><span class="o">::</span><span class="n">eDevice</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">recordCopyFromDeviceToStaging</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mCommandBuffer</span><span class="p">,</span>
+                                                           <span class="nb">true</span><span class="p">);</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="kt">void</span>
@@ -748,9 +749,7 @@
 <span class="p">{</span>
     <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut postSubmit called"</span><span class="p">);</span>
 
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutputStaging</span><span class="o">-&gt;</span><span class="n">mapDataFromHostMemory</span><span class="p">();</span>
-
-    <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">setData</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutputStaging</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">());</span>
+    <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">mapDataFromHostMemory</span><span class="p">();</span>
 <span class="p">}</span>
 
 <span class="p">}</span>

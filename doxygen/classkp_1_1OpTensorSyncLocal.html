@@ -105,8 +105,8 @@ Public Member Functions</h2></td></tr>
 <tr class="inherit_header pub_methods_classkp_1_1OpBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classkp_1_1OpBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classkp_1_1OpBase.html">kp::OpBase</a></td></tr>
 <tr class="memitem:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#ad0b568269057a48cf5c71c5616bba750">OpBase</a> ()</td></tr>
 <tr class="separator:ad0b568269057a48cf5c71c5616bba750 inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab84b915d9e0627590c34a1f83dad0a9e inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#ab84b915d9e0627590c34a1f83dad0a9e">OpBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, bool freeTensors)</td></tr>
-<tr class="separator:ab84b915d9e0627590c34a1f83dad0a9e inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5f3f217e5e7263277bb5e900dafa279 inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#af5f3f217e5e7263277bb5e900dafa279">OpBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors)</td></tr>
+<tr class="separator:af5f3f217e5e7263277bb5e900dafa279 inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab3aa15a2a7f6482461a1ff9de3b47af inherit pub_methods_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#aab3aa15a2a7f6482461a1ff9de3b47af">~OpBase</a> ()</td></tr>
 <tr class="separator:aab3aa15a2a7f6482461a1ff9de3b47af inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -131,7 +131,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 <tr class="separator:abb08c638efbe48d63bc91d9c02d91519 inherit pro_attribs_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Operation that syncs tensor's local data by mapping the data from device memory into the local vector. For TensorTypes::eDevice it will use a staging tensor to perform the copy. For TensorTypes::eStaging it will only copy the data and perform a map, which will be executed during the postSubmit (there will be no copy during the sequence eval/submit). This function cannot be carried out for TensorTypes::eStaging. </p>
+<div class="textblock"><p>Operation that syncs tensor's local memory by mapping device data into the local CPU memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a843ba988f4229454cfe37970120ffbb6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a843ba988f4229454cfe37970120ffbb6">&#9670;&nbsp;</a></span>OpTensorSyncLocal()</h2>
@@ -205,7 +205,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Default destructor. This class manages the memory of the staging tensors it owns but these are released in the postSubmit, before it arrives to the destructor. </p>
+<p>Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release. </p>
 
 </div>
 </div>
@@ -232,7 +232,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Performs basic checks such as ensuring that there is at least one tensor provided, that they are initialized and that they are not of type TensorTpes::eStaging. </p>
+<p>Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element. </p>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#af1fb6bd20031f0a70b5ef881f88de721">kp::OpBase</a>.</p>
 
@@ -316,7 +316,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
   </tr>
 </table>
 </div><div class="memdoc">
-<p>For device tensors, it records the copy command into the staging tensor from the device tensor. </p>
+<p>For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory. </p>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a242dbf4582c0b3b1d1a1f2a2207833ef">kp::OpBase</a>.</p>
 

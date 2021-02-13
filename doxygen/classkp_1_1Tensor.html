@@ -76,7 +76,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a1b2af1c0e8dc0f154e11780e7103beb4"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> { <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">TensorTypes::eDevice</a> = 0, 
-<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5">TensorTypes::eStaging</a> = 1, 
+<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a746241fcf54388332f43a13dd4a82f0a">TensorTypes::eHost</a> = 1, 
 <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ae1a7e733531f08074becd467959f0521">TensorTypes::eStorage</a> = 2
  }</td></tr>
 <tr class="separator:a1b2af1c0e8dc0f154e11780e7103beb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +109,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3618a3e5a86cfaad31820f9910525424"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b54d0040e09e918620fcce44651fb24"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a1b54d0040e09e918620fcce44651fb24">recordCopyFrom</a> (std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; copyFromTensor, bool createBarrier)</td></tr>
 <tr class="separator:a1b54d0040e09e918620fcce44651fb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3904d5862735e0a7dafdd8bc2bed472"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#aa3904d5862735e0a7dafdd8bc2bed472">recordCopyFromStagingToDevice</a> (std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, bool createBarrier)</td></tr>
+<tr class="separator:aa3904d5862735e0a7dafdd8bc2bed472"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad05f0613b505318adc3bcd9236a6af14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#ad05f0613b505318adc3bcd9236a6af14">recordCopyFromDeviceToStaging</a> (std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, bool createBarrier)</td></tr>
+<tr class="separator:ad05f0613b505318adc3bcd9236a6af14"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b3c387940770f7d6de891ece13190bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a2b3c387940770f7d6de891ece13190bd">recordBufferMemoryBarrier</a> (std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, vk::AccessFlagBits srcAccessMask, vk::AccessFlagBits dstAccessMask, vk::PipelineStageFlagBits srcStageMask, vk::PipelineStageFlagBits dstStageMask)</td></tr>
 <tr class="separator:a2b3c387940770f7d6de891ece13190bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805e6050a935763488116e071c0ce461"><td class="memItemLeft" align="right" valign="top">vk::DescriptorBufferInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">constructDescriptorBufferInfo</a> ()</td></tr>
@@ -145,7 +149,7 @@ Public Member Functions</h2></td></tr>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f"></a>eDevice&#160;</td><td class="fielddoc"><p>Type is device memory, source and destination. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a1b2af1c0e8dc0f154e11780e7103beb4ab288dd012e30ff97c0236b12e3c2c6e5"></a>eStaging&#160;</td><td class="fielddoc"><p>Type is host memory, source and destination. </p>
+<tr><td class="fieldname"><a id="a1b2af1c0e8dc0f154e11780e7103beb4a746241fcf54388332f43a13dd4a82f0a"></a>eHost&#160;</td><td class="fielddoc"><p>Type is host memory, source and destination. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a1b2af1c0e8dc0f154e11780e7103beb4ae1a7e733531f08074becd467959f0521"></a>eStorage&#160;</td><td class="fielddoc"><p>Type is Device memory (only) </p>
 </td></tr>
@@ -200,7 +204,7 @@ Public Member Functions</h2></td></tr>
 <p>Default constructor with data provided which would be used to create the respective vulkan buffer and memory.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>Vector of data that will be used by the tensor </td></tr>
+    <tr><td class="paramname">data</td><td>Non-zero-sized vector of data that will be used by the tensor </td></tr>
     <tr><td class="paramname">tensorType</td><td>Type for the tensor which is of type TensorTypes </td></tr>
   </table>
   </dd>
@@ -485,6 +489,78 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record the commands into </td></tr>
     <tr><td class="paramname">copyFromTensor</td><td><a class="el" href="classkp_1_1Tensor.html">Tensor</a> to copy the data from </td></tr>
+    <tr><td class="paramname">createBarrier</td><td>Whether to create a barrier that ensures the data is copied before further operations. Default is true. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad05f0613b505318adc3bcd9236a6af14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad05f0613b505318adc3bcd9236a6af14">&#9670;&nbsp;</a></span>recordCopyFromDeviceToStaging()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Tensor::recordCopyFromDeviceToStaging </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>createBarrier</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Records a copy from the internal device memory to the staging memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record the commands into </td></tr>
+    <tr><td class="paramname">createBarrier</td><td>Whether to create a barrier that ensures the data is copied before further operations. Default is true. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa3904d5862735e0a7dafdd8bc2bed472"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3904d5862735e0a7dafdd8bc2bed472">&#9670;&nbsp;</a></span>recordCopyFromStagingToDevice()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Tensor::recordCopyFromStagingToDevice </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>createBarrier</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Records a copy from the internal staging memory to the device memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record the commands into </td></tr>
     <tr><td class="paramname">createBarrier</td><td>Whether to create a barrier that ensures the data is copied before further operations. Default is true. </td></tr>
   </table>
   </dd>

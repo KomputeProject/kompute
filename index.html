@@ -273,6 +273,13 @@
     </li>
     <li class="md-nav__item">
     
+    
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
     
     </li>
@@ -441,6 +448,7 @@
 <li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/custom-operations.html">C++ Extending Kompute with Custom Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/reference.html">C++ Class Documentation &amp; Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://kompute.cc/codecov/">C++ Code Coverage</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -506,9 +514,9 @@
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
 
     <span class="c1">// 2. Create and initialise Kompute Tensors through manager</span>
-    <span class="k">auto</span> <span class="n">tensorInA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorInB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">buildTensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorInA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorInB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
 
     <span class="c1">// 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)</span>
     <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shaderString</span> <span class="o">=</span> <span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>

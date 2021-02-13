@@ -274,6 +274,13 @@
     </li>
     <li class="md-nav__item">
     
+    
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
     
     </li>
@@ -324,6 +331,12 @@
         <li class="md-nav__item"><a href="#dockerfiles" class="md-nav__link">Dockerfiles</a>
         </li>
         <li class="md-nav__item"><a href="#running-building-documentation" class="md-nav__link">Running / Building Documentation</a>
+        </li>
+        <li class="md-nav__item"><a href="#performing-release" class="md-nav__link">Performing Release</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id5" class="md-nav__link">```</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -386,6 +399,12 @@
         <li class="md-nav__item"><a href="#dockerfiles" class="md-nav__link">Dockerfiles</a>
         </li>
         <li class="md-nav__item"><a href="#running-building-documentation" class="md-nav__link">Running / Building Documentation</a>
+        </li>
+        <li class="md-nav__item"><a href="#performing-release" class="md-nav__link">Performing Release</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id5" class="md-nav__link">```</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -474,6 +493,56 @@
 <li><p>You can build the documentation using the <cite>gendocsall</cite> cmake target</p></li>
 <li><p>You can serve the documentation locally using the <cite>mk_run_docs</cite> command in the Makefile</p></li>
 </ul>
+
+
+<h2 id="performing-release">Performing Release<a class="headerlink" href="#performing-release" title="Permalink to this headline">¶</a></h2>
+<p>In order to perform the release the following steps need to be carried out:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Build changelog</dt><dd><ul>
+<li><p>Generate latest changelog <cite>make build_changelog</cite></p></li>
+<li><p>Update latest tag in new CHANGELOG.md to be the vesion to release</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Python Release</dt><dd><ul>
+<li><dl class="simple">
+<dt>Build dependency:</dt><dd><ul>
+<li><p>Intsall dependency: <cite>pip install .</cite></p></li>
+<li><p>Ensure all tests pass in GPU and CPU: <cite>python -m pytest</cite></p></li>
+<li><p>Build distribution <cite>python setup.py sdist bdist_wheel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Test repo:</dt><dd><ul>
+<li><p>Push to test repo <cite>python -m twine upload –repository testpypi dist/*</cite></p></li>
+<li><p>Install python dependency: <cite>python -m pip install –index-url https://test.pypi.org/simple/ –no-deps kp</cite></p></li>
+<li><p>Ensure all tests pass in GPU and CPU: <cite>python -m pytest</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Prod repo:</dt><dd><ul>
+<li><p>Push to test repo <cite>python -m twine upload dist/*</cite></p></li>
+<li><p>Install package from prod pypi <cite>pip install kp</cite></p></li>
+<li><p>Ensure all tests pass in GPU and CPU: <cite>python -m pytest</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+
+<h3 id="id5"><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a><a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+
 
 
 

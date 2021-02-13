@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - test/TestOpAlgoLoopsPassingData.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">test</a> - TestOpAlgoLoopsPassingData.cpp<span style="font-size: 80%;"> (source / <a href="TestOpAlgoLoopsPassingData.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">27</td>
+            <td class="headerCovTableEntryLo">7.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-02-13 13:13:47</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">40.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : </a>
+<span class="lineNum">       2 </span>            : #include &quot;gtest/gtest.h&quot;
+<span class="lineNum">       3 </span>            : 
+<a name="4"><span class="lineNum">       4 </span>            : #include &quot;kompute/Kompute.hpp&quot;</a>
+<span class="lineNum">       5 </span>            : 
+<span class="lineNum">       6 </span><span class="lineCov">         40 : TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)</span>
+<span class="lineNum">       7 </span>            : {
+<span class="lineNum">       8 </span><span class="lineNoCov">          0 :     kp::Manager mgr;</span>
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :     float TOTAL_ITER = 10;
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :     std::vector&lt;float&gt; testExpectedOutVec = { TOTAL_ITER,
+<span class="lineNum">      13 </span>            :                                               TOTAL_ITER,
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 :                                               TOTAL_ITER };</span>
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span><span class="lineNoCov">          0 :     std::shared_ptr&lt;kp::Tensor&gt; tensorA{ new kp::Tensor({ 0, 0, 0 }) };</span>
+<span class="lineNum">      17 </span><span class="lineNoCov">          0 :     std::shared_ptr&lt;kp::Tensor&gt; tensorB{ new kp::Tensor({ 0, 0, 0 }) };</span>
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            :     std::string shader(R&quot;(
+<span class="lineNum">      20 </span>            :         #version 450
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :         layout (local_size_x = 1) in;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :         layout(set = 0, binding = 0) buffer a { float pa[]; };
+<span class="lineNum">      25 </span>            :         layout(set = 0, binding = 1) buffer b { float pb[]; };
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            :         void main() {
+<span class="lineNum">      28 </span>            :             uint index = gl_GlobalInvocationID.x;
+<span class="lineNum">      29 </span>            :             pb[index] = pa[index] + 1;
+<span class="lineNum">      30 </span>            :         }
+<span class="lineNum">      31 </span><span class="lineNoCov">          0 :     )&quot;);</span>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 :     mgr.rebuild({ tensorA, tensorB }, false);</span>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            :     {
+<span class="lineNum">      36 </span>            :         std::shared_ptr&lt;kp::Sequence&gt; sq =
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :           mgr.sequence(&quot;default&quot;);</span>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         sq-&gt;begin();</span>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         sq-&gt;record&lt;kp::OpTensorSyncDevice&gt;({ tensorA, tensorB });</span>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineNoCov">          0 :         sq-&gt;end();</span>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :         sq-&gt;eval();</span>
+<span class="lineNum">      46 </span>            :     }
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :     {
+<span class="lineNum">      49 </span>            :         std::shared_ptr&lt;kp::Sequence&gt; sq =
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :           mgr.sequence(&quot;run&quot;);</span>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         sq-&gt;begin();</span>
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :         sq-&gt;record&lt;kp::OpAlgoBase&gt;(</span>
+<span class="lineNum">      55 </span>            :           { tensorA, tensorB },
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :           std::vector&lt;char&gt;(shader.begin(), shader.end()));</span>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :         sq-&gt;record&lt;kp::OpTensorCopy&gt;({ tensorB, tensorA });</span>
+<span class="lineNum">      59 </span><span class="lineNoCov">          0 :         sq-&gt;end();</span>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 :         for (size_t i = 0; i &lt; TOTAL_ITER; i++) {</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :             sq-&gt;eval();</span>
+<span class="lineNum">      63 </span>            :         }
+<span class="lineNum">      64 </span>            :     }
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            :     {
+<span class="lineNum">      67 </span>            :         std::shared_ptr&lt;kp::Sequence&gt; sq =
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :           mgr.sequence(&quot;export&quot;);</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :         sq-&gt;begin();</span>
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :         sq-&gt;record&lt;kp::OpTensorSyncLocal&gt;({ tensorA, tensorB });</span>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :         sq-&gt;end();</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :         sq-&gt;eval();</span>
+<span class="lineNum">      77 </span>            :     }
+<a name="78"><span class="lineNum">      78 </span>            : </a>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     EXPECT_EQ(tensorA-&gt;data(), testExpectedOutVec);</span>
+<span class="lineNum">      80 </span><span class="lineCov">         24 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

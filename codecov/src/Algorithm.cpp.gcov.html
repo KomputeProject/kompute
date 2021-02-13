@@ -1,0 +1,391 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - src/Algorithm.cpp</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - Algorithm.cpp<span style="font-size: 80%;"> (source / <a href="Algorithm.cpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">76</td>
+            <td class="headerCovTableEntry">89</td>
+            <td class="headerCovTableEntryMed">85.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2021-02-13 13:13:47</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">9</td>
+            <td class="headerCovTableEntryMed">77.8 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : #include &lt;fstream&gt;</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &quot;kompute/Algorithm.hpp&quot;
+<span class="lineNum">       4 </span>            : 
+<a name="5"><span class="lineNum">       5 </span>            : namespace kp {</a>
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span><span class="lineNoCov">          0 : Algorithm::Algorithm()</span>
+<span class="lineNum">       8 </span>            : {
+<span class="lineNum">       9 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm base constructor&quot;);
+<a name="10"><span class="lineNum">      10 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span><span class="lineCov">         12 : Algorithm::Algorithm(std::shared_ptr&lt;vk::Device&gt; device,</span>
+<span class="lineNum">      13 </span><span class="lineCov">         96 :                      std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer)</span>
+<span class="lineNum">      14 </span>            : {
+<span class="lineNum">      15 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm Constructor with device&quot;);
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            :     this-&gt;mDevice = device;
+<span class="lineNum">      18 </span>            :     this-&gt;mCommandBuffer = commandBuffer;
+<span class="lineNum">      19 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span><span class="lineCov">         24 : Algorithm::~Algorithm()</span>
+<span class="lineNum">      22 </span>            : {
+<span class="lineNum">      23 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm Destructor started&quot;);
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span><span class="lineCov">         12 :     if (!this-&gt;mDevice) {</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         SPDLOG_ERROR(</span>
+<span class="lineNum">      27 </span>            :           &quot;Kompute Algorithm destructor reached with null Device pointer&quot;);
+<span class="lineNum">      28 </span>            :         return;
+<span class="lineNum">      29 </span>            :     }
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span><span class="lineCov">         12 :     if (this-&gt;mFreePipeline) {</span>
+<span class="lineNum">      32 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Destroying pipeline&quot;);
+<span class="lineNum">      33 </span><span class="lineCov">         12 :         if (!this-&gt;mPipeline) {</span>
+<span class="lineNum">      34 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(&quot;Kompute Algorithm Error requested to destroy &quot;</span>
+<span class="lineNum">      35 </span>            :                          &quot;pipeline but it is null&quot;);
+<span class="lineNum">      36 </span>            :         }
+<span class="lineNum">      37 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">      38 </span>            :           *this-&gt;mPipeline,
+<span class="lineNum">      39 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">      40 </span>            :     }
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span><span class="lineCov">         12 :     if (this-&gt;mFreePipelineCache) {</span>
+<span class="lineNum">      43 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Destroying pipeline cache&quot;);
+<span class="lineNum">      44 </span><span class="lineCov">         12 :         if (!this-&gt;mPipelineCache) {</span>
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(&quot;Kompute Algorithm Error requested to destroy &quot;</span>
+<span class="lineNum">      46 </span>            :                          &quot;pipeline cache but it is null&quot;);
+<span class="lineNum">      47 </span>            :         }
+<span class="lineNum">      48 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">      49 </span>            :           *this-&gt;mPipelineCache,
+<span class="lineNum">      50 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">      51 </span>            :     }
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineCov">         12 :     if (this-&gt;mFreePipelineLayout) {</span>
+<span class="lineNum">      54 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Destroying pipeline layout&quot;);
+<span class="lineNum">      55 </span><span class="lineCov">         12 :         if (!this-&gt;mPipelineLayout) {</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(&quot;Kompute Algorithm Error requested to destroy &quot;</span>
+<span class="lineNum">      57 </span>            :                          &quot;pipeline layout but it is null&quot;);
+<span class="lineNum">      58 </span>            :         }
+<span class="lineNum">      59 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">      60 </span>            :           *this-&gt;mPipelineLayout,
+<span class="lineNum">      61 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">      62 </span>            :     }
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov">         12 :     if (this-&gt;mFreeShaderModule) {</span>
+<span class="lineNum">      65 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Destroying shader module&quot;);
+<span class="lineNum">      66 </span><span class="lineCov">         12 :         if (!this-&gt;mShaderModule) {</span>
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(&quot;Kompute Algorithm Error requested to destroy shader &quot;</span>
+<span class="lineNum">      68 </span>            :                          &quot;module but it is null&quot;);
+<span class="lineNum">      69 </span>            :         }
+<span class="lineNum">      70 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">      71 </span>            :           *this-&gt;mShaderModule,
+<span class="lineNum">      72 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">      73 </span>            :     }
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span><span class="lineCov">         12 :     if (this-&gt;mFreeDescriptorSet) {</span>
+<span class="lineNum">      76 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Freeing Descriptor Set&quot;);
+<span class="lineNum">      77 </span><span class="lineCov">         12 :         if (!this-&gt;mDescriptorSet) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(</span>
+<span class="lineNum">      79 </span>            :               &quot;Kompute Algorithm Error requested to free descriptor set&quot;);
+<span class="lineNum">      80 </span>            :         }
+<span class="lineNum">      81 </span>            :         this-&gt;mDevice-&gt;freeDescriptorSets(
+<span class="lineNum">      82 </span><span class="lineCov">         12 :           *this-&gt;mDescriptorPool, 1, this-&gt;mDescriptorSet.get());</span>
+<span class="lineNum">      83 </span>            :     }
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineCov">         12 :     if (this-&gt;mFreeDescriptorSetLayout) {</span>
+<span class="lineNum">      86 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Destroying Descriptor Set Layout&quot;);
+<span class="lineNum">      87 </span><span class="lineCov">         12 :         if (!this-&gt;mDescriptorSetLayout) {</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(&quot;Kompute Algorithm Error requested to destroy &quot;</span>
+<span class="lineNum">      89 </span>            :                          &quot;descriptor set layout but it is null&quot;);
+<span class="lineNum">      90 </span>            :         }
+<span class="lineNum">      91 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">      92 </span>            :           *this-&gt;mDescriptorSetLayout,
+<span class="lineNum">      93 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">      94 </span>            :     }
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineCov">         12 :     if (this-&gt;mFreeDescriptorPool) {</span>
+<span class="lineNum">      97 </span>            :         SPDLOG_DEBUG(&quot;Kompute Algorithm Destroying Descriptor Pool&quot;);
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :         if (!this-&gt;mDescriptorPool) {</span>
+<span class="lineNum">      99 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(&quot;Kompute Algorithm Error requested to destroy &quot;</span>
+<span class="lineNum">     100 </span>            :                          &quot;descriptor pool but it is null&quot;);
+<span class="lineNum">     101 </span>            :         }
+<span class="lineNum">     102 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">     103 </span>            :           *this-&gt;mDescriptorPool,
+<span class="lineNum">     104 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span><span class="lineCov">         12 : }</span>
+<a name="107"><span class="lineNum">     107 </span>            : </a>
+<span class="lineNum">     108 </span>            : void
+<span class="lineNum">     109 </span><span class="lineCov">         12 : Algorithm::init(const std::vector&lt;char&gt;&amp; shaderFileData,</span>
+<span class="lineNum">     110 </span>            :                 std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensorParams)
+<span class="lineNum">     111 </span>            : {
+<span class="lineNum">     112 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm init started&quot;);
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineCov">         12 :     this-&gt;createParameters(tensorParams);</span>
+<span class="lineNum">     115 </span><span class="lineCov">         12 :     this-&gt;createShaderModule(shaderFileData);</span>
+<span class="lineNum">     116 </span>            : 
+<span class="lineNum">     117 </span>            :     std::vector&lt;uint32_t&gt; sizes;
+<span class="lineNum">     118 </span><span class="lineCov">         70 :     for (std::shared_ptr&lt;Tensor&gt; tensor : tensorParams) {</span>
+<span class="lineNum">     119 </span><span class="lineCov">        116 :         sizes.push_back(tensor-&gt;size());</span>
+<span class="lineNum">     120 </span>            :     }
+<span class="lineNum">     121 </span><span class="lineCov">         24 :     this-&gt;createPipeline(sizes);</span>
+<span class="lineNum">     122 </span><span class="lineCov">         12 : }</span>
+<a name="123"><span class="lineNum">     123 </span>            : </a>
+<span class="lineNum">     124 </span>            : void
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 : Algorithm::createDescriptorPool()</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 : {}</span>
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            : void
+<span class="lineNum">     129 </span><span class="lineCov">         12 : Algorithm::createParameters(std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensorParams)</span>
+<span class="lineNum">     130 </span>            : {
+<span class="lineNum">     131 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm createParameters started&quot;);
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :     std::vector&lt;vk::DescriptorPoolSize&gt; descriptorPoolSizes = {
+<span class="lineNum">     134 </span>            :         vk::DescriptorPoolSize(
+<span class="lineNum">     135 </span>            :           vk::DescriptorType::eStorageBuffer,
+<span class="lineNum">     136 </span><span class="lineCov">         12 :           static_cast&lt;uint32_t&gt;(tensorParams.size()) // Descriptor count</span>
+<span class="lineNum">     137 </span>            :           )
+<span class="lineNum">     138 </span><span class="lineCov">         24 :     };</span>
+<span class="lineNum">     139 </span>            : 
+<span class="lineNum">     140 </span>            :     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
+<span class="lineNum">     141 </span>            :       vk::DescriptorPoolCreateFlags(),
+<span class="lineNum">     142 </span>            :       1, // Max sets
+<span class="lineNum">     143 </span><span class="lineCov">         12 :       static_cast&lt;uint32_t&gt;(descriptorPoolSizes.size()),</span>
+<span class="lineNum">     144 </span><span class="lineCov">         24 :       descriptorPoolSizes.data());</span>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm creating descriptor pool&quot;);
+<span class="lineNum">     147 </span><span class="lineCov">         12 :     this-&gt;mDescriptorPool = std::make_shared&lt;vk::DescriptorPool&gt;();</span>
+<span class="lineNum">     148 </span><span class="lineCov">         12 :     this-&gt;mDevice-&gt;createDescriptorPool(</span>
+<span class="lineNum">     149 </span>            :       &amp;descriptorPoolInfo, nullptr, this-&gt;mDescriptorPool.get());
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :     std::vector&lt;vk::DescriptorSetLayoutBinding&gt; descriptorSetBindings;
+<span class="lineNum">     152 </span><span class="lineCov">        198 :     for (size_t i = 0; i &lt; tensorParams.size(); i++) {</span>
+<span class="lineNum">     153 </span>            :         descriptorSetBindings.push_back(
+<span class="lineNum">     154 </span><span class="lineCov">        116 :           vk::DescriptorSetLayoutBinding(i, // Binding index</span>
+<span class="lineNum">     155 </span>            :                                          vk::DescriptorType::eStorageBuffer,
+<span class="lineNum">     156 </span>            :                                          1, // Descriptor count
+<span class="lineNum">     157 </span>            :                                          vk::ShaderStageFlagBits::eCompute));
+<span class="lineNum">     158 </span>            :     }
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :     // This is the component that is fed into the pipeline
+<span class="lineNum">     161 </span>            :     vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo(
+<span class="lineNum">     162 </span>            :       vk::DescriptorSetLayoutCreateFlags(),
+<span class="lineNum">     163 </span><span class="lineCov">         12 :       static_cast&lt;uint32_t&gt;(descriptorSetBindings.size()),</span>
+<span class="lineNum">     164 </span><span class="lineCov">         24 :       descriptorSetBindings.data());</span>
+<span class="lineNum">     165 </span>            : 
+<span class="lineNum">     166 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm creating descriptor set layout&quot;);
+<span class="lineNum">     167 </span><span class="lineCov">         12 :     this-&gt;mDescriptorSetLayout = std::make_shared&lt;vk::DescriptorSetLayout&gt;();</span>
+<span class="lineNum">     168 </span><span class="lineCov">         12 :     this-&gt;mDevice-&gt;createDescriptorSetLayout(</span>
+<span class="lineNum">     169 </span>            :       &amp;descriptorSetLayoutInfo, nullptr, this-&gt;mDescriptorSetLayout.get());
+<span class="lineNum">     170 </span><span class="lineCov">         12 :     this-&gt;mFreeDescriptorSetLayout = true;</span>
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            :     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
+<span class="lineNum">     173 </span>            :       *this-&gt;mDescriptorPool,
+<span class="lineNum">     174 </span>            :       1, // Descriptor set layout count
+<span class="lineNum">     175 </span><span class="lineCov">         12 :       this-&gt;mDescriptorSetLayout.get());</span>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm allocating descriptor sets&quot;);
+<span class="lineNum">     178 </span><span class="lineCov">         12 :     this-&gt;mDescriptorSet = std::make_shared&lt;vk::DescriptorSet&gt;();</span>
+<span class="lineNum">     179 </span><span class="lineCov">         12 :     this-&gt;mDevice-&gt;allocateDescriptorSets(&amp;descriptorSetAllocateInfo,</span>
+<span class="lineNum">     180 </span>            :                                           this-&gt;mDescriptorSet.get());
+<span class="lineNum">     181 </span><span class="lineCov">         12 :     this-&gt;mFreeDescriptorSet = true;</span>
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm updating descriptor sets&quot;);
+<span class="lineNum">     184 </span><span class="lineCov">        198 :     for (size_t i = 0; i &lt; tensorParams.size(); i++) {</span>
+<span class="lineNum">     185 </span>            :         std::vector&lt;vk::WriteDescriptorSet&gt; computeWriteDescriptorSets;
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            :         vk::DescriptorBufferInfo descriptorBufferInfo =
+<span class="lineNum">     188 </span><span class="lineCov">         58 :           tensorParams[i]-&gt;constructDescriptorBufferInfo();</span>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span>            :         computeWriteDescriptorSets.push_back(
+<span class="lineNum">     191 </span><span class="lineCov">        116 :           vk::WriteDescriptorSet(*this-&gt;mDescriptorSet,</span>
+<span class="lineNum">     192 </span>            :                                  i, // Destination binding
+<span class="lineNum">     193 </span>            :                                  0, // Destination array element
+<span class="lineNum">     194 </span>            :                                  1, // Descriptor count
+<span class="lineNum">     195 </span>            :                                  vk::DescriptorType::eStorageBuffer,
+<span class="lineNum">     196 </span>            :                                  nullptr, // Descriptor image info
+<span class="lineNum">     197 </span>            :                                  &amp;descriptorBufferInfo));
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :         this-&gt;mDevice-&gt;updateDescriptorSets(computeWriteDescriptorSets,
+<span class="lineNum">     200 </span>            :                                             nullptr);
+<span class="lineNum">     201 </span>            :     }
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :     SPDLOG_DEBUG(&quot;Kompue Algorithm successfully run init&quot;);
+<span class="lineNum">     204 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span>            : void
+<span class="lineNum">     207 </span><span class="lineCov">         12 : Algorithm::createShaderModule(const std::vector&lt;char&gt;&amp; shaderFileData)</span>
+<span class="lineNum">     208 </span>            : {
+<span class="lineNum">     209 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm createShaderModule started&quot;);
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span>            :     vk::ShaderModuleCreateInfo shaderModuleInfo(
+<span class="lineNum">     212 </span>            :       vk::ShaderModuleCreateFlags(),
+<span class="lineNum">     213 </span>            :       shaderFileData.size(),
+<span class="lineNum">     214 </span><span class="lineCov">         12 :       (uint32_t*)shaderFileData.data());</span>
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm Creating shader module. ShaderFileSize: {}&quot;,
+<span class="lineNum">     217 </span>            :                  shaderFileData.size());
+<span class="lineNum">     218 </span><span class="lineCov">         12 :     this-&gt;mFreeShaderModule = true;</span>
+<span class="lineNum">     219 </span><span class="lineCov">         12 :     this-&gt;mShaderModule = std::make_shared&lt;vk::ShaderModule&gt;();</span>
+<span class="lineNum">     220 </span><span class="lineCov">         12 :     this-&gt;mDevice-&gt;createShaderModule(</span>
+<span class="lineNum">     221 </span>            :       &amp;shaderModuleInfo, nullptr, this-&gt;mShaderModule.get());
+<span class="lineNum">     222 </span><span class="lineCov">         12 :     this-&gt;mFreeShaderModule = true;</span>
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm create shader module success&quot;);
+<span class="lineNum">     225 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span>            : void
+<span class="lineNum">     228 </span><span class="lineCov">         12 : Algorithm::createPipeline(std::vector&lt;uint32_t&gt; specializationData)</span>
+<span class="lineNum">     229 </span>            : {
+<span class="lineNum">     230 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm calling create Pipeline&quot;);
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span>            :     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
+<span class="lineNum">     233 </span>            :       vk::PipelineLayoutCreateFlags(),
+<span class="lineNum">     234 </span>            :       1, // Set layout count
+<span class="lineNum">     235 </span><span class="lineCov">         12 :       this-&gt;mDescriptorSetLayout.get());</span>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span><span class="lineCov">         12 :     this-&gt;mPipelineLayout = std::make_shared&lt;vk::PipelineLayout&gt;();</span>
+<span class="lineNum">     238 </span><span class="lineCov">         12 :     this-&gt;mDevice-&gt;createPipelineLayout(</span>
+<span class="lineNum">     239 </span>            :       &amp;pipelineLayoutInfo, nullptr, this-&gt;mPipelineLayout.get());
+<span class="lineNum">     240 </span><span class="lineCov">         12 :     this-&gt;mFreePipelineLayout = true;</span>
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            :     std::vector&lt;vk::SpecializationMapEntry&gt; specializationEntries;
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span><span class="lineCov">        198 :     for (size_t i = 0; i &lt; specializationData.size(); i++) {</span>
+<span class="lineNum">     245 </span>            :         vk::SpecializationMapEntry specializationEntry(
+<span class="lineNum">     246 </span>            :           static_cast&lt;uint32_t&gt;(i),
+<span class="lineNum">     247 </span>            :           static_cast&lt;uint32_t&gt;(sizeof(uint32_t) * i),
+<span class="lineNum">     248 </span><span class="lineCov">         58 :           sizeof(uint32_t));</span>
+<span class="lineNum">     249 </span>            : 
+<span class="lineNum">     250 </span><span class="lineCov">         58 :         specializationEntries.push_back(specializationEntry);</span>
+<span class="lineNum">     251 </span>            :     }
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span>            :     vk::SpecializationInfo specializationInfo(
+<span class="lineNum">     254 </span>            :       static_cast&lt;uint32_t&gt;(specializationEntries.size()),
+<span class="lineNum">     255 </span>            :       specializationEntries.data(),
+<span class="lineNum">     256 </span><span class="lineCov">         12 :       sizeof(uint32_t) * specializationEntries.size(),</span>
+<span class="lineNum">     257 </span><span class="lineCov">         12 :       specializationData.data());</span>
+<span class="lineNum">     258 </span>            : 
+<span class="lineNum">     259 </span>            :     vk::PipelineShaderStageCreateInfo shaderStage(
+<span class="lineNum">     260 </span>            :       vk::PipelineShaderStageCreateFlags(),
+<span class="lineNum">     261 </span>            :       vk::ShaderStageFlagBits::eCompute,
+<span class="lineNum">     262 </span>            :       *this-&gt;mShaderModule,
+<span class="lineNum">     263 </span>            :       &quot;main&quot;,
+<span class="lineNum">     264 </span>            :       &amp;specializationInfo);
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span>            :     vk::ComputePipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
+<span class="lineNum">     267 </span>            :                                                shaderStage,
+<span class="lineNum">     268 </span>            :                                                *this-&gt;mPipelineLayout,
+<span class="lineNum">     269 </span>            :                                                vk::Pipeline(),
+<span class="lineNum">     270 </span>            :                                                0);
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span><span class="lineCov">         12 :     vk::PipelineCacheCreateInfo pipelineCacheInfo =</span>
+<span class="lineNum">     273 </span>            :       vk::PipelineCacheCreateInfo();
+<span class="lineNum">     274 </span><span class="lineCov">         12 :     this-&gt;mPipelineCache = std::make_shared&lt;vk::PipelineCache&gt;();</span>
+<span class="lineNum">     275 </span><span class="lineCov">         12 :     this-&gt;mDevice-&gt;createPipelineCache(</span>
+<span class="lineNum">     276 </span>            :       &amp;pipelineCacheInfo, nullptr, this-&gt;mPipelineCache.get());
+<span class="lineNum">     277 </span><span class="lineCov">         12 :     this-&gt;mFreePipelineCache = true;</span>
+<span class="lineNum">     278 </span>            : 
+<span class="lineNum">     279 </span>            : #ifdef KOMPUTE_CREATE_PIPELINE_RESULT_VALUE
+<span class="lineNum">     280 </span>            :     vk::ResultValue&lt;vk::Pipeline&gt; pipelineResult =
+<span class="lineNum">     281 </span>            :       this-&gt;mDevice-&gt;createComputePipeline(*this-&gt;mPipelineCache, pipelineInfo);
+<span class="lineNum">     282 </span>            : 
+<span class="lineNum">     283 </span>            :     if (pipelineResult.result != vk::Result::eSuccess) {
+<span class="lineNum">     284 </span>            :         throw std::runtime_error(&quot;Failed to create pipeline result: &quot; +
+<span class="lineNum">     285 </span>            :                                  vk::to_string(pipelineResult.result));
+<span class="lineNum">     286 </span>            :     }
+<span class="lineNum">     287 </span>            : #else
+<span class="lineNum">     288 </span>            :     vk::Pipeline pipelineResult =
+<span class="lineNum">     289 </span><span class="lineCov">         12 :       this-&gt;mDevice-&gt;createComputePipeline(*this-&gt;mPipelineCache, pipelineInfo);</span>
+<span class="lineNum">     290 </span><span class="lineCov">         12 :     this-&gt;mFreePipeline = true;</span>
+<span class="lineNum">     291 </span>            : #endif
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span>            :     this-&gt;mFreePipeline = true;
+<span class="lineNum">     294 </span><span class="lineCov">         12 :     this-&gt;mPipeline = std::make_shared&lt;vk::Pipeline&gt;(pipelineResult);</span>
+<span class="lineNum">     295 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span>            : void
+<span class="lineNum">     298 </span><span class="lineCov">         12 : Algorithm::recordDispatch(uint32_t x, uint32_t y, uint32_t z)</span>
+<span class="lineNum">     299 </span>            : {
+<span class="lineNum">     300 </span>            :     SPDLOG_DEBUG(&quot;Kompute Algorithm calling record dispatch&quot;);
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :     this-&gt;mCommandBuffer-&gt;bindPipeline(vk::PipelineBindPoint::eCompute,
+<span class="lineNum">     303 </span>            :                                        *this-&gt;mPipeline);
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span>            :     this-&gt;mCommandBuffer-&gt;bindDescriptorSets(vk::PipelineBindPoint::eCompute,
+<span class="lineNum">     306 </span>            :                                              *this-&gt;mPipelineLayout,
+<span class="lineNum">     307 </span>            :                                              0, // First set
+<span class="lineNum">     308 </span>            :                                              *this-&gt;mDescriptorSet,
+<span class="lineNum">     309 </span>            :                                              nullptr // Dispatcher
+<span class="lineNum">     310 </span>            :     );
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            :     this-&gt;mCommandBuffer-&gt;dispatch(x, y, z);
+<span class="lineNum">     313 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">     314 </span>            : 
+<span class="lineNum">     315 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

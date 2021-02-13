@@ -309,6 +309,13 @@
     </li>
     <li class="md-nav__item">
     
+    
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
     
     </li>
@@ -506,7 +513,7 @@
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">});</span>
 
     <span class="c1">// Create a new sequence</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sqWeakPtr</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">getOrCreateManagedSequence</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">weak_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sqWeakPtr</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">();</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">sqWeakPtr</span><span class="p">.</span><span class="n">lock</span><span class="p">())</span>
     <span class="p">{</span>
@@ -759,8 +766,8 @@
     <span class="c1">// We need to create explicit sequences with their respective queues</span>
     <span class="c1">// The second parameter is the index in the familyIndex array which is relative</span>
     <span class="c1">//      to the vector we created the manager with.</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">createManagedSequence</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">createManagedSequence</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="s">"queueOne"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="s">"queueTwo"</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
     <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
     <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
@@ -992,7 +999,7 @@
 6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
 
 <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span>
-        <span class="n">mgr</span><span class="p">.</span><span class="n">getOrCreateManagedSequence</span><span class="p">(</span><span class="s">"createTensors"</span><span class="p">).</span><span class="n">lock</span><span class="p">())</span>
+        <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="s">"createTensors"</span><span class="p">).</span><span class="n">lock</span><span class="p">())</span>
 <span class="p">{</span>
     <span class="c1">// ...</span>
 </pre></div>

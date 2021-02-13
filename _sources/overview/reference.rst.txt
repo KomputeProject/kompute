@@ -86,16 +86,6 @@ The kp::OpMult operation is a sample implementation of the kp::OpAlgoBase class.
 .. doxygenclass:: kp::OpMult
    :members:
 
-OpTensorCreate
--------
-
-The kp::OpTensorCreate is a tensor only operations which initialises a kp::Tensor by creating the respective vk::Buffer and vk::Memory, as well as transferring the local data into the GPU.
-
-.. image:: ../images/kompute-vulkan-architecture-opcreatetensor.jpg
-   :width: 100%
-
-.. doxygenclass:: kp::OpTensorCreate
-   :members:
 
 OpTensorCopy
 -------

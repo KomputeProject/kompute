@@ -272,6 +272,13 @@
     </li>
     <li class="md-nav__item">
     
+    
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
     
     </li>
@@ -378,10 +385,8 @@
 
 <div class="genindex-jumpbox">
  <a href="#B"><strong>B</strong></a>
- | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
- | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#K"><strong>K</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -397,24 +402,16 @@
       <li><a href="overview/python-reference.html#kp.Sequence.begin">begin() (kp.Sequence method)</a>
 </li>
   </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#kp.Manager.build_tensor">build_tensor() (kp.Manager method)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="C">C</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#kp.Manager.create_sequence">create_sequence() (kp.Manager method)</a>
-</li>
-  </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#id1">data() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.data">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="overview/python-reference.html#kp.Manager.destroy">destroy() (kp.Manager method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -460,12 +457,12 @@
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_lro_def">eval_async_algo_lro_def() (kp.Manager method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_mult">eval_async_algo_mult() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_mult_def">eval_async_algo_mult_def() (kp.Manager method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_str">eval_async_algo_str() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_algo_str_def">eval_async_algo_str_def() (kp.Manager method)</a>
@@ -473,10 +470,6 @@
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_copy">eval_async_tensor_copy() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_copy_def">eval_async_tensor_copy_def() (kp.Manager method)</a>
-</li>
-      <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_create">eval_async_tensor_create() (kp.Manager method)</a>
-</li>
-      <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_create_def">eval_async_tensor_create_def() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_async_tensor_sync_device">eval_async_tensor_sync_device() (kp.Manager method)</a>
 </li>
@@ -498,8 +491,6 @@
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_tensor_copy_def">eval_tensor_copy_def() (kp.Manager method)</a>
 </li>
-      <li><a href="overview/python-reference.html#kp.Manager.eval_tensor_create">eval_tensor_create() (kp.Manager method)</a>
-</li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_tensor_create_def">eval_tensor_create_def() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_tensor_sync_device">eval_tensor_sync_device() (kp.Manager method)</a>
@@ -509,14 +500,6 @@
       <li><a href="overview/python-reference.html#kp.Manager.eval_tensor_sync_local">eval_tensor_sync_local() (kp.Manager method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Manager.eval_tensor_sync_local_def">eval_tensor_sync_local_def() (kp.Manager method)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="G">G</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#kp.Manager.get_create_sequence">get_create_sequence() (kp.Manager method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -563,9 +546,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp7ManagerE">kp::Manager (C++ class)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp7Manager11buildTensorERKNSt6vectorIfEEN6Tensor11TensorTypesE">kp::Manager::buildTensor (C++ function)</a>
-</li>
-      <li><a href="overview/reference.html#_CPPv4N2kp7Manager21createManagedSequenceENSt6stringE8uint32_t">kp::Manager::createManagedSequence (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4N2kp7Manager7destroyENSt10shared_ptrIN2kp6TensorEEE">kp::Manager::destroy (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7destroyENSt10shared_ptrIN2kp8SequenceEEE">[1]</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7destroyENSt6vectorINSt10shared_ptrIN2kp6TensorEEEEE">[2]</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7destroyENSt6vectorINSt10shared_ptrIN2kp8SequenceEEEEE">[3]</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7destroyERKNSt6stringE">[4]</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7destroyERKNSt6vectorINSt6stringEEE">[5]</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4I0DpEN2kp7Manager6evalOpEvNSt6vectorINSt10shared_ptrI6TensorEEEENSt6stringEDpRR5TArgs">kp::Manager::evalOp (C++ function)</a>
 </li>
@@ -579,9 +560,13 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4I0DpEN2kp7Manager13evalOpDefaultEvNSt6vectorINSt10shared_ptrI6TensorEEEEDpRR5TArgs">kp::Manager::evalOpDefault (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp7Manager26getOrCreateManagedSequenceENSt6stringE">kp::Manager::getOrCreateManagedSequence (C++ function)</a>
-</li>
       <li><a href="overview/reference.html#_CPPv4N2kp7Manager7ManagerE8uint32_tRKNSt6vectorI8uint32_tEE">kp::Manager::Manager (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7ManagerENSt10shared_ptrIN2vk8InstanceEEENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEE8uint32_t">[1]</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7ManagerEv">[2]</a>
+</li>
+      <li><a href="overview/reference.html#_CPPv4N2kp7Manager7rebuildENSt10shared_ptrIN2kp6TensorEEEb">kp::Manager::rebuild (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager7rebuildENSt6vectorINSt10shared_ptrIN2kp6TensorEEEEEb">[1]</a>
+</li>
+      <li><a href="overview/reference.html#_CPPv4N2kp7Manager8sequenceENSt6stringE8uint32_t">kp::Manager::sequence (C++ function)</a>
+</li>
+      <li><a href="overview/reference.html#_CPPv4N2kp7Manager6tensorERKNSt6vectorIfEEN6Tensor11TensorTypesEb">kp::Manager::tensor (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp7ManagerD0Ev">kp::Manager::~Manager (C++ function)</a>
 </li>
@@ -605,7 +590,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp6OpBase4initEv">kp::OpBase::init (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp6OpBase6OpBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEEb">kp::OpBase::OpBase (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp6OpBase6OpBaseEv">[1]</a>
+      <li><a href="overview/reference.html#_CPPv4N2kp6OpBase6OpBaseENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEERNSt6vectorINSt10shared_ptrI6TensorEEEE">kp::OpBase::OpBase (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp6OpBase6OpBaseEv">[1]</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp6OpBase8postEvalEv">kp::OpBase::postEval (C++ function)</a>
 </li>
@@ -635,28 +620,14 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp12OpTensorCopyD0Ev">kp::OpTensorCopy::~OpTensorCopy (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreateE">kp::OpTensorCreate (C++ class)</a>
-</li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreate4initEv">kp::OpTensorCreate::init (C++ function)</a>
-</li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreate14OpTensorCreateENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE">kp::OpTensorCreate::OpTensorCreate (C++ function)</a>
-</li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreate8postEvalEv">kp::OpTensorCreate::postEval (C++ function)</a>
-</li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreate7preEvalEv">kp::OpTensorCreate::preEval (C++ function)</a>
-</li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreate6recordEv">kp::OpTensorCreate::record (C++ function)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpTensorCreateD0Ev">kp::OpTensorCreate::~OpTensorCreate (C++ function)</a>
-</li>
       <li><a href="overview/reference.html#_CPPv4N2kp18OpTensorSyncDeviceE">kp::OpTensorSyncDevice (C++ class)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp18OpTensorSyncDevice4initEv">kp::OpTensorSyncDevice::init (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp18OpTensorSyncDevice18OpTensorSyncDeviceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk13CommandBufferEEENSt6vectorINSt10shared_ptrI6TensorEEEE">kp::OpTensorSyncDevice::OpTensorSyncDevice (C++ function)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/reference.html#_CPPv4N2kp18OpTensorSyncDevice8postEvalEv">kp::OpTensorSyncDevice::postEval (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp18OpTensorSyncDevice7preEvalEv">kp::OpTensorSyncDevice::preEval (C++ function)</a>
@@ -729,6 +700,10 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp6Tensor14recordCopyFromENSt10shared_ptrIN2vk13CommandBufferEEENSt10shared_ptrI6TensorEEb">kp::Tensor::recordCopyFrom (C++ function)</a>
 </li>
+      <li><a href="overview/reference.html#_CPPv4N2kp6Tensor29recordCopyFromDeviceToStagingENSt10shared_ptrIN2vk13CommandBufferEEEb">kp::Tensor::recordCopyFromDeviceToStaging (C++ function)</a>
+</li>
+      <li><a href="overview/reference.html#_CPPv4N2kp6Tensor29recordCopyFromStagingToDeviceENSt10shared_ptrIN2vk13CommandBufferEEEb">kp::Tensor::recordCopyFromStagingToDevice (C++ function)</a>
+</li>
       <li><a href="overview/reference.html#_CPPv4N2kp6Tensor7setDataERKNSt6vectorIfEE">kp::Tensor::setData (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp6Tensor5shapeEv">kp::Tensor::shape (C++ function)</a>
@@ -743,7 +718,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE">kp::Tensor::TensorTypes::eDevice (C++ enumerator)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp6Tensor11TensorTypes8eStagingE">kp::Tensor::TensorTypes::eStaging (C++ enumerator)</a>
+      <li><a href="overview/reference.html#_CPPv4N2kp6Tensor11TensorTypes5eHostE">kp::Tensor::TensorTypes::eHost (C++ enumerator)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp6Tensor11TensorTypes8eStorageE">kp::Tensor::TensorTypes::eStorage (C++ enumerator)</a>
 </li>
@@ -788,19 +763,19 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="overview/python-reference.html#kp.Manager.rebuild">rebuild() (kp.Manager method)</a>
+</li>
       <li><a href="overview/python-reference.html#kp.Sequence.record_algo_data">record_algo_data() (kp.Sequence method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Sequence.record_algo_file">record_algo_file() (kp.Sequence method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Sequence.record_algo_lro">record_algo_lro() (kp.Sequence method)</a>
 </li>
-      <li><a href="overview/python-reference.html#kp.Sequence.record_algo_mult">record_algo_mult() (kp.Sequence method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#kp.Sequence.record_tensor_copy">record_tensor_copy() (kp.Sequence method)</a>
+      <li><a href="overview/python-reference.html#kp.Sequence.record_algo_mult">record_algo_mult() (kp.Sequence method)</a>
 </li>
-      <li><a href="overview/python-reference.html#kp.Sequence.record_tensor_create">record_tensor_create() (kp.Sequence method)</a>
+      <li><a href="overview/python-reference.html#kp.Sequence.record_tensor_copy">record_tensor_copy() (kp.Sequence method)</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Sequence.record_tensor_sync_device">record_tensor_sync_device() (kp.Sequence method)</a>
 </li>
@@ -813,6 +788,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#kp.Sequence">Sequence (class in kp)</a>
+</li>
+      <li><a href="overview/python-reference.html#kp.Manager.sequence">sequence() (kp.Manager method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -827,6 +804,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#id0">Tensor (class in kp)</a>, <a href="overview/python-reference.html#kp.Tensor">[1]</a>
+</li>
+      <li><a href="overview/python-reference.html#kp.Manager.tensor">tensor() (kp.Manager method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>

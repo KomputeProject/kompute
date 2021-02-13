@@ -274,6 +274,13 @@
     </li>
     <li class="md-nav__item">
     
+    
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Python Documentation:</span></span>
     
     </li>
@@ -414,14 +421,47 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dt id="kp.Manager">
 <em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Manager</code><a class="headerlink" href="#kp.Manager" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
-<dt id="kp.Manager.build_tensor">
-<code class="sig-name descname">build_tensor</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager, data: List[float], tensorType: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#kp.Manager.build_tensor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build and initialise tensor</p>
-</dd></dl>
-<dl class="py method">
-<dt id="kp.Manager.create_sequence">
-<code class="sig-name descname">create_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">queueIndex</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#kp.Manager.create_sequence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a sequence with specific name and specified index of available queues</p>
+<dt id="kp.Manager.destroy">
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>destroy(self: kp.Manager, tensor: kp.Tensor) -&gt; None</p></li>
+</ol>
+<p>Destroy owned Vulkan GPU resources and free GPU memory for single
+tensor.</p>
+<p>@param tensors Single tensor to rebuild</p>
+<ol class="arabic simple" start="2">
+<li><p>destroy(self: kp.Manager, tensors: List[kp.Tensor]) -&gt; None</p></li>
+</ol>
+<p>Destroy owned Vulkan GPU resources and free GPU memory for vector of
+tensors.</p>
+<p>@param tensors Single tensor to rebuild</p>
+<ol class="arabic simple" start="3">
+<li><p>destroy(self: kp.Manager, sequences: List[kp.Sequence]) -&gt; None</p></li>
+</ol>
+<p>Destroy owned Vulkan GPU resources and free GPU memory for vector of
+sequences. Destroying by sequence name is more efficent and hence
+recommended instead of by object.</p>
+<p>@param sequences Vector for shared ptrs with sequences to destroy</p>
+<ol class="arabic simple" start="4">
+<li><p>destroy(self: kp.Manager, sequence: kp.Sequence) -&gt; None</p></li>
+</ol>
+<p>Destroy owned Vulkan GPU resources and free GPU memory for single
+sequence. Destroying by sequence name is more efficent and hence
+recommended instead of by object.</p>
+<p>@param sequences Single sequence to rebuild</p>
+<ol class="arabic simple" start="5">
+<li><p>destroy(self: kp.Manager, sequenceName: str) -&gt; None</p></li>
+</ol>
+<p>Destroy owned Vulkan GPU resources and free GPU memory for sequence by
+name.</p>
+<p>@param sequenceName Single name of named sequence to destroy</p>
+<ol class="arabic simple" start="6">
+<li><p>destroy(self: kp.Manager, sequenceNames: List[str]) -&gt; None</p></li>
+</ol>
+<p>Destroy owned Vulkan GPU resources and free GPU memory for sequences
+using vector of named sequence names.</p>
+<p>@param sequenceName Vector of sequence names to destroy</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_algo_data">
@@ -566,16 +606,6 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dd><p>Evaluates asynchronously operation to copy one tensor to one or many tensors with anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
-<dt id="kp.Manager.eval_async_tensor_create">
-<code class="sig-name descname">eval_async_tensor_create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_tensor_create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates asynchronously operation to create and initialise tensor GPU memory and buffer with explicitly named Sequence</p>
-</dd></dl>
-<dl class="py method">
-<dt id="kp.Manager.eval_async_tensor_create_def">
-<code class="sig-name descname">eval_async_tensor_create_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_tensor_create_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates asynchronously operation to create and initialise tensor GPU memory and buffer with anonymous Sequence</p>
-</dd></dl>
-<dl class="py method">
 <dt id="kp.Manager.eval_async_tensor_sync_device">
 <code class="sig-name descname">eval_async_tensor_sync_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_tensor_sync_device" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluates asynchronously operation to sync tensor from local memory to GPU memory with explicitly named Sequence</p>
@@ -588,12 +618,12 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dl class="py method">
 <dt id="kp.Manager.eval_async_tensor_sync_local">
 <code class="sig-name descname">eval_async_tensor_sync_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_tensor_sync_local" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory using staging tensors with explicitly named Sequence</p>
+<dd><p>Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_async_tensor_sync_local_def">
 <code class="sig-name descname">eval_async_tensor_sync_local_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_async_tensor_sync_local_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory using staging tensors with anonymous Sequence</p>
+<dd><p>Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_await">
@@ -616,14 +646,9 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dd><p>Evaluates operation to copy one tensor to one or many tensors with new anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
-<dt id="kp.Manager.eval_tensor_create">
-<code class="sig-name descname">eval_tensor_create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_tensor_create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates operation to create and initialise tensor GPU memory and buffer with explicitly named Sequence</p>
-</dd></dl>
-<dl class="py method">
 <dt id="kp.Manager.eval_tensor_create_def">
-<code class="sig-name descname">eval_tensor_create_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_tensor_create_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates operation to create and initialise tensor GPU memory and buffer with new anonymous Sequence</p>
+<code class="sig-name descname">eval_tensor_create_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">syncDataToGPU</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_tensor_create_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporary backwards compatibility for tensor creation function which will be removed in the next version.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_tensor_sync_device">
@@ -638,17 +663,35 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dl class="py method">
 <dt id="kp.Manager.eval_tensor_sync_local">
 <code class="sig-name descname">eval_tensor_sync_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_tensor_sync_local" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates operation to sync tensor(s) from GPU memory to local memory using staging tensors with explicitly named Sequence</p>
+<dd><p>Evaluates operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.eval_tensor_sync_local_def">
 <code class="sig-name descname">eval_tensor_sync_local_def</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Manager.eval_tensor_sync_local_def" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluates operation to sync tensor(s) from GPU memory to local memory using staging tensors with new anonymous Sequence</p>
+<dd><p>Evaluates operation to sync tensor(s) from GPU memory to local memory with new anonymous Sequence</p>
 </dd></dl>
 <dl class="py method">
-<dt id="kp.Manager.get_create_sequence">
-<code class="sig-name descname">get_create_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#kp.Manager.get_create_sequence" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a Sequence or create a new one with given name</p>
+<dt id="kp.Manager.rebuild">
+<code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.rebuild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>rebuild(self: kp.Manager, tensors: List[kp.Tensor], syncDataToGPU: bool = True) -&gt; None</p></li>
+</ol>
+<p>Build and initialise list of tensors</p>
+<ol class="arabic simple" start="2">
+<li><p>rebuild(self: kp.Manager, tensor: kp.Tensor, syncDataToGPU: bool = True) -&gt; None</p></li>
+</ol>
+<p>Build and initialise tensor</p>
+</dd></dl>
+<dl class="py method">
+<dt id="kp.Manager.sequence">
+<code class="sig-name descname">sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Manager" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">''</span></em>, <em class="sig-param"><span class="n">queueIndex</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#kp.Manager.sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get or create a sequence with specific name and specified index of available queues</p>
+</dd></dl>
+<dl class="py method">
+<dt id="kp.Manager.tensor">
+<code class="sig-name descname">tensor</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager, data: List[float], tensorType: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;, syncDataToGPU: bool = True</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#kp.Manager.tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build and initialise tensor</p>
 </dd></dl>
 </dd></dl>
 
@@ -661,47 +704,64 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dd><dl class="py method">
 <dt id="kp.Sequence.begin">
 <code class="sig-name descname">begin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.begin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clears previous commands and starts recording commands in sequence which can be run in batch.</p>
+<dd><p>Begins recording commands for commands to be submitted into the
+command buffer.</p>
+<p>@return Boolean stating whether execution was successful.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.end">
 <code class="sig-name descname">end</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.end" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stops listening and recording for new commands.</p>
+<dd><p>Ends the recording and stops recording commands when the record
+command is sent.</p>
+<p>@return Boolean stating whether execution was successful.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.eval">
 <code class="sig-name descname">eval</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.eval" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes the currently recorded commands synchronously by waiting on Vulkan Fence.</p>
+<dd><p>Eval sends all the recorded and stored operations in the vector of
+operations into the gpu as a submit job with a barrier.</p>
+<p>@return Boolean stating whether execution was successful.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.eval_async">
 <code class="sig-name descname">eval_async</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.eval_async" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes the currently recorded commands asynchronously.</p>
+<dd><p>Eval Async sends all the recorded and stored operations in the vector
+of operations into the gpu as a submit job with a barrier. EvalAwait()
+must be called after to ensure the sequence is terminated correctly.</p>
+<p>@return Boolean stating whether execution was successful.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.eval_await">
 <code class="sig-name descname">eval_await</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.eval_await" title="Permalink to this definition">¶</a></dt>
-<dd><p>Waits until the execution finishes using Vulkan Fence.</p>
+<dd><p>Eval Await waits for the fence to finish processing and then once it
+finishes, it runs the postEval of all operations.</p>
+<p>@param waitFor Number of milliseconds to wait before timing out.
+@return Boolean stating whether execution was successful.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.init">
 <code class="sig-name descname">init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Sequence.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialises Vulkan resources within sequence using provided device.</p>
+<dd><p>Initialises sequence including the creation of the command pool and
+the command buffer.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.is_init">
 <code class="sig-name descname">is_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.is_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the Sequence has been initialized</p>
+<dd><p>Returns true if the sequence has been successfully initialised.</p>
+<p>@return Boolean stating if sequence has been initialised.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.is_rec">
 <code class="sig-name descname">is_rec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.is_rec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks whether the Sequence is currently in recording mode.</p>
+<dd><p>Returns true if the sequence is currently in recording activated.</p>
+<p>@return Boolean stating if recording ongoing.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.is_running">
 <code class="sig-name descname">is_running</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.is_running" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks whether the Sequence operations are currently still executing.</p>
+<dd><p>Returns true if the sequence is currently running - mostly used for
+async workloads.</p>
+<p>@return Boolean stating if currently running.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.record_algo_data">
@@ -726,12 +786,13 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dl class="py method">
 <dt id="kp.Sequence.record_tensor_copy">
 <code class="sig-name descname">record_tensor_copy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_tensor_copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Records operation to copy one tensor to one or many tensors</p>
-</dd></dl>
-<dl class="py method">
-<dt id="kp.Sequence.record_tensor_create">
-<code class="sig-name descname">record_tensor_create</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_tensor_create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Records operation to create and initialise tensor GPU memory and buffer</p>
+<dd><p>Record function for operation to be added to the GPU queue in batch.
+This template requires classes to be derived from the OpBase class.
+This function also requires the Sequence to be recording, otherwise it
+will not be able to add the operation.</p>
+<p>@param tensors Vector of tensors to use for the operation @param TArgs
+Template parameters that are used to initialise operation which allows
+for extensible configurations on initialisation.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Sequence.record_tensor_sync_device">
@@ -741,7 +802,7 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 <dl class="py method">
 <dt id="kp.Sequence.record_tensor_sync_local">
 <code class="sig-name descname">record_tensor_sync_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a></span></em>, <em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id0" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Sequence.record_tensor_sync_local" title="Permalink to this definition">¶</a></dt>
-<dd><p>Records operation to sync tensor(s) from GPU memory to local memory using staging tensors</p>
+<dd><p>Records operation to sync tensor(s) from GPU memory to local memory</p>
 </dd></dl>
 </dd></dl>
 
@@ -867,7 +928,7 @@ shader storage).</p>
 <p>Members:</p>
 <blockquote>
 <div><p>device : Tensor holding data in GPU memory.</p>
-<p>staging : Tensor used for transfer of data to device.</p>
+<p>host : Tensor used for CPU visible GPU data.</p>
 <p>storage : Tensor with host visible gpu memory.</p>
 </div></blockquote>
 <dl class="py method">
