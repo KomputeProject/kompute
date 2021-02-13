@@ -179,6 +179,9 @@ generate_python_docstrings:
 install_python_reqs:
 	python3 -m pip install -r scripts/requirements.txt
 
+install_lcov:
+	sudo apt install lcov -y
+
 build_shaders:
 	python3 scripts/convert_shaders.py \
 		--shader-path shaders/glsl \

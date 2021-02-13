@@ -21,6 +21,8 @@ set(DOXYFILE_IN
     ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
 set(DOXYFILE_OUT
     ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+set(CODECOV_INDEX_FILE
+    ${DOXYGEN_OUTPUT_DIR/html/codecov/index.html})
 
 # Perform replacement with cmake vars inside Doxifine.in
 configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
@@ -33,8 +35,13 @@ add_custom_command(
     COMMENT "Generating docs"
 )
 
-add_custom_target(gendoxygen ALL 
-    DEPENDS ${DOXYGEN_INDEX_FILE})
+if(KP_OPT_DOCS_GEN_CODECOV)
+    add_custom_target(gendoxygen ALL 
+        DEPENDS ${DOXYGEN_INDEX_FILE} ${DOXYGEN_OUTPUT_DIR})
+else()
+    add_custom_target(gendoxygen ALL 
+        DEPENDS ${DOXYGEN_INDEX_FILE})
+endif()
 
 
 #####################################################
