@@ -20,6 +20,7 @@ Documentation Index (as per sidebar)
     C++ Converting GLSL/HLSL Shaders to Cpp Headers <overview/shaders-to-headers>
     C++ Extending Kompute with Custom Operations <overview/custom-operations>
     C++ Class Documentation & Reference <overview/reference>
+    C++ Code Coverage <https://kompute.cc/codecov/>
 
 .. toctree::
     :titlesonly:
