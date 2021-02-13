@@ -177,6 +177,13 @@ PYBIND11_MODULE(kp, m) {
                 py::arg("sequenceName"), DOC(kp, Manager, destroy, 5))
         .def("destroy", py::overload_cast<const std::vector<std::string>&>(&kp::Manager::destroy),
                 py::arg("sequenceNames"), DOC(kp, Manager, destroy, 6))
+        // temporary backwards compatibility
+        .def("eval_tensor_create_def",[](kp::Manager& self, std::vector<std::shared_ptr<kp::Tensor>> tensors, bool syncDataToGPU) -> void {
+                    kp_error("IMPORTANT: eval_tensor_create_def is depricated! Please use Manager.rebuild instead as function will be removed soon.");
+                    self.rebuild(tensors, syncDataToGPU);
+                },
+                py::arg("tensors"), py::arg("syncDataToGPU") = true,
+                "Temporary backwards compatibility for tensor creation function which will be removed in the next version.")
 
         // Await functions
         .def("eval_await", &kp::Manager::evalOpAwait,
