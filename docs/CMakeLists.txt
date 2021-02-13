@@ -21,6 +21,14 @@ set(DOXYFILE_IN
     ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
 set(DOXYFILE_OUT
     ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+set(SPHINX_SOURCE
+    ${CMAKE_CURRENT_SOURCE_DIR})
+set(SPHINX_BUILD
+    ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
+set(CODECOV_DOCS_DIR
+    ${SPHINX_BUILD}/codecov/)
+set(CODECOV_DOCS_INDEX_FILE
+    ${CODECOV_DOCS_DIR}/index.html})
 
 # Perform replacement with cmake vars inside Doxifine.in
 configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
@@ -33,18 +41,31 @@ add_custom_command(
     COMMENT "Generating docs"
 )
 
-add_custom_target(gendoxygen ALL 
-    DEPENDS ${DOXYGEN_INDEX_FILE})
+if(KOMPUTE_OPT_CODE_COVERAGE)
+    add_custom_target(gendoxygen ALL 
+        DEPENDS ${DOXYGEN_INDEX_FILE} ${CODECOV_DOCS_INDEX_FILE})
+else()
+    add_custom_target(gendoxygen ALL 
+        DEPENDS ${DOXYGEN_INDEX_FILE})
+endif()
 
+#####################################################
+########### CODECOV DOCS ###############
+#####################################################
+
+add_custom_command(
+    OUTPUT ${CODECOV_DOCS_INDEX_FILE}
+    COMMAND ${CMAKE_COMMAND}
+        -E copy_directory
+        ${CODECOV_DIR_HTML}
+        ${CODECOV_DOCS_DIR}
+    DEPENDS codecov_genhtml)
 
 #####################################################
 ########### Sphinx ###############
 #####################################################
 
 find_package(Sphinx REQUIRED)
-
-set(SPHINX_SOURCE ${CMAKE_CURRENT_SOURCE_DIR})
-set(SPHINX_BUILD ${CMAKE_CURRENT_BINARY_DIR}/sphinx)
 
 add_custom_target(gensphinx ALL
     COMMAND

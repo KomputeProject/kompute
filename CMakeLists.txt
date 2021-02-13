@@ -8,6 +8,7 @@ set(CMAKE_VERBOSE_MAKEFILE on)
 
 # Enable or disable targets
 option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 0)
+option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" 0)
 option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 0)
 option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" 0)
 option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" 0)
@@ -40,6 +41,21 @@ endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 ${KOMPUTE_EXTRA_CXX_FLAGS} -DUSE_DEBUG_EXTENTIONS")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EXTRA_CXX_FLAGS}")
+
+if(KOMPUTE_OPT_CODE_COVERAGE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage --coverage")
+
+    set(CODECOV_DIR
+        ${CMAKE_CURRENT_BINARY_DIR}/codecov/)
+    set(CODECOV_DIR_LCOV
+        ${CODECOV_DIR}lcov/)
+    set(CODECOV_FILENAME_LCOV_INFO
+        lcov.info)
+    set(CODECOV_FILENAME_LCOV_INFO_FULL
+        lcov_full.info)
+    set(CODECOV_DIR_HTML
+        ${CODECOV_DIR}html/)
+endif()
 
 # Allow scripts to call main kompute Makefile
 function(kompute_make KOMPUTE_MAKE_TARGET)

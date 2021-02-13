@@ -35,4 +35,57 @@ target_link_libraries(test_kompute PRIVATE kompute)
 
 add_test(NAME test_kompute COMMAND test_kompute)
 
+#####################################################
+#################### CODECOV  #######################
+#####################################################
+
+if (KOMPUTE_OPT_CODE_COVERAGE)
+    if(NOT UNIX)
+        message(
+            FATAL_ERROR
+            "KOMPUTE_OPT_CODE_COVERAGE can only be enabled in unix based systems due to limitation on gcov")
+    endif()
+
+    add_custom_target(codecov_run_tests
+        COMMAND make -C ${PROJECT_SOURCE_DIR} mk_run_tests
+        DEPENDS test_kompute)
+
+    add_custom_target(codecov_copy_files
+        COMMAND ${CMAKE_COMMAND}
+            -E copy_directory
+            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/test_kompute.dir/
+            ${CODECOV_DIR}
+        COMMAND ${CMAKE_COMMAND}
+            -E copy_directory
+            ${CMAKE_CURRENT_BINARY_DIR}/../src/CMakeFiles/kompute.dir/
+            ${CODECOV_DIR}
+        DEPENDS test_kompute codecov_run_tests)
+
+    add_custom_target(codecov_gcov
+        COMMAND gcov
+            -b -c "*.gcno"
+        WORKING_DIRECTORY ${CODECOV_DIR}
+        DEPENDS codecov_copy_files)
+
+    add_custom_target(codecov_lcov
+        COMMAND lcov
+            --capture
+            -o ${CODECOV_FILENAME_LCOV_INFO_FULL}
+            -d .
+        COMMAND lcov
+            --extract
+            ${CODECOV_FILENAME_LCOV_INFO_FULL}
+            -o ${CODECOV_FILENAME_LCOV_INFO}
+            -d .
+            "*/src/*" "*/test/*"
+        WORKING_DIRECTORY ${CODECOV_DIR}
+        DEPENDS codecov_gcov)
+
+    add_custom_target(codecov_genhtml
+        COMMAND genhtml
+            ${CODECOV_FILENAME_LCOV_INFO}
+            --output-directory ${CODECOV_DIR_HTML}
+        WORKING_DIRECTORY ${CODECOV_DIR}
+        DEPENDS codecov_lcov)
+endif()
 
