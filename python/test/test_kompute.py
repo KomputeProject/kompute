@@ -169,3 +169,25 @@ def test_workgroup():
     assert tensor_a.is_init() == False
     assert tensor_b.is_init() == False
 
+
+def test_tensor_rebuild_backwards_compat():
+    """
+    Test basic OpMult operation
+    """
+
+    tensor_in_a = kp.Tensor([2, 2, 2])
+    tensor_in_b = kp.Tensor([1, 2, 3])
+    tensor_out = kp.Tensor([0, 0, 0])
+
+    mgr = kp.Manager()
+
+    mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+
+    mgr.eval_algo_mult_def([tensor_in_a, tensor_in_b, tensor_out])
+
+    mgr.eval_tensor_sync_local_def([tensor_out])
+
+    assert tensor_out.data() == [2.0, 4.0, 6.0]
+    assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
+
+
