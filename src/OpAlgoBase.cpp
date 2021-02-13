@@ -13,7 +13,8 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::Device> device,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
-                       KomputeWorkgroup komputeWorkgroup)
+                       KomputeWorkgroup komputeWorkgroup,
+                       const Algorithm::SpecializationContainer& specializationConstants)
   : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}",
@@ -37,7 +38,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                 this->mKomputeWorkgroup.y,
                 this->mKomputeWorkgroup.z);
 
-    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
+    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer, specializationConstants);
 }
 
 OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -45,8 +46,9 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
                        std::string shaderFilePath,
-                       KomputeWorkgroup komputeWorkgroup)
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup)
+                       KomputeWorkgroup komputeWorkgroup,
+                       const Algorithm::SpecializationContainer& specializationConstants)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
 {
     SPDLOG_DEBUG(
       "Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}",
@@ -60,8 +62,9 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
                        const std::vector<char>& shaderDataRaw,
-                       KomputeWorkgroup komputeWorkgroup)
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup)
+                       KomputeWorkgroup komputeWorkgroup,
+                       const Algorithm::SpecializationContainer& specializationConstants)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shader raw "
                  "data length: {}",
