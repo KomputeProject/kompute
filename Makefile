@@ -69,6 +69,7 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DSPDLOG_INSTALL=1 \
+		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
 		-G "Unix Makefiles"
 
 mk_build_all:
