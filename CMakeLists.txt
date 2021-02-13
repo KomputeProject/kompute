@@ -44,6 +44,17 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EX
 
 if(KOMPUTE_OPT_CODE_COVERAGE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage --coverage")
+
+    set(CODECOV_DIR
+        ${CMAKE_CURRENT_BINARY_DIR}/codecov/)
+    set(CODECOV_DIR_LCOV
+        ${CODECOV_DIR}lcov/)
+    set(CODECOV_FILENAME_LCOV_INFO
+        lcov.info)
+    set(CODECOV_FILENAME_LCOV_INFO_FULL
+        lcov_full.info)
+    set(CODECOV_DIR_HTML
+        ${CODECOV_DIR}html/)
 endif()
 
 # Allow scripts to call main kompute Makefile
