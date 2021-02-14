@@ -379,13 +379,13 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmSpecialized)
 
             sq = mgr.sequence();
 
-            auto spec = std::vector<float>({5.0, 0.3});
+            auto spec = kp::Constants({5.0, 0.3});
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
               { tensorA, tensorB },
               std::vector<char>(shader.begin(), shader.end()),
-              std::array<uint32_t, 3>(), spec);
+              kp::Workgroup(), spec);
             sq->end();
 
             sq->eval();
