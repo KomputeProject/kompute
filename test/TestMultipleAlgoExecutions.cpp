@@ -385,7 +385,7 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmSpecialized)
             sq->record<kp::OpAlgoBase>(
               { tensorA, tensorB },
               std::vector<char>(shader.begin(), shader.end()),
-              kp::OpAlgoBase::KomputeWorkgroup(), spec);
+              std::array<uint32_t, 3>(), spec);
             sq->end();
 
             sq->eval();
