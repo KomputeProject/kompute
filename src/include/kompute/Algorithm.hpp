@@ -28,7 +28,7 @@ public:
      */
     Algorithm(std::shared_ptr<vk::Device> device,
               std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              const std::vector<float>& specializationConstants = {});
+              const Constants& specializationConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -80,7 +80,7 @@ private:
     bool mFreePipeline = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<float> mSpecializationConstants;
+    Constants mSpecializationConstants;
 
     // Create util functions
     void createShaderModule(const std::vector<char>& shaderFileData);

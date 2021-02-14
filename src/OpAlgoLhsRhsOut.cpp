@@ -14,7 +14,7 @@ OpAlgoLhsRhsOut::OpAlgoLhsRhsOut(
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors,
-  const std::array<uint32_t, 3>& komputeWorkgroup)
+  const Workgroup& komputeWorkgroup)
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in
   // a granular way.

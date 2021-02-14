@@ -11,7 +11,7 @@ Algorithm::Algorithm()
 
 Algorithm::Algorithm(std::shared_ptr<vk::Device> device,
                      std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                     const std::vector<float>& specializationConstants)
+                     const Constants& specializationConstants)
 {
     SPDLOG_DEBUG("Kompute Algorithm Constructor with device");
 

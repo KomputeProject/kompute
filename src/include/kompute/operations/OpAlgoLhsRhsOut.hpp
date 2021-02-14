@@ -40,7 +40,7 @@ class OpAlgoLhsRhsOut : public OpAlgoBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors,
-           const std::array<uint32_t, 3>& komputeWorkgroup = {});
+           const Workgroup& komputeWorkgroup = {});
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
