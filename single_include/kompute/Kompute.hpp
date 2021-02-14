@@ -1647,7 +1647,7 @@ public:
      */
     Algorithm(std::shared_ptr<vk::Device> device,
               std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              const std::vector<float>& specializationConstants = {});
+              const Constants& specializationConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -1699,7 +1699,7 @@ private:
     bool mFreePipeline = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<float> mSpecializationConstants;
+    Constants mSpecializationConstants;
 
     // Create util functions
     void createShaderModule(const std::vector<char>& shaderFileData);
@@ -1746,7 +1746,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            const Workgroup& komputeWorkgroup = {},
-           const std::vector<float>& specializationConstants = {});
+           const Constants& specializationConstants = {});
 
     /**
      * Constructor that enables a file to be passed to the operation with
@@ -1766,7 +1766,7 @@ class OpAlgoBase : public OpBase
            std::vector<std::shared_ptr<Tensor>>& tensors,
            std::string shaderFilePath,
            const Workgroup& komputeWorkgroup = {},
-           const std::vector<float>& specializationConstants = {});
+           const Constants& specializationConstants = {});
 
     /**
      * Constructor that enables raw shader data to be passed to the main operation
@@ -1785,7 +1785,7 @@ class OpAlgoBase : public OpBase
            std::vector<std::shared_ptr<Tensor>>& tensors,
            const std::vector<char>& shaderDataRaw,
            const Workgroup& komputeWorkgroup = {},
-           const std::vector<float>& specializationConstants = {});
+           const Constants& specializationConstants = {});
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
