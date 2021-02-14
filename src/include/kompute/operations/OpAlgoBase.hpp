@@ -22,11 +22,6 @@ namespace kp {
 class OpAlgoBase : public OpBase
 {
   public:
-    struct KomputeWorkgroup {
-        uint32_t x;
-        uint32_t y;
-        uint32_t z;
-    };
 
     /**
      *  Base constructor, should not be used unless explicitly intended.
@@ -49,7 +44,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           KomputeWorkgroup komputeWorkgroup = {},
+           const std::array<uint32_t, 3>& komputeWorkgroup = {},
            const std::vector<float>& specializationConstants = {});
 
     /**
@@ -69,7 +64,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            std::string shaderFilePath,
-           KomputeWorkgroup komputeWorkgroup = {},
+           const std::array<uint32_t, 3>& komputeWorkgroup = {},
            const std::vector<float>& specializationConstants = {});
 
     /**
@@ -88,7 +83,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            const std::vector<char>& shaderDataRaw,
-           KomputeWorkgroup komputeWorkgroup = {},
+           const std::array<uint32_t, 3>& komputeWorkgroup = {},
            const std::vector<float>& specializationConstants = {});
 
     /**
@@ -137,7 +132,7 @@ class OpAlgoBase : public OpBase
 
     // -------------- ALWAYS OWNED RESOURCES
 
-    KomputeWorkgroup mKomputeWorkgroup;
+    std::array<uint32_t, 3> mKomputeWorkgroup;
 
     std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
     std::vector<char> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
