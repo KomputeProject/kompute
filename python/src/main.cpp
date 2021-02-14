@@ -11,6 +11,8 @@ namespace py = pybind11;
 py::object kp_debug, kp_info, kp_warning, kp_error;
 
 PYBIND11_MODULE(kp, m) {
+    spdlog::set_level(
+      static_cast<spdlog::level::level_enum>(0));
 
     // The logging modules are used in the Kompute.hpp file
     py::module_ logging  = py::module_::import("logging");
@@ -110,38 +112,27 @@ PYBIND11_MODULE(kp, m) {
             "Records operation to sync tensor from local memory to GPU memory")
         .def("record_tensor_sync_local", &kp::Sequence::record<kp::OpTensorSyncLocal>,
             "Records operation to sync tensor(s) from GPU memory to local memory")
-        .def("record_algo_mult", &kp::Sequence::record<kp::OpMult>,
-            "Records operation to run multiplication compute shader to two input tensors and an output tensor")
-        .def("record_algo_file", [](kp::Sequence &self, 
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    const std::string& file_path,
-                                    std::tuple<uint32_t,uint32_t,uint32_t> work_group) -> bool {
-                const kp::OpAlgoBase::KomputeWorkgroup wgroup{
-                    std::get<0>(work_group), std::get<1>(work_group), std::get<2>(work_group),
-                };
-                return self.record<kp::OpAlgoBase>(tensors, file_path, wgroup);
-            },
-            "Records an operation using a custom shader provided from a shader path",
-            py::arg("tensors"), py::arg("file_path"), py::arg("work_group") = std::make_tuple(0,0,0)  )
+        .def("record_algo_file", &kp::Sequence::record<
+                                    kp::OpAlgoBase,
+                                    const std::string&,
+                                    kp::Workgroup,
+                                    kp::Constants>,
+        "Records an operation using a custom shader provided from a shader path",
+            py::arg("tensors"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         .def("record_algo_data", [](kp::Sequence &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     py::bytes &bytes,
-                                    std::tuple<uint32_t,uint32_t,uint32_t> work_group) -> bool {
+                                    kp::Workgroup workgroup,
+                                    kp::Constants constants) -> bool {
                 // Bytes have to be converted into std::vector
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
-                const kp::OpAlgoBase::KomputeWorkgroup wgroup{
-                    std::get<0>(work_group), std::get<1>(work_group), std::get<2>(work_group),
-                };
                 return self.record<kp::OpAlgoBase>(
-                    tensors, std::vector<char>(data, data + length), wgroup
-                );
+                    tensors, std::vector<char>(data, data + length), workgroup, constants);
             },
             "Records an operation using a custom shader provided as spirv bytes",
-            py::arg("tensors"), py::arg("bytes"), py::arg("work_group") = std::make_tuple(0,0,0)  )
-        .def("record_algo_lro", &kp::Sequence::record<kp::OpAlgoLhsRhsOut>,
-            "Records operation to run left right out operation with custom shader");
+            py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() );
 
 
     py::class_<kp::Manager>(m, "Manager")
@@ -199,33 +190,27 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates operation to sync tensor from local memory to GPU memory with new anonymous Sequence")
         .def("eval_tensor_sync_local_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncLocal>,
             "Evaluates operation to sync tensor(s) from GPU memory to local memory with new anonymous Sequence")
-        .def("eval_algo_mult_def", &kp::Manager::evalOpDefault<kp::OpMult>,
-            "Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with new anonymous Sequence")
-        .def("eval_algo_file_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, std::string>,
-            "Evaluates an operation using a custom shader provided from a shader path with new anonymous Sequence")
-        .def("eval_algo_str_def", &kp::Manager::evalOpDefault<kp::OpAlgoBase, std::vector<char>>,
-            "Evaluates an operation using a custom shader provided as string provided as list of characters with new anonymous Sequence")
-        .def("eval_algo_str_def", [](kp::Manager &self,
-                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                     const std::string& shader_str){
-                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
-                self.evalOpDefault<kp::OpAlgoBase>(tensors, shader_vec);
-        },
-            "Evaluates an operation using a custom shader provided as string with a new anonymous Sequence")
+        .def("eval_algo_file_def", &kp::Manager::evalOpDefault<
+                                    kp::OpAlgoBase,
+                                    const std::string&,
+                                    kp::Workgroup,
+                                    kp::Constants>,
+            "Evaluates an operation using a custom shader provided from a shader path with new anonymous Sequence",
+            py::arg("tensors"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         .def("eval_algo_data_def", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    py::bytes &bytes) {
+                                    py::bytes &bytes,
+                                    kp::Workgroup workgroup,
+                                    kp::Constants constants) {
                 // Bytes have to be converted into std::vector
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOpDefault<kp::OpAlgoBase>(
-                    tensors,
-                    std::vector<char>(data, data + length));
+                    tensors, std::vector<char>(data, data + length), workgroup, constants);
             },
-            "Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence")
-        .def("eval_algo_lro_def", &kp::Manager::evalOpDefault<kp::OpAlgoLhsRhsOut>,
-            "Evaluates operation to run left right out operation with custom shader with new anonymous Sequence")
+            "Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence",
+            py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         
         // eval
         .def("eval_tensor_copy", &kp::Manager::evalOp<kp::OpTensorCopy>,
@@ -234,36 +219,28 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates operation to sync tensor from local memory to GPU memory with explicitly named Sequence")
         .def("eval_tensor_sync_local", &kp::Manager::evalOp<kp::OpTensorSyncLocal>,
             "Evaluates operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
-        .def("eval_algo_mult", &kp::Manager::evalOp<kp::OpMult>,
-            "Evaluates operation to run multiplication compute shader to two input tensors and an output tensor with explicitly named Sequence")
-        .def("eval_algo_file", &kp::Manager::evalOp<kp::OpAlgoBase, std::string>,
-            "Evaluates an operation using a custom shader provided from a shader path with explicitly named Sequence")
-        .def("eval_algo_str", &kp::Manager::evalOp<kp::OpAlgoBase, std::vector<char>>,
-            "Evaluates an operation using a custom shader provided as string provided as list of characters with explicitly named Sequence")
-        .def("eval_algo_str", [](kp::Manager &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    const std::string& sequenceName,
-                                    const std::string& shader_str) {
-                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
-                self.evalOp<kp::OpAlgoBase>(tensors, sequenceName, shader_vec);
-            },
-            "Evaluates an operation using a custom shader provided as string with explicitly named Sequence")
+        .def("eval_algo_file", &kp::Manager::evalOp<
+                                    kp::OpAlgoBase,
+                                    const std::string&,
+                                    kp::Workgroup,
+                                    kp::Constants>,
+            "Evaluates an operation using a custom shader provided from a shader path with explicitly named Sequence",
+            py::arg("tensors"), py::arg("sequence_name"), py::arg("data"),py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         .def("eval_algo_data", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     std::string sequenceName,
-                                    py::bytes &bytes) {
+                                    py::bytes &bytes,
+                                    kp::Workgroup workgroup,
+                                    kp::Constants constants) {
                 // Bytes have to be converted into std::vector
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOp<kp::OpAlgoBase>(
-                    tensors,
-                    sequenceName,
-                    std::vector<char>(data, data + length));
+                    tensors, sequenceName, std::vector<char>(data, data + length), workgroup, constants);
             },
-            "Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence")
-        .def("eval_algo_lro", &kp::Manager::evalOp<kp::OpAlgoLhsRhsOut>,
-            "Evaluates operation to run left right out operation with custom shader with explicitly named Sequence")
+            "Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence",
+            py::arg("tensors"), py::arg("sequence_name"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         
         // eval async default
         .def("eval_async_tensor_copy_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorCopy>,
@@ -272,33 +249,27 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously operation to sync tensor from local memory to GPU memory with anonymous Sequence")
         .def("eval_async_tensor_sync_local_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncLocal>,
             "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with anonymous Sequence")
-        .def("eval_async_algo_mult_def", &kp::Manager::evalOpAsyncDefault<kp::OpMult>,
-            "Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with anonymous Sequence")
-        .def("eval_async_algo_file_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, std::string>,
-            "Evaluates asynchronously an operation using a custom shader provided from a shader path with anonymous Sequence")
-        .def("eval_async_algo_str_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoBase, std::vector<char>>,
-            "Evaluates Asynchronously an operation using a custom shader provided as string provided as list of characters with new anonymous Sequence")
-        .def("eval_async_algo_str_def", [](kp::Manager &self,
-                                           std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                           const std::string& shader_str) {
-                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
-                self.evalOpAsyncDefault<kp::OpAlgoBase>(tensors, shader_vec);
-            },
-            "Evaluates Asynchronously an operation using a custom shader provided as string with new anonymous Sequence")
+        .def("eval_async_algo_file_def", &kp::Manager::evalOpAsyncDefault<
+                                    kp::OpAlgoBase,
+                                    const std::string&,
+                                    kp::Workgroup,
+                                    kp::Constants>,
+            "Evaluates asynchronously an operation using a custom shader provided from a shader path with anonymous Sequence",
+            py::arg("tensors"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         .def("eval_async_algo_data_def", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    py::bytes &bytes) {
+                                    py::bytes &bytes,
+                                    kp::Workgroup workgroup,
+                                    kp::Constants constants) {
                 // Bytes have to be converted into std::vector
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOpAsyncDefault<kp::OpAlgoBase>(
-                    tensors,
-                    std::vector<char>(data, data + length));
+                    tensors, std::vector<char>(data, data + length), workgroup, constants);
             },
-            "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence")
-        .def("eval_async_algo_lro_def", &kp::Manager::evalOpAsyncDefault<kp::OpAlgoLhsRhsOut>,
-            "Evaluates asynchronously operation to run left right out operation with custom shader with anonymous Sequence")
+            "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence",
+            py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         
         // eval async
         .def("eval_async_tensor_copy", &kp::Manager::evalOpAsync<kp::OpTensorCopy>,
@@ -307,36 +278,28 @@ PYBIND11_MODULE(kp, m) {
             "Evaluates asynchronously operation to sync tensor from local memory to GPU memory with explicitly named Sequence")
         .def("eval_async_tensor_sync_local", &kp::Manager::evalOpAsync<kp::OpTensorSyncLocal>,
             "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
-        .def("eval_async_algo_mult", &kp::Manager::evalOpAsync<kp::OpMult>,
-            "Evaluates asynchronously operation to run multiplication compute shader to two input tensors and an output tensor with explicitly named Sequence")
-        .def("eval_async_algo_file", &kp::Manager::evalOpAsync<kp::OpAlgoBase, std::string>,
-            "Evaluates asynchronously an operation using a custom shader provided from a shader path with explicitly named Sequence")
-        .def("eval_async_algo_str", &kp::Manager::evalOpAsync<kp::OpAlgoBase, std::vector<char>>,
-            "Evaluates Asynchronous an operation using a custom shader provided as string provided as list of characters with explicitly named Sequence")
-        .def("eval_async_algo_str", [](kp::Manager &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    const std::string& sequenceName,
-                                    const std::string& shader_str) {
-                const std::vector<char> shader_vec(shader_str.begin(), shader_str.end());
-                self.evalOpAsync<kp::OpAlgoBase>(tensors, sequenceName, shader_vec);
-            },
-            "Evaluates Asynchronous an operation using a custom shader provided as string with explicitly named Sequence")
+        .def("eval_async_algo_file", &kp::Manager::evalOpAsync<
+                                    kp::OpAlgoBase,
+                                    const std::string&,
+                                    kp::Workgroup,
+                                    kp::Constants>,
+            "Evaluates asynchronously an operation using a custom shader provided from a shader path with explicitly named Sequence",
+            py::arg("tensors"), py::arg("sequence_name"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
         .def("eval_async_algo_data", [](kp::Manager &self,
                                     std::vector<std::shared_ptr<kp::Tensor>> tensors,
                                     std::string sequenceName,
-                                    py::bytes &bytes) {
+                                    py::bytes &bytes,
+                                    kp::Workgroup workgroup,
+                                    kp::Constants constants) {
                 // Bytes have to be converted into std::vector
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOpAsync<kp::OpAlgoBase>(
-                    tensors,
-                    sequenceName,
-                    std::vector<char>(data, data + length));
+                    tensors, sequenceName, std::vector<char>(data, data + length), workgroup, constants);
             },
-            "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence")
-        .def("eval_async_algo_lro", &kp::Manager::evalOpAsync<kp::OpAlgoLhsRhsOut>,
-            "Evaluates asynchronously operation to run left right out operation with custom shader with explicitly named Sequence");
+            "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence",
+            py::arg("tensors"), py::arg("sequence_name"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() );
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
