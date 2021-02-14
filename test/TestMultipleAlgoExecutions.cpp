@@ -358,7 +358,7 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmSpecialized)
 
     std::string shader(R"(
       #version 450
-      layout (constant_id = 0) const uint cOne = 1;
+      layout (constant_id = 0) const float cOne = 1;
       layout (constant_id = 1) const float cTwo = 1;
       layout (local_size_x = 1) in;
       layout(set = 0, binding = 0) buffer a { float pa[]; };
@@ -379,7 +379,7 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmSpecialized)
 
             sq = mgr.sequence();
 
-            auto spec = kp::Algorithm::SpecializationContainer({{(uint32_t)5}, {(float)0.3f}});
+            auto spec = std::vector<float>({5.0, 0.3});
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(

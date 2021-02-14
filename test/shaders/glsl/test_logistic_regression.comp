@@ -1,6 +1,6 @@
 #version 450
 
-layout (constant_id = 0) const uint M = 0;
+layout (constant_id = 0) const float m = 0;
 
 layout (local_size_x = 1) in;
 
@@ -13,8 +13,6 @@ layout(set = 0, binding = 5) buffer bwoutj { float woutj[]; };
 layout(set = 0, binding = 6) buffer bbin { float bin[]; };
 layout(set = 0, binding = 7) buffer bbout { float bout[]; };
 layout(set = 0, binding = 8) buffer blout { float lout[]; };
-
-float m = float(M);
 
 float sigmoid(float z) {
     return 1.0 / (1.0 + exp(-z));
