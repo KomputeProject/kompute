@@ -11,8 +11,6 @@ namespace py = pybind11;
 py::object kp_debug, kp_info, kp_warning, kp_error;
 
 PYBIND11_MODULE(kp, m) {
-    spdlog::set_level(
-      static_cast<spdlog::level::level_enum>(0));
 
     // The logging modules are used in the Kompute.hpp file
     py::module_ logging  = py::module_::import("logging");

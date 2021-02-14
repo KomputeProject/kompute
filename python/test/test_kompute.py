@@ -41,7 +41,7 @@ def test_opalgobase_file():
     mgr = kp.Manager()
     mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
-    shader_path = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
+    shader_path = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv")
 
     mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
 

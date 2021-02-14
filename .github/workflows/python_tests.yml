@@ -25,9 +25,6 @@ jobs:
     - name: test-python
       run: |
         export VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
-        pytest -v python/test/test_array_multiplication.py
-        pytest -v python/test/test_kompute.py -k "test_opmult"
-        pytest -v python/test/test_kompute.py -k "test_tensor_rebuild_backwards_compat"
-        pytest -v python/test/test_logistic_regression.py
+        pytest -v python/test/
 
 
