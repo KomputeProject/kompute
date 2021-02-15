@@ -12,7 +12,7 @@ namespace kp {
 */
 class Algorithm
 {
-  public:
+public:
     /**
         Base constructor for Algorithm. Should not be used unless explicit
        intended.
@@ -27,7 +27,8 @@ class Algorithm
      * shaders
      */
     Algorithm(std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer);
+              std::shared_ptr<vk::CommandBuffer> commandBuffer,
+              const Constants& specializationConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -35,6 +36,7 @@ class Algorithm
      *
      * @param shaderFileData The bytes in spir-v format of the shader
      * @tensorParams The Tensors to be used in the Algorithm / shader for
+     * @specalizationInstalces The specialization parameters to pass to the function
      * processing
      */
     void init(const std::vector<char>& shaderFileData,
@@ -56,7 +58,7 @@ class Algorithm
      */
     void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
 
-  private:
+private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
     std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
@@ -77,9 +79,12 @@ class Algorithm
     std::shared_ptr<vk::Pipeline> mPipeline;
     bool mFreePipeline = false;
 
+    // -------------- ALWAYS OWNED RESOURCES
+    Constants mSpecializationConstants;
+
     // Create util functions
     void createShaderModule(const std::vector<char>& shaderFileData);
-    void createPipeline(std::vector<uint32_t> specializationData = {});
+    void createPipeline();
 
     // Parameters
     void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);

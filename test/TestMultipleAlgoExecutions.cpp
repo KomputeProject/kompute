@@ -350,3 +350,4 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
     }
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 1, 1, 1 }));
 }
+

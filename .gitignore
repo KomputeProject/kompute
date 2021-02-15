@@ -179,9 +179,6 @@ bin/
 external/boost/
 tmp/
 
-# Spirv
-*.spv
-
 # CMake
 build/
 release/

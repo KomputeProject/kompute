@@ -44,7 +44,7 @@ class OpMult : public OpAlgoBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors,
-           KomputeWorkgroup komputeWorkgroup = KomputeWorkgroup())
+           const Workgroup& komputeWorkgroup = {})
       : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
     {
         SPDLOG_DEBUG("Kompute OpMult constructor with params");

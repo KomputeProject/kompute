@@ -22,11 +22,6 @@ namespace kp {
 class OpAlgoBase : public OpBase
 {
   public:
-    struct KomputeWorkgroup {
-        uint32_t x;
-        uint32_t y;
-        uint32_t z;
-    };
 
     /**
      *  Base constructor, should not be used unless explicitly intended.
@@ -49,7 +44,8 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           KomputeWorkgroup komputeWorkgroup = KomputeWorkgroup());
+           const Workgroup& komputeWorkgroup = {},
+           const Constants& specializationConstants = {});
 
     /**
      * Constructor that enables a file to be passed to the operation with
@@ -68,7 +64,8 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            std::string shaderFilePath,
-           KomputeWorkgroup komputeWorkgroup = KomputeWorkgroup());
+           const Workgroup& komputeWorkgroup = {},
+           const Constants& specializationConstants = {});
 
     /**
      * Constructor that enables raw shader data to be passed to the main operation
@@ -86,7 +83,8 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
            const std::vector<char>& shaderDataRaw,
-           KomputeWorkgroup komputeWorkgroup = KomputeWorkgroup());
+           const Workgroup& komputeWorkgroup = {},
+           const Constants& specializationConstants = {});
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -134,7 +132,7 @@ class OpAlgoBase : public OpBase
 
     // -------------- ALWAYS OWNED RESOURCES
 
-    KomputeWorkgroup mKomputeWorkgroup;
+    Workgroup mKomputeWorkgroup;
 
     std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
     std::vector<char> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content

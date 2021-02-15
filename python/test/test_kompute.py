@@ -3,10 +3,11 @@ import os
 import kp
 import numpy as np
 import logging
+import pyshader as ps
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
-def test_opmult():
+def test_opalgobase_file():
     """
     Test basic OpMult operation
     """
@@ -19,43 +20,8 @@ def test_opmult():
 
     mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.eval_algo_mult_def([tensor_in_a, tensor_in_b, tensor_out])
-
-    mgr.eval_tensor_sync_local_def([tensor_out])
-
-    assert tensor_out.data() == [2.0, 4.0, 6.0]
-    assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
-
-def test_opalgobase_data():
-    """
-    Test basic OpAlgoBase operation
-    """
-
-    tensor_in_a = kp.Tensor([2, 2, 2])
-    tensor_in_b = kp.Tensor([1, 2, 3])
-    tensor_out = kp.Tensor([0, 0, 0])
-
-    mgr = kp.Manager()
-
-    shaderData = """
-        #version 450
-
-        layout (local_size_x = 1) in;
-
-        // The input rebuild bind index is relative to index in parameter passed
-        layout(set = 0, binding = 0) buffer bina { float tina[]; };
-        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
-        layout(set = 0, binding = 2) buffer bout { float tout[]; };
-
-        void main() {
-            uint index = gl_GlobalInvocationID.x;
-            tout[index] = tina[index] * tinb[index];
-        }
-    """
-
-    mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
-
-    mgr.eval_algo_str_def([tensor_in_a, tensor_in_b, tensor_out], shaderData)
+    shader_path = os.path.abspath(os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv"))
+    mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 
@@ -73,12 +39,11 @@ def test_opalgobase_file():
     tensor_out = kp.Tensor([0, 0, 0])
 
     mgr = kp.Manager()
-
-    shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
-
     mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+    shader_path = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv")
+
+    mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 
@@ -96,8 +61,8 @@ def test_sequence():
 
     mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
-    shaderFilePath = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp")
-    mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shaderFilePath)
+    shader_path = os.path.abspath(os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv"))
+    mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
 
     mgr.eval_await_def()
 
@@ -131,27 +96,19 @@ def test_workgroup():
 
     mgr.rebuild([tensor_a, tensor_b])
 
-    shader_src = """
-        #version 450
-
-        layout (local_size_x = 1) in;
-
-        // The input rebuild bind index is relative to index in parameter passed
-        layout(set = 0, binding = 0) writeonly buffer bout  { float toutx[]; };
-        layout(set = 0, binding = 1) writeonly buffer bout2 { float touty[]; };
-
-        void main() {
-            uint index   = gl_WorkGroupID.x*gl_NumWorkGroups.y + gl_WorkGroupID.y;
-
-            toutx[index] = gl_GlobalInvocationID.x;
-            touty[index] = gl_GlobalInvocationID.y;
-        }
-    """
-    shader_src = bytes(shader_src, encoding='utf8')
+    @ps.python2shader
+    def compute_shader_wg(gl_idx=("input", "GlobalInvocationId", ps.ivec3),
+                          gl_wg_id=("input", "WorkgroupId", ps.ivec3),
+                          gl_wg_num=("input", "NumWorkgroups", ps.ivec3),
+                          data1=("buffer", 0, ps.Array(ps.f32)),
+                          data2=("buffer", 1, ps.Array(ps.f32))):
+        i = gl_wg_id.x * gl_wg_num.y + gl_wg_id.y
+        data1[i] = f32(gl_idx.x)
+        data2[i] = f32(gl_idx.y)
 
     seq = mgr.sequence("new")
     seq.begin()
-    seq.record_algo_data([tensor_a, tensor_b], shader_src, (16,8,1))
+    seq.record_algo_data([tensor_a, tensor_b], compute_shader_wg.to_spirv(), workgroup=(16,8,1))
     seq.end()
     seq.eval()
 
@@ -160,6 +117,9 @@ def test_workgroup():
     assert seq.is_init() == False
 
     mgr.eval_tensor_sync_local_def([tensor_a, tensor_b])
+
+    print(tensor_a.numpy())
+    print(tensor_b.numpy())
 
     assert np.all(tensor_a.numpy() == np.stack([np.arange(16)]*8, axis=1).ravel())
     assert np.all(tensor_b.numpy() == np.stack([np.arange(8)]*16, axis=0).ravel())
@@ -183,7 +143,9 @@ def test_tensor_rebuild_backwards_compat():
 
     mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
 
-    mgr.eval_algo_mult_def([tensor_in_a, tensor_in_b, tensor_out])
+    shader_path = os.path.abspath(os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv"))
+    mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
+    mgr.eval_await_def()
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 

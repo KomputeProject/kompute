@@ -10,6 +10,12 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 
 #include <vulkan/vulkan.hpp>
 
+// Typedefs to simplify interaction with core types
+namespace kp {
+typedef std::array<uint32_t, 3> Workgroup;
+typedef std::vector<float> Constants;
+}
+
 // Must be after vulkan is included
 #ifndef KOMPUTE_VK_API_VERSION
 #ifndef KOMPUTE_VK_API_MAJOR_VERSION

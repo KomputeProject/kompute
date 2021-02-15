@@ -13,7 +13,8 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::Device> device,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
-                       KomputeWorkgroup komputeWorkgroup)
+                       const Workgroup& komputeWorkgroup,
+                       const Constants& specializationConstants)
   : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}",
@@ -21,23 +22,23 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
-    if (komputeWorkgroup.x > 0) {
+    if (komputeWorkgroup[0] > 0) {
         // If at least the x value is provided we use mainly the parameters
         // provided
         this->mKomputeWorkgroup = {
-            komputeWorkgroup.x,
-            komputeWorkgroup.y > 0 ? komputeWorkgroup.y : 1,
-            komputeWorkgroup.z > 0 ? komputeWorkgroup.z : 1
+            komputeWorkgroup[0],
+            komputeWorkgroup[1] > 0 ? komputeWorkgroup[1] : 1,
+            komputeWorkgroup[2] > 0 ? komputeWorkgroup[2] : 1
         };
     } else {
         this->mKomputeWorkgroup = { tensors[0]->size(), 1, 1 };
     }
     SPDLOG_INFO("Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}",
-                this->mKomputeWorkgroup.x,
-                this->mKomputeWorkgroup.y,
-                this->mKomputeWorkgroup.z);
+                this->mKomputeWorkgroup[0],
+                this->mKomputeWorkgroup[1],
+                this->mKomputeWorkgroup[2]);
 
-    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer);
+    this->mAlgorithm = std::make_shared<Algorithm>(device, commandBuffer, specializationConstants);
 }
 
 OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -45,8 +46,9 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
                        std::string shaderFilePath,
-                       KomputeWorkgroup komputeWorkgroup)
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup)
+                       const Workgroup& komputeWorkgroup,
+                       const Constants& specializationConstants)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
 {
     SPDLOG_DEBUG(
       "Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}",
@@ -60,8 +62,9 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
                        const std::vector<char>& shaderDataRaw,
-                       KomputeWorkgroup komputeWorkgroup)
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup)
+                       const Workgroup& komputeWorkgroup,
+                       const Constants& specializationConstants)
+  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shader raw "
                  "data length: {}",
@@ -117,9 +120,9 @@ OpAlgoBase::record()
           vk::PipelineStageFlagBits::eComputeShader);
     }
 
-    this->mAlgorithm->recordDispatch(this->mKomputeWorkgroup.x,
-                                     this->mKomputeWorkgroup.y,
-                                     this->mKomputeWorkgroup.z);
+    this->mAlgorithm->recordDispatch(this->mKomputeWorkgroup[0],
+                                     this->mKomputeWorkgroup[1],
+                                     this->mKomputeWorkgroup[2]);
 }
 
 void

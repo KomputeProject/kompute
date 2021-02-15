@@ -14,7 +14,7 @@ OpAlgoLhsRhsOut::OpAlgoLhsRhsOut(
   std::shared_ptr<vk::Device> device,
   std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors,
-  KomputeWorkgroup komputeWorkgroup)
+  const Workgroup& komputeWorkgroup)
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in
   // a granular way.
@@ -93,9 +93,9 @@ OpAlgoLhsRhsOut::record()
       vk::PipelineStageFlagBits::eHost,
       vk::PipelineStageFlagBits::eComputeShader);
 
-    this->mAlgorithm->recordDispatch(this->mKomputeWorkgroup.x,
-                                     this->mKomputeWorkgroup.y,
-                                     this->mKomputeWorkgroup.z);
+    this->mAlgorithm->recordDispatch(this->mKomputeWorkgroup[0],
+                                     this->mKomputeWorkgroup[1],
+                                     this->mKomputeWorkgroup[2]);
 
     // Barrier to ensure the shader code is executed before buffer read
     this->mTensorOutput->recordBufferMemoryBarrier(
