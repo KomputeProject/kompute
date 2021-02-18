@@ -70,6 +70,7 @@ mk_cmake:
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DSPDLOG_INSTALL=1 \
 		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
+		-DSHADERC_SKIP_TESTS=1 \
 		-G "Unix Makefiles"
 
 mk_build_all:
@@ -88,7 +89,7 @@ mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 mk_run_tests: mk_build_tests
-	./build/test/test_kompute $(FILTER_TESTS)
+	./build/test/test_kompute --gtest_filter=$(FILTER_TESTS)
 
 mk_build_swiftshader_library:
 	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
@@ -98,6 +99,9 @@ mk_build_swiftshader_library:
 
 mk_run_tests_cpu: export VK_ICD_FILENAMES=$(PWD)/swiftshader/build/vk_swiftshader_icd.json
 mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_only
+
+mk_run_tests_only:
+	./build/test/test_kompute --gtest_filter="-TestAsyncOperations.*"
 
 mk_run_tests_cpu_only:
 	./build/test/test_kompute --gtest_filter="TestLogisticRegressionAlgorithm.*"
@@ -133,6 +137,7 @@ vs_cmake:
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DSPDLOG_INSTALL=1 \
+		-DSHADERC_SKIP_TESTS=1 \
 		-G "Visual Studio 16 2019"
 
 vs_build_all:

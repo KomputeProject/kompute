@@ -1,4 +1,7 @@
 
+#####################################################
+#################### GETEST #######################
+#####################################################
 enable_testing()
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
     add_subdirectory(${PROJECT_SOURCE_DIR}/external/googletest EXCLUDE_FROM_ALL
@@ -34,6 +37,35 @@ endif()
 target_link_libraries(test_kompute PRIVATE kompute)
 
 add_test(NAME test_kompute COMMAND test_kompute)
+
+#####################################################
+#################### PYSHADERC #######################
+#####################################################
+
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/shaderc EXCLUDE_FROM_ALL
+        ${CMAKE_CURRENT_BINARY_DIR}/kompute_shaderc)
+
+    target_include_directories(
+        test_kompute PRIVATE
+        ${shaderc_SOURCE_DIR}/include)
+
+    target_link_libraries(test_kompute PRIVATE
+        shaderc_combined)
+else()
+    find_library(SHADERC_LIB shaderc_combined)
+
+    find_path(SHADERC_INCLUDE_DIRS shaderc)
+
+    target_include_directories(
+        test_kompute PRIVATE
+        ${SHADERC_INCLUDE_DIRS}/include)
+
+    MESSAGE(STATUS "INclude dirs:" ${SHADERC_INCLUDE_DIRS})
+
+    target_link_libraries(test_kompute PRIVATE
+        shaderc_combined)
+endif()
 
 #####################################################
 #################### CODECOV  #######################
