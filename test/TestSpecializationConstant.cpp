@@ -3,6 +3,7 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "TestUtils.cpp"
 
 TEST(TestSpecializationConstants, TestTwoConstants)
 {
@@ -37,7 +38,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             sq->begin();
             sq->record<kp::OpAlgoBase>(
               { tensorA, tensorB },
-              std::vector<char>(shader.begin(), shader.end()),
+              spirv_from_string(shader),
               kp::Workgroup(), spec);
             sq->end();
 
