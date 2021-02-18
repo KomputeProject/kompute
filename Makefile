@@ -13,7 +13,7 @@ VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsyst
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 # Regext to pass to catch2 to filter tests
-FILTER_TESTS ?= "*"
+FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
