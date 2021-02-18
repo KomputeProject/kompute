@@ -5,6 +5,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "TestUtils.cpp"
+
 TEST(TestAsyncOperations, TestManagerParallelExecution)
 {
     // This test is built for NVIDIA 1650. It assumes:
@@ -55,7 +57,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgr.evalOpDefault<kp::OpAlgoBase>(
-          { inputsSyncB[i] }, std::vector<char>(shader.begin(), shader.end()));
+          { inputsSyncB[i] }, spirv_from_string(shader));
     }
 
     auto endSync = std::chrono::high_resolution_clock::now();
@@ -89,7 +91,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         mgrAsync.evalOpAsync<kp::OpAlgoBase>(
           { inputsAsyncB[i] },
           "async" + std::to_string(i),
-          std::vector<char>(shader.begin(), shader.end()));
+          spirv_from_string(shader));
     }
 
     for (uint32_t i = 0; i < numParallel; i++) {
@@ -152,10 +154,10 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     mgr.rebuild({ tensorA, tensorB });
 
     mgr.evalOpAsync<kp::OpAlgoBase>(
-      { tensorA }, "asyncOne", std::vector<char>(shader.begin(), shader.end()));
+      { tensorA }, "asyncOne", spirv_from_string(shader));
 
     mgr.evalOpAsync<kp::OpAlgoBase>(
-      { tensorB }, "asyncTwo", std::vector<char>(shader.begin(), shader.end()));
+      { tensorB }, "asyncTwo", spirv_from_string(shader));
 
     mgr.evalOpAwait("asyncOne");
     mgr.evalOpAwait("asyncTwo");

@@ -3,6 +3,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "TestUtils.cpp"
+
 TEST(TestDestroy, TestDestroyTensorSingle)
 {
     std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
@@ -28,7 +30,7 @@ TEST(TestDestroy, TestDestroyTensorSingle)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+              { tensorA }, spirv_from_string(shader));
             sq->end();
 
             sq->eval();
@@ -71,7 +73,7 @@ TEST(TestDestroy, TestDestroyTensorVector)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA, tensorB }, std::vector<char>(shader.begin(), shader.end()));
+              { tensorA, tensorB }, spirv_from_string(shader));
             sq->end();
 
             sq->eval();
@@ -136,7 +138,7 @@ TEST(TestDestroy, TestDestroySequenceSingle)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+              { tensorA }, spirv_from_string(shader));
             sq->end();
 
             sq->eval();
@@ -176,14 +178,14 @@ TEST(TestDestroy, TestDestroySequenceVector)
             sq1 = mgr.sequence("One");
             sq1->begin();
             sq1->record<kp::OpAlgoBase>(
-              { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+              { tensorA }, spirv_from_string(shader));
             sq1->end();
             sq1->eval();
 
             sq2 = mgr.sequence("Two");
             sq2->begin();
             sq2->record<kp::OpAlgoBase>(
-              { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+              { tensorA }, spirv_from_string(shader));
             sq2->end();
             sq2->eval();
 
@@ -218,11 +220,11 @@ TEST(TestDestroy, TestDestroySequenceNameSingleInsideManager)
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "one",
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "two",
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -257,7 +259,7 @@ TEST(TestDestroy, TestDestroySequenceNameSingleOutsideManager)
             sq1 = mgr.sequence("One");
             sq1->begin();
             sq1->record<kp::OpAlgoBase>(
-              { tensorA }, std::vector<char>(shader.begin(), shader.end()));
+              { tensorA }, spirv_from_string(shader));
             sq1->end();
             sq1->eval();
 
@@ -291,11 +293,11 @@ TEST(TestDestroy, TestDestroySequenceNameVectorInsideManager)
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "one",
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "two",
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -325,11 +327,11 @@ TEST(TestDestroy, TestDestroySequenceNameVectorOutsideManager)
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "one",
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "two",
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -359,7 +361,7 @@ TEST(TestDestroy, TestDestroySequenceNameDefaultOutsideManager)
 
             mgr.evalOpDefault<kp::OpAlgoBase>(
               { tensorA },
-              std::vector<char>(shader.begin(), shader.end()));
+              spirv_from_string(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
