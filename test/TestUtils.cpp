@@ -4,7 +4,7 @@
 
 #include <shaderc/shaderc.hpp>
 
-static std::vector<uint32_t> spirv_from_string(const std::string& source,
+static std::vector<char> spirv_from_string(const std::string& source,
                                    shaderc_optimization_level optimization = shaderc_optimization_level_size,
                                    std::vector<std::pair<std::string,std::string>> definitions = {}) {
   shaderc::Compiler compiler;
@@ -17,7 +17,7 @@ static std::vector<uint32_t> spirv_from_string(const std::string& source,
 
   std::string errorTag = "kompute";
   shaderc::SpvCompilationResult module =
-      compiler.CompileGlslToSpv(source, shaderc_glsl_default_compute_shader, errorTag.c_str(), options);
+      compiler.CompileGlslToSpv(source, shaderc_glsl_compute_shader, errorTag.c_str(), options);
 
   if (module.GetCompilationStatus() != shaderc_compilation_status_success)  {
     throw std::runtime_error("Shader string invalid: " + module.GetErrorMessage());
