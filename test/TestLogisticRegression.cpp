@@ -5,7 +5,9 @@
 
 #include "kompute_test/shaders/shadertest_logistic_regression.hpp"
 
-TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
+#include "TestUtils.cpp"
+
+TEST(TestLogisticRegression, TestMainLogisticRegression)
 {
 
     uint32_t ITERATIONS = 100;
@@ -29,6 +31,68 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
                                                         wIn, wOutI, wOutJ,
                                                         bIn, bOut,  lOut };
 
+    std::string shaderStr = R"(
+#version 450
+
+layout (constant_id = 0) const float m = 0;
+
+layout (local_size_x = 1) in;
+
+layout(set = 0, binding = 0) buffer bxi { float xi[]; };
+layout(set = 0, binding = 1) buffer bxj { float xj[]; };
+layout(set = 0, binding = 2) buffer by { float y[]; };
+layout(set = 0, binding = 3) buffer bwin { float win[]; };
+layout(set = 0, binding = 4) buffer bwouti { float wouti[]; };
+layout(set = 0, binding = 5) buffer bwoutj { float woutj[]; };
+layout(set = 0, binding = 6) buffer bbin { float bin[]; };
+layout(set = 0, binding = 7) buffer bbout { float bout[]; };
+layout(set = 0, binding = 8) buffer blout { float lout[]; };
+
+float sigmoid(float z) {
+    return 1.0 / (1.0 + exp(-z));
+}
+
+float inference(vec2 x, vec2 w, float b) {
+    // Compute the linear mapping function
+    float z = dot(w, x) + b;
+    // Calculate the y-hat with sigmoid 
+    float yHat = sigmoid(z);
+    return yHat;
+}
+
+float calculateLoss(float yHat, float y) {
+    return -(y * log(yHat)  +  (1.0 - y) * log(1.0 - yHat));
+}
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+
+    vec2 wCurr = vec2(win[0], win[1]);
+    float bCurr = bin[0];
+
+    vec2 xCurr = vec2(xi[idx], xj[idx]);
+    float yCurr = y[idx];
+
+    float yHat = inference(xCurr, wCurr, bCurr);
+
+    float dZ = yHat - yCurr;
+    vec2 dW = (1. / m) * xCurr * dZ;
+    float dB = (1. / m) * dZ;
+    wouti[idx] = dW.x;
+    woutj[idx] = dW.y;
+    bout[idx] = dB;
+
+    lout[idx] = calculateLoss(yHat, yCurr);
+}
+    )";
+
+    std::vector<char> shaderSpirv = spirv_from_string(shaderStr);
+
+    std::vector<char> shaderData = std::vector<char>(
+            kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+            kp::shader_data::shaders_glsl_logisticregression_comp_spv +
+              kp::shader_data::shaders_glsl_logisticregression_comp_spv_len);
+
     {
         kp::Manager mgr;
 
@@ -41,19 +105,10 @@ TEST(TestLogisticRegressionAlgorithm, TestMainLogisticRegression)
 
         sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
-#ifdef KOMPUTE_SHADER_FROM_STRING
-        sq->record<kp::OpAlgoBase>(
-          params, "test/shaders/glsl/test_logistic_regression.comp",
-          kp::Workgroup(), kp::Constants({5.0}));
-#else
         sq->record<kp::OpAlgoBase>(
           params,
-          std::vector<char>(
-            kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-            kp::shader_data::shaders_glsl_logisticregression_comp_spv +
-              kp::shader_data::shaders_glsl_logisticregression_comp_spv_len),
+          shaderSpirv,
           kp::Workgroup(), kp::Constants({5.0}));
-#endif
 
         sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
