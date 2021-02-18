@@ -97,25 +97,28 @@ if (KOMPUTE_OPT_CODE_COVERAGE)
         WORKING_DIRECTORY ${CODECOV_DIR}
         DEPENDS codecov_copy_files)
 
-    add_custom_target(codecov_lcov
+    add_custom_target(codecov_lcov_capture
         COMMAND lcov
             --capture
             -o ${CODECOV_FILENAME_LCOV_INFO_FULL}
             -d .
+        WORKING_DIRECTORY ${CODECOV_DIR}
+        DEPENDS codecov_gcov)
+    add_custom_target(codecov_lcov_extract
         COMMAND lcov
             --extract
             ${CODECOV_FILENAME_LCOV_INFO_FULL}
             -o ${CODECOV_FILENAME_LCOV_INFO}
             -d .
-            "*/src/*" "*/test/*"
+            "*/src/*"
         WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_gcov)
+        DEPENDS codecov_lcov_capture)
 
     add_custom_target(codecov_genhtml
         COMMAND genhtml
             ${CODECOV_FILENAME_LCOV_INFO}
             --output-directory ${CODECOV_DIR_HTML}
         WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_lcov)
+        DEPENDS codecov_lcov_extract)
 endif()
 
