@@ -59,12 +59,10 @@ else()
 
     target_include_directories(
         test_kompute PRIVATE
-        ${SHADERC_INCLUDE_DIRS}/include)
-
-    MESSAGE(STATUS "INclude dirs:" ${SHADERC_INCLUDE_DIRS})
+        ${SHADERC_INCLUDE_DIRS})
 
     target_link_libraries(test_kompute PRIVATE
-        shaderc_combined)
+        ${SHADERC_LIB})
 endif()
 
 #####################################################
