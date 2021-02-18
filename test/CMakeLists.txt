@@ -46,6 +46,10 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
     add_subdirectory(${PROJECT_SOURCE_DIR}/external/shaderc EXCLUDE_FROM_ALL
         ${CMAKE_CURRENT_BINARY_DIR}/kompute_shaderc)
 
+    ## Ensure shaderc is initialised
+    execute_process(COMMAND
+        python3 ${PROJECT_SOURCE_DIR}/external/shaderc/utils/git-sync-deps)
+
     target_include_directories(
         test_kompute PRIVATE
         ${shaderc_SOURCE_DIR}/include)
