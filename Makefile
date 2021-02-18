@@ -100,19 +100,6 @@ mk_build_swiftshader_library:
 mk_run_tests_cpu: export VK_ICD_FILENAMES=$(PWD)/swiftshader/build/vk_swiftshader_icd.json
 mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_only
 
-mk_run_tests_only:
-	./build/test/test_kompute --gtest_filter="-TestAsyncOperations.*"
-
-mk_run_tests_cpu_only:
-	./build/test/test_kompute --gtest_filter="TestLogisticRegressionAlgorithm.*"
-	./build/test/test_kompute --gtest_filter="TestManager.*"
-	./build/test/test_kompute --gtest_filter="TestOpAlgoBase.ShaderCompiledDataFromConstructor"
-	./build/test/test_kompute --gtest_filter="TestOpTensorCopy.*"
-	./build/test/test_kompute --gtest_filter="TestOpTensorCreate.*"
-	./build/test/test_kompute --gtest_filter="TestOpTensorSync.*"
-	./build/test/test_kompute --gtest_filter="TestSequence.*"
-	./build/test/test_kompute --gtest_filter="TestTensor.*"
-
 
 ####### Visual studio build shortcut commands #######
 
