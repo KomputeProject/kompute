@@ -50,7 +50,7 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
     execute_process(COMMAND
         python3 ${PROJECT_SOURCE_DIR}/external/shaderc/utils/git-sync-deps)
 
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/shaderc EXCLUDE_FROM_ALL
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/shaderc
         ${CMAKE_CURRENT_BINARY_DIR}/kompute_shaderc)
 
     target_include_directories(
