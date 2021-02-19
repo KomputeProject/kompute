@@ -45,31 +45,36 @@ add_test(NAME test_kompute COMMAND test_kompute)
 set(SHADERC_SKIP_TESTS 1)
 
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-    # Ensure shaderc is initialised by cloning all dependencies
-    message(STATUS "Cloning all repositories for shaderc dependency")
-    execute_process(COMMAND
-        python3 ${PROJECT_SOURCE_DIR}/external/shaderc/utils/git-sync-deps)
-
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/shaderc
-        ${CMAKE_CURRENT_BINARY_DIR}/kompute_shaderc)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang
+        ${CMAKE_CURRENT_BINARY_DIR}/kompute_glslang)
 
     target_include_directories(
         test_kompute PRIVATE
-        ${PROJECT_SOURCE_DIR}/external/shaderc/libshaderc/include)
+        ${PROJECT_SOURCE_DIR}/external/glslang)
 
     target_link_libraries(test_kompute PRIVATE
-        shaderc_combined)
+        # Not including hlsl support
+        # HLSL
+        # glslang includes OGLCompiler, OSDependent, MachineIndependent
+        glslang
+        SPIRV
+        glslang-default-resource-limits
+        MachineIndependent)
 else()
-    find_library(SHADERC_LIB shaderc_combined)
-
-    find_path(SHADERC_INCLUDE_DIRS shaderc)
+    find_package(glslang CONFIG REQUIRED)
 
     target_include_directories(
         test_kompute PRIVATE
-        ${SHADERC_INCLUDE_DIRS})
+        ${GLSLANG_GENERATED_INCLUDEDIR})
 
     target_link_libraries(test_kompute PRIVATE
-        ${SHADERC_LIB})
+        # Not including hlsl support
+        # glslang::HLSL
+        # Adding explicit dependencies to match above
+        glslang
+        SPIRV
+        glslang-default-resource-limits
+        MachineIndependent)
 endif()
 
 #####################################################

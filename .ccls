@@ -17,8 +17,7 @@
 -I./python/pybind11/include/
 -I./external/Vulkan-Headers/include/
 -I./external/googletest/googletest/include/
--I./external/shaderc/libshaderc/include/
--I./external/shaderc/libshaderc_util/include/
+-I./external/glslang/
 -I./external/spdlog/include/
 -I./src/include/
 -I./single_include/

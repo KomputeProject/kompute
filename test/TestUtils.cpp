@@ -4,28 +4,72 @@
 
 #include <shaderc/shaderc.hpp>
 
+#include <glslang/Public/ShaderLang.h>
+#include <StandAlone/ResourceLimits.h>
+#include <SPIRV/GlslangToSpv.h>
+
 static std::vector<char> spirv_from_string(const std::string& source,
+                                   const std::string& entryPoint = "main",
                                    shaderc_optimization_level optimization = shaderc_optimization_level_zero,
                                    std::vector<std::pair<std::string,std::string>> definitions = {}) {
-    shaderc::Compiler compiler;
-    shaderc::CompileOptions options;
 
-    for (const std::pair<std::string,std::string>& def : definitions) {
-        options.AddMacroDefinition(def.first, def.second);
+        // Initialize glslang library.
+    glslang::InitializeProcess();
+
+    const EShLanguage language = EShLangCompute;
+    glslang::TShader shader(language);
+
+    const char *file_name_list[1] = {""};
+    const char *shader_source     = reinterpret_cast<const char *>(source.data());
+    shader.setStringsWithLengthsAndNames(&shader_source, nullptr, file_name_list, 1);
+    shader.setEntryPoint(entryPoint.c_str());
+    shader.setSourceEntryPoint(entryPoint.c_str());
+
+    std::string info_log = "";
+    const EShMessages messages = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules | EShMsgSpvRules);
+    if (!shader.parse(&glslang::DefaultTBuiltInResource, 100, false, messages))
+    {
+        info_log = std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog());
+        throw std::runtime_error(info_log);
     }
-    if (optimization) options.SetOptimizationLevel(optimization);
 
-    std::string errorTag = "kompute";
-    shaderc::SpvCompilationResult module =
-        compiler.CompileGlslToSpv(source, shaderc_glsl_compute_shader, errorTag.c_str(), options);
 
-    if (module.GetCompilationStatus() != shaderc_compilation_status_success)  {
-      throw std::runtime_error("Shader string invalid: " + module.GetErrorMessage());
+    // Add shader to new program object.
+    glslang::TProgram program;
+    program.addShader(&shader);
+    // Link program.
+    if (!program.link(messages))
+    {
+        info_log = std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog());
+        throw std::runtime_error(info_log);
     }
 
-    std::vector<uint32_t> vi = {module.cbegin(), module.cend()};
-    auto p = reinterpret_cast<char*>(vi.data());
-    std::vector<char> vc{p, p + vi.size() * sizeof(int)};
+    // Save any info log that was generated.
+    if (shader.getInfoLog())
+    {
+        info_log += std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog()) + "\n";
+    }
 
-    return vc;
+    if (program.getInfoLog())
+    {
+        info_log += std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog());
+    }
+
+    glslang::TIntermediate *intermediate = program.getIntermediate(language);
+    // Translate to SPIRV.
+    if (!intermediate)
+    {
+        info_log += "Failed to get shared intermediate code.\n";
+        throw std::runtime_error(info_log);
+    }
+
+    spv::SpvBuildLogger logger;
+    std::vector<std::uint32_t> spirv;
+    glslang::GlslangToSpv(*intermediate, spirv, &logger);
+    info_log += logger.getAllMessages() + "\n";
+
+    // Shutdown glslang library.
+    glslang::FinalizeProcess();
+
+    return std::vector<char>((char*)spirv.data(), (char*)(spirv.data()+spirv.size()) );
 }
