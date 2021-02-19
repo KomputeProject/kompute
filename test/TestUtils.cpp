@@ -2,18 +2,15 @@
 #include <iostream>
 #include <vector>
 
-#include <shaderc/shaderc.hpp>
-
 #include <glslang/Public/ShaderLang.h>
 #include <StandAlone/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
 
 static std::vector<char> spirv_from_string(const std::string& source,
                                    const std::string& entryPoint = "main",
-                                   shaderc_optimization_level optimization = shaderc_optimization_level_zero,
                                    std::vector<std::pair<std::string,std::string>> definitions = {}) {
 
-        // Initialize glslang library.
+    // Initialize glslang library.
     glslang::InitializeProcess();
 
     const EShLanguage language = EShLangCompute;
