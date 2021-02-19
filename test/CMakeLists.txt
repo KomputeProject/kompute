@@ -55,7 +55,7 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
 
     target_include_directories(
         test_kompute PRIVATE
-        ${shaderc_SOURCE_DIR}/include)
+        ${PROJECT_SOURCE_DIR}/external/shaderc/libshaderc/include)
 
     target_link_libraries(test_kompute PRIVATE
         shaderc_combined)
