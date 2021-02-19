@@ -76,8 +76,8 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abca36359b946dc1102890d34b6fa562b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#abca36359b946dc1102890d34b6fa562b">Algorithm</a> ()</td></tr>
 <tr class="separator:abca36359b946dc1102890d34b6fa562b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71175003231f8a716df9146d70a70303"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a71175003231f8a716df9146d70a70303">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer)</td></tr>
-<tr class="separator:a71175003231f8a716df9146d70a70303"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af51a05d1be6ce7651c4081e1b13bdc6a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#af51a05d1be6ce7651c4081e1b13bdc6a">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, const Constants &amp;specializationConstants={})</td></tr>
+<tr class="separator:af51a05d1be6ce7651c4081e1b13bdc6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae54d2ab78d3236964d4281635368d8ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ae54d2ab78d3236964d4281635368d8ef">init</a> (const std::vector&lt; char &gt; &amp;shaderFileData, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensorParams)</td></tr>
 <tr class="separator:ae54d2ab78d3236964d4281635368d8ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">~Algorithm</a> ()</td></tr>
@@ -112,8 +112,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
 
 </div>
 </div>
-<a id="a71175003231f8a716df9146d70a70303"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71175003231f8a716df9146d70a70303">&#9670;&nbsp;</a></span>Algorithm() <span class="overload">[2/2]</span></h2>
+<a id="af51a05d1be6ce7651c4081e1b13bdc6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af51a05d1be6ce7651c4081e1b13bdc6a">&#9670;&nbsp;</a></span>Algorithm() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,7 +128,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td>
-          <td class="paramname"><em>commandBuffer</em>&#160;</td>
+          <td class="paramname"><em>commandBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramname"><em>specializationConstants</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -195,7 +201,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
 <p>Initialiser for the shader data provided to the algorithm as well as tensor parameters that will be used in shader.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">shaderFileData</td><td>The bytes in spir-v format of the shader  The Tensors to be used in the <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> / shader for processing </td></tr>
+    <tr><td class="paramname">shaderFileData</td><td>The bytes in spir-v format of the shader  The Tensors to be used in the <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> / shader for  The specialization parameters to pass to the function processing </td></tr>
   </table>
   </dd>
 </dl>
