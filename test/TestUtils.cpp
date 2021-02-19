@@ -6,7 +6,8 @@
 #include <StandAlone/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
 
-static std::vector<char> spirv_from_string(const std::string& source,
+static std::vector<char> spirv_from_sources(const std::vector<std::string>& sources,
+                                   const std::vector<std::string>& files = {},
                                    const std::string& entryPoint = "main",
                                    std::vector<std::pair<std::string,std::string>> definitions = {}) {
 
@@ -16,9 +17,19 @@ static std::vector<char> spirv_from_string(const std::string& source,
     const EShLanguage language = EShLangCompute;
     glslang::TShader shader(language);
 
-    const char *file_name_list[1] = {""};
-    const char *shader_source     = reinterpret_cast<const char *>(source.data());
-    shader.setStringsWithLengthsAndNames(&shader_source, nullptr, file_name_list, 1);
+    std::vector<const char*> filesCStr(files.size()), sourcesCStr(sources.size());
+    for (size_t i = 0; i < sources.size(); i++) sourcesCStr[i] = sources[i].c_str();
+
+    if (files.size() > 1) {
+        assert(files.size() == sources.size());
+        for (size_t i = 0; i < files.size(); i++) filesCStr[i] = files[i].c_str();
+        shader.setStringsWithLengthsAndNames(sourcesCStr.data(), nullptr, filesCStr.data(), filesCStr.size());
+    }
+    else {
+        filesCStr = {""};
+        shader.setStringsWithLengthsAndNames(sourcesCStr.data(), nullptr, filesCStr.data(), sourcesCStr.size());
+    }
+
     shader.setEntryPoint(entryPoint.c_str());
     shader.setSourceEntryPoint(entryPoint.c_str());
 
@@ -70,3 +81,8 @@ static std::vector<char> spirv_from_string(const std::string& source,
 
     return std::vector<char>((char*)spirv.data(), (char*)(spirv.data()+spirv.size()) );
 }
+
+static std::vector<char> spirv_from_string(const std::string& source) {
+    return spirv_from_sources({source});
+}
+
