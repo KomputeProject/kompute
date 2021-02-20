@@ -3,8 +3,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include "TestUtils.cpp"
-
 TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 {
 
@@ -30,11 +28,11 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -75,19 +73,19 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
     // Then perform the computations
     sq->begin();
     sq->record<kp::OpAlgoBase>({ tensorA },
-                               spirv_from_string(shader));
+                               kp::spirv_from_source(shader));
     sq->end();
     sq->eval();
 
     sq->begin();
     sq->record<kp::OpAlgoBase>({ tensorA },
-                               spirv_from_string(shader));
+                               kp::spirv_from_source(shader));
     sq->end();
     sq->eval();
 
     sq->begin();
     sq->record<kp::OpAlgoBase>({ tensorA },
-                               spirv_from_string(shader));
+                               kp::spirv_from_source(shader));
     sq->end();
     sq->eval();
 
@@ -124,7 +122,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
 
         sq->end();
         sq->eval();
@@ -137,7 +135,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
 
         sq->end();
         sq->eval();
@@ -150,7 +148,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
 
         sq->end();
         sq->eval();
@@ -208,7 +206,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
         sq->begin();
 
         sq->record<kp::OpAlgoBase>(
-          { tensorA }, spirv_from_string(shader));
+          { tensorA }, kp::spirv_from_source(shader));
 
         sq->end();
 
@@ -267,7 +265,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorInA, tensorInB, tensorOut },
-      spirv_from_string(shader));
+      kp::spirv_from_source(shader));
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOut });
 
@@ -310,7 +308,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorInA, tensorInB, tensorOut },
-      spirv_from_string(shader));
+      kp::spirv_from_source(shader));
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOut });
 
@@ -342,7 +340,7 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA }, spirv_from_string(shader));
+              { tensorA }, kp::spirv_from_source(shader));
             sq->end();
 
             sq->eval();

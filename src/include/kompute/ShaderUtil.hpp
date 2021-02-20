@@ -1,12 +1,15 @@
+#pragma once
 
 #include <iostream>
 #include <vector>
 
-#include "kompute/Kompute.hpp"
+#include "Core.hpp"
 
 #include <glslang/Public/ShaderLang.h>
 #include <StandAlone/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
+
+namespace kp {
 
 static std::vector<char> spirv_from_sources(const std::vector<std::string>& sources,
                                    const std::vector<std::string>& files = {},
@@ -41,9 +44,9 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     if (!shader.parse(&glslang::DefaultTBuiltInResource, 100, false, messages))
     {
         info_log = std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog());
+        SPDLOG_ERROR(info_log);
         throw std::runtime_error(info_log);
     }
-
 
     // Add shader to new program object.
     glslang::TProgram program;
@@ -60,6 +63,7 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     if (shader.getInfoLog())
     {
         info_log += std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog()) + "\n";
+        SPDLOG_INFO(info_log);
     }
 
     glslang::TIntermediate *intermediate = program.getIntermediate(language);
@@ -74,7 +78,12 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     spv::SpvBuildLogger logger;
     std::vector<std::uint32_t> spirv;
     glslang::GlslangToSpv(*intermediate, spirv, &logger);
-    info_log += logger.getAllMessages() + "\n";
+
+    if (shader.getInfoLog())
+    {
+        info_log += logger.getAllMessages() + "\n";
+        SPDLOG_DEBUG(info_log);
+    }
 
     // Shutdown glslang library.
     glslang::FinalizeProcess();
@@ -82,7 +91,8 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     return std::vector<char>((char*)spirv.data(), (char*)(spirv.data()+spirv.size()) );
 }
 
-static std::vector<char> spirv_from_string(const std::string& source) {
+static std::vector<char> spirv_from_source(const std::string& source) {
     return spirv_from_sources({source});
 }
 
+}

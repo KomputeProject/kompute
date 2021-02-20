@@ -16,6 +16,7 @@ option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
 # Build options
 option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" 0)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
+option(KOMPUTE_OPT_DISABLE_GLSLANG "Skip compilation of glslang utilities" 0)
 option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD, "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
@@ -24,7 +25,10 @@ set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, se
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_ENABLE_SPDLOG=1")
-    set(SPDLOG_INSTALL, 1)
+    if(KOMPUTE_OPT_INSTALL)
+        # Enable install parameters for spdlog (overrides parameters passed)
+        set(SPDLOG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
+    endif()
 endif()
 
 if(KOMPUTE_OPT_ANDOID_BUILD)
@@ -37,6 +41,16 @@ endif()
 
 if(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
+endif()
+
+if(KOMPUTE_OPT_DISABLE_GLSLANG)
+    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_DISABLE_GLSLANG=1")
+else()
+    if(KOMPUTE_OPT_INSTALL)
+        # Enable install parameters for glslang (overrides parameters passed)
+        set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
+        set(BUILD_SHARED_LIBS ON CACHE BOOL "Enables build of shared libraries" FORCE)
+    endif()
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 ${KOMPUTE_EXTRA_CXX_FLAGS} -DUSE_DEBUG_EXTENTIONS")

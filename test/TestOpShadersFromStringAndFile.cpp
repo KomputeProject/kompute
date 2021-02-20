@@ -5,8 +5,6 @@
 
 #include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
 
-#include "TestUtils.cpp"
-
 TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
 {
     kp::Manager mgr;
@@ -31,7 +29,7 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
     )");
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorA, tensorB }, spirv_from_string(shader));
+      { tensorA, tensorB }, kp::spirv_from_source(shader));
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
