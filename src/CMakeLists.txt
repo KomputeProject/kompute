@@ -109,38 +109,35 @@ endif()
 #################### GLSLANG #######################
 #####################################################
 
-if(NOT KOMPUTE_OPT_DISABLE_GLSLANG)
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang
+        ${CMAKE_CURRENT_BINARY_DIR}/kompute_glslang)
 
-    if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang
-            ${CMAKE_CURRENT_BINARY_DIR}/kompute_glslang)
+    target_include_directories(
+        kompute PRIVATE
+        ${PROJECT_SOURCE_DIR}/external/glslang)
 
-        target_include_directories(
-            kompute PRIVATE
-            ${PROJECT_SOURCE_DIR}/external/glslang)
+    target_link_libraries(kompute
+        # Not including hlsl support
+        # HLSL
+        # glslang includes OGLCompiler, OSDependent, MachineIndependent
+        glslang
+        SPIRV
+        glslang-default-resource-limits)
+else()
+    find_package(glslang CONFIG REQUIRED)
 
-        target_link_libraries(kompute
-            # Not including hlsl support
-            # HLSL
-            # glslang includes OGLCompiler, OSDependent, MachineIndependent
-            glslang
-            SPIRV
-            glslang-default-resource-limits)
-    else()
-        find_package(glslang CONFIG REQUIRED)
+    target_include_directories(
+        kompute PRIVATE
+        ${GLSLANG_GENERATED_INCLUDEDIR})
 
-        target_include_directories(
-            kompute PRIVATE
-            ${GLSLANG_GENERATED_INCLUDEDIR})
-
-        target_link_libraries(kompute
-            # Not including hlsl support
-            # glslang::HLSL
-            # Adding explicit dependencies to match above
-            glslang
-            SPIRV
-            glslang-default-resource-limits)
-    endif()
+    target_link_libraries(kompute
+        # Not including hlsl support
+        # glslang::HLSL
+        # Adding explicit dependencies to match above
+        glslang
+        SPIRV
+        glslang-default-resource-limits)
 endif()
 
 

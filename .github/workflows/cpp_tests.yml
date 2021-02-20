@@ -23,9 +23,7 @@ jobs:
                   -DKOMPUTE_OPT_INSTALL=0                    \
                   -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
                   -DKOMPUTE_OPT_BUILD_TESTS=1                \
-                  -DKOMPUTE_OPT_ENABLE_SPDLOG=1              \
-                  -DSHADERC_SKIP_TESTS=1                     \
-                  -DSPDLOG_INSTALL=1
+                  -DKOMPUTE_OPT_ENABLE_SPDLOG=1
     - name: build-cpp
       run: |
         make mk_build_tests
