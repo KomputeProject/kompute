@@ -54,11 +54,11 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
 #ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
             // Newer versions of Android are able to use shaderc to read raw string
             sq->record<kp::OpAlgoBase>(
-                    params, std::vector<char>(LR_SHADER.begin(), LR_SHADER.end()));
+                    params, std::vector<uint32_t>(LR_SHADER.begin(), LR_SHADER.end()));
 #else
             // Older versions of Android require the SPIRV binary directly
             sq->record<kp::OpAlgoBase>(
-                    params, std::vector<char>(
+                    params, std::vector<uint32_t>(
                             kp::shader_data::shaders_glsl_logisticregression_comp_spv,
                             kp::shader_data::shaders_glsl_logisticregression_comp_spv
                                 + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len

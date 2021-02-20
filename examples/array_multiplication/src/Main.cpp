@@ -40,11 +40,11 @@ int main()
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
             { tensorInA, tensorInB, tensorOut },
-            std::vector<char>(shader.begin(), shader.end()));
+            std::vector<uint32_t>(shader.begin(), shader.end()));
 #else
     mgr.evalOpDefault<kp::OpAlgoBase>(
             { tensorInA, tensorInB, tensorOut },
-            std::vector<char>(
+            std::vector<uint32_t>(
             kp::shader_data::shaders_glsl_opmult_comp_spv,
             kp::shader_data::shaders_glsl_opmult_comp_spv
                 + kp::shader_data::shaders_glsl_opmult_comp_spv_len));

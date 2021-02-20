@@ -47,11 +47,11 @@ TEST(TestOpAlgoBase, ShaderCompiledDataFromConstructor)
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
       { tensorA, tensorB },
-      std::vector<char>(
-        kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
-        kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv +
+      std::vector<uint32_t>(
+        (uint32_t*)kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
+        (uint32_t*)(kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv +
           kp::shader_data::
-            test_shaders_glsl_test_op_custom_shader_comp_spv_len));
+            test_shaders_glsl_test_op_custom_shader_comp_spv_len)));
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 

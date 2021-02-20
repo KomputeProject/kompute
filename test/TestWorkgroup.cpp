@@ -25,10 +25,10 @@ TEST(TestWorkgroup, TestSimpleWorkgroup)
             sq->begin();
             sq->record<kp::OpAlgoBase>(
               { tensorA, tensorB },
-              std::vector<char>(
-                kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv,
-                kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv +
-                  kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv_len),
+              std::vector<uint32_t>(
+                (uint32_t*)kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv,
+                (uint32_t*)(kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv +
+                  kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv_len)),
                 workgroup);
             sq->end();
 

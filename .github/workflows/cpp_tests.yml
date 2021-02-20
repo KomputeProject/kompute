@@ -19,6 +19,7 @@ jobs:
     - name: configure-cpp
       run: |
         cmake -Bbuild/ \
+                  -DCMAKE_BUILD_TYPE=Debug                   \
                   -DKOMPUTE_OPT_INSTALL=0                    \
                   -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
                   -DKOMPUTE_OPT_BUILD_TESTS=1                \

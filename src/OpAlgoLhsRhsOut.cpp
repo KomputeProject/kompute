@@ -67,7 +67,7 @@ OpAlgoLhsRhsOut::init()
 
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut fetching spirv data");
 
-    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
+    std::vector<uint32_t> shaderFileData = this->fetchSpirvBinaryData();
 
     SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut Initialising algorithm component");
 

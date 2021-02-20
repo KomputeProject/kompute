@@ -151,6 +151,8 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
 
     mgr.rebuild({ tensorA, tensorB });
 
+    std::vector<uint32_t> result = kp::Shader::compile_source(shader);
+
     mgr.evalOpAsync<kp::OpAlgoBase>(
       { tensorA }, "asyncOne", kp::Shader::compile_source(shader));
 

@@ -118,13 +118,13 @@ namespace kp {
 
 class Shader {
 public:
-    static std::vector<char> compile_sources(
+    static std::vector<uint32_t> compile_sources(
             const std::vector<std::string>& sources,
             const std::vector<std::string>& files = {},
             const std::string& entryPoint = "main",
             std::vector<std::pair<std::string,std::string>> definitions = {});
 
-    static std::vector<char> compile_source(
+    static std::vector<uint32_t> compile_source(
             const std::string& source,
             const std::string& entryPoint = "main",
             std::vector<std::pair<std::string,std::string>> definitions = {});
@@ -1683,7 +1683,7 @@ public:
      * @specalizationInstalces The specialization parameters to pass to the function
      * processing
      */
-    void init(const std::vector<char>& shaderFileData,
+    void init(const std::vector<uint32_t>& shaderFileData,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 
     /**
@@ -1727,7 +1727,7 @@ private:
     Constants mSpecializationConstants;
 
     // Create util functions
-    void createShaderModule(const std::vector<char>& shaderFileData);
+    void createShaderModule(const std::vector<uint32_t>& shaderFileData);
     void createPipeline();
 
     // Parameters
@@ -1808,7 +1808,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::vector<char>& shaderDataRaw,
+           const std::vector<uint32_t>& shaderDataRaw,
            const Workgroup& komputeWorkgroup = {},
            const Constants& specializationConstants = {});
 
@@ -1860,9 +1860,9 @@ class OpAlgoBase : public OpBase
     Workgroup mKomputeWorkgroup;
 
     std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
-    std::vector<char> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
+    std::vector<uint32_t> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
 
-    virtual std::vector<char> fetchSpirvBinaryData();
+    virtual std::vector<uint32_t> fetchSpirvBinaryData();
 };
 
 } // End namespace kp
@@ -1985,7 +1985,7 @@ class OpMult : public OpAlgoBase
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
 #ifndef RELEASE
-        this->mShaderFilePath = "shaders/glsl/opmult.comp";
+        this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
 #endif
     }
 
@@ -1994,15 +1994,15 @@ class OpMult : public OpAlgoBase
      * If RELEASE=1 it will be using the static version of the shader which is 
      * loaded using this file directly. Otherwise it should not override the function.
      */
-    std::vector<char> fetchSpirvBinaryData() override
+    std::vector<uint32_t> fetchSpirvBinaryData() override
     {
         SPDLOG_WARN(
           "Kompute OpMult Running shaders directly from header");
 
-        return std::vector<char>(
-          shader_data::shaders_glsl_opmult_comp_spv,
-          shader_data::shaders_glsl_opmult_comp_spv +
-            kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+        return std::vector<uint32_t>(
+          (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
+          (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
+            kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
     }
 #endif

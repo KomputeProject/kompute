@@ -49,7 +49,7 @@ int main()
       params, "shaders/glsl/logistic_regression.comp");
 #else
     sq->record<kp::OpAlgoBase>(
-        params, std::vector<char>(
+        params, std::vector<uint32_t>(
                 kp::shader_data::shaders_glsl_logisticregression_comp_spv,
                 kp::shader_data::shaders_glsl_logisticregression_comp_spv
                     + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));

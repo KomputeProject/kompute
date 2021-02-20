@@ -3,7 +3,7 @@
 
 namespace kp {
 
-std::vector<char>
+std::vector<uint32_t>
 Shader::compile_sources(const std::vector<std::string>& sources,
                                    const std::vector<std::string>& files,
                                    const std::string& entryPoint,
@@ -81,10 +81,10 @@ Shader::compile_sources(const std::vector<std::string>& sources,
     // Shutdown glslang library.
     glslang::FinalizeProcess();
 
-    return std::vector<char>((char*)spirv.data(), (char*)(spirv.data()+spirv.size()) );
+    return spirv;
 }
 
-std::vector<char>
+std::vector<uint32_t>
 Shader::compile_source(const std::string& source,
         const std::string& entryPoint,
         std::vector<std::pair<std::string,std::string>> definitions) {

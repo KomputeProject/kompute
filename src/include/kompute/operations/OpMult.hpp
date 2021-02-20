@@ -50,7 +50,7 @@ class OpMult : public OpAlgoBase
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
 #ifndef RELEASE
-        this->mShaderFilePath = "shaders/glsl/opmult.comp";
+        this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
 #endif
     }
 
@@ -59,15 +59,15 @@ class OpMult : public OpAlgoBase
      * If RELEASE=1 it will be using the static version of the shader which is 
      * loaded using this file directly. Otherwise it should not override the function.
      */
-    std::vector<char> fetchSpirvBinaryData() override
+    std::vector<uint32_t> fetchSpirvBinaryData() override
     {
         SPDLOG_WARN(
           "Kompute OpMult Running shaders directly from header");
 
-        return std::vector<char>(
-          shader_data::shaders_glsl_opmult_comp_spv,
-          shader_data::shaders_glsl_opmult_comp_spv +
-            kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+        return std::vector<uint32_t>(
+          (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
+          (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
+            kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
     }
 #endif

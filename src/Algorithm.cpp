@@ -108,7 +108,7 @@ Algorithm::~Algorithm()
 }
 
 void
-Algorithm::init(const std::vector<char>& shaderFileData,
+Algorithm::init(const std::vector<uint32_t>& shaderFileData,
                 std::vector<std::shared_ptr<Tensor>> tensorParams)
 {
     SPDLOG_DEBUG("Kompute Algorithm init started");
@@ -206,14 +206,14 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 }
 
 void
-Algorithm::createShaderModule(const std::vector<char>& shaderFileData)
+Algorithm::createShaderModule(const std::vector<uint32_t>& shaderFileData)
 {
     SPDLOG_DEBUG("Kompute Algorithm createShaderModule started");
 
     vk::ShaderModuleCreateInfo shaderModuleInfo(
       vk::ShaderModuleCreateFlags(),
-      shaderFileData.size(),
-      (uint32_t*)shaderFileData.data());
+      sizeof(uint32_t) * shaderFileData.size(),
+      shaderFileData.data());
 
     SPDLOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
                  shaderFileData.size());
