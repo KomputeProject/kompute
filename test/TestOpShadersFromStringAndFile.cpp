@@ -29,7 +29,7 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
     )");
 
     mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorA, tensorB }, kp::spirv_from_source(shader));
+      { tensorA, tensorB }, kp::Shader::compile(shader));
 
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 

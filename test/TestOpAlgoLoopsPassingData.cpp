@@ -53,7 +53,7 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
 
         sq->record<kp::OpAlgoBase>(
           { tensorA, tensorB },
-          kp::spirv_from_source(shader));
+          kp::Shader::compile(shader));
 
         sq->record<kp::OpTensorCopy>({ tensorB, tensorA });
         sq->end();

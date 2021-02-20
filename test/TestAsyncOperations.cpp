@@ -55,7 +55,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
 
     for (uint32_t i = 0; i < numParallel; i++) {
         mgr.evalOpDefault<kp::OpAlgoBase>(
-          { inputsSyncB[i] }, kp::spirv_from_source(shader));
+          { inputsSyncB[i] }, kp::Shader::compile(shader));
     }
 
     auto endSync = std::chrono::high_resolution_clock::now();
@@ -89,7 +89,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         mgrAsync.evalOpAsync<kp::OpAlgoBase>(
           { inputsAsyncB[i] },
           "async" + std::to_string(i),
-          kp::spirv_from_source(shader));
+          kp::Shader::compile(shader));
     }
 
     for (uint32_t i = 0; i < numParallel; i++) {
@@ -152,10 +152,10 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     mgr.rebuild({ tensorA, tensorB });
 
     mgr.evalOpAsync<kp::OpAlgoBase>(
-      { tensorA }, "asyncOne", kp::spirv_from_source(shader));
+      { tensorA }, "asyncOne", kp::Shader::compile(shader));
 
     mgr.evalOpAsync<kp::OpAlgoBase>(
-      { tensorB }, "asyncTwo", kp::spirv_from_source(shader));
+      { tensorB }, "asyncTwo", kp::Shader::compile(shader));
 
     mgr.evalOpAwait("asyncOne");
     mgr.evalOpAwait("asyncTwo");

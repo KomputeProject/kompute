@@ -35,7 +35,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             sq->begin();
             sq->record<kp::OpAlgoBase>(
               { tensorA, tensorB },
-              kp::spirv_from_source(shader),
+              kp::Shader::compile(shader),
               kp::Workgroup(), spec);
             sq->end();
 

@@ -1,20 +1,13 @@
-#pragma once
 
-#include <iostream>
-#include <vector>
-
-#include "Core.hpp"
-
-#include <glslang/Public/ShaderLang.h>
-#include <StandAlone/ResourceLimits.h>
-#include <SPIRV/GlslangToSpv.h>
+#include "kompute/Shader.hpp"
 
 namespace kp {
 
-static std::vector<char> spirv_from_sources(const std::vector<std::string>& sources,
-                                   const std::vector<std::string>& files = {},
-                                   const std::string& entryPoint = "main",
-                                   std::vector<std::pair<std::string,std::string>> definitions = {}) {
+std::vector<char>
+Shader::compile(const std::vector<std::string>& sources,
+                                   const std::vector<std::string>& files,
+                                   const std::string& entryPoint,
+                                   std::vector<std::pair<std::string,std::string>> definitions) {
 
     // Initialize glslang library.
     glslang::InitializeProcess();
@@ -91,8 +84,11 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     return std::vector<char>((char*)spirv.data(), (char*)(spirv.data()+spirv.size()) );
 }
 
-static std::vector<char> spirv_from_source(const std::string& source) {
-    return spirv_from_sources({source});
+std::vector<char>
+Shader::compile(const std::string& source,
+        const std::string& entryPoint,
+        std::vector<std::pair<std::string,std::string>> definitions) {
+    return compile({source});
 }
 
 }
