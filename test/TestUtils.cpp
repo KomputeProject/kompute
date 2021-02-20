@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 
+#include "kompute/Kompute.hpp"
+
 #include <glslang/Public/ShaderLang.h>
 #include <StandAlone/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
@@ -14,6 +16,7 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     // Initialize glslang library.
     glslang::InitializeProcess();
 
+    // Currently we don't support other shader types nor plan to
     const EShLanguage language = EShLangCompute;
     glslang::TShader shader(language);
 
@@ -49,6 +52,7 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
     if (!program.link(messages))
     {
         info_log = std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog());
+        SPDLOG_ERROR(info_log);
         throw std::runtime_error(info_log);
     }
 
@@ -58,16 +62,12 @@ static std::vector<char> spirv_from_sources(const std::vector<std::string>& sour
         info_log += std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog()) + "\n";
     }
 
-    if (program.getInfoLog())
-    {
-        info_log += std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog());
-    }
-
     glslang::TIntermediate *intermediate = program.getIntermediate(language);
     // Translate to SPIRV.
     if (!intermediate)
     {
         info_log += "Failed to get shared intermediate code.\n";
+        SPDLOG_ERROR(info_log);
         throw std::runtime_error(info_log);
     }
 
