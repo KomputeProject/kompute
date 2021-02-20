@@ -149,6 +149,7 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
     this->mDescriptorPool = std::make_shared<vk::DescriptorPool>();
     this->mDevice->createDescriptorPool(
       &descriptorPoolInfo, nullptr, this->mDescriptorPool.get());
+    this->mFreeDescriptorPool = true;
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
     for (size_t i = 0; i < tensorParams.size(); i++) {
