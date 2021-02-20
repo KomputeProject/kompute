@@ -28,7 +28,7 @@ TEST(TestDestroy, TestDestroyTensorSingle)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA }, kp::Shader::compile(shader));
+              { tensorA }, kp::Shader::compile_source(shader));
             sq->end();
 
             sq->eval();
@@ -71,7 +71,7 @@ TEST(TestDestroy, TestDestroyTensorVector)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA, tensorB }, kp::Shader::compile(shader));
+              { tensorA, tensorB }, kp::Shader::compile_source(shader));
             sq->end();
 
             sq->eval();
@@ -136,7 +136,7 @@ TEST(TestDestroy, TestDestroySequenceSingle)
 
             sq->begin();
             sq->record<kp::OpAlgoBase>(
-              { tensorA }, kp::Shader::compile(shader));
+              { tensorA }, kp::Shader::compile_source(shader));
             sq->end();
 
             sq->eval();
@@ -176,14 +176,14 @@ TEST(TestDestroy, TestDestroySequenceVector)
             sq1 = mgr.sequence("One");
             sq1->begin();
             sq1->record<kp::OpAlgoBase>(
-              { tensorA }, kp::Shader::compile(shader));
+              { tensorA }, kp::Shader::compile_source(shader));
             sq1->end();
             sq1->eval();
 
             sq2 = mgr.sequence("Two");
             sq2->begin();
             sq2->record<kp::OpAlgoBase>(
-              { tensorA }, kp::Shader::compile(shader));
+              { tensorA }, kp::Shader::compile_source(shader));
             sq2->end();
             sq2->eval();
 
@@ -218,11 +218,11 @@ TEST(TestDestroy, TestDestroySequenceNameSingleInsideManager)
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "one",
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "two",
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -257,7 +257,7 @@ TEST(TestDestroy, TestDestroySequenceNameSingleOutsideManager)
             sq1 = mgr.sequence("One");
             sq1->begin();
             sq1->record<kp::OpAlgoBase>(
-              { tensorA }, kp::Shader::compile(shader));
+              { tensorA }, kp::Shader::compile_source(shader));
             sq1->end();
             sq1->eval();
 
@@ -291,11 +291,11 @@ TEST(TestDestroy, TestDestroySequenceNameVectorInsideManager)
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "one",
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "two",
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -325,11 +325,11 @@ TEST(TestDestroy, TestDestroySequenceNameVectorOutsideManager)
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "one",
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOp<kp::OpAlgoBase>(
               { tensorA }, "two",
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 
@@ -359,7 +359,7 @@ TEST(TestDestroy, TestDestroySequenceNameDefaultOutsideManager)
 
             mgr.evalOpDefault<kp::OpAlgoBase>(
               { tensorA },
-              kp::Shader::compile(shader));
+              kp::Shader::compile_source(shader));
 
             mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
 

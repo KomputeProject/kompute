@@ -4,7 +4,7 @@
 namespace kp {
 
 std::vector<char>
-Shader::compile(const std::vector<std::string>& sources,
+Shader::compile_sources(const std::vector<std::string>& sources,
                                    const std::vector<std::string>& files,
                                    const std::string& entryPoint,
                                    std::vector<std::pair<std::string,std::string>> definitions) {
@@ -85,10 +85,10 @@ Shader::compile(const std::vector<std::string>& sources,
 }
 
 std::vector<char>
-Shader::compile(const std::string& source,
+Shader::compile_source(const std::string& source,
         const std::string& entryPoint,
         std::vector<std::pair<std::string,std::string>> definitions) {
-    return compile({source});
+    return compile_sources({source});
 }
 
 }
