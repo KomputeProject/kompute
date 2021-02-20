@@ -40,8 +40,7 @@ PYBIND11_MODULE(kp, m) {
                 return py::bytes((const char*)spirv.data(), spirv.size() * sizeof(uint32_t));
             },
             "Compiles string source provided and returns the value in bytes",
-            py::arg("source"), py::arg("entryPoint") = "main", py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() )
-        .def_static("compile_sources", &kp::Shader::compile_sources);
+            py::arg("source"), py::arg("entryPoint") = "main", py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() );
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
         .def(py::init(
