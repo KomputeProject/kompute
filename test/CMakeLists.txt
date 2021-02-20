@@ -57,10 +57,10 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
         test_kompute PRIVATE
         ${PROJECT_SOURCE_DIR}/external/shaderc/libshaderc/include)
 
-    find_library(SHADERC_LIB shaderc_combined)
-
     target_link_libraries(test_kompute PRIVATE
-        ${SHADERC_LIB})
+        shaderc)
+
+    message(STATUS "Shaderc lib:" shaderc)
 else()
     find_library(SHADERC_LIB shaderc_combined)
 
