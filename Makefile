@@ -74,16 +74,16 @@ mk_cmake:
 		-G "Unix Makefiles"
 
 mk_build_all:
-	cmake --build build/. --parallel
+	cmake --build build/. --parallel $(($(nproc)-2))
 
 mk_build_docs:
-	cmake --build build/. --target gendocsall --parallel
+	cmake --build build/. --target gendocsall --parallel $(($(nproc)-2))
 
 mk_build_kompute:
-	cmake --build build/. --target kompute --parallel
+	cmake --build build/. --target kompute --parallel $(($(nproc)-2))
 
 mk_build_tests:
-	cmake --build build/ --target test_kompute --parallel
+	cmake --build build/ --target test_kompute --parallel $(($(nproc)-2))
 
 mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
