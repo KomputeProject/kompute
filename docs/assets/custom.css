@@ -1,8 +1,8 @@
 
 @media (max-width: 1200px) {
 .md-header-nav__button {
-    color: #ef5350;
-    background-color: white;
+    color: #fff;
+    background-color: #ef5350 !important;
     border-radius: 5px;
 }
 }
@@ -16,8 +16,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Container backgrounds */
-.md-container, .md-main, .md-nav {
-    background-color: #252632;
+.md-container, .md-main, .md-nav, .md-nav__list {
+    background-color: #252632 !important;
     color: #fff;
 }
 
