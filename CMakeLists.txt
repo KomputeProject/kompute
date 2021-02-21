@@ -19,6 +19,7 @@ option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for 
 option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD, "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
+option(KOMPUTE_OPT_DISABLE_SHADER_UTILS "Remove shader util code and dependencies including glslang" 0)
 # Build flags
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
@@ -42,10 +43,15 @@ if(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
 endif()
 
-if(KOMPUTE_OPT_INSTALL)
-    # Enable install parameters for glslang (overrides parameters passed)
-    set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "Enables build of shared libraries" FORCE)
+if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
+    if(KOMPUTE_OPT_INSTALL)
+        # Enable install parameters for glslang (overrides parameters passed)
+        # When install is enabled the glslang libraries become shared
+        set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
+        set(BUILD_SHARED_LIBS ON CACHE BOOL "Enables build of shared libraries" FORCE)
+    endif()
+else()
+    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_DISABLE_SHADER_UTILS=1")
 endif()
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 ${KOMPUTE_EXTRA_CXX_FLAGS} -DUSE_DEBUG_EXTENTIONS")

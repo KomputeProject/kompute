@@ -30,7 +30,7 @@ PYBIND11_MODULE(kp, m) {
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
         .export_values();
 
-
+#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
     py::class_<kp::Shader>(m, "Shader", "Shader class")
         .def_static("compile_source", [](
                                     const std::string& source,
@@ -51,6 +51,7 @@ PYBIND11_MODULE(kp, m) {
             },
             "Compiles sources provided with file names and returns the value in bytes",
             py::arg("sources"), py::arg("files") = std::vector<std::string>(), py::arg("entryPoint") = "main", py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() );
+#endif // KOMPUTE_DISABLE_SHADER_UTILS
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
         .def(py::init(

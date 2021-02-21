@@ -1,5 +1,6 @@
 #pragma once
 
+#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
 #include <iostream>
 #include <vector>
 
@@ -54,3 +55,5 @@ public:
 
 };
 }
+#endif // DKOMPUTE_DISABLE_SHADER_UTILS
+

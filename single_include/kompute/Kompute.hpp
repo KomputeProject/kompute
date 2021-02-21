@@ -107,6 +107,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #endif // KOMPUTE_SPDLOG_ENABLED
 #endif // KOMPUTE_LOG_OVERRIDE
 
+#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
 #include <iostream>
 #include <vector>
 
@@ -159,6 +160,7 @@ public:
 
 };
 }
+#endif // DKOMPUTE_DISABLE_SHADER_UTILS
 
 /*
     THIS FILE HAS BEEN AUTOMATICALLY GENERATED - DO NOT EDIT

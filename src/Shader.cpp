@@ -1,4 +1,5 @@
 
+#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
 #include "kompute/Shader.hpp"
 
 namespace kp {
@@ -92,3 +93,4 @@ Shader::compile_source(const std::string& source,
 }
 
 }
+#endif // DKOMPUTE_DISABLE_SHADER_UTILS
