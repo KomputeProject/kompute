@@ -25,10 +25,10 @@ set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, se
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_ENABLE_SPDLOG=1")
+    set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "Enables external fmt as its current dep" FORCE)
     if(KOMPUTE_OPT_INSTALL)
         # Enable install parameters for spdlog (overrides parameters passed)
         set(SPDLOG_INSTALL ON CACHE BOOL "Enables install of spdlot" FORCE)
-        set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "Enables external fmt as its current dep" FORCE)
     endif()
 endif()
 
