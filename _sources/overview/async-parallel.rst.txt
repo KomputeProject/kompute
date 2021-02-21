@@ -27,7 +27,7 @@ This basically provides further granularity on Vulkan Fences, which is its means
 
 It is important that submitting tasks asynchronously, does not mean that these will be executed in parallel. Parallel execution of operations will be covered in the following section.
 
-Asynchronous operation submission can be achieved through the kp::Manager, or directly through the kp::Sequence. Below is an example using the Kompute manager.
+Asynchronous operation submission can be achieved through the :class:`kp::Manager`, or directly through the :class:`kp::Sequence`. Below is an example using the Kompute manager.
 
 Conceptual Overview
 ^^^^^^^^^^^^^^^^^^^^^
@@ -64,7 +64,7 @@ Sequences can be executed in synchronously or asynchronously without having to c
     :linenos:
 
     // Create tensors data explicitly in GPU with an operation
-    mgr.evalOpAsyncDefault<kp::OpTensorCreate>({ tensor });
+    mgr.rebuild({ tensor });
 
 
 While this is running we can actually do other things like in this case create the shader we'll be using.
@@ -125,7 +125,7 @@ Similar to above we can run other commands such as the `OpAlgoBase` asynchronous
     // Run Async Kompute operation on the parameters provided
     mgr.evalOpAsyncDefault<kp::OpAlgoBase<>>(
         { tensor }, 
-        std::vector<char>(shader.begin(), shader.end()));
+        kp::Shader::compile_source(shader));
 
     // Here we can do other work
 
@@ -226,7 +226,7 @@ Similar to the asyncrhonous usecase above, we can still run synchronous commands
     :linenos:
 
     // We run the first step synchronously on the default sequence
-    mgr.evalOpDefault<kp::OpTensorCreate>({ tensorA, tensorB });
+    mgr.rebuild({ tensorA, tensorB });
 
     // Define your shader as a string (using string literals for simplicity)
     // (You can also pass the raw compiled bytes, or even path to file)
@@ -259,17 +259,19 @@ Now we can actually trigger the parallel processing, running two OpAlgoBase Oper
 .. code-block:: cpp
     :linenos:
 
+    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+
     // Run the first parallel operation in the `queueOne` sequence
     mgr.evalOpAsync<kp::OpAlgoBase<>>(
         { tensorA }, 
         "queueOne",
-        std::vector<char>(shader.begin(), shader.end()));
+        spirv);
 
     // Run the second parallel operation in the `queueTwo` sequence
     mgr.evalOpAsync<kp::OpAlgoBase<>>(
         { tensorB }, 
         "queueTwo",
-        std::vector<char>(shader.begin(), shader.end()));
+        spirv);
 
 
 Similar to the asynchronous example above, we are able to do other work whilst the tasks are executing.

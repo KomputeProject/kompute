@@ -239,28 +239,28 @@
     <li class="md-nav__item">
     
     
-      <a href="overview/memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      <a href="overview/memory-management.html" class="md-nav__link">Memory Management Principles</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="overview/build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      <a href="overview/build-system.html" class="md-nav__link">Build System Deep Dive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="overview/shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      <a href="overview/shaders-to-headers.html" class="md-nav__link">Processing Shaders (Online & Offline)</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="overview/custom-operations.html" class="md-nav__link">C++ Extending Kompute with Custom Operations</a>
+      <a href="overview/custom-operations.html" class="md-nav__link">Extending Kompute with Custom Operations</a>
       
     
     </li>
@@ -274,7 +274,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">Test Code Coverage</a>
       
     
     </li>
@@ -443,12 +443,12 @@
 <p class="caption"><span class="caption-text">C++ Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">C++ Memory Management Principles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">C++ Build System Deep Dive</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview/custom-operations.html">C++ Extending Kompute with Custom Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">Memory Management Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/build-system.html">Build System Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/shaders-to-headers.html">Processing Shaders (Online &amp; Offline)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/custom-operations.html">Extending Kompute with Custom Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/reference.html">C++ Class Documentation &amp; Reference</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://kompute.cc/codecov/">C++ Code Coverage</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://kompute.cc/codecov/">Test Code Coverage</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -538,7 +538,7 @@
     <span class="c1">// 3. Run operation with string shader synchronously</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">},</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shaderString</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shaderString</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+        <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shaderString</span><span class="p">));</span>
 
     <span class="c1">// 4. Map results back from GPU memory to print the results</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>

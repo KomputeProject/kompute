@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-21 07:46:45</td>
+            <td class="headerValue">2021-02-21 12:50:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -67,7 +67,7 @@
 <span class="lineNum">       5 </span>            : 
 <span class="lineNum">       6 </span><span class="lineNoCov">          0 : OpTensorCopy::OpTensorCopy()</span>
 <span class="lineNum">       7 </span>            : {
-<span class="lineNum">       8 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy constructor base&quot;);
+<span class="lineNum">       8 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy constructor base&quot;);
 <span class="lineNum">       9 </span><span class="lineNoCov">          0 : }</span>
 <span class="lineNum">      10 </span>            : 
 <span class="lineNum">      11 </span><span class="lineCov">         11 : OpTensorCopy::OpTensorCopy(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</span>
@@ -76,18 +76,18 @@
 <span class="lineNum">      14 </span><span class="lineCov">         11 :                            std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors)</span>
 <span class="lineNum">      15 </span><span class="lineCov">         55 :   : OpBase(physicalDevice, device, commandBuffer, tensors)</span>
 <span class="lineNum">      16 </span>            : {
-<span class="lineNum">      17 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy constructor with params&quot;);
+<span class="lineNum">      17 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy constructor with params&quot;);
 <a name="18"><span class="lineNum">      18 </span><span class="lineCov">         11 : }</span></a>
 <span class="lineNum">      19 </span>            : 
 <span class="lineNum">      20 </span><span class="lineCov">         11 : OpTensorCopy::~OpTensorCopy()</span>
 <span class="lineNum">      21 </span>            : {
-<span class="lineNum">      22 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy destructor started&quot;);
+<span class="lineNum">      22 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy destructor started&quot;);
 <span class="lineNum">      23 </span><span class="lineCov">         11 : }</span>
 <span class="lineNum">      24 </span>            : 
 <span class="lineNum">      25 </span>            : void
 <span class="lineNum">      26 </span><span class="lineCov">         11 : OpTensorCopy::init()</span>
 <span class="lineNum">      27 </span>            : {
-<span class="lineNum">      28 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy init called&quot;);
+<span class="lineNum">      28 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy init called&quot;);
 <span class="lineNum">      29 </span>            : 
 <span class="lineNum">      30 </span><span class="lineCov">         22 :     if (this-&gt;mTensors.size() &lt; 2) {</span>
 <span class="lineNum">      31 </span>            :         throw std::runtime_error(
@@ -110,7 +110,7 @@
 <span class="lineNum">      48 </span>            : void
 <span class="lineNum">      49 </span><span class="lineCov">         10 : OpTensorCopy::record()</span>
 <span class="lineNum">      50 </span>            : {
-<span class="lineNum">      51 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy record called&quot;);
+<span class="lineNum">      51 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy record called&quot;);
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            :     // We iterate from the second tensor onwards and record a copy to all
 <span class="lineNum">      54 </span><span class="lineCov">         56 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
@@ -122,13 +122,13 @@
 <span class="lineNum">      60 </span>            : void
 <span class="lineNum">      61 </span><span class="lineCov">         19 : OpTensorCopy::preEval()</span>
 <span class="lineNum">      62 </span>            : {
-<span class="lineNum">      63 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy preEval called&quot;);
+<span class="lineNum">      63 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy preEval called&quot;);
 <span class="lineNum">      64 </span><span class="lineCov">         19 : }</span>
 <span class="lineNum">      65 </span>            : 
 <span class="lineNum">      66 </span>            : void
 <span class="lineNum">      67 </span><span class="lineCov">         19 : OpTensorCopy::postEval()</span>
 <span class="lineNum">      68 </span>            : {
-<span class="lineNum">      69 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpTensorCopy postEval called&quot;);
+<span class="lineNum">      69 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy postEval called&quot;);
 <span class="lineNum">      70 </span>            : 
 <span class="lineNum">      71 </span>            :     // Copy the data from the first tensor into all the tensors
 <span class="lineNum">      72 </span><span class="lineCov">        101 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>

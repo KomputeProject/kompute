@@ -67,7 +67,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Class Documentation and C++ Reference" href="reference.html" />
-    <link rel="prev" title="Converting Shaders to C++ Headers" href="shaders-to-headers.html" />
+    <link rel="prev" title="Processing Shaders with Kompute" href="shaders-to-headers.html" />
   
    
 
@@ -240,21 +240,21 @@
     <li class="md-nav__item">
     
     
-      <a href="memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      <a href="memory-management.html" class="md-nav__link">Memory Management Principles</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      <a href="build-system.html" class="md-nav__link">Build System Deep Dive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      <a href="shaders-to-headers.html" class="md-nav__link">Processing Shaders (Online & Offline)</a>
       
     
     </li>
@@ -262,9 +262,9 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> C++ Extending Kompute with Custom Operations </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Extending Kompute with Custom Operations </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">C++ Extending Kompute with Custom Operations</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Extending Kompute with Custom Operations</a>
       
         
 <nav class="md-nav md-nav--secondary">
@@ -302,7 +302,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">Test Code Coverage</a>
       
     
     </li>
@@ -421,7 +421,7 @@
 <p>These nuances are important for more advanced users of Kompute, as this will provide further intuition in what are the specific functions and components that the native functions (like OpTensorCreate, OpAlgoBase, etc) contain which define their specific behaviour.</p>
 
 <h2 id="flow-of-function-calls">Flow of Function Calls<a class="headerlink" href="#flow-of-function-calls" title="Permalink to this headline">¶</a></h2>
-<p>The top level operation which all operations inherit from is the <cite>kp::OpBase</cite> class. Some of the “Core Native Operations” like <cite>kp::OpTensorCopy</cite>, <cite>kp::OpTensorCreate</cite>, etc all inherit from the base operation class.</p>
+<p>The top level operation which all operations inherit from is the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpBase</span></code> class. Some of the “Core Native Operations” like <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCopy</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCreate</span></code>, etc all inherit from the base operation class.</p>
 <p>The <cite>kp::OpAlgoBase</cite> is another base operation that is specifically built to enable users to create their own operations that contain custom shader logic (i.e. requiring Vulkan Compute Pipelines, DescriptorSets, etc). The next section contains an example which shows how to extend the OpAlgoBase class.</p>
 <p>Below you</p>
 <table>
@@ -639,7 +639,7 @@
 
 <span class="n">OpAlgoLhsRhsOut</span><span class="o">::</span><span class="n">OpAlgoLhsRhsOut</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut constructor base"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut constructor base"</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">OpAlgoLhsRhsOut</span><span class="o">::</span><span class="n">OpAlgoLhsRhsOut</span><span class="p">(</span>
@@ -653,24 +653,24 @@
   <span class="c1">// a granular way.</span>
   <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="n">komputeWorkgroup</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut constructor with params"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut constructor with params"</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">OpAlgoLhsRhsOut</span><span class="o">::~</span><span class="n">OpAlgoLhsRhsOut</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut destructor started"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut destructor started"</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kt">void</span>
 <span class="n">OpAlgoLhsRhsOut</span><span class="o">::</span><span class="n">init</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut init called"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut init called"</span><span class="p">);</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span>
           <span class="s">"Kompute OpAlgoLhsRhsOut called with less than 1 tensor"</span><span class="p">);</span>
     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">SPDLOG_WARN</span><span class="p">(</span>
+        <span class="n">KP_LOG_WARN</span><span class="p">(</span>
           <span class="s">"Kompute OpAlgoLhsRhsOut called with more than 3 this-&gt;mTensors"</span><span class="p">);</span>
     <span class="p">}</span>
 
@@ -698,11 +698,11 @@
           <span class="s">" Output: "</span> <span class="o">+</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()));</span>
     <span class="p">}</span>
 
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut fetching spirv data"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut fetching spirv data"</span><span class="p">);</span>
 
     <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">shaderFileData</span> <span class="o">=</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">fetchSpirvBinaryData</span><span class="p">();</span>
 
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut Initialising algorithm component"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut Initialising algorithm component"</span><span class="p">);</span>
 
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">mAlgorithm</span><span class="o">-&gt;</span><span class="n">init</span><span class="p">(</span><span class="n">shaderFileData</span><span class="p">,</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensors</span><span class="p">);</span>
 <span class="p">}</span>
@@ -710,7 +710,7 @@
 <span class="kt">void</span>
 <span class="n">OpAlgoLhsRhsOut</span><span class="o">::</span><span class="n">record</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut record called"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut record called"</span><span class="p">);</span>
 
     <span class="c1">// Barrier to ensure the data is finished writing to buffer memory</span>
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorLHS</span><span class="o">-&gt;</span><span class="n">recordBufferMemoryBarrier</span><span class="p">(</span>
@@ -747,7 +747,7 @@
 <span class="kt">void</span>
 <span class="n">OpAlgoLhsRhsOut</span><span class="o">::</span><span class="n">postEval</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="n">SPDLOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut postSubmit called"</span><span class="p">);</span>
+    <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpAlgoLhsRhsOut postSubmit called"</span><span class="p">);</span>
 
     <span class="k">this</span><span class="o">-&gt;</span><span class="n">mTensorOutput</span><span class="o">-&gt;</span><span class="n">mapDataFromHostMemory</span><span class="p">();</span>
 <span class="p">}</span>
@@ -769,7 +769,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="shaders-to-headers.html" title="Converting Shaders to C++ Headers"
+            <a href="shaders-to-headers.html" title="Processing Shaders with Kompute"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -778,7 +778,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Converting Shaders to C++ Headers </span>
+                      class="md-footer-nav__direction"> Previous </span> Processing Shaders with Kompute </span>
               </div>
             </a>
           

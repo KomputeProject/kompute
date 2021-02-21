@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-21 07:46:45</td>
+            <td class="headerValue">2021-02-21 12:50:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -191,15 +191,15 @@
 <span class="lineNum">     129 </span>            :                       &quot;Kompute Sequence record(...) template only valid with &quot;
 <span class="lineNum">     130 </span>            :                       &quot;OpBase derived classes&quot;);
 <span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            :         SPDLOG_DEBUG(&quot;Kompute Sequence record function started&quot;);
+<span class="lineNum">     132 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence record function started&quot;);
 <span class="lineNum">     133 </span>            : 
 <span class="lineNum">     134 </span><span class="lineNoCov">          0 :         if (!this-&gt;isRecording()) {</span>
-<span class="lineNum">     135 </span><span class="lineNoCov">          0 :             SPDLOG_ERROR(</span>
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :             KP_LOG_ERROR(</span>
 <span class="lineNum">     136 </span>            :               &quot;Kompute sequence record attempted when not record BEGIN&quot;);
 <span class="lineNum">     137 </span><span class="lineNoCov">          0 :             return false;</span>
 <span class="lineNum">     138 </span>            :         }
 <span class="lineNum">     139 </span>            : 
-<span class="lineNum">     140 </span>            :         SPDLOG_DEBUG(&quot;Kompute Sequence creating OpBase derived class instance&quot;);
+<span class="lineNum">     140 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence creating OpBase derived class instance&quot;);
 <span class="lineNum">     141 </span><span class="lineNoCov">          0 :         T* op = new T(this-&gt;mPhysicalDevice,</span>
 <span class="lineNum">     142 </span>            :                       this-&gt;mDevice,
 <span class="lineNum">     143 </span>            :                       this-&gt;mCommandBuffer,
@@ -210,11 +210,11 @@
 <span class="lineNum">     148 </span>            : 
 <span class="lineNum">     149 </span>            :         std::unique_ptr&lt;OpBase&gt; baseOpPtr{ baseOp };
 <span class="lineNum">     150 </span>            : 
-<span class="lineNum">     151 </span>            :         SPDLOG_DEBUG(
+<span class="lineNum">     151 </span>            :         KP_LOG_DEBUG(
 <span class="lineNum">     152 </span>            :           &quot;Kompute Sequence running init on OpBase derived class instance&quot;);
 <span class="lineNum">     153 </span><span class="lineNoCov">          0 :         baseOpPtr-&gt;init();</span>
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span>            :         SPDLOG_DEBUG(
+<span class="lineNum">     155 </span>            :         KP_LOG_DEBUG(
 <span class="lineNum">     156 </span>            :           &quot;Kompute Sequence running record on OpBase derived class instance&quot;);
 <span class="lineNum">     157 </span><span class="lineNoCov">          0 :         baseOpPtr-&gt;record();</span>
 <span class="lineNum">     158 </span>            : 

@@ -240,28 +240,28 @@
     <li class="md-nav__item">
     
     
-      <a href="memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      <a href="memory-management.html" class="md-nav__link">Memory Management Principles</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      <a href="build-system.html" class="md-nav__link">Build System Deep Dive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      <a href="shaders-to-headers.html" class="md-nav__link">Processing Shaders (Online & Offline)</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="custom-operations.html" class="md-nav__link">C++ Extending Kompute with Custom Operations</a>
+      <a href="custom-operations.html" class="md-nav__link">Extending Kompute with Custom Operations</a>
       
     
     </li>
@@ -275,7 +275,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">Test Code Coverage</a>
       
     
     </li>
@@ -774,8 +774,9 @@ tensor.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Shader.compile_sources">
-<em class="property">static </em><code class="sig-name descname">compile_sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg2</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">arg3</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> → List<span class="p">[</span>int<span class="p">]</span><a class="headerlink" href="#kp.Shader.compile_sources" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">static </em><code class="sig-name descname">compile_sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">files</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">entryPoint</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'main'</span></em>, <em class="sig-param"><span class="n">definitions</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → bytes<a class="headerlink" href="#kp.Shader.compile_sources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compiles sources provided with file names and returns the value in bytes</p>
+</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt id="id0">

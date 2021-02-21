@@ -259,8 +259,6 @@
             </nav>
         </li>
         <li class="md-nav__item"><a href="#your-custom-kompute-operation" class="md-nav__link">Your Custom Kompute Operation</a>
-        </li>
-        <li class="md-nav__item"><a href="#logistic-regression-example" class="md-nav__link">Logistic Regression Example</a>
         </li></ul>
             </nav>
         </li>
@@ -275,28 +273,28 @@
     <li class="md-nav__item">
     
     
-      <a href="memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      <a href="memory-management.html" class="md-nav__link">Memory Management Principles</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      <a href="build-system.html" class="md-nav__link">Build System Deep Dive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      <a href="shaders-to-headers.html" class="md-nav__link">Processing Shaders (Online & Offline)</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="custom-operations.html" class="md-nav__link">C++ Extending Kompute with Custom Operations</a>
+      <a href="custom-operations.html" class="md-nav__link">Extending Kompute with Custom Operations</a>
       
     
     </li>
@@ -310,7 +308,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">Test Code Coverage</a>
       
     
     </li>
@@ -411,8 +409,6 @@
             </nav>
         </li>
         <li class="md-nav__item"><a href="#your-custom-kompute-operation" class="md-nav__link">Your Custom Kompute Operation</a>
-        </li>
-        <li class="md-nav__item"><a href="#logistic-regression-example" class="md-nav__link">Logistic Regression Example</a>
         </li></ul>
             </nav>
         </li>
@@ -521,7 +517,7 @@
         <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
 
         <span class="c1">// Record batch commands to send to GPU</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&lt;&gt;&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
+        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMult</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">,</span> <span class="n">tensorOutput</span> <span class="p">});</span>
         <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCopy</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorOutput</span><span class="p">,</span> <span class="n">tensorLHS</span><span class="p">,</span> <span class="n">tensorRHS</span><span class="p">});</span>
 
         <span class="c1">// Stop recording</span>
@@ -610,7 +606,9 @@
 58
 59
 60
-61</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+61
+62
+63</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
@@ -619,7 +617,7 @@
     <span class="k">auto</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
 
     <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">rebuild</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
 
     <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
     <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
@@ -647,6 +645,8 @@
 <span class="s">        }</span>
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+
     <span class="c1">// We can now await for the previous submitted command</span>
     <span class="c1">// The first parameter can be the amount of time to wait</span>
     <span class="c1">// The time provided is in nanoseconds</span>
@@ -655,7 +655,7 @@
     <span class="c1">// Run Async Kompute operation on the parameters provided</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsyncDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensor</span> <span class="p">},</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+        <span class="n">spirv</span><span class="p">);</span>
 
     <span class="c1">// Here we can do other work</span>
 
@@ -753,7 +753,9 @@
 71
 72
 73
-74</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+74
+75
+76</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
 
     <span class="c1">// In this case we select device 0, and for queues, one queue from familyIndex 0</span>
     <span class="c1">// and one queue from familyIndex 2</span>
@@ -774,7 +776,7 @@
     <span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)));</span>
 
     <span class="c1">// We run the first step synchronously on the default sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">rebuild</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
 
     <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
     <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
@@ -802,17 +804,19 @@
 <span class="s">        }</span>
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+
     <span class="c1">// Run the first parallel operation in the `queueOne` sequence</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensorA</span> <span class="p">},</span>
         <span class="s">"queueOne"</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+        <span class="n">spirv</span><span class="p">);</span>
 
     <span class="c1">// Run the second parallel operation in the `queueTwo` sequence</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
         <span class="p">{</span> <span class="n">tensorB</span> <span class="p">},</span>
         <span class="s">"queueTwo"</span><span class="p">,</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">shader</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>
+        <span class="n">spirv</span><span class="p">);</span>
 
     <span class="c1">// Here we can do other work</span>
 
@@ -878,7 +882,7 @@
       <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="c1">// Perform your custom steps such as reading from a shader file</span>
-        <span class="k">this</span><span class="o">-&gt;</span><span class="n">mShaderFilePath</span> <span class="o">=</span> <span class="s">"shaders/glsl/opmult.comp"</span><span class="p">;</span>
+        <span class="k">this</span><span class="o">-&gt;</span><span class="n">mShaderFilePath</span> <span class="o">=</span> <span class="s">"shaders/glsl/opmult.comp.spv"</span><span class="p">;</span>
     <span class="p">}</span>
 <span class="p">}</span>
 
@@ -893,7 +897,7 @@
     <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
 
     <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">rebuild</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
 
     <span class="c1">// Run Kompute operation on the parameters provided with dispatch layout</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMyCustom</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">&gt;&gt;</span><span class="p">(</span>
@@ -901,336 +905,6 @@
 
     <span class="c1">// Prints the output which is { 0, 4, 12 }</span>
     <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-
-
-<h2 id="logistic-regression-example">Logistic Regression Example<a class="headerlink" href="#logistic-regression-example" title="Permalink to this headline">¶</a></h2>
-<p>Logistic regression is oftens seen as the hello world in machine learning so we will be using it for our examples. Back to <a class="reference external" href="#simple-examples">examples list</a>.</p>
-<a class="reference internal image-reference" href="../_images/logistic-regression.jpg"><img alt="../_images/logistic-regression.jpg" src="../_images/logistic-regression.jpg" style="width: 300px;"/></a>
-<p>In summary, we have:</p>
-<ul class="simple">
-<li><p>Vector <code class="docutils literal notranslate"><span class="pre">X</span></code> with input data (with a pair of inputs <code class="docutils literal notranslate"><span class="pre">Xi</span></code> and <code class="docutils literal notranslate"><span class="pre">Xj</span></code>)</p></li>
-<li><p>Output <code class="docutils literal notranslate"><span class="pre">Y</span></code> with expected predictions</p></li>
-</ul>
-<p>With this we will:</p>
-<ul class="simple">
-<li><p>Optimize the function simplified as <code class="docutils literal notranslate"><span class="pre">Y</span> <span class="pre">=</span> <span class="pre">WX</span> <span class="pre">+</span> <span class="pre">b</span></code></p></li>
-<li><p>We’ll want our program to learn the parameters <code class="docutils literal notranslate"><span class="pre">W</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code></p></li>
-</ul>
-<p>We will have to convert this into Kompute terminology.</p>
-<p>First specifically around the inputs, we will be using the following:</p>
-<ul class="simple">
-<li><p>Two vertors for the variable <cite>X</cite>, vector <cite>Xi</cite> and <cite>Xj</cite></p></li>
-<li><p>One vector <cite>Y</cite> for the true predictions</p></li>
-<li><p>A vector <cite>W</cite> containing the two input weight values to use for inference</p></li>
-<li><p>A vector <cite>B</cite> containing a single input parameter for <cite>b</cite></p></li>
-</ul>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">wInVec</span> <span class="o">=</span> <span class="p">{</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span> <span class="p">};</span>
-<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">bInVec</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">xI</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">})};</span>
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">xJ</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">})};</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">y</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span> <span class="p">})};</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">wIn</span><span class="p">{</span>
-    <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">wInVec</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorTypes</span><span class="o">::</span><span class="n">eStaging</span><span class="p">)};</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">bIn</span><span class="p">{</span>
-    <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">(</span><span class="n">bInVec</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorTypes</span><span class="o">::</span><span class="n">eStaging</span><span class="p">)};</span>
-</pre></div>
-</td></tr></table></div>
-<p>We will have the following output vectors:</p>
-<ul class="simple">
-<li><p>Two output vectors <cite>Wi</cite> and <cite>Wj</cite> to store all the deltas to perform gradient descent on W</p></li>
-<li><p>One output vector <cite>Bout</cite> to store all the deltas to perform gradient descent on B</p></li>
-</ul>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">wOutI</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">})};</span>
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">wOutJ</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">})};</span>
-
-<span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">bOut</span><span class="p">{</span> <span class="k">new</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">})};</span>
-</pre></div>
-</td></tr></table></div>
-<p>For simplicity we will store all the tensors inside a params variable:</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span>
-    <span class="p">{</span><span class="n">xI</span><span class="p">,</span> <span class="n">xJ</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">wIn</span><span class="p">,</span> <span class="n">wOutI</span><span class="p">,</span> <span class="n">wOutJ</span><span class="p">,</span> <span class="n">bIn</span><span class="p">,</span> <span class="n">bOut</span><span class="p">};</span>
-</pre></div>
-</td></tr></table></div>
-<p>Now that we have the inputs and outputs we will be able to use them in the processing. The workflow we will be using is the following:</p>
-<ol class="arabic simple">
-<li><p>Create a Sequence to record and submit GPU commands</p></li>
-<li><p>Submit OpCreateTensor to create all the tensors</p></li>
-<li><p>Record the OpAlgo with the Logistic Regression shader</p></li>
-<li><p>Loop across number of iterations:</p></li>
-</ol>
-<blockquote>
-<div><p>4-a. Submit algo operation on LR shader
-4-b. Re-calculate weights from loss</p>
-</div></blockquote>
-<ol class="arabic simple" start="5">
-<li><p>Print output weights and bias</p></li>
-</ol>
-<ol class="arabic simple">
-<li><p>Create a sequence to record and submit GPU commands</p></li>
-</ol>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
-
-<span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span>
-        <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="s">"createTensors"</span><span class="p">).</span><span class="n">lock</span><span class="p">())</span>
-<span class="p">{</span>
-    <span class="c1">// ...</span>
-</pre></div>
-</td></tr></table></div>
-<p>Submit OpCreateTensor to create all the tensors</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="c1">// ... continuing from codeblock above</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpCreateTensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">);</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
-</pre></div>
-</td></tr></table></div>
-<p>Record the OpAlgo with the Logistic Regression shader</p>
-<p>Once we re-record, all the instructions that were recorded previously are cleared.</p>
-<p>Because of this we can record now the new commands which will consist of the following:</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="c1">// ... continuing from codeblock above</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">wIn</span><span class="p">,</span> <span class="n">bIn</span><span class="p">});</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
-            <span class="n">params</span><span class="p">,</span>
-            <span class="nb">false</span><span class="p">,</span> <span class="c1">// Whether to copy output from device</span>
-            <span class="s">"test/shaders/glsl/test_logistic_regression.comp"</span><span class="p">);</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="n">wOutI</span><span class="p">,</span> <span class="n">wOutJ</span><span class="p">,</span> <span class="n">bOut</span><span class="p">});</span>
-
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">();</span>
-</pre></div>
-</td></tr></table></div>
-<p>Loop across number of iterations + 4-a. Submit algo operation on LR shader</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="c1">// ... continuing from codeblock above</span>
-
-    <span class="kt">uint32_t</span> <span class="n">ITERATIONS</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-
-    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ITERATIONS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// Run evaluation which passes data through shader once</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
-</pre></div>
-</td></tr></table></div>
-<p>4-b. Re-calculate weights from loss</p>
-<p>Once the shader code is executed, we are able to use the outputs from the shader calculation.</p>
-<p>In this case we want to basically add all the calculated weights and bias from the back-prop step.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="c1">// ...</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ITERATIONS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// ... continuing from codeblock above</span>
-
-        <span class="c1">// Run evaluation which passes data through shader once</span>
-        <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
-
-        <span class="c1">// Subtract the resulting weights and biases</span>
-        <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">();</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">wInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutI</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
-            <span class="n">wInVec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">wOutJ</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
-            <span class="n">bInVec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">bOut</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="n">j</span><span class="p">];</span>
-        <span class="p">}</span>
-        <span class="c1">// Set the data for the GPU to use in the next iteration</span>
-        <span class="n">wIn</span><span class="o">-&gt;</span><span class="n">mapDataIntoHostMemory</span><span class="p">();</span>
-        <span class="n">bIn</span><span class="o">-&gt;</span><span class="n">mapDataIntoHostMemory</span><span class="p">();</span>
-    <span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-<ol class="arabic simple" start="5">
-<li><p>Print output weights and bias</p></li>
-</ol>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Weight i: "</span> <span class="o">&lt;&lt;</span> <span class="n">wIn</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Weight j: "</span> <span class="o">&lt;&lt;</span> <span class="n">wIn</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Bias: "</span> <span class="o">&lt;&lt;</span> <span class="n">bIn</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</pre></div>
-</td></tr></table></div>
-<p>Finally you can see the shader used for the logistic regression usecase below:</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">#version 450</span>
-
-<span class="n">layout</span> <span class="p">(</span><span class="n">constant_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">const</span> <span class="n">uint</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-
-<span class="n">layout</span> <span class="p">(</span><span class="n">local_size_x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span><span class="p">;</span>
-
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bxi</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">xi</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bxj</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">xj</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">by</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">y</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bwin</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">win</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bwouti</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">wouti</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bwoutj</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">woutj</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bbin</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">bin</span><span class="p">[];</span> <span class="p">};</span>
-<span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">7</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">bbout</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">bout</span><span class="p">[];</span> <span class="p">};</span>
-
-<span class="kt">float</span> <span class="n">learningRate</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
-<span class="kt">float</span> <span class="n">m</span> <span class="o">=</span> <span class="kt">float</span><span class="p">(</span><span class="n">M</span><span class="p">);</span>
-
-<span class="kt">float</span> <span class="nf">sigmoid</span><span class="p">(</span><span class="kt">float</span> <span class="n">z</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">z</span><span class="p">));</span>
-<span class="p">}</span>
-
-<span class="kt">float</span> <span class="nf">inference</span><span class="p">(</span><span class="n">vec2</span> <span class="n">x</span><span class="p">,</span> <span class="n">vec2</span> <span class="n">w</span><span class="p">,</span> <span class="kt">float</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">float</span> <span class="n">z</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">yHat</span> <span class="o">=</span> <span class="n">sigmoid</span><span class="p">(</span><span class="n">z</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">yHat</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">float</span> <span class="nf">calculateLoss</span><span class="p">(</span><span class="kt">float</span> <span class="n">yHat</span><span class="p">,</span> <span class="kt">float</span> <span class="n">y</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">yHat</span><span class="p">)</span>  <span class="o">+</span>  <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">yHat</span><span class="p">));</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">uint</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-
-    <span class="n">vec2</span> <span class="n">wCurr</span> <span class="o">=</span> <span class="n">vec2</span><span class="p">(</span><span class="n">win</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">win</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
-    <span class="kt">float</span> <span class="n">bCurr</span> <span class="o">=</span> <span class="n">bin</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-
-    <span class="n">vec2</span> <span class="n">xCurr</span> <span class="o">=</span> <span class="n">vec2</span><span class="p">(</span><span class="n">xi</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">xj</span><span class="p">[</span><span class="n">idx</span><span class="p">]);</span>
-    <span class="kt">float</span> <span class="n">yCurr</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
-
-    <span class="kt">float</span> <span class="n">yHat</span> <span class="o">=</span> <span class="n">inference</span><span class="p">(</span><span class="n">xCurr</span><span class="p">,</span> <span class="n">wCurr</span><span class="p">,</span> <span class="n">bCurr</span><span class="p">);</span>
-    <span class="kt">float</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">calculateLoss</span><span class="p">(</span><span class="n">yHat</span><span class="p">,</span> <span class="n">yCurr</span><span class="p">);</span>
-
-    <span class="kt">float</span> <span class="n">dZ</span> <span class="o">=</span> <span class="n">yHat</span> <span class="o">-</span> <span class="n">yCurr</span><span class="p">;</span>
-    <span class="n">vec2</span> <span class="n">dW</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">xCurr</span> <span class="o">*</span> <span class="n">dZ</span><span class="p">;</span>
-    <span class="kt">float</span> <span class="n">dB</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">dZ</span><span class="p">;</span>
-    <span class="n">wouti</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">learningRate</span> <span class="o">*</span> <span class="n">dW</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-    <span class="n">woutj</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">learningRate</span> <span class="o">*</span> <span class="n">dW</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
-    <span class="n">bout</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">learningRate</span> <span class="o">*</span> <span class="n">dB</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>

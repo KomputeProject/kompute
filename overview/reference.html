@@ -240,28 +240,28 @@
     <li class="md-nav__item">
     
     
-      <a href="memory-management.html" class="md-nav__link">C++ Memory Management Principles</a>
+      <a href="memory-management.html" class="md-nav__link">Memory Management Principles</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="build-system.html" class="md-nav__link">C++ Build System Deep Dive</a>
+      <a href="build-system.html" class="md-nav__link">Build System Deep Dive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="shaders-to-headers.html" class="md-nav__link">C++ Converting GLSL/HLSL Shaders to Cpp Headers</a>
+      <a href="shaders-to-headers.html" class="md-nav__link">Processing Shaders (Online & Offline)</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="custom-operations.html" class="md-nav__link">C++ Extending Kompute with Custom Operations</a>
+      <a href="custom-operations.html" class="md-nav__link">Extending Kompute with Custom Operations</a>
       
     
     </li>
@@ -298,6 +298,8 @@
         <li class="md-nav__item"><a href="#optensorsynclocal" class="md-nav__link">OpTensorSyncLocal</a>
         </li>
         <li class="md-nav__item"><a href="#optensorsyncdevice" class="md-nav__link">OpTensorSyncDevice</a>
+        </li>
+        <li class="md-nav__item"><a href="#shader" class="md-nav__link">Shader</a>
         </li></ul>
             </nav>
         </li>
@@ -312,7 +314,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://kompute.cc/codecov/" class="md-nav__link">C++ Code Coverage</a>
+      <a href="https://kompute.cc/codecov/" class="md-nav__link">Test Code Coverage</a>
       
     
     </li>
@@ -417,6 +419,8 @@
         <li class="md-nav__item"><a href="#optensorsynclocal" class="md-nav__link">OpTensorSyncLocal</a>
         </li>
         <li class="md-nav__item"><a href="#optensorsyncdevice" class="md-nav__link">OpTensorSyncDevice</a>
+        </li>
+        <li class="md-nav__item"><a href="#shader" class="md-nav__link">Shader</a>
         </li></ul>
             </nav>
         </li>
@@ -441,7 +445,7 @@
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture.jpg"><img alt="../_images/kompute-vulkan-architecture.jpg" src="../_images/kompute-vulkan-architecture.jpg" style="width: 100%;"/></a>
 
 <h2 id="manager">Manager<a class="headerlink" href="#manager" title="Permalink to this headline">¶</a></h2>
-<p>The Kompute Manager provides a high level interface to simplify interaction with underlying kp::Sequences of kp::Operations.</p>
+<p>The Kompute Manager provides a high level interface to simplify interaction with underlying <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Sequences</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Operations</span></code>.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-manager.jpg"><img alt="../_images/kompute-vulkan-architecture-manager.jpg" src="../_images/kompute-vulkan-architecture-manager.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp7ManagerE">
@@ -702,7 +706,7 @@
 
 
 <h2 id="sequence">Sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
-<p>The Kompute Sequence consists of batches of kp::Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.</p>
+<p>The Kompute Sequence consists of batches of <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Operations</span></code>, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-sequence.jpg"><img alt="../_images/kompute-vulkan-architecture-sequence.jpg" src="../_images/kompute-vulkan-architecture-sequence.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp8SequenceE">
@@ -847,7 +851,7 @@
 
 
 <h2 id="tensor">Tensor<a class="headerlink" href="#tensor" title="Permalink to this headline">¶</a></h2>
-<p>The kp::Tensor is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Tensor</span></code> is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-tensor.jpg"><img alt="../_images/kompute-vulkan-architecture-tensor.jpg" src="../_images/kompute-vulkan-architecture-tensor.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp6TensorE">
@@ -1058,7 +1062,7 @@
 
 
 <h2 id="algorithm">Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
-<p>The kp::Algorithm consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan resources as outlined in the architectural diagram.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Algorithm</span></code> consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan resources as outlined in the architectural diagram.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-algorithm.jpg"><img alt="../_images/kompute-vulkan-architecture-algorithm.jpg" src="../_images/kompute-vulkan-architecture-algorithm.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp9AlgorithmE">
@@ -1120,7 +1124,7 @@
 
 
 <h2 id="opbase">OpBase<a class="headerlink" href="#opbase" title="Permalink to this headline">¶</a></h2>
-<p>The kp::OpBase provides a top level class for an operation in Kompute, which is the step that is executed on a GPU submission. The Kompute operations can consist of one or more kp::Tensor.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpBase</span></code> provides a top level class for an operation in Kompute, which is the step that is executed on a GPU submission. The Kompute operations can consist of one or more <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Tensor</span></code>.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-operations.jpg"><img alt="../_images/kompute-vulkan-architecture-operations.jpg" src="../_images/kompute-vulkan-architecture-operations.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp6OpBaseE">
@@ -1275,7 +1279,7 @@
 
 
 <h2 id="opmult">OpMult<a class="headerlink" href="#opmult" title="Permalink to this headline">¶</a></h2>
-<p>The kp::OpMult operation is a sample implementation of the kp::OpAlgoBase class. This class shows how it is possible to create a custom vk::OpAlgoBase that can compile as part of the binary. The kp::OpMult operation uses the shader-to-cpp-header-file script to convert the script into cpp header files.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpMult</span></code> operation is a sample implementation of the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpAlgoBase</span></code> class. This class shows how it is possible to create a custom vk::OpAlgoBase that can compile as part of the binary. The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpMult</span></code> operation uses the shader-to-cpp-header-file script to convert the script into cpp header files.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp6OpMultE">
@@ -1314,7 +1318,7 @@
 
 
 <h2 id="optensorcopy">OpTensorCopy<a class="headerlink" href="#optensorcopy" title="Permalink to this headline">¶</a></h2>
-<p>The kp::OpTensorCopy is a tensor only operation that copies the GPU memory buffer data from one kp::Tensor to one or more subsequent tensors.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCopy</span></code> is a tensor only operation that copies the GPU memory buffer data from one <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Tensor</span></code> to one or more subsequent tensors.</p>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp12OpTensorCopyE">
 <span id="_CPPv3N2kp12OpTensorCopyE"></span><span id="_CPPv2N2kp12OpTensorCopyE"></span><span id="kp::OpTensorCopy"></span><span class="target" id="classkp_1_1OpTensorCopy"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorCopy</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp12OpTensorCopyE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1366,7 +1370,7 @@
 
 
 <h2 id="optensorsynclocal">OpTensorSyncLocal<a class="headerlink" href="#optensorsynclocal" title="Permalink to this headline">¶</a></h2>
-<p>The kp::OpTensorSyncLocal is a tensor only operation that maps the data from the GPU device memory into the local host vector.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorSyncLocal</span></code> is a tensor only operation that maps the data from the GPU device memory into the local host vector.</p>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp17OpTensorSyncLocalE">
 <span id="_CPPv3N2kp17OpTensorSyncLocalE"></span><span id="_CPPv2N2kp17OpTensorSyncLocalE"></span><span id="kp::OpTensorSyncLocal"></span><span class="target" id="classkp_1_1OpTensorSyncLocal"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncLocal</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp17OpTensorSyncLocalE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1418,7 +1422,7 @@
 
 
 <h2 id="optensorsyncdevice">OpTensorSyncDevice<a class="headerlink" href="#optensorsyncdevice" title="Permalink to this headline">¶</a></h2>
-<p>The kp::OpTensorSyncDevice is a tensor only operation that maps the data from the local host vector into the GPU device memory.</p>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorSyncDevice</span></code> is a tensor only operation that maps the data from the local host vector into the GPU device memory.</p>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp18OpTensorSyncDeviceE">
 <span id="_CPPv3N2kp18OpTensorSyncDeviceE"></span><span id="_CPPv2N2kp18OpTensorSyncDeviceE"></span><span id="kp::OpTensorSyncDevice"></span><span class="target" id="classkp_1_1OpTensorSyncDevice"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncDevice</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDeviceE" title="Permalink to this definition">¶</a><br/></dt>
@@ -1464,6 +1468,51 @@
 <dt id="_CPPv4N2kp18OpTensorSyncDevice8postEvalEv">
 <span id="_CPPv3N2kp18OpTensorSyncDevice8postEvalEv"></span><span id="_CPPv2N2kp18OpTensorSyncDevice8postEvalEv"></span><span id="kp::OpTensorSyncDevice::postEval"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1a2124d84d6c3d4f00e8a8adcf3d6e018f"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice8postEvalEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Does not perform any postEval commands. </p>
+</dd></dl>
+</div>
+</dd></dl>
+
+
+<h2 id="shader">Shader<a class="headerlink" href="#shader" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Shader</span></code> class contains a set of utilities to compile and process shaders.</p>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp6ShaderE">
+<span id="_CPPv3N2kp6ShaderE"></span><span id="_CPPv2N2kp6ShaderE"></span><span id="kp::Shader"></span><span class="target" id="classkp_1_1Shader"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Shader</code><a class="headerlink" href="#_CPPv4N2kp6ShaderE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p><a class="reference internal" href="#classkp_1_1Shader"><span class="std std-ref">Shader</span></a> utily class with functions to compile and process glsl files. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Shader15compile_sourcesERKNSt6vectorINSt6stringEEERKNSt6vectorINSt6stringEEERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE">
+<span id="_CPPv3N2kp6Shader15compile_sourcesERKNSt6vectorINSt6stringEEERKNSt6vectorINSt6stringEEERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE"></span><span id="_CPPv2N2kp6Shader15compile_sourcesERKNSt6vectorINSt6stringEEERKNSt6vectorINSt6stringEEERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE"></span><span id="kp::Shader::compile_sources__std::vector:ss:CR.std::vector:ss:CR.ssCR.std::vector:std::pair:ss.ss::"></span><span class="target" id="classkp_1_1Shader_1ae0d70e63b68f97b9c7fc6ffeb6ddfa14"></span>std::vector&lt;uint32_t&gt; <code class="sig-name descname">compile_sources</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::string&gt; &amp;<em>sources</em>, <em class="property">const</em> std::vector&lt;std::string&gt; &amp;<em>files</em> = {}, <em class="property">const</em> std::string &amp;<em>entryPoint</em> = "main", std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; <em>definitions</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Shader15compile_sourcesERKNSt6vectorINSt6stringEEERKNSt6vectorINSt6stringEEERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Compile multiple sources with optional filenames. Currently this function uses the glslang C++ interface which is not thread safe so this funciton should not be called from multiple threads concurrently. If you have a online shader processing multithreading use-case that can’t use offline compilation please open an issue.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The compiled SPIR-V binary in unsigned int32 format </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sources</span></code>: A list of raw glsl shaders in string format </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">files</span></code>: A list of file names respective to each of the sources </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">entryPoint</span></code>: The function name to use as entry point </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">definitions</span></code>: List of pairs containing key value definitions </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Shader14compile_sourceERKNSt6stringERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE">
+<span id="_CPPv3N2kp6Shader14compile_sourceERKNSt6stringERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE"></span><span id="_CPPv2N2kp6Shader14compile_sourceERKNSt6stringERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE"></span><span id="kp::Shader::compile_source__ssCR.ssCR.std::vector:std::pair:ss.ss::"></span><span class="target" id="classkp_1_1Shader_1a272acc94fcaed0a4c82a818c28b18fe8"></span>std::vector&lt;uint32_t&gt; <code class="sig-name descname">compile_source</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>source</em>, <em class="property">const</em> std::string &amp;<em>entryPoint</em> = "main", std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; <em>definitions</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Shader14compile_sourceERKNSt6stringERKNSt6stringENSt6vectorINSt4pairINSt6stringENSt6stringEEEEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Compile a single glslang source from string value. Currently this function uses the glslang C++ interface which is not thread safe so this funciton should not be called from multiple threads concurrently. If you have a online shader processing multithreading use-case that can’t use offline compilation please open an issue.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The compiled SPIR-V binary in unsigned int32 format </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code>: An individual raw glsl shader in string format </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">entryPoint</span></code>: The function name to use as entry point </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">definitions</span></code>: List of pairs containing key value definitions </p></li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 </div>
 </dd></dl>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-21 07:46:45</td>
+            <td class="headerValue">2021-02-21 12:50:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">24</td>
@@ -67,14 +67,14 @@
 <span class="lineNum">       5 </span>            : 
 <span class="lineNum">       6 </span><span class="lineNoCov">          0 : Tensor::Tensor()</span>
 <span class="lineNum">       7 </span>            : {
-<span class="lineNum">       8 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor base constructor&quot;);
+<span class="lineNum">       8 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor base constructor&quot;);
 <span class="lineNum">       9 </span>            :     this-&gt;mTensorType = TensorTypes::eDevice;
 <a name="10"><span class="lineNum">      10 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">      11 </span>            : 
 <span class="lineNum">      12 </span><span class="lineCov">        588 : Tensor::Tensor(const std::vector&lt;float&gt;&amp; data, TensorTypes tensorType)</span>
 <span class="lineNum">      13 </span>            : {
 <span class="lineNum">      14 </span>            : #if DEBUG
-<span class="lineNum">      15 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor constructor data length: {}, and type: {}&quot;,
+<span class="lineNum">      15 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor constructor data length: {}, and type: {}&quot;,
 <span class="lineNum">      16 </span>            :                  data.size(),
 <span class="lineNum">      17 </span>            :                  tensorType);
 <span class="lineNum">      18 </span>            : #endif
@@ -86,21 +86,21 @@
 <span class="lineNum">      24 </span>            : 
 <span class="lineNum">      25 </span><span class="lineCov">        208 : Tensor::~Tensor()</span>
 <span class="lineNum">      26 </span>            : {
-<span class="lineNum">      27 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor destructor started. Type: {}&quot;,
+<span class="lineNum">      27 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor destructor started. Type: {}&quot;,
 <span class="lineNum">      28 </span>            :                  this-&gt;tensorType());
 <span class="lineNum">      29 </span>            : 
 <span class="lineNum">      30 </span>            :     if (this-&gt;isInit()) {
 <span class="lineNum">      31 </span><span class="lineNoCov">          0 :         this-&gt;freeMemoryDestroyGPUResources();</span>
 <span class="lineNum">      32 </span>            :     }
 <span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor destructor success&quot;);
+<span class="lineNum">      34 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor destructor success&quot;);
 <span class="lineNum">      35 </span><span class="lineCov">        104 : }</span>
 <a name="36"><span class="lineNum">      36 </span>            : </a>
 <span class="lineNum">      37 </span>            : void
 <span class="lineNum">      38 </span><span class="lineCov">         97 : Tensor::init(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</span>
 <span class="lineNum">      39 </span>            :              std::shared_ptr&lt;vk::Device&gt; device)
 <span class="lineNum">      40 </span>            : {
-<span class="lineNum">      41 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor running init with Vulkan params and num data &quot;
+<span class="lineNum">      41 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor running init with Vulkan params and num data &quot;
 <span class="lineNum">      42 </span>            :                  &quot;elementS: {}&quot;,
 <span class="lineNum">      43 </span>            :                  this-&gt;mData.size());
 <span class="lineNum">      44 </span>            : 
@@ -173,7 +173,7 @@
 <span class="lineNum">     111 </span>            :     vk::DeviceSize bufferSize(this-&gt;memorySize());
 <span class="lineNum">     112 </span>            :     vk::BufferCopy copyRegion(0, 0, bufferSize);
 <span class="lineNum">     113 </span>            : 
-<span class="lineNum">     114 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor recordCopyFrom data size {}.&quot;, bufferSize);
+<span class="lineNum">     114 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor recordCopyFrom data size {}.&quot;, bufferSize);
 <span class="lineNum">     115 </span>            : 
 <span class="lineNum">     116 </span><span class="lineCov">         60 :     this-&gt;copyBuffer(commandBuffer,</span>
 <span class="lineNum">     117 </span>            :                      copyFromTensor-&gt;mPrimaryBuffer,
@@ -191,7 +191,7 @@
 <span class="lineNum">     129 </span>            :     vk::DeviceSize bufferSize(this-&gt;memorySize());
 <span class="lineNum">     130 </span>            :     vk::BufferCopy copyRegion(0, 0, bufferSize);
 <span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor copying data size {}.&quot;, bufferSize);
+<span class="lineNum">     132 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor copying data size {}.&quot;, bufferSize);
 <span class="lineNum">     133 </span>            : 
 <span class="lineNum">     134 </span><span class="lineCov">        430 :     this-&gt;copyBuffer(commandBuffer,</span>
 <span class="lineNum">     135 </span>            :                      this-&gt;mStagingBuffer,
@@ -209,7 +209,7 @@
 <span class="lineNum">     147 </span>            :     vk::DeviceSize bufferSize(this-&gt;memorySize());
 <span class="lineNum">     148 </span>            :     vk::BufferCopy copyRegion(0, 0, bufferSize);
 <span class="lineNum">     149 </span>            : 
-<span class="lineNum">     150 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor copying data size {}.&quot;, bufferSize);
+<span class="lineNum">     150 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor copying data size {}.&quot;, bufferSize);
 <span class="lineNum">     151 </span>            : 
 <span class="lineNum">     152 </span><span class="lineCov">        255 :     this-&gt;copyBuffer(commandBuffer,</span>
 <span class="lineNum">     153 </span>            :                      this-&gt;mPrimaryBuffer,
@@ -253,7 +253,7 @@
 <span class="lineNum">     191 </span>            :   vk::PipelineStageFlagBits srcStageMask,
 <span class="lineNum">     192 </span>            :   vk::PipelineStageFlagBits dstStageMask)
 <span class="lineNum">     193 </span>            : {
-<span class="lineNum">     194 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor recording buffer memory barrier&quot;);
+<span class="lineNum">     194 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor recording buffer memory barrier&quot;);
 <span class="lineNum">     195 </span>            : 
 <span class="lineNum">     196 </span>            :     vk::DeviceSize bufferSize = this-&gt;memorySize();
 <span class="lineNum">     197 </span>            : 
@@ -285,7 +285,7 @@
 <span class="lineNum">     223 </span>            : void
 <span class="lineNum">     224 </span><span class="lineCov">        847 : Tensor::mapDataFromHostMemory()</span>
 <span class="lineNum">     225 </span>            : {
-<span class="lineNum">     226 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor mapping data from host buffer&quot;);
+<span class="lineNum">     226 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor mapping data from host buffer&quot;);
 <span class="lineNum">     227 </span>            : 
 <span class="lineNum">     228 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; hostVisibleMemory = nullptr;
 <span class="lineNum">     229 </span>            : 
@@ -294,7 +294,7 @@
 <span class="lineNum">     232 </span><span class="lineCov">        845 :     } else if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
 <span class="lineNum">     233 </span>            :         hostVisibleMemory = this-&gt;mStagingMemory;
 <span class="lineNum">     234 </span>            :     } else {
-<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         SPDLOG_WARN(</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(</span>
 <span class="lineNum">     236 </span>            :           &quot;Kompute Tensor mapping data not supported on storage tensor&quot;);
 <span class="lineNum">     237 </span>            :         return;
 <span class="lineNum">     238 </span>            :     }
@@ -312,7 +312,7 @@
 <span class="lineNum">     250 </span><span class="lineCov">        492 : Tensor::mapDataIntoHostMemory()</span>
 <span class="lineNum">     251 </span>            : {
 <span class="lineNum">     252 </span>            : 
-<span class="lineNum">     253 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor local mapping tensor data to host buffer&quot;);
+<span class="lineNum">     253 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor local mapping tensor data to host buffer&quot;);
 <span class="lineNum">     254 </span>            : 
 <span class="lineNum">     255 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; hostVisibleMemory = nullptr;
 <span class="lineNum">     256 </span>            : 
@@ -321,7 +321,7 @@
 <span class="lineNum">     259 </span><span class="lineCov">        284 :     } else if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
 <span class="lineNum">     260 </span>            :         hostVisibleMemory = this-&gt;mStagingMemory;
 <span class="lineNum">     261 </span>            :     } else {
-<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         SPDLOG_WARN(</span>
+<span class="lineNum">     262 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(</span>
 <span class="lineNum">     263 </span>            :           &quot;Kompute Tensor mapping data not supported on storage tensor&quot;);
 <span class="lineNum">     264 </span>            :         return;
 <span class="lineNum">     265 </span>            :     }
@@ -404,7 +404,7 @@
 <span class="lineNum">     342 </span>            : void
 <span class="lineNum">     343 </span><span class="lineCov">         97 : Tensor::allocateMemoryCreateGPUResources()</span>
 <span class="lineNum">     344 </span>            : {
-<span class="lineNum">     345 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor creating buffer&quot;);
+<span class="lineNum">     345 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor creating buffer&quot;);
 <span class="lineNum">     346 </span>            : 
 <span class="lineNum">     347 </span><span class="lineCov">         97 :     if (!this-&gt;mIsInit) {</span>
 <span class="lineNum">     348 </span>            :         throw std::runtime_error(
@@ -418,7 +418,7 @@
 <span class="lineNum">     356 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Tensor device is null&quot;);</span>
 <span class="lineNum">     357 </span>            :     }
 <span class="lineNum">     358 </span>            : 
-<span class="lineNum">     359 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor creating primary buffer and memory&quot;);
+<span class="lineNum">     359 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor creating primary buffer and memory&quot;);
 <span class="lineNum">     360 </span>            : 
 <span class="lineNum">     361 </span><span class="lineCov">         97 :     this-&gt;mPrimaryBuffer = std::make_shared&lt;vk::Buffer&gt;();</span>
 <span class="lineNum">     362 </span><span class="lineCov">        193 :     this-&gt;createBuffer(this-&gt;mPrimaryBuffer,</span>
@@ -431,7 +431,7 @@
 <span class="lineNum">     369 </span><span class="lineCov">         96 :     this-&gt;mFreePrimaryMemory = true;</span>
 <span class="lineNum">     370 </span>            : 
 <span class="lineNum">     371 </span><span class="lineCov">         96 :     if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
-<span class="lineNum">     372 </span>            :         SPDLOG_DEBUG(&quot;Kompute Tensor creating staging buffer and memory&quot;);
+<span class="lineNum">     372 </span>            :         KP_LOG_DEBUG(&quot;Kompute Tensor creating staging buffer and memory&quot;);
 <span class="lineNum">     373 </span>            : 
 <span class="lineNum">     374 </span><span class="lineCov">         86 :         this-&gt;mStagingBuffer = std::make_shared&lt;vk::Buffer&gt;();</span>
 <span class="lineNum">     375 </span><span class="lineCov">        172 :         this-&gt;createBuffer(this-&gt;mStagingBuffer,</span>
@@ -444,7 +444,7 @@
 <span class="lineNum">     382 </span><span class="lineCov">         86 :         this-&gt;mFreeStagingMemory = true;</span>
 <span class="lineNum">     383 </span>            :     }
 <span class="lineNum">     384 </span>            : 
-<span class="lineNum">     385 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor buffer &amp; memory creation successful&quot;);
+<span class="lineNum">     385 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor buffer &amp; memory creation successful&quot;);
 <span class="lineNum">     386 </span><span class="lineCov">         96 : }</span>
 <span class="lineNum">     387 </span>            : 
 <span class="lineNum">     388 </span>            : void
@@ -459,7 +459,7 @@
 <span class="lineNum">     397 </span><span class="lineCov">          1 :           &quot;Kompute Tensor attempted to create a zero-sized buffer&quot;);</span>
 <span class="lineNum">     398 </span>            :     }
 <span class="lineNum">     399 </span>            : 
-<span class="lineNum">     400 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor creating buffer with memory size: {}, and &quot;
+<span class="lineNum">     400 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor creating buffer with memory size: {}, and &quot;
 <span class="lineNum">     401 </span>            :                  &quot;usage flags: {}&quot;,
 <span class="lineNum">     402 </span>            :                  bufferSize,
 <span class="lineNum">     403 </span>            :                  vk::to_string(bufferUsageFlags));
@@ -479,7 +479,7 @@
 <span class="lineNum">     417 </span>            :                            vk::MemoryPropertyFlags memoryPropertyFlags)
 <span class="lineNum">     418 </span>            : {
 <span class="lineNum">     419 </span>            : 
-<span class="lineNum">     420 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor allocating and binding memory&quot;);
+<span class="lineNum">     420 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor allocating and binding memory&quot;);
 <span class="lineNum">     421 </span>            : 
 <span class="lineNum">     422 </span>            :     vk::PhysicalDeviceMemoryProperties memoryProperties =
 <span class="lineNum">     423 </span>            :       this-&gt;mPhysicalDevice-&gt;getMemoryProperties();
@@ -502,7 +502,7 @@
 <span class="lineNum">     440 </span>            :           &quot;Memory type index for buffer creation not found&quot;);
 <span class="lineNum">     441 </span>            :     }
 <span class="lineNum">     442 </span>            : 
-<span class="lineNum">     443 </span>            :     SPDLOG_DEBUG(
+<span class="lineNum">     443 </span>            :     KP_LOG_DEBUG(
 <span class="lineNum">     444 </span>            :       &quot;Kompute Tensor allocating memory index: {}, size {}, flags: {}&quot;,
 <span class="lineNum">     445 </span>            :       memoryTypeIndex,
 <span class="lineNum">     446 </span>            :       memoryRequirements.size,
@@ -519,22 +519,22 @@
 <span class="lineNum">     457 </span>            : void
 <span class="lineNum">     458 </span><span class="lineCov">         98 : Tensor::freeMemoryDestroyGPUResources()</span>
 <span class="lineNum">     459 </span>            : {
-<span class="lineNum">     460 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor started freeMemoryDestroyGPUResources&quot;);
+<span class="lineNum">     460 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor started freeMemoryDestroyGPUResources&quot;);
 <span class="lineNum">     461 </span>            : 
 <span class="lineNum">     462 </span><span class="lineCov">         98 :     this-&gt;mIsInit = false;</span>
 <span class="lineNum">     463 </span>            : 
 <span class="lineNum">     464 </span><span class="lineCov">         98 :     if (!this-&gt;mDevice) {</span>
-<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         SPDLOG_ERROR(</span>
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(</span>
 <span class="lineNum">     466 </span>            :           &quot;Kompute Tensor destructor reached with null Device pointer&quot;);
 <span class="lineNum">     467 </span><span class="lineNoCov">          0 :         return;</span>
 <span class="lineNum">     468 </span>            :     }
 <span class="lineNum">     469 </span>            : 
 <span class="lineNum">     470 </span><span class="lineCov">         98 :     if (this-&gt;mFreePrimaryBuffer) {</span>
 <span class="lineNum">     471 </span><span class="lineCov">         98 :         if (!this-&gt;mPrimaryBuffer) {</span>
-<span class="lineNum">     472 </span><span class="lineCov">          4 :             SPDLOG_ERROR(&quot;Kompose Tensor expected to destroy primary buffer &quot;</span>
+<span class="lineNum">     472 </span><span class="lineCov">          4 :             KP_LOG_ERROR(&quot;Kompose Tensor expected to destroy primary buffer &quot;</span>
 <span class="lineNum">     473 </span>            :                          &quot;but got null buffer&quot;);
 <span class="lineNum">     474 </span>            :         } else {
-<span class="lineNum">     475 </span>            :             SPDLOG_DEBUG(&quot;Kompose Tensor destroying primary buffer&quot;);
+<span class="lineNum">     475 </span>            :             KP_LOG_DEBUG(&quot;Kompose Tensor destroying primary buffer&quot;);
 <span class="lineNum">     476 </span>            :             this-&gt;mDevice-&gt;destroy(
 <span class="lineNum">     477 </span>            :               *this-&gt;mPrimaryBuffer,
 <span class="lineNum">     478 </span>            :               (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
@@ -544,10 +544,10 @@
 <span class="lineNum">     482 </span>            : 
 <span class="lineNum">     483 </span><span class="lineCov">         98 :     if (this-&gt;mFreeStagingBuffer) {</span>
 <span class="lineNum">     484 </span><span class="lineCov">         88 :         if (!this-&gt;mStagingBuffer) {</span>
-<span class="lineNum">     485 </span><span class="lineCov">          4 :             SPDLOG_ERROR(&quot;Kompose Tensor expected to destroy staging buffer &quot;</span>
+<span class="lineNum">     485 </span><span class="lineCov">          4 :             KP_LOG_ERROR(&quot;Kompose Tensor expected to destroy staging buffer &quot;</span>
 <span class="lineNum">     486 </span>            :                          &quot;but got null buffer&quot;);
 <span class="lineNum">     487 </span>            :         } else {
-<span class="lineNum">     488 </span>            :             SPDLOG_DEBUG(&quot;Kompose Tensor destroying staging buffer&quot;);
+<span class="lineNum">     488 </span>            :             KP_LOG_DEBUG(&quot;Kompose Tensor destroying staging buffer&quot;);
 <span class="lineNum">     489 </span>            :             this-&gt;mDevice-&gt;destroy(
 <span class="lineNum">     490 </span>            :               *this-&gt;mStagingBuffer,
 <span class="lineNum">     491 </span>            :               (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
@@ -557,10 +557,10 @@
 <span class="lineNum">     495 </span>            : 
 <span class="lineNum">     496 </span><span class="lineCov">         98 :     if (this-&gt;mFreePrimaryMemory) {</span>
 <span class="lineNum">     497 </span><span class="lineCov">         98 :         if (!this-&gt;mPrimaryMemory) {</span>
-<span class="lineNum">     498 </span><span class="lineCov">          4 :             SPDLOG_ERROR(&quot;Kompose Tensor expected to free primary memory but &quot;</span>
+<span class="lineNum">     498 </span><span class="lineCov">          4 :             KP_LOG_ERROR(&quot;Kompose Tensor expected to free primary memory but &quot;</span>
 <span class="lineNum">     499 </span>            :                          &quot;got null memory&quot;);
 <span class="lineNum">     500 </span>            :         } else {
-<span class="lineNum">     501 </span>            :             SPDLOG_DEBUG(&quot;Kompose Tensor freeing primary memory&quot;);
+<span class="lineNum">     501 </span>            :             KP_LOG_DEBUG(&quot;Kompose Tensor freeing primary memory&quot;);
 <span class="lineNum">     502 </span>            :             this-&gt;mDevice-&gt;freeMemory(
 <span class="lineNum">     503 </span>            :               *this-&gt;mPrimaryMemory,
 <span class="lineNum">     504 </span>            :               (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
@@ -570,10 +570,10 @@
 <span class="lineNum">     508 </span>            : 
 <span class="lineNum">     509 </span><span class="lineCov">         98 :     if (this-&gt;mFreeStagingMemory) {</span>
 <span class="lineNum">     510 </span><span class="lineCov">         88 :         if (!this-&gt;mStagingMemory) {</span>
-<span class="lineNum">     511 </span><span class="lineCov">          4 :             SPDLOG_ERROR(&quot;Kompose Tensor expected to free staging memory but &quot;</span>
+<span class="lineNum">     511 </span><span class="lineCov">          4 :             KP_LOG_ERROR(&quot;Kompose Tensor expected to free staging memory but &quot;</span>
 <span class="lineNum">     512 </span>            :                          &quot;got null memory&quot;);
 <span class="lineNum">     513 </span>            :         } else {
-<span class="lineNum">     514 </span>            :             SPDLOG_DEBUG(&quot;Kompose Tensor freeing staging memory&quot;);
+<span class="lineNum">     514 </span>            :             KP_LOG_DEBUG(&quot;Kompose Tensor freeing staging memory&quot;);
 <span class="lineNum">     515 </span>            :             this-&gt;mDevice-&gt;freeMemory(
 <span class="lineNum">     516 </span>            :               *this-&gt;mStagingMemory,
 <span class="lineNum">     517 </span>            :               (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
@@ -581,7 +581,7 @@
 <span class="lineNum">     519 </span>            :         }
 <span class="lineNum">     520 </span>            :     }
 <span class="lineNum">     521 </span>            : 
-<span class="lineNum">     522 </span>            :     SPDLOG_DEBUG(&quot;Kompute Tensor successful freeMemoryDestroyGPUResources&quot;);
+<span class="lineNum">     522 </span>            :     KP_LOG_DEBUG(&quot;Kompute Tensor successful freeMemoryDestroyGPUResources&quot;);
 <span class="lineNum">     523 </span>            : }
 <span class="lineNum">     524 </span>            : 
 <span class="lineNum">     525 </span>            : }

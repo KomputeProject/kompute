@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-21 07:46:45</td>
+            <td class="headerValue">2021-02-21 12:50:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">3</td>
@@ -61,99 +61,101 @@
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
 <a name="1"><span class="lineNum">       1 </span>            : </a>
-<span class="lineNum">       2 </span>            : #include &quot;kompute/Shader.hpp&quot;
-<span class="lineNum">       3 </span>            : 
-<span class="lineNum">       4 </span>            : namespace kp {
-<a name="5"><span class="lineNum">       5 </span>            : </a>
-<span class="lineNum">       6 </span>            : std::vector&lt;uint32_t&gt;
-<span class="lineNum">       7 </span><span class="lineCov">         32 : Shader::compile_sources(const std::vector&lt;std::string&gt;&amp; sources,</span>
-<span class="lineNum">       8 </span>            :                                    const std::vector&lt;std::string&gt;&amp; files,
-<span class="lineNum">       9 </span>            :                                    const std::string&amp; entryPoint,
-<span class="lineNum">      10 </span>            :                                    std::vector&lt;std::pair&lt;std::string,std::string&gt;&gt; definitions) {
-<span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span>            :     // Initialize glslang library.
-<span class="lineNum">      13 </span><span class="lineCov">         32 :     glslang::InitializeProcess();</span>
-<span class="lineNum">      14 </span>            : 
-<span class="lineNum">      15 </span>            :     // Currently we don't support other shader types nor plan to
-<span class="lineNum">      16 </span>            :     const EShLanguage language = EShLangCompute;
-<span class="lineNum">      17 </span><span class="lineCov">         64 :     glslang::TShader shader(language);</span>
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span><span class="lineCov">         96 :     std::vector&lt;const char*&gt; filesCStr(files.size()), sourcesCStr(sources.size());</span>
-<span class="lineNum">      20 </span><span class="lineCov">        192 :     for (size_t i = 0; i &lt; sources.size(); i++) sourcesCStr[i] = sources[i].c_str();</span>
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span><span class="lineCov">         64 :     if (files.size() &gt; 1) {</span>
-<span class="lineNum">      23 </span>            :         assert(files.size() == sources.size());
-<span class="lineNum">      24 </span><span class="lineNoCov">          0 :         for (size_t i = 0; i &lt; files.size(); i++) filesCStr[i] = files[i].c_str();</span>
-<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         shader.setStringsWithLengthsAndNames(sourcesCStr.data(), nullptr, filesCStr.data(), filesCStr.size());</span>
-<span class="lineNum">      26 </span>            :     }
-<span class="lineNum">      27 </span>            :     else {
-<span class="lineNum">      28 </span>            :         filesCStr = {&quot;&quot;};
-<span class="lineNum">      29 </span><span class="lineCov">         64 :         shader.setStringsWithLengthsAndNames(sourcesCStr.data(), nullptr, filesCStr.data(), sourcesCStr.size());</span>
-<span class="lineNum">      30 </span>            :     }
-<span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span><span class="lineCov">         32 :     shader.setEntryPoint(entryPoint.c_str());</span>
-<span class="lineNum">      33 </span><span class="lineCov">         32 :     shader.setSourceEntryPoint(entryPoint.c_str());</span>
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineCov">         32 :     std::string info_log = &quot;&quot;;</span>
-<span class="lineNum">      36 </span>            :     const EShMessages messages = static_cast&lt;EShMessages&gt;(EShMsgDefault | EShMsgVulkanRules | EShMsgSpvRules);
-<span class="lineNum">      37 </span><span class="lineCov">         32 :     if (!shader.parse(&amp;glslang::DefaultTBuiltInResource, 100, false, messages))</span>
-<span class="lineNum">      38 </span>            :     {
-<span class="lineNum">      39 </span><span class="lineNoCov">          0 :         info_log = std::string(shader.getInfoLog()) + &quot;\n&quot; + std::string(shader.getInfoDebugLog());</span>
-<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         SPDLOG_ERROR(info_log);</span>
-<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         throw std::runtime_error(info_log);</span>
-<span class="lineNum">      42 </span>            :     }
-<span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span>            :     // Add shader to new program object.
-<span class="lineNum">      45 </span><span class="lineCov">         64 :     glslang::TProgram program;</span>
-<span class="lineNum">      46 </span>            :     program.addShader(&amp;shader);
-<span class="lineNum">      47 </span>            :     // Link program.
-<span class="lineNum">      48 </span><span class="lineCov">         32 :     if (!program.link(messages))</span>
-<span class="lineNum">      49 </span>            :     {
-<span class="lineNum">      50 </span><span class="lineNoCov">          0 :         info_log = std::string(program.getInfoLog()) + &quot;\n&quot; + std::string(program.getInfoDebugLog());</span>
-<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         SPDLOG_ERROR(info_log);</span>
-<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         throw std::runtime_error(info_log);</span>
-<span class="lineNum">      53 </span>            :     }
-<span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span>            :     // Save any info log that was generated.
-<span class="lineNum">      56 </span><span class="lineCov">         32 :     if (shader.getInfoLog())</span>
-<span class="lineNum">      57 </span>            :     {
-<span class="lineNum">      58 </span><span class="lineCov">        192 :         info_log += std::string(shader.getInfoLog()) + &quot;\n&quot; + std::string(shader.getInfoDebugLog()) + &quot;\n&quot;;</span>
-<span class="lineNum">      59 </span><span class="lineCov">         32 :         SPDLOG_INFO(info_log);</span>
-<span class="lineNum">      60 </span>            :     }
-<span class="lineNum">      61 </span>            : 
-<span class="lineNum">      62 </span>            :     glslang::TIntermediate *intermediate = program.getIntermediate(language);
-<span class="lineNum">      63 </span>            :     // Translate to SPIRV.
-<span class="lineNum">      64 </span><span class="lineCov">         32 :     if (!intermediate)</span>
-<span class="lineNum">      65 </span>            :     {
-<span class="lineNum">      66 </span>            :         info_log += &quot;Failed to get shared intermediate code.\n&quot;;
-<span class="lineNum">      67 </span><span class="lineNoCov">          0 :         SPDLOG_ERROR(info_log);</span>
-<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         throw std::runtime_error(info_log);</span>
-<span class="lineNum">      69 </span>            :     }
-<span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span><span class="lineCov">         32 :     spv::SpvBuildLogger logger;</span>
-<span class="lineNum">      72 </span>            :     std::vector&lt;std::uint32_t&gt; spirv;
-<span class="lineNum">      73 </span><span class="lineCov">         32 :     glslang::GlslangToSpv(*intermediate, spirv, &amp;logger);</span>
-<span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span><span class="lineCov">         32 :     if (shader.getInfoLog())</span>
-<span class="lineNum">      76 </span>            :     {
-<span class="lineNum">      77 </span><span class="lineCov">         96 :         info_log += logger.getAllMessages() + &quot;\n&quot;;</span>
-<span class="lineNum">      78 </span>            :         SPDLOG_DEBUG(info_log);
-<span class="lineNum">      79 </span>            :     }
-<span class="lineNum">      80 </span>            : 
-<span class="lineNum">      81 </span>            :     // Shutdown glslang library.
-<span class="lineNum">      82 </span><span class="lineCov">         32 :     glslang::FinalizeProcess();</span>
-<span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span><span class="lineCov">         32 :     return spirv;</span>
-<span class="lineNum">      85 </span>            : }
-<a name="86"><span class="lineNum">      86 </span>            : </a>
-<span class="lineNum">      87 </span>            : std::vector&lt;uint32_t&gt;
-<span class="lineNum">      88 </span><span class="lineCov">         32 : Shader::compile_source(const std::string&amp; source,</span>
-<span class="lineNum">      89 </span>            :         const std::string&amp; entryPoint,
-<span class="lineNum">      90 </span>            :         std::vector&lt;std::pair&lt;std::string,std::string&gt;&gt; definitions) {
-<span class="lineNum">      91 </span><span class="lineCov">        128 :     return compile_sources({source});</span>
-<a name="92"><span class="lineNum">      92 </span>            : }</a>
-<span class="lineNum">      93 </span>            : 
-<span class="lineNum">      94 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">       2 </span>            : #if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
+<span class="lineNum">       3 </span>            : #include &quot;kompute/Shader.hpp&quot;
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            : namespace kp {
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            : std::vector&lt;uint32_t&gt;
+<span class="lineNum">       8 </span><span class="lineCov">         32 : Shader::compile_sources(const std::vector&lt;std::string&gt;&amp; sources,</span>
+<span class="lineNum">       9 </span>            :                                    const std::vector&lt;std::string&gt;&amp; files,
+<span class="lineNum">      10 </span>            :                                    const std::string&amp; entryPoint,
+<span class="lineNum">      11 </span>            :                                    std::vector&lt;std::pair&lt;std::string,std::string&gt;&gt; definitions) {
+<span class="lineNum">      12 </span>            : 
+<span class="lineNum">      13 </span>            :     // Initialize glslang library.
+<span class="lineNum">      14 </span><span class="lineCov">         32 :     glslang::InitializeProcess();</span>
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :     // Currently we don't support other shader types nor plan to
+<span class="lineNum">      17 </span>            :     const EShLanguage language = EShLangCompute;
+<span class="lineNum">      18 </span><span class="lineCov">         64 :     glslang::TShader shader(language);</span>
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span><span class="lineCov">         96 :     std::vector&lt;const char*&gt; filesCStr(files.size()), sourcesCStr(sources.size());</span>
+<span class="lineNum">      21 </span><span class="lineCov">        192 :     for (size_t i = 0; i &lt; sources.size(); i++) sourcesCStr[i] = sources[i].c_str();</span>
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span><span class="lineCov">         64 :     if (files.size() &gt; 1) {</span>
+<span class="lineNum">      24 </span>            :         assert(files.size() == sources.size());
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 :         for (size_t i = 0; i &lt; files.size(); i++) filesCStr[i] = files[i].c_str();</span>
+<span class="lineNum">      26 </span><span class="lineNoCov">          0 :         shader.setStringsWithLengthsAndNames(sourcesCStr.data(), nullptr, filesCStr.data(), filesCStr.size());</span>
+<span class="lineNum">      27 </span>            :     }
+<span class="lineNum">      28 </span>            :     else {
+<span class="lineNum">      29 </span>            :         filesCStr = {&quot;&quot;};
+<span class="lineNum">      30 </span><span class="lineCov">         64 :         shader.setStringsWithLengthsAndNames(sourcesCStr.data(), nullptr, filesCStr.data(), sourcesCStr.size());</span>
+<span class="lineNum">      31 </span>            :     }
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineCov">         32 :     shader.setEntryPoint(entryPoint.c_str());</span>
+<span class="lineNum">      34 </span><span class="lineCov">         32 :     shader.setSourceEntryPoint(entryPoint.c_str());</span>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineCov">         32 :     std::string info_log = &quot;&quot;;</span>
+<span class="lineNum">      37 </span>            :     const EShMessages messages = static_cast&lt;EShMessages&gt;(EShMsgDefault | EShMsgVulkanRules | EShMsgSpvRules);
+<span class="lineNum">      38 </span><span class="lineCov">         32 :     if (!shader.parse(&amp;glslang::DefaultTBuiltInResource, 100, false, messages))</span>
+<span class="lineNum">      39 </span>            :     {
+<span class="lineNum">      40 </span><span class="lineNoCov">          0 :         info_log = std::string(shader.getInfoLog()) + &quot;\n&quot; + std::string(shader.getInfoDebugLog());</span>
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(&quot;Kompute Shader Error: {}&quot;, info_log);</span>
+<span class="lineNum">      42 </span><span class="lineNoCov">          0 :         throw std::runtime_error(info_log);</span>
+<span class="lineNum">      43 </span>            :     }
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            :     // Add shader to new program object.
+<span class="lineNum">      46 </span><span class="lineCov">         64 :     glslang::TProgram program;</span>
+<span class="lineNum">      47 </span>            :     program.addShader(&amp;shader);
+<span class="lineNum">      48 </span>            :     // Link program.
+<span class="lineNum">      49 </span><span class="lineCov">         32 :     if (!program.link(messages))</span>
+<span class="lineNum">      50 </span>            :     {
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :         info_log = std::string(program.getInfoLog()) + &quot;\n&quot; + std::string(program.getInfoDebugLog());</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(&quot;Kompute Shader Error: {}&quot;, info_log);</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :         throw std::runtime_error(info_log);</span>
+<span class="lineNum">      54 </span>            :     }
+<span class="lineNum">      55 </span>            : 
+<span class="lineNum">      56 </span>            :     // Save any info log that was generated.
+<span class="lineNum">      57 </span><span class="lineCov">         32 :     if (shader.getInfoLog())</span>
+<span class="lineNum">      58 </span>            :     {
+<span class="lineNum">      59 </span><span class="lineCov">        192 :         info_log += std::string(shader.getInfoLog()) + &quot;\n&quot; + std::string(shader.getInfoDebugLog()) + &quot;\n&quot;;</span>
+<span class="lineNum">      60 </span><span class="lineCov">         32 :         KP_LOG_INFO(&quot;Kompute Shader Information: {}&quot;, info_log);</span>
+<span class="lineNum">      61 </span>            :     }
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :     glslang::TIntermediate *intermediate = program.getIntermediate(language);
+<span class="lineNum">      64 </span>            :     // Translate to SPIRV.
+<span class="lineNum">      65 </span><span class="lineCov">         32 :     if (!intermediate)</span>
+<span class="lineNum">      66 </span>            :     {
+<span class="lineNum">      67 </span>            :         info_log += &quot;Failed to get shared intermediate code.\n&quot;;
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(&quot;Kompute Shader Error: {}&quot;, info_log);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :         throw std::runtime_error(info_log);</span>
+<span class="lineNum">      70 </span>            :     }
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineCov">         32 :     spv::SpvBuildLogger logger;</span>
+<span class="lineNum">      73 </span>            :     std::vector&lt;std::uint32_t&gt; spirv;
+<span class="lineNum">      74 </span><span class="lineCov">         32 :     glslang::GlslangToSpv(*intermediate, spirv, &amp;logger);</span>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineCov">         32 :     if (shader.getInfoLog())</span>
+<span class="lineNum">      77 </span>            :     {
+<span class="lineNum">      78 </span><span class="lineCov">         96 :         info_log += logger.getAllMessages() + &quot;\n&quot;;</span>
+<span class="lineNum">      79 </span>            :         KP_LOG_DEBUG(&quot;Kompute Shader all result messages: {}&quot;, info_log);
+<span class="lineNum">      80 </span>            :     }
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :     // Shutdown glslang library.
+<span class="lineNum">      83 </span><span class="lineCov">         32 :     glslang::FinalizeProcess();</span>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineCov">         32 :     return spirv;</span>
+<span class="lineNum">      86 </span>            : }
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span>            : std::vector&lt;uint32_t&gt;
+<span class="lineNum">      89 </span><span class="lineCov">         32 : Shader::compile_source(const std::string&amp; source,</span>
+<span class="lineNum">      90 </span>            :         const std::string&amp; entryPoint,
+<span class="lineNum">      91 </span>            :         std::vector&lt;std::pair&lt;std::string,std::string&gt;&gt; definitions) {
+<span class="lineNum">      92 </span><span class="lineCov">        128 :     return compile_sources({source});</span>
+<a name="93"><span class="lineNum">      93 </span>            : }</a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">      96 </span>            : #endif // DKOMPUTE_DISABLE_SHADER_UTILS
 </pre>
       </td>
     </tr>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-21 07:46:45</td>
+            <td class="headerValue">2021-02-21 12:50:34</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -82,7 +82,7 @@
 <span class="lineNum">      20 </span>            :     /**
 <span class="lineNum">      21 </span>            :      *  Base constructor, should not be used unless explicitly intended.
 <span class="lineNum">      22 </span>            :      */
-<span class="lineNum">      23 </span><span class="lineNoCov">          0 :     OpBase() { SPDLOG_DEBUG(&quot;Compute OpBase base constructor&quot;); }</span>
+<span class="lineNum">      23 </span><span class="lineNoCov">          0 :     OpBase() { KP_LOG_DEBUG(&quot;Compute OpBase base constructor&quot;); }</span>
 <span class="lineNum">      24 </span>            : 
 <span class="lineNum">      25 </span>            :     /**
 <span class="lineNum">      26 </span>            :      * Default constructor with parameters that provides the bare minimum
@@ -99,7 +99,7 @@
 <span class="lineNum">      37 </span>            :            std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,
 <span class="lineNum">      38 </span>            :            std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)
 <span class="lineNum">      39 </span><span class="lineCov">        417 :     {</span>
-<span class="lineNum">      40 </span>            :         SPDLOG_DEBUG(&quot;Compute OpBase constructor with params&quot;);
+<span class="lineNum">      40 </span>            :         KP_LOG_DEBUG(&quot;Compute OpBase constructor with params&quot;);
 <span class="lineNum">      41 </span>            : 
 <span class="lineNum">      42 </span>            :         this-&gt;mPhysicalDevice = physicalDevice;
 <span class="lineNum">      43 </span>            :         this-&gt;mDevice = device;
@@ -114,20 +114,20 @@
 <span class="lineNum">      52 </span>            :      */
 <span class="lineNum">      53 </span><span class="lineCov">        139 :     virtual ~OpBase()</span>
 <span class="lineNum">      54 </span><span class="lineCov">        417 :     {</span>
-<span class="lineNum">      55 </span>            :         SPDLOG_DEBUG(&quot;Kompute OpBase destructor started&quot;);
+<span class="lineNum">      55 </span>            :         KP_LOG_DEBUG(&quot;Kompute OpBase destructor started&quot;);
 <span class="lineNum">      56 </span>            : 
 <span class="lineNum">      57 </span><span class="lineCov">        139 :         if (!this-&gt;mDevice) {</span>
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             SPDLOG_WARN(&quot;Kompute OpBase destructor called with empty device&quot;);</span>
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(&quot;Kompute OpBase destructor called with empty device&quot;);</span>
 <span class="lineNum">      59 </span>            :             return;
 <span class="lineNum">      60 </span>            :         }
 <span class="lineNum">      61 </span>            : 
 <span class="lineNum">      62 </span><span class="lineCov">        139 :         if (this-&gt;mFreeTensors) {</span>
-<span class="lineNum">      63 </span>            :             SPDLOG_DEBUG(&quot;Kompute OpBase freeing tensors&quot;);
+<span class="lineNum">      63 </span>            :             KP_LOG_DEBUG(&quot;Kompute OpBase freeing tensors&quot;);
 <span class="lineNum">      64 </span><span class="lineNoCov">          0 :             for (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</span>
 <span class="lineNum">      65 </span><span class="lineNoCov">          0 :                 if (tensor &amp;&amp; tensor-&gt;isInit()) {</span>
 <span class="lineNum">      66 </span><span class="lineNoCov">          0 :                     tensor-&gt;freeMemoryDestroyGPUResources();</span>
 <span class="lineNum">      67 </span>            :                 } else {
-<span class="lineNum">      68 </span><span class="lineNoCov">          0 :                     SPDLOG_WARN(&quot;Kompute OpBase expected to free &quot;</span>
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :                     KP_LOG_WARN(&quot;Kompute OpBase expected to free &quot;</span>
 <span class="lineNum">      69 </span>            :                                   &quot;tensor but has already been freed.&quot;);
 <span class="lineNum">      70 </span>            :                 }
 <span class="lineNum">      71 </span>            :             }
