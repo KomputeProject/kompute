@@ -6,7 +6,7 @@ namespace kp {
 
 OpAlgoBase::OpAlgoBase()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor base");
+    KP_LOG_DEBUG("Kompute OpAlgoBase constructor base");
 }
 
 OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -17,7 +17,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        const Constants& specializationConstants)
   : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}",
+    KP_LOG_DEBUG("Kompute OpAlgoBase constructor with params numTensors: {}",
                  tensors.size());
 
     // The dispatch size is set up based on either explicitly provided template
@@ -33,7 +33,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     } else {
         this->mKomputeWorkgroup = { tensors[0]->size(), 1, 1 };
     }
-    SPDLOG_INFO("Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}",
+    KP_LOG_INFO("Kompute OpAlgoBase dispatch size X: {}, Y: {}, Z: {}",
                 this->mKomputeWorkgroup[0],
                 this->mKomputeWorkgroup[1],
                 this->mKomputeWorkgroup[2]);
@@ -50,7 +50,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        const Constants& specializationConstants)
   : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
 {
-    SPDLOG_DEBUG(
+    KP_LOG_DEBUG(
       "Kompute OpAlgoBase shaderFilePath constructo with shaderfile path: {}",
       shaderFilePath);
 
@@ -66,7 +66,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        const Constants& specializationConstants)
   : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shader raw "
+    KP_LOG_DEBUG("Kompute OpAlgoBase shaderFilePath constructo with shader raw "
                  "data length: {}",
                  shaderDataRaw.size());
 
@@ -75,13 +75,13 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
 OpAlgoBase::~OpAlgoBase()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase destructor started");
+    KP_LOG_DEBUG("Kompute OpAlgoBase destructor started");
 }
 
 void
 OpAlgoBase::init()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase init called");
+    KP_LOG_DEBUG("Kompute OpAlgoBase init called");
 
     if (this->mTensors.size() < 1) {
         throw std::runtime_error(
@@ -96,11 +96,11 @@ OpAlgoBase::init()
         }
     }
 
-    SPDLOG_DEBUG("Kompute OpAlgoBase fetching spirv data");
+    KP_LOG_DEBUG("Kompute OpAlgoBase fetching spirv data");
 
     std::vector<uint32_t> shaderFileData = this->fetchSpirvBinaryData();
 
-    SPDLOG_DEBUG("Kompute OpAlgoBase Initialising algorithm component");
+    KP_LOG_DEBUG("Kompute OpAlgoBase Initialising algorithm component");
 
     this->mAlgorithm->init(shaderFileData, this->mTensors);
 }
@@ -108,7 +108,7 @@ OpAlgoBase::init()
 void
 OpAlgoBase::record()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase record called");
+    KP_LOG_DEBUG("Kompute OpAlgoBase record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
     for (std::shared_ptr<Tensor> tensor : this->mTensors) {
@@ -128,22 +128,22 @@ OpAlgoBase::record()
 void
 OpAlgoBase::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase preEval called");
+    KP_LOG_DEBUG("Kompute OpAlgoBase preEval called");
 }
 
 void
 OpAlgoBase::postEval()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
+    KP_LOG_DEBUG("Kompute OpAlgoBase postSubmit called");
 }
 
 std::vector<uint32_t>
 OpAlgoBase::fetchSpirvBinaryData()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoBase Running fetchSpirvBinaryData");
+    KP_LOG_DEBUG("Kompute OpAlgoBase Running fetchSpirvBinaryData");
 
     if (this->mShaderFilePath.size()) {
-        SPDLOG_DEBUG("Kompute OpAlgoBase Reading data from file path");
+        KP_LOG_DEBUG("Kompute OpAlgoBase Reading data from file path");
 
         std::ifstream fileStream(this->mShaderFilePath,
                                  std::ios::binary | std::ios::in |
@@ -160,11 +160,11 @@ OpAlgoBase::fetchSpirvBinaryData()
         fileStream.read(shaderDataRaw, shaderFileSize);
         fileStream.close();
 
-        SPDLOG_WARN("Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
+        KP_LOG_WARN("Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
 
         return std::vector<uint32_t>((uint32_t*)shaderDataRaw, (uint32_t*)(shaderDataRaw + shaderFileSize));
     } else if (this->mShaderDataRaw.size()) {
-        SPDLOG_DEBUG("Kompute OpAlgoBase Reading data from data provided");
+        KP_LOG_DEBUG("Kompute OpAlgoBase Reading data from data provided");
         return this->mShaderDataRaw;
     } else {
         throw std::runtime_error(

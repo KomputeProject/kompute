@@ -5,7 +5,7 @@ namespace kp {
 
 OpTensorCopy::OpTensorCopy()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy constructor base");
+    KP_LOG_DEBUG("Kompute OpTensorCopy constructor base");
 }
 
 OpTensorCopy::OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
@@ -14,18 +14,18 @@ OpTensorCopy::OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                            std::vector<std::shared_ptr<Tensor>> tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy constructor with params");
+    KP_LOG_DEBUG("Kompute OpTensorCopy constructor with params");
 }
 
 OpTensorCopy::~OpTensorCopy()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy destructor started");
+    KP_LOG_DEBUG("Kompute OpTensorCopy destructor started");
 }
 
 void
 OpTensorCopy::init()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy init called");
+    KP_LOG_DEBUG("Kompute OpTensorCopy init called");
 
     if (this->mTensors.size() < 2) {
         throw std::runtime_error(
@@ -48,7 +48,7 @@ OpTensorCopy::init()
 void
 OpTensorCopy::record()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy record called");
+    KP_LOG_DEBUG("Kompute OpTensorCopy record called");
 
     // We iterate from the second tensor onwards and record a copy to all
     for (size_t i = 1; i < this->mTensors.size(); i++) {
@@ -60,13 +60,13 @@ OpTensorCopy::record()
 void
 OpTensorCopy::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy preEval called");
+    KP_LOG_DEBUG("Kompute OpTensorCopy preEval called");
 }
 
 void
 OpTensorCopy::postEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorCopy postEval called");
+    KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 
     // Copy the data from the first tensor into all the tensors
     for (size_t i = 1; i < this->mTensors.size(); i++) {

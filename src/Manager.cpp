@@ -18,7 +18,7 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
                      const char* pMessage,
                      void* pUserData)
 {
-    SPDLOG_DEBUG("[VALIDATION]: {} - {}", pLayerPrefix, pMessage);
+    KP_LOG_DEBUG("[VALIDATION]: {} - {}", pLayerPrefix, pMessage);
     return VK_FALSE;
 }
 #endif
@@ -50,16 +50,16 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
 
 Manager::~Manager()
 {
-    SPDLOG_DEBUG("Kompute Manager Destructor started");
+    KP_LOG_DEBUG("Kompute Manager Destructor started");
 
     if (this->mDevice == nullptr) {
-        SPDLOG_ERROR(
+        KP_LOG_ERROR(
           "Kompute Manager destructor reached with null Device pointer");
         return;
     }
 
     if (this->mManagedSequences.size()) {
-        SPDLOG_DEBUG("Kompute Manager explicitly running destructor for "
+        KP_LOG_DEBUG("Kompute Manager explicitly running destructor for "
                      "managed sequences");
         for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
              this->mManagedSequences) {
@@ -69,10 +69,10 @@ Manager::~Manager()
     }
 
     if (this->mManagedTensors.size()) {
-        SPDLOG_DEBUG("Kompute Manager explicitly freeing tensors");
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing tensors");
         for (const std::shared_ptr<Tensor>& tensor : this->mManagedTensors) {
             if (!tensor->isInit()) {
-                SPDLOG_ERROR("Kompute Manager attempted to free managed tensor "
+                KP_LOG_ERROR("Kompute Manager attempted to free managed tensor "
                              "but not tensor is not initialised");
             }
             tensor->freeMemoryDestroyGPUResources();
@@ -81,14 +81,14 @@ Manager::~Manager()
     }
 
     if (this->mFreeDevice) {
-        SPDLOG_INFO("Destroying device");
+        KP_LOG_INFO("Destroying device");
         this->mDevice->destroy(
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        SPDLOG_DEBUG("Kompute Manager Destroyed Device");
+        KP_LOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
     if (this->mInstance == nullptr) {
-        SPDLOG_ERROR(
+        KP_LOG_ERROR(
           "Kompute Manager destructor reached with null Instance pointer");
         return;
     }
@@ -98,7 +98,7 @@ Manager::~Manager()
     if (this->mDebugReportCallback) {
         this->mInstance->destroyDebugReportCallbackEXT(
           this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
-        SPDLOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
+        KP_LOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
     }
 #endif
 #endif
@@ -106,14 +106,14 @@ Manager::~Manager()
     if (this->mFreeInstance) {
         this->mInstance->destroy(
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        SPDLOG_DEBUG("Kompute Manager Destroyed Instance");
+        KP_LOG_DEBUG("Kompute Manager Destroyed Instance");
     }
 }
 
 std::shared_ptr<Sequence>
 Manager::sequence(std::string sequenceName, uint32_t queueIndex)
 {
-    SPDLOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
+    KP_LOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
                  "and queueIndex: {}",
                  sequenceName,
                  queueIndex);
@@ -143,7 +143,7 @@ void
 Manager::createInstance()
 {
 
-    SPDLOG_DEBUG("Kompute Manager creating instance");
+    KP_LOG_DEBUG("Kompute Manager creating instance");
 
     this->mFreeInstance = true;
 
@@ -168,7 +168,7 @@ Manager::createInstance()
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-    SPDLOG_DEBUG("Kompute Manager adding debug validation layers");
+    KP_LOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
     std::vector<const char*> validLayerNames;
     std::vector<const char*> desiredLayerNames = {
@@ -201,11 +201,11 @@ Manager::createInstance()
     this->mInstance = std::make_shared<vk::Instance>();
     vk::createInstance(
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
-    SPDLOG_DEBUG("Kompute Manager Instance Created");
+    KP_LOG_DEBUG("Kompute Manager Instance Created");
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-    SPDLOG_DEBUG("Kompute Manager adding debug callbacks");
+    KP_LOG_DEBUG("Kompute Manager adding debug callbacks");
     if (validLayerNames.size() > 0) {
         vk::DebugReportFlagsEXT debugFlags =
           vk::DebugReportFlagBitsEXT::eError |
@@ -228,7 +228,7 @@ void
 Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
 {
 
-    SPDLOG_DEBUG("Kompute Manager creating Device");
+    KP_LOG_DEBUG("Kompute Manager creating Device");
 
     if (this->mInstance == nullptr) {
         throw std::runtime_error("Kompute Manager instance is null");
@@ -252,7 +252,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
     vk::PhysicalDeviceProperties physicalDeviceProperties =
       physicalDevice.getProperties();
 
-    SPDLOG_INFO("Using physical device index {} found {}",
+    KP_LOG_INFO("Using physical device index {} found {}",
                 this->mPhysicalDeviceIndex,
                 physicalDeviceProperties.deviceName);
 
@@ -311,7 +311,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
     this->mDevice = std::make_shared<vk::Device>();
     physicalDevice.createDevice(
       &deviceCreateInfo, nullptr, this->mDevice.get());
-    SPDLOG_DEBUG("Kompute Manager device created");
+    KP_LOG_DEBUG("Kompute Manager device created");
 
     for (const uint32_t& familyQueueIndex : this->mComputeQueueFamilyIndices) {
         std::shared_ptr<vk::Queue> currQueue = std::make_shared<vk::Queue>();
@@ -325,7 +325,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
         this->mComputeQueues.push_back(currQueue);
     }
 
-    SPDLOG_DEBUG("Kompute Manager compute queue obtained");
+    KP_LOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
 std::shared_ptr<Tensor>
@@ -334,9 +334,9 @@ Manager::tensor(
   Tensor::TensorTypes tensorType,
   bool syncDataToGPU)
 {
-    SPDLOG_DEBUG("Kompute Manager tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager tensor triggered");
 
-    SPDLOG_DEBUG("Kompute Manager creating new tensor shared ptr");
+    KP_LOG_DEBUG("Kompute Manager creating new tensor shared ptr");
     std::shared_ptr<Tensor> tensor =
       std::make_shared<Tensor>(kp::Tensor(data, tensorType));
 
@@ -354,7 +354,7 @@ void
 Manager::rebuild(std::vector<std::shared_ptr<kp::Tensor>> tensors,
                     bool syncDataToGPU)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild triggered");
     for (std::shared_ptr<Tensor> tensor : tensors) {
 
         // False syncData to run all tensors at once instead one by one
@@ -370,7 +370,7 @@ void
 Manager::rebuild(std::shared_ptr<kp::Tensor> tensor,
                     bool syncDataToGPU)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Tensor triggered");
 
     if (tensor->isInit()) {
         tensor->freeMemoryDestroyGPUResources();
@@ -392,7 +392,7 @@ Manager::rebuild(std::shared_ptr<kp::Tensor> tensor,
 void
 Manager::destroy(std::shared_ptr<kp::Tensor> tensor)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Tensor triggered");
 
     if (tensor->isInit()) {
         tensor->freeMemoryDestroyGPUResources();
@@ -410,7 +410,7 @@ Manager::destroy(std::shared_ptr<kp::Tensor> tensor)
 void
 Manager::destroy(std::vector<std::shared_ptr<kp::Tensor>> tensors)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Tensor triggered");
 
     for (std::shared_ptr<Tensor> tensor : tensors) {
         this->destroy(tensor);
@@ -420,7 +420,7 @@ Manager::destroy(std::vector<std::shared_ptr<kp::Tensor>> tensors)
 void
 Manager::destroy(std::vector<std::shared_ptr<kp::Sequence>> sequences)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
 
     for (std::shared_ptr<kp::Sequence> sequence : sequences) {
         this->destroy(sequence);
@@ -430,7 +430,7 @@ Manager::destroy(std::vector<std::shared_ptr<kp::Sequence>> sequences)
 void
 Manager::destroy(std::shared_ptr<kp::Sequence> sequence)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
 
     // Inefficient but required to delete by value
     // Depending on the amount of named sequences created may be worth creating
@@ -450,7 +450,7 @@ Manager::destroy(std::shared_ptr<kp::Sequence> sequence)
 void
 Manager::destroy(const std::string& sequenceName)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
 
     std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
       found = this->mManagedSequences.find(sequenceName);
@@ -467,7 +467,7 @@ Manager::destroy(const std::string& sequenceName)
 void
 Manager::destroy(const std::vector<std::string>& sequenceNames)
 {
-    SPDLOG_DEBUG("Kompute Manager rebuild Sequence triggered");
+    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
 
     for (const std::string& sequenceName : sequenceNames) {
         this->destroy(sequenceName);

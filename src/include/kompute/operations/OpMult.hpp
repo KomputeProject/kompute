@@ -47,7 +47,7 @@ class OpMult : public OpAlgoBase
            const Workgroup& komputeWorkgroup = {})
       : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
     {
-        SPDLOG_DEBUG("Kompute OpMult constructor with params");
+        KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
 #ifndef RELEASE
         this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
@@ -61,7 +61,7 @@ class OpMult : public OpAlgoBase
      */
     std::vector<uint32_t> fetchSpirvBinaryData() override
     {
-        SPDLOG_WARN(
+        KP_LOG_WARN(
           "Kompute OpMult Running shaders directly from header");
 
         return std::vector<uint32_t>(
@@ -77,7 +77,7 @@ class OpMult : public OpAlgoBase
      * components but does not destroy the underlying tensors
      */
     ~OpMult() override {
-        SPDLOG_DEBUG("Kompute OpMult destructor started");
+        KP_LOG_DEBUG("Kompute OpMult destructor started");
     }
 
 };

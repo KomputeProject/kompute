@@ -51,12 +51,12 @@ extern "C" {
 JNIEXPORT jboolean JNICALL
 Java_com_ethicalml_kompute_KomputeJni_initVulkan(JNIEnv *env, jobject thiz) {
 
-    SPDLOG_INFO("Initialising vulkan");
+    KP_LOG_INFO("Initialising vulkan");
 
     uint32_t totalRetries = 0;
 
     while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
-        SPDLOG_INFO("VULKAN LOAD TRY NUMBER: %u", totalRetries);
+        KP_LOG_INFO("VULKAN LOAD TRY NUMBER: %u", totalRetries);
         if(InitVulkan()) {
             break;
         }
@@ -76,7 +76,7 @@ Java_com_ethicalml_kompute_KomputeJni_kompute(
         jfloatArray xjJFloatArr,
         jfloatArray yJFloatArr) {
 
-    SPDLOG_INFO("Creating manager");
+    KP_LOG_INFO("Creating manager");
 
     std::vector<float> xiVector = jfloatArrayToVector(env, xiJFloatArr);
     std::vector<float> xjVector = jfloatArrayToVector(env, xjJFloatArr);
@@ -98,7 +98,7 @@ Java_com_ethicalml_kompute_KomputeJni_komputeParams(
         jfloatArray xjJFloatArr,
         jfloatArray yJFloatArr) {
 
-    SPDLOG_INFO("Creating manager");
+    KP_LOG_INFO("Creating manager");
 
     std::vector<float> xiVector = jfloatArrayToVector(env, xiJFloatArr);
     std::vector<float> xjVector = jfloatArrayToVector(env, xjJFloatArr);

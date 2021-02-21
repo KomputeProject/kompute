@@ -8,6 +8,8 @@
 static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #endif
 
+#include <fmt/core.h>
+
 #include <vulkan/vulkan.hpp>
 
 // Typedefs to simplify interaction with core types
@@ -48,60 +50,61 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #ifndef KOMPUTE_LOG_OVERRIDE
 #if KOMPUTE_ENABLE_SPDLOG
 #include <spdlog/spdlog.h>
+#define KP_LOG_DEBUG(...) SPDLOG_DEBUG(__VA_ARGS__)
+#define KP_LOG_INFO(...) SPDLOG_INFO(__VA_ARGS__)
+#define KP_LOG_WARN(...) SPDLOG_WARN(__VA_ARGS__)
+#define KP_LOG_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
 #else
 #include <iostream>
 #if SPDLOG_ACTIVE_LEVEL > 1
-#define SPDLOG_DEBUG(message, ...)
+#define KP_LOG_DEBUG(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_DEBUG(message, ...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, message))
+#define KP_LOG_DEBUG(...)                                             \
+    ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_DEBUG(message, ...) kp_debug(message);
+#define KP_LOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_DEBUG(message, ...)                                             \
-    std::cout << "DEBUG: " << message << std::endl
+#define KP_LOG_DEBUG(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 1
 
 #if SPDLOG_ACTIVE_LEVEL > 2
-#define SPDLOG_INFO(message, ...)
+#define KP_LOG_INFO(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_INFO(message, ...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+#define KP_LOG_INFO(...)                                              \
+    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_INFO(message, ...) kp_info(message);
+#define KP_LOG_INFO(...) kp_info(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_INFO(message, ...) std::cout << "INFO: " << message << std::endl
+#define KP_LOG_INFO(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 2
 
 #if SPDLOG_ACTIVE_LEVEL > 3
-#define SPDLOG_WARN(message, ...)
+#define KP_LOG_WARN(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_WARN(message, ...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, message))
+#define KP_LOG_WARN(...)                                              \
+    ((void)__android_log_print(ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_WARN(message, ...) kp_warning(message);
+#define KP_LOG_WARN(...) kp_warning(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_WARN(message, ...)                                              \
-    std::cout << "WARNING: " << message << std::endl
+#define KP_LOG_WARN(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 3
 
 #if SPDLOG_ACTIVE_LEVEL > 4
-#define SPDLOG_ERROR(message, ...)
+#define KP_LOG_ERROR(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_ERROR(message, ...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, message))
+#define KP_LOG_ERROR(...)                                             \
+    ((void)__android_log_print(ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_ERROR(message, ...) kp_error(message);
+#define KP_LOG_ERROR(...) kp_error(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_ERROR(message, ...)                                             \
-    std::cout << "ERROR: " << message << std::endl
+#define KP_LOG_ERROR(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 4
 #endif // KOMPUTE_SPDLOG_ENABLED

@@ -38,7 +38,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
     if (!shader.parse(&glslang::DefaultTBuiltInResource, 100, false, messages))
     {
         info_log = std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog());
-        SPDLOG_ERROR("Kompute Shader Error: {}", info_log);
+        KP_LOG_ERROR("Kompute Shader Error: {}", info_log);
         throw std::runtime_error(info_log);
     }
 
@@ -49,7 +49,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
     if (!program.link(messages))
     {
         info_log = std::string(program.getInfoLog()) + "\n" + std::string(program.getInfoDebugLog());
-        SPDLOG_ERROR("Kompute Shader Error: {}", info_log);
+        KP_LOG_ERROR("Kompute Shader Error: {}", info_log);
         throw std::runtime_error(info_log);
     }
 
@@ -57,7 +57,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
     if (shader.getInfoLog())
     {
         info_log += std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog()) + "\n";
-        SPDLOG_INFO("Kompute Shader Information: {}", info_log);
+        KP_LOG_INFO("Kompute Shader Information: {}", info_log);
     }
 
     glslang::TIntermediate *intermediate = program.getIntermediate(language);
@@ -65,7 +65,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
     if (!intermediate)
     {
         info_log += "Failed to get shared intermediate code.\n";
-        SPDLOG_ERROR("Kompute Shader Error: {}", info_log);
+        KP_LOG_ERROR("Kompute Shader Error: {}", info_log);
         throw std::runtime_error(info_log);
     }
 
@@ -76,7 +76,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
     if (shader.getInfoLog())
     {
         info_log += logger.getAllMessages() + "\n";
-        SPDLOG_DEBUG("Kompute Shader all result messages: {}", info_log);
+        KP_LOG_DEBUG("Kompute Shader all result messages: {}", info_log);
     }
 
     // Shutdown glslang library.

@@ -6,7 +6,7 @@ namespace kp {
 
 OpAlgoLhsRhsOut::OpAlgoLhsRhsOut()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor base");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor base");
 }
 
 OpAlgoLhsRhsOut::OpAlgoLhsRhsOut(
@@ -20,24 +20,24 @@ OpAlgoLhsRhsOut::OpAlgoLhsRhsOut(
   // a granular way.
   : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup)
 {
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor with params");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor with params");
 }
 
 OpAlgoLhsRhsOut::~OpAlgoLhsRhsOut()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut destructor started");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut destructor started");
 }
 
 void
 OpAlgoLhsRhsOut::init()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut init called");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut init called");
 
     if (this->mTensors.size() < 3) {
         throw std::runtime_error(
           "Kompute OpAlgoLhsRhsOut called with less than 1 tensor");
     } else if (this->mTensors.size() > 3) {
-        SPDLOG_WARN(
+        KP_LOG_WARN(
           "Kompute OpAlgoLhsRhsOut called with more than 3 this->mTensors");
     }
 
@@ -65,11 +65,11 @@ OpAlgoLhsRhsOut::init()
           " Output: " + std::to_string(this->mTensorOutput->size()));
     }
 
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut fetching spirv data");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut fetching spirv data");
 
     std::vector<uint32_t> shaderFileData = this->fetchSpirvBinaryData();
 
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut Initialising algorithm component");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut Initialising algorithm component");
 
     this->mAlgorithm->init(shaderFileData, this->mTensors);
 }
@@ -77,7 +77,7 @@ OpAlgoLhsRhsOut::init()
 void
 OpAlgoLhsRhsOut::record()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut record called");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
     this->mTensorLHS->recordBufferMemoryBarrier(
@@ -114,7 +114,7 @@ OpAlgoLhsRhsOut::record()
 void
 OpAlgoLhsRhsOut::postEval()
 {
-    SPDLOG_DEBUG("Kompute OpAlgoLhsRhsOut postSubmit called");
+    KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut postSubmit called");
 
     this->mTensorOutput->mapDataFromHostMemory();
 }

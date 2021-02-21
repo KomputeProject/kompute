@@ -20,7 +20,7 @@ class OpBase
     /**
      *  Base constructor, should not be used unless explicitly intended.
      */
-    OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
+    OpBase() { KP_LOG_DEBUG("Compute OpBase base constructor"); }
 
     /**
      * Default constructor with parameters that provides the bare minimum
@@ -37,7 +37,7 @@ class OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors)
     {
-        SPDLOG_DEBUG("Compute OpBase constructor with params");
+        KP_LOG_DEBUG("Compute OpBase constructor with params");
 
         this->mPhysicalDevice = physicalDevice;
         this->mDevice = device;
@@ -52,20 +52,20 @@ class OpBase
      */
     virtual ~OpBase()
     {
-        SPDLOG_DEBUG("Kompute OpBase destructor started");
+        KP_LOG_DEBUG("Kompute OpBase destructor started");
 
         if (!this->mDevice) {
-            SPDLOG_WARN("Kompute OpBase destructor called with empty device");
+            KP_LOG_WARN("Kompute OpBase destructor called with empty device");
             return;
         }
 
         if (this->mFreeTensors) {
-            SPDLOG_DEBUG("Kompute OpBase freeing tensors");
+            KP_LOG_DEBUG("Kompute OpBase freeing tensors");
             for (std::shared_ptr<Tensor> tensor : this->mTensors) {
                 if (tensor && tensor->isInit()) {
                     tensor->freeMemoryDestroyGPUResources();
                 } else {
-                    SPDLOG_WARN("Kompute OpBase expected to free "
+                    KP_LOG_WARN("Kompute OpBase expected to free "
                                   "tensor but has already been freed.");
                 }
             }

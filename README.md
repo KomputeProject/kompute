@@ -78,7 +78,7 @@ int main() {
     // 3. Run operation with string shader synchronously
     mgr.evalOpDefault<kp::OpAlgoBase>(
         { tensorInA, tensorInB, tensorOut },
-        std::vector<uint32_t>(shaderString.begin(), shaderString.end()));
+        kp::Shader::compile_source(shaderString));
 
     // 4. Map results back from GPU memory to print the results
     mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
