@@ -1,13 +1,4 @@
 
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        set(SPDLOG_INSTALL ON)
-        add_subdirectory(${PROJECT_SOURCE_DIR}/external/spdlog ${CMAKE_CURRENT_BINARY_DIR}/kompute_spdlog)
-    else()
-        find_package(spdlog REQUIRED)
-    endif()
-endif()
-
 if(KOMPUTE_OPT_ANDOID_BUILD)
     find_library(android android)
 endif()
@@ -79,12 +70,41 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
         $<BUILD_INTERFACE:${VULKAN_HEADERS_INCLUDES}>)
 endif()
 
+#####################################################
+#################### fmt #######################
+#####################################################
+
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/fmt ${CMAKE_CURRENT_BINARY_DIR}/kompute_fmt)
+else()
+    find_package(fmt REQUIRED)
+endif()
+
+target_link_libraries(
+    kompute 
+    fmt::fmt
+)
+
+#####################################################
+#################### SPDLOG #######################
+#####################################################
+
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
+    if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+        add_subdirectory(${PROJECT_SOURCE_DIR}/external/spdlog ${CMAKE_CURRENT_BINARY_DIR}/kompute_spdlog)
+    else()
+        find_package(spdlog REQUIRED)
+    endif()
+
     target_link_libraries(
         kompute 
         spdlog::spdlog
     )
 endif()
+
+#####################################################
+#################### Android #######################
+#####################################################
 
 if(KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
@@ -95,10 +115,18 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
     )
 endif()
 
+#####################################################
+########## Built C++ Header SHADERS #################
+#####################################################
+
 if(KOMPUTE_OPT_BUILD_SHADERS)
     add_dependencies(kompute
         build_shaders)
 endif()
+
+#####################################################
+#################### Single Header #######################
+#####################################################
 
 if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
     add_dependencies(kompute
