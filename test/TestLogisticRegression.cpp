@@ -75,7 +75,7 @@ TEST(TestLogisticRegression, TestMainLogisticRegression)
     EXPECT_GT(wIn->data()[1], 1.0);
     EXPECT_LT(bIn->data()[0], 0.0);
 
-    SPDLOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
+    KP_LOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
                 wIn->data()[0],
                 wIn->data()[1],
                 bIn->data()[0]);
@@ -156,7 +156,7 @@ TEST(TestLogisticRegression, TestMainLogisticRegressionManualCopy)
     EXPECT_GT(wIn->data()[1], 1.0);
     EXPECT_LT(bIn->data()[0], 0.0);
 
-    SPDLOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
+    KP_LOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
                 wIn->data()[0],
                 wIn->data()[1],
                 bIn->data()[0]);

@@ -129,15 +129,15 @@ class Sequence
                       "Kompute Sequence record(...) template only valid with "
                       "OpBase derived classes");
 
-        SPDLOG_DEBUG("Kompute Sequence record function started");
+        KP_LOG_DEBUG("Kompute Sequence record function started");
 
         if (!this->isRecording()) {
-            SPDLOG_ERROR(
+            KP_LOG_ERROR(
               "Kompute sequence record attempted when not record BEGIN");
             return false;
         }
 
-        SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         T* op = new T(this->mPhysicalDevice,
                       this->mDevice,
                       this->mCommandBuffer,
@@ -148,11 +148,11 @@ class Sequence
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
-        SPDLOG_DEBUG(
+        KP_LOG_DEBUG(
           "Kompute Sequence running init on OpBase derived class instance");
         baseOpPtr->init();
 
-        SPDLOG_DEBUG(
+        KP_LOG_DEBUG(
           "Kompute Sequence running record on OpBase derived class instance");
         baseOpPtr->record();
 

@@ -50,57 +50,61 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #ifndef KOMPUTE_LOG_OVERRIDE
 #if KOMPUTE_ENABLE_SPDLOG
 #include <spdlog/spdlog.h>
+#define KP_LOG_DEBUG(...) SPDLOG_DEBUG(__VA_ARGS__)
+#define KP_LOG_INFO(...) SPDLOG_INFO(__VA_ARGS__)
+#define KP_LOG_WARN(...) SPDLOG_WARN(__VA_ARGS__)
+#define KP_LOG_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
 #else
 #include <iostream>
 #if SPDLOG_ACTIVE_LEVEL > 1
-#define SPDLOG_DEBUG(...)
+#define KP_LOG_DEBUG(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_DEBUG(...)                                             \
+#define KP_LOG_DEBUG(...)                                             \
     ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
+#define KP_LOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_DEBUG(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_DEBUG(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 1
 
 #if SPDLOG_ACTIVE_LEVEL > 2
-#define SPDLOG_INFO(...)
+#define KP_LOG_INFO(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_INFO(...)                                              \
+#define KP_LOG_INFO(...)                                              \
     ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_INFO(...) kp_info(fmt::format(__VA_ARGS__))
+#define KP_LOG_INFO(...) kp_info(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_INFO(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_INFO(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 2
 
 #if SPDLOG_ACTIVE_LEVEL > 3
-#define SPDLOG_WARN(...)
+#define KP_LOG_WARN(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_WARN(...)                                              \
+#define KP_LOG_WARN(...)                                              \
     ((void)__android_log_print(ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_WARN(...) kp_warning(fmt::format(__VA_ARGS__))
+#define KP_LOG_WARN(...) kp_warning(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_WARN(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_WARN(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 3
 
 #if SPDLOG_ACTIVE_LEVEL > 4
-#define SPDLOG_ERROR(...)
+#define KP_LOG_ERROR(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define SPDLOG_ERROR(...)                                             \
+#define KP_LOG_ERROR(...)                                             \
     ((void)__android_log_print(ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
 #elif defined(KOMPUTE_BUILD_PYTHON)
-#define SPDLOG_ERROR(...) kp_error(fmt::format(__VA_ARGS__))
+#define KP_LOG_ERROR(...) kp_error(fmt::format(__VA_ARGS__))
 #else
-#define SPDLOG_ERROR(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_ERROR(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 4
 #endif // KOMPUTE_SPDLOG_ENABLED
@@ -1006,7 +1010,7 @@ class OpBase
     /**
      *  Base constructor, should not be used unless explicitly intended.
      */
-    OpBase() { SPDLOG_DEBUG("Compute OpBase base constructor"); }
+    OpBase() { KP_LOG_DEBUG("Compute OpBase base constructor"); }
 
     /**
      * Default constructor with parameters that provides the bare minimum
@@ -1023,7 +1027,7 @@ class OpBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors)
     {
-        SPDLOG_DEBUG("Compute OpBase constructor with params");
+        KP_LOG_DEBUG("Compute OpBase constructor with params");
 
         this->mPhysicalDevice = physicalDevice;
         this->mDevice = device;
@@ -1038,20 +1042,20 @@ class OpBase
      */
     virtual ~OpBase()
     {
-        SPDLOG_DEBUG("Kompute OpBase destructor started");
+        KP_LOG_DEBUG("Kompute OpBase destructor started");
 
         if (!this->mDevice) {
-            SPDLOG_WARN("Kompute OpBase destructor called with empty device");
+            KP_LOG_WARN("Kompute OpBase destructor called with empty device");
             return;
         }
 
         if (this->mFreeTensors) {
-            SPDLOG_DEBUG("Kompute OpBase freeing tensors");
+            KP_LOG_DEBUG("Kompute OpBase freeing tensors");
             for (std::shared_ptr<Tensor> tensor : this->mTensors) {
                 if (tensor && tensor->isInit()) {
                     tensor->freeMemoryDestroyGPUResources();
                 } else {
-                    SPDLOG_WARN("Kompute OpBase expected to free "
+                    KP_LOG_WARN("Kompute OpBase expected to free "
                                   "tensor but has already been freed.");
                 }
             }
@@ -1234,15 +1238,15 @@ class Sequence
                       "Kompute Sequence record(...) template only valid with "
                       "OpBase derived classes");
 
-        SPDLOG_DEBUG("Kompute Sequence record function started");
+        KP_LOG_DEBUG("Kompute Sequence record function started");
 
         if (!this->isRecording()) {
-            SPDLOG_ERROR(
+            KP_LOG_ERROR(
               "Kompute sequence record attempted when not record BEGIN");
             return false;
         }
 
-        SPDLOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         T* op = new T(this->mPhysicalDevice,
                       this->mDevice,
                       this->mCommandBuffer,
@@ -1253,11 +1257,11 @@ class Sequence
 
         std::unique_ptr<OpBase> baseOpPtr{ baseOp };
 
-        SPDLOG_DEBUG(
+        KP_LOG_DEBUG(
           "Kompute Sequence running init on OpBase derived class instance");
         baseOpPtr->init();
 
-        SPDLOG_DEBUG(
+        KP_LOG_DEBUG(
           "Kompute Sequence running record on OpBase derived class instance");
         baseOpPtr->record();
 
@@ -1423,23 +1427,23 @@ class Manager
                 std::string sequenceName,
                 TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOp triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOp triggered");
         std::shared_ptr<kp::Sequence> sq =
           this->sequence(sequenceName);
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
         sq->begin();
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
         sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence END");
         sq->end();
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
         sq->eval();
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
     /**
@@ -1453,7 +1457,7 @@ class Manager
     void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
                        TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->mCurrentSequenceIndex++;
         this->evalOp<T>(
           tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
@@ -1472,24 +1476,24 @@ class Manager
                      std::string sequenceName,
                      TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync triggered");
 
         std::shared_ptr<kp::Sequence> sq =
           this->sequence(sequenceName);
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
         sq->begin();
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
         sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
         sq->end();
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
         sq->evalAsync();
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
     }
 
     /**
@@ -1504,7 +1508,7 @@ class Manager
     void evalOpAsyncDefault(std::vector<std::shared_ptr<Tensor>> tensors,
                             TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
         this->mCurrentSequenceIndex++;
         this->evalOpAsync<T>(
           tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
@@ -1518,23 +1522,23 @@ class Manager
      */
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}",
+        KP_LOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}",
                      sequenceName);
         std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
           found = this->mManagedSequences.find(sequenceName);
 
         if (found != this->mManagedSequences.end()) {
             if (std::shared_ptr<kp::Sequence> sq = found->second) {
-                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence "
+                KP_LOG_DEBUG("Kompute Manager evalOpAwait running sequence "
                              "Sequence EVAL AWAIT");
                 if (sq->isRunning()) {
                     sq->evalAwait(waitFor);
                 }
             }
-            SPDLOG_DEBUG(
+            KP_LOG_DEBUG(
               "Kompute Manager evalOpAwait running sequence SUCCESS");
         } else {
-            SPDLOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
+            KP_LOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
         }
     }
 
@@ -1547,7 +1551,7 @@ class Manager
      */
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
         this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
     }
 
@@ -2011,7 +2015,7 @@ class OpMult : public OpAlgoBase
            const Workgroup& komputeWorkgroup = {})
       : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
     {
-        SPDLOG_DEBUG("Kompute OpMult constructor with params");
+        KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
 #ifndef RELEASE
         this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
@@ -2025,7 +2029,7 @@ class OpMult : public OpAlgoBase
      */
     std::vector<uint32_t> fetchSpirvBinaryData() override
     {
-        SPDLOG_WARN(
+        KP_LOG_WARN(
           "Kompute OpMult Running shaders directly from header");
 
         return std::vector<uint32_t>(
@@ -2041,7 +2045,7 @@ class OpMult : public OpAlgoBase
      * components but does not destroy the underlying tensors
      */
     ~OpMult() override {
-        SPDLOG_DEBUG("Kompute OpMult destructor started");
+        KP_LOG_DEBUG("Kompute OpMult destructor started");
     }
 
 };

@@ -6,14 +6,14 @@ namespace kp {
 
 Algorithm::Algorithm()
 {
-    SPDLOG_DEBUG("Kompute Algorithm base constructor");
+    KP_LOG_DEBUG("Kompute Algorithm base constructor");
 }
 
 Algorithm::Algorithm(std::shared_ptr<vk::Device> device,
                      std::shared_ptr<vk::CommandBuffer> commandBuffer,
                      const Constants& specializationConstants)
 {
-    SPDLOG_DEBUG("Kompute Algorithm Constructor with device");
+    KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
     this->mDevice = device;
     this->mCommandBuffer = commandBuffer;
@@ -22,18 +22,18 @@ Algorithm::Algorithm(std::shared_ptr<vk::Device> device,
 
 Algorithm::~Algorithm()
 {
-    SPDLOG_DEBUG("Kompute Algorithm Destructor started");
+    KP_LOG_DEBUG("Kompute Algorithm Destructor started");
 
     if (!this->mDevice) {
-        SPDLOG_ERROR(
+        KP_LOG_ERROR(
           "Kompute Algorithm destructor reached with null Device pointer");
         return;
     }
 
     if (this->mFreePipeline) {
-        SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline");
+        KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline");
         if (!this->mPipeline) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "pipeline but it is null");
         }
         this->mDevice->destroy(
@@ -42,9 +42,9 @@ Algorithm::~Algorithm()
     }
 
     if (this->mFreePipelineCache) {
-        SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
+        KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
         if (!this->mPipelineCache) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "pipeline cache but it is null");
         }
         this->mDevice->destroy(
@@ -53,9 +53,9 @@ Algorithm::~Algorithm()
     }
 
     if (this->mFreePipelineLayout) {
-        SPDLOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
+        KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
         if (!this->mPipelineLayout) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "pipeline layout but it is null");
         }
         this->mDevice->destroy(
@@ -64,9 +64,9 @@ Algorithm::~Algorithm()
     }
 
     if (this->mFreeShaderModule) {
-        SPDLOG_DEBUG("Kompute Algorithm Destroying shader module");
+        KP_LOG_DEBUG("Kompute Algorithm Destroying shader module");
         if (!this->mShaderModule) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy shader "
+            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy shader "
                          "module but it is null");
         }
         this->mDevice->destroy(
@@ -75,9 +75,9 @@ Algorithm::~Algorithm()
     }
 
     if (this->mFreeDescriptorSet) {
-        SPDLOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
+        KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
         if (!this->mDescriptorSet) {
-            SPDLOG_ERROR(
+            KP_LOG_ERROR(
               "Kompute Algorithm Error requested to free descriptor set");
         }
         this->mDevice->freeDescriptorSets(
@@ -85,9 +85,9 @@ Algorithm::~Algorithm()
     }
 
     if (this->mFreeDescriptorSetLayout) {
-        SPDLOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
+        KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
         if (!this->mDescriptorSetLayout) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "descriptor set layout but it is null");
         }
         this->mDevice->destroy(
@@ -96,9 +96,9 @@ Algorithm::~Algorithm()
     }
 
     if (this->mFreeDescriptorPool) {
-        SPDLOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
+        KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
         if (!this->mDescriptorPool) {
-            SPDLOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
                          "descriptor pool but it is null");
         }
         this->mDevice->destroy(
@@ -111,7 +111,7 @@ void
 Algorithm::init(const std::vector<uint32_t>& shaderFileData,
                 std::vector<std::shared_ptr<Tensor>> tensorParams)
 {
-    SPDLOG_DEBUG("Kompute Algorithm init started");
+    KP_LOG_DEBUG("Kompute Algorithm init started");
 
     this->createParameters(tensorParams);
     this->createShaderModule(shaderFileData);
@@ -130,7 +130,7 @@ Algorithm::createDescriptorPool()
 void
 Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 {
-    SPDLOG_DEBUG("Kompute Algorithm createParameters started");
+    KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
         vk::DescriptorPoolSize(
@@ -145,7 +145,7 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
       static_cast<uint32_t>(descriptorPoolSizes.size()),
       descriptorPoolSizes.data());
 
-    SPDLOG_DEBUG("Kompute Algorithm creating descriptor pool");
+    KP_LOG_DEBUG("Kompute Algorithm creating descriptor pool");
     this->mDescriptorPool = std::make_shared<vk::DescriptorPool>();
     this->mDevice->createDescriptorPool(
       &descriptorPoolInfo, nullptr, this->mDescriptorPool.get());
@@ -166,7 +166,7 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
       static_cast<uint32_t>(descriptorSetBindings.size()),
       descriptorSetBindings.data());
 
-    SPDLOG_DEBUG("Kompute Algorithm creating descriptor set layout");
+    KP_LOG_DEBUG("Kompute Algorithm creating descriptor set layout");
     this->mDescriptorSetLayout = std::make_shared<vk::DescriptorSetLayout>();
     this->mDevice->createDescriptorSetLayout(
       &descriptorSetLayoutInfo, nullptr, this->mDescriptorSetLayout.get());
@@ -177,13 +177,13 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
       1, // Descriptor set layout count
       this->mDescriptorSetLayout.get());
 
-    SPDLOG_DEBUG("Kompute Algorithm allocating descriptor sets");
+    KP_LOG_DEBUG("Kompute Algorithm allocating descriptor sets");
     this->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
     this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
                                           this->mDescriptorSet.get());
     this->mFreeDescriptorSet = true;
 
-    SPDLOG_DEBUG("Kompute Algorithm updating descriptor sets");
+    KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
     for (size_t i = 0; i < tensorParams.size(); i++) {
         std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
 
@@ -203,20 +203,20 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
                                             nullptr);
     }
 
-    SPDLOG_DEBUG("Kompue Algorithm successfully run init");
+    KP_LOG_DEBUG("Kompue Algorithm successfully run init");
 }
 
 void
 Algorithm::createShaderModule(const std::vector<uint32_t>& shaderFileData)
 {
-    SPDLOG_DEBUG("Kompute Algorithm createShaderModule started");
+    KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
 
     vk::ShaderModuleCreateInfo shaderModuleInfo(
       vk::ShaderModuleCreateFlags(),
       sizeof(uint32_t) * shaderFileData.size(),
       shaderFileData.data());
 
-    SPDLOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
+    KP_LOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
                  shaderFileData.size());
     this->mFreeShaderModule = true;
     this->mShaderModule = std::make_shared<vk::ShaderModule>();
@@ -224,13 +224,13 @@ Algorithm::createShaderModule(const std::vector<uint32_t>& shaderFileData)
       &shaderModuleInfo, nullptr, this->mShaderModule.get());
     this->mFreeShaderModule = true;
 
-    SPDLOG_DEBUG("Kompute Algorithm create shader module success");
+    KP_LOG_DEBUG("Kompute Algorithm create shader module success");
 }
 
 void
 Algorithm::createPipeline()
 {
-    SPDLOG_DEBUG("Kompute Algorithm calling create Pipeline");
+    KP_LOG_DEBUG("Kompute Algorithm calling create Pipeline");
 
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
       vk::PipelineLayoutCreateFlags(),
@@ -302,7 +302,7 @@ Algorithm::createPipeline()
 void
 Algorithm::recordDispatch(uint32_t x, uint32_t y, uint32_t z)
 {
-    SPDLOG_DEBUG("Kompute Algorithm calling record dispatch");
+    KP_LOG_DEBUG("Kompute Algorithm calling record dispatch");
 
     this->mCommandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute,
                                        *this->mPipeline);

@@ -84,23 +84,23 @@ class Manager
                 std::string sequenceName,
                 TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOp triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOp triggered");
         std::shared_ptr<kp::Sequence> sq =
           this->sequence(sequenceName);
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
         sq->begin();
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
         sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence END");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence END");
         sq->end();
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
         sq->eval();
 
-        SPDLOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
+        KP_LOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
     }
 
     /**
@@ -114,7 +114,7 @@ class Manager
     void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
                        TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOp Default triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOp Default triggered");
         this->mCurrentSequenceIndex++;
         this->evalOp<T>(
           tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
@@ -133,24 +133,24 @@ class Manager
                      std::string sequenceName,
                      TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync triggered");
 
         std::shared_ptr<kp::Sequence> sq =
           this->sequence(sequenceName);
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
         sq->begin();
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
         sq->record<T>(tensors, std::forward<TArgs>(params)...);
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
         sq->end();
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
         sq->evalAsync();
 
-        SPDLOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
     }
 
     /**
@@ -165,7 +165,7 @@ class Manager
     void evalOpAsyncDefault(std::vector<std::shared_ptr<Tensor>> tensors,
                             TArgs&&... params)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
         this->mCurrentSequenceIndex++;
         this->evalOpAsync<T>(
           tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
@@ -179,23 +179,23 @@ class Manager
      */
     void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}",
+        KP_LOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}",
                      sequenceName);
         std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
           found = this->mManagedSequences.find(sequenceName);
 
         if (found != this->mManagedSequences.end()) {
             if (std::shared_ptr<kp::Sequence> sq = found->second) {
-                SPDLOG_DEBUG("Kompute Manager evalOpAwait running sequence "
+                KP_LOG_DEBUG("Kompute Manager evalOpAwait running sequence "
                              "Sequence EVAL AWAIT");
                 if (sq->isRunning()) {
                     sq->evalAwait(waitFor);
                 }
             }
-            SPDLOG_DEBUG(
+            KP_LOG_DEBUG(
               "Kompute Manager evalOpAwait running sequence SUCCESS");
         } else {
-            SPDLOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
+            KP_LOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
         }
     }
 
@@ -208,7 +208,7 @@ class Manager
      */
     void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
     {
-        SPDLOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
+        KP_LOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
         this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
     }
 

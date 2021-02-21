@@ -92,10 +92,10 @@ void KomputeModelMLNode::train(Array yArr, Array xIArr, Array xJArr) {
         }
     }
 
-    SPDLOG_INFO("RESULT: <<<<<<<<<<<<<<<<<<<");
-    SPDLOG_INFO(wIn->data()[0]);
-    SPDLOG_INFO(wIn->data()[1]);
-    SPDLOG_INFO(bIn->data()[0]);
+    KP_LOG_INFO("RESULT: <<<<<<<<<<<<<<<<<<<");
+    KP_LOG_INFO(wIn->data()[0]);
+    KP_LOG_INFO(wIn->data()[1]);
+    KP_LOG_INFO(bIn->data()[0]);
 
     this->mWeights = kp::Tensor(wIn->data());
     this->mBias = kp::Tensor(bIn->data());
@@ -127,7 +127,7 @@ Array KomputeModelMLNode::predict(Array xI, Array xJ) {
 Array KomputeModelMLNode::get_params() {
     Array retArray;
 
-    SPDLOG_INFO(this->mWeights.size() + this->mBias.size());
+    KP_LOG_INFO(this->mWeights.size() + this->mBias.size());
 
     if(this->mWeights.size() + this->mBias.size() == 0) {
         return retArray;

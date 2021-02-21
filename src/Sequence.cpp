@@ -5,7 +5,7 @@ namespace kp {
 
 Sequence::Sequence()
 {
-    SPDLOG_DEBUG("Kompute Sequence base constructor");
+    KP_LOG_DEBUG("Kompute Sequence base constructor");
     this->mIsInit = false;
 }
 
@@ -14,7 +14,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Queue> computeQueue,
                    uint32_t queueIndex)
 {
-    SPDLOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
+    KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
@@ -25,10 +25,10 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
 Sequence::~Sequence()
 {
-    SPDLOG_DEBUG("Kompute Sequence Destructor started");
+    KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
     if (!this->mIsInit) {
-        SPDLOG_INFO("Kompute Sequence destructor called but sequence is not "
+        KP_LOG_INFO("Kompute Sequence destructor called but sequence is not "
                     "initialized so no need to removing GPU resources.");
         return;
     } else {
@@ -47,15 +47,15 @@ Sequence::init()
 bool
 Sequence::begin()
 {
-    SPDLOG_DEBUG("Kompute sequence called BEGIN");
+    KP_LOG_DEBUG("Kompute sequence called BEGIN");
 
     if (this->isRecording()) {
-        SPDLOG_WARN("Kompute Sequence begin called when  already recording");
+        KP_LOG_WARN("Kompute Sequence begin called when  already recording");
         return false;
     }
 
     if (this->isRunning()) {
-        SPDLOG_WARN(
+        KP_LOG_WARN(
           "Kompute Sequence begin called when sequence still running");
         return false;
     }
@@ -65,16 +65,16 @@ Sequence::begin()
     }
 
     if (this->mOperations.size()) {
-        SPDLOG_INFO("Kompute Sequence clearing previous operations");
+        KP_LOG_INFO("Kompute Sequence clearing previous operations");
         this->mOperations.clear();
     }
 
     if (!this->mRecording) {
-        SPDLOG_INFO("Kompute Sequence command recording BEGIN");
+        KP_LOG_INFO("Kompute Sequence command recording BEGIN");
         this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
         this->mRecording = true;
     } else {
-        SPDLOG_WARN("Kompute Sequence attempted to start command recording "
+        KP_LOG_WARN("Kompute Sequence attempted to start command recording "
                     "but recording already started");
     }
     return true;
@@ -83,10 +83,10 @@ Sequence::begin()
 bool
 Sequence::end()
 {
-    SPDLOG_DEBUG("Kompute Sequence calling END");
+    KP_LOG_DEBUG("Kompute Sequence calling END");
 
     if (!this->isRecording()) {
-        SPDLOG_WARN("Kompute Sequence end called when not recording");
+        KP_LOG_WARN("Kompute Sequence end called when not recording");
         return false;
     }
 
@@ -95,11 +95,11 @@ Sequence::end()
     }
 
     if (this->mRecording) {
-        SPDLOG_INFO("Kompute Sequence command recording END");
+        KP_LOG_INFO("Kompute Sequence command recording END");
         this->mCommandBuffer->end();
         this->mRecording = false;
     } else {
-        SPDLOG_WARN("Kompute Sequence attempted to end command recording but "
+        KP_LOG_WARN("Kompute Sequence attempted to end command recording but "
                     "recording not started");
     }
     return true;
@@ -108,17 +108,17 @@ Sequence::end()
 bool
 Sequence::eval()
 {
-    SPDLOG_DEBUG("Kompute sequence EVAL BEGIN");
+    KP_LOG_DEBUG("Kompute sequence EVAL BEGIN");
 
     bool evalResult = this->evalAsync();
     if (!evalResult) {
-        SPDLOG_DEBUG("Kompute sequence EVAL FAILURE");
+        KP_LOG_DEBUG("Kompute sequence EVAL FAILURE");
         return false;
     }
 
     evalResult = this->evalAwait();
 
-    SPDLOG_DEBUG("Kompute sequence EVAL SUCCESS");
+    KP_LOG_DEBUG("Kompute sequence EVAL SUCCESS");
 
     return evalResult;
 }
@@ -127,11 +127,11 @@ bool
 Sequence::evalAsync()
 {
     if (this->isRecording()) {
-        SPDLOG_WARN("Kompute Sequence evalAsync called when still recording");
+        KP_LOG_WARN("Kompute Sequence evalAsync called when still recording");
         return false;
     }
     if (this->mIsRunning) {
-        SPDLOG_WARN("Kompute Sequence evalAsync called when an eval async was "
+        KP_LOG_WARN("Kompute Sequence evalAsync called when an eval async was "
                     "called without successful wait");
         return false;
     }
@@ -147,7 +147,7 @@ Sequence::evalAsync()
 
     this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
 
-    SPDLOG_DEBUG(
+    KP_LOG_DEBUG(
       "Kompute sequence submitting command buffer into compute queue");
 
     this->mComputeQueue->submit(1, &submitInfo, this->mFence);
@@ -159,7 +159,7 @@ bool
 Sequence::evalAwait(uint64_t waitFor)
 {
     if (!this->mIsRunning) {
-        SPDLOG_WARN("Kompute Sequence evalAwait called without existing eval");
+        KP_LOG_WARN("Kompute Sequence evalAwait called without existing eval");
         return false;
     }
 
@@ -171,7 +171,7 @@ Sequence::evalAwait(uint64_t waitFor)
     this->mIsRunning = false;
 
     if (result == vk::Result::eTimeout) {
-        SPDLOG_WARN("Kompute Sequence evalAwait timed out");
+        KP_LOG_WARN("Kompute Sequence evalAwait timed out");
         return false;
     }
 
@@ -203,26 +203,26 @@ Sequence::isInit()
 void
 Sequence::freeMemoryDestroyGPUResources()
 {
-    SPDLOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
+    KP_LOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
 
     if (!this->mIsInit) {
-        SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
+        KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
                      "but Sequence is not initialized so there's no relevant "
                      "GPU resources.");
         return;
     }
 
     if (!this->mDevice) {
-        SPDLOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
+        KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
                      "with null Device pointer");
         this->mIsInit = false;
         return;
     }
 
     if (this->mFreeCommandBuffer) {
-        SPDLOG_INFO("Freeing CommandBuffer");
+        KP_LOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            SPDLOG_ERROR(
+            KP_LOG_ERROR(
               "Kompute Sequence freeMemoryDestroyGPUResources called with null "
               "CommandPool pointer");
             this->mIsInit = false;
@@ -230,13 +230,13 @@ Sequence::freeMemoryDestroyGPUResources()
         }
         this->mDevice->freeCommandBuffers(
           *this->mCommandPool, 1, this->mCommandBuffer.get());
-        SPDLOG_DEBUG("Kompute Sequence Freed CommandBuffer");
+        KP_LOG_DEBUG("Kompute Sequence Freed CommandBuffer");
     }
 
     if (this->mFreeCommandPool) {
-        SPDLOG_INFO("Destroying CommandPool");
+        KP_LOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            SPDLOG_ERROR(
+            KP_LOG_ERROR(
               "Kompute Sequence freeMemoryDestroyGPUResources called with null "
               "CommandPool pointer");
             this->mIsInit = false;
@@ -245,11 +245,11 @@ Sequence::freeMemoryDestroyGPUResources()
         this->mDevice->destroy(
           *this->mCommandPool,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        SPDLOG_DEBUG("Kompute Sequence Destroyed CommandPool");
+        KP_LOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 
     if (this->mOperations.size()) {
-        SPDLOG_INFO("Kompute Sequence clearing operations buffer");
+        KP_LOG_INFO("Kompute Sequence clearing operations buffer");
         this->mOperations.clear();
     }
 
@@ -259,7 +259,7 @@ Sequence::freeMemoryDestroyGPUResources()
 void
 Sequence::createCommandPool()
 {
-    SPDLOG_DEBUG("Kompute Sequence creating command pool");
+    KP_LOG_DEBUG("Kompute Sequence creating command pool");
 
     if (!this->mDevice) {
         throw std::runtime_error("Kompute Sequence device is null");
@@ -275,13 +275,13 @@ Sequence::createCommandPool()
     this->mCommandPool = std::make_shared<vk::CommandPool>();
     this->mDevice->createCommandPool(
       &commandPoolInfo, nullptr, this->mCommandPool.get());
-    SPDLOG_DEBUG("Kompute Sequence Command Pool Created");
+    KP_LOG_DEBUG("Kompute Sequence Command Pool Created");
 }
 
 void
 Sequence::createCommandBuffer()
 {
-    SPDLOG_DEBUG("Kompute Sequence creating command buffer");
+    KP_LOG_DEBUG("Kompute Sequence creating command buffer");
     if (!this->mDevice) {
         throw std::runtime_error("Kompute Sequence device is null");
     }
@@ -297,7 +297,7 @@ Sequence::createCommandBuffer()
     this->mCommandBuffer = std::make_shared<vk::CommandBuffer>();
     this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo,
                                           this->mCommandBuffer.get());
-    SPDLOG_DEBUG("Kompute Sequence Command Buffer Created");
+    KP_LOG_DEBUG("Kompute Sequence Command Buffer Created");
 }
 
 }

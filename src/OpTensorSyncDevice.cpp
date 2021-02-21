@@ -7,7 +7,7 @@ namespace kp {
 
 OpTensorSyncDevice::OpTensorSyncDevice()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice constructor base");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor base");
 }
 
 OpTensorSyncDevice::OpTensorSyncDevice(
@@ -17,18 +17,18 @@ OpTensorSyncDevice::OpTensorSyncDevice(
   std::vector<std::shared_ptr<Tensor>> tensors)
   : OpBase(physicalDevice, device, commandBuffer, tensors)
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
 }
 
 OpTensorSyncDevice::~OpTensorSyncDevice()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice destructor started");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice destructor started");
 }
 
 void
 OpTensorSyncDevice::init()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice init called");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice init called");
 
     if (this->mTensors.size() < 1) {
         throw std::runtime_error(
@@ -41,7 +41,7 @@ OpTensorSyncDevice::init()
                                      "has not been initialized");
         }
         if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
-            SPDLOG_WARN(
+            KP_LOG_WARN(
               "Kompute OpTensorSyncLocal tensor parameter is of type "
               "TensorTypes::eStorage and hence cannot be used to receive or "
               "pass data.");
@@ -52,7 +52,7 @@ OpTensorSyncDevice::init()
 void
 OpTensorSyncDevice::record()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice record called");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
@@ -65,7 +65,7 @@ OpTensorSyncDevice::record()
 void
 OpTensorSyncDevice::preEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
 
     // Performing sync of data as eval can be called multiple times with same op
     for (size_t i = 0; i < this->mTensors.size(); i++) {
@@ -78,7 +78,7 @@ OpTensorSyncDevice::preEval()
 void
 OpTensorSyncDevice::postEval()
 {
-    SPDLOG_DEBUG("Kompute OpTensorSyncDevice postEval called");
+    KP_LOG_DEBUG("Kompute OpTensorSyncDevice postEval called");
 }
 
 }
