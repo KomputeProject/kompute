@@ -39,7 +39,7 @@ public:
      * @specalizationInstalces The specialization parameters to pass to the function
      * processing
      */
-    void init(const std::vector<char>& shaderFileData,
+    void init(const std::vector<uint32_t>& shaderFileData,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 
     /**
@@ -83,7 +83,7 @@ private:
     Constants mSpecializationConstants;
 
     // Create util functions
-    void createShaderModule(const std::vector<char>& shaderFileData);
+    void createShaderModule(const std::vector<uint32_t>& shaderFileData);
     void createPipeline();
 
     // Parameters

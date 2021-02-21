@@ -44,16 +44,11 @@ int main()
 
     sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
-#ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
     sq->record<kp::OpAlgoBase>(
-      params, "shaders/glsl/logistic_regression.comp");
-#else
-    sq->record<kp::OpAlgoBase>(
-        params, std::vector<char>(
-                kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-                kp::shader_data::shaders_glsl_logisticregression_comp_spv
-                    + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
-#endif
+        params, std::vector<uint32_t>(
+                (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+                (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
+                    + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len)));
 
     sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 

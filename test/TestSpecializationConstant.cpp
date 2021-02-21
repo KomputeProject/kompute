@@ -1,8 +1,6 @@
-
 #include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
-
 
 TEST(TestSpecializationConstants, TestTwoConstants)
 {
@@ -37,7 +35,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             sq->begin();
             sq->record<kp::OpAlgoBase>(
               { tensorA, tensorB },
-              std::vector<char>(shader.begin(), shader.end()),
+              kp::Shader::compile_source(shader),
               kp::Workgroup(), spec);
             sq->end();
 

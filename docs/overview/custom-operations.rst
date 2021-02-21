@@ -11,7 +11,7 @@ These nuances are important for more advanced users of Kompute, as this will pro
 Flow of Function Calls
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The top level operation which all operations inherit from is the `kp::OpBase` class. Some of the "Core Native Operations" like `kp::OpTensorCopy`, `kp::OpTensorCreate`, etc all inherit from the base operation class.
+The top level operation which all operations inherit from is the :class:`kp::OpBase` class. Some of the "Core Native Operations" like :class:`kp::OpTensorCopy`, :class:`kp::OpTensorCreate`, etc all inherit from the base operation class.
 
 The `kp::OpAlgoBase` is another base operation that is specifically built to enable users to create their own operations that contain custom shader logic (i.e. requiring Vulkan Compute Pipelines, DescriptorSets, etc). The next section contains an example which shows how to extend the OpAlgoBase class.
 

@@ -107,6 +107,61 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #endif // KOMPUTE_SPDLOG_ENABLED
 #endif // KOMPUTE_LOG_OVERRIDE
 
+#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
+#include <iostream>
+#include <vector>
+
+#include <glslang/Public/ShaderLang.h>
+#include <StandAlone/ResourceLimits.h>
+#include <SPIRV/GlslangToSpv.h>
+
+namespace kp {
+
+/**
+    Shader utily class with functions to compile and process glsl files.
+*/
+class Shader {
+public:
+    /**
+     * Compile multiple sources with optional filenames. Currently this function
+     * uses the glslang C++ interface which is not thread safe so this funciton
+     * should not be called from multiple threads concurrently. If you have a
+     * online shader processing multithreading use-case that can't use offline 
+     * compilation please open an issue.
+     *
+     * @param sources A list of raw glsl shaders in string format
+     * @param files A list of file names respective to each of the sources
+     * @param entryPoint The function name to use as entry point
+     * @param definitions List of pairs containing key value definitions
+     * @return The compiled SPIR-V binary in unsigned int32 format
+     */
+    static std::vector<uint32_t> compile_sources(
+            const std::vector<std::string>& sources,
+            const std::vector<std::string>& files = {},
+            const std::string& entryPoint = "main",
+            std::vector<std::pair<std::string,std::string>> definitions = {});
+
+    /**
+     * Compile a single glslang source from string value. Currently this function
+     * uses the glslang C++ interface which is not thread safe so this funciton
+     * should not be called from multiple threads concurrently. If you have a
+     * online shader processing multithreading use-case that can't use offline 
+     * compilation please open an issue.
+     *
+     * @param source An individual raw glsl shader in string format
+     * @param entryPoint The function name to use as entry point
+     * @param definitions List of pairs containing key value definitions
+     * @return The compiled SPIR-V binary in unsigned int32 format
+     */
+    static std::vector<uint32_t> compile_source(
+            const std::string& source,
+            const std::string& entryPoint = "main",
+            std::vector<std::pair<std::string,std::string>> definitions = {});
+
+};
+}
+#endif // DKOMPUTE_DISABLE_SHADER_UTILS
+
 /*
     THIS FILE HAS BEEN AUTOMATICALLY GENERATED - DO NOT EDIT
 
@@ -133,7 +188,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 namespace kp {
 namespace shader_data {
 static const unsigned char shaders_glsl_opmult_comp_spv[] = {
-  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x08, 0x00, 0x08, 0x00,
+  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x0a, 0x00, 0x08, 0x00,
   0x2e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x02, 0x00,
   0x01, 0x00, 0x00, 0x00, 0x0b, 0x00, 0x06, 0x00, 0x01, 0x00, 0x00, 0x00,
   0x47, 0x4c, 0x53, 0x4c, 0x2e, 0x73, 0x74, 0x64, 0x2e, 0x34, 0x35, 0x30,
@@ -287,7 +342,7 @@ static const unsigned int shaders_glsl_opmult_comp_spv_len = 1464;
 namespace kp {
 namespace shader_data {
 static const unsigned char shaders_glsl_logisticregression_comp_spv[] = {
-  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x08, 0x00, 0x08, 0x00,
+  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x0a, 0x00, 0x08, 0x00,
   0xae, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x02, 0x00,
   0x01, 0x00, 0x00, 0x00, 0x0b, 0x00, 0x06, 0x00, 0x01, 0x00, 0x00, 0x00,
   0x47, 0x4c, 0x53, 0x4c, 0x2e, 0x73, 0x74, 0x64, 0x2e, 0x34, 0x35, 0x30,
@@ -1658,7 +1713,7 @@ public:
      * @specalizationInstalces The specialization parameters to pass to the function
      * processing
      */
-    void init(const std::vector<char>& shaderFileData,
+    void init(const std::vector<uint32_t>& shaderFileData,
               std::vector<std::shared_ptr<Tensor>> tensorParams);
 
     /**
@@ -1702,7 +1757,7 @@ private:
     Constants mSpecializationConstants;
 
     // Create util functions
-    void createShaderModule(const std::vector<char>& shaderFileData);
+    void createShaderModule(const std::vector<uint32_t>& shaderFileData);
     void createPipeline();
 
     // Parameters
@@ -1783,7 +1838,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::vector<char>& shaderDataRaw,
+           const std::vector<uint32_t>& shaderDataRaw,
            const Workgroup& komputeWorkgroup = {},
            const Constants& specializationConstants = {});
 
@@ -1835,9 +1890,9 @@ class OpAlgoBase : public OpBase
     Workgroup mKomputeWorkgroup;
 
     std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
-    std::vector<char> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
+    std::vector<uint32_t> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
 
-    virtual std::vector<char> fetchSpirvBinaryData();
+    virtual std::vector<uint32_t> fetchSpirvBinaryData();
 };
 
 } // End namespace kp
@@ -1960,7 +2015,7 @@ class OpMult : public OpAlgoBase
         SPDLOG_DEBUG("Kompute OpMult constructor with params");
 
 #ifndef RELEASE
-        this->mShaderFilePath = "shaders/glsl/opmult.comp";
+        this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
 #endif
     }
 
@@ -1969,15 +2024,15 @@ class OpMult : public OpAlgoBase
      * If RELEASE=1 it will be using the static version of the shader which is 
      * loaded using this file directly. Otherwise it should not override the function.
      */
-    std::vector<char> fetchSpirvBinaryData() override
+    std::vector<uint32_t> fetchSpirvBinaryData() override
     {
         SPDLOG_WARN(
           "Kompute OpMult Running shaders directly from header");
 
-        return std::vector<char>(
-          shader_data::shaders_glsl_opmult_comp_spv,
-          shader_data::shaders_glsl_opmult_comp_spv +
-            kp::shader_data::shaders_glsl_opmult_comp_spv_len);
+        return std::vector<uint32_t>(
+          (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
+          (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
+            kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
     }
 #endif

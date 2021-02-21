@@ -82,7 +82,7 @@ class OpAlgoBase : public OpBase
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::vector<char>& shaderDataRaw,
+           const std::vector<uint32_t>& shaderDataRaw,
            const Workgroup& komputeWorkgroup = {},
            const Constants& specializationConstants = {});
 
@@ -135,9 +135,9 @@ class OpAlgoBase : public OpBase
     Workgroup mKomputeWorkgroup;
 
     std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
-    std::vector<char> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
+    std::vector<uint32_t> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
 
-    virtual std::vector<char> fetchSpirvBinaryData();
+    virtual std::vector<uint32_t> fetchSpirvBinaryData();
 };
 
 } // End namespace kp

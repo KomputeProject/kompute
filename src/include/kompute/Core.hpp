@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef VK_USE_PLATFORM_ANDROID_KHR
+#if VK_USE_PLATFORM_ANDROID_KHR
 #include <android/log.h>
 #include <kompute_vk_ndk_wrapper.hpp>
 // VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp
@@ -82,7 +82,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 #define SPDLOG_WARN(message, ...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+    ((void)__android_log_print(ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, message))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define SPDLOG_WARN(message, ...) kp_warning(message);
 #else
@@ -96,7 +96,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 #define SPDLOG_ERROR(message, ...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, message))
+    ((void)__android_log_print(ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, message))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define SPDLOG_ERROR(message, ...) kp_error(message);
 #else

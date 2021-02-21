@@ -12,7 +12,7 @@ Below is a diagram that provides insights on the relationship between Vulkan Kom
 Manager
 -------
 
-The Kompute Manager provides a high level interface to simplify interaction with underlying kp::Sequences of kp::Operations.
+The Kompute Manager provides a high level interface to simplify interaction with underlying :class:`kp::Sequences` of :class:`kp::Operations`.
 
 .. image:: ../images/kompute-vulkan-architecture-manager.jpg
    :width: 100%
@@ -23,7 +23,7 @@ The Kompute Manager provides a high level interface to simplify interaction with
 Sequence
 -------
 
-The Kompute Sequence consists of batches of kp::Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.
+The Kompute Sequence consists of batches of :class:`kp::Operations`, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.
 
 .. image:: ../images/kompute-vulkan-architecture-sequence.jpg
    :width: 100%
@@ -34,7 +34,7 @@ The Kompute Sequence consists of batches of kp::Operations, which are executed o
 Tensor
 -------
 
-The kp::Tensor is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.
+The :class:`kp::Tensor` is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.
 
 .. image:: ../images/kompute-vulkan-architecture-tensor.jpg
    :width: 100%
@@ -45,7 +45,7 @@ The kp::Tensor is the atomic unit in Kompute, and it is used primarily for handl
 Algorithm
 -------
 
-The kp::Algorithm consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan resources as outlined in the architectural diagram.
+The :class:`kp::Algorithm` consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan resources as outlined in the architectural diagram.
 
 .. image:: ../images/kompute-vulkan-architecture-algorithm.jpg
    :width: 100%
@@ -56,7 +56,7 @@ The kp::Algorithm consists primarily of the components required for shader code 
 OpBase
 -------
 
-The kp::OpBase provides a top level class for an operation in Kompute, which is the step that is executed on a GPU submission. The Kompute operations can consist of one or more kp::Tensor.
+The :class:`kp::OpBase` provides a top level class for an operation in Kompute, which is the step that is executed on a GPU submission. The Kompute operations can consist of one or more :class:`kp::Tensor`.
 
 .. image:: ../images/kompute-vulkan-architecture-operations.jpg
    :width: 100%
@@ -78,7 +78,7 @@ The vk::OpAlgoBase extends the vk::OpBase class, and provides the base for shade
 OpMult
 -------
 
-The kp::OpMult operation is a sample implementation of the kp::OpAlgoBase class. This class shows how it is possible to create a custom vk::OpAlgoBase that can compile as part of the binary. The kp::OpMult operation uses the shader-to-cpp-header-file script to convert the script into cpp header files.
+The :class:`kp::OpMult` operation is a sample implementation of the :class:`kp::OpAlgoBase` class. This class shows how it is possible to create a custom vk::OpAlgoBase that can compile as part of the binary. The :class:`kp::OpMult` operation uses the shader-to-cpp-header-file script to convert the script into cpp header files.
 
 .. image:: ../images/kompute-vulkan-architecture-opmult.jpg
    :width: 100%
@@ -90,7 +90,7 @@ The kp::OpMult operation is a sample implementation of the kp::OpAlgoBase class.
 OpTensorCopy
 -------
 
-The kp::OpTensorCopy is a tensor only operation that copies the GPU memory buffer data from one kp::Tensor to one or more subsequent tensors.
+The :class:`kp::OpTensorCopy` is a tensor only operation that copies the GPU memory buffer data from one :class:`kp::Tensor` to one or more subsequent tensors.
 
 .. doxygenclass:: kp::OpTensorCopy
    :members:
@@ -98,7 +98,7 @@ The kp::OpTensorCopy is a tensor only operation that copies the GPU memory buffe
 OpTensorSyncLocal
 -------
 
-The kp::OpTensorSyncLocal is a tensor only operation that maps the data from the GPU device memory into the local host vector.
+The :class:`kp::OpTensorSyncLocal` is a tensor only operation that maps the data from the GPU device memory into the local host vector.
 
 .. doxygenclass:: kp::OpTensorSyncLocal
    :members:
@@ -106,11 +106,19 @@ The kp::OpTensorSyncLocal is a tensor only operation that maps the data from the
 OpTensorSyncDevice
 -------
 
-The kp::OpTensorSyncDevice is a tensor only operation that maps the data from the local host vector into the GPU device memory.
+The :class:`kp::OpTensorSyncDevice` is a tensor only operation that maps the data from the local host vector into the GPU device memory.
 
 .. doxygenclass:: kp::OpTensorSyncDevice
    :members:
 
+
+Shader
+--------
+
+The :class:`kp::Shader` class contains a set of utilities to compile and process shaders.
+
+.. doxygenclass:: kp::Shader
+   :members:
 
 
 

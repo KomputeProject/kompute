@@ -30,6 +30,28 @@ PYBIND11_MODULE(kp, m) {
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
         .export_values();
 
+#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
+    py::class_<kp::Shader>(m, "Shader", "Shader class")
+        .def_static("compile_source", [](
+                                    const std::string& source,
+                                    const std::string& entryPoint,
+                                    const std::vector<std::pair<std::string,std::string>>& definitions) {
+                std::vector<uint32_t> spirv = kp::Shader::compile_source(source, entryPoint, definitions);
+                return py::bytes((const char*)spirv.data(), spirv.size() * sizeof(uint32_t));
+            },
+            "Compiles string source provided and returns the value in bytes",
+            py::arg("source"), py::arg("entryPoint") = "main", py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() )
+        .def_static("compile_sources", [](
+                                    const std::vector<std::string>& source,
+                                    const std::vector<std::string>& files,
+                                    const std::string& entryPoint,
+                                    const std::vector<std::pair<std::string,std::string>>& definitions) {
+                std::vector<uint32_t> spirv = kp::Shader::compile_sources(source, files, entryPoint, definitions);
+                return py::bytes((const char*)spirv.data(), spirv.size() * sizeof(uint32_t));
+            },
+            "Compiles sources provided with file names and returns the value in bytes",
+            py::arg("sources"), py::arg("files") = std::vector<std::string>(), py::arg("entryPoint") = "main", py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() );
+#endif // KOMPUTE_DISABLE_SHADER_UTILS
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
         .def(py::init(
@@ -127,7 +149,7 @@ PYBIND11_MODULE(kp, m) {
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 return self.record<kp::OpAlgoBase>(
-                    tensors, std::vector<char>(data, data + length), workgroup, constants);
+                    tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Records an operation using a custom shader provided as spirv bytes",
             py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() );
@@ -205,7 +227,7 @@ PYBIND11_MODULE(kp, m) {
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOpDefault<kp::OpAlgoBase>(
-                    tensors, std::vector<char>(data, data + length), workgroup, constants);
+                    tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence",
             py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
@@ -235,7 +257,7 @@ PYBIND11_MODULE(kp, m) {
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOp<kp::OpAlgoBase>(
-                    tensors, sequenceName, std::vector<char>(data, data + length), workgroup, constants);
+                    tensors, sequenceName, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence",
             py::arg("tensors"), py::arg("sequence_name"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
@@ -264,7 +286,7 @@ PYBIND11_MODULE(kp, m) {
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOpAsyncDefault<kp::OpAlgoBase>(
-                    tensors, std::vector<char>(data, data + length), workgroup, constants);
+                    tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence",
             py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
@@ -294,7 +316,7 @@ PYBIND11_MODULE(kp, m) {
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
                 self.evalOpAsync<kp::OpAlgoBase>(
-                    tensors, sequenceName, std::vector<char>(data, data + length), workgroup, constants);
+                    tensors, sequenceName, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence",
             py::arg("tensors"), py::arg("sequence_name"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() );

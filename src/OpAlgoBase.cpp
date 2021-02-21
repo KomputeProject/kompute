@@ -61,7 +61,7 @@ OpAlgoBase::OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                        std::shared_ptr<vk::Device> device,
                        std::shared_ptr<vk::CommandBuffer> commandBuffer,
                        std::vector<std::shared_ptr<Tensor>>& tensors,
-                       const std::vector<char>& shaderDataRaw,
+                       const std::vector<uint32_t>& shaderDataRaw,
                        const Workgroup& komputeWorkgroup,
                        const Constants& specializationConstants)
   : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)
@@ -98,7 +98,7 @@ OpAlgoBase::init()
 
     SPDLOG_DEBUG("Kompute OpAlgoBase fetching spirv data");
 
-    std::vector<char> shaderFileData = this->fetchSpirvBinaryData();
+    std::vector<uint32_t> shaderFileData = this->fetchSpirvBinaryData();
 
     SPDLOG_DEBUG("Kompute OpAlgoBase Initialising algorithm component");
 
@@ -137,7 +137,7 @@ OpAlgoBase::postEval()
     SPDLOG_DEBUG("Kompute OpAlgoBase postSubmit called");
 }
 
-std::vector<char>
+std::vector<uint32_t>
 OpAlgoBase::fetchSpirvBinaryData()
 {
     SPDLOG_DEBUG("Kompute OpAlgoBase Running fetchSpirvBinaryData");
@@ -162,7 +162,7 @@ OpAlgoBase::fetchSpirvBinaryData()
 
         SPDLOG_WARN("Kompute OpAlgoBase fetched {} bytes", shaderFileSize);
 
-        return std::vector<char>(shaderDataRaw, shaderDataRaw + shaderFileSize);
+        return std::vector<uint32_t>((uint32_t*)shaderDataRaw, (uint32_t*)(shaderDataRaw + shaderFileSize));
     } else if (this->mShaderDataRaw.size()) {
         SPDLOG_DEBUG("Kompute OpAlgoBase Reading data from data provided");
         return this->mShaderDataRaw;

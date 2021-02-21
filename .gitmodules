@@ -14,3 +14,7 @@
 	path = python/pybind11
 	url = https://github.com/pybind/pybind11
     branch = v2.6.1
+[submodule "external/glslang"]
+	path = external/glslang
+	url = https://github.com/KhronosGroup/glslang/
+    branch = 11.1.0

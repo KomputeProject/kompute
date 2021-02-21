@@ -13,7 +13,7 @@ VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsyst
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 # Regext to pass to catch2 to filter tests
-FILTER_TESTS ?= "*"
+FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
@@ -68,7 +68,6 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
-		-DSPDLOG_INSTALL=1 \
 		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
 		-G "Unix Makefiles"
 
@@ -88,7 +87,7 @@ mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 mk_run_tests: mk_build_tests
-	./build/test/test_kompute $(FILTER_TESTS)
+	./build/test/test_kompute --gtest_filter=$(FILTER_TESTS)
 
 mk_build_swiftshader_library:
 	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
@@ -98,16 +97,6 @@ mk_build_swiftshader_library:
 
 mk_run_tests_cpu: export VK_ICD_FILENAMES=$(PWD)/swiftshader/build/vk_swiftshader_icd.json
 mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_only
-
-mk_run_tests_cpu_only:
-	./build/test/test_kompute --gtest_filter="TestLogisticRegressionAlgorithm.*"
-	./build/test/test_kompute --gtest_filter="TestManager.*"
-	./build/test/test_kompute --gtest_filter="TestOpAlgoBase.ShaderCompiledDataFromConstructor"
-	./build/test/test_kompute --gtest_filter="TestOpTensorCopy.*"
-	./build/test/test_kompute --gtest_filter="TestOpTensorCreate.*"
-	./build/test/test_kompute --gtest_filter="TestOpTensorSync.*"
-	./build/test/test_kompute --gtest_filter="TestSequence.*"
-	./build/test/test_kompute --gtest_filter="TestTensor.*"
 
 
 ####### Visual studio build shortcut commands #######
@@ -132,7 +121,6 @@ vs_cmake:
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
-		-DSPDLOG_INSTALL=1 \
 		-G "Visual Studio 16 2019"
 
 vs_build_all:

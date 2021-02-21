@@ -17,21 +17,34 @@ def test_opalgobase_file():
     tensor_out = kp.Tensor([0, 0, 0])
 
     mgr = kp.Manager()
-
     mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
-    shader_path = os.path.abspath(os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv"))
-    mgr.eval_async_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
+    shader_path = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv")
+
+    mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 
     assert tensor_out.data() == [2.0, 4.0, 6.0]
-    assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
 
 
-def test_opalgobase_file():
+def test_shader_str():
     """
     Test basic OpAlgoBase operation
+    """
+
+    shader = """
+#version 450
+layout(set = 0, binding = 0) buffer tensorLhs {float valuesLhs[];};
+layout(set = 0, binding = 1) buffer tensorRhs {float valuesRhs[];};
+layout(set = 0, binding = 2) buffer tensorOutput { float valuesOutput[];};
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+void main()
+{
+    uint index = gl_GlobalInvocationID.x;
+    valuesOutput[index] = valuesLhs[index] * valuesRhs[index];
+}
     """
 
     tensor_in_a = kp.Tensor([2, 2, 2])
@@ -41,9 +54,9 @@ def test_opalgobase_file():
     mgr = kp.Manager()
     mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
 
-    shader_path = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv")
+    spirv = kp.Shader.compile_source(shader)
 
-    mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
+    mgr.eval_algo_data_def([tensor_in_a, tensor_in_b, tensor_out], spirv)
 
     mgr.eval_tensor_sync_local_def([tensor_out])
 

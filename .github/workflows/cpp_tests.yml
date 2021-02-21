@@ -19,16 +19,16 @@ jobs:
     - name: configure-cpp
       run: |
         cmake -Bbuild/ \
+                  -DCMAKE_BUILD_TYPE=Debug                   \
                   -DKOMPUTE_OPT_INSTALL=0                    \
                   -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
                   -DKOMPUTE_OPT_BUILD_TESTS=1                \
-                  -DKOMPUTE_OPT_ENABLE_SPDLOG=1              \
-                  -DSPDLOG_INSTALL=1
+                  -DKOMPUTE_OPT_ENABLE_SPDLOG=1
     - name: build-cpp
       run: |
         make mk_build_tests
     - name: test-cpp
       run: |
         export VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
-        make mk_run_tests_cpu_only
+        make mk_run_tests
 
