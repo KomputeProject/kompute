@@ -764,6 +764,20 @@ tensor.</p>
 
 <h2 id="tensortype">TensorType<a class="headerlink" href="#tensortype" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-kp"></span><dl class="py class">
+<dt id="kp.Shader">
+<em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Shader</code><a class="headerlink" href="#kp.Shader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shader class</p>
+<dl class="py method">
+<dt id="kp.Shader.compile_source">
+<em class="property">static </em><code class="sig-name descname">compile_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">entryPoint</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'main'</span></em>, <em class="sig-param"><span class="n">definitions</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → bytes<a class="headerlink" href="#kp.Shader.compile_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compiles string source provided and returns the value in bytes</p>
+</dd></dl>
+<dl class="py method">
+<dt id="kp.Shader.compile_sources">
+<em class="property">static </em><code class="sig-name descname">compile_sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">arg0</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg1</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">arg2</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">arg3</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> → List<span class="p">[</span>int<span class="p">]</span><a class="headerlink" href="#kp.Shader.compile_sources" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
 <dt id="id0">
 <em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Structured data used in GPU operations.</p>

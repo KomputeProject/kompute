@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-19 08:16:52</td>
+            <td class="headerValue">2021-02-21 07:46:45</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
@@ -123,7 +123,7 @@
 <span class="lineNum">      61 </span>            :                        std::shared_ptr&lt;vk::Device&gt; device,
 <span class="lineNum">      62 </span>            :                        std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,
 <span class="lineNum">      63 </span>            :                        std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,
-<span class="lineNum">      64 </span>            :                        const std::vector&lt;char&gt;&amp; shaderDataRaw,
+<span class="lineNum">      64 </span>            :                        const std::vector&lt;uint32_t&gt;&amp; shaderDataRaw,
 <span class="lineNum">      65 </span>            :                        const Workgroup&amp; komputeWorkgroup,
 <span class="lineNum">      66 </span><span class="lineCov">         35 :                        const Constants&amp; specializationConstants)</span>
 <span class="lineNum">      67 </span><span class="lineCov">        140 :   : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup, specializationConstants)</span>
@@ -160,7 +160,7 @@
 <span class="lineNum">      98 </span>            : 
 <span class="lineNum">      99 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpAlgoBase fetching spirv data&quot;);
 <span class="lineNum">     100 </span>            : 
-<span class="lineNum">     101 </span><span class="lineCov">         39 :     std::vector&lt;char&gt; shaderFileData = this-&gt;fetchSpirvBinaryData();</span>
+<span class="lineNum">     101 </span><span class="lineCov">         39 :     std::vector&lt;uint32_t&gt; shaderFileData = this-&gt;fetchSpirvBinaryData();</span>
 <span class="lineNum">     102 </span>            : 
 <span class="lineNum">     103 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpAlgoBase Initialising algorithm component&quot;);
 <span class="lineNum">     104 </span>            : 
@@ -199,7 +199,7 @@
 <span class="lineNum">     137 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpAlgoBase postSubmit called&quot;);
 <span class="lineNum">     138 </span><span class="lineCov">        248 : }</span>
 <a name="139"><span class="lineNum">     139 </span>            : </a>
-<span class="lineNum">     140 </span>            : std::vector&lt;char&gt;
+<span class="lineNum">     140 </span>            : std::vector&lt;uint32_t&gt;
 <span class="lineNum">     141 </span><span class="lineCov">         36 : OpAlgoBase::fetchSpirvBinaryData()</span>
 <span class="lineNum">     142 </span>            : {
 <span class="lineNum">     143 </span>            :     SPDLOG_DEBUG(&quot;Kompute OpAlgoBase Running fetchSpirvBinaryData&quot;);
@@ -224,7 +224,7 @@
 <span class="lineNum">     162 </span>            : 
 <span class="lineNum">     163 </span><span class="lineCov">          1 :         SPDLOG_WARN(&quot;Kompute OpAlgoBase fetched {} bytes&quot;, shaderFileSize);</span>
 <span class="lineNum">     164 </span>            : 
-<span class="lineNum">     165 </span><span class="lineCov">          1 :         return std::vector&lt;char&gt;(shaderDataRaw, shaderDataRaw + shaderFileSize);</span>
+<span class="lineNum">     165 </span><span class="lineCov">          1 :         return std::vector&lt;uint32_t&gt;((uint32_t*)shaderDataRaw, (uint32_t*)(shaderDataRaw + shaderFileSize));</span>
 <span class="lineNum">     166 </span><span class="lineCov">         70 :     } else if (this-&gt;mShaderDataRaw.size()) {</span>
 <span class="lineNum">     167 </span>            :         SPDLOG_DEBUG(&quot;Kompute OpAlgoBase Reading data from data provided&quot;);
 <span class="lineNum">     168 </span><span class="lineCov">         35 :         return this-&gt;mShaderDataRaw;</span>

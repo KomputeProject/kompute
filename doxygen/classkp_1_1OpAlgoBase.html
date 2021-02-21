@@ -100,8 +100,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:accf997b6e3343080d51916b0a8c252dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48db9aef4edb1853dfff28bc0f8387d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a48db9aef4edb1853dfff28bc0f8387d7">OpAlgoBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, std::string shaderFilePath, const Workgroup &amp;komputeWorkgroup={}, const Constants &amp;specializationConstants={})</td></tr>
 <tr class="separator:a48db9aef4edb1853dfff28bc0f8387d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3dacb86a1135eb313c6a6421e7d5e082"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a3dacb86a1135eb313c6a6421e7d5e082">OpAlgoBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, const std::vector&lt; char &gt; &amp;shaderDataRaw, const Workgroup &amp;komputeWorkgroup={}, const Constants &amp;specializationConstants={})</td></tr>
-<tr class="separator:a3dacb86a1135eb313c6a6421e7d5e082"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a662ecc57c6d050da009042247f9d88af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a662ecc57c6d050da009042247f9d88af">OpAlgoBase</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::CommandBuffer &gt; commandBuffer, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, const std::vector&lt; uint32_t &gt; &amp;shaderDataRaw, const Workgroup &amp;komputeWorkgroup={}, const Constants &amp;specializationConstants={})</td></tr>
+<tr class="separator:a662ecc57c6d050da009042247f9d88af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0dfee08381bcc6d082a2f22940912ab1"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a0dfee08381bcc6d082a2f22940912ab1">~OpAlgoBase</a> () override</td></tr>
 <tr class="separator:a0dfee08381bcc6d082a2f22940912ab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c19a222f489492cf6681c0dcb30225d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a3c19a222f489492cf6681c0dcb30225d">init</a> () override</td></tr>
@@ -122,9 +122,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:aae816f71b7216d4757b00fdfe61ad710"><td class="memItemLeft" align="right" valign="top"><a id="aae816f71b7216d4757b00fdfe61ad710"></a>
-virtual std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fetchSpirvBinaryData</b> ()</td></tr>
-<tr class="separator:aae816f71b7216d4757b00fdfe61ad710"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d01624144b1de5568c86450a98230d4"><td class="memItemLeft" align="right" valign="top"><a id="a8d01624144b1de5568c86450a98230d4"></a>
+virtual std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fetchSpirvBinaryData</b> ()</td></tr>
+<tr class="separator:a8d01624144b1de5568c86450a98230d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -141,10 +141,10 @@ Workgroup&#160;</td><td class="memItemRight" valign="bottom"><b>mKomputeWorkgrou
 std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#aa533459360a091c336705213685518dd">mShaderFilePath</a></td></tr>
 <tr class="memdesc:aa533459360a091c336705213685518dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional member variable which can be provided for the <a class="el" href="classkp_1_1OpAlgoBase.html">OpAlgoBase</a> to find the data automatically and load for processing. <br /></td></tr>
 <tr class="separator:aa533459360a091c336705213685518dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c084041222a2fd37984358368f518c1"><td class="memItemLeft" align="right" valign="top"><a id="a6c084041222a2fd37984358368f518c1"></a>
-std::vector&lt; char &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a6c084041222a2fd37984358368f518c1">mShaderDataRaw</a></td></tr>
-<tr class="memdesc:a6c084041222a2fd37984358368f518c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional member variable which can be provided to contain either the raw shader content or the spirv binary content. <br /></td></tr>
-<tr class="separator:a6c084041222a2fd37984358368f518c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a771234a9ae72ff08ec000705182ca941"><td class="memItemLeft" align="right" valign="top"><a id="a771234a9ae72ff08ec000705182ca941"></a>
+std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoBase.html#a771234a9ae72ff08ec000705182ca941">mShaderDataRaw</a></td></tr>
+<tr class="memdesc:a771234a9ae72ff08ec000705182ca941"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional member variable which can be provided to contain either the raw shader content or the spirv binary content. <br /></td></tr>
+<tr class="separator:a771234a9ae72ff08ec000705182ca941"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classkp_1_1OpBase"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classkp_1_1OpBase')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classkp_1_1OpBase.html">kp::OpBase</a></td></tr>
 <tr class="memitem:a0896d76ccfb1aca3aace9e60acbc1377 inherit pro_attribs_classkp_1_1OpBase"><td class="memItemLeft" align="right" valign="top"><a id="a0896d76ccfb1aca3aace9e60acbc1377"></a>
 std::shared_ptr&lt; vk::PhysicalDevice &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpBase.html#a0896d76ccfb1aca3aace9e60acbc1377">mPhysicalDevice</a></td></tr>
@@ -318,8 +318,8 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
 
 </div>
 </div>
-<a id="a3dacb86a1135eb313c6a6421e7d5e082"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3dacb86a1135eb313c6a6421e7d5e082">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[4/4]</span></h2>
+<a id="a662ecc57c6d050da009042247f9d88af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a662ecc57c6d050da009042247f9d88af">&#9670;&nbsp;</a></span>OpAlgoBase() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -351,7 +351,7 @@ std::shared_ptr&lt; vk::CommandBuffer &gt;&#160;</td><td class="memItemRight" va
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; char &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; uint32_t &gt; &amp;&#160;</td>
           <td class="paramname"><em>shaderDataRaw</em>, </td>
         </tr>
         <tr>
