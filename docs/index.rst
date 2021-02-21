@@ -15,12 +15,12 @@ Documentation Index (as per sidebar)
     :caption: C++ Documentation:
 
     C++ Examples <overview/advanced-examples>
-    C++ Memory Management Principles <overview/memory-management>
-    C++ Build System Deep Dive <overview/build-system>
-    C++ Converting GLSL/HLSL Shaders to Cpp Headers <overview/shaders-to-headers>
-    C++ Extending Kompute with Custom Operations <overview/custom-operations>
+    Memory Management Principles <overview/memory-management>
+    Build System Deep Dive <overview/build-system>
+    Processing Shaders (Online & Offline) <overview/shaders-to-headers>
+    Extending Kompute with Custom Operations <overview/custom-operations>
     C++ Class Documentation & Reference <overview/reference>
-    C++ Code Coverage <https://kompute.cc/codecov/>
+    Test Code Coverage <https://kompute.cc/codecov/>
 
 .. toctree::
     :titlesonly:

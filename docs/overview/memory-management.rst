@@ -21,7 +21,7 @@ The memory ownership is hierarchically outlined in the component architecture - 
 Optional Memory Management
 -------------
 
-As outlined above, resource memory is only managed by Kompute if the resources are created by Kompute. Each of the Kompute components can also be initialised with externally managed resources. The kp::Manager for example can be initialized with an external Vulkan Device. The first principle ensures that all memory ownership is explicitly defined when managing and creating Kompute resources.
+As outlined above, resource memory is only managed by Kompute if the resources are created by Kompute. Each of the Kompute components can also be initialised with externally managed resources. The :class:`kp::Manager` for example can be initialized with an external Vulkan Device. The first principle ensures that all memory ownership is explicitly defined when managing and creating Kompute resources.
 
 
 

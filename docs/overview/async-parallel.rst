@@ -27,7 +27,7 @@ This basically provides further granularity on Vulkan Fences, which is its means
 
 It is important that submitting tasks asynchronously, does not mean that these will be executed in parallel. Parallel execution of operations will be covered in the following section.
 
-Asynchronous operation submission can be achieved through the kp::Manager, or directly through the kp::Sequence. Below is an example using the Kompute manager.
+Asynchronous operation submission can be achieved through the :class:`kp::Manager`, or directly through the :class:`kp::Sequence`. Below is an example using the Kompute manager.
 
 Conceptual Overview
 ^^^^^^^^^^^^^^^^^^^^^
