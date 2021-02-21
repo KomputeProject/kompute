@@ -59,6 +59,10 @@ add_custom_command(
         -E copy_directory
         ${CODECOV_DIR_HTML}
         ${CODECOV_DOCS_DIR}
+    COMMAND ${CMAKE_COMMAND}
+        -E copy
+        ${PROJECT_SOURCE_DIR}/docs/assets/gcov.css
+        ${CODECOV_DOCS_DIR}/gcov.css
     DEPENDS codecov_genhtml)
 
 #####################################################
