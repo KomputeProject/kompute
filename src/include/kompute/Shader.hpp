@@ -4,11 +4,11 @@
 #include <iostream>
 #include <vector>
 
-#include "Core.hpp"
-
 #include <glslang/Public/ShaderLang.h>
 #include <StandAlone/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
+
+#include "kompute/Core.hpp"
 
 namespace kp {
 

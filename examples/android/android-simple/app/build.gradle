@@ -18,8 +18,10 @@ android {
                 arguments '-DANDROID_TOOLCHAIN=clang',
                         '-DANDROID_STL=c++_static',
                         '-DKOMPUTE_OPT_ANDOID_BUILD=1',
+                        '-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1',
                         '-DKOMPUTE_OPT_INSTALL=0',
-                        '-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1',
+                        '-DKOMPUTE_OPT_ENABLE_SPDLOG=0',
+                        '-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=0',
                         '-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=1',
                         '-DKOMPUTE_EXTRA_CXX_FLAGS=-DKOMPUTE_VK_API_MINOR_VERSION=0'
             }
