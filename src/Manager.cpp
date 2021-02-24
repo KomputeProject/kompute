@@ -119,24 +119,6 @@ Manager::~Manager()
     }
 }
 
-std::shared_ptr<Sequence>
-Manager::sequence(uint32_t queueIndex)
-{
-    KP_LOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
-                 "and queueIndex: {}",
-                 queueIndex);
-
-    std::shared_ptr<Sequence> sq =
-      std::make_shared<Sequence>(this->mPhysicalDevice,
-                                 this->mDevice,
-                                 this->mComputeQueues[queueIndex],
-                                 this->mComputeQueueFamilyIndices[queueIndex]);
-
-    this->mManagedSequences.push_back(sq);
-
-    return sq;
-}
-
 void
 Manager::createInstance()
 {
@@ -334,13 +316,15 @@ Manager::tensor(
 {
     KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-    std::shared_ptr<Tensor> tensor = std::make_shared<Tensor>(
-              kp::Tensor(this->mPhysicalDevice, this->mDevice, data, tensorType));
+    std::shared_ptr<Tensor> tensor{
+              new kp::Tensor(this->mPhysicalDevice, this->mDevice, data, tensorType) };
 
     this->mManagedTensors.push_back(tensor);
 
     return tensor;
 }
+
+
 std::shared_ptr<Algorithm>
 Manager::algorithm(
         const std::vector<std::shared_ptr<Tensor>>& tensors,
@@ -351,18 +335,36 @@ Manager::algorithm(
 
     KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
-    std::shared_ptr<Algorithm> algorithm = std::make_shared<Algorithm>(
-            kp::Algorithm(
+    std::shared_ptr<Algorithm> algorithm{
+        new kp::Algorithm(
                 this->mDevice,
                 tensors,
                 spirv,
                 workgroup,
                 specializationConstants,
-                pushConstants));
+                pushConstants)};
 
     this->mManagedAlgorithms.push_back(algorithm);
 
     return algorithm;
+}
+
+std::shared_ptr<Sequence>
+Manager::sequence(uint32_t queueIndex)
+{
+    KP_LOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
+                 "and queueIndex: {}",
+                 queueIndex);
+
+    std::shared_ptr<Sequence> sq{
+        new kp::Sequence(this->mPhysicalDevice,
+                         this->mDevice,
+                         this->mComputeQueues[queueIndex],
+                         this->mComputeQueueFamilyIndices[queueIndex]) };
+
+    this->mManagedSequences.push_back(sq);
+
+    return sq;
 }
 
 }

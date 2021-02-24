@@ -11,7 +11,8 @@ else()
 endif()
 
 file(GLOB test_kompute_CPP
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TestMain.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/TestWorkgroup.cpp"
 )
 
 add_executable(test_kompute ${test_kompute_CPP})

@@ -37,6 +37,11 @@ Algorithm::rebuild(
 {
     KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
+    this->mSpirv = spirv;
+    this->mWorkgroup = workgroup;
+    this->mSpecializationConstants = specializationConstants;
+    this->mPushConstants = pushConstants;
+
     // Descriptor pool is created first so if available then destroy all before rebuild
     if (this->mFreeDescriptorPool) {
         this->freeMemoryDestroyGPUResources();
@@ -303,6 +308,8 @@ Algorithm::createPipeline()
 
     this->mFreePipeline = true;
     this->mPipeline = std::make_shared<vk::Pipeline>(pipelineResult);
+
+    KP_LOG_DEBUG("Kompute Algorithm Create Pipeline Success");
 }
 
 void
@@ -313,6 +320,8 @@ Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
     commandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute,
                                        *this->mPipeline);
 
+    KP_LOG_DEBUG("Kompute Algorithm pipeline bound");
+
     commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eCompute,
                                              *this->mPipelineLayout,
                                              0, // First set
@@ -320,7 +329,11 @@ Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
                                              nullptr // Dispatcher
     );
 
+    KP_LOG_DEBUG("Kompute Algorithm descriptor sets bound");
+
     commandBuffer->dispatch(this->mWorkgroup[0], this->mWorkgroup[1], this->mWorkgroup[2]);
+
+    KP_LOG_DEBUG("Kompute Algorithm dispatch success");
 }
 
 void
