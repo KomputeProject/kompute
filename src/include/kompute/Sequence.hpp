@@ -9,7 +9,7 @@ namespace kp {
 /**
  *  Container of operations that can be sent to GPU as batch
  */
-class Sequence
+class Sequence: public std::enable_shared_from_this<Sequence>
 {
   public:
     /**
@@ -32,12 +32,29 @@ class Sequence
     ~Sequence();
 
     /**
+     * Record function for operation to be added to the GPU queue in batch. This
+     * template requires classes to be derived from the OpBase class. This
+     * function also requires the Sequence to be recording, otherwise it will
+     * not be able to add the operation.
+     *
+     * @param tensors Vector of tensors to use for the operation
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
+     */
+    std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
+
+    /**
+     * Clear function clears all operations currently recorded and starts recording again.
+     */
+    void clear();
+
+    /**
      * Begins recording commands for commands to be submitted into the command
      * buffer.
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool begin();
+    void begin();
 
     /**
      * Ends the recording and stops recording commands when the record command
@@ -45,7 +62,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool end();
+    void end();
 
     /**
      * Eval sends all the recorded and stored operations in the vector of
@@ -53,7 +70,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool eval();
+    std::shared_ptr<Sequence> eval();
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
@@ -62,7 +79,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool evalAsync();
+    std::shared_ptr<Sequence> evalAsync();
 
     /**
      * Eval Await waits for the fence to finish processing and then once it
@@ -71,7 +88,7 @@ class Sequence
      * @param waitFor Number of milliseconds to wait before timing out.
      * @return Boolean stating whether execution was successful.
      */
-    bool evalAwait(uint64_t waitFor = UINT64_MAX);
+    std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
      * Returns true if the sequence is currently in recording activated.
@@ -94,55 +111,6 @@ class Sequence
      */
     void freeMemoryDestroyGPUResources();
 
-    /**
-     * Record function for operation to be added to the GPU queue in batch. This
-     * template requires classes to be derived from the OpBase class. This
-     * function also requires the Sequence to be recording, otherwise it will
-     * not be able to add the operation.
-     *
-     * @param tensors Vector of tensors to use for the operation
-     * @param TArgs Template parameters that are used to initialise operation
-     * which allows for extensible configurations on initialisation.
-     */
-    template<typename T, typename... TArgs>
-    bool record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
-    {
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        if (!this->isRecording()) {
-            KP_LOG_ERROR(
-              "Kompute sequence record attempted when not record BEGIN");
-            return false;
-        }
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op = new T(this->mPhysicalDevice,
-                      this->mDevice,
-                      this->mCommandBuffer,
-                      tensors,
-                      std::forward<TArgs>(params)...);
-
-        OpBase* baseOp = dynamic_cast<OpBase*>(op);
-
-        std::unique_ptr<OpBase> baseOpPtr{ baseOp };
-
-        KP_LOG_DEBUG(
-          "Kompute Sequence running init on OpBase derived class instance");
-        baseOpPtr->init();
-
-        KP_LOG_DEBUG(
-          "Kompute Sequence running record on OpBase derived class instance");
-        baseOpPtr->record();
-
-        mOperations.push_back(std::move(baseOpPtr));
-
-        return true;
-    }
-
   private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
@@ -158,7 +126,7 @@ class Sequence
 
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
-    std::vector<std::unique_ptr<OpBase>> mOperations;
+    std::vector<std::shared_ptr<OpBase>> mOperations;
 
     // State
     bool mRecording = false;

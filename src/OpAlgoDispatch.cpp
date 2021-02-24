@@ -4,26 +4,16 @@
 
 namespace kp {
 
-OpAlgoDispatch::OpAlgoDispatch(std::vector<std::shared_ptr<Tensor>> tensors,
-            std::shared_ptr<Algorithm> algorithm)
-  : OpBase(tensors, algorithm)
+OpAlgoDispatch::OpAlgoDispatch(const std::vector<std::shared_ptr<Tensor>>& tensors,
+           const std::shared_ptr<kp::Algorithm>& algorithm)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
-    this->mManagesAlgorithm = false;
-    this->mManagesTensors = false;
 }
 
 OpAlgoDispatch::~OpAlgoDispatch()
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch destructor started");
-}
-
-void
-OpAlgoDispatch::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device)
-{
-    KP_LOG_DEBUG("Kompute OpAlgoDispatch init called");
 }
 
 void

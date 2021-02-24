@@ -6,37 +6,21 @@
 namespace kp {
 
 OpTensorSyncLocal::OpTensorSyncLocal(
-  std::vector<std::shared_ptr<Tensor>> tensors)
-  : OpBase(tensors, nullptr)
+  const std::vector<std::shared_ptr<Tensor>>& tensors)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal constructor with params");
 
-    this->mManagesTensors = false;
-    this->mManagesAlgorithm = false;
+    if (tensors.size() < 1) {
+        throw std::runtime_error(
+          "Kompute OpTensorSyncLocal called with less than 1 tensor");
+    }
+
+    this->mTensors = tensors;
 }
 
 OpTensorSyncLocal::~OpTensorSyncLocal()
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal destructor started");
-}
-
-void
-OpTensorSyncLocal::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device)
-{
-    KP_LOG_DEBUG("Kompute OpTensorSyncLocal init called");
-
-    if (this->mTensors.size() < 1) {
-        throw std::runtime_error(
-          "Kompute OpTensorSyncLocal called with less than 1 tensor");
-    }
-
-    for (std::shared_ptr<Tensor> tensor : this->mTensors) {
-        if (!tensor->isInit()) {
-            throw std::runtime_error(
-              "Kompute OpTensorSyncLocal: Tensor has not been initialized");
-        }
-    }
 }
 
 void

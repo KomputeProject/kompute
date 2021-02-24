@@ -4,14 +4,12 @@
 
 #include "kompute/Core.hpp"
 
-#if RELEASE
 #include "kompute/shaders/shaderopmult.hpp"
-#endif
 
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpAlgoCreate.hpp"
+#include "kompute/operations/OpAlgoDispatch.hpp"
 
 namespace kp {
 
@@ -19,15 +17,9 @@ namespace kp {
  * Operation that performs multiplication on two tensors and outpus on third
  * tensor.
  */
-class OpMult : public OpAlgoCreate
+class OpMult : public OpAlgoDispatch
 {
   public:
-    /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    OpMult() {
-
-    }
 
     /**
      * Default constructor with parameters that provides the bare minimum
@@ -40,46 +32,30 @@ class OpMult : public OpAlgoCreate
      * @param tensors Tensors that are to be used in this operation
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
-    OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>> tensors,
-           const Workgroup& komputeWorkgroup = {})
-      : OpAlgoCreate(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
+    OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
+        : OpAlgoDispatch(tensors, algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
-#ifndef RELEASE
-        this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
-#endif
-    }
+        if (tensors.size() != 3) {
+            throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
+        }
 
-#if RELEASE
-    /**
-     * If RELEASE=1 it will be using the static version of the shader which is 
-     * loaded using this file directly. Otherwise it should not override the function.
-     */
-    std::vector<uint32_t> fetchSpirvBinaryData() override
-    {
-        KP_LOG_WARN(
-          "Kompute OpMult Running shaders directly from header");
-
-        return std::vector<uint32_t>(
+        std::vector<uint32_t> spirv(
           (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
             kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
+        algorithm->rebuild(tensors, spirv, Workgroup({tensors[0]->size()}));
     }
-#endif
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpMult() override {
+    virtual ~OpMult() override {
         KP_LOG_DEBUG("Kompute OpMult destructor started");
     }
-
 };
 
 } // End namespace kp

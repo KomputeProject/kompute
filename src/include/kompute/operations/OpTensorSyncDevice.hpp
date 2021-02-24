@@ -21,18 +21,12 @@ class OpTensorSyncDevice : public OpBase
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorSyncDevice(std::vector<std::shared_ptr<Tensor>> tensors);
+    OpTensorSyncDevice(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
      */
     ~OpTensorSyncDevice() override;
-
-    /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
-     */
-    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device) override;
 
     /**
      * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
@@ -50,6 +44,8 @@ class OpTensorSyncDevice : public OpBase
     virtual void postEval() override;
 
   private:
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp

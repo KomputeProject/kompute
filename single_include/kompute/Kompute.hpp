@@ -871,8 +871,6 @@ static const unsigned int shaders_glsl_logisticregression_comp_spv_len = 4816;
 #include <set>
 #include <unordered_map>
 
-#define KP_MAX_DIM_SIZE 1
-
 namespace kp {
 
 /**
@@ -900,11 +898,6 @@ class Tensor
     };
 
     /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    Tensor();
-
-    /**
      *  Default constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
@@ -912,8 +905,10 @@ class Tensor
      * tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
-    Tensor(const std::vector<float>& data,
-           TensorTypes tensorType = TensorTypes::eDevice);
+    Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           const std::vector<float>& data,
+           const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
@@ -927,8 +922,8 @@ class Tensor
      * would only be created for the tensors of type TensorType::eDevice as
      * otherwise there is no need to copy from host memory.
      */
-    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device);
+    void rebuild(const std::vector<float>& data,
+           TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -960,26 +955,13 @@ class Tensor
      * @return Unsigned integer representing the total number of elements
      */
     uint32_t size();
-    /**
-     * Returns the shape of the tensor, which includes the number of dimensions
-     * and the size per dimension.
-     *
-     * @return Array containing the sizes for each dimension. Zero means
-     * respective dimension is not active.
-     */
-    std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
+
     /**
      * Retrieve the tensor type of the Tensor
      *
      * @return Tensor type of tensor
      */
     TensorTypes tensorType();
-    /**
-     * Returns true if the tensor initialisation function has been carried out
-     * successful, which would mean that the buffer and memory will have been
-     * provisioned.
-     */
-    bool isInit();
 
     /**
      * Sets / resets the vector data of the tensor. This function does not
@@ -1083,9 +1065,6 @@ class Tensor
 
     TensorTypes mTensorType = TensorTypes::eDevice;
 
-    std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
-    bool mIsInit = false;
-
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer,
                       vk::BufferUsageFlags bufferUsageFlags);
@@ -1112,6 +1091,107 @@ class Tensor
 namespace kp {
 
 /**
+    Abstraction for compute shaders that are run on top of tensors grouped via
+   ParameterGroups (which group descriptorsets)
+*/
+class Algorithm
+{
+public:
+
+    /**
+     *  Default constructor for Algorithm
+     *
+     *  @param device The Vulkan device to use for creating resources
+     *  @param commandBuffer The vulkan command buffer to bind the pipeline and
+     * shaders
+     */
+    Algorithm(
+            std::shared_ptr<vk::Device> device,
+            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+            const std::vector<uint32_t>& spirv = {},
+            const Workgroup& workgroup = {},
+            const Constants& specializationConstants = {},
+            const Constants& pushConstants = {});
+
+    /**
+     * Initialiser for the shader data provided to the algorithm as well as
+     * tensor parameters that will be used in shader.
+     *
+     * @param shaderFileData The bytes in spir-v format of the shader
+     * @tensorParams The Tensors to be used in the Algorithm / shader for
+     * @specalizationInstalces The specialization parameters to pass to the function
+     * processing
+     */
+    void rebuild(
+            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+            const std::vector<uint32_t>& spirv = {},
+            const Workgroup& workgroup = {},
+            const Constants& specializationConstants = {},
+            const Constants& pushConstants = {});
+
+    bool isInit();
+
+    void freeMemoryDestroyGPUResources();
+
+    /**
+     * Destructor for Algorithm which is responsible for freeing and desroying
+     * respective pipelines and owned parameter groups.
+     */
+    ~Algorithm();
+
+    /**
+     * Records the dispatch function with the provided template parameters or
+     * alternatively using the size of the tensor by default.
+     *
+     * @param x Layout X dispatch value
+     * @param y Layout Y dispatch value
+     * @param z Layout Z dispatch value
+     */
+    void recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer);
+
+    void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
+
+private:
+    // -------------- NEVER OWNED RESOURCES
+    std::shared_ptr<vk::Device> mDevice;
+
+    // -------------- OPTIONALLY OWNED RESOURCES
+    std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
+    bool mFreeDescriptorSetLayout = false;
+    std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
+    bool mFreeDescriptorPool = false;
+    std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
+    bool mFreeDescriptorSet = false;
+    std::shared_ptr<vk::ShaderModule> mShaderModule;
+    bool mFreeShaderModule = false;
+    std::shared_ptr<vk::PipelineLayout> mPipelineLayout;
+    bool mFreePipelineLayout = false;
+    std::shared_ptr<vk::PipelineCache> mPipelineCache;
+    bool mFreePipelineCache = false;
+    std::shared_ptr<vk::Pipeline> mPipeline;
+    bool mFreePipeline = false;
+
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<uint32_t> mSpirv;
+    Constants mSpecializationConstants;
+    Constants mPushConstants;
+    Workgroup mWorkgroup;
+
+    bool mIsInit;
+
+    // Create util functions
+    void createShaderModule();
+    void createPipeline();
+
+    // Parameters
+    void createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorParams);
+};
+
+} // End namespace kp
+
+namespace kp {
+
+/**
  *  Base Operation which provides the high level interface that Kompute
  *  operations implement in order to perform a set of actions in the GPU.
  *
@@ -1122,33 +1202,6 @@ namespace kp {
 class OpBase
 {
   public:
-    /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    OpBase() { KP_LOG_DEBUG("Compute OpBase base constructor"); }
-
-    /**
-     * Default constructor with parameters that provides the bare minimum
-     * requirements for the operations to be able to create and manage their
-     * sub-components.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     */
-    OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors)
-    {
-        KP_LOG_DEBUG("Compute OpBase constructor with params");
-
-        this->mPhysicalDevice = physicalDevice;
-        this->mDevice = device;
-        this->mCommandBuffer = commandBuffer;
-        this->mTensors = tensors;
-    }
 
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
@@ -1158,37 +1211,14 @@ class OpBase
     virtual ~OpBase()
     {
         KP_LOG_DEBUG("Kompute OpBase destructor started");
-
-        if (!this->mDevice) {
-            KP_LOG_WARN("Kompute OpBase destructor called with empty device");
-            return;
-        }
-
-        if (this->mFreeTensors) {
-            KP_LOG_DEBUG("Kompute OpBase freeing tensors");
-            for (std::shared_ptr<Tensor> tensor : this->mTensors) {
-                if (tensor && tensor->isInit()) {
-                    tensor->freeMemoryDestroyGPUResources();
-                } else {
-                    KP_LOG_WARN("Kompute OpBase expected to free "
-                                  "tensor but has already been freed.");
-                }
-            }
-        }
     }
-
-    /**
-     * The init function is responsible for setting up all the resources and
-     * should be called after the Operation has been created.
-     */
-    virtual void init() = 0;
 
     /**
      * The record function is intended to only send a record command or run
      * commands that are expected to record operations that are to be submitted
      * as a batch into the GPU.
      */
-    virtual void record() = 0;
+    virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) = 0;
 
     /**
      * Pre eval is called before the Sequence has called eval and submitted the commands to
@@ -1209,21 +1239,6 @@ class OpBase
      * provided by the user.
      */
     virtual void postEval() = 0;
-
-  protected:
-    // -------------- NEVER OWNED RESOURCES
-    std::shared_ptr<vk::PhysicalDevice>
-      mPhysicalDevice;                   ///< Vulkan Physical Device
-    std::shared_ptr<vk::Device> mDevice; ///< Vulkan Logical Device
-    std::shared_ptr<vk::CommandBuffer>
-      mCommandBuffer; ///< Vulkan Command Buffer
-
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>>
-      mTensors; ///< Tensors referenced by operation that can be managed
-                ///< optionally by operation
-    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
-                               ///< tensors are freed (if they are managed)
 };
 
 } // End namespace kp
@@ -1233,14 +1248,9 @@ namespace kp {
 /**
  *  Container of operations that can be sent to GPU as batch
  */
-class Sequence
+class Sequence: public std::enable_shared_from_this<Sequence>
 {
   public:
-    /**
-     *  Base constructor for Sequence. Should not be used unless explicit
-     * intended.
-     */
-    Sequence();
     /**
      * Main constructor for sequence which requires core vulkan components to
      * generate all dependent resources.
@@ -1261,10 +1271,21 @@ class Sequence
     ~Sequence();
 
     /**
-     * Initialises sequence including the creation of the command pool and the
-     * command buffer.
+     * Record function for operation to be added to the GPU queue in batch. This
+     * template requires classes to be derived from the OpBase class. This
+     * function also requires the Sequence to be recording, otherwise it will
+     * not be able to add the operation.
+     *
+     * @param tensors Vector of tensors to use for the operation
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
      */
-    void init();
+    std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
+
+    /**
+     * Clear function clears all operations currently recorded and starts recording again.
+     */
+    void clear();
 
     /**
      * Begins recording commands for commands to be submitted into the command
@@ -1272,7 +1293,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool begin();
+    void begin();
 
     /**
      * Ends the recording and stops recording commands when the record command
@@ -1280,7 +1301,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool end();
+    void end();
 
     /**
      * Eval sends all the recorded and stored operations in the vector of
@@ -1288,7 +1309,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool eval();
+    std::shared_ptr<Sequence> eval();
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
@@ -1297,7 +1318,7 @@ class Sequence
      *
      * @return Boolean stating whether execution was successful.
      */
-    bool evalAsync();
+    std::shared_ptr<Sequence> evalAsync();
 
     /**
      * Eval Await waits for the fence to finish processing and then once it
@@ -1306,7 +1327,7 @@ class Sequence
      * @param waitFor Number of milliseconds to wait before timing out.
      * @return Boolean stating whether execution was successful.
      */
-    bool evalAwait(uint64_t waitFor = UINT64_MAX);
+    std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
      * Returns true if the sequence is currently in recording activated.
@@ -1324,66 +1345,10 @@ class Sequence
     bool isRunning();
 
     /**
-     * Returns true if the sequence has been successfully initialised.
-     *
-     * @return Boolean stating if sequence has been initialised.
-     */
-    bool isInit();
-
-    /**
      * Destroys and frees the GPU resources which include the buffer and memory
      * and sets the sequence as init=False.
      */
     void freeMemoryDestroyGPUResources();
-
-    /**
-     * Record function for operation to be added to the GPU queue in batch. This
-     * template requires classes to be derived from the OpBase class. This
-     * function also requires the Sequence to be recording, otherwise it will
-     * not be able to add the operation.
-     *
-     * @param tensors Vector of tensors to use for the operation
-     * @param TArgs Template parameters that are used to initialise operation
-     * which allows for extensible configurations on initialisation.
-     */
-    template<typename T, typename... TArgs>
-    bool record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
-    {
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        if (!this->isRecording()) {
-            KP_LOG_ERROR(
-              "Kompute sequence record attempted when not record BEGIN");
-            return false;
-        }
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op = new T(this->mPhysicalDevice,
-                      this->mDevice,
-                      this->mCommandBuffer,
-                      tensors,
-                      std::forward<TArgs>(params)...);
-
-        OpBase* baseOp = dynamic_cast<OpBase*>(op);
-
-        std::unique_ptr<OpBase> baseOpPtr{ baseOp };
-
-        KP_LOG_DEBUG(
-          "Kompute Sequence running init on OpBase derived class instance");
-        baseOpPtr->init();
-
-        KP_LOG_DEBUG(
-          "Kompute Sequence running record on OpBase derived class instance");
-        baseOpPtr->record();
-
-        mOperations.push_back(std::move(baseOpPtr));
-
-        return true;
-    }
 
   private:
     // -------------- NEVER OWNED RESOURCES
@@ -1400,10 +1365,9 @@ class Sequence
 
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
-    std::vector<std::unique_ptr<OpBase>> mOperations;
+    std::vector<std::shared_ptr<OpBase>> mOperations;
 
     // State
-    bool mIsInit = false;
     bool mRecording = false;
     bool mIsRunning = false;
 
@@ -1422,8 +1386,6 @@ namespace kp {
 class OpTensorSyncDevice : public OpBase
 {
   public:
-    OpTensorSyncDevice();
-
     /**
      * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.
      *
@@ -1432,10 +1394,7 @@ class OpTensorSyncDevice : public OpBase
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorSyncDevice(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
+    OpTensorSyncDevice(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
@@ -1443,14 +1402,9 @@ class OpTensorSyncDevice : public OpBase
     ~OpTensorSyncDevice() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
-     */
-    void init() override;
-
-    /**
      * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
      */
-    void record() override;
+    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
@@ -1463,6 +1417,8 @@ class OpTensorSyncDevice : public OpBase
     virtual void postEval() override;
 
   private:
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp
@@ -1525,150 +1481,7 @@ class Manager
      * @param queueIndex The queue to use from the available queues
      * @return Shared pointer to the manager owned sequence resource
      */
-    std::shared_ptr<Sequence> sequence(
-            std::string sequenceName = KP_DEFAULT_SESSION,
-            uint32_t queueIndex = 0);
-
-    /**
-     * Function that evaluates operation against named sequence.
-     *
-     * @param tensors The tensors to be used in the operation recorded
-     * @param sequenceName The name of the sequence to be retrieved or created
-     * @param TArgs Template parameters that will be used to initialise
-     * Operation to allow for extensible configurations on initialisation
-     */
-    template<typename T, typename... TArgs>
-    void evalOp(std::vector<std::shared_ptr<Tensor>> tensors,
-                std::string sequenceName,
-                TArgs&&... params)
-    {
-        KP_LOG_DEBUG("Kompute Manager evalOp triggered");
-        std::shared_ptr<kp::Sequence> sq =
-          this->sequence(sequenceName);
-
-        KP_LOG_DEBUG("Kompute Manager evalOp running sequence BEGIN");
-        sq->begin();
-
-        KP_LOG_DEBUG("Kompute Manager evalOp running sequence RECORD");
-        sq->record<T>(tensors, std::forward<TArgs>(params)...);
-
-        KP_LOG_DEBUG("Kompute Manager evalOp running sequence END");
-        sq->end();
-
-        KP_LOG_DEBUG("Kompute Manager evalOp running sequence EVAL");
-        sq->eval();
-
-        KP_LOG_DEBUG("Kompute Manager evalOp running sequence SUCCESS");
-    }
-
-    /**
-     * Function that evaluates operation against a newly created sequence.
-     *
-     * @param tensors The tensors to be used in the operation recorded
-     * @param TArgs Template parameters that will be used to initialise
-     * Operation to allow for extensible configurations on initialisation
-     */
-    template<typename T, typename... TArgs>
-    void evalOpDefault(std::vector<std::shared_ptr<Tensor>> tensors,
-                       TArgs&&... params)
-    {
-        KP_LOG_DEBUG("Kompute Manager evalOp Default triggered");
-        this->mCurrentSequenceIndex++;
-        this->evalOp<T>(
-          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
-    }
-
-    /**
-     * Function that evaluates operation against named sequence asynchronously.
-     *
-     * @param tensors The tensors to be used in the operation recorded
-     * @param sequenceName The name of the sequence to be retrieved or created
-     * @param params Template parameters that will be used to initialise
-     * Operation to allow for extensible configurations on initialisation
-     */
-    template<typename T, typename... TArgs>
-    void evalOpAsync(std::vector<std::shared_ptr<Tensor>> tensors,
-                     std::string sequenceName,
-                     TArgs&&... params)
-    {
-        KP_LOG_DEBUG("Kompute Manager evalOpAsync triggered");
-
-        std::shared_ptr<kp::Sequence> sq =
-          this->sequence(sequenceName);
-
-        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence BEGIN");
-        sq->begin();
-
-        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence RECORD");
-        sq->record<T>(tensors, std::forward<TArgs>(params)...);
-
-        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence END");
-        sq->end();
-
-        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence EVAL");
-        sq->evalAsync();
-
-        KP_LOG_DEBUG("Kompute Manager evalOpAsync running sequence SUCCESS");
-    }
-
-    /**
-     * Operation that evaluates operation against default sequence
-     * asynchronously.
-     *
-     * @param tensors The tensors to be used in the operation recorded
-     * @param params Template parameters that will be used to initialise
-     * Operation to allow for extensible configurations on initialisation
-     */
-    template<typename T, typename... TArgs>
-    void evalOpAsyncDefault(std::vector<std::shared_ptr<Tensor>> tensors,
-                            TArgs&&... params)
-    {
-        KP_LOG_DEBUG("Kompute Manager evalOpAsyncDefault triggered");
-        this->mCurrentSequenceIndex++;
-        this->evalOpAsync<T>(
-          tensors, KP_DEFAULT_SESSION, std::forward<TArgs>(params)...);
-    }
-
-    /**
-     * Operation that awaits for named sequence to finish.
-     *
-     * @param sequenceName The name of the sequence to wait for termination
-     * @param waitFor The amount of time to wait before timing out
-     */
-    void evalOpAwait(std::string sequenceName, uint64_t waitFor = UINT64_MAX)
-    {
-        KP_LOG_DEBUG("Kompute Manager evalOpAwait triggered with sequence {}",
-                     sequenceName);
-        std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
-          found = this->mManagedSequences.find(sequenceName);
-
-        if (found != this->mManagedSequences.end()) {
-            if (std::shared_ptr<kp::Sequence> sq = found->second) {
-                KP_LOG_DEBUG("Kompute Manager evalOpAwait running sequence "
-                             "Sequence EVAL AWAIT");
-                if (sq->isRunning()) {
-                    sq->evalAwait(waitFor);
-                }
-            }
-            KP_LOG_DEBUG(
-              "Kompute Manager evalOpAwait running sequence SUCCESS");
-        } else {
-            KP_LOG_ERROR("Kompute Manager evalOpAwait Sequence not found");
-        }
-    }
-
-    /**
-     * Operation that awaits for default sequence to finish.
-     *
-     * @param tensors The tensors to be used in the operation recorded
-     * @param params Template parameters that will be used to initialise
-     * Operation to allow for extensible configurations on initialisation
-     */
-    void evalOpAwaitDefault(uint64_t waitFor = UINT64_MAX)
-    {
-        KP_LOG_DEBUG("Kompute Manager evalOpAwaitDefault triggered");
-        this->evalOpAwait(KP_DEFAULT_SESSION, waitFor);
-    }
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
 
     /**
      * Function that simplifies the common workflow of tensor creation and
@@ -1686,79 +1499,12 @@ class Manager
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
       bool syncDataToGPU = true);
 
-    /**
-     * Function that simplifies the common workflow of tensor initialisation. It
-     * will take the constructor parameters for a Tensor and will will us it to
-     * create a new Tensor. The tensor memory will then be managed and owned by
-     * the manager.
-     *
-     * @param tensors Array of tensors to rebuild
-     * @param syncDataToGPU Whether to sync the data to GPU memory
-     */
-    void rebuild(std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                        bool syncDataToGPU = true);
-
-    /**
-     * Function that simplifies the common workflow of tensor initialisation. It
-     * will take the constructor parameters for a Tensor and will will us it to
-     * create a new Tensor. The tensor memory will then be managed and owned by
-     * the manager.
-     *
-     * @param tensors Single tensor to rebuild
-     * @param syncDataToGPU Whether to sync the data to GPU memory
-     */
-    void rebuild(std::shared_ptr<kp::Tensor> tensor,
-                        bool syncDataToGPU = true);
-
-    /**
-     * Destroy owned Vulkan GPU resources and free GPU memory for
-     * single tensor.
-     *
-     * @param tensors Single tensor to rebuild
-     */
-    void destroy(std::shared_ptr<kp::Tensor> tensor);
-
-    /**
-     * Destroy owned Vulkan GPU resources and free GPU memory for
-     * vector of tensors.
-     *
-     * @param tensors Single tensor to rebuild
-     */
-    void destroy(std::vector<std::shared_ptr<kp::Tensor>> tensors);
-
-    /**
-     * Destroy owned Vulkan GPU resources and free GPU memory for
-     * vector of sequences. Destroying by sequence name is more efficent
-     * and hence recommended instead of by object.
-     *
-     * @param sequences Vector for shared ptrs with sequences to destroy
-     */
-    void destroy(std::vector<std::shared_ptr<kp::Sequence>> sequences);
-
-    /**
-     * Destroy owned Vulkan GPU resources and free GPU memory for
-     * single sequence. Destroying by sequence name is more efficent
-     * and hence recommended instead of by object.
-     *
-     * @param sequences Single sequence to rebuild
-     */
-    void destroy(std::shared_ptr<kp::Sequence> sequence);
-
-    /**
-     * Destroy owned Vulkan GPU resources and free GPU memory for
-     * sequence by name.
-     *
-     * @param sequenceName Single name of named sequence to destroy
-     */
-    void destroy(const std::string& sequenceName);
-
-    /**
-     * Destroy owned Vulkan GPU resources and free GPU memory for
-     * sequences using vector of named sequence names.
-     *
-     * @param sequenceName Vector of sequence names to destroy
-     */
-    void destroy(const std::vector<std::string>& sequenceNames);
+    std::shared_ptr<Algorithm> algorithm(
+            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+            const std::vector<uint32_t>& spirv = {},
+            const Workgroup& workgroup = {},
+            const Constants& specializationConstants = {},
+            const Constants& pushConstants = {});
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
@@ -1770,10 +1516,9 @@ class Manager
     bool mFreeDevice = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::set<std::shared_ptr<Tensor>> mManagedTensors;
-
-    std::unordered_map<std::string, std::shared_ptr<Sequence>>
-      mManagedSequences;
+    std::vector<std::weak_ptr<Tensor>> mManagedTensors;
+    std::vector<std::weak_ptr<Sequence>> mManagedSequences;
+    std::vector<std::weak_ptr<Algorithm>> mManagedAlgorithms;
 
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
@@ -1799,180 +1544,23 @@ class Manager
 namespace kp {
 
 /**
-    Abstraction for compute shaders that are run on top of tensors grouped via
-   ParameterGroups (which group descriptorsets)
-*/
-class Algorithm
-{
-public:
-    /**
-        Base constructor for Algorithm. Should not be used unless explicit
-       intended.
-    */
-    Algorithm();
-
-    /**
-     *  Default constructor for Algorithm
-     *
-     *  @param device The Vulkan device to use for creating resources
-     *  @param commandBuffer The vulkan command buffer to bind the pipeline and
-     * shaders
-     */
-    Algorithm(std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              const Constants& specializationConstants = {});
-
-    /**
-     * Initialiser for the shader data provided to the algorithm as well as
-     * tensor parameters that will be used in shader.
-     *
-     * @param shaderFileData The bytes in spir-v format of the shader
-     * @tensorParams The Tensors to be used in the Algorithm / shader for
-     * @specalizationInstalces The specialization parameters to pass to the function
-     * processing
-     */
-    void init(const std::vector<uint32_t>& shaderFileData,
-              std::vector<std::shared_ptr<Tensor>> tensorParams);
-
-    /**
-     * Destructor for Algorithm which is responsible for freeing and desroying
-     * respective pipelines and owned parameter groups.
-     */
-    ~Algorithm();
-
-    /**
-     * Records the dispatch function with the provided template parameters or
-     * alternatively using the size of the tensor by default.
-     *
-     * @param x Layout X dispatch value
-     * @param y Layout Y dispatch value
-     * @param z Layout Z dispatch value
-     */
-    void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
-
-private:
-    // -------------- NEVER OWNED RESOURCES
-    std::shared_ptr<vk::Device> mDevice;
-    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
-
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
-    bool mFreeDescriptorSetLayout = false;
-    std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
-    bool mFreeDescriptorPool = false;
-    std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
-    bool mFreeDescriptorSet = false;
-    std::shared_ptr<vk::ShaderModule> mShaderModule;
-    bool mFreeShaderModule = false;
-    std::shared_ptr<vk::PipelineLayout> mPipelineLayout;
-    bool mFreePipelineLayout = false;
-    std::shared_ptr<vk::PipelineCache> mPipelineCache;
-    bool mFreePipelineCache = false;
-    std::shared_ptr<vk::Pipeline> mPipeline;
-    bool mFreePipeline = false;
-
-    // -------------- ALWAYS OWNED RESOURCES
-    Constants mSpecializationConstants;
-
-    // Create util functions
-    void createShaderModule(const std::vector<uint32_t>& shaderFileData);
-    void createPipeline();
-
-    // Parameters
-    void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
-    void createDescriptorPool();
-};
-
-} // End namespace kp
-
-namespace kp {
-
-/**
  * Operation that provides a general abstraction that simplifies the use of 
  * algorithm and parameter components which can be used with shaders.
  * By default it enables the user to provide a dynamic number of tensors
  * which are then passed as inputs.
  */
-class OpAlgoCreate : public OpBase
+class OpAlgoDispatch : public OpBase
 {
   public:
 
-    /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    OpAlgoCreate();
-
-    /**
-     * Default constructor with parameters that provides the bare minimum
-     * requirements for the operations to be able to create and manage their
-     * sub-components.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
-     * @param komputeWorkgroup Optional parameter to specify the layout for processing
-     */
-    OpAlgoCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           const Workgroup& komputeWorkgroup = {},
-           const Constants& specializationConstants = {});
-
-    /**
-     * Constructor that enables a file to be passed to the operation with
-     * the contents of the shader. This can be either in raw format or in
-     * compiled SPIR-V binary format.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     * @param shaderFilePath Parameter to specify the shader to load (either in spirv or raw format)
-     * @param komputeWorkgroup Optional parameter to specify the layout for processing
-     */
-    OpAlgoCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           std::string shaderFilePath,
-           const Workgroup& komputeWorkgroup = {},
-           const Constants& specializationConstants = {});
-
-    /**
-     * Constructor that enables raw shader data to be passed to the main operation
-     * which can be either in raw shader glsl code or in compiled SPIR-V binary.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     * @param shaderDataRaw Optional parameter to specify the shader data either in binary or raw form
-     * @param komputeWorkgroup Optional parameter to specify the layout for processing
-     */
-    OpAlgoCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::vector<uint32_t>& shaderDataRaw,
-           const Workgroup& komputeWorkgroup = {},
-           const Constants& specializationConstants = {});
+    OpAlgoDispatch(const std::vector<std::shared_ptr<Tensor>>& tensors,
+           const std::shared_ptr<kp::Algorithm>& algorithm);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    virtual ~OpAlgoCreate() override;
-
-    /**
-     * The init function is responsible for the initialisation of the algorithm
-     * component based on the parameters specified, and allows for extensibility
-     * on the options provided. Further dependent classes can perform more 
-     * specific checks such as ensuring tensors provided are initialised, etc.
-     */
-    virtual void init() override;
+    virtual ~OpAlgoDispatch() override;
 
     /**
      * This records the commands that are to be sent to the GPU. This includes
@@ -1982,7 +1570,7 @@ class OpAlgoCreate : public OpBase
      * copy of the output data for the staging buffer so it can be read by the
      * host.
      */
-    virtual void record() override;
+    virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
@@ -1996,105 +1584,13 @@ class OpAlgoCreate : public OpBase
      */
     virtual void postEval() override;
 
-  protected:
-    // -------------- NEVER OWNED RESOURCES
-
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<Algorithm> mAlgorithm;
-    bool mFreeAlgorithm = false;
-
+private:
     // -------------- ALWAYS OWNED RESOURCES
-
-    Workgroup mWorkgroup;
-
-    std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoCreate to find the data automatically and load for processing
-    std::vector<uint32_t> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
-
-    virtual std::vector<uint32_t> fetchSpirvBinaryData();
+    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::shared_ptr<Algorithm> mAlgorithm;
 };
 
 } // End namespace kp
-
-#include <fstream>
-
-namespace kp {
-
-/**
- * Operation base class to simplify the creation of operations that require
- * right hand and left hand side datapoints together with a single output.
- * The expected data passed is two input tensors and one output tensor.
- */
-class OpAlgoLhsRhsOut : public OpAlgoCreate
-{
-  public:
-    /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    OpAlgoLhsRhsOut();
-
-    /**
-     * Default constructor with parameters that provides the bare minimum
-     * requirements for the operations to be able to create and manage their
-     * sub-components.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     * @param freeTensors Whether operation manages the memory of the Tensors
-     * @param komputeWorkgroup Optional parameter to specify the layout for processing
-     */
-    OpAlgoLhsRhsOut(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>> tensors,
-           const Workgroup& komputeWorkgroup = {});
-
-    /**
-     * Default destructor, which is in charge of destroying the algorithm
-     * components but does not destroy the underlying tensors
-     */
-    virtual ~OpAlgoLhsRhsOut() override;
-
-    /**
-     * The init function is responsible for ensuring that all of the tensors
-     * provided are aligned with requirements such as LHS, RHS and Output
-     * tensors, and  creates the algorithm component which processes the
-     * computation.
-     */
-    virtual void init() override;
-
-    /**
-     * This records the commands that are to be sent to the GPU. This includes
-     * the barriers that ensure the memory has been copied before going in and
-     * out of the shader, as well as the dispatch operation that sends the
-     * shader processing to the gpu. This function also records the GPU memory
-     * copy of the output data for the staging buffer so it can be read by the
-     * host.
-     */
-    virtual void record() override;
-
-    /**
-     * Executes after the recorded commands are submitted, and performs a copy
-     * of the GPU Device memory into the staging buffer so the output data can
-     * be retrieved.
-     */
-    virtual void postEval() override;
-
-  protected:
-    // -------------- NEVER OWNED RESOURCES
-    std::shared_ptr<Tensor> mTensorLHS; ///< Reference to the parameter used in the left hand side equation of the shader
-    std::shared_ptr<Tensor> mTensorRHS; ///< Reference to the parameter used in the right hand side equation of the shader
-    std::shared_ptr<Tensor> mTensorOutput; ///< Reference to the parameter used in the output of the shader and will be copied with a staging vector
-};
-
-} // End namespace kp
-
-#include <fstream>
-
-#if RELEASE
-
-#endif
 
 namespace kp {
 
@@ -2102,15 +1598,9 @@ namespace kp {
  * Operation that performs multiplication on two tensors and outpus on third
  * tensor.
  */
-class OpMult : public OpAlgoCreate
+class OpMult : public OpAlgoDispatch
 {
   public:
-    /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    OpMult() {
-
-    }
 
     /**
      * Default constructor with parameters that provides the bare minimum
@@ -2123,46 +1613,30 @@ class OpMult : public OpAlgoCreate
      * @param tensors Tensors that are to be used in this operation
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
-    OpMult(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>> tensors,
-           const Workgroup& komputeWorkgroup = {})
-      : OpAlgoCreate(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
+    OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
+        : OpAlgoDispatch(tensors, algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
-#ifndef RELEASE
-        this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
-#endif
-    }
+        if (tensors.size() != 3) {
+            throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
+        }
 
-#if RELEASE
-    /**
-     * If RELEASE=1 it will be using the static version of the shader which is 
-     * loaded using this file directly. Otherwise it should not override the function.
-     */
-    std::vector<uint32_t> fetchSpirvBinaryData() override
-    {
-        KP_LOG_WARN(
-          "Kompute OpMult Running shaders directly from header");
-
-        return std::vector<uint32_t>(
+        std::vector<uint32_t> spirv(
           (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
             kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
+        algorithm->rebuild(tensors, spirv, Workgroup({tensors[0]->size()}));
     }
-#endif
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpMult() override {
+    virtual ~OpMult() override {
         KP_LOG_DEBUG("Kompute OpMult destructor started");
     }
-
 };
 
 } // End namespace kp
@@ -2175,8 +1649,6 @@ namespace kp {
 class OpTensorCopy : public OpBase
 {
   public:
-    OpTensorCopy();
-
     /**
      * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation.
      *
@@ -2185,10 +1657,7 @@ class OpTensorCopy : public OpBase
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
+    OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
@@ -2196,14 +1665,9 @@ class OpTensorCopy : public OpBase
     ~OpTensorCopy() override;
 
     /**
-     * Performs basic checks such as ensuring there are at least two tensors provided, that they are initialised and that they are not of type TensorTypes::eStorage.
-     */
-    void init() override;
-
-    /**
      * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
      */
-    void record() override;
+    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
@@ -2216,6 +1680,8 @@ class OpTensorCopy : public OpBase
     virtual void postEval() override;
 
   private:
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp
@@ -2228,8 +1694,6 @@ namespace kp {
 class OpTensorSyncLocal : public OpBase
 {
   public:
-    OpTensorSyncLocal();
-
     /**
      * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensors provided cannot be of type TensorTypes::eStorage.
      *
@@ -2238,10 +1702,7 @@ class OpTensorSyncLocal : public OpBase
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorSyncLocal(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
+    OpTensorSyncLocal(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
@@ -2249,14 +1710,9 @@ class OpTensorSyncLocal : public OpBase
     ~OpTensorSyncLocal() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
-     */
-    void init() override;
-
-    /**
      * For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory.
      */
-    void record() override;
+    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
@@ -2269,6 +1725,8 @@ class OpTensorSyncLocal : public OpBase
     virtual void postEval() override;
 
   private:
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp

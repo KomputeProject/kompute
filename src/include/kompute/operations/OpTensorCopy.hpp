@@ -22,18 +22,12 @@ class OpTensorCopy : public OpBase
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorCopy(std::vector<std::shared_ptr<Tensor>> tensors);
+    OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
      */
     ~OpTensorCopy() override;
-
-    /**
-     * Performs basic checks such as ensuring there are at least two tensors provided, that they are initialised and that they are not of type TensorTypes::eStorage.
-     */
-    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device) override;
 
     /**
      * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
@@ -51,6 +45,8 @@ class OpTensorCopy : public OpBase
     virtual void postEval() override;
 
   private:
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp
