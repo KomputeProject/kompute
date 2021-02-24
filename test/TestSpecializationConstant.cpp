@@ -33,7 +33,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             auto spec = kp::Constants({5.0, 0.3});
 
             sq->begin();
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
               { tensorA, tensorB },
               kp::Shader::compile_source(shader),
               kp::Workgroup(), spec);

@@ -4,36 +4,62 @@
 
 namespace kp {
 
-Algorithm::Algorithm()
-{
-    KP_LOG_DEBUG("Kompute Algorithm base constructor");
-}
-
-Algorithm::Algorithm(std::shared_ptr<vk::Device> device,
-                     std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                     const Constants& specializationConstants)
+Algorithm::Algorithm(
+            std::shared_ptr<vk::Device> device,
+            const std::vector<std::shared_ptr<Tensor>>& tensors,
+            const std::vector<uint32_t>& spirv,
+            const Workgroup& workgroup,
+            const Constants& specializationConstants,
+            const Constants& pushConstants)
 {
     KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
     this->mDevice = device;
-    this->mCommandBuffer = commandBuffer;
-    this->mSpecializationConstants = specializationConstants;
+    this->setWorkgroup(workgroup);
+    this->mPushConstants = pushConstants;
+    this->rebuild(tensors, spirv, workgroup, specializationConstants, pushConstants);
 }
 
 Algorithm::~Algorithm()
 {
     KP_LOG_DEBUG("Kompute Algorithm Destructor started");
 
+    this->freeMemoryDestroyGPUResources();
+}
+
+void
+Algorithm::rebuild(
+            const std::vector<std::shared_ptr<Tensor>>& tensors,
+            const std::vector<uint32_t>& spirv,
+            const Workgroup& workgroup,
+            const Constants& specializationConstants,
+            const Constants& pushConstants)
+{
+    KP_LOG_DEBUG("Kompute Algorithm rebuild started");
+
+    // Descriptor pool is created first so if available then destroy all before rebuild
+    if (this->mFreeDescriptorPool) {
+        this->freeMemoryDestroyGPUResources();
+    }
+
+    this->createParameters(tensors);
+    this->createShaderModule();
+    this->createPipeline();
+}
+
+void
+Algorithm::freeMemoryDestroyGPUResources() {
+
     if (!this->mDevice) {
-        KP_LOG_ERROR(
-          "Kompute Algorithm destructor reached with null Device pointer");
+        KP_LOG_WARN(
+          "Kompute Algorithm destroy function reached with null Device pointer");
         return;
     }
 
     if (this->mFreePipeline) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline");
         if (!this->mPipeline) {
-            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
                          "pipeline but it is null");
         }
         this->mDevice->destroy(
@@ -44,7 +70,7 @@ Algorithm::~Algorithm()
     if (this->mFreePipelineCache) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
         if (!this->mPipelineCache) {
-            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
                          "pipeline cache but it is null");
         }
         this->mDevice->destroy(
@@ -55,7 +81,7 @@ Algorithm::~Algorithm()
     if (this->mFreePipelineLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
         if (!this->mPipelineLayout) {
-            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
                          "pipeline layout but it is null");
         }
         this->mDevice->destroy(
@@ -66,7 +92,7 @@ Algorithm::~Algorithm()
     if (this->mFreeShaderModule) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying shader module");
         if (!this->mShaderModule) {
-            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy shader "
+            KP_LOG_WARN("Kompute Algorithm Error requested to destroy shader "
                          "module but it is null");
         }
         this->mDevice->destroy(
@@ -77,7 +103,7 @@ Algorithm::~Algorithm()
     if (this->mFreeDescriptorSet) {
         KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
         if (!this->mDescriptorSet) {
-            KP_LOG_ERROR(
+            KP_LOG_WARN(
               "Kompute Algorithm Error requested to free descriptor set");
         }
         this->mDevice->freeDescriptorSets(
@@ -87,7 +113,7 @@ Algorithm::~Algorithm()
     if (this->mFreeDescriptorSetLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
         if (!this->mDescriptorSetLayout) {
-            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
                          "descriptor set layout but it is null");
         }
         this->mDevice->destroy(
@@ -98,7 +124,7 @@ Algorithm::~Algorithm()
     if (this->mFreeDescriptorPool) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
         if (!this->mDescriptorPool) {
-            KP_LOG_ERROR("Kompute Algorithm Error requested to destroy "
+            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
                          "descriptor pool but it is null");
         }
         this->mDevice->destroy(
@@ -108,27 +134,7 @@ Algorithm::~Algorithm()
 }
 
 void
-Algorithm::init(const std::vector<uint32_t>& shaderFileData,
-                std::vector<std::shared_ptr<Tensor>> tensorParams)
-{
-    KP_LOG_DEBUG("Kompute Algorithm init started");
-
-    this->createParameters(tensorParams);
-    this->createShaderModule(shaderFileData);
-
-    for (std::shared_ptr<Tensor> tensor : tensorParams) {
-        this->mSpecializationConstants.push_back(tensor->size());
-    }
-
-    this->createPipeline();
-}
-
-void
-Algorithm::createDescriptorPool()
-{}
-
-void
-Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
+Algorithm::createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorParams)
 {
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
@@ -207,17 +213,17 @@ Algorithm::createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams)
 }
 
 void
-Algorithm::createShaderModule(const std::vector<uint32_t>& shaderFileData)
+Algorithm::createShaderModule()
 {
     KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
 
     vk::ShaderModuleCreateInfo shaderModuleInfo(
       vk::ShaderModuleCreateFlags(),
-      sizeof(uint32_t) * shaderFileData.size(),
-      shaderFileData.data());
+      sizeof(uint32_t) * this->mSpirv.size(),
+      this->mSpirv.data());
 
     KP_LOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
-                 shaderFileData.size());
+                 this->mSpirv.size());
     this->mFreeShaderModule = true;
     this->mShaderModule = std::make_shared<vk::ShaderModule>();
     this->mDevice->createShaderModule(
@@ -300,21 +306,42 @@ Algorithm::createPipeline()
 }
 
 void
-Algorithm::recordDispatch(uint32_t x, uint32_t y, uint32_t z)
+Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm calling record dispatch");
 
-    this->mCommandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute,
+    commandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute,
                                        *this->mPipeline);
 
-    this->mCommandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eCompute,
+    commandBuffer->bindDescriptorSets(vk::PipelineBindPoint::eCompute,
                                              *this->mPipelineLayout,
                                              0, // First set
                                              *this->mDescriptorSet,
                                              nullptr // Dispatcher
     );
 
-    this->mCommandBuffer->dispatch(x, y, z);
+    commandBuffer->dispatch(this->mWorkgroup[0], this->mWorkgroup[1], this->mWorkgroup[2]);
+}
+
+void
+Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
+    // The dispatch size is set up based on either explicitly provided template
+    // parameters or by default it would take the shape and size of the tensors
+    if (workgroup[0] > 0) {
+        // If at least the x value is provided we use mainly the parameters
+        // provided
+        this->mWorkgroup = {
+            workgroup[0],
+            workgroup[1] > 0 ? workgroup[1] : 1,
+            workgroup[2] > 0 ? workgroup[2] : 1
+        };
+    } else {
+        this->mWorkgroup = { minSize, 1, 1 };
+    }
+    KP_LOG_INFO("Kompute OpAlgoCreate dispatch size X: {}, Y: {}, Z: {}",
+                this->mWorkgroup[0],
+                this->mWorkgroup[1],
+                this->mWorkgroup[2]);
 }
 
 }

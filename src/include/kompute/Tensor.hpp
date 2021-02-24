@@ -2,8 +2,6 @@
 
 #include "kompute/Core.hpp"
 
-#define KP_MAX_DIM_SIZE 1
-
 namespace kp {
 
 /**
@@ -31,11 +29,6 @@ class Tensor
     };
 
     /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    Tensor();
-
-    /**
      *  Default constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
@@ -43,8 +36,10 @@ class Tensor
      * tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
-    Tensor(const std::vector<float>& data,
-           TensorTypes tensorType = TensorTypes::eDevice);
+    Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           const std::vector<float>& data,
+           const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
@@ -58,8 +53,8 @@ class Tensor
      * would only be created for the tensors of type TensorType::eDevice as
      * otherwise there is no need to copy from host memory.
      */
-    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device);
+    void rebuild(const std::vector<float>& data,
+           TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -91,26 +86,13 @@ class Tensor
      * @return Unsigned integer representing the total number of elements
      */
     uint32_t size();
-    /**
-     * Returns the shape of the tensor, which includes the number of dimensions
-     * and the size per dimension.
-     *
-     * @return Array containing the sizes for each dimension. Zero means
-     * respective dimension is not active.
-     */
-    std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
+
     /**
      * Retrieve the tensor type of the Tensor
      *
      * @return Tensor type of tensor
      */
     TensorTypes tensorType();
-    /**
-     * Returns true if the tensor initialisation function has been carried out
-     * successful, which would mean that the buffer and memory will have been
-     * provisioned.
-     */
-    bool isInit();
 
     /**
      * Sets / resets the vector data of the tensor. This function does not
@@ -213,9 +195,6 @@ class Tensor
     std::vector<float> mData;
 
     TensorTypes mTensorType = TensorTypes::eDevice;
-
-    std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
-    bool mIsInit = false;
 
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer,

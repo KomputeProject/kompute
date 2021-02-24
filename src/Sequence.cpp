@@ -3,12 +3,6 @@
 
 namespace kp {
 
-Sequence::Sequence()
-{
-    KP_LOG_DEBUG("Kompute Sequence base constructor");
-    this->mIsInit = false;
-}
-
 Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::Queue> computeQueue,
@@ -20,28 +14,16 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
-    this->mIsInit = false;
+
+    this->createCommandPool();
+    this->createCommandBuffer();
 }
 
 Sequence::~Sequence()
 {
     KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
-    if (!this->mIsInit) {
-        KP_LOG_INFO("Kompute Sequence destructor called but sequence is not "
-                    "initialized so no need to removing GPU resources.");
-        return;
-    } else {
-        this->freeMemoryDestroyGPUResources();
-    }
-}
-
-void
-Sequence::init()
-{
-    this->createCommandPool();
-    this->createCommandBuffer();
-    this->mIsInit = true;
+    this->freeMemoryDestroyGPUResources();
 }
 
 bool
@@ -194,28 +176,14 @@ Sequence::isRecording()
     return this->mRecording;
 }
 
-bool
-Sequence::isInit()
-{
-    return this->mIsInit;
-}
-
 void
 Sequence::freeMemoryDestroyGPUResources()
 {
     KP_LOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
 
-    if (!this->mIsInit) {
-        KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
-                     "but Sequence is not initialized so there's no relevant "
-                     "GPU resources.");
-        return;
-    }
-
     if (!this->mDevice) {
         KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
                      "with null Device pointer");
-        this->mIsInit = false;
         return;
     }
 
@@ -225,7 +193,6 @@ Sequence::freeMemoryDestroyGPUResources()
             KP_LOG_ERROR(
               "Kompute Sequence freeMemoryDestroyGPUResources called with null "
               "CommandPool pointer");
-            this->mIsInit = false;
             return;
         }
         this->mDevice->freeCommandBuffers(
@@ -239,7 +206,6 @@ Sequence::freeMemoryDestroyGPUResources()
             KP_LOG_ERROR(
               "Kompute Sequence freeMemoryDestroyGPUResources called with null "
               "CommandPool pointer");
-            this->mIsInit = false;
             return;
         }
         this->mDevice->destroy(
@@ -253,7 +219,6 @@ Sequence::freeMemoryDestroyGPUResources()
         this->mOperations.clear();
     }
 
-    this->mIsInit = false;
 }
 
 void

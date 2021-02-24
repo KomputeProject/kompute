@@ -3,18 +3,13 @@
 
 namespace kp {
 
-OpTensorCopy::OpTensorCopy()
-{
-    KP_LOG_DEBUG("Kompute OpTensorCopy constructor base");
-}
-
-OpTensorCopy::OpTensorCopy(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                           std::shared_ptr<vk::Device> device,
-                           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                           std::vector<std::shared_ptr<Tensor>> tensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors)
+OpTensorCopy::OpTensorCopy(std::vector<std::shared_ptr<Tensor>> tensors)
+  : OpBase(tensors, nullptr)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy constructor with params");
+
+    this->mManagesTensors = false;
+    this->mManagesAlgorithm = false;
 }
 
 OpTensorCopy::~OpTensorCopy()
@@ -23,7 +18,8 @@ OpTensorCopy::~OpTensorCopy()
 }
 
 void
-OpTensorCopy::init()
+OpTensorCopy::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy init called");
 
@@ -46,14 +42,14 @@ OpTensorCopy::init()
 }
 
 void
-OpTensorCopy::record()
+OpTensorCopy::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy record called");
 
     // We iterate from the second tensor onwards and record a copy to all
     for (size_t i = 1; i < this->mTensors.size(); i++) {
         this->mTensors[i]->recordCopyFrom(
-          this->mCommandBuffer, this->mTensors[0], false);
+          commandBuffer, this->mTensors[0], false);
     }
 }
 

@@ -27,11 +27,11 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
     {
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
 
         sq->record<kp::OpTensorSyncLocal>({ tensorA });
@@ -72,19 +72,19 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     // Then perform the computations
     sq->begin();
-    sq->record<kp::OpAlgoBase>({ tensorA },
+    sq->record<kp::OpAlgoCreate>({ tensorA },
                                kp::Shader::compile_source(shader));
     sq->end();
     sq->eval();
 
     sq->begin();
-    sq->record<kp::OpAlgoBase>({ tensorA },
+    sq->record<kp::OpAlgoCreate>({ tensorA },
                                kp::Shader::compile_source(shader));
     sq->end();
     sq->eval();
 
     sq->begin();
-    sq->record<kp::OpAlgoBase>({ tensorA },
+    sq->record<kp::OpAlgoCreate>({ tensorA },
                                kp::Shader::compile_source(shader));
     sq->end();
     sq->eval();
@@ -121,7 +121,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
 
         sq->end();
@@ -134,7 +134,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
 
         sq->end();
@@ -147,7 +147,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
 
         sq->end();
@@ -205,7 +205,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA }, kp::Shader::compile_source(shader));
 
         sq->end();
@@ -263,7 +263,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
         }
       )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase>(
+    mgr.evalOpDefault<kp::OpAlgoCreate>(
       { tensorInA, tensorInB, tensorOut },
       kp::Shader::compile_source(shader));
 
@@ -306,7 +306,7 @@ TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
     mgr.evalOpDefault<kp::OpTensorSyncDevice>(
       { tensorInA, tensorInB, tensorOut });
 
-    mgr.evalOpDefault<kp::OpAlgoBase>(
+    mgr.evalOpDefault<kp::OpAlgoCreate>(
       { tensorInA, tensorInB, tensorOut },
       kp::Shader::compile_source(shader));
 
@@ -339,7 +339,7 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
             sq = mgr.sequence();
 
             sq->begin();
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
               { tensorA }, kp::Shader::compile_source(shader));
             sq->end();
 

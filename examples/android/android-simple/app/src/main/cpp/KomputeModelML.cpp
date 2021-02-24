@@ -52,7 +52,7 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
             sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
             // Newer versions of Android are able to use shaderc to read raw string
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
                     params, kp::Shader::compile_source(LR_SHADER));
 
             sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });

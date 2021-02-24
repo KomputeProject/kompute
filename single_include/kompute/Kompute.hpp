@@ -1893,14 +1893,14 @@ namespace kp {
  * By default it enables the user to provide a dynamic number of tensors
  * which are then passed as inputs.
  */
-class OpAlgoBase : public OpBase
+class OpAlgoCreate : public OpBase
 {
   public:
 
     /**
      *  Base constructor, should not be used unless explicitly intended.
      */
-    OpAlgoBase();
+    OpAlgoCreate();
 
     /**
      * Default constructor with parameters that provides the bare minimum
@@ -1914,7 +1914,7 @@ class OpAlgoBase : public OpBase
      * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
-    OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpAlgoCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
@@ -1933,7 +1933,7 @@ class OpAlgoBase : public OpBase
      * @param shaderFilePath Parameter to specify the shader to load (either in spirv or raw format)
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
-    OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpAlgoCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
@@ -1952,7 +1952,7 @@ class OpAlgoBase : public OpBase
      * @param shaderDataRaw Optional parameter to specify the shader data either in binary or raw form
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
-    OpAlgoBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    OpAlgoCreate(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>>& tensors,
@@ -1964,7 +1964,7 @@ class OpAlgoBase : public OpBase
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    virtual ~OpAlgoBase() override;
+    virtual ~OpAlgoCreate() override;
 
     /**
      * The init function is responsible for the initialisation of the algorithm
@@ -2005,9 +2005,9 @@ class OpAlgoBase : public OpBase
 
     // -------------- ALWAYS OWNED RESOURCES
 
-    Workgroup mKomputeWorkgroup;
+    Workgroup mWorkgroup;
 
-    std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoBase to find the data automatically and load for processing
+    std::string mShaderFilePath; ///< Optional member variable which can be provided for the OpAlgoCreate to find the data automatically and load for processing
     std::vector<uint32_t> mShaderDataRaw; ///< Optional member variable which can be provided to contain either the raw shader content or the spirv binary content
 
     virtual std::vector<uint32_t> fetchSpirvBinaryData();
@@ -2024,7 +2024,7 @@ namespace kp {
  * right hand and left hand side datapoints together with a single output.
  * The expected data passed is two input tensors and one output tensor.
  */
-class OpAlgoLhsRhsOut : public OpAlgoBase
+class OpAlgoLhsRhsOut : public OpAlgoCreate
 {
   public:
     /**
@@ -2102,7 +2102,7 @@ namespace kp {
  * Operation that performs multiplication on two tensors and outpus on third
  * tensor.
  */
-class OpMult : public OpAlgoBase
+class OpMult : public OpAlgoCreate
 {
   public:
     /**
@@ -2128,7 +2128,7 @@ class OpMult : public OpAlgoBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors,
            const Workgroup& komputeWorkgroup = {})
-      : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
+      : OpAlgoCreate(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 

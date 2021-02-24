@@ -3,23 +3,19 @@
 
 namespace kp {
 
-Tensor::Tensor()
+Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           const std::vector<float>& data,
+           const TensorTypes& tensorType)
 {
-    KP_LOG_DEBUG("Kompute Tensor base constructor");
-    this->mTensorType = TensorTypes::eDevice;
-}
-
-Tensor::Tensor(const std::vector<float>& data, TensorTypes tensorType)
-{
-#if DEBUG
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
                  data.size(),
                  tensorType);
-#endif
 
-    this->mData = data;
-    this->mShape = { static_cast<uint32_t>(data.size()) };
-    this->mTensorType = tensorType;
+    this->mPhysicalDevice = physicalDevice;
+    this->mDevice = device;
+
+    this->rebuild(data, tensorType);
 }
 
 Tensor::~Tensor()
@@ -27,25 +23,25 @@ Tensor::~Tensor()
     KP_LOG_DEBUG("Kompute Tensor destructor started. Type: {}",
                  this->tensorType());
 
-    if (this->isInit()) {
-        this->freeMemoryDestroyGPUResources();
-    }
+    this->freeMemoryDestroyGPUResources();
 
     KP_LOG_DEBUG("Kompute Tensor destructor success");
 }
 
 void
-Tensor::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-             std::shared_ptr<vk::Device> device)
+Tensor::rebuild(const std::vector<float>& data,
+           TensorTypes tensorType)
 {
-    KP_LOG_DEBUG("Kompute Tensor running init with Vulkan params and num data "
-                 "elementS: {}",
-                 this->mData.size());
+    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}",
+                 data.size());
 
-    this->mPhysicalDevice = physicalDevice;
-    this->mDevice = device;
+    this->mData = data;
+    this->mTensorType = tensorType;
 
-    this->mIsInit = true;
+    if (this->mPrimaryBuffer || this->mPrimaryMemory) {
+        KP_LOG_DEBUG("Kompute Tensor destroying existing resources before rebuild");
+        this->freeMemoryDestroyGPUResources();
+    }
 
     this->allocateMemoryCreateGPUResources();
 }
@@ -71,25 +67,13 @@ Tensor::memorySize()
 uint32_t
 Tensor::size()
 {
-    return this->mShape[0];
-}
-
-std::array<uint32_t, KP_MAX_DIM_SIZE>
-Tensor::shape()
-{
-    return this->mShape;
+    return static_cast<uint32_t>(this->mData.size());
 }
 
 Tensor::TensorTypes
 Tensor::tensorType()
 {
     return this->mTensorType;
-}
-
-bool
-Tensor::isInit()
-{
-    return this->mIsInit && this->mPrimaryBuffer && this->mPrimaryMemory;
 }
 
 void
@@ -165,11 +149,6 @@ Tensor::copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
                    vk::BufferCopy copyRegion,
                    bool createBarrier)
 {
-
-    if (!this->mIsInit) {
-        throw std::runtime_error(
-          "Kompute Tensor attempted to run copyBuffer without init");
-    }
 
     commandBuffer->copyBuffer(*bufferFrom, *bufferTo, copyRegion);
 
@@ -344,11 +323,6 @@ Tensor::allocateMemoryCreateGPUResources()
 {
     KP_LOG_DEBUG("Kompute Tensor creating buffer");
 
-    if (!this->mIsInit) {
-        throw std::runtime_error(
-          "Kompute Tensor attempted to run createBuffer without init");
-    }
-
     if (!this->mPhysicalDevice) {
         throw std::runtime_error("Kompute Tensor phyisical device is null");
     }
@@ -457,9 +431,7 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
 void
 Tensor::freeMemoryDestroyGPUResources()
 {
-    KP_LOG_DEBUG("Kompute Tensor started freeMemoryDestroyGPUResources");
-
-    this->mIsInit = false;
+    KP_LOG_DEBUG("Kompute Tensor started freeMemoryDestroyGPUResources()");
 
     if (!this->mDevice) {
         KP_LOG_ERROR(
@@ -519,7 +491,7 @@ Tensor::freeMemoryDestroyGPUResources()
         }
     }
 
-    KP_LOG_DEBUG("Kompute Tensor successful freeMemoryDestroyGPUResources");
+    KP_LOG_DEBUG("Kompute Tensor successful freeMemoryDestroyGPUResources()");
 }
 
 }

@@ -11,7 +11,7 @@
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpAlgoBase.hpp"
+#include "kompute/operations/OpAlgoCreate.hpp"
 
 namespace kp {
 
@@ -19,7 +19,7 @@ namespace kp {
  * Operation that performs multiplication on two tensors and outpus on third
  * tensor.
  */
-class OpMult : public OpAlgoBase
+class OpMult : public OpAlgoCreate
 {
   public:
     /**
@@ -45,7 +45,7 @@ class OpMult : public OpAlgoBase
            std::shared_ptr<vk::CommandBuffer> commandBuffer,
            std::vector<std::shared_ptr<Tensor>> tensors,
            const Workgroup& komputeWorkgroup = {})
-      : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
+      : OpAlgoCreate(physicalDevice, device, commandBuffer, tensors, "", komputeWorkgroup)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 

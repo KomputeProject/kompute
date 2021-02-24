@@ -5,19 +5,14 @@
 
 namespace kp {
 
-OpTensorSyncLocal::OpTensorSyncLocal()
-{
-    KP_LOG_DEBUG("Kompute OpTensorSyncLocal constructor base");
-}
-
 OpTensorSyncLocal::OpTensorSyncLocal(
-  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-  std::shared_ptr<vk::Device> device,
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors)
+  : OpBase(tensors, nullptr)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal constructor with params");
+
+    this->mManagesTensors = false;
+    this->mManagesAlgorithm = false;
 }
 
 OpTensorSyncLocal::~OpTensorSyncLocal()
@@ -26,7 +21,8 @@ OpTensorSyncLocal::~OpTensorSyncLocal()
 }
 
 void
-OpTensorSyncLocal::init()
+OpTensorSyncLocal::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal init called");
 
@@ -40,24 +36,18 @@ OpTensorSyncLocal::init()
             throw std::runtime_error(
               "Kompute OpTensorSyncLocal: Tensor has not been initialized");
         }
-        if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
-            KP_LOG_WARN(
-              "Kompute OpTensorSyncLocal tensor parameter is of type "
-              "TensorTypes::eStorage and hence cannot be used to receive or "
-              "pass data.");
-        }
     }
 }
 
 void
-OpTensorSyncLocal::record()
+OpTensorSyncLocal::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
             this->mTensors[i]->recordCopyFromDeviceToStaging(
-              this->mCommandBuffer, true);
+              commandBuffer, true);
         }
     }
 }

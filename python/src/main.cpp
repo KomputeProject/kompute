@@ -133,7 +133,7 @@ PYBIND11_MODULE(kp, m) {
         .def("record_tensor_sync_local", &kp::Sequence::record<kp::OpTensorSyncLocal>,
             "Records operation to sync tensor(s) from GPU memory to local memory")
         .def("record_algo_file", &kp::Sequence::record<
-                                    kp::OpAlgoBase,
+                                    kp::OpAlgoCreate,
                                     const std::string&,
                                     kp::Workgroup,
                                     kp::Constants>,
@@ -148,7 +148,7 @@ PYBIND11_MODULE(kp, m) {
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
-                return self.record<kp::OpAlgoBase>(
+                return self.record<kp::OpAlgoCreate>(
                     tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Records an operation using a custom shader provided as spirv bytes",
@@ -211,7 +211,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_tensor_sync_local_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncLocal>,
             "Evaluates operation to sync tensor(s) from GPU memory to local memory with new anonymous Sequence")
         .def("eval_algo_file_def", &kp::Manager::evalOpDefault<
-                                    kp::OpAlgoBase,
+                                    kp::OpAlgoCreate,
                                     const std::string&,
                                     kp::Workgroup,
                                     kp::Constants>,
@@ -226,7 +226,7 @@ PYBIND11_MODULE(kp, m) {
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
-                self.evalOpDefault<kp::OpAlgoBase>(
+                self.evalOpDefault<kp::OpAlgoCreate>(
                     tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence",
@@ -240,7 +240,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_tensor_sync_local", &kp::Manager::evalOp<kp::OpTensorSyncLocal>,
             "Evaluates operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
         .def("eval_algo_file", &kp::Manager::evalOp<
-                                    kp::OpAlgoBase,
+                                    kp::OpAlgoCreate,
                                     const std::string&,
                                     kp::Workgroup,
                                     kp::Constants>,
@@ -256,7 +256,7 @@ PYBIND11_MODULE(kp, m) {
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
-                self.evalOp<kp::OpAlgoBase>(
+                self.evalOp<kp::OpAlgoCreate>(
                     tensors, sequenceName, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence",
@@ -270,7 +270,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_async_tensor_sync_local_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncLocal>,
             "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with anonymous Sequence")
         .def("eval_async_algo_file_def", &kp::Manager::evalOpAsyncDefault<
-                                    kp::OpAlgoBase,
+                                    kp::OpAlgoCreate,
                                     const std::string&,
                                     kp::Workgroup,
                                     kp::Constants>,
@@ -285,7 +285,7 @@ PYBIND11_MODULE(kp, m) {
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
-                self.evalOpAsyncDefault<kp::OpAlgoBase>(
+                self.evalOpAsyncDefault<kp::OpAlgoCreate>(
                     tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence",
@@ -299,7 +299,7 @@ PYBIND11_MODULE(kp, m) {
         .def("eval_async_tensor_sync_local", &kp::Manager::evalOpAsync<kp::OpTensorSyncLocal>,
             "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
         .def("eval_async_algo_file", &kp::Manager::evalOpAsync<
-                                    kp::OpAlgoBase,
+                                    kp::OpAlgoCreate,
                                     const std::string&,
                                     kp::Workgroup,
                                     kp::Constants>,
@@ -315,7 +315,7 @@ PYBIND11_MODULE(kp, m) {
                 py::buffer_info info(py::buffer(bytes).request());
                 const char *data = reinterpret_cast<const char *>(info.ptr);
                 size_t length = static_cast<size_t>(info.size);
-                self.evalOpAsync<kp::OpAlgoBase>(
+                self.evalOpAsync<kp::OpAlgoCreate>(
                     tensors, sequenceName, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
             },
             "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence",

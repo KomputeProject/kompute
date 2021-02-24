@@ -23,7 +23,7 @@ TEST(TestWorkgroup, TestSimpleWorkgroup)
 
             sq = mgr.sequence();
             sq->begin();
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
               { tensorA, tensorB },
               std::vector<uint32_t>(
                 (uint32_t*)kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv,

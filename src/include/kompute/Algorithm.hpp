@@ -13,11 +13,6 @@ namespace kp {
 class Algorithm
 {
 public:
-    /**
-        Base constructor for Algorithm. Should not be used unless explicit
-       intended.
-    */
-    Algorithm();
 
     /**
      *  Default constructor for Algorithm
@@ -26,9 +21,13 @@ public:
      *  @param commandBuffer The vulkan command buffer to bind the pipeline and
      * shaders
      */
-    Algorithm(std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              const Constants& specializationConstants = {});
+    Algorithm(
+            std::shared_ptr<vk::Device> device,
+            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+            const std::vector<uint32_t>& spirv = {},
+            const Workgroup& workgroup = {},
+            const Constants& specializationConstants = {},
+            const Constants& pushConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -39,8 +38,16 @@ public:
      * @specalizationInstalces The specialization parameters to pass to the function
      * processing
      */
-    void init(const std::vector<uint32_t>& shaderFileData,
-              std::vector<std::shared_ptr<Tensor>> tensorParams);
+    void rebuild(
+            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+            const std::vector<uint32_t>& spirv = {},
+            const Workgroup& workgroup = {},
+            const Constants& specializationConstants = {},
+            const Constants& pushConstants = {});
+
+    bool isInit();
+
+    void freeMemoryDestroyGPUResources();
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
@@ -56,12 +63,13 @@ public:
      * @param y Layout Y dispatch value
      * @param z Layout Z dispatch value
      */
-    void recordDispatch(uint32_t x = 1, uint32_t y = 1, uint32_t z = 1);
+    void recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer);
+
+    void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
 
 private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
-    std::shared_ptr<vk::CommandBuffer> mCommandBuffer;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
@@ -80,15 +88,19 @@ private:
     bool mFreePipeline = false;
 
     // -------------- ALWAYS OWNED RESOURCES
+    std::vector<uint32_t> mSpirv;
     Constants mSpecializationConstants;
+    Constants mPushConstants;
+    Workgroup mWorkgroup;
+
+    bool mIsInit;
 
     // Create util functions
-    void createShaderModule(const std::vector<uint32_t>& shaderFileData);
+    void createShaderModule();
     void createPipeline();
 
     // Parameters
-    void createParameters(std::vector<std::shared_ptr<Tensor>>& tensorParams);
-    void createDescriptorPool();
+    void createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorParams);
 };
 
 } // End namespace kp

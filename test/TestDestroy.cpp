@@ -27,7 +27,7 @@ TEST(TestDestroy, TestDestroyTensorSingle)
             sq = mgr.sequence();
 
             sq->begin();
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
               { tensorA }, kp::Shader::compile_source(shader));
             sq->end();
 
@@ -70,7 +70,7 @@ TEST(TestDestroy, TestDestroyTensorVector)
             sq = mgr.sequence();
 
             sq->begin();
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
               { tensorA, tensorB }, kp::Shader::compile_source(shader));
             sq->end();
 
@@ -135,7 +135,7 @@ TEST(TestDestroy, TestDestroySequenceSingle)
             sq = mgr.sequence();
 
             sq->begin();
-            sq->record<kp::OpAlgoBase>(
+            sq->record<kp::OpAlgoCreate>(
               { tensorA }, kp::Shader::compile_source(shader));
             sq->end();
 
@@ -175,14 +175,14 @@ TEST(TestDestroy, TestDestroySequenceVector)
 
             sq1 = mgr.sequence("One");
             sq1->begin();
-            sq1->record<kp::OpAlgoBase>(
+            sq1->record<kp::OpAlgoCreate>(
               { tensorA }, kp::Shader::compile_source(shader));
             sq1->end();
             sq1->eval();
 
             sq2 = mgr.sequence("Two");
             sq2->begin();
-            sq2->record<kp::OpAlgoBase>(
+            sq2->record<kp::OpAlgoCreate>(
               { tensorA }, kp::Shader::compile_source(shader));
             sq2->end();
             sq2->eval();
@@ -216,11 +216,11 @@ TEST(TestDestroy, TestDestroySequenceNameSingleInsideManager)
         {
             mgr.rebuild({ tensorA });
 
-            mgr.evalOp<kp::OpAlgoBase>(
+            mgr.evalOp<kp::OpAlgoCreate>(
               { tensorA }, "one",
               kp::Shader::compile_source(shader));
 
-            mgr.evalOp<kp::OpAlgoBase>(
+            mgr.evalOp<kp::OpAlgoCreate>(
               { tensorA }, "two",
               kp::Shader::compile_source(shader));
 
@@ -256,7 +256,7 @@ TEST(TestDestroy, TestDestroySequenceNameSingleOutsideManager)
 
             sq1 = mgr.sequence("One");
             sq1->begin();
-            sq1->record<kp::OpAlgoBase>(
+            sq1->record<kp::OpAlgoCreate>(
               { tensorA }, kp::Shader::compile_source(shader));
             sq1->end();
             sq1->eval();
@@ -289,11 +289,11 @@ TEST(TestDestroy, TestDestroySequenceNameVectorInsideManager)
         {
             mgr.rebuild({ tensorA });
 
-            mgr.evalOp<kp::OpAlgoBase>(
+            mgr.evalOp<kp::OpAlgoCreate>(
               { tensorA }, "one",
               kp::Shader::compile_source(shader));
 
-            mgr.evalOp<kp::OpAlgoBase>(
+            mgr.evalOp<kp::OpAlgoCreate>(
               { tensorA }, "two",
               kp::Shader::compile_source(shader));
 
@@ -323,11 +323,11 @@ TEST(TestDestroy, TestDestroySequenceNameVectorOutsideManager)
         {
             mgr.rebuild({ tensorA });
 
-            mgr.evalOp<kp::OpAlgoBase>(
+            mgr.evalOp<kp::OpAlgoCreate>(
               { tensorA }, "one",
               kp::Shader::compile_source(shader));
 
-            mgr.evalOp<kp::OpAlgoBase>(
+            mgr.evalOp<kp::OpAlgoCreate>(
               { tensorA }, "two",
               kp::Shader::compile_source(shader));
 
@@ -357,7 +357,7 @@ TEST(TestDestroy, TestDestroySequenceNameDefaultOutsideManager)
         {
             mgr.rebuild({ tensorA });
 
-            mgr.evalOpDefault<kp::OpAlgoBase>(
+            mgr.evalOpDefault<kp::OpAlgoCreate>(
               { tensorA },
               kp::Shader::compile_source(shader));
 

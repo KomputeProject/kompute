@@ -37,7 +37,7 @@ int main()
         }
       )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase>(
+    mgr.evalOpDefault<kp::OpAlgoCreate>(
             { tensorInA, tensorInB, tensorOut },
             kp::Shader::compile_source(shader));
 

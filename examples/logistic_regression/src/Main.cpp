@@ -44,7 +44,7 @@ int main()
 
     sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
-    sq->record<kp::OpAlgoBase>(
+    sq->record<kp::OpAlgoCreate>(
         params, std::vector<uint32_t>(
                 (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
                 (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv

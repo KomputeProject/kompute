@@ -59,7 +59,7 @@ void KomputeSummatorNode::_init() {
                 { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
             { this->mPrimaryTensor, this->mSecondaryTensor }, 
             kp::Shader::compile_source(shader));
 

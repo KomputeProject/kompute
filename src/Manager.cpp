@@ -61,21 +61,30 @@ Manager::~Manager()
     if (this->mManagedSequences.size()) {
         KP_LOG_DEBUG("Kompute Manager explicitly running destructor for "
                      "managed sequences");
-        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
-             this->mManagedSequences) {
-            sqPair.second->freeMemoryDestroyGPUResources();
+        for (const std::weak_ptr<Sequence>& weakSq : this->mManagedSequences) {
+            if (std::shared_ptr<Sequence> sq = weakSq.lock()) {
+                sq->freeMemoryDestroyGPUResources();
+            }
         }
         this->mManagedSequences.clear();
     }
 
+    if (this->mManagedAlgorithms.size()) {
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing algorithms");
+        for (const std::weak_ptr<Algorithm>& weakAlgorithm : this->mManagedAlgorithms) {
+            if (std::shared_ptr<Algorithm> algorithm = weakAlgorithm.lock()) {
+                algorithm->freeMemoryDestroyGPUResources();
+            }
+        }
+        this->mManagedTensors.clear();
+    }
+
     if (this->mManagedTensors.size()) {
         KP_LOG_DEBUG("Kompute Manager explicitly freeing tensors");
-        for (const std::shared_ptr<Tensor>& tensor : this->mManagedTensors) {
-            if (!tensor->isInit()) {
-                KP_LOG_ERROR("Kompute Manager attempted to free managed tensor "
-                             "but not tensor is not initialised");
+        for (const std::weak_ptr<Tensor>& weakTensor : this->mManagedTensors) {
+            if (std::shared_ptr<Tensor> tensor = weakTensor.lock()) {
+                tensor->freeMemoryDestroyGPUResources();
             }
-            tensor->freeMemoryDestroyGPUResources();
         }
         this->mManagedTensors.clear();
     }
@@ -111,32 +120,21 @@ Manager::~Manager()
 }
 
 std::shared_ptr<Sequence>
-Manager::sequence(std::string sequenceName, uint32_t queueIndex)
+Manager::sequence(uint32_t queueIndex)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
                  "and queueIndex: {}",
-                 sequenceName,
                  queueIndex);
 
-    std::shared_ptr<Sequence> sq = nullptr;
+    std::shared_ptr<Sequence> sq =
+      std::make_shared<Sequence>(this->mPhysicalDevice,
+                                 this->mDevice,
+                                 this->mComputeQueues[queueIndex],
+                                 this->mComputeQueueFamilyIndices[queueIndex]);
 
-    std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
-      this->mManagedSequences.find(sequenceName);
+    this->mManagedSequences.insert(sq);
 
-    if (found == this->mManagedSequences.end()) {
-        std::shared_ptr<Sequence> sq =
-          std::make_shared<Sequence>(this->mPhysicalDevice,
-                                     this->mDevice,
-                                     this->mComputeQueues[queueIndex],
-                                     this->mComputeQueueFamilyIndices[queueIndex]);
-        sq->init();
-
-        this->mManagedSequences.insert({ sequenceName, sq });
-
-        return sq;
-    } else {
-        return found->second;
-    }
+    return sq;
 }
 
 void
@@ -334,13 +332,10 @@ Manager::tensor(
   Tensor::TensorTypes tensorType,
   bool syncDataToGPU)
 {
-    KP_LOG_DEBUG("Kompute Manager tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-    KP_LOG_DEBUG("Kompute Manager creating new tensor shared ptr");
-    std::shared_ptr<Tensor> tensor =
-      std::make_shared<Tensor>(kp::Tensor(data, tensorType));
-
-    tensor->init(this->mPhysicalDevice, this->mDevice);
+    std::shared_ptr<Tensor> tensor = std::make_shared<Tensor>(
+              kp::Tensor(this->mPhysicalDevice, this->mDevice, data, tensorType));
 
     if (syncDataToGPU) {
         this->evalOpDefault<OpTensorSyncDevice>({ tensor });
@@ -348,6 +343,29 @@ Manager::tensor(
     this->mManagedTensors.insert(tensor);
 
     return tensor;
+}
+std::shared_ptr<Algorithm>
+Manager::algorithm(
+        const std::vector<std::shared_ptr<Tensor>>& tensors,
+        const std::vector<uint32_t>& spirv,
+        const Workgroup& workgroup,
+        const Constants& specializationConstants,
+        const Constants& pushConstants) {
+
+    KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
+
+    std::shared_ptr<Algorithm> algorithm = std::make_shared<Algorithm>(
+            kp::Algorithm(
+                this->mDevice,
+                tensors,
+                spirv,
+                workgroup,
+                specializationConstants,
+                pushConstants));
+
+    this->mManagedAlgorithms.insert(algorithm);
+
+    return algorithm;
 }
 
 void

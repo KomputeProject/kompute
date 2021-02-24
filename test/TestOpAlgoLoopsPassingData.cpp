@@ -51,7 +51,7 @@ TEST(TestProcessingIterations, IterateThroughMultipleSumAndCopies)
 
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           { tensorA, tensorB },
           kp::Shader::compile_source(shader));
 

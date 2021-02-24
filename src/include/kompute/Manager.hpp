@@ -67,9 +67,7 @@ class Manager
      * @param queueIndex The queue to use from the available queues
      * @return Shared pointer to the manager owned sequence resource
      */
-    std::shared_ptr<Sequence> sequence(
-            std::string sequenceName = KP_DEFAULT_SESSION,
-            uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
 
     /**
      * Function that evaluates operation against named sequence.
@@ -228,6 +226,13 @@ class Manager
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
       bool syncDataToGPU = true);
 
+    std::shared_ptr<Algorithm> algorithm(
+            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+            const std::vector<uint32_t>& spirv = {},
+            const Workgroup& workgroup = {},
+            const Constants& specializationConstants = {},
+            const Constants& pushConstants = {});
+
     /**
      * Function that simplifies the common workflow of tensor initialisation. It
      * will take the constructor parameters for a Tensor and will will us it to
@@ -312,10 +317,10 @@ class Manager
     bool mFreeDevice = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::set<std::shared_ptr<Tensor>> mManagedTensors;
-
-    std::unordered_map<std::string, std::shared_ptr<Sequence>>
-      mManagedSequences;
+    std::set<std::weak_ptr<Tensor>> mManagedTensors;
+    std::set<std::weak_ptr<Sequence>> mManagedSequences;
+    std::set<std::weak_ptr<Algorithm>> mManagedAlgorithms;
+    //std::unique_ptr<Sequence> mDefaultSequence;
 
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;

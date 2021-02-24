@@ -4,19 +4,22 @@
 
 #include "kompute/Core.hpp"
 
+#include "kompute/shaders/shaderopmult.hpp"
+
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
 
-#include "kompute/operations/OpAlgoCreate.hpp"
+#include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 
 /**
- * Operation base class to simplify the creation of operations that require
- * right hand and left hand side datapoints together with a single output.
- * The expected data passed is two input tensors and one output tensor.
+ * Operation that provides a general abstraction that simplifies the use of 
+ * algorithm and parameter components which can be used with shaders.
+ * By default it enables the user to provide a dynamic number of tensors
+ * which are then passed as inputs.
  */
-class OpAlgoLhsRhsOut : public OpAlgoCreate
+class OpAlgoCreate : public OpBase
 {
   public:
 
@@ -29,25 +32,21 @@ class OpAlgoLhsRhsOut : public OpAlgoCreate
      * @param device Vulkan logical device for passing to Algorithm
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param freeTensors Whether operation manages the memory of the Tensors
+     * @param shaderFilePath Optional parameter to specify the shader to load (either in spirv or raw format)
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
-    OpAlgoLhsRhsOut(std::vector<std::shared_ptr<Tensor>>& tensors,
-            std::shared_ptr<Algorithm> algorithm);
+    OpAlgoCreate(std::vector<std::shared_ptr<Tensor>> tensors,
+           std::shared_ptr<kp::Algorithm> algorithm);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    virtual ~OpAlgoLhsRhsOut() override;
+    virtual ~OpAlgoCreate() override;
 
-    /**
-     * The init function is responsible for ensuring that all of the tensors
-     * provided are aligned with requirements such as LHS, RHS and Output
-     * tensors, and  creates the algorithm component which processes the
-     * computation.
-     */
-    virtual void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+
+    virtual void init(
+            std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device) override;
 
     /**
@@ -60,18 +59,18 @@ class OpAlgoLhsRhsOut : public OpAlgoCreate
      */
     virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
 
+
+    /**
+     * Does not perform any preEval commands.
+     */
+    virtual void preEval() override;
+
     /**
      * Executes after the recorded commands are submitted, and performs a copy
      * of the GPU Device memory into the staging buffer so the output data can
      * be retrieved.
      */
     virtual void postEval() override;
-
-  protected:
-    // -------------- NEVER OWNED RESOURCES
-    std::shared_ptr<Tensor> mTensorLHS; ///< Reference to the parameter used in the left hand side equation of the shader
-    std::shared_ptr<Tensor> mTensorRHS; ///< Reference to the parameter used in the right hand side equation of the shader
-    std::shared_ptr<Tensor> mTensorOutput; ///< Reference to the parameter used in the output of the shader and will be copied with a staging vector
 };
 
 } // End namespace kp

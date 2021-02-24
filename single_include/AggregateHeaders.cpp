@@ -6,7 +6,7 @@
 #include "kompute/Manager.hpp"
 #include "kompute/Sequence.hpp"
 #include "kompute/operations/OpBase.hpp"
-#include "kompute/operations/OpAlgoBase.hpp"
+#include "kompute/operations/OpAlgoCreate.hpp"
 #include "kompute/operations/OpAlgoLhsRhsOut.hpp"
 #include "kompute/operations/OpMult.hpp"
 #include "kompute/operations/OpTensorCopy.hpp"

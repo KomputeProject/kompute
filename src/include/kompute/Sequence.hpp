@@ -13,11 +13,6 @@ class Sequence
 {
   public:
     /**
-     *  Base constructor for Sequence. Should not be used unless explicit
-     * intended.
-     */
-    Sequence();
-    /**
      * Main constructor for sequence which requires core vulkan components to
      * generate all dependent resources.
      *
@@ -35,12 +30,6 @@ class Sequence
      * owned operations.
      */
     ~Sequence();
-
-    /**
-     * Initialises sequence including the creation of the command pool and the
-     * command buffer.
-     */
-    void init();
 
     /**
      * Begins recording commands for commands to be submitted into the command
@@ -98,13 +87,6 @@ class Sequence
      * @return Boolean stating if currently running.
      */
     bool isRunning();
-
-    /**
-     * Returns true if the sequence has been successfully initialised.
-     *
-     * @return Boolean stating if sequence has been initialised.
-     */
-    bool isInit();
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory
@@ -179,7 +161,6 @@ class Sequence
     std::vector<std::unique_ptr<OpBase>> mOperations;
 
     // State
-    bool mIsInit = false;
     bool mRecording = false;
     bool mIsRunning = false;
 

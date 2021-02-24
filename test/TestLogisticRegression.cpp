@@ -41,7 +41,7 @@ TEST(TestLogisticRegression, TestMainLogisticRegression)
 
         sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           params,
           std::vector<uint32_t>(
             (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
@@ -120,7 +120,7 @@ TEST(TestLogisticRegression, TestMainLogisticRegressionManualCopy)
         // Record op algo base
         sq->begin();
 
-        sq->record<kp::OpAlgoBase>(
+        sq->record<kp::OpAlgoCreate>(
           params,
           std::vector<uint32_t>(
             (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,

@@ -10,15 +10,12 @@ OpAlgoLhsRhsOut::OpAlgoLhsRhsOut()
 }
 
 OpAlgoLhsRhsOut::OpAlgoLhsRhsOut(
-  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-  std::shared_ptr<vk::Device> device,
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
-  std::vector<std::shared_ptr<Tensor>> tensors,
-  const Workgroup& komputeWorkgroup)
+  std::vector<std::shared_ptr<Tensor>>& tensors,
+            std::shared_ptr<Algorithm> algorithm)
   // The inheritance is initialised with the copyOutputData to false given that
   // this depencendant class handles the transfer of data via staging buffers in
   // a granular way.
-  : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, komputeWorkgroup)
+  : OpAlgoCreate(tensors, algorithm)
 {
     KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut constructor with params");
 }
@@ -29,7 +26,8 @@ OpAlgoLhsRhsOut::~OpAlgoLhsRhsOut()
 }
 
 void
-OpAlgoLhsRhsOut::init()
+OpAlgoLhsRhsOut::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device)
 {
     KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut init called");
 
@@ -70,12 +68,10 @@ OpAlgoLhsRhsOut::init()
     std::vector<uint32_t> shaderFileData = this->fetchSpirvBinaryData();
 
     KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut Initialising algorithm component");
-
-    this->mAlgorithm->init(shaderFileData, this->mTensors);
 }
 
 void
-OpAlgoLhsRhsOut::record()
+OpAlgoLhsRhsOut::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpAlgoLhsRhsOut record called");
 

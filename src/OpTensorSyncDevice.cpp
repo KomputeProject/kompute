@@ -1,21 +1,11 @@
 
-#include "kompute/Tensor.hpp"
-
 #include "kompute/operations/OpTensorSyncDevice.hpp"
 
 namespace kp {
 
-OpTensorSyncDevice::OpTensorSyncDevice()
-{
-    KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor base");
-}
-
 OpTensorSyncDevice::OpTensorSyncDevice(
-  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-  std::shared_ptr<vk::Device> device,
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
   std::vector<std::shared_ptr<Tensor>> tensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors)
+  : OpBase(tensors, nullptr)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
 }
@@ -26,7 +16,8 @@ OpTensorSyncDevice::~OpTensorSyncDevice()
 }
 
 void
-OpTensorSyncDevice::init()
+OpTensorSyncDevice::init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice init called");
 
@@ -50,14 +41,14 @@ OpTensorSyncDevice::init()
 }
 
 void
-OpTensorSyncDevice::record()
+OpTensorSyncDevice::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
             this->mTensors[i]->recordCopyFromStagingToDevice(
-              this->mCommandBuffer, false);
+              commandBuffer, false);
         }
     }
 }
