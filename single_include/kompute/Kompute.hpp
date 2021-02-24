@@ -115,7 +115,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #include <vector>
 
 #include <glslang/Public/ShaderLang.h>
-#include <StandAlone/ResourceLimits.h>
+#include <glslang/Include/ResourceLimits.h>
 #include <SPIRV/GlslangToSpv.h>
 
 namespace kp {
