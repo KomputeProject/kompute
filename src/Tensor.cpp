@@ -449,6 +449,7 @@ Tensor::freeMemoryDestroyGPUResources()
               *this->mPrimaryBuffer,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
             this->mPrimaryBuffer = nullptr;
+            this->mFreePrimaryBuffer = false;
         }
     }
 
@@ -462,6 +463,7 @@ Tensor::freeMemoryDestroyGPUResources()
               *this->mStagingBuffer,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
             this->mStagingBuffer = nullptr;
+            this->mFreeStagingBuffer = false;
         }
     }
 
@@ -475,6 +477,7 @@ Tensor::freeMemoryDestroyGPUResources()
               *this->mPrimaryMemory,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
             this->mPrimaryMemory = nullptr;
+            this->mFreePrimaryMemory = false;
         }
     }
 
@@ -488,6 +491,7 @@ Tensor::freeMemoryDestroyGPUResources()
               *this->mStagingMemory,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
             this->mStagingMemory = nullptr;
+            this->mFreeStagingMemory = false;
         }
     }
 

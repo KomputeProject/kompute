@@ -40,11 +40,9 @@ Sequence::begin()
         throw std::runtime_error("Kompute Sequence begin called when sequence still running");
     }
 
-    if (!this->mRecording) {
-        KP_LOG_INFO("Kompute Sequence command recording BEGIN");
-        this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
-        this->mRecording = true;
-    }
+    KP_LOG_INFO("Kompute Sequence command now started recording");
+    this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
+    this->mRecording = true;
 }
 
 void
@@ -161,6 +159,10 @@ Sequence::freeMemoryDestroyGPUResources()
         }
         this->mDevice->freeCommandBuffers(
           *this->mCommandPool, 1, this->mCommandBuffer.get());
+
+        this->mCommandBuffer = nullptr;
+        this->mFreeCommandBuffer = false;
+
         KP_LOG_DEBUG("Kompute Sequence Freed CommandBuffer");
     }
 
@@ -175,6 +177,10 @@ Sequence::freeMemoryDestroyGPUResources()
         this->mDevice->destroy(
           *this->mCommandPool,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+
+        this->mCommandPool = nullptr;
+        this->mFreeCommandPool = false;
+
         KP_LOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 
@@ -194,6 +200,7 @@ Sequence::record(std::shared_ptr<OpBase> op)
 
     KP_LOG_DEBUG(
       "Kompute Sequence running record on OpBase derived class instance");
+
     op->record(this->mCommandBuffer);
 
     this->mOperations.push_back(op);

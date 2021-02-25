@@ -9,6 +9,8 @@ OpAlgoDispatch::OpAlgoDispatch(const std::vector<std::shared_ptr<Tensor>>& tenso
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
+    this->mTensors = tensors;
+    this->mAlgorithm = algorithm;
 }
 
 OpAlgoDispatch::~OpAlgoDispatch()

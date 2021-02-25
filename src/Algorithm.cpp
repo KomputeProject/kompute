@@ -15,8 +15,6 @@ Algorithm::Algorithm(
     KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
     this->mDevice = device;
-    this->setWorkgroup(workgroup);
-    this->mPushConstants = pushConstants;
     this->rebuild(tensors, spirv, workgroup, specializationConstants, pushConstants);
 }
 
@@ -37,8 +35,8 @@ Algorithm::rebuild(
 {
     KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
+    this->setWorkgroup(workgroup);
     this->mSpirv = spirv;
-    this->mWorkgroup = workgroup;
     this->mSpecializationConstants = specializationConstants;
     this->mPushConstants = pushConstants;
 
@@ -300,14 +298,20 @@ Algorithm::createPipeline()
         throw std::runtime_error("Failed to create pipeline result: " +
                                  vk::to_string(pipelineResult.result));
     }
-#else
-    vk::Pipeline pipelineResult =
-      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
+
+    vk::Pipeline& pipeline = pipelineResult.value;
+    this->mPipeline = std::make_shared<vk::Pipeline>(pipeline);
     this->mFreePipeline = true;
+#else
+    vk::Pipeline pipeline =
+      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
+    this->mPipeline = std::make_shared<vk::Pipeline>(pipeline);
 #endif
 
-    this->mFreePipeline = true;
-    this->mPipeline = std::make_shared<vk::Pipeline>(pipelineResult);
+    // TODO: Update to consistent
+    // this->mPipeline = std::make_shared<vk::Pipeline>();
+    // this->mDevice->createComputePipelines(
+    //         *this->mPipelineCache, 1, &pipelineInfo, nullptr, this->mPipeline.get());
 
     KP_LOG_DEBUG("Kompute Algorithm Create Pipeline Success");
 }
@@ -316,6 +320,20 @@ void
 Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm calling record dispatch");
+
+    if(this->mPipelineCache) {
+        KP_LOG_WARN("Value valid");
+    }
+    else {
+        KP_LOG_WARN("NOT Value valid");
+    }
+
+    if(this->mPipeline) {
+        KP_LOG_WARN("Value valid");
+    }
+    else {
+        KP_LOG_WARN("NOT Value valid");
+    }
 
     commandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute,
                                        *this->mPipeline);
@@ -338,6 +356,12 @@ Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 
 void
 Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
+
+    KP_LOG_INFO("Kompute OpAlgoCreate setting dispatch size X: {}, Y: {}, Z: {}",
+                this->mWorkgroup[0],
+                this->mWorkgroup[1],
+                this->mWorkgroup[2]);
+
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
     if (workgroup[0] > 0) {
@@ -351,10 +375,6 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
     } else {
         this->mWorkgroup = { minSize, 1, 1 };
     }
-    KP_LOG_INFO("Kompute OpAlgoCreate dispatch size X: {}, Y: {}, Z: {}",
-                this->mWorkgroup[0],
-                this->mWorkgroup[1],
-                this->mWorkgroup[2]);
 }
 
 }

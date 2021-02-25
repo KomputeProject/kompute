@@ -4,6 +4,8 @@
 
 #include "kompute/Manager.hpp"
 
+#include "kompute/operations/OpAlgoDispatch.hpp"
+
 namespace kp {
 
 #if DEBUG
@@ -76,7 +78,7 @@ Manager::~Manager()
                 algorithm->freeMemoryDestroyGPUResources();
             }
         }
-        this->mManagedTensors.clear();
+        this->mManagedAlgorithms.clear();
     }
 
     if (this->mManagedTensors.size()) {
@@ -324,7 +326,6 @@ Manager::tensor(
     return tensor;
 }
 
-
 std::shared_ptr<Algorithm>
 Manager::algorithm(
         const std::vector<std::shared_ptr<Tensor>>& tensors,
@@ -352,8 +353,7 @@ Manager::algorithm(
 std::shared_ptr<Sequence>
 Manager::sequence(uint32_t queueIndex)
 {
-    KP_LOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
-                 "and queueIndex: {}",
+    KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}",
                  queueIndex);
 
     std::shared_ptr<Sequence> sq{
