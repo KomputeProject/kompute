@@ -1,6 +1,7 @@
 
 #if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
 #include "kompute/Shader.hpp"
+#include <StandAlone/ResourceLimits.h>
 
 namespace kp {
 
