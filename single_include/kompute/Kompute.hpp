@@ -1341,6 +1341,7 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      *
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
+    // TODO: Aim to have only a single function with tensors/algorithm
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence>
     eval(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
@@ -1355,6 +1356,7 @@ class Sequence: public std::enable_shared_from_this<Sequence>
         std::shared_ptr<T> op{
             new T(tensors, std::forward<TArgs>(params)...) };
 
+        // TODO: Aim to be able to handle errors when returning without throw except
         return this->eval(op);
     }
     // Needded as otherise can't use initialiser list
@@ -1383,6 +1385,7 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync();
+    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<OpBase> op);
 
     /**
      * Eval sends all the recorded and stored operations in the vector of
@@ -1742,7 +1745,7 @@ class OpMult : public OpAlgoDispatch
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
     OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
-        : OpAlgoDispatch(tensors, algorithm)
+        : OpAlgoDispatch(algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
@@ -1755,7 +1758,7 @@ class OpMult : public OpAlgoDispatch
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
             kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
-        algorithm->rebuild(tensors, spirv, Workgroup({tensors[0]->size()}));
+        algorithm->rebuild(tensors, spirv);
     }
 
     /**

@@ -33,7 +33,7 @@ class OpMult : public OpAlgoDispatch
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
     OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
-        : OpAlgoDispatch(tensors, algorithm)
+        : OpAlgoDispatch(algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
@@ -46,7 +46,7 @@ class OpMult : public OpAlgoDispatch
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
             kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
-        algorithm->rebuild(tensors, spirv, Workgroup({tensors[0]->size()}));
+        algorithm->rebuild(tensors, spirv);
     }
 
     /**

@@ -3,40 +3,40 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestSequence, CmdBufSequenceBeginEnd)
-{
-    kp::Manager mgr;
-
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence");
-
-        EXPECT_TRUE(sq->eval());
-        EXPECT_TRUE(!sq->isRecording());
-        EXPECT_TRUE(sq->begin());
-        EXPECT_TRUE(sq->isRecording());
-        EXPECT_TRUE(!sq->begin());
-        EXPECT_TRUE(sq->isRecording());
-        EXPECT_TRUE(sq->end());
-        EXPECT_TRUE(!sq->isRecording());
-        EXPECT_TRUE(!sq->end());
-        EXPECT_TRUE(!sq->isRecording());
-        EXPECT_TRUE(sq->eval());
-    }
-}
-
-TEST(TestSequence, SequenceDestructorViaManager)
-{
-    std::shared_ptr<kp::Sequence> sq = nullptr;
-
-    {
-        kp::Manager mgr;
-
-        sq = mgr.sequence("newSequence");
-
-        EXPECT_TRUE(sq->isInit());
-    }
-
-    EXPECT_FALSE(sq->isInit());
-}
+//TEST(TestSequence, CmdBufSequenceBeginEnd)
+//{
+//    kp::Manager mgr;
+//
+//    {
+//        std::shared_ptr<kp::Sequence> sq =
+//          mgr.sequence("newSequence");
+//
+//        EXPECT_TRUE(sq->eval());
+//        EXPECT_TRUE(!sq->isRecording());
+//        EXPECT_TRUE(sq->begin());
+//        EXPECT_TRUE(sq->isRecording());
+//        EXPECT_TRUE(!sq->begin());
+//        EXPECT_TRUE(sq->isRecording());
+//        EXPECT_TRUE(sq->end());
+//        EXPECT_TRUE(!sq->isRecording());
+//        EXPECT_TRUE(!sq->end());
+//        EXPECT_TRUE(!sq->isRecording());
+//        EXPECT_TRUE(sq->eval());
+//    }
+//}
+//
+//TEST(TestSequence, SequenceDestructorViaManager)
+//{
+//    std::shared_ptr<kp::Sequence> sq = nullptr;
+//
+//    {
+//        kp::Manager mgr;
+//
+//        sq = mgr.sequence("newSequence");
+//
+//        EXPECT_TRUE(sq->isInit());
+//    }
+//
+//    EXPECT_FALSE(sq->isInit());
+//}
 

@@ -138,6 +138,7 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync();
+    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<OpBase> op);
 
     /**
      * Eval sends all the recorded and stored operations in the vector of

@@ -23,7 +23,7 @@ Sequence::~Sequence()
 {
     KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
-    this->freeMemoryDestroyGPUResources();
+    this->destroy();
 }
 
 void
@@ -113,6 +113,15 @@ Sequence::evalAsync()
 }
 
 std::shared_ptr<Sequence>
+Sequence::evalAsync(std::shared_ptr<OpBase> op)
+{
+    this->clear();
+    this->record(op);
+    this->evalAsync();
+    return shared_from_this();
+}
+
+std::shared_ptr<Sequence>
 Sequence::evalAwait(uint64_t waitFor)
 {
     if (!this->mIsRunning) {
@@ -162,10 +171,10 @@ Sequence::isInit() {
 void
 Sequence::destroy()
 {
-    KP_LOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
+    KP_LOG_DEBUG("Kompute Sequence destroy called");
 
     if (!this->mDevice) {
-        KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
+        KP_LOG_ERROR("Kompute Sequence destroy called "
                      "with null Device pointer");
         return;
     }
@@ -174,7 +183,7 @@ Sequence::destroy()
         KP_LOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
             KP_LOG_ERROR(
-              "Kompute Sequence freeMemoryDestroyGPUResources called with null "
+              "Kompute Sequence destroy called with null "
               "CommandPool pointer");
             return;
         }
@@ -191,7 +200,7 @@ Sequence::destroy()
         KP_LOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
             KP_LOG_ERROR(
-              "Kompute Sequence freeMemoryDestroyGPUResources called with null "
+              "Kompute Sequence destroy called with null "
               "CommandPool pointer");
             return;
         }

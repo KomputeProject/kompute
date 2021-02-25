@@ -3,6 +3,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "kompute_test/shaders/shadertest_workgroup.hpp"
+
 TEST(TestWorkgroup, TestSimpleWorkgroup)
 {
     std::shared_ptr<kp::Tensor> tensorA = nullptr;
@@ -29,7 +31,7 @@ TEST(TestWorkgroup, TestSimpleWorkgroup)
 
             sq = mgr.sequence();
             sq->record<kp::OpTensorSyncDevice>(params);
-            sq->record<kp::OpAlgoDispatch>(params, algorithm);
+            sq->record<kp::OpAlgoDispatch>(algorithm);
             sq->record<kp::OpTensorSyncLocal>(params);
             sq->eval();
         }

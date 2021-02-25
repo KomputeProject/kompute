@@ -23,7 +23,7 @@ Tensor::~Tensor()
     KP_LOG_DEBUG("Kompute Tensor destructor started. Type: {}",
                  this->tensorType());
 
-    this->freeMemoryDestroyGPUResources();
+    this->destroy();
 
     KP_LOG_DEBUG("Kompute Tensor destructor success");
 }
@@ -40,7 +40,7 @@ Tensor::rebuild(const std::vector<float>& data,
 
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
         KP_LOG_DEBUG("Kompute Tensor destroying existing resources before rebuild");
-        this->freeMemoryDestroyGPUResources();
+        this->destroy();
     }
 
     this->allocateMemoryCreateGPUResources();
@@ -440,7 +440,7 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
 void
 Tensor::destroy()
 {
-    KP_LOG_DEBUG("Kompute Tensor started freeMemoryDestroyGPUResources()");
+    KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
     if (!this->mDevice) {
         KP_LOG_ERROR(
@@ -508,7 +508,7 @@ Tensor::destroy()
         this->mDevice = nullptr;
     }
 
-    KP_LOG_DEBUG("Kompute Tensor successful freeMemoryDestroyGPUResources()");
+    KP_LOG_DEBUG("Kompute Tensor successful destroy()");
 }
 
 }
