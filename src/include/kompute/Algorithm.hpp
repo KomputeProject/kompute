@@ -45,10 +45,6 @@ public:
             const Constants& specializationConstants = {},
             const Constants& pushConstants = {});
 
-    bool isInit();
-
-    void freeMemoryDestroyGPUResources();
-
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
      * respective pipelines and owned parameter groups.
@@ -65,11 +61,21 @@ public:
      */
     void recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
+    bool isInit();
+
     void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
+
+    const Workgroup& getWorkgroup();
+    const Constants& getSpecializationConstants();
+    const Constants& getPushConstants();
+    const std::vector<std::shared_ptr<Tensor>>& getTensors();
+
+    void destroy();
 
 private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
@@ -100,7 +106,7 @@ private:
     void createPipeline();
 
     // Parameters
-    void createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorParams);
+    void createParameters();
 };
 
 } // End namespace kp

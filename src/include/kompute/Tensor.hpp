@@ -59,7 +59,9 @@ class Tensor
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
      */
-    void freeMemoryDestroyGPUResources();
+    void destroy();
+
+    bool isInit();
 
     /**
      * Returns the vector of data currently contained by the Tensor. It is

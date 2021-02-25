@@ -30,6 +30,8 @@ class Manager
      * they would like to create the resources on.
      *
      * @param physicalDeviceIndex The index of the physical device to use
+     * @param manageResources (Optional) Whether to manage the memory of the
+     * resources created and destroy when the manager is destroyed.
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
      * @param totalQueues The total number of compute queues to create.
@@ -48,8 +50,7 @@ class Manager
      */
     Manager(std::shared_ptr<vk::Instance> instance,
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device,
-            uint32_t physicalDeviceIndex);
+            std::shared_ptr<vk::Device> device);
 
     /**
      * Manager destructor which would ensure all owned resources are destroyed
@@ -92,12 +93,14 @@ class Manager
             const Constants& specializationConstants = {},
             const Constants& pushConstants = {});
 
+    void destroy();
+    void clear();
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
-    uint32_t mPhysicalDeviceIndex = -1;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
 
@@ -109,7 +112,7 @@ class Manager
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
-    uint32_t mCurrentSequenceIndex = -1;
+    bool mManageResources = false;
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
@@ -120,7 +123,7 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {});
+    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {}, uint32_t hysicalDeviceIndex = 0);
 };
 
 } // End namespace kp

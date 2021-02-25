@@ -4,12 +4,10 @@
 
 namespace kp {
 
-OpAlgoDispatch::OpAlgoDispatch(const std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::shared_ptr<kp::Algorithm>& algorithm)
+OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
-    this->mTensors = tensors;
     this->mAlgorithm = algorithm;
 }
 
@@ -24,7 +22,7 @@ OpAlgoDispatch::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
     KP_LOG_DEBUG("Kompute OpAlgoDispatch record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
-    for (std::shared_ptr<Tensor> tensor : this->mTensors) {
+    for (const std::shared_ptr<Tensor>& tensor : this->mAlgorithm->getTensors()) {
         tensor->recordBufferMemoryBarrier(
           commandBuffer,
           vk::AccessFlagBits::eHostWrite,

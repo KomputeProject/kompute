@@ -10,5 +10,6 @@
 #include "kompute/operations/OpTensorCopy.hpp"
 #include "kompute/operations/OpTensorSyncDevice.hpp"
 #include "kompute/operations/OpTensorSyncLocal.hpp"
+#include "kompute/operations/OpAlgoDispatch.hpp"
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"

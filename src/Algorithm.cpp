@@ -22,7 +22,7 @@ Algorithm::~Algorithm()
 {
     KP_LOG_DEBUG("Kompute Algorithm Destructor started");
 
-    this->freeMemoryDestroyGPUResources();
+    this->destroy();
 }
 
 void
@@ -35,23 +35,35 @@ Algorithm::rebuild(
 {
     KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
-    this->setWorkgroup(workgroup);
+    this->mTensors = tensors;
     this->mSpirv = spirv;
     this->mSpecializationConstants = specializationConstants;
     this->mPushConstants = pushConstants;
+    this->setWorkgroup(workgroup);
 
     // Descriptor pool is created first so if available then destroy all before rebuild
     if (this->mFreeDescriptorPool) {
-        this->freeMemoryDestroyGPUResources();
+        this->destroy();
     }
 
-    this->createParameters(tensors);
+    this->createParameters();
     this->createShaderModule();
     this->createPipeline();
 }
 
+bool
+Algorithm::isInit() {
+    return this->mPipeline &&
+        this->mPipelineCache &&
+        this->mPipelineLayout &&
+        this->mDescriptorPool &&
+        this->mDescriptorSet &&
+        this->mDescriptorSetLayout &&
+        this->mShaderModule;
+}
+
 void
-Algorithm::freeMemoryDestroyGPUResources() {
+Algorithm::destroy() {
 
     if (!this->mDevice) {
         KP_LOG_WARN(
@@ -68,6 +80,7 @@ Algorithm::freeMemoryDestroyGPUResources() {
         this->mDevice->destroy(
           *this->mPipeline,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mPipeline = nullptr;
     }
 
     if (this->mFreePipelineCache) {
@@ -79,6 +92,7 @@ Algorithm::freeMemoryDestroyGPUResources() {
         this->mDevice->destroy(
           *this->mPipelineCache,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mPipelineCache = nullptr;
     }
 
     if (this->mFreePipelineLayout) {
@@ -90,6 +104,7 @@ Algorithm::freeMemoryDestroyGPUResources() {
         this->mDevice->destroy(
           *this->mPipelineLayout,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mPipelineLayout = nullptr;
     }
 
     if (this->mFreeShaderModule) {
@@ -101,6 +116,7 @@ Algorithm::freeMemoryDestroyGPUResources() {
         this->mDevice->destroy(
           *this->mShaderModule,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mShaderModule = nullptr;
     }
 
     if (this->mFreeDescriptorSet) {
@@ -111,6 +127,7 @@ Algorithm::freeMemoryDestroyGPUResources() {
         }
         this->mDevice->freeDescriptorSets(
           *this->mDescriptorPool, 1, this->mDescriptorSet.get());
+        this->mDescriptorSet = nullptr;
     }
 
     if (this->mFreeDescriptorSetLayout) {
@@ -122,6 +139,7 @@ Algorithm::freeMemoryDestroyGPUResources() {
         this->mDevice->destroy(
           *this->mDescriptorSetLayout,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mDescriptorSetLayout = nullptr;
     }
 
     if (this->mFreeDescriptorPool) {
@@ -133,18 +151,19 @@ Algorithm::freeMemoryDestroyGPUResources() {
         this->mDevice->destroy(
           *this->mDescriptorPool,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mDescriptorPool = nullptr;
     }
 }
 
 void
-Algorithm::createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorParams)
+Algorithm::createParameters()
 {
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
         vk::DescriptorPoolSize(
           vk::DescriptorType::eStorageBuffer,
-          static_cast<uint32_t>(tensorParams.size()) // Descriptor count
+          static_cast<uint32_t>(this->mTensors.size()) // Descriptor count
           )
     };
 
@@ -161,7 +180,7 @@ Algorithm::createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorPa
     this->mFreeDescriptorPool = true;
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
-    for (size_t i = 0; i < tensorParams.size(); i++) {
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
         descriptorSetBindings.push_back(
           vk::DescriptorSetLayoutBinding(i, // Binding index
                                          vk::DescriptorType::eStorageBuffer,
@@ -193,11 +212,11 @@ Algorithm::createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorPa
     this->mFreeDescriptorSet = true;
 
     KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
-    for (size_t i = 0; i < tensorParams.size(); i++) {
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
         std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
 
         vk::DescriptorBufferInfo descriptorBufferInfo =
-          tensorParams[i]->constructDescriptorBufferInfo();
+          this->mTensors[i]->constructDescriptorBufferInfo();
 
         computeWriteDescriptorSets.push_back(
           vk::WriteDescriptorSet(*this->mDescriptorSet,
@@ -375,6 +394,26 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
     } else {
         this->mWorkgroup = { minSize, 1, 1 };
     }
+}
+
+const Workgroup&
+Algorithm::getWorkgroup() {
+    return this->mWorkgroup;
+}
+
+const Constants&
+Algorithm::getSpecializationConstants() {
+    return this->mSpecializationConstants;
+}
+
+const Constants&
+Algorithm::getPushConstants() {
+    return this->mPushConstants;
+}
+
+const std::vector<std::shared_ptr<Tensor>>&
+Algorithm::getTensors() {
+    return this->mTensors;
 }
 
 }

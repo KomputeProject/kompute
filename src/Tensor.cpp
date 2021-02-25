@@ -76,6 +76,15 @@ Tensor::tensorType()
     return this->mTensorType;
 }
 
+bool
+Tensor::isInit() {
+    return this->mDevice &&
+        this->mPrimaryBuffer &&
+        this->mPrimaryMemory &&
+        this->mStagingBuffer &&
+        this->mStagingMemory;
+}
+
 void
 Tensor::setData(const std::vector<float>& data)
 {
@@ -429,7 +438,7 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
 }
 
 void
-Tensor::freeMemoryDestroyGPUResources()
+Tensor::destroy()
 {
     KP_LOG_DEBUG("Kompute Tensor started freeMemoryDestroyGPUResources()");
 
@@ -493,6 +502,10 @@ Tensor::freeMemoryDestroyGPUResources()
             this->mStagingMemory = nullptr;
             this->mFreeStagingMemory = false;
         }
+    }
+
+    if (this->mDevice) {
+        this->mDevice = nullptr;
     }
 
     KP_LOG_DEBUG("Kompute Tensor successful freeMemoryDestroyGPUResources()");

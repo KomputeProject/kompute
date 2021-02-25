@@ -17,8 +17,7 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
-    OpAlgoDispatch(const std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::shared_ptr<kp::Algorithm>& algorithm);
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -50,7 +49,6 @@ class OpAlgoDispatch : public OpBase
 
 private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mTensors;
     std::shared_ptr<Algorithm> mAlgorithm;
 };
 

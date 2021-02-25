@@ -61,12 +61,25 @@ Sequence::end()
     }
 }
 
+void
+Sequence::clear() {
+    KP_LOG_DEBUG("Kompute Sequence  calling clear");
+    this->end();
+}
+
 std::shared_ptr<Sequence>
 Sequence::eval()
 {
     KP_LOG_DEBUG("Kompute sequence EVAL BEGIN");
 
     return this->evalAsync()->evalAwait();
+}
+
+std::shared_ptr<Sequence>
+Sequence::eval(std::shared_ptr<OpBase> op) {
+    this->clear();
+    this->record(op);
+    this->eval();
 }
 
 std::shared_ptr<Sequence>
@@ -138,8 +151,16 @@ Sequence::isRecording()
     return this->mRecording;
 }
 
+bool
+Sequence::isInit() {
+    return this->mDevice &&
+        this->mCommandPool &&
+        this->mCommandBuffer &&
+        this->mComputeQueue;
+}
+
 void
-Sequence::freeMemoryDestroyGPUResources()
+Sequence::destroy()
 {
     KP_LOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
 
@@ -187,6 +208,16 @@ Sequence::freeMemoryDestroyGPUResources()
     if (this->mOperations.size()) {
         KP_LOG_INFO("Kompute Sequence clearing operations buffer");
         this->mOperations.clear();
+    }
+
+    if (this->mDevice) {
+        this->mDevice = nullptr;
+    }
+    if (this->mPhysicalDevice) {
+        this->mPhysicalDevice = nullptr;
+    }
+    if (this->mComputeQueue) {
+        this->mComputeQueue = nullptr;
     }
 
 }

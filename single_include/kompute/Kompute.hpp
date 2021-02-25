@@ -928,7 +928,9 @@ class Tensor
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
      */
-    void freeMemoryDestroyGPUResources();
+    void destroy();
+
+    bool isInit();
 
     /**
      * Returns the vector of data currently contained by the Tensor. It is
@@ -1129,10 +1131,6 @@ public:
             const Constants& specializationConstants = {},
             const Constants& pushConstants = {});
 
-    bool isInit();
-
-    void freeMemoryDestroyGPUResources();
-
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
      * respective pipelines and owned parameter groups.
@@ -1149,11 +1147,21 @@ public:
      */
     void recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer);
 
+    bool isInit();
+
     void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
+
+    const Workgroup& getWorkgroup();
+    const Constants& getSpecializationConstants();
+    const Constants& getPushConstants();
+    const std::vector<std::shared_ptr<Tensor>>& getTensors();
+
+    void destroy();
 
 private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
@@ -1184,7 +1192,7 @@ private:
     void createPipeline();
 
     // Parameters
-    void createParameters(const std::vector<std::shared_ptr<Tensor>>& tensorParams);
+    void createParameters();
 };
 
 } // End namespace kp
@@ -1271,6 +1279,10 @@ class Sequence: public std::enable_shared_from_this<Sequence>
     ~Sequence();
 
     /**
+     */
+    std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
+
+    /**
      * Record function for operation to be added to the GPU queue in batch. This
      * template requires classes to be derived from the OpBase class. This
      * function also requires the Sequence to be recording, otherwise it will
@@ -1280,7 +1292,146 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
      */
-    std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence>
+    record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{
+            new T(tensors, std::forward<TArgs>(params)...) };
+
+        return this->record(op);
+    }
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence>
+    record(std::shared_ptr<Algorithm> algorithm, TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{
+            new T(algorithm, std::forward<TArgs>(params)...) };
+
+        return this->record(op);
+    }
+
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    std::shared_ptr<Sequence> eval();
+
+    std::shared_ptr<Sequence> eval(std::shared_ptr<OpBase> op);
+
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence>
+    eval(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{
+            new T(tensors, std::forward<TArgs>(params)...) };
+
+        return this->eval(op);
+    }
+    // Needded as otherise can't use initialiser list
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence>
+    eval(std::shared_ptr<Algorithm> algorithm, TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{
+            new T(algorithm, std::forward<TArgs>(params)...) };
+
+        return this->eval(op);
+    }
+
+    /**
+     * Eval Async sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier. EvalAwait() must
+     * be called after to ensure the sequence is terminated correctly.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
+    std::shared_ptr<Sequence> evalAsync();
+
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence>
+    evalAsync(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{
+            new T(tensors, std::forward<TArgs>(params)...) };
+
+        return this->evalAsync(op);
+    }
+    // Needed as otherwise it's not possible to use initializer lists
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence>
+    evalAsync(std::shared_ptr<Algorithm> algorithm, TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{
+            new T(algorithm, std::forward<TArgs>(params)...) };
+
+        return this->evalAsync(op);
+    }
+
+    /**
+     * Eval Await waits for the fence to finish processing and then once it
+     * finishes, it runs the postEval of all operations.
+     *
+     * @param waitFor Number of milliseconds to wait before timing out.
+     * @return Boolean stating whether execution was successful.
+     */
+    std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
      * Clear function clears all operations currently recorded and starts recording again.
@@ -1304,37 +1455,13 @@ class Sequence: public std::enable_shared_from_this<Sequence>
     void end();
 
     /**
-     * Eval sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job with a barrier.
-     *
-     * @return Boolean stating whether execution was successful.
-     */
-    std::shared_ptr<Sequence> eval();
-
-    /**
-     * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job with a barrier. EvalAwait() must
-     * be called after to ensure the sequence is terminated correctly.
-     *
-     * @return Boolean stating whether execution was successful.
-     */
-    std::shared_ptr<Sequence> evalAsync();
-
-    /**
-     * Eval Await waits for the fence to finish processing and then once it
-     * finishes, it runs the postEval of all operations.
-     *
-     * @param waitFor Number of milliseconds to wait before timing out.
-     * @return Boolean stating whether execution was successful.
-     */
-    std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
-
-    /**
      * Returns true if the sequence is currently in recording activated.
      *
      * @return Boolean stating if recording ongoing.
      */
     bool isRecording();
+
+    bool isInit();
 
     /**
      * Returns true if the sequence is currently running - mostly used for async
@@ -1348,7 +1475,7 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * Destroys and frees the GPU resources which include the buffer and memory
      * and sets the sequence as init=False.
      */
-    void freeMemoryDestroyGPUResources();
+    void destroy();
 
   private:
     // -------------- NEVER OWNED RESOURCES
@@ -1444,6 +1571,8 @@ class Manager
      * they would like to create the resources on.
      *
      * @param physicalDeviceIndex The index of the physical device to use
+     * @param manageResources (Optional) Whether to manage the memory of the
+     * resources created and destroy when the manager is destroyed.
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
      * @param totalQueues The total number of compute queues to create.
@@ -1462,8 +1591,7 @@ class Manager
      */
     Manager(std::shared_ptr<vk::Instance> instance,
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device,
-            uint32_t physicalDeviceIndex);
+            std::shared_ptr<vk::Device> device);
 
     /**
      * Manager destructor which would ensure all owned resources are destroyed
@@ -1506,12 +1634,14 @@ class Manager
             const Constants& specializationConstants = {},
             const Constants& pushConstants = {});
 
+    void destroy();
+    void clear();
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
-    uint32_t mPhysicalDeviceIndex = -1;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
 
@@ -1523,7 +1653,7 @@ class Manager
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
 
-    uint32_t mCurrentSequenceIndex = -1;
+    bool mManageResources = false;
 
 #if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
@@ -1534,7 +1664,7 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {});
+    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {}, uint32_t hysicalDeviceIndex = 0);
 };
 
 } // End namespace kp
@@ -1553,8 +1683,7 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
-    OpAlgoDispatch(const std::vector<std::shared_ptr<Tensor>>& tensors,
-           const std::shared_ptr<kp::Algorithm>& algorithm);
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -1586,7 +1715,6 @@ class OpAlgoDispatch : public OpBase
 
 private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mTensors;
     std::shared_ptr<Algorithm> mAlgorithm;
 };
 
