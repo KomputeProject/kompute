@@ -32,13 +32,15 @@ TEST(TestLogisticRegression, TestMainLogisticRegression)
                                                         wIn, wOutI, wOutJ,
                                                         bIn, bOut,  lOut };
 
+        mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+
         std::vector<uint32_t> spirv = std::vector<uint32_t>(
-            (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-            (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv +
-              kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
+            (uint32_t*)kp::shader_data::test_shaders_glsl_test_logistic_regression_comp_spv,
+            (uint32_t*)(kp::shader_data::test_shaders_glsl_test_logistic_regression_comp_spv +
+              kp::shader_data::test_shaders_glsl_test_logistic_regression_comp_spv_len));
 
         std::shared_ptr<kp::Algorithm> algorithm =
-            mgr.algorithm(params, spirv, kp::Workgroup(), kp::Constants({5.0}));
+            mgr.algorithm(params, spirv, kp::Workgroup({5}), kp::Constants({5.0}));
 
         std::shared_ptr<kp::Sequence> sq =
             mgr.sequence()
@@ -103,6 +105,8 @@ TEST(TestLogisticRegression, TestMainLogisticRegressionManualCopy)
         std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
                                                         wIn, wOutI, wOutJ,
                                                         bIn, bOut,  lOut };
+
+        mgr.sequence()->record<kp::OpTensorSyncDevice>(params)->eval();
 
         std::vector<uint32_t> spirv = std::vector<uint32_t>(
             (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,

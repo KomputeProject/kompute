@@ -1686,7 +1686,7 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
-    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm);
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm, bool skipAlgoInit = false);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -1745,7 +1745,7 @@ class OpMult : public OpAlgoDispatch
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
     OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
-        : OpAlgoDispatch(algorithm)
+        : OpAlgoDispatch(algorithm, true)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 

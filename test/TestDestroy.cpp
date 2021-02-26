@@ -74,7 +74,7 @@ TEST(TestDestroy, TestDestroyTensorVector)
             mgr.sequence()
                 ->record<kp::OpTensorSyncDevice>(algo->getTensors())
                 ->record<kp::OpAlgoDispatch>(algo)
-                ->record<kp::OpTensorSyncDevice>(algo->getTensors())
+                ->record<kp::OpTensorSyncLocal>(algo->getTensors())
                 ->eval();
 
             tensorA->destroy();
@@ -111,11 +111,13 @@ TEST(TestDestroy, TestDestroySequenceSingle)
 
             tensorA = mgr.tensor({0, 0, 0});
 
-            mgr.sequence()
+            sq = mgr.sequence()
                 ->record<kp::OpTensorSyncDevice>({tensorA})
                 ->record<kp::OpAlgoDispatch>(mgr.algorithm({tensorA}, spirv))
                 ->record<kp::OpTensorSyncLocal>({tensorA})
                 ->eval();
+
+            sq->destroy();
 
             EXPECT_FALSE(sq->isInit());
         }

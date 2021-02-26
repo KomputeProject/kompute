@@ -15,7 +15,14 @@ Algorithm::Algorithm(
     KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
     this->mDevice = device;
-    this->rebuild(tensors, spirv, workgroup, specializationConstants, pushConstants);
+
+    if (tensors.size() && spirv.size()) {
+        KP_LOG_INFO("Kompute Algorithm initialising with tensor size: {} and spirv size: {}", tensors.size(), spirv.size());
+        this->rebuild(tensors, spirv, workgroup, specializationConstants, pushConstants);
+    }
+    else {
+        KP_LOG_INFO("Kompute Algorithm constructor with empty tensors and or spirv so not rebuilding vulkan components");
+    }
 }
 
 Algorithm::~Algorithm()
@@ -39,10 +46,10 @@ Algorithm::rebuild(
     this->mSpirv = spirv;
     this->mSpecializationConstants = specializationConstants;
     this->mPushConstants = pushConstants;
-    this->setWorkgroup(workgroup);
+    this->setWorkgroup(workgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
 
     // Descriptor pool is created first so if available then destroy all before rebuild
-    if (this->mFreeDescriptorPool) {
+    if (this->isInit()) {
         this->destroy();
     }
 
@@ -340,20 +347,6 @@ Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm calling record dispatch");
 
-    if(this->mPipelineCache) {
-        KP_LOG_WARN("Value valid");
-    }
-    else {
-        KP_LOG_WARN("NOT Value valid");
-    }
-
-    if(this->mPipeline) {
-        KP_LOG_WARN("Value valid");
-    }
-    else {
-        KP_LOG_WARN("NOT Value valid");
-    }
-
     commandBuffer->bindPipeline(vk::PipelineBindPoint::eCompute,
                                        *this->mPipeline);
 
@@ -376,10 +369,7 @@ Algorithm::recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 void
 Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
 
-    KP_LOG_INFO("Kompute OpAlgoCreate setting dispatch size X: {}, Y: {}, Z: {}",
-                this->mWorkgroup[0],
-                this->mWorkgroup[1],
-                this->mWorkgroup[2]);
+    KP_LOG_INFO("Kompute OpAlgoCreate setting dispatch size");
 
     // The dispatch size is set up based on either explicitly provided template
     // parameters or by default it would take the shape and size of the tensors
@@ -394,6 +384,11 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
     } else {
         this->mWorkgroup = { minSize, 1, 1 };
     }
+
+    KP_LOG_INFO("Kompute OpAlgoCreate set dispatch size X: {}, Y: {}, Z: {}",
+                this->mWorkgroup[0],
+                this->mWorkgroup[1],
+                this->mWorkgroup[2]);
 }
 
 const Workgroup&

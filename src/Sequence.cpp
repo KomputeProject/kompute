@@ -78,8 +78,7 @@ Sequence::eval()
 std::shared_ptr<Sequence>
 Sequence::eval(std::shared_ptr<OpBase> op) {
     this->clear();
-    this->record(op);
-    this->eval();
+    return this->record(op)->eval();
 }
 
 std::shared_ptr<Sequence>
@@ -88,6 +87,7 @@ Sequence::evalAsync()
     if (this->isRecording()) {
         this->end();
     }
+
     if (this->mIsRunning) {
         throw std::runtime_error("Kompute Sequence evalAsync called when an eval async was "
                     "called without successful wait");

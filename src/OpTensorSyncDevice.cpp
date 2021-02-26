@@ -19,6 +19,8 @@ OpTensorSyncDevice::OpTensorSyncDevice(
 OpTensorSyncDevice::~OpTensorSyncDevice()
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice destructor started");
+
+    this->mTensors.clear();
 }
 
 void

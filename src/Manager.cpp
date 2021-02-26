@@ -33,7 +33,7 @@ Manager::Manager()
 Manager::Manager(uint32_t physicalDeviceIndex,
                  const std::vector<uint32_t>& familyQueueIndices)
 {
-    this->mManageResources = false;
+    this->mManageResources = true;
 
     this->createInstance();
     this->createDevice(familyQueueIndices, physicalDeviceIndex);
@@ -43,7 +43,7 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
                  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                  std::shared_ptr<vk::Device> device)
 {
-    this->mManageResources = true;
+    this->mManageResources = false;
 
     this->mInstance = instance;
     this->mPhysicalDevice = physicalDevice;
