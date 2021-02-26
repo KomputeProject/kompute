@@ -7,12 +7,12 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy constructor with params");
 
+    this->mTensors = tensors;
+
     if (this->mTensors.size() < 2) {
         throw std::runtime_error(
           "Kompute OpTensorCopy called with less than 2 tensor");
     }
-
-    this->mTensors = tensors;
 }
 
 OpTensorCopy::~OpTensorCopy()
