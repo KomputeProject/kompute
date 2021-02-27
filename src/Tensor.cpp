@@ -80,9 +80,7 @@ bool
 Tensor::isInit() {
     return this->mDevice &&
         this->mPrimaryBuffer &&
-        this->mPrimaryMemory &&
-        this->mStagingBuffer &&
-        this->mStagingMemory;
+        this->mPrimaryMemory;
 }
 
 void
@@ -443,14 +441,14 @@ Tensor::destroy()
     KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
     if (!this->mDevice) {
-        KP_LOG_ERROR(
+        KP_LOG_WARN(
           "Kompute Tensor destructor reached with null Device pointer");
         return;
     }
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
-            KP_LOG_ERROR("Kompose Tensor expected to destroy primary buffer "
+            KP_LOG_WARN("Kompose Tensor expected to destroy primary buffer "
                          "but got null buffer");
         } else {
             KP_LOG_DEBUG("Kompose Tensor destroying primary buffer");
@@ -464,7 +462,7 @@ Tensor::destroy()
 
     if (this->mFreeStagingBuffer) {
         if (!this->mStagingBuffer) {
-            KP_LOG_ERROR("Kompose Tensor expected to destroy staging buffer "
+            KP_LOG_WARN("Kompose Tensor expected to destroy staging buffer "
                          "but got null buffer");
         } else {
             KP_LOG_DEBUG("Kompose Tensor destroying staging buffer");
@@ -478,7 +476,7 @@ Tensor::destroy()
 
     if (this->mFreePrimaryMemory) {
         if (!this->mPrimaryMemory) {
-            KP_LOG_ERROR("Kompose Tensor expected to free primary memory but "
+            KP_LOG_WARN("Kompose Tensor expected to free primary memory but "
                          "got null memory");
         } else {
             KP_LOG_DEBUG("Kompose Tensor freeing primary memory");
@@ -492,7 +490,7 @@ Tensor::destroy()
 
     if (this->mFreeStagingMemory) {
         if (!this->mStagingMemory) {
-            KP_LOG_ERROR("Kompose Tensor expected to free staging memory but "
+            KP_LOG_WARN("Kompose Tensor expected to free staging memory but "
                          "got null memory");
         } else {
             KP_LOG_DEBUG("Kompose Tensor freeing staging memory");
