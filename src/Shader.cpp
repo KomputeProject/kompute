@@ -1,7 +1,6 @@
 
 #if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
 #include "kompute/Shader.hpp"
-#include <StandAlone/ResourceLimits.h>
 
 namespace kp {
 
@@ -9,7 +8,8 @@ std::vector<uint32_t>
 Shader::compile_sources(const std::vector<std::string>& sources,
                                    const std::vector<std::string>& files,
                                    const std::string& entryPoint,
-                                   std::vector<std::pair<std::string,std::string>> definitions) {
+                                   std::vector<std::pair<std::string,std::string>> definitions,
+                                   const TBuiltInResource resources) {
 
     // Initialize glslang library.
     glslang::InitializeProcess();
@@ -36,7 +36,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
 
     std::string info_log = "";
     const EShMessages messages = static_cast<EShMessages>(EShMsgDefault | EShMsgVulkanRules | EShMsgSpvRules);
-    if (!shader.parse(&glslang::DefaultTBuiltInResource, 100, false, messages))
+    if (!shader.parse(&resources, 100, false, messages))
     {
         info_log = std::string(shader.getInfoLog()) + "\n" + std::string(shader.getInfoDebugLog());
         KP_LOG_ERROR("Kompute Shader Error: {}", info_log);
@@ -89,8 +89,9 @@ Shader::compile_sources(const std::vector<std::string>& sources,
 std::vector<uint32_t>
 Shader::compile_source(const std::string& source,
         const std::string& entryPoint,
-        std::vector<std::pair<std::string,std::string>> definitions) {
-    return compile_sources({source});
+        std::vector<std::pair<std::string,std::string>> definitions,
+        const TBuiltInResource resource) {
+    return compile_sources({source}, std::vector<std::string>({}), entryPoint, definitions, resource);
 }
 
 }
