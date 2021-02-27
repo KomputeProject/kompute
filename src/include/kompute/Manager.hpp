@@ -7,8 +7,6 @@
 
 #include "kompute/Sequence.hpp"
 
-#include "kompute/operations/OpTensorSyncDevice.hpp"
-
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -83,8 +81,7 @@ class Manager
      */
     std::shared_ptr<Tensor> tensor(
       const std::vector<float>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice,
-      bool syncDataToGPU = true);
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice);
 
     std::shared_ptr<Algorithm> algorithm(
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},

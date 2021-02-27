@@ -346,8 +346,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices, uint32_t 
 std::shared_ptr<Tensor>
 Manager::tensor(
   const std::vector<float>& data,
-  Tensor::TensorTypes tensorType,
-  bool syncDataToGPU)
+  Tensor::TensorTypes tensorType)
 {
     KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
