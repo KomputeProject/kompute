@@ -332,6 +332,7 @@ Algorithm::createPipeline()
     vk::Pipeline pipeline =
       this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
     this->mPipeline = std::make_shared<vk::Pipeline>(pipeline);
+    this->mFreePipeline = true;
 #endif
 
     // TODO: Update to consistent

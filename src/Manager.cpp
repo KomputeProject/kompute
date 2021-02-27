@@ -117,7 +117,6 @@ Manager::destroy() {
     if (this->mDebugReportCallback) {
         this->mInstance->destroyDebugReportCallbackEXT(
           this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
-        this->mInstance = nullptr;
         KP_LOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
     }
 #endif
