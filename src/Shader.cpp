@@ -9,7 +9,7 @@ Shader::compile_sources(const std::vector<std::string>& sources,
                                    const std::vector<std::string>& files,
                                    const std::string& entryPoint,
                                    std::vector<std::pair<std::string,std::string>> definitions,
-                                   const TBuiltInResource resources) {
+                                   const TBuiltInResource& resources) {
 
     // Initialize glslang library.
     glslang::InitializeProcess();
@@ -90,7 +90,7 @@ std::vector<uint32_t>
 Shader::compile_source(const std::string& source,
         const std::string& entryPoint,
         std::vector<std::pair<std::string,std::string>> definitions,
-        const TBuiltInResource resource) {
+        const TBuiltInResource& resource) {
     return compile_sources({source}, std::vector<std::string>({}), entryPoint, definitions, resource);
 }
 

@@ -6,7 +6,7 @@
 
 #include <glslang/Include/ResourceLimits.h>
 #include <glslang/Public/ShaderLang.h>
-#include <glslang/SPIRV/GlslangToSpv.h>
+#include <SPIRV/GlslangToSpv.h>
 
 #include "kompute/Core.hpp"
 
@@ -36,7 +36,7 @@ public:
             const std::vector<std::string>& files = {},
             const std::string& entryPoint = "main",
             std::vector<std::pair<std::string,std::string>> definitions = {},
-            const TBuiltInResource resources = defaultResource);
+            const TBuiltInResource& resources = defaultResource);
 
     /**
      * Compile a single glslang source from string value. Currently this function
@@ -55,10 +55,12 @@ public:
             const std::string& source,
             const std::string& entryPoint = "main",
             std::vector<std::pair<std::string,std::string>> definitions = {},
-            const TBuiltInResource resources = defaultResource);
+            const TBuiltInResource& resources = defaultResource);
 
 private:
     // The default resource limit for the GLSL compiler, can be overwritten
+    // Has been adobted by:
+    // https://github.com/KhronosGroup/glslang/blob/master/StandAlone/ResourceLimits.cpp
     static constexpr TBuiltInResource defaultResource = {
     /* .MaxLights = */ 0,
     /* .MaxClipPlanes = */ 0,
