@@ -174,7 +174,7 @@ Sequence::destroy()
     KP_LOG_DEBUG("Kompute Sequence destroy called");
 
     if (!this->mDevice) {
-        KP_LOG_ERROR("Kompute Sequence destroy called "
+        KP_LOG_WARN("Kompute Sequence destroy called "
                      "with null Device pointer");
         return;
     }
@@ -182,7 +182,7 @@ Sequence::destroy()
     if (this->mFreeCommandBuffer) {
         KP_LOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            KP_LOG_ERROR(
+            KP_LOG_WARN(
               "Kompute Sequence destroy called with null "
               "CommandPool pointer");
             return;
@@ -199,7 +199,7 @@ Sequence::destroy()
     if (this->mFreeCommandPool) {
         KP_LOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            KP_LOG_ERROR(
+            KP_LOG_WARN(
               "Kompute Sequence destroy called with null "
               "CommandPool pointer");
             return;
