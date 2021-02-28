@@ -32,20 +32,26 @@ void compileShaderWithGivenResources(const std::string shaderString, const TBuil
 
 TEST(TestShaderResources, TestNoMaxLight)
 {
-    const TBuiltInResource noMaxLightResources = { /* .MaxLights = */ 0, 6, 32, 32, 64, 4096, 64, 32, 80, 32, 4096, 32, 128, 8, 16, 16, 15, -8, 7, 8, 65535, 65535, 65535, 1024, 1024, 64, 1024, 16, 8, 8, 1, 60, 64, 64, 128, 128, 8, 8, 8, 0, 0, 0, 0, 0, 8, 8, 16, 256, 1024, 1024, 64, 128, 128, 16, 1024, 4096, 128, 128, 16, 1024, 120, 32, 64, 16, 0, 0, 0, 0, 8, 8, 1, 0, 0, 0, 0, 1, 1, 16384, 4, 64, 8, 8, 4, 256, 512, 32, 1, 1, 32, 1, 1, 4, 1, {true, true, true, true, true, true, true, true, true}};
-    EXPECT_NO_THROW(compileShaderWithGivenResources(shaderString,noMaxLightResources));
+    TBuiltInResource noMaxLightResources = kp::defaultResource;
+    noMaxLightResources.maxLights=0;
+        
+    EXPECT_NO_THROW(compileShaderWithGivenResources(shaderString, noMaxLightResources));
 }
 
 
 TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 {
-    const TBuiltInResource smallComputeWorkGroupSizeXResources = { 32, 6, 32, 32, 64, 4096, 64, 32, 80, 32, 4096, 32, 128, 8, 16, 16, 15, -8, 7, 8, 65535, 65535, 65535, /* .MaxComputeWorkGroupSizeX = */0, 1024, 64, 1024, 16, 8, 8, 1, 60, 64, 64, 128, 128, 8, 8, 8, 0, 0, 0, 0, 0, 8, 8, 16, 256, 1024, 1024, 64, 128, 128, 16, 1024, 4096, 128, 128, 16, 1024, 120, 32, 64, 16, 0, 0, 0, 0, 8, 8, 1, 0, 0, 0, 0, 1, 1, 16384, 4, 64, 8, 8, 4, 256, 512, 32, 1, 1, 32, 1, 1, 4, 1, {true, true, true, true, true, true, true, true, true}};
+    TBuiltInResource smallComputeWorkGroupSizeXResources = kp::defaultResource;
+    noMaxLightResources.maxComputeWorkGroupSizeX=0;
+    
     ASSERT_THROW(compileShaderWithGivenResources(shaderString, smallComputeWorkGroupSizeXResources), std::runtime_error);
 } 
 
 
 TEST(TestShaderResources, TestNoWhileLoop)
 {
-    const TBuiltInResource noWhileLoopResources = { 32, 6, 32, 32, 64, 4096, 64, 32, 80, 32, 4096, 32, 128, 8, 16, 16, 15, -8, 7, 8, 65535, 65535, 65535, 1024, 1024, 64, 1024, 16, 8, 8, 1, 60, 64, 64, 128, 128, 8, 8, 8, 0, 0, 0, 0, 0, 8, 8, 16, 256, 1024, 1024, 64, 128, 128, 16, 1024, 4096, 128, 128, 16, 1024, 120, 32, 64, 16, 0, 0, 0, 0, 8, 8, 1, 0, 0, 0, 0, 1, 1, 16384, 4, 64, 8, 8, 4, 256, 512, 32, 1, 1, 32, 1, 1, 4, 1, {true, /* .whileLoops = */false, true, true, true, true, true, true, true}};
+    TBuiltInResource noWhileLoopResources = kp::defaultResource;
+    noWhileLoopResources.limits.whileLoops=0;
+    
     ASSERT_THROW(compileShaderWithGivenResources(shaderString, noWhileLoopResources), std::runtime_error);
 } 
