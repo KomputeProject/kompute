@@ -30,5 +30,5 @@ def test_array_multiplication():
         .record(kp.OpTensorSyncLocal([tensor_out]))
         .eval())
 
-    assert tensor_out.data() == [2.0, 4.0, 6.0]
-    assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
+    assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
+    assert np.all(tensor_out.data() == [2.0, 4.0, 6.0])

@@ -69,7 +69,7 @@ void main()
         .record(kp.OpTensorSyncLocal(params))
         .eval())
 
-    assert tensor_out.data() == [2.0, 4.0, 6.0]
+    assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
 
 def test_sequence():
     """
@@ -116,8 +116,8 @@ def test_sequence():
 
     assert sq.is_init() == False
 
-    assert tensor_out.data() == [2.0, 4.0, 6.0]
-    assert np.all(tensor_out.numpy() == [2.0, 4.0, 6.0])
+    assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
+    assert np.all(tensor_out.data() == [2.0, 4.0, 6.0])
 
     tensor_in_a.destroy()
     tensor_in_b.destroy()
@@ -126,6 +126,39 @@ def test_sequence():
     assert tensor_in_a.is_init() == False
     assert tensor_in_b.is_init() == False
     assert tensor_out.is_init() == False
+
+def test_pushconsts():
+
+    spirv = kp.Shader.compile_source("""
+          #version 450
+          layout(push_constant) uniform PushConstants {
+            float x;
+            float y;
+            float z;
+          } pcs;
+          layout (local_size_x = 1) in;
+          layout(set = 0, binding = 0) buffer a { float pa[]; };
+          void main() {
+              pa[0] += pcs.x;
+              pa[1] += pcs.y;
+              pa[2] += pcs.z;
+          }
+    """)
+
+    mgr = kp.Manager()
+
+    tensor = mgr.tensor([0, 0, 0])
+
+    algo = mgr.algorithm([tensor], spirv, (1, 1, 1))
+
+    (mgr.sequence()
+        .record(kp.OpTensorSyncDevice([tensor]))
+        .record(kp.OpAlgoDispatch(algo, [0.1, 0.2, 0.3]))
+        .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
+        .record(kp.OpTensorSyncLocal([tensor]))
+        .eval())
+
+    assert np.all(tensor.data() == np.array([0.4, 0.4, 0.4], dtype=np.float32))
 
 def test_workgroup():
     mgr = kp.Manager(0)
@@ -151,9 +184,9 @@ def test_workgroup():
         .record(kp.OpTensorSyncLocal([tensor_a, tensor_b]))
         .eval())
 
-    print(tensor_a.numpy())
-    print(tensor_b.numpy())
+    print(tensor_a.data())
+    print(tensor_b.data())
 
-    assert np.all(tensor_a.numpy() == np.stack([np.arange(16)]*8, axis=1).ravel())
-    assert np.all(tensor_b.numpy() == np.stack([np.arange(8)]*16, axis=0).ravel())
+    assert np.all(tensor_a.data() == np.stack([np.arange(16)]*8, axis=1).ravel())
+    assert np.all(tensor_b.data() == np.stack([np.arange(8)]*16, axis=0).ravel())
 

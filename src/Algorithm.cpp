@@ -2,8 +2,6 @@
 
 #include "kompute/Algorithm.hpp"
 
-#include "fmt/ranges.h"
-
 namespace kp {
 
 Algorithm::Algorithm(

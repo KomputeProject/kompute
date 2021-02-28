@@ -4,6 +4,8 @@
 
 #include <kompute/Kompute.hpp>
 
+#include "fmt/ranges.h"
+
 #include "docstrings.hpp"
 
 namespace py = pybind11;
@@ -64,7 +66,8 @@ PYBIND11_MODULE(kp, m) {
         .def(py::init<const std::vector<std::shared_ptr<kp::Tensor>>&>());
 
     py::class_<kp::OpAlgoDispatch, std::shared_ptr<kp::OpAlgoDispatch>>(m, "OpAlgoDispatch", py::base<kp::OpBase>())
-        .def(py::init<const std::shared_ptr<kp::Algorithm>&>());
+        .def(py::init<const std::shared_ptr<kp::Algorithm>&,const kp::Constants&>(),
+                py::arg("algorithm"), py::arg("push_consts") = kp::Constants());
 
     py::class_<kp::OpMult, std::shared_ptr<kp::OpMult>>(m, "OpMult", py::base<kp::OpBase>())
         .def(py::init<const std::vector<std::shared_ptr<kp::Tensor>>&,const std::shared_ptr<kp::Algorithm>&>());
@@ -73,12 +76,10 @@ PYBIND11_MODULE(kp, m) {
         .def("get_tensors", &kp::Algorithm::getTensors)
         .def("destroy", &kp::Algorithm::destroy)
         .def("get_spec_consts", &kp::Algorithm::getSpecializationConstants)
-        .def("get_push_consts", &kp::Algorithm::getPushConstants)
         .def("is_init", &kp::Algorithm::isInit);
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
-        .def("data", &kp::Tensor::data, DOC(kp, Tensor, data))
-        .def("numpy", [](kp::Tensor& self) {
+        .def("data", [](kp::Tensor& self) {
                 return py::array(self.data().size(), self.data().data());
             }, "Returns stored data as a new numpy array.")
         .def("__getitem__", [](kp::Tensor &self, size_t index) -> float { return self.data()[index]; },
@@ -150,16 +151,15 @@ PYBIND11_MODULE(kp, m) {
                              const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
                              const py::bytes& spirv,
                              const kp::Workgroup& workgroup,
-                             const kp::Constants& spec_consts,
-                             const kp::Constants& push_consts) {
+                             const kp::Constants& spec_consts) {
                     py::buffer_info info(py::buffer(spirv).request());
                     const char *data = reinterpret_cast<const char *>(info.ptr);
                     size_t length = static_cast<size_t>(info.size);
                     std::vector<uint32_t> spirvVec((uint32_t*)data, (uint32_t*)(data + length));
-                    return self.algorithm(tensors, spirvVec, workgroup, spec_consts, push_consts);
+                    return self.algorithm(tensors, spirvVec, workgroup, spec_consts);
                 },
             "Algorithm initialisation function",
-            py::arg("tensors"), py::arg("spirv"), py::arg("workgroup") = kp::Workgroup(), py::arg("spec_consts") = kp::Constants(), py::arg("push_consts") = kp::Constants());
+            py::arg("tensors"), py::arg("spirv"), py::arg("workgroup") = kp::Workgroup(), py::arg("spec_consts") = kp::Constants());
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
