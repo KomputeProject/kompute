@@ -84,7 +84,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
 
     for (uint32_t i = 0; i < numParallel; i++) {
         inputsAsyncB.push_back(mgr.tensor(data));
-        algosAsync.push_back(mgr.algorithm({inputsAsyncB[i]}, spirv));
+        algosAsync.push_back(mgr.algorithm({ inputsAsyncB[i] }, spirv));
     }
 
     std::vector<std::shared_ptr<kp::Sequence>> sqs;
@@ -160,8 +160,8 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
 
     sq1->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
-    std::shared_ptr<kp::Algorithm> algo1 = mgr.algorithm({tensorA}, spirv);
-    std::shared_ptr<kp::Algorithm> algo2 = mgr.algorithm({tensorB}, spirv);
+    std::shared_ptr<kp::Algorithm> algo1 = mgr.algorithm({ tensorA }, spirv);
+    std::shared_ptr<kp::Algorithm> algo2 = mgr.algorithm({ tensorB }, spirv);
 
     sq1->evalAsync<kp::OpAlgoDispatch>(algo1);
     sq2->evalAsync<kp::OpAlgoDispatch>(algo2);

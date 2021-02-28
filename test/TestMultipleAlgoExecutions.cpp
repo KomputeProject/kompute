@@ -3,9 +3,10 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality) {
+TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
+{
 
-    kp::Manager mgr; 
+    kp::Manager mgr;
 
     auto tensorInA = mgr.tensor({ 2., 2., 2. });
     auto tensorInB = mgr.tensor({ 1., 2., 3. });
@@ -38,21 +39,24 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality) {
         }
     )");
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = {tensorInA, tensorInB, tensorOutA, tensorOutB};
+    std::vector<std::shared_ptr<kp::Tensor>> params = {
+        tensorInA, tensorInB, tensorOutA, tensorOutB
+    };
 
-    kp::Workgroup workgroup({3, 1, 1});
+    kp::Workgroup workgroup({ 3, 1, 1 });
     kp::Constants specConsts({ 2 });
     kp::Constants pushConstsA({ 2.0 });
     kp::Constants pushConstsB({ 3.0 });
 
-    auto algorithm = mgr.algorithm(params, kp::Shader::compile_source(shader), workgroup, specConsts);
+    auto algorithm = mgr.algorithm(
+      params, kp::Shader::compile_source(shader), workgroup, specConsts);
 
     // 3. Run operation with string shader synchronously
     mgr.sequence()
-        ->record<kp::OpTensorSyncDevice>(params)
-        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsA)
-        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
-        ->eval();
+      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpAlgoDispatch>(algorithm, pushConstsA)
+      ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
+      ->eval();
 
     auto sq = mgr.sequence();
     sq->evalAsync<kp::OpTensorSyncLocal>(params);
@@ -83,12 +87,12 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 
     {
         mgr.sequence()
-            ->record<kp::OpTensorSyncDevice>({ tensorA })
-            ->record<kp::OpAlgoDispatch>(mgr.algorithm({tensorA}, spirv))
-            ->record<kp::OpAlgoDispatch>(mgr.algorithm({tensorA}, spirv))
-            ->record<kp::OpAlgoDispatch>(mgr.algorithm({tensorA}, spirv))
-            ->record<kp::OpTensorSyncLocal>({ tensorA })
-            ->eval();
+          ->record<kp::OpTensorSyncDevice>({ tensorA })
+          ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record<kp::OpTensorSyncLocal>({ tensorA })
+          ->eval();
     }
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
@@ -111,29 +115,20 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
-    std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm({tensorA}, spirv);
+    std::shared_ptr<kp::Algorithm> algorithm =
+      mgr.algorithm({ tensorA }, spirv);
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    mgr.sequence()
-        ->record<kp::OpTensorSyncDevice>({ tensorA })
-        ->eval();
+    mgr.sequence()->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-    mgr.sequence()
-        ->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval();
+    mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    mgr.sequence()
-        ->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval();
+    mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    mgr.sequence()
-        ->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval();
+    mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    mgr.sequence()
-        ->record<kp::OpTensorSyncLocal>({ tensorA })
-        ->eval();
+    mgr.sequence()->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
@@ -156,23 +151,20 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
-    std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm({tensorA}, spirv);
+    std::shared_ptr<kp::Algorithm> algorithm =
+      mgr.algorithm({ tensorA }, spirv);
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
     sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-    sq->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval();
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval();
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval();
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->record<kp::OpTensorSyncLocal>({ tensorA })
-        ->eval();
+    sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
@@ -194,23 +186,19 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
-    std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm({tensorA}, spirv);
+    std::shared_ptr<kp::Algorithm> algorithm =
+      mgr.algorithm({ tensorA }, spirv);
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
     sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-    sq->record<kp::OpAlgoDispatch>(algorithm)
-        ->eval()
-        ->eval()
-        ->eval();
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval()->eval()->eval();
 
-    sq->record<kp::OpTensorSyncLocal>({ tensorA })
-        ->eval();
+    sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
-
 
 TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
 {
@@ -234,22 +222,18 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
 
             std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
-            std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm({tensorA}, spirv);
+            std::shared_ptr<kp::Algorithm> algorithm =
+              mgr.algorithm({ tensorA }, spirv);
 
             sq = mgr.sequence();
 
             sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-            sq->record<kp::OpAlgoDispatch>(algorithm)
-                ->eval()
-                ->eval()
-                ->eval();
+            sq->record<kp::OpAlgoDispatch>(algorithm)->eval()->eval()->eval();
 
-            sq->record<kp::OpTensorSyncLocal>({ tensorA })
-                ->eval();
+            sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
         }
     }
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
 }
-

@@ -32,16 +32,18 @@ TEST(TestPushConstants, TestTwoConstants)
             std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
 
             std::shared_ptr<kp::Algorithm> algo =
-                mgr.algorithm({tensor}, spirv, kp::Workgroup({1}));
+              mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }));
 
             sq = mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>({tensor})
-                ->record<kp::OpAlgoDispatch>(algo, kp::Constants{0.1, 0.2, 0.3})
-                ->record<kp::OpAlgoDispatch>(algo, kp::Constants{0.3, 0.2, 0.1})
-                ->record<kp::OpTensorSyncLocal>({tensor})
-                ->eval();
+                   ->record<kp::OpTensorSyncDevice>({ tensor })
+                   ->record<kp::OpAlgoDispatch>(algo,
+                                                kp::Constants{ 0.1, 0.2, 0.3 })
+                   ->record<kp::OpAlgoDispatch>(algo,
+                                                kp::Constants{ 0.3, 0.2, 0.1 })
+                   ->record<kp::OpTensorSyncLocal>({ tensor })
+                   ->eval();
 
-            EXPECT_EQ(tensor->data(), kp::Constants({0.4, 0.4, 0.4}));
+            EXPECT_EQ(tensor->data(), kp::Constants({ 0.4, 0.4, 0.4 }));
         }
     }
 }

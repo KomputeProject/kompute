@@ -4,23 +4,25 @@
 
 namespace kp {
 
-Algorithm::Algorithm(
-            std::shared_ptr<vk::Device> device,
-            const std::vector<std::shared_ptr<Tensor>>& tensors,
-            const std::vector<uint32_t>& spirv,
-            const Workgroup& workgroup,
-            const Constants& specializationConstants)
+Algorithm::Algorithm(std::shared_ptr<vk::Device> device,
+                     const std::vector<std::shared_ptr<Tensor>>& tensors,
+                     const std::vector<uint32_t>& spirv,
+                     const Workgroup& workgroup,
+                     const Constants& specializationConstants)
 {
     KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
     this->mDevice = device;
 
     if (tensors.size() && spirv.size()) {
-        KP_LOG_INFO("Kompute Algorithm initialising with tensor size: {} and spirv size: {}", tensors.size(), spirv.size());
+        KP_LOG_INFO("Kompute Algorithm initialising with tensor size: {} and "
+                    "spirv size: {}",
+                    tensors.size(),
+                    spirv.size());
         this->rebuild(tensors, spirv, workgroup, specializationConstants);
-    }
-    else {
-        KP_LOG_INFO("Kompute Algorithm constructor with empty tensors and or spirv so not rebuilding vulkan components");
+    } else {
+        KP_LOG_INFO("Kompute Algorithm constructor with empty tensors and or "
+                    "spirv so not rebuilding vulkan components");
     }
 }
 
@@ -32,20 +34,21 @@ Algorithm::~Algorithm()
 }
 
 void
-Algorithm::rebuild(
-            const std::vector<std::shared_ptr<Tensor>>& tensors,
-            const std::vector<uint32_t>& spirv,
-            const Workgroup& workgroup,
-            const Constants& specializationConstants)
+Algorithm::rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
+                   const std::vector<uint32_t>& spirv,
+                   const Workgroup& workgroup,
+                   const Constants& specializationConstants)
 {
     KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
     this->mTensors = tensors;
     this->mSpirv = spirv;
     this->mSpecializationConstants = specializationConstants;
-    this->setWorkgroup(workgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
+    this->setWorkgroup(workgroup,
+                       this->mTensors.size() ? this->mTensors[0]->size() : 1);
 
-    // Descriptor pool is created first so if available then destroy all before rebuild
+    // Descriptor pool is created first so if available then destroy all before
+    // rebuild
     if (this->isInit()) {
         this->destroy();
     }
@@ -56,22 +59,20 @@ Algorithm::rebuild(
 }
 
 bool
-Algorithm::isInit() {
-    return this->mPipeline &&
-        this->mPipelineCache &&
-        this->mPipelineLayout &&
-        this->mDescriptorPool &&
-        this->mDescriptorSet &&
-        this->mDescriptorSetLayout &&
-        this->mShaderModule;
+Algorithm::isInit()
+{
+    return this->mPipeline && this->mPipelineCache && this->mPipelineLayout &&
+           this->mDescriptorPool && this->mDescriptorSet &&
+           this->mDescriptorSetLayout && this->mShaderModule;
 }
 
 void
-Algorithm::destroy() {
+Algorithm::destroy()
+{
 
     if (!this->mDevice) {
-        KP_LOG_WARN(
-          "Kompute Algorithm destroy function reached with null Device pointer");
+        KP_LOG_WARN("Kompute Algorithm destroy function reached with null "
+                    "Device pointer");
         return;
     }
 
@@ -79,7 +80,7 @@ Algorithm::destroy() {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline");
         if (!this->mPipeline) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                         "pipeline but it is null");
+                        "pipeline but it is null");
         }
         this->mDevice->destroy(
           *this->mPipeline,
@@ -91,7 +92,7 @@ Algorithm::destroy() {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
         if (!this->mPipelineCache) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                         "pipeline cache but it is null");
+                        "pipeline cache but it is null");
         }
         this->mDevice->destroy(
           *this->mPipelineCache,
@@ -103,7 +104,7 @@ Algorithm::destroy() {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
         if (!this->mPipelineLayout) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                         "pipeline layout but it is null");
+                        "pipeline layout but it is null");
         }
         this->mDevice->destroy(
           *this->mPipelineLayout,
@@ -115,7 +116,7 @@ Algorithm::destroy() {
         KP_LOG_DEBUG("Kompute Algorithm Destroying shader module");
         if (!this->mShaderModule) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy shader "
-                         "module but it is null");
+                        "module but it is null");
         }
         this->mDevice->destroy(
           *this->mShaderModule,
@@ -123,10 +124,10 @@ Algorithm::destroy() {
         this->mShaderModule = nullptr;
     }
 
-    // We don't call freeDescriptorSet as the descriptor pool is not created with
-    // VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
+    // We don't call freeDescriptorSet as the descriptor pool is not created
+    // with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
     // (https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-vkFreeDescriptorSets-descriptorPool-00312))
-    //if (this->mFreeDescriptorSet && this->mDescriptorSet) {
+    // if (this->mFreeDescriptorSet && this->mDescriptorSet) {
     //    KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
     //    if (!this->mDescriptorSet) {
     //        KP_LOG_WARN(
@@ -141,7 +142,7 @@ Algorithm::destroy() {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
         if (!this->mDescriptorSetLayout) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                         "descriptor set layout but it is null");
+                        "descriptor set layout but it is null");
         }
         this->mDevice->destroy(
           *this->mDescriptorSetLayout,
@@ -153,7 +154,7 @@ Algorithm::destroy() {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
         if (!this->mDescriptorPool) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                         "descriptor pool but it is null");
+                        "descriptor pool but it is null");
         }
         this->mDevice->destroy(
           *this->mDescriptorPool,
@@ -246,10 +247,10 @@ Algorithm::createShaderModule()
 {
     KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
 
-    vk::ShaderModuleCreateInfo shaderModuleInfo(
-      vk::ShaderModuleCreateFlags(),
-      sizeof(uint32_t) * this->mSpirv.size(),
-      this->mSpirv.data());
+    vk::ShaderModuleCreateInfo shaderModuleInfo(vk::ShaderModuleCreateFlags(),
+                                                sizeof(uint32_t) *
+                                                  this->mSpirv.size(),
+                                                this->mSpirv.data());
 
     KP_LOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
                  this->mSpirv.size());
@@ -281,14 +282,14 @@ Algorithm::createPipeline()
 
     for (uint32_t i = 0; i < this->mSpecializationConstants.size(); i++) {
         vk::SpecializationMapEntry specializationEntry(
-           static_cast<uint32_t>(i),
-           static_cast<uint32_t>(sizeof(float) * i),
-           sizeof(float));
+          static_cast<uint32_t>(i),
+          static_cast<uint32_t>(sizeof(float) * i),
+          sizeof(float));
 
         specializationEntries.push_back(specializationEntry);
     }
 
-    // This passes ownership of the memory so we remove ownership from 
+    // This passes ownership of the memory so we remove ownership from
     // specialization container by using "transferDataOwnership"
     vk::SpecializationInfo specializationInfo(
       static_cast<uint32_t>(specializationEntries.size()),
@@ -338,7 +339,8 @@ Algorithm::createPipeline()
     // TODO: Update to consistent
     // this->mPipeline = std::make_shared<vk::Pipeline>();
     // this->mDevice->createComputePipelines(
-    //         *this->mPipelineCache, 1, &pipelineInfo, nullptr, this->mPipeline.get());
+    //         *this->mPipelineCache, 1, &pipelineInfo, nullptr,
+    //         this->mPipeline.get());
 
     KP_LOG_DEBUG("Kompute Algorithm Create Pipeline Success");
 }
@@ -349,29 +351,31 @@ Algorithm::bindCore(const vk::CommandBuffer& commandBuffer)
     KP_LOG_DEBUG("Kompute Algorithm binding pipeline");
 
     commandBuffer.bindPipeline(vk::PipelineBindPoint::eCompute,
-                                       *this->mPipeline);
+                               *this->mPipeline);
 
     KP_LOG_DEBUG("Kompute Algorithm binding descriptor sets");
 
     commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eCompute,
-                                             *this->mPipelineLayout,
-                                             0, // First set
-                                             *this->mDescriptorSet,
-                                             nullptr // Dispatcher
+                                     *this->mPipelineLayout,
+                                     0, // First set
+                                     *this->mDescriptorSet,
+                                     nullptr // Dispatcher
     );
 }
 
 void
-Algorithm::bindPush(const vk::CommandBuffer& commandBuffer, const Constants& pushConstants)
+Algorithm::bindPush(const vk::CommandBuffer& commandBuffer,
+                    const Constants& pushConstants)
 {
     if (pushConstants.size()) {
-        KP_LOG_DEBUG("Kompute Algorithm binding push constants size: {}", pushConstants.size());
+        KP_LOG_DEBUG("Kompute Algorithm binding push constants size: {}",
+                     pushConstants.size());
 
         commandBuffer.pushConstants(*this->mPipelineLayout,
-                                     vk::ShaderStageFlagBits::eCompute,
-                                     0,
-                                     pushConstants.size() * sizeof(float),
-                                     pushConstants.data());
+                                    vk::ShaderStageFlagBits::eCompute,
+                                    0,
+                                    pushConstants.size() * sizeof(float),
+                                    pushConstants.data());
     }
 }
 
@@ -380,11 +384,13 @@ Algorithm::recordDispatch(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm recording dispatch");
 
-    commandBuffer.dispatch(this->mWorkgroup[0], this->mWorkgroup[1], this->mWorkgroup[2]);
+    commandBuffer.dispatch(
+      this->mWorkgroup[0], this->mWorkgroup[1], this->mWorkgroup[2]);
 }
 
 void
-Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
+Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize)
+{
 
     KP_LOG_INFO("Kompute OpAlgoCreate setting dispatch size");
 
@@ -393,11 +399,9 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
     if (workgroup[0] > 0) {
         // If at least the x value is provided we use mainly the parameters
         // provided
-        this->mWorkgroup = {
-            workgroup[0],
-            workgroup[1] > 0 ? workgroup[1] : 1,
-            workgroup[2] > 0 ? workgroup[2] : 1
-        };
+        this->mWorkgroup = { workgroup[0],
+                             workgroup[1] > 0 ? workgroup[1] : 1,
+                             workgroup[2] > 0 ? workgroup[2] : 1 };
     } else {
         this->mWorkgroup = { minSize, 1, 1 };
     }
@@ -409,17 +413,20 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize) {
 }
 
 const Workgroup&
-Algorithm::getWorkgroup() {
+Algorithm::getWorkgroup()
+{
     return this->mWorkgroup;
 }
 
 const Constants&
-Algorithm::getSpecializationConstants() {
+Algorithm::getSpecializationConstants()
+{
     return this->mSpecializationConstants;
 }
 
 const std::vector<std::shared_ptr<Tensor>>&
-Algorithm::getTensors() {
+Algorithm::getTensors()
+{
     return this->mTensors;
 }
 

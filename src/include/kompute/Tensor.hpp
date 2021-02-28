@@ -54,7 +54,7 @@ class Tensor
      * otherwise there is no need to copy from host memory.
      */
     void rebuild(const std::vector<float>& data,
-           TensorTypes tensorType = TensorTypes::eDevice);
+                 TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -125,9 +125,8 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFromStagingToDevice(
-      const vk::CommandBuffer& commandBuffer,
-      bool createBarrier);
+    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
+                                       bool createBarrier);
 
     /**
      * Records a copy from the internal device memory to the staging memory
@@ -138,9 +137,8 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFromDeviceToStaging(
-      const vk::CommandBuffer& commandBuffer,
-      bool createBarrier);
+    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
+                                       bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which
@@ -152,12 +150,11 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(
-      const vk::CommandBuffer& commandBuffer,
-      vk::AccessFlagBits srcAccessMask,
-      vk::AccessFlagBits dstAccessMask,
-      vk::PipelineStageFlagBits srcStageMask,
-      vk::PipelineStageFlagBits dstStageMask);
+    void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                   vk::AccessFlagBits srcAccessMask,
+                                   vk::AccessFlagBits dstAccessMask,
+                                   vk::PipelineStageFlagBits srcStageMask,
+                                   vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
@@ -205,11 +202,11 @@ class Tensor
                             std::shared_ptr<vk::DeviceMemory> memory,
                             vk::MemoryPropertyFlags memoryPropertyFlags);
     void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
-                    std::shared_ptr<vk::Buffer> bufferFrom,
-                    std::shared_ptr<vk::Buffer> bufferTo,
-                    vk::DeviceSize bufferSize,
-                    vk::BufferCopy copyRegion,
-                    bool createBarrier);
+                          std::shared_ptr<vk::Buffer> bufferFrom,
+                          std::shared_ptr<vk::Buffer> bufferTo,
+                          vk::DeviceSize bufferSize,
+                          vk::BufferCopy copyRegion,
+                          bool createBarrier);
 
     // Private util functions
     vk::BufferUsageFlags getPrimaryBufferUsageFlags();

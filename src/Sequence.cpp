@@ -37,7 +37,8 @@ Sequence::begin()
     }
 
     if (this->isRunning()) {
-        throw std::runtime_error("Kompute Sequence begin called when sequence still running");
+        throw std::runtime_error(
+          "Kompute Sequence begin called when sequence still running");
     }
 
     KP_LOG_INFO("Kompute Sequence command now started recording");
@@ -53,8 +54,7 @@ Sequence::end()
     if (!this->isRecording()) {
         KP_LOG_WARN("Kompute Sequence end called when not recording");
         return;
-    } 
-    else {
+    } else {
         KP_LOG_INFO("Kompute Sequence command recording END");
         this->mCommandBuffer->end();
         this->mRecording = false;
@@ -62,7 +62,8 @@ Sequence::end()
 }
 
 void
-Sequence::clear() {
+Sequence::clear()
+{
     KP_LOG_DEBUG("Kompute Sequence  calling clear");
     this->end();
 }
@@ -76,7 +77,8 @@ Sequence::eval()
 }
 
 std::shared_ptr<Sequence>
-Sequence::eval(std::shared_ptr<OpBase> op) {
+Sequence::eval(std::shared_ptr<OpBase> op)
+{
     this->clear();
     return this->record(op)->eval();
 }
@@ -89,8 +91,9 @@ Sequence::evalAsync()
     }
 
     if (this->mIsRunning) {
-        throw std::runtime_error("Kompute Sequence evalAsync called when an eval async was "
-                    "called without successful wait");
+        throw std::runtime_error(
+          "Kompute Sequence evalAsync called when an eval async was "
+          "called without successful wait");
     }
 
     this->mIsRunning = true;
@@ -137,7 +140,8 @@ Sequence::evalAwait(uint64_t waitFor)
     this->mIsRunning = false;
 
     if (result == vk::Result::eTimeout) {
-        KP_LOG_WARN("Kompute Sequence evalAwait reached timeout of {}", waitFor);
+        KP_LOG_WARN("Kompute Sequence evalAwait reached timeout of {}",
+                    waitFor);
         return shared_from_this();
     }
 
@@ -161,11 +165,10 @@ Sequence::isRecording()
 }
 
 bool
-Sequence::isInit() {
-    return this->mDevice &&
-        this->mCommandPool &&
-        this->mCommandBuffer &&
-        this->mComputeQueue;
+Sequence::isInit()
+{
+    return this->mDevice && this->mCommandPool && this->mCommandBuffer &&
+           this->mComputeQueue;
 }
 
 void
@@ -175,16 +178,15 @@ Sequence::destroy()
 
     if (!this->mDevice) {
         KP_LOG_WARN("Kompute Sequence destroy called "
-                     "with null Device pointer");
+                    "with null Device pointer");
         return;
     }
 
     if (this->mFreeCommandBuffer) {
         KP_LOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            KP_LOG_WARN(
-              "Kompute Sequence destroy called with null "
-              "CommandPool pointer");
+            KP_LOG_WARN("Kompute Sequence destroy called with null "
+                        "CommandPool pointer");
             return;
         }
         this->mDevice->freeCommandBuffers(
@@ -199,9 +201,8 @@ Sequence::destroy()
     if (this->mFreeCommandPool) {
         KP_LOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            KP_LOG_WARN(
-              "Kompute Sequence destroy called with null "
-              "CommandPool pointer");
+            KP_LOG_WARN("Kompute Sequence destroy called with null "
+                        "CommandPool pointer");
             return;
         }
         this->mDevice->destroy(
@@ -228,7 +229,6 @@ Sequence::destroy()
     if (this->mComputeQueue) {
         this->mComputeQueue = nullptr;
     }
-
 }
 
 std::shared_ptr<Sequence>

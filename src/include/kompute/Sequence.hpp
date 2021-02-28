@@ -9,7 +9,7 @@ namespace kp {
 /**
  *  Container of operations that can be sent to GPU as batch
  */
-class Sequence: public std::enable_shared_from_this<Sequence>
+class Sequence : public std::enable_shared_from_this<Sequence>
 {
   public:
     /**
@@ -46,8 +46,9 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * which allows for extensible configurations on initialisation.
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence>
-    record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    std::shared_ptr<Sequence> record(
+      std::vector<std::shared_ptr<Tensor>> tensors,
+      TArgs&&... params)
     {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -56,14 +57,13 @@ class Sequence: public std::enable_shared_from_this<Sequence>
                       "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        std::shared_ptr<T> op{
-            new T(tensors, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
 
         return this->record(op);
     }
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence>
-    record(std::shared_ptr<Algorithm> algorithm, TArgs&&... params)
+    std::shared_ptr<Sequence> record(std::shared_ptr<Algorithm> algorithm,
+                                     TArgs&&... params)
     {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -72,8 +72,8 @@ class Sequence: public std::enable_shared_from_this<Sequence>
                       "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        std::shared_ptr<T> op{
-            new T(algorithm, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(algorithm,
+                                     std::forward<TArgs>(params)...) };
 
         return this->record(op);
     }
@@ -96,8 +96,8 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      */
     // TODO: Aim to have only a single function with tensors/algorithm
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence>
-    eval(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    std::shared_ptr<Sequence> eval(std::vector<std::shared_ptr<Tensor>> tensors,
+                                   TArgs&&... params)
     {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -106,16 +106,16 @@ class Sequence: public std::enable_shared_from_this<Sequence>
                       "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        std::shared_ptr<T> op{
-            new T(tensors, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
 
-        // TODO: Aim to be able to handle errors when returning without throw except
+        // TODO: Aim to be able to handle errors when returning without throw
+        // except
         return this->eval(op);
     }
     // Needded as otherise can't use initialiser list
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence>
-    eval(std::shared_ptr<Algorithm> algorithm, TArgs&&... params)
+    std::shared_ptr<Sequence> eval(std::shared_ptr<Algorithm> algorithm,
+                                   TArgs&&... params)
     {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -124,8 +124,8 @@ class Sequence: public std::enable_shared_from_this<Sequence>
                       "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        std::shared_ptr<T> op{
-            new T(algorithm, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(algorithm,
+                                     std::forward<TArgs>(params)...) };
 
         return this->eval(op);
     }
@@ -147,8 +147,9 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence>
-    evalAsync(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    std::shared_ptr<Sequence> evalAsync(
+      std::vector<std::shared_ptr<Tensor>> tensors,
+      TArgs&&... params)
     {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -157,15 +158,14 @@ class Sequence: public std::enable_shared_from_this<Sequence>
                       "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        std::shared_ptr<T> op{
-            new T(tensors, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
 
         return this->evalAsync(op);
     }
     // Needed as otherwise it's not possible to use initializer lists
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence>
-    evalAsync(std::shared_ptr<Algorithm> algorithm, TArgs&&... params)
+    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<Algorithm> algorithm,
+                                        TArgs&&... params)
     {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -174,8 +174,8 @@ class Sequence: public std::enable_shared_from_this<Sequence>
                       "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        std::shared_ptr<T> op{
-            new T(algorithm, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(algorithm,
+                                     std::forward<TArgs>(params)...) };
 
         return this->evalAsync(op);
     }
@@ -190,7 +190,8 @@ class Sequence: public std::enable_shared_from_this<Sequence>
     std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
-     * Clear function clears all operations currently recorded and starts recording again.
+     * Clear function clears all operations currently recorded and starts
+     * recording again.
      */
     void clear();
 
@@ -216,7 +217,6 @@ class Sequence: public std::enable_shared_from_this<Sequence>
      * @return Boolean stating if recording ongoing.
      */
     bool isRecording();
-
 
     bool isInit();
 

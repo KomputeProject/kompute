@@ -28,17 +28,19 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
             std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
 
-            std::vector<std::shared_ptr<kp::Tensor>> params = {tensorA, tensorB};
+            std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
+                                                                tensorB };
 
-            kp::Constants spec = kp::Constants({5.0, 0.3});
+            kp::Constants spec = kp::Constants({ 5.0, 0.3 });
 
-            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, spirv, {}, spec);
+            std::shared_ptr<kp::Algorithm> algo =
+              mgr.algorithm(params, spirv, {}, spec);
 
             sq = mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>(params)
-                ->record<kp::OpAlgoDispatch>(algo)
-                ->record<kp::OpTensorSyncLocal>(params)
-                ->eval();
+                   ->record<kp::OpTensorSyncDevice>(params)
+                   ->record<kp::OpAlgoDispatch>(algo)
+                   ->record<kp::OpTensorSyncLocal>(params)
+                   ->eval();
 
             EXPECT_EQ(tensorA->data(), std::vector<float>({ 5, 5, 5 }));
             EXPECT_EQ(tensorB->data(), std::vector<float>({ 0.3, 0.3, 0.3 }));

@@ -29,24 +29,27 @@ TEST(TestLogisticRegression, TestMainLogisticRegression)
         std::shared_ptr<kp::Tensor> lOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
         std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
-                                                        wIn, wOutI, wOutJ,
-                                                        bIn, bOut,  lOut };
+                                                            wIn, wOutI, wOutJ,
+                                                            bIn, bOut,  lOut };
 
         mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
         std::vector<uint32_t> spirv = std::vector<uint32_t>(
-            (uint32_t*)kp::shader_data::test_shaders_glsl_test_logistic_regression_comp_spv,
-            (uint32_t*)(kp::shader_data::test_shaders_glsl_test_logistic_regression_comp_spv +
-              kp::shader_data::test_shaders_glsl_test_logistic_regression_comp_spv_len));
+          (uint32_t*)kp::shader_data::
+            test_shaders_glsl_test_logistic_regression_comp_spv,
+          (uint32_t*)(kp::shader_data::
+                        test_shaders_glsl_test_logistic_regression_comp_spv +
+                      kp::shader_data::
+                        test_shaders_glsl_test_logistic_regression_comp_spv_len));
 
-        std::shared_ptr<kp::Algorithm> algorithm =
-            mgr.algorithm(params, spirv, kp::Workgroup({5}), kp::Constants({5.0}));
+        std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm(
+          params, spirv, kp::Workgroup({ 5 }), kp::Constants({ 5.0 }));
 
         std::shared_ptr<kp::Sequence> sq =
-            mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
-                ->record<kp::OpAlgoDispatch>(algorithm)
-                ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+          mgr.sequence()
+            ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+            ->record<kp::OpAlgoDispatch>(algorithm)
+            ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
         // Iterate across all expected iterations
         for (size_t i = 0; i < ITERATIONS; i++) {
@@ -90,37 +93,38 @@ TEST(TestLogisticRegression, TestMainLogisticRegressionManualCopy)
 
         std::shared_ptr<kp::Tensor> y = mgr.tensor({ 0, 0, 0, 1, 1 });
 
-        std::shared_ptr<kp::Tensor> wIn = mgr.tensor(
-                { 0.001, 0.001 }, kp::Tensor::TensorTypes::eHost);
+        std::shared_ptr<kp::Tensor> wIn =
+          mgr.tensor({ 0.001, 0.001 }, kp::Tensor::TensorTypes::eHost);
         std::shared_ptr<kp::Tensor> wOutI = mgr.tensor({ 0, 0, 0, 0, 0 });
         std::shared_ptr<kp::Tensor> wOutJ = mgr.tensor({ 0, 0, 0, 0, 0 });
 
-        std::shared_ptr<kp::Tensor> bIn = mgr.tensor(
-                { 0 },
-                kp::Tensor::TensorTypes::eHost);
+        std::shared_ptr<kp::Tensor> bIn =
+          mgr.tensor({ 0 }, kp::Tensor::TensorTypes::eHost);
         std::shared_ptr<kp::Tensor> bOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
         std::shared_ptr<kp::Tensor> lOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
         std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
-                                                        wIn, wOutI, wOutJ,
-                                                        bIn, bOut,  lOut };
+                                                            wIn, wOutI, wOutJ,
+                                                            bIn, bOut,  lOut };
 
         mgr.sequence()->record<kp::OpTensorSyncDevice>(params)->eval();
 
         std::vector<uint32_t> spirv = std::vector<uint32_t>(
-            (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-            (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv +
-              kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
+          (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+          (uint32_t*)(kp::shader_data::
+                        shaders_glsl_logisticregression_comp_spv +
+                      kp::shader_data::
+                        shaders_glsl_logisticregression_comp_spv_len));
 
         std::shared_ptr<kp::Algorithm> algorithm =
-            mgr.algorithm(params, spirv, kp::Workgroup(), kp::Constants({5.0}));
+          mgr.algorithm(params, spirv, kp::Workgroup(), kp::Constants({ 5.0 }));
 
         std::shared_ptr<kp::Sequence> sq =
-            mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
-                ->record<kp::OpAlgoDispatch>(algorithm)
-                ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+          mgr.sequence()
+            ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+            ->record<kp::OpAlgoDispatch>(algorithm)
+            ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
         // Iterate across all expected iterations
         for (size_t i = 0; i < ITERATIONS; i++) {
@@ -136,18 +140,18 @@ TEST(TestLogisticRegression, TestMainLogisticRegressionManualCopy)
             bIn->mapDataIntoHostMemory();
         }
 
-    // Based on the inputs the outputs should be at least:
-    // * wi < 0.01
-    // * wj > 1.0
-    // * b < 0
-    // TODO: Add EXPECT_DOUBLE_EQ instead
-    EXPECT_LT(wIn->data()[0], 0.01);
-    EXPECT_GT(wIn->data()[1], 1.0);
-    EXPECT_LT(bIn->data()[0], 0.0);
+        // Based on the inputs the outputs should be at least:
+        // * wi < 0.01
+        // * wj > 1.0
+        // * b < 0
+        // TODO: Add EXPECT_DOUBLE_EQ instead
+        EXPECT_LT(wIn->data()[0], 0.01);
+        EXPECT_GT(wIn->data()[1], 1.0);
+        EXPECT_LT(bIn->data()[0], 0.0);
 
-    KP_LOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
-                wIn->data()[0],
-                wIn->data()[1],
-                bIn->data()[0]);
+        KP_LOG_WARN("Result wIn i: {}, wIn j: {}, bIn: {}",
+                    wIn->data()[0],
+                    wIn->data()[1],
+                    bIn->data()[0]);
     }
 }

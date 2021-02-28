@@ -27,12 +27,12 @@ TEST(TestDestroy, TestDestroyTensorSingle)
             tensorA = mgr.tensor({ 0, 0, 0 });
 
             std::shared_ptr<kp::Algorithm> algo =
-                mgr.algorithm({ tensorA }, spirv);
+              mgr.algorithm({ tensorA }, spirv);
 
             mgr.sequence()
-                ->record<kp::OpAlgoDispatch>(algo)
-                ->eval()
-                ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
+              ->record<kp::OpAlgoDispatch>(algo)
+              ->eval()
+              ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
 
             tensorA->destroy();
             EXPECT_FALSE(tensorA->isInit());
@@ -68,14 +68,14 @@ TEST(TestDestroy, TestDestroyTensorVector)
             tensorA = mgr.tensor({ 1, 1, 1 });
             tensorB = mgr.tensor({ 1, 1, 1 });
 
-            std::shared_ptr<kp::Algorithm> algo = 
-                mgr.algorithm({tensorA, tensorB}, spirv);
+            std::shared_ptr<kp::Algorithm> algo =
+              mgr.algorithm({ tensorA, tensorB }, spirv);
 
             mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>(algo->getTensors())
-                ->record<kp::OpAlgoDispatch>(algo)
-                ->record<kp::OpTensorSyncLocal>(algo->getTensors())
-                ->eval();
+              ->record<kp::OpTensorSyncDevice>(algo->getTensors())
+              ->record<kp::OpAlgoDispatch>(algo)
+              ->record<kp::OpTensorSyncLocal>(algo->getTensors())
+              ->eval();
 
             tensorA->destroy();
             tensorB->destroy();
@@ -109,12 +109,13 @@ TEST(TestDestroy, TestDestroySequenceSingle)
         {
             kp::Manager mgr;
 
-            tensorA = mgr.tensor({0, 0, 0});
+            tensorA = mgr.tensor({ 0, 0, 0 });
 
-            sq = mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>({tensorA})
-                ->record<kp::OpAlgoDispatch>(mgr.algorithm({tensorA}, spirv))
-                ->record<kp::OpTensorSyncLocal>({tensorA})
+            sq =
+              mgr.sequence()
+                ->record<kp::OpTensorSyncDevice>({ tensorA })
+                ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+                ->record<kp::OpTensorSyncLocal>({ tensorA })
                 ->eval();
 
             sq->destroy();
@@ -124,4 +125,3 @@ TEST(TestDestroy, TestDestroySequenceSingle)
     }
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 1, 1, 1 }));
 }
-

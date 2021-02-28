@@ -84,10 +84,10 @@ class Manager
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice);
 
     std::shared_ptr<Algorithm> algorithm(
-            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
-            const std::vector<uint32_t>& spirv = {},
-            const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {});
+      const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+      const std::vector<uint32_t>& spirv = {},
+      const Workgroup& workgroup = {},
+      const Constants& specializationConstants = {});
 
     void destroy();
     void clear();
@@ -119,7 +119,8 @@ class Manager
 
     // Create functions
     void createInstance();
-    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {}, uint32_t hysicalDeviceIndex = 0);
+    void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
+                      uint32_t hysicalDeviceIndex = 0);
 };
 
 } // End namespace kp

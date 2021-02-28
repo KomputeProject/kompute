@@ -4,9 +4,9 @@
 namespace kp {
 
 Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           const std::vector<float>& data,
-           const TensorTypes& tensorType)
+               std::shared_ptr<vk::Device> device,
+               const std::vector<float>& data,
+               const TensorTypes& tensorType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
                  data.size(),
@@ -29,17 +29,16 @@ Tensor::~Tensor()
 }
 
 void
-Tensor::rebuild(const std::vector<float>& data,
-           TensorTypes tensorType)
+Tensor::rebuild(const std::vector<float>& data, TensorTypes tensorType)
 {
-    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}",
-                 data.size());
+    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", data.size());
 
     this->mData = data;
     this->mTensorType = tensorType;
 
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
-        KP_LOG_DEBUG("Kompute Tensor destroying existing resources before rebuild");
+        KP_LOG_DEBUG(
+          "Kompute Tensor destroying existing resources before rebuild");
         this->destroy();
     }
 
@@ -77,10 +76,9 @@ Tensor::tensorType()
 }
 
 bool
-Tensor::isInit() {
-    return this->mDevice &&
-        this->mPrimaryBuffer &&
-        this->mPrimaryMemory;
+Tensor::isInit()
+{
+    return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory;
 }
 
 void
@@ -105,17 +103,16 @@ Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
     KP_LOG_DEBUG("Kompute Tensor recordCopyFrom data size {}.", bufferSize);
 
     this->recordCopyBuffer(commandBuffer,
-                     copyFromTensor->mPrimaryBuffer,
-                     this->mPrimaryBuffer,
-                     bufferSize,
-                     copyRegion,
-                     createBarrier);
+                           copyFromTensor->mPrimaryBuffer,
+                           this->mPrimaryBuffer,
+                           bufferSize,
+                           copyRegion,
+                           createBarrier);
 }
 
 void
-Tensor::recordCopyFromStagingToDevice(
-  const vk::CommandBuffer& commandBuffer,
-  bool createBarrier)
+Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
+                                      bool createBarrier)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
@@ -123,17 +120,16 @@ Tensor::recordCopyFromStagingToDevice(
     KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
     this->recordCopyBuffer(commandBuffer,
-                     this->mStagingBuffer,
-                     this->mPrimaryBuffer,
-                     bufferSize,
-                     copyRegion,
-                     createBarrier);
+                           this->mStagingBuffer,
+                           this->mPrimaryBuffer,
+                           bufferSize,
+                           copyRegion,
+                           createBarrier);
 }
 
 void
-Tensor::recordCopyFromDeviceToStaging(
-  const vk::CommandBuffer& commandBuffer,
-  bool createBarrier)
+Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
+                                      bool createBarrier)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
@@ -141,20 +137,20 @@ Tensor::recordCopyFromDeviceToStaging(
     KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
     this->recordCopyBuffer(commandBuffer,
-                     this->mPrimaryBuffer,
-                     this->mStagingBuffer,
-                     bufferSize,
-                     copyRegion,
-                     createBarrier);
+                           this->mPrimaryBuffer,
+                           this->mStagingBuffer,
+                           bufferSize,
+                           copyRegion,
+                           createBarrier);
 }
 
 void
 Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
-                   std::shared_ptr<vk::Buffer> bufferFrom,
-                   std::shared_ptr<vk::Buffer> bufferTo,
-                   vk::DeviceSize bufferSize,
-                   vk::BufferCopy copyRegion,
-                   bool createBarrier)
+                         std::shared_ptr<vk::Buffer> bufferFrom,
+                         std::shared_ptr<vk::Buffer> bufferTo,
+                         vk::DeviceSize bufferSize,
+                         vk::BufferCopy copyRegion,
+                         bool createBarrier)
 {
 
     commandBuffer.copyBuffer(*bufferFrom, *bufferTo, copyRegion);
@@ -170,12 +166,11 @@ Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
 }
 
 void
-Tensor::recordBufferMemoryBarrier(
-  const vk::CommandBuffer& commandBuffer,
-  vk::AccessFlagBits srcAccessMask,
-  vk::AccessFlagBits dstAccessMask,
-  vk::PipelineStageFlagBits srcStageMask,
-  vk::PipelineStageFlagBits dstStageMask)
+Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                  vk::AccessFlagBits srcAccessMask,
+                                  vk::AccessFlagBits dstAccessMask,
+                                  vk::PipelineStageFlagBits srcStageMask,
+                                  vk::PipelineStageFlagBits dstStageMask)
 {
     KP_LOG_DEBUG("Kompute Tensor recording buffer memory barrier");
 
@@ -190,11 +185,11 @@ Tensor::recordBufferMemoryBarrier(
     bufferMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
     commandBuffer.pipelineBarrier(srcStageMask,
-                                   dstStageMask,
-                                   vk::DependencyFlags(),
-                                   nullptr,
-                                   bufferMemoryBarrier,
-                                   nullptr);
+                                  dstStageMask,
+                                  vk::DependencyFlags(),
+                                  nullptr,
+                                  bufferMemoryBarrier,
+                                  nullptr);
 }
 
 vk::DescriptorBufferInfo
@@ -449,7 +444,7 @@ Tensor::destroy()
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
             KP_LOG_WARN("Kompose Tensor expected to destroy primary buffer "
-                         "but got null buffer");
+                        "but got null buffer");
         } else {
             KP_LOG_DEBUG("Kompose Tensor destroying primary buffer");
             this->mDevice->destroy(
@@ -463,7 +458,7 @@ Tensor::destroy()
     if (this->mFreeStagingBuffer) {
         if (!this->mStagingBuffer) {
             KP_LOG_WARN("Kompose Tensor expected to destroy staging buffer "
-                         "but got null buffer");
+                        "but got null buffer");
         } else {
             KP_LOG_DEBUG("Kompose Tensor destroying staging buffer");
             this->mDevice->destroy(
@@ -477,7 +472,7 @@ Tensor::destroy()
     if (this->mFreePrimaryMemory) {
         if (!this->mPrimaryMemory) {
             KP_LOG_WARN("Kompose Tensor expected to free primary memory but "
-                         "got null memory");
+                        "got null memory");
         } else {
             KP_LOG_DEBUG("Kompose Tensor freeing primary memory");
             this->mDevice->freeMemory(
@@ -491,7 +486,7 @@ Tensor::destroy()
     if (this->mFreeStagingMemory) {
         if (!this->mStagingMemory) {
             KP_LOG_WARN("Kompose Tensor expected to free staging memory but "
-                         "got null memory");
+                        "got null memory");
         } else {
             KP_LOG_DEBUG("Kompose Tensor freeing staging memory");
             this->mDevice->freeMemory(

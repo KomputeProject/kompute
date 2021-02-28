@@ -30,8 +30,8 @@ OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mTensors[i]->recordCopyFromDeviceToStaging(
-              commandBuffer, true);
+            this->mTensors[i]->recordCopyFromDeviceToStaging(commandBuffer,
+                                                             true);
         }
     }
 }

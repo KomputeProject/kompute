@@ -11,4 +11,3 @@ TEST(TestTensor, ConstructorData)
     EXPECT_EQ(tensor->size(), vec.size());
     EXPECT_EQ(tensor->data(), vec);
 }
-

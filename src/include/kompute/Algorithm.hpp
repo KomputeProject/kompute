@@ -12,8 +12,7 @@ namespace kp {
 */
 class Algorithm
 {
-public:
-
+  public:
     /**
      *  Default constructor for Algorithm
      *
@@ -21,12 +20,11 @@ public:
      *  @param commandBuffer The vulkan command buffer to bind the pipeline and
      * shaders
      */
-    Algorithm(
-            std::shared_ptr<vk::Device> device,
-            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
-            const std::vector<uint32_t>& spirv = {},
-            const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {});
+    Algorithm(std::shared_ptr<vk::Device> device,
+              const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+              const std::vector<uint32_t>& spirv = {},
+              const Workgroup& workgroup = {},
+              const Constants& specializationConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -34,14 +32,13 @@ public:
      *
      * @param shaderFileData The bytes in spir-v format of the shader
      * @tensorParams The Tensors to be used in the Algorithm / shader for
-     * @specalizationInstalces The specialization parameters to pass to the function
-     * processing
+     * @specalizationInstalces The specialization parameters to pass to the
+     * function processing
      */
-    void rebuild(
-            const std::vector<std::shared_ptr<Tensor>>& tensors = {},
-            const std::vector<uint32_t>& spirv = {},
-            const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {});
+    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+                 const std::vector<uint32_t>& spirv = {},
+                 const Workgroup& workgroup = {},
+                 const Constants& specializationConstants = {});
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
@@ -61,7 +58,8 @@ public:
 
     void bindCore(const vk::CommandBuffer& commandBuffer);
 
-    void bindPush(const vk::CommandBuffer& commandBuffer, const Constants& pushConstants);
+    void bindPush(const vk::CommandBuffer& commandBuffer,
+                  const Constants& pushConstants);
 
     bool isInit();
 
@@ -73,7 +71,7 @@ public:
 
     void destroy();
 
-private:
+  private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
     std::vector<std::shared_ptr<Tensor>> mTensors;
