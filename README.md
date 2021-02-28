@@ -56,35 +56,65 @@ int main() {
     // 2. Create and initialise Kompute Tensors through manager
     auto tensorInA = mgr.tensor({ 2., 2., 2. });
     auto tensorInB = mgr.tensor({ 1., 2., 3. });
-    auto tensorOut = mgr.tensor({ 0., 0., 0. });
+    auto tensorOutA = mgr.tensor({ 0., 0., 0. });
+    auto tensorOutB = mgr.tensor({ 0., 0., 0. });
 
-    // 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-    std::string shaderString = (R"(
+    std::vector<std::shared_ptr<kp::Tensor>> params = {tensorInA, tensorInB, tensorOutA, tensorOutB};
+
+    // 3. Create algorithm based on shader (supports buffers & push/spec constants)
+    std::string shader = (R"(
         #version 450
 
         layout (local_size_x = 1) in;
 
         // The input tensors bind index is relative to index in parameter passed
-        layout(set = 0, binding = 0) buffer bina { float tina[]; };
-        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
-        layout(set = 0, binding = 2) buffer bout { float tout[]; };
+        layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
+        layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };
+
+        // Kompute supports push constants updated on dispatch
+        layout(push_constant) uniform PushConstants {
+            float val;
+        } push_const;
+
+        // Kompute also supports spec constants on initalization
+        layout(constant_id = 0) const float const_one = 0;
 
         void main() {
             uint index = gl_GlobalInvocationID.x;
-            tout[index] = tina[index] * tinb[index];
+            out_a[index] += in_a[index] * in_b[index];
+            out_b[index] += const_one * push_const.val;
         }
     )");
 
-    // 3. Run operation with string shader synchronously
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-        { tensorInA, tensorInB, tensorOut },
-        kp::Shader::compile_source(shaderString));
+    kp::Workgroup workgroup({3, 1, 1});
+    kp::Constants specConsts({ 2 });
 
-    // 4. Map results back from GPU memory to print the results
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
+    auto algorithm = mgr.algorithm(params, kp::Shader::compile_source(shader), workgroup, specConsts);
 
-    // Prints the output which is Output: { 2, 4, 6 }
-    for (const float& elem : tensorOut->data()) std::cout << elem << "  ";
+    kp::Constants pushConstsA({ 2.0 });
+    kp::Constants pushConstsB({ 3.0 });
+
+    // 4. Run operation synchronously using sequence
+    mgr.sequence()
+        ->record<kp::OpTensorSyncDevice>(params)
+        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsA)
+        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
+        ->eval();
+
+    // 5. Sync results from the GPU asynchronously
+    sq = mgr.sequence()
+    sq->evalAsync<kp::OpTensorSyncLocal>(params);
+
+    // ... Do other work asynchronously whilst GPU finishes
+
+    sq->evalAwait();
+
+    // Prints the first output which is: { 4, 8, 12 }
+    for (const float& elem : tensorOutA->data()) std::cout << elem << "  ";
+    // Prints the second output which is: { 10, 10, 10 }
+    for (const float& elem : tensorOutB->data()) std::cout << elem << "  ";
 }
 
 ```
@@ -94,34 +124,72 @@ int main() {
 The [Python package](https://kompute.cc/overview/python-package.html) provides a [high level interactive interface](https://kompute.cc/overview/python-reference.html) that enables for experimentation whilst ensuring high performance and fast development workflows.
 
 ```python
+
 # 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
-mgr = Manager()
+mgr = kp.Manager()
 
-# 2. Create and initialise Kompute Tensors (can be initialized with List[] or np.Array)
-tensor_in_a = Tensor([2, 2, 2])
-tensor_in_b = Tensor([1, 2, 3])
-tensor_out = Tensor([0, 0, 0])
+# 2. Create and initialise Kompute Tensors through manager
+tensor_in_a = mgr.tensor([2, 2, 2])
+tensor_in_b = mgr.tensor([1, 2, 3])
+tensor_out_a = mgr.tensor([0, 0, 0])
+tensor_out_b = mgr.tensor([0, 0, 0])
 
-mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+params = [tensor_in_a, tensor_in_b, tensor_out_a, tensor_out_b]
 
-# 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-@python2shader
-def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
-                            data1=("buffer", 0, Array(f32)),
-                            data2=("buffer", 1, Array(f32)),
-                            data3=("buffer", 2, Array(f32))):
-    i = index.x
-    data3[i] = data1[i] * data2[i]
+# 3. Create algorithm based on shader (supports buffers & push/spec constants)
+shader = """
+    #version 450
 
-# 4. Run multiplication operation synchronously
-mgr.eval_algo_data_def(
-    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
+    layout (local_size_x = 1) in;
 
-# 5. Map results back from GPU memory to print the results
-mgr.eval_tensor_sync_local_def([tensor_out])
+    // The input tensors bind index is relative to index in parameter passed
+    layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
+    layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
+    layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };
+    layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };
 
-# Prints [2.0, 4.0, 6.0]
-print(tensor_out.data())
+    // Kompute supports push constants updated on dispatch
+    layout(push_constant) uniform PushConstants {
+        float val;
+    } push_const;
+
+    // Kompute also supports spec constants on initalization
+    layout(constant_id = 0) const float const_one = 0;
+
+    void main() {
+        uint index = gl_GlobalInvocationID.x;
+        out_a[index] += in_a[index] * in_b[index];
+        out_b[index] += const_one * push_const.val;
+    }
+"""
+
+workgroup = (3, 1, 1)
+spec_consts = [2]
+push_consts_a = [2]
+push_consts_b = [3]
+
+algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts)
+
+# 4. Run operation synchronously using sequence
+(mgr.sequence()
+    .record(kp.OpTensorSyncDevice(params))
+    .record(kp.OpAlgoDispatch(algo, push_consts_a))
+    .record(kp.OpAlgoDispatch(algo, push_consts_b))
+    .eval())
+
+# 5. Sync results from the GPU asynchronously
+sq = mgr.sequence()
+sq.eval_async(kp.OpTensorSyncLocal(params))
+
+# ... Do other work asynchronously whilst GPU finishes
+
+sq.eval_await()
+
+# Prints the first output which is: { 4, 8, 12 }
+print(tensor_out_a)
+# Prints the first output which is: { 10, 10, 10 }
+print(tensor_out_b)
+
 ```
 
 ### Interactive Notebooks & Hands on Videos

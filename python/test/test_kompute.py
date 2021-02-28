@@ -30,6 +30,63 @@ kp_log = logging.getLogger("kp")
 #
 #    assert tensor_out.data() == [2.0, 4.0, 6.0]
 
+def test_end_to_end():
+
+    mgr = kp.Manager()
+
+    tensor_in_a = mgr.tensor([2, 2, 2])
+    tensor_in_b = mgr.tensor([1, 2, 3])
+    tensor_out_a = mgr.tensor([0, 0, 0])
+    tensor_out_b = mgr.tensor([0, 0, 0])
+
+    params = [tensor_in_a, tensor_in_b, tensor_out_a, tensor_out_b]
+
+    shader = """
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
+        layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };
+
+        // Kompute supports push constants updated on dispatch
+        layout(push_constant) uniform PushConstants {
+            float val;
+        } push_const;
+
+        // Kompute also supports spec constants on initalization
+        layout(constant_id = 0) const float const_one = 0;
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            out_a[index] += in_a[index] * in_b[index];
+            out_b[index] += const_one * push_const.val;
+        }
+    """
+
+    workgroup = (3, 1, 1)
+    spec_consts = [2]
+    push_consts_a = [2]
+    push_consts_b = [3]
+
+    algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts)
+
+    (mgr.sequence()
+        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpAlgoDispatch(algo, push_consts_a))
+        .record(kp.OpAlgoDispatch(algo, push_consts_b))
+        .eval())
+
+    sq = mgr.sequence()
+    sq.eval_async(kp.OpTensorSyncLocal(params))
+
+    sq.eval_await()
+
+    assert tensor_out_a.data().tolist() == [4, 8, 12]
+    assert tensor_out_b.data().tolist() == [10, 10, 10]
 
 
 def test_shader_str():
