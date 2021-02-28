@@ -1,8 +1,8 @@
 #pragma once
 
 #include "kompute/Core.hpp"
-
 #include "kompute/Tensor.hpp"
+#include "kompute/Algorithm.hpp"
 
 namespace kp {
 
@@ -17,33 +17,6 @@ namespace kp {
 class OpBase
 {
   public:
-    /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    OpBase() { KP_LOG_DEBUG("Compute OpBase base constructor"); }
-
-    /**
-     * Default constructor with parameters that provides the bare minimum
-     * requirements for the operations to be able to create and manage their
-     * sub-components.
-     *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
-     * @param tensors Tensors that are to be used in this operation
-     */
-    OpBase(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           std::shared_ptr<vk::CommandBuffer> commandBuffer,
-           std::vector<std::shared_ptr<Tensor>>& tensors)
-    {
-        KP_LOG_DEBUG("Compute OpBase constructor with params");
-
-        this->mPhysicalDevice = physicalDevice;
-        this->mDevice = device;
-        this->mCommandBuffer = commandBuffer;
-        this->mTensors = tensors;
-    }
 
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
@@ -53,37 +26,14 @@ class OpBase
     virtual ~OpBase()
     {
         KP_LOG_DEBUG("Kompute OpBase destructor started");
-
-        if (!this->mDevice) {
-            KP_LOG_WARN("Kompute OpBase destructor called with empty device");
-            return;
-        }
-
-        if (this->mFreeTensors) {
-            KP_LOG_DEBUG("Kompute OpBase freeing tensors");
-            for (std::shared_ptr<Tensor> tensor : this->mTensors) {
-                if (tensor && tensor->isInit()) {
-                    tensor->freeMemoryDestroyGPUResources();
-                } else {
-                    KP_LOG_WARN("Kompute OpBase expected to free "
-                                  "tensor but has already been freed.");
-                }
-            }
-        }
     }
-
-    /**
-     * The init function is responsible for setting up all the resources and
-     * should be called after the Operation has been created.
-     */
-    virtual void init() = 0;
 
     /**
      * The record function is intended to only send a record command or run
      * commands that are expected to record operations that are to be submitted
      * as a batch into the GPU.
      */
-    virtual void record() = 0;
+    virtual void record(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
      * Pre eval is called before the Sequence has called eval and submitted the commands to
@@ -93,7 +43,7 @@ class OpBase
      * resources that are created should be idempotent in case it's called multiple
      * times in a row.
      */
-    virtual void preEval() = 0;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
      * Post eval is called after the Sequence has called eval and submitted the commands to
@@ -103,22 +53,7 @@ class OpBase
      * resources that are destroyed should not require a re-init unless explicitly
      * provided by the user.
      */
-    virtual void postEval() = 0;
-
-  protected:
-    // -------------- NEVER OWNED RESOURCES
-    std::shared_ptr<vk::PhysicalDevice>
-      mPhysicalDevice;                   ///< Vulkan Physical Device
-    std::shared_ptr<vk::Device> mDevice; ///< Vulkan Logical Device
-    std::shared_ptr<vk::CommandBuffer>
-      mCommandBuffer; ///< Vulkan Command Buffer
-
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>>
-      mTensors; ///< Tensors referenced by operation that can be managed
-                ///< optionally by operation
-    bool mFreeTensors = false; ///< Explicit boolean that specifies whether the
-                               ///< tensors are freed (if they are managed)
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) = 0;
 };
 
 } // End namespace kp

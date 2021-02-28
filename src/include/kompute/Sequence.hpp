@@ -9,14 +9,9 @@ namespace kp {
 /**
  *  Container of operations that can be sent to GPU as batch
  */
-class Sequence
+class Sequence : public std::enable_shared_from_this<Sequence>
 {
   public:
-    /**
-     *  Base constructor for Sequence. Should not be used unless explicit
-     * intended.
-     */
-    Sequence();
     /**
      * Main constructor for sequence which requires core vulkan components to
      * generate all dependent resources.
@@ -37,80 +32,8 @@ class Sequence
     ~Sequence();
 
     /**
-     * Initialises sequence including the creation of the command pool and the
-     * command buffer.
      */
-    void init();
-
-    /**
-     * Begins recording commands for commands to be submitted into the command
-     * buffer.
-     *
-     * @return Boolean stating whether execution was successful.
-     */
-    bool begin();
-
-    /**
-     * Ends the recording and stops recording commands when the record command
-     * is sent.
-     *
-     * @return Boolean stating whether execution was successful.
-     */
-    bool end();
-
-    /**
-     * Eval sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job with a barrier.
-     *
-     * @return Boolean stating whether execution was successful.
-     */
-    bool eval();
-
-    /**
-     * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job with a barrier. EvalAwait() must
-     * be called after to ensure the sequence is terminated correctly.
-     *
-     * @return Boolean stating whether execution was successful.
-     */
-    bool evalAsync();
-
-    /**
-     * Eval Await waits for the fence to finish processing and then once it
-     * finishes, it runs the postEval of all operations.
-     *
-     * @param waitFor Number of milliseconds to wait before timing out.
-     * @return Boolean stating whether execution was successful.
-     */
-    bool evalAwait(uint64_t waitFor = UINT64_MAX);
-
-    /**
-     * Returns true if the sequence is currently in recording activated.
-     *
-     * @return Boolean stating if recording ongoing.
-     */
-    bool isRecording();
-
-    /**
-     * Returns true if the sequence is currently running - mostly used for async
-     * workloads.
-     *
-     * @return Boolean stating if currently running.
-     */
-    bool isRunning();
-
-    /**
-     * Returns true if the sequence has been successfully initialised.
-     *
-     * @return Boolean stating if sequence has been initialised.
-     */
-    bool isInit();
-
-    /**
-     * Destroys and frees the GPU resources which include the buffer and memory
-     * and sets the sequence as init=False.
-     */
-    void freeMemoryDestroyGPUResources();
+    std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
 
     /**
      * Record function for operation to be added to the GPU queue in batch. This
@@ -123,43 +46,193 @@ class Sequence
      * which allows for extensible configurations on initialisation.
      */
     template<typename T, typename... TArgs>
-    bool record(std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+    std::shared_ptr<Sequence> record(
+      std::vector<std::shared_ptr<Tensor>> tensors,
+      TArgs&&... params)
     {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
         static_assert(std::is_base_of<OpBase, T>::value,
                       "Kompute Sequence record(...) template only valid with "
                       "OpBase derived classes");
 
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
+
+        return this->record(op);
+    }
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence> record(std::shared_ptr<Algorithm> algorithm,
+                                     TArgs&&... params)
+    {
         KP_LOG_DEBUG("Kompute Sequence record function started");
 
-        if (!this->isRecording()) {
-            KP_LOG_ERROR(
-              "Kompute sequence record attempted when not record BEGIN");
-            return false;
-        }
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
 
         KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
-        T* op = new T(this->mPhysicalDevice,
-                      this->mDevice,
-                      this->mCommandBuffer,
-                      tensors,
-                      std::forward<TArgs>(params)...);
+        std::shared_ptr<T> op{ new T(algorithm,
+                                     std::forward<TArgs>(params)...) };
 
-        OpBase* baseOp = dynamic_cast<OpBase*>(op);
-
-        std::unique_ptr<OpBase> baseOpPtr{ baseOp };
-
-        KP_LOG_DEBUG(
-          "Kompute Sequence running init on OpBase derived class instance");
-        baseOpPtr->init();
-
-        KP_LOG_DEBUG(
-          "Kompute Sequence running record on OpBase derived class instance");
-        baseOpPtr->record();
-
-        mOperations.push_back(std::move(baseOpPtr));
-
-        return true;
+        return this->record(op);
     }
+
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    std::shared_ptr<Sequence> eval();
+
+    std::shared_ptr<Sequence> eval(std::shared_ptr<OpBase> op);
+
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    // TODO: Aim to have only a single function with tensors/algorithm
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence> eval(std::vector<std::shared_ptr<Tensor>> tensors,
+                                   TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
+
+        // TODO: Aim to be able to handle errors when returning without throw
+        // except
+        return this->eval(op);
+    }
+    // Needded as otherise can't use initialiser list
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence> eval(std::shared_ptr<Algorithm> algorithm,
+                                   TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{ new T(algorithm,
+                                     std::forward<TArgs>(params)...) };
+
+        return this->eval(op);
+    }
+
+    /**
+     * Eval Async sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier. EvalAwait() must
+     * be called after to ensure the sequence is terminated correctly.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
+    std::shared_ptr<Sequence> evalAsync();
+    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<OpBase> op);
+
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence> evalAsync(
+      std::vector<std::shared_ptr<Tensor>> tensors,
+      TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
+
+        return this->evalAsync(op);
+    }
+    // Needed as otherwise it's not possible to use initializer lists
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<Algorithm> algorithm,
+                                        TArgs&&... params)
+    {
+        KP_LOG_DEBUG("Kompute Sequence record function started");
+
+        static_assert(std::is_base_of<OpBase, T>::value,
+                      "Kompute Sequence record(...) template only valid with "
+                      "OpBase derived classes");
+
+        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
+        std::shared_ptr<T> op{ new T(algorithm,
+                                     std::forward<TArgs>(params)...) };
+
+        return this->evalAsync(op);
+    }
+
+    /**
+     * Eval Await waits for the fence to finish processing and then once it
+     * finishes, it runs the postEval of all operations.
+     *
+     * @param waitFor Number of milliseconds to wait before timing out.
+     * @return Boolean stating whether execution was successful.
+     */
+    std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
+
+    /**
+     * Clear function clears all operations currently recorded and starts
+     * recording again.
+     */
+    void clear();
+
+    /**
+     * Begins recording commands for commands to be submitted into the command
+     * buffer.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
+    void begin();
+
+    /**
+     * Ends the recording and stops recording commands when the record command
+     * is sent.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
+    void end();
+
+    /**
+     * Returns true if the sequence is currently in recording activated.
+     *
+     * @return Boolean stating if recording ongoing.
+     */
+    bool isRecording();
+
+    bool isInit();
+
+    /**
+     * Returns true if the sequence is currently running - mostly used for async
+     * workloads.
+     *
+     * @return Boolean stating if currently running.
+     */
+    bool isRunning();
+
+    /**
+     * Destroys and frees the GPU resources which include the buffer and memory
+     * and sets the sequence as init=False.
+     */
+    void destroy();
 
   private:
     // -------------- NEVER OWNED RESOURCES
@@ -176,10 +249,9 @@ class Sequence
 
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
-    std::vector<std::unique_ptr<OpBase>> mOperations;
+    std::vector<std::shared_ptr<OpBase>> mOperations;
 
     // State
-    bool mIsInit = false;
     bool mRecording = false;
     bool mIsRunning = false;
 

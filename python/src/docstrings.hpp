@@ -266,23 +266,23 @@ The type of tensor to initialize @param syncDataToGPU Whether to sync
 the data to GPU memory @returns Initialized Tensor with memory Syncd
 to GPU device)doc";
 
-static const char *__doc_kp_OpAlgoBase =
+static const char *__doc_kp_OpAlgoCreate =
 R"doc(Operation that provides a general abstraction that simplifies the use
 of algorithm and parameter components which can be used with shaders.
 By default it enables the user to provide a dynamic number of tensors
 which are then passed as inputs.)doc";
 
-static const char *__doc_kp_OpAlgoBase_KomputeWorkgroup = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_KomputeWorkgroup_x = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup_x = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_KomputeWorkgroup_y = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup_y = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_KomputeWorkgroup_z = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup_z = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_OpAlgoBase = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
+static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
 
-static const char *__doc_kp_OpAlgoBase_OpAlgoBase_2 =
+static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate_2 =
 R"doc(Default constructor with parameters that provides the bare minimum
 requirements for the operations to be able to create and manage their
 sub-components.
@@ -295,7 +295,7 @@ shaderFilePath Optional parameter to specify the shader to load
 (either in spirv or raw format) @param komputeWorkgroup Optional
 parameter to specify the layout for processing)doc";
 
-static const char *__doc_kp_OpAlgoBase_OpAlgoBase_3 =
+static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate_3 =
 R"doc(Constructor that enables a file to be passed to the operation with the
 contents of the shader. This can be either in raw format or in
 compiled SPIR-V binary format.
@@ -308,7 +308,7 @@ shaderFilePath Parameter to specify the shader to load (either in
 spirv or raw format) @param komputeWorkgroup Optional parameter to
 specify the layout for processing)doc";
 
-static const char *__doc_kp_OpAlgoBase_OpAlgoBase_4 =
+static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate_4 =
 R"doc(Constructor that enables raw shader data to be passed to the main
 operation which can be either in raw shader glsl code or in compiled
 SPIR-V binary.
@@ -321,37 +321,37 @@ shaderDataRaw Optional parameter to specify the shader data either in
 binary or raw form @param komputeWorkgroup Optional parameter to
 specify the layout for processing)doc";
 
-static const char *__doc_kp_OpAlgoBase_fetchSpirvBinaryData = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_fetchSpirvBinaryData = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_init =
+static const char *__doc_kp_OpAlgoCreate_init =
 R"doc(The init function is responsible for the initialisation of the
 algorithm component based on the parameters specified, and allows for
 extensibility on the options provided. Further dependent classes can
 perform more specific checks such as ensuring tensors provided are
 initialised, etc.)doc";
 
-static const char *__doc_kp_OpAlgoBase_mAlgorithm = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_mAlgorithm = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_mFreeAlgorithm = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_mFreeAlgorithm = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_mKomputeWorkgroup = R"doc()doc";
+static const char *__doc_kp_OpAlgoCreate_mKomputeWorkgroup = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoBase_mShaderDataRaw =
+static const char *__doc_kp_OpAlgoCreate_mShaderDataRaw =
 R"doc(< Optional member variable which can be provided to contain either the
 raw shader content or the spirv binary content)doc";
 
-static const char *__doc_kp_OpAlgoBase_mShaderFilePath =
-R"doc(< Optional member variable which can be provided for the OpAlgoBase to
+static const char *__doc_kp_OpAlgoCreate_mShaderFilePath =
+R"doc(< Optional member variable which can be provided for the OpAlgoCreate to
 find the data automatically and load for processing)doc";
 
-static const char *__doc_kp_OpAlgoBase_postEval =
+static const char *__doc_kp_OpAlgoCreate_postEval =
 R"doc(Executes after the recorded commands are submitted, and performs a
 copy of the GPU Device memory into the staging buffer so the output
 data can be retrieved.)doc";
 
-static const char *__doc_kp_OpAlgoBase_preEval = R"doc(Does not perform any preEval commands.)doc";
+static const char *__doc_kp_OpAlgoCreate_preEval = R"doc(Does not perform any preEval commands.)doc";
 
-static const char *__doc_kp_OpAlgoBase_record =
+static const char *__doc_kp_OpAlgoCreate_record =
 R"doc(This records the commands that are to be sent to the GPU. This
 includes the barriers that ensure the memory has been copied before
 going in and out of the shader, as well as the dispatch operation that

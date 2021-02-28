@@ -1,9 +1,8 @@
 #pragma once
 
 #include "kompute/Core.hpp"
-
+#include "kompute/operations/OpBase.hpp"
 #include "kompute/Tensor.hpp"
-
 #include "kompute/operations/OpBase.hpp"
 
 namespace kp {
@@ -14,8 +13,6 @@ namespace kp {
 class OpTensorSyncDevice : public OpBase
 {
   public:
-    OpTensorSyncDevice();
-
     /**
      * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.
      *
@@ -24,10 +21,7 @@ class OpTensorSyncDevice : public OpBase
      * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorSyncDevice(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                   std::vector<std::shared_ptr<Tensor>> tensors);
+    OpTensorSyncDevice(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
@@ -35,26 +29,23 @@ class OpTensorSyncDevice : public OpBase
     ~OpTensorSyncDevice() override;
 
     /**
-     * Performs basic checks such as ensuring that there is at least one tensor provided with min memory of 1 element.
-     */
-    void init() override;
-
-    /**
      * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
      */
-    void record() override;
+    void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any postEval commands.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
   private:
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp

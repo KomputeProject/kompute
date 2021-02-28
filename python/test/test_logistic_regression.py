@@ -46,45 +46,39 @@ def test_logistic_regression():
     mgr = kp.Manager(0)
 
     # First we create input and ouput tensors for shader
-    tensor_x_i = kp.Tensor([0.0, 1.0, 1.0, 1.0, 1.0])
-    tensor_x_j = kp.Tensor([0.0, 0.0, 0.0, 1.0, 1.0])
+    tensor_x_i = mgr.tensor([0.0, 1.0, 1.0, 1.0, 1.0])
+    tensor_x_j = mgr.tensor([0.0, 0.0, 0.0, 1.0, 1.0])
 
-    tensor_y = kp.Tensor([0.0, 0.0, 0.0, 1.0, 1.0])
+    tensor_y = mgr.tensor([0.0, 0.0, 0.0, 1.0, 1.0])
 
-    tensor_w_in = kp.Tensor([0.001, 0.001])
-    tensor_w_out_i = kp.Tensor([0.0, 0.0, 0.0, 0.0, 0.0])
-    tensor_w_out_j = kp.Tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_w_in = mgr.tensor([0.001, 0.001])
+    tensor_w_out_i = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_w_out_j = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
 
-    tensor_b_in = kp.Tensor([0.0])
-    tensor_b_out = kp.Tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_b_in = mgr.tensor([0.0])
+    tensor_b_out = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
 
-    tensor_l_out = kp.Tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_l_out = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
 
-    tensor_m = kp.Tensor([ tensor_y.size() ])
+    tensor_m = mgr.tensor([ tensor_y.size() ])
 
     # We store them in an array for easier interaction
     params = [tensor_x_i, tensor_x_j, tensor_y, tensor_w_in, tensor_w_out_i,
         tensor_w_out_j, tensor_b_in, tensor_b_out, tensor_l_out, tensor_m]
 
-    mgr.rebuild(params)
+    mgr.sequence().eval(kp.OpTensorSyncDevice(params))
 
     # Create a managed sequence
     sq = mgr.sequence()
 
-    # Clear previous operations and begin recording for new operations
-    sq.begin()
-
     # Record operation to sync memory from local to GPU memory
-    sq.record_tensor_sync_device([tensor_w_in, tensor_b_in])
+    sq.record(kp.OpTensorSyncDevice([tensor_w_in, tensor_b_in]))
 
     # Record operation to execute GPU shader against all our parameters
-    sq.record_algo_data(params, compute_shader.to_spirv())
+    sq.record(kp.OpAlgoDispatch(mgr.algorithm(params, compute_shader.to_spirv())))
 
     # Record operation to sync memory from GPU to local memory
-    sq.record_tensor_sync_local([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out])
-
-    # Stop recording operations
-    sq.end()
+    sq.record(kp.OpTensorSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
 
     ITERATIONS = 100
     learning_rate = 0.1

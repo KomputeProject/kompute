@@ -28,8 +28,8 @@ public:
     static void _register_methods();
 
 private:
-    kp::Tensor mWeights;
-    kp::Tensor mBias;
+    std::shared_ptr<kp::Tensor> mWeights;
+    std::shared_ptr<kp::Tensor> mBias;
 };
 
 static std::string LR_SHADER = R"(

@@ -2,8 +2,6 @@
 
 #include "kompute/Core.hpp"
 
-#define KP_MAX_DIM_SIZE 1
-
 namespace kp {
 
 /**
@@ -31,11 +29,6 @@ class Tensor
     };
 
     /**
-     *  Base constructor, should not be used unless explicitly intended.
-     */
-    Tensor();
-
-    /**
      *  Default constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
@@ -43,8 +36,10 @@ class Tensor
      * tensor
      *  @param tensorType Type for the tensor which is of type TensorTypes
      */
-    Tensor(const std::vector<float>& data,
-           TensorTypes tensorType = TensorTypes::eDevice);
+    Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           const std::vector<float>& data,
+           const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
@@ -58,13 +53,15 @@ class Tensor
      * would only be created for the tensors of type TensorType::eDevice as
      * otherwise there is no need to copy from host memory.
      */
-    void init(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device);
+    void rebuild(const std::vector<float>& data,
+                 TensorTypes tensorType = TensorTypes::eDevice);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
      */
-    void freeMemoryDestroyGPUResources();
+    void destroy();
+
+    bool isInit();
 
     /**
      * Returns the vector of data currently contained by the Tensor. It is
@@ -91,26 +88,13 @@ class Tensor
      * @return Unsigned integer representing the total number of elements
      */
     uint32_t size();
-    /**
-     * Returns the shape of the tensor, which includes the number of dimensions
-     * and the size per dimension.
-     *
-     * @return Array containing the sizes for each dimension. Zero means
-     * respective dimension is not active.
-     */
-    std::array<uint32_t, KP_MAX_DIM_SIZE> shape();
+
     /**
      * Retrieve the tensor type of the Tensor
      *
      * @return Tensor type of tensor
      */
     TensorTypes tensorType();
-    /**
-     * Returns true if the tensor initialisation function has been carried out
-     * successful, which would mean that the buffer and memory will have been
-     * provisioned.
-     */
-    bool isInit();
 
     /**
      * Sets / resets the vector data of the tensor. This function does not
@@ -128,7 +112,7 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+    void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                         std::shared_ptr<Tensor> copyFromTensor,
                         bool createBarrier);
 
@@ -141,9 +125,8 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFromStagingToDevice(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
-      bool createBarrier);
+    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
+                                       bool createBarrier);
 
     /**
      * Records a copy from the internal device memory to the staging memory
@@ -154,9 +137,8 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFromDeviceToStaging(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
-      bool createBarrier);
+    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
+                                       bool createBarrier);
 
     /**
      * Records the buffer memory barrier into the command buffer which
@@ -168,12 +150,11 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
-      vk::AccessFlagBits srcAccessMask,
-      vk::AccessFlagBits dstAccessMask,
-      vk::PipelineStageFlagBits srcStageMask,
-      vk::PipelineStageFlagBits dstStageMask);
+    void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                   vk::AccessFlagBits srcAccessMask,
+                                   vk::AccessFlagBits dstAccessMask,
+                                   vk::PipelineStageFlagBits srcStageMask,
+                                   vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
@@ -214,21 +195,18 @@ class Tensor
 
     TensorTypes mTensorType = TensorTypes::eDevice;
 
-    std::array<uint32_t, KP_MAX_DIM_SIZE> mShape;
-    bool mIsInit = false;
-
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer,
                       vk::BufferUsageFlags bufferUsageFlags);
     void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
                             std::shared_ptr<vk::DeviceMemory> memory,
                             vk::MemoryPropertyFlags memoryPropertyFlags);
-    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
-                    std::shared_ptr<vk::Buffer> bufferFrom,
-                    std::shared_ptr<vk::Buffer> bufferTo,
-                    vk::DeviceSize bufferSize,
-                    vk::BufferCopy copyRegion,
-                    bool createBarrier);
+    void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
+                          std::shared_ptr<vk::Buffer> bufferFrom,
+                          std::shared_ptr<vk::Buffer> bufferTo,
+                          vk::DeviceSize bufferSize,
+                          vk::BufferCopy copyRegion,
+                          bool createBarrier);
 
     // Private util functions
     vk::BufferUsageFlags getPrimaryBufferUsageFlags();

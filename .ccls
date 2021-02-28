@@ -19,6 +19,7 @@
 -I./external/googletest/googletest/include/
 -I./external/glslang/
 -I./external/spdlog/include/
+-I./external/fmt/include/
 -I./src/include/
 -I./single_include/
 -I./vk_ndk_wrapper_include/

@@ -31,26 +31,34 @@ Manager::Manager()
 Manager::Manager(uint32_t physicalDeviceIndex,
                  const std::vector<uint32_t>& familyQueueIndices)
 {
-    this->mPhysicalDeviceIndex = physicalDeviceIndex;
+    this->mManageResources = true;
 
     this->createInstance();
-    this->createDevice(familyQueueIndices);
+    this->createDevice(familyQueueIndices, physicalDeviceIndex);
 }
 
 Manager::Manager(std::shared_ptr<vk::Instance> instance,
                  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                 std::shared_ptr<vk::Device> device,
-                 uint32_t physicalDeviceIndex)
+                 std::shared_ptr<vk::Device> device)
 {
+    this->mManageResources = false;
+
     this->mInstance = instance;
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
-    this->mPhysicalDeviceIndex = physicalDeviceIndex;
 }
 
 Manager::~Manager()
 {
     KP_LOG_DEBUG("Kompute Manager Destructor started");
+    this->destroy();
+}
+
+void
+Manager::destroy()
+{
+
+    KP_LOG_DEBUG("Kompute Manager destroy() started");
 
     if (this->mDevice == nullptr) {
         KP_LOG_ERROR(
@@ -58,24 +66,34 @@ Manager::~Manager()
         return;
     }
 
-    if (this->mManagedSequences.size()) {
+    if (this->mManageResources && this->mManagedSequences.size()) {
         KP_LOG_DEBUG("Kompute Manager explicitly running destructor for "
                      "managed sequences");
-        for (const std::pair<std::string, std::shared_ptr<Sequence>>& sqPair :
-             this->mManagedSequences) {
-            sqPair.second->freeMemoryDestroyGPUResources();
+        for (const std::weak_ptr<Sequence>& weakSq : this->mManagedSequences) {
+            if (std::shared_ptr<Sequence> sq = weakSq.lock()) {
+                sq->destroy();
+            }
         }
         this->mManagedSequences.clear();
     }
 
-    if (this->mManagedTensors.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing tensors");
-        for (const std::shared_ptr<Tensor>& tensor : this->mManagedTensors) {
-            if (!tensor->isInit()) {
-                KP_LOG_ERROR("Kompute Manager attempted to free managed tensor "
-                             "but not tensor is not initialised");
+    if (this->mManageResources && this->mManagedAlgorithms.size()) {
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing algorithms");
+        for (const std::weak_ptr<Algorithm>& weakAlgorithm :
+             this->mManagedAlgorithms) {
+            if (std::shared_ptr<Algorithm> algorithm = weakAlgorithm.lock()) {
+                algorithm->destroy();
             }
-            tensor->freeMemoryDestroyGPUResources();
+        }
+        this->mManagedAlgorithms.clear();
+    }
+
+    if (this->mManageResources && this->mManagedTensors.size()) {
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing tensors");
+        for (const std::weak_ptr<Tensor>& weakTensor : this->mManagedTensors) {
+            if (std::shared_ptr<Tensor> tensor = weakTensor.lock()) {
+                tensor->destroy();
+            }
         }
         this->mManagedTensors.clear();
     }
@@ -84,6 +102,7 @@ Manager::~Manager()
         KP_LOG_INFO("Destroying device");
         this->mDevice->destroy(
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mDevice = nullptr;
         KP_LOG_DEBUG("Kompute Manager Destroyed Device");
     }
 
@@ -106,36 +125,8 @@ Manager::~Manager()
     if (this->mFreeInstance) {
         this->mInstance->destroy(
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mInstance = nullptr;
         KP_LOG_DEBUG("Kompute Manager Destroyed Instance");
-    }
-}
-
-std::shared_ptr<Sequence>
-Manager::sequence(std::string sequenceName, uint32_t queueIndex)
-{
-    KP_LOG_DEBUG("Kompute Manager sequence() with sequenceName: {} "
-                 "and queueIndex: {}",
-                 sequenceName,
-                 queueIndex);
-
-    std::shared_ptr<Sequence> sq = nullptr;
-
-    std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator found =
-      this->mManagedSequences.find(sequenceName);
-
-    if (found == this->mManagedSequences.end()) {
-        std::shared_ptr<Sequence> sq =
-          std::make_shared<Sequence>(this->mPhysicalDevice,
-                                     this->mDevice,
-                                     this->mComputeQueues[queueIndex],
-                                     this->mComputeQueueFamilyIndices[queueIndex]);
-        sq->init();
-
-        this->mManagedSequences.insert({ sequenceName, sq });
-
-        return sq;
-    } else {
-        return found->second;
     }
 }
 
@@ -225,7 +216,31 @@ Manager::createInstance()
 }
 
 void
-Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
+Manager::clear()
+{
+    if (this->mManageResources) {
+        this->mManagedTensors.erase(
+          std::remove_if(begin(this->mManagedTensors),
+                         end(this->mManagedTensors),
+                         [](std::weak_ptr<Tensor> t) { return t.expired(); }),
+          end(this->mManagedTensors));
+        this->mManagedAlgorithms.erase(
+          std::remove_if(
+            begin(this->mManagedAlgorithms),
+            end(this->mManagedAlgorithms),
+            [](std::weak_ptr<Algorithm> t) { return t.expired(); }),
+          end(this->mManagedAlgorithms));
+        this->mManagedSequences.erase(
+          std::remove_if(begin(this->mManagedSequences),
+                         end(this->mManagedSequences),
+                         [](std::weak_ptr<Sequence> t) { return t.expired(); }),
+          end(this->mManagedSequences));
+    }
+}
+
+void
+Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
+                      uint32_t physicalDeviceIndex)
 {
 
     KP_LOG_DEBUG("Kompute Manager creating Device");
@@ -233,7 +248,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
     if (this->mInstance == nullptr) {
         throw std::runtime_error("Kompute Manager instance is null");
     }
-    if (this->mPhysicalDeviceIndex < 0) {
+    if (physicalDeviceIndex < 0) {
         throw std::runtime_error(
           "Kompute Manager physical device index not provided");
     }
@@ -243,8 +258,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
     std::vector<vk::PhysicalDevice> physicalDevices =
       this->mInstance->enumeratePhysicalDevices();
 
-    vk::PhysicalDevice physicalDevice =
-      physicalDevices[this->mPhysicalDeviceIndex];
+    vk::PhysicalDevice physicalDevice = physicalDevices[physicalDeviceIndex];
 
     this->mPhysicalDevice =
       std::make_shared<vk::PhysicalDevice>(physicalDevice);
@@ -253,7 +267,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
       physicalDevice.getProperties();
 
     KP_LOG_INFO("Using physical device index {} found {}",
-                this->mPhysicalDeviceIndex,
+                physicalDeviceIndex,
                 physicalDeviceProperties.deviceName);
 
     if (!familyQueueIndices.size()) {
@@ -329,150 +343,55 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices)
 }
 
 std::shared_ptr<Tensor>
-Manager::tensor(
-  const std::vector<float>& data,
-  Tensor::TensorTypes tensorType,
-  bool syncDataToGPU)
+Manager::tensor(const std::vector<float>& data, Tensor::TensorTypes tensorType)
 {
-    KP_LOG_DEBUG("Kompute Manager tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-    KP_LOG_DEBUG("Kompute Manager creating new tensor shared ptr");
-    std::shared_ptr<Tensor> tensor =
-      std::make_shared<Tensor>(kp::Tensor(data, tensorType));
+    std::shared_ptr<Tensor> tensor{ new kp::Tensor(
+      this->mPhysicalDevice, this->mDevice, data, tensorType) };
 
-    tensor->init(this->mPhysicalDevice, this->mDevice);
-
-    if (syncDataToGPU) {
-        this->evalOpDefault<OpTensorSyncDevice>({ tensor });
+    if (this->mManageResources) {
+        this->mManagedTensors.push_back(tensor);
     }
-    this->mManagedTensors.insert(tensor);
 
     return tensor;
 }
 
-void
-Manager::rebuild(std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                    bool syncDataToGPU)
+std::shared_ptr<Algorithm>
+Manager::algorithm(const std::vector<std::shared_ptr<Tensor>>& tensors,
+                   const std::vector<uint32_t>& spirv,
+                   const Workgroup& workgroup,
+                   const Constants& specializationConstants)
 {
-    KP_LOG_DEBUG("Kompute Manager rebuild triggered");
-    for (std::shared_ptr<Tensor> tensor : tensors) {
 
-        // False syncData to run all tensors at once instead one by one
-        this->rebuild(tensor, false);
+    KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
+
+    std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
+      this->mDevice, tensors, spirv, workgroup, specializationConstants) };
+
+    if (this->mManageResources) {
+        this->mManagedAlgorithms.push_back(algorithm);
     }
 
-    if (syncDataToGPU) {
-        this->evalOpDefault<OpTensorSyncDevice>(tensors);
-    }
+    return algorithm;
 }
 
-void
-Manager::rebuild(std::shared_ptr<kp::Tensor> tensor,
-                    bool syncDataToGPU)
+std::shared_ptr<Sequence>
+Manager::sequence(uint32_t queueIndex)
 {
-    KP_LOG_DEBUG("Kompute Manager rebuild Tensor triggered");
+    KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
-    if (tensor->isInit()) {
-        tensor->freeMemoryDestroyGPUResources();
+    std::shared_ptr<Sequence> sq{ new kp::Sequence(
+      this->mPhysicalDevice,
+      this->mDevice,
+      this->mComputeQueues[queueIndex],
+      this->mComputeQueueFamilyIndices[queueIndex]) };
+
+    if (this->mManageResources) {
+        this->mManagedSequences.push_back(sq);
     }
 
-    tensor->init(this->mPhysicalDevice, this->mDevice);
-
-    std::set<std::shared_ptr<Tensor>>::iterator it =
-      this->mManagedTensors.find(tensor);
-    if (it == this->mManagedTensors.end()) {
-        this->mManagedTensors.insert(tensor);
-    }
-
-    if (syncDataToGPU) {
-        this->evalOpDefault<OpTensorSyncDevice>({ tensor });
-    }
+    return sq;
 }
-
-void
-Manager::destroy(std::shared_ptr<kp::Tensor> tensor)
-{
-    KP_LOG_DEBUG("Kompute Manager rebuild Tensor triggered");
-
-    if (tensor->isInit()) {
-        tensor->freeMemoryDestroyGPUResources();
-    }
-
-    // TODO: Confirm not limiting destroying tensors owned by this manager allowed
-    std::set<std::shared_ptr<Tensor>>::iterator it =
-      this->mManagedTensors.find(tensor);
-
-    if (it != this->mManagedTensors.end()) {
-        this->mManagedTensors.erase(tensor);
-    }
-}
-
-void
-Manager::destroy(std::vector<std::shared_ptr<kp::Tensor>> tensors)
-{
-    KP_LOG_DEBUG("Kompute Manager rebuild Tensor triggered");
-
-    for (std::shared_ptr<Tensor> tensor : tensors) {
-        this->destroy(tensor);
-    }
-}
-
-void
-Manager::destroy(std::vector<std::shared_ptr<kp::Sequence>> sequences)
-{
-    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
-
-    for (std::shared_ptr<kp::Sequence> sequence : sequences) {
-        this->destroy(sequence);
-    }
-}
-
-void
-Manager::destroy(std::shared_ptr<kp::Sequence> sequence)
-{
-    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
-
-    // Inefficient but required to delete by value
-    // Depending on the amount of named sequences created may be worth creating
-    // a set to ensure efficient delete.
-    for (std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator it = this->mManagedSequences.begin(); it != this->mManagedSequences.end(); it++) {
-        if (it->second == sequence) {
-            this->mManagedSequences.erase(it);
-            break;
-        }
-    }
-
-    if (sequence->isInit()) {
-        sequence->freeMemoryDestroyGPUResources();
-    }
-}
-
-void
-Manager::destroy(const std::string& sequenceName)
-{
-    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
-
-    std::unordered_map<std::string, std::shared_ptr<Sequence>>::iterator
-      found = this->mManagedSequences.find(sequenceName);
-
-    if (found != this->mManagedSequences.end()) {
-        // We don't call destroy(sequence) as erasing sequence by name more efficient
-        if (found->second->isInit()) {
-            found->second->freeMemoryDestroyGPUResources();
-        }
-        this->mManagedSequences.erase(sequenceName);
-    }
-}
-
-void
-Manager::destroy(const std::vector<std::string>& sequenceNames)
-{
-    KP_LOG_DEBUG("Kompute Manager rebuild Sequence triggered");
-
-    for (const std::string& sequenceName : sequenceNames) {
-        this->destroy(sequenceName);
-    }
-}
-
 
 }

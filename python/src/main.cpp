@@ -4,6 +4,8 @@
 
 #include <kompute/Kompute.hpp>
 
+#include "fmt/ranges.h"
+
 #include "docstrings.hpp"
 
 namespace py = pybind11;
@@ -23,8 +25,7 @@ PYBIND11_MODULE(kp, m) {
 
     py::module_ np = py::module_::import("numpy");
 
-
-    py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes", DOC(kp, Tensor, TensorTypes))
+    py::enum_<kp::Tensor::TensorTypes>(m, "TensorTypes")
         .value("device", kp::Tensor::TensorTypes::eDevice, "Tensor holding data in GPU memory.")
         .value("host", kp::Tensor::TensorTypes::eHost, "Tensor used for CPU visible GPU data.")
         .value("storage", kp::Tensor::TensorTypes::eStorage, "Tensor with host visible gpu memory.")
@@ -53,22 +54,32 @@ PYBIND11_MODULE(kp, m) {
             py::arg("sources"), py::arg("files") = std::vector<std::string>(), py::arg("entryPoint") = "main", py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() );
 #endif // KOMPUTE_DISABLE_SHADER_UTILS
 
+    py::class_<kp::OpBase, std::shared_ptr<kp::OpBase>>(m, "OpBase");
+
+    py::class_<kp::OpTensorSyncDevice, std::shared_ptr<kp::OpTensorSyncDevice>>(m, "OpTensorSyncDevice", py::base<kp::OpBase>())
+        .def(py::init<const std::vector<std::shared_ptr<kp::Tensor>>&>());
+
+    py::class_<kp::OpTensorSyncLocal, std::shared_ptr<kp::OpTensorSyncLocal>>(m, "OpTensorSyncLocal", py::base<kp::OpBase>())
+        .def(py::init<const std::vector<std::shared_ptr<kp::Tensor>>&>());
+
+    py::class_<kp::OpTensorCopy, std::shared_ptr<kp::OpTensorCopy>>(m, "OpTensorCopy", py::base<kp::OpBase>())
+        .def(py::init<const std::vector<std::shared_ptr<kp::Tensor>>&>());
+
+    py::class_<kp::OpAlgoDispatch, std::shared_ptr<kp::OpAlgoDispatch>>(m, "OpAlgoDispatch", py::base<kp::OpBase>())
+        .def(py::init<const std::shared_ptr<kp::Algorithm>&,const kp::Constants&>(),
+                py::arg("algorithm"), py::arg("push_consts") = kp::Constants());
+
+    py::class_<kp::OpMult, std::shared_ptr<kp::OpMult>>(m, "OpMult", py::base<kp::OpBase>())
+        .def(py::init<const std::vector<std::shared_ptr<kp::Tensor>>&,const std::shared_ptr<kp::Algorithm>&>());
+
+    py::class_<kp::Algorithm, std::shared_ptr<kp::Algorithm>>(m, "Algorithm")
+        .def("get_tensors", &kp::Algorithm::getTensors)
+        .def("destroy", &kp::Algorithm::destroy)
+        .def("get_spec_consts", &kp::Algorithm::getSpecializationConstants)
+        .def("is_init", &kp::Algorithm::isInit);
+
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
-        .def(py::init(
-            [np](const py::array_t<float> data, kp::Tensor::TensorTypes tensor_type) {
-                const py::array_t<float> flatdata = np.attr("ravel")(data);
-                const py::buffer_info info        = flatdata.request();
-                const float* ptr                  = (float*) info.ptr;
-                return std::unique_ptr<kp::Tensor>(
-                    new kp::Tensor(std::vector<float>(ptr, ptr+flatdata.size()), tensor_type)
-                );
-            }), 
-            "Construct Tensor with an array as initial data and an optional kp.TensorType (default:device).",
-            py::arg("data"),
-            py::arg("tensor_type") = kp::Tensor::TensorTypes::eDevice
-            )
-        .def("data", &kp::Tensor::data, DOC(kp, Tensor, data))
-        .def("numpy", [](kp::Tensor& self) {
+        .def("data", [](kp::Tensor& self) {
                 return py::array(self.data().size(), self.data().data());
             }, "Returns stored data as a new numpy array.")
         .def("__getitem__", [](kp::Tensor &self, size_t index) -> float { return self.data()[index]; },
@@ -105,221 +116,50 @@ PYBIND11_MODULE(kp, m) {
         .def("__len__", &kp::Tensor::size, "Retrieves the size of the Tensor data as per the local Tensor memory.")
         .def("tensor_type", &kp::Tensor::tensorType, "Retreves the memory type of the tensor.")
         .def("is_init", &kp::Tensor::isInit, "Checks whether the tensor GPU memory has been initialised.")
-        .def("map_data_from_host", &kp::Tensor::mapDataFromHostMemory, "Maps data into GPU memory from tensor local data.")
-        .def("map_data_into_host", &kp::Tensor::mapDataIntoHostMemory, "Maps data from GPU memory into tensor local data.");
-
+        .def("destroy", &kp::Tensor::destroy, "Destroy tensor GPU resources.");
 
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
-        .def("init", &kp::Sequence::init, DOC(kp, Sequence, init))
-        
-        // record
-        .def("begin", &kp::Sequence::begin, DOC(kp, Sequence, begin))
-        .def("end", &kp::Sequence::end, DOC(kp, Sequence, end))
-        
-        // eval
-        .def("eval", &kp::Sequence::eval, DOC(kp, Sequence, eval))
-        .def("eval_async", &kp::Sequence::evalAsync, DOC(kp, Sequence, evalAsync))
-        .def("eval_await", &kp::Sequence::evalAwait, DOC(kp, Sequence, evalAwait))
-        
-        // status
-        .def("is_running", &kp::Sequence::isRunning, DOC(kp, Sequence, isRunning))
-        .def("is_rec", &kp::Sequence::isRecording, DOC(kp, Sequence, isRecording))
-        .def("is_init", &kp::Sequence::isInit, DOC(kp, Sequence, isInit))
-        
-        // record
-        .def("record_tensor_copy", &kp::Sequence::record<kp::OpTensorCopy>, DOC(kp, Sequence, record))
-        .def("record_tensor_sync_device", &kp::Sequence::record<kp::OpTensorSyncDevice>,
-            "Records operation to sync tensor from local memory to GPU memory")
-        .def("record_tensor_sync_local", &kp::Sequence::record<kp::OpTensorSyncLocal>,
-            "Records operation to sync tensor(s) from GPU memory to local memory")
-        .def("record_algo_file", &kp::Sequence::record<
-                                    kp::OpAlgoBase,
-                                    const std::string&,
-                                    kp::Workgroup,
-                                    kp::Constants>,
-        "Records an operation using a custom shader provided from a shader path",
-            py::arg("tensors"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        .def("record_algo_data", [](kp::Sequence &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    py::bytes &bytes,
-                                    kp::Workgroup workgroup,
-                                    kp::Constants constants) -> bool {
-                // Bytes have to be converted into std::vector
-                py::buffer_info info(py::buffer(bytes).request());
-                const char *data = reinterpret_cast<const char *>(info.ptr);
-                size_t length = static_cast<size_t>(info.size);
-                return self.record<kp::OpAlgoBase>(
-                    tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
+        .def("record", [](kp::Sequence& self, std::shared_ptr<kp::OpBase> op) { return self.record(op); })
+        .def("eval", [](kp::Sequence& self) { return self.eval(); })
+        .def("eval", [](kp::Sequence& self, std::shared_ptr<kp::OpBase> op) { return self.eval(op); })
+        .def("eval_async", [](kp::Sequence& self) { return self.eval(); })
+        .def("eval_async", [](kp::Sequence& self, std::shared_ptr<kp::OpBase> op) { return self.evalAsync(op); })
+        .def("eval_await", [](kp::Sequence& self) { return self.evalAwait(); })
+        .def("eval_await", [](kp::Sequence& self, uint32_t wait) { return self.evalAwait(wait); })
+        .def("is_recording", &kp::Sequence::isRecording)
+        .def("is_running", &kp::Sequence::isRunning)
+        .def("is_init", &kp::Sequence::isInit)
+        .def("clear", &kp::Sequence::clear)
+        .def("destroy", &kp::Sequence::destroy);
+
+    py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(m, "Manager")
+        .def(py::init())
+        .def(py::init<uint32_t>())
+        .def(py::init<uint32_t,const std::vector<uint32_t>&>())
+        .def("sequence", &kp::Manager::sequence, py::arg("queueIndex") = 0)
+        .def("tensor", [np](kp::Manager& self,
+                            const py::array_t<float> data,
+                            kp::Tensor::TensorTypes tensor_type) {
+                const py::array_t<float> flatdata = np.attr("ravel")(data);
+                const py::buffer_info info        = flatdata.request();
+                const float* ptr                  = (float*) info.ptr;
+                return self.tensor(std::vector<float>(ptr, ptr+flatdata.size()), tensor_type);
             },
-            "Records an operation using a custom shader provided as spirv bytes",
-            py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() );
-
-
-    py::class_<kp::Manager>(m, "Manager")
-        .def(py::init(), "Default initializer uses device 0 and first compute compatible GPU queueFamily")
-        .def(py::init(
-            [](uint32_t physicalDeviceIndex) {
-                return std::unique_ptr<kp::Manager>(new kp::Manager(physicalDeviceIndex));
-            }), "Manager initialiser can provide specified device index but will use first compute compatible GPU queueFamily")
-        .def(py::init(
-            [](uint32_t physicalDeviceIndex, const std::vector<uint32_t>& familyQueueIndices) {
-                return std::unique_ptr<kp::Manager>(new kp::Manager(physicalDeviceIndex, familyQueueIndices));
-            }), "Manager initialiser can provide specified device and array of GPU queueFamilies to load.")
-        .def("sequence", &kp::Manager::sequence,
-                py::arg("name") = "", py::arg("queueIndex") = 0, "Get or create a sequence with specific name and specified index of available queues")
-        .def("tensor", &kp::Manager::tensor, 
-                py::arg("data"), py::arg("tensorType") = kp::Tensor::TensorTypes::eDevice, py::arg("syncDataToGPU") = true,
-                "Build and initialise tensor")
-        .def("rebuild", py::overload_cast<std::vector<std::shared_ptr<kp::Tensor>>, bool>(&kp::Manager::rebuild),
-                py::arg("tensors"), py::arg("syncDataToGPU") = true,
-                "Build and initialise list of tensors")
-        .def("rebuild", py::overload_cast<std::shared_ptr<kp::Tensor>, bool>(&kp::Manager::rebuild),
-                py::arg("tensor"), py::arg("syncDataToGPU") = true,
-                "Build and initialise tensor")
-        .def("destroy", py::overload_cast<std::shared_ptr<kp::Tensor>>(&kp::Manager::destroy),
-                py::arg("tensor"), DOC(kp, Manager, destroy))
-        .def("destroy", py::overload_cast<std::vector<std::shared_ptr<kp::Tensor>>>(&kp::Manager::destroy),
-                py::arg("tensors"), DOC(kp, Manager, destroy, 2))
-        .def("destroy", py::overload_cast<std::vector<std::shared_ptr<kp::Sequence>>>(&kp::Manager::destroy),
-                py::arg("sequences"), DOC(kp, Manager, destroy, 3))
-        .def("destroy", py::overload_cast<std::shared_ptr<kp::Sequence>>(&kp::Manager::destroy),
-                py::arg("sequence"), DOC(kp, Manager, destroy, 4))
-        .def("destroy", py::overload_cast<const std::string &>(&kp::Manager::destroy),
-                py::arg("sequenceName"), DOC(kp, Manager, destroy, 5))
-        .def("destroy", py::overload_cast<const std::vector<std::string>&>(&kp::Manager::destroy),
-                py::arg("sequenceNames"), DOC(kp, Manager, destroy, 6))
-        // temporary backwards compatibility
-        .def("eval_tensor_create_def",[](kp::Manager& self, std::vector<std::shared_ptr<kp::Tensor>> tensors, bool syncDataToGPU) -> void {
-                    kp_error("IMPORTANT: eval_tensor_create_def is depricated! Please use Manager.rebuild instead as function will be removed soon.");
-                    self.rebuild(tensors, syncDataToGPU);
+            "Tensor initialisation function with data and tensor type",
+            py::arg("data"), py::arg("tensor_type") = kp::Tensor::TensorTypes::eDevice)
+        .def("algorithm", [](kp::Manager& self,
+                             const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
+                             const py::bytes& spirv,
+                             const kp::Workgroup& workgroup,
+                             const kp::Constants& spec_consts) {
+                    py::buffer_info info(py::buffer(spirv).request());
+                    const char *data = reinterpret_cast<const char *>(info.ptr);
+                    size_t length = static_cast<size_t>(info.size);
+                    std::vector<uint32_t> spirvVec((uint32_t*)data, (uint32_t*)(data + length));
+                    return self.algorithm(tensors, spirvVec, workgroup, spec_consts);
                 },
-                py::arg("tensors"), py::arg("syncDataToGPU") = true,
-                "Temporary backwards compatibility for tensor creation function which will be removed in the next version.")
-
-        // Await functions
-        .def("eval_await", &kp::Manager::evalOpAwait,
-                py::arg("sequenceName"), py::arg("waitFor") = UINT64_MAX,
-                "Awaits for asynchronous operation on a named Sequence")
-        .def("eval_await_def", &kp::Manager::evalOpAwaitDefault,
-                py::arg("waitFor") = UINT64_MAX, "Awaits for asynchronous operation on the last anonymous Sequence created")
-        
-        // eval default
-        .def("eval_tensor_copy_def", &kp::Manager::evalOpDefault<kp::OpTensorCopy>,
-            "Evaluates operation to copy one tensor to one or many tensors with new anonymous Sequence")
-        .def("eval_tensor_sync_device_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncDevice>,
-            "Evaluates operation to sync tensor from local memory to GPU memory with new anonymous Sequence")
-        .def("eval_tensor_sync_local_def", &kp::Manager::evalOpDefault<kp::OpTensorSyncLocal>,
-            "Evaluates operation to sync tensor(s) from GPU memory to local memory with new anonymous Sequence")
-        .def("eval_algo_file_def", &kp::Manager::evalOpDefault<
-                                    kp::OpAlgoBase,
-                                    const std::string&,
-                                    kp::Workgroup,
-                                    kp::Constants>,
-            "Evaluates an operation using a custom shader provided from a shader path with new anonymous Sequence",
-            py::arg("tensors"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        .def("eval_algo_data_def", [](kp::Manager &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    py::bytes &bytes,
-                                    kp::Workgroup workgroup,
-                                    kp::Constants constants) {
-                // Bytes have to be converted into std::vector
-                py::buffer_info info(py::buffer(bytes).request());
-                const char *data = reinterpret_cast<const char *>(info.ptr);
-                size_t length = static_cast<size_t>(info.size);
-                self.evalOpDefault<kp::OpAlgoBase>(
-                    tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
-            },
-            "Evaluates an operation using a custom shader provided as spirv bytes with new anonymous Sequence",
-            py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        
-        // eval
-        .def("eval_tensor_copy", &kp::Manager::evalOp<kp::OpTensorCopy>,
-            "Evaluates operation to copy one tensor to one or many tensors with explicitly named Sequence")
-        .def("eval_tensor_sync_device", &kp::Manager::evalOp<kp::OpTensorSyncDevice>,
-            "Evaluates operation to sync tensor from local memory to GPU memory with explicitly named Sequence")
-        .def("eval_tensor_sync_local", &kp::Manager::evalOp<kp::OpTensorSyncLocal>,
-            "Evaluates operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
-        .def("eval_algo_file", &kp::Manager::evalOp<
-                                    kp::OpAlgoBase,
-                                    const std::string&,
-                                    kp::Workgroup,
-                                    kp::Constants>,
-            "Evaluates an operation using a custom shader provided from a shader path with explicitly named Sequence",
-            py::arg("tensors"), py::arg("sequence_name"), py::arg("data"),py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        .def("eval_algo_data", [](kp::Manager &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    std::string sequenceName,
-                                    py::bytes &bytes,
-                                    kp::Workgroup workgroup,
-                                    kp::Constants constants) {
-                // Bytes have to be converted into std::vector
-                py::buffer_info info(py::buffer(bytes).request());
-                const char *data = reinterpret_cast<const char *>(info.ptr);
-                size_t length = static_cast<size_t>(info.size);
-                self.evalOp<kp::OpAlgoBase>(
-                    tensors, sequenceName, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
-            },
-            "Evaluates an operation using a custom shader provided as spirv bytes with explicitly named Sequence",
-            py::arg("tensors"), py::arg("sequence_name"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        
-        // eval async default
-        .def("eval_async_tensor_copy_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorCopy>,
-            "Evaluates asynchronously operation to copy one tensor to one or many tensors with anonymous Sequence")
-        .def("eval_async_tensor_sync_device_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncDevice>,
-            "Evaluates asynchronously operation to sync tensor from local memory to GPU memory with anonymous Sequence")
-        .def("eval_async_tensor_sync_local_def", &kp::Manager::evalOpAsyncDefault<kp::OpTensorSyncLocal>,
-            "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with anonymous Sequence")
-        .def("eval_async_algo_file_def", &kp::Manager::evalOpAsyncDefault<
-                                    kp::OpAlgoBase,
-                                    const std::string&,
-                                    kp::Workgroup,
-                                    kp::Constants>,
-            "Evaluates asynchronously an operation using a custom shader provided from a shader path with anonymous Sequence",
-            py::arg("tensors"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        .def("eval_async_algo_data_def", [](kp::Manager &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    py::bytes &bytes,
-                                    kp::Workgroup workgroup,
-                                    kp::Constants constants) {
-                // Bytes have to be converted into std::vector
-                py::buffer_info info(py::buffer(bytes).request());
-                const char *data = reinterpret_cast<const char *>(info.ptr);
-                size_t length = static_cast<size_t>(info.size);
-                self.evalOpAsyncDefault<kp::OpAlgoBase>(
-                    tensors, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
-            },
-            "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with anonymous Sequence",
-            py::arg("tensors"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        
-        // eval async
-        .def("eval_async_tensor_copy", &kp::Manager::evalOpAsync<kp::OpTensorCopy>,
-            "Evaluates asynchronously operation to copy one tensor to one or many tensors with explicitly named Sequence")
-        .def("eval_async_tensor_sync_device", &kp::Manager::evalOpAsync<kp::OpTensorSyncDevice>,
-            "Evaluates asynchronously operation to sync tensor from local memory to GPU memory with explicitly named Sequence")
-        .def("eval_async_tensor_sync_local", &kp::Manager::evalOpAsync<kp::OpTensorSyncLocal>,
-            "Evaluates asynchronously operation to sync tensor(s) from GPU memory to local memory with explicitly named Sequence")
-        .def("eval_async_algo_file", &kp::Manager::evalOpAsync<
-                                    kp::OpAlgoBase,
-                                    const std::string&,
-                                    kp::Workgroup,
-                                    kp::Constants>,
-            "Evaluates asynchronously an operation using a custom shader provided from a shader path with explicitly named Sequence",
-            py::arg("tensors"), py::arg("sequence_name"), py::arg("data"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() )
-        .def("eval_async_algo_data", [](kp::Manager &self,
-                                    std::vector<std::shared_ptr<kp::Tensor>> tensors,
-                                    std::string sequenceName,
-                                    py::bytes &bytes,
-                                    kp::Workgroup workgroup,
-                                    kp::Constants constants) {
-                // Bytes have to be converted into std::vector
-                py::buffer_info info(py::buffer(bytes).request());
-                const char *data = reinterpret_cast<const char *>(info.ptr);
-                size_t length = static_cast<size_t>(info.size);
-                self.evalOpAsync<kp::OpAlgoBase>(
-                    tensors, sequenceName, std::vector<uint32_t>((uint32_t*)data, (uint32_t*)(data + length)), workgroup, constants);
-            },
-            "Evaluates asynchronously an operation using a custom shader provided as raw string or spirv bytes with explicitly named Sequence",
-            py::arg("tensors"), py::arg("sequence_name"), py::arg("bytes"), py::arg("workgroup") = kp::Workgroup(), py::arg("constants") = kp::Constants() );
+            "Algorithm initialisation function",
+            py::arg("tensors"), py::arg("spirv"), py::arg("workgroup") = kp::Workgroup(), py::arg("spec_consts") = kp::Constants());
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;

@@ -31,7 +31,7 @@ void KomputeSummatorNode::_init() {
     std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.tensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.tensor({ 0.0 });
-    this->mSequence = this->mManager.sequence("AdditionSeq");
+    this->mSequence = this->mManager.sequence();
 
     // We now record the steps in the sequence
     if (std::shared_ptr<kp::Sequence> sq = this->mSequence)
@@ -51,7 +51,11 @@ void KomputeSummatorNode::_init() {
             }
         )");
 
-        sq->begin();
+        std::shared_ptr<kp::Algorithm> algo =
+          mgr.algorithm(
+                { this->mPrimaryTensor, this->mSecondaryTensor },
+                kp::Shader::compile_source(shader));
+
 
         // First we ensure secondary tensor loads to GPU
         // No need to sync the primary tensor as it should not be changed
@@ -59,15 +63,12 @@ void KomputeSummatorNode::_init() {
                 { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
-        sq->record<kp::OpAlgoBase>(
-            { this->mPrimaryTensor, this->mSecondaryTensor }, 
-            kp::Shader::compile_source(shader));
+        sq->record<kp::OpAlgoDispatch>(algo)
 
         // We map the result back to local 
         sq->record<kp::OpTensorSyncLocal>(
                 { this->mPrimaryTensor });
 
-        sq->end();
     }
     else {
         throw std::runtime_error("Sequence pointer no longer available");

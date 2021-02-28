@@ -60,12 +60,19 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #define KP_LOG_DEBUG(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define KP_LOG_DEBUG(...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+#define KP_LOG_DEBUG(...)                                                      \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
 #else
-#define KP_LOG_DEBUG(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_DEBUG(...)                                                      \
+    fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
+               __DATE__,                                                       \
+               __TIME__,                                                       \
+               __FILE__,                                                       \
+               __LINE__,                                                       \
+               fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 1
 
@@ -73,12 +80,19 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #define KP_LOG_INFO(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define KP_LOG_INFO(...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+#define KP_LOG_INFO(...)                                                       \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_INFO(...) kp_info(fmt::format(__VA_ARGS__))
 #else
-#define KP_LOG_INFO(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_INFO(...)                                                       \
+    fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
+               __DATE__,                                                       \
+               __TIME__,                                                       \
+               __FILE__,                                                       \
+               __LINE__,                                                       \
+               fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 2
 
@@ -86,12 +100,19 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #define KP_LOG_WARN(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define KP_LOG_WARN(...)                                              \
-    ((void)__android_log_print(ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+#define KP_LOG_WARN(...)                                                       \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_WARN(...) kp_warning(fmt::format(__VA_ARGS__))
 #else
-#define KP_LOG_WARN(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_WARN(...)                                                       \
+    fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
+               __DATE__,                                                       \
+               __TIME__,                                                       \
+               __FILE__,                                                       \
+               __LINE__,                                                       \
+               fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 3
 
@@ -99,12 +120,19 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #define KP_LOG_ERROR(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
-#define KP_LOG_ERROR(...)                                             \
-    ((void)__android_log_print(ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+#define KP_LOG_ERROR(...)                                                      \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_ERROR(...) kp_error(fmt::format(__VA_ARGS__))
 #else
-#define KP_LOG_ERROR(...) fmt::print("[{} {}] [debug] [{}:{}] {}\n", __DATE__, __TIME__, __FILE__, __LINE__, fmt::format(__VA_ARGS__))
+#define KP_LOG_ERROR(...)                                                      \
+    fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
+               __DATE__,                                                       \
+               __TIME__,                                                       \
+               __FILE__,                                                       \
+               __LINE__,                                                       \
+               fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #endif // SPDLOG_ACTIVE_LEVEL > 4
 #endif // KOMPUTE_SPDLOG_ENABLED

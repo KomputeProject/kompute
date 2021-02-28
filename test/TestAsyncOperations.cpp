@@ -37,25 +37,32 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         }
     )");
 
+    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+
     std::vector<float> data(size, 0.0);
     std::vector<float> resultSync(size, 100000000);
     std::vector<float> resultAsync(size, 100000000);
 
     kp::Manager mgr;
 
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+
     std::vector<std::shared_ptr<kp::Tensor>> inputsSyncB;
+    std::vector<std::shared_ptr<kp::Algorithm>> algorithms;
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        inputsSyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+        inputsSyncB.push_back(mgr.tensor(data));
+        algorithms.push_back(mgr.algorithm({ inputsSyncB[i] }, spirv));
     }
 
-    mgr.rebuild(inputsSyncB);
+    sq->eval<kp::OpTensorSyncDevice>(inputsSyncB);
+
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>(inputsSyncB);
 
     auto startSync = std::chrono::high_resolution_clock::now();
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        mgr.evalOpDefault<kp::OpAlgoBase>(
-          { inputsSyncB[i] }, kp::Shader::compile_source(shader));
+        sq->eval<kp::OpAlgoDispatch>(algorithms[i]);
     }
 
     auto endSync = std::chrono::high_resolution_clock::now();
@@ -63,7 +70,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
       std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync)
         .count();
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>(inputsSyncB);
+    sq->eval<kp::OpTensorSyncLocal>(inputsSyncB);
 
     for (uint32_t i = 0; i < numParallel; i++) {
         EXPECT_EQ(inputsSyncB[i]->data(), resultSync);
@@ -73,27 +80,27 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
 
     std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
 
+    std::vector<std::shared_ptr<kp::Algorithm>> algosAsync;
+
     for (uint32_t i = 0; i < numParallel; i++) {
-        inputsAsyncB.push_back(std::make_shared<kp::Tensor>(kp::Tensor(data)));
+        inputsAsyncB.push_back(mgr.tensor(data));
+        algosAsync.push_back(mgr.algorithm({ inputsAsyncB[i] }, spirv));
     }
 
-    mgrAsync.rebuild(inputsAsyncB);
+    std::vector<std::shared_ptr<kp::Sequence>> sqs;
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        mgrAsync.sequence("async" + std::to_string(i), i);
+        sqs.push_back(mgrAsync.sequence(i));
     }
 
     auto startAsync = std::chrono::high_resolution_clock::now();
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        mgrAsync.evalOpAsync<kp::OpAlgoBase>(
-          { inputsAsyncB[i] },
-          "async" + std::to_string(i),
-          kp::Shader::compile_source(shader));
+        sqs[i]->evalAsync<kp::OpAlgoDispatch>(algosAsync[i]);
     }
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        mgrAsync.evalOpAwait("async" + std::to_string(i));
+        sqs[i]->evalAwait();
     }
 
     auto endAsync = std::chrono::high_resolution_clock::now();
@@ -101,7 +108,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
                            endAsync - startAsync)
                            .count();
 
-    mgrAsync.evalOpDefault<kp::OpTensorSyncLocal>({ inputsAsyncB });
+    sq->eval<kp::OpTensorSyncLocal>({ inputsAsyncB });
 
     for (uint32_t i = 0; i < numParallel; i++) {
         EXPECT_EQ(inputsAsyncB[i]->data(), resultAsync);
@@ -138,32 +145,32 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
         }
     )");
 
+    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+
     std::vector<float> data(size, 0.0);
     std::vector<float> resultAsync(size, 100000000);
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(data) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(data) };
+    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor(data);
+    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor(data);
 
-    mgr.sequence("asyncOne");
-    mgr.sequence("asyncTwo");
+    std::shared_ptr<kp::Sequence> sq1 = mgr.sequence();
+    std::shared_ptr<kp::Sequence> sq2 = mgr.sequence();
 
-    mgr.rebuild({ tensorA, tensorB });
+    sq1->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
-    std::vector<uint32_t> result = kp::Shader::compile_source(shader);
+    std::shared_ptr<kp::Algorithm> algo1 = mgr.algorithm({ tensorA }, spirv);
+    std::shared_ptr<kp::Algorithm> algo2 = mgr.algorithm({ tensorB }, spirv);
 
-    mgr.evalOpAsync<kp::OpAlgoBase>(
-      { tensorA }, "asyncOne", kp::Shader::compile_source(shader));
+    sq1->evalAsync<kp::OpAlgoDispatch>(algo1);
+    sq2->evalAsync<kp::OpAlgoDispatch>(algo2);
 
-    mgr.evalOpAsync<kp::OpAlgoBase>(
-      { tensorB }, "asyncTwo", kp::Shader::compile_source(shader));
+    sq1->evalAwait();
+    sq2->evalAwait();
 
-    mgr.evalOpAwait("asyncOne");
-    mgr.evalOpAwait("asyncTwo");
-
-    mgr.evalOpAsyncDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
-    mgr.evalOpAwaitDefault();
+    sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    sq1->evalAwait();
 
     EXPECT_EQ(tensorA->data(), resultAsync);
     EXPECT_EQ(tensorB->data(), resultAsync);

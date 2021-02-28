@@ -151,8 +151,7 @@ if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
             # HLSL
             # glslang includes OGLCompiler, OSDependent, MachineIndependent
             glslang
-            SPIRV
-            glslang-default-resource-limits)
+            SPIRV)
     else()
         find_package(glslang CONFIG REQUIRED)
 
@@ -164,9 +163,8 @@ if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
             # Not including hlsl support
             # glslang::HLSL
             # Adding explicit dependencies to match above
-            glslang
-            SPIRV
-            glslang-default-resource-limits)
+            glslang::glslang
+            glslang::SPIRV)
     endif()
 endif()
 

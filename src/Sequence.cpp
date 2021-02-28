@@ -3,12 +3,6 @@
 
 namespace kp {
 
-Sequence::Sequence()
-{
-    KP_LOG_DEBUG("Kompute Sequence base constructor");
-    this->mIsInit = false;
-}
-
 Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::Queue> computeQueue,
@@ -20,126 +14,92 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
-    this->mIsInit = false;
+
+    this->createCommandPool();
+    this->createCommandBuffer();
 }
 
 Sequence::~Sequence()
 {
     KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
-    if (!this->mIsInit) {
-        KP_LOG_INFO("Kompute Sequence destructor called but sequence is not "
-                    "initialized so no need to removing GPU resources.");
-        return;
-    } else {
-        this->freeMemoryDestroyGPUResources();
-    }
+    this->destroy();
 }
 
 void
-Sequence::init()
-{
-    this->createCommandPool();
-    this->createCommandBuffer();
-    this->mIsInit = true;
-}
-
-bool
 Sequence::begin()
 {
     KP_LOG_DEBUG("Kompute sequence called BEGIN");
 
     if (this->isRecording()) {
-        KP_LOG_WARN("Kompute Sequence begin called when  already recording");
-        return false;
+        KP_LOG_DEBUG("Kompute Sequence begin called when already recording");
+        return;
     }
 
     if (this->isRunning()) {
-        KP_LOG_WARN(
+        throw std::runtime_error(
           "Kompute Sequence begin called when sequence still running");
-        return false;
     }
 
-    if (!this->mCommandPool) {
-        throw std::runtime_error("Kompute Sequence command pool is null");
-    }
-
-    if (this->mOperations.size()) {
-        KP_LOG_INFO("Kompute Sequence clearing previous operations");
-        this->mOperations.clear();
-    }
-
-    if (!this->mRecording) {
-        KP_LOG_INFO("Kompute Sequence command recording BEGIN");
-        this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
-        this->mRecording = true;
-    } else {
-        KP_LOG_WARN("Kompute Sequence attempted to start command recording "
-                    "but recording already started");
-    }
-    return true;
+    KP_LOG_INFO("Kompute Sequence command now started recording");
+    this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
+    this->mRecording = true;
 }
 
-bool
+void
 Sequence::end()
 {
     KP_LOG_DEBUG("Kompute Sequence calling END");
 
     if (!this->isRecording()) {
         KP_LOG_WARN("Kompute Sequence end called when not recording");
-        return false;
-    }
-
-    if (!this->mCommandPool) {
-        throw std::runtime_error("Kompute Sequence command pool is null");
-    }
-
-    if (this->mRecording) {
+        return;
+    } else {
         KP_LOG_INFO("Kompute Sequence command recording END");
         this->mCommandBuffer->end();
         this->mRecording = false;
-    } else {
-        KP_LOG_WARN("Kompute Sequence attempted to end command recording but "
-                    "recording not started");
     }
-    return true;
 }
 
-bool
+void
+Sequence::clear()
+{
+    KP_LOG_DEBUG("Kompute Sequence  calling clear");
+    this->end();
+}
+
+std::shared_ptr<Sequence>
 Sequence::eval()
 {
     KP_LOG_DEBUG("Kompute sequence EVAL BEGIN");
 
-    bool evalResult = this->evalAsync();
-    if (!evalResult) {
-        KP_LOG_DEBUG("Kompute sequence EVAL FAILURE");
-        return false;
-    }
-
-    evalResult = this->evalAwait();
-
-    KP_LOG_DEBUG("Kompute sequence EVAL SUCCESS");
-
-    return evalResult;
+    return this->evalAsync()->evalAwait();
 }
 
-bool
+std::shared_ptr<Sequence>
+Sequence::eval(std::shared_ptr<OpBase> op)
+{
+    this->clear();
+    return this->record(op)->eval();
+}
+
+std::shared_ptr<Sequence>
 Sequence::evalAsync()
 {
     if (this->isRecording()) {
-        KP_LOG_WARN("Kompute Sequence evalAsync called when still recording");
-        return false;
+        this->end();
     }
+
     if (this->mIsRunning) {
-        KP_LOG_WARN("Kompute Sequence evalAsync called when an eval async was "
-                    "called without successful wait");
-        return false;
+        throw std::runtime_error(
+          "Kompute Sequence evalAsync called when an eval async was "
+          "called without successful wait");
     }
 
     this->mIsRunning = true;
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
-        this->mOperations[i]->preEval();
+        this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
     vk::SubmitInfo submitInfo(
@@ -152,15 +112,24 @@ Sequence::evalAsync()
 
     this->mComputeQueue->submit(1, &submitInfo, this->mFence);
 
-    return true;
+    return shared_from_this();
 }
 
-bool
+std::shared_ptr<Sequence>
+Sequence::evalAsync(std::shared_ptr<OpBase> op)
+{
+    this->clear();
+    this->record(op);
+    this->evalAsync();
+    return shared_from_this();
+}
+
+std::shared_ptr<Sequence>
 Sequence::evalAwait(uint64_t waitFor)
 {
     if (!this->mIsRunning) {
         KP_LOG_WARN("Kompute Sequence evalAwait called without existing eval");
-        return false;
+        return shared_from_this();
     }
 
     vk::Result result =
@@ -171,15 +140,16 @@ Sequence::evalAwait(uint64_t waitFor)
     this->mIsRunning = false;
 
     if (result == vk::Result::eTimeout) {
-        KP_LOG_WARN("Kompute Sequence evalAwait timed out");
-        return false;
+        KP_LOG_WARN("Kompute Sequence evalAwait reached timeout of {}",
+                    waitFor);
+        return shared_from_this();
     }
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
-        this->mOperations[i]->postEval();
+        this->mOperations[i]->postEval(*this->mCommandBuffer);
     }
 
-    return true;
+    return shared_from_this();
 }
 
 bool
@@ -197,54 +167,51 @@ Sequence::isRecording()
 bool
 Sequence::isInit()
 {
-    return this->mIsInit;
+    return this->mDevice && this->mCommandPool && this->mCommandBuffer &&
+           this->mComputeQueue;
 }
 
 void
-Sequence::freeMemoryDestroyGPUResources()
+Sequence::destroy()
 {
-    KP_LOG_DEBUG("Kompute Sequence freeMemoryDestroyGPUResources called");
-
-    if (!this->mIsInit) {
-        KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
-                     "but Sequence is not initialized so there's no relevant "
-                     "GPU resources.");
-        return;
-    }
+    KP_LOG_DEBUG("Kompute Sequence destroy called");
 
     if (!this->mDevice) {
-        KP_LOG_ERROR("Kompute Sequence freeMemoryDestroyGPUResources called "
-                     "with null Device pointer");
-        this->mIsInit = false;
+        KP_LOG_WARN("Kompute Sequence destroy called "
+                    "with null Device pointer");
         return;
     }
 
     if (this->mFreeCommandBuffer) {
         KP_LOG_INFO("Freeing CommandBuffer");
         if (!this->mCommandBuffer) {
-            KP_LOG_ERROR(
-              "Kompute Sequence freeMemoryDestroyGPUResources called with null "
-              "CommandPool pointer");
-            this->mIsInit = false;
+            KP_LOG_WARN("Kompute Sequence destroy called with null "
+                        "CommandPool pointer");
             return;
         }
         this->mDevice->freeCommandBuffers(
           *this->mCommandPool, 1, this->mCommandBuffer.get());
+
+        this->mCommandBuffer = nullptr;
+        this->mFreeCommandBuffer = false;
+
         KP_LOG_DEBUG("Kompute Sequence Freed CommandBuffer");
     }
 
     if (this->mFreeCommandPool) {
         KP_LOG_INFO("Destroying CommandPool");
         if (this->mCommandPool == nullptr) {
-            KP_LOG_ERROR(
-              "Kompute Sequence freeMemoryDestroyGPUResources called with null "
-              "CommandPool pointer");
-            this->mIsInit = false;
+            KP_LOG_WARN("Kompute Sequence destroy called with null "
+                        "CommandPool pointer");
             return;
         }
         this->mDevice->destroy(
           *this->mCommandPool,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+
+        this->mCommandPool = nullptr;
+        this->mFreeCommandPool = false;
+
         KP_LOG_DEBUG("Kompute Sequence Destroyed CommandPool");
     }
 
@@ -253,7 +220,32 @@ Sequence::freeMemoryDestroyGPUResources()
         this->mOperations.clear();
     }
 
-    this->mIsInit = false;
+    if (this->mDevice) {
+        this->mDevice = nullptr;
+    }
+    if (this->mPhysicalDevice) {
+        this->mPhysicalDevice = nullptr;
+    }
+    if (this->mComputeQueue) {
+        this->mComputeQueue = nullptr;
+    }
+}
+
+std::shared_ptr<Sequence>
+Sequence::record(std::shared_ptr<OpBase> op)
+{
+    KP_LOG_DEBUG("Kompute Sequence record function started");
+
+    this->begin();
+
+    KP_LOG_DEBUG(
+      "Kompute Sequence running record on OpBase derived class instance");
+
+    op->record(*this->mCommandBuffer);
+
+    this->mOperations.push_back(op);
+
+    return shared_from_this();
 }
 
 void

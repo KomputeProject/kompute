@@ -5,13 +5,12 @@
 
 #include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
 
-TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
+TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.rebuild({ tensorA, tensorB });
+    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 3, 4, 5 });
+    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
         #version 450
@@ -28,50 +27,60 @@ TEST(TestOpAlgoBase, ShaderRawDataFromConstructor)
         }
     )");
 
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorA, tensorB }, kp::Shader::compile_source(shader));
+    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
+
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
+      ->eval<kp::OpTensorSyncLocal>(params);
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
     EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
 }
 
-TEST(TestOpAlgoBase, ShaderCompiledDataFromConstructor)
+TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.rebuild({ tensorA, tensorB });
+    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 3, 4, 5 });
+    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
 
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorA, tensorB },
-      std::vector<uint32_t>(
-        (uint32_t*)kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
-        (uint32_t*)(kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv +
-          kp::shader_data::
-            test_shaders_glsl_test_op_custom_shader_comp_spv_len)));
+    std::vector<uint32_t> spirv = std::vector<uint32_t>(
+      (uint32_t*)
+        kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
+      (uint32_t*)(kp::shader_data::
+                    test_shaders_glsl_test_op_custom_shader_comp_spv +
+                  kp::shader_data::
+                    test_shaders_glsl_test_op_custom_shader_comp_spv_len));
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
-    EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
-}
-
-TEST(TestOpAlgoBase, ShaderCompiledDataFromFile)
-{
-    kp::Manager mgr;
-
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    mgr.rebuild({ tensorA, tensorB });
-
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorA, tensorB }, "test/shaders/glsl/test_op_custom_shader.comp.spv");
-
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
+      ->eval<kp::OpTensorSyncLocal>(params);
 
     EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
     EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
 }
+
+// TODO: Add support to read from file for shader
+// TEST(TestOpAlgoCreate, ShaderCompiledDataFromFile)
+//{
+//    kp::Manager mgr;
+//
+//    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
+//    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
+//    mgr.rebuild({ tensorA, tensorB });
+//
+//    mgr.evalOpDefault<kp::OpAlgoCreate>(
+//      { tensorA, tensorB },
+//      "test/shaders/glsl/test_op_custom_shader.comp.spv");
+//
+//    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+//
+//    EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
+//    EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
+//}
