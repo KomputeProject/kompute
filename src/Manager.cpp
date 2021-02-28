@@ -363,8 +363,7 @@ Manager::algorithm(
         const std::vector<std::shared_ptr<Tensor>>& tensors,
         const std::vector<uint32_t>& spirv,
         const Workgroup& workgroup,
-        const Constants& specializationConstants,
-        const Constants& pushConstants) {
+        const Constants& specializationConstants) {
 
     KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
@@ -374,8 +373,7 @@ Manager::algorithm(
                 tensors,
                 spirv,
                 workgroup,
-                specializationConstants,
-                pushConstants)};
+                specializationConstants)};
 
  	if (this->mManageResources) {
         this->mManagedAlgorithms.push_back(algorithm);

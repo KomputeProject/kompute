@@ -24,7 +24,7 @@ OpTensorSyncDevice::~OpTensorSyncDevice()
 }
 
 void
-OpTensorSyncDevice::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
+OpTensorSyncDevice::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice record called");
 
@@ -37,7 +37,7 @@ OpTensorSyncDevice::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 }
 
 void
-OpTensorSyncDevice::preEval()
+OpTensorSyncDevice::preEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
 
@@ -50,7 +50,7 @@ OpTensorSyncDevice::preEval()
 }
 
 void
-OpTensorSyncDevice::postEval()
+OpTensorSyncDevice::postEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice postEval called");
 }

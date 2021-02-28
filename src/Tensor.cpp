@@ -94,7 +94,7 @@ Tensor::setData(const std::vector<float>& data)
 }
 
 void
-Tensor::recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                        std::shared_ptr<Tensor> copyFromTensor,
                        bool createBarrier)
 {
@@ -104,7 +104,7 @@ Tensor::recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
 
     KP_LOG_DEBUG("Kompute Tensor recordCopyFrom data size {}.", bufferSize);
 
-    this->copyBuffer(commandBuffer,
+    this->recordCopyBuffer(commandBuffer,
                      copyFromTensor->mPrimaryBuffer,
                      this->mPrimaryBuffer,
                      bufferSize,
@@ -114,7 +114,7 @@ Tensor::recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
 
 void
 Tensor::recordCopyFromStagingToDevice(
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  const vk::CommandBuffer& commandBuffer,
   bool createBarrier)
 {
     vk::DeviceSize bufferSize(this->memorySize());
@@ -122,7 +122,7 @@ Tensor::recordCopyFromStagingToDevice(
 
     KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
-    this->copyBuffer(commandBuffer,
+    this->recordCopyBuffer(commandBuffer,
                      this->mStagingBuffer,
                      this->mPrimaryBuffer,
                      bufferSize,
@@ -132,7 +132,7 @@ Tensor::recordCopyFromStagingToDevice(
 
 void
 Tensor::recordCopyFromDeviceToStaging(
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  const vk::CommandBuffer& commandBuffer,
   bool createBarrier)
 {
     vk::DeviceSize bufferSize(this->memorySize());
@@ -140,7 +140,7 @@ Tensor::recordCopyFromDeviceToStaging(
 
     KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
-    this->copyBuffer(commandBuffer,
+    this->recordCopyBuffer(commandBuffer,
                      this->mPrimaryBuffer,
                      this->mStagingBuffer,
                      bufferSize,
@@ -149,7 +149,7 @@ Tensor::recordCopyFromDeviceToStaging(
 }
 
 void
-Tensor::copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
                    std::shared_ptr<vk::Buffer> bufferFrom,
                    std::shared_ptr<vk::Buffer> bufferTo,
                    vk::DeviceSize bufferSize,
@@ -157,7 +157,7 @@ Tensor::copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
                    bool createBarrier)
 {
 
-    commandBuffer->copyBuffer(*bufferFrom, *bufferTo, copyRegion);
+    commandBuffer.copyBuffer(*bufferFrom, *bufferTo, copyRegion);
 
     if (createBarrier) {
         // Buffer to ensure wait until data is copied to staging buffer
@@ -171,7 +171,7 @@ Tensor::copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
 
 void
 Tensor::recordBufferMemoryBarrier(
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
+  const vk::CommandBuffer& commandBuffer,
   vk::AccessFlagBits srcAccessMask,
   vk::AccessFlagBits dstAccessMask,
   vk::PipelineStageFlagBits srcStageMask,
@@ -189,7 +189,7 @@ Tensor::recordBufferMemoryBarrier(
     bufferMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     bufferMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 
-    commandBuffer->pipelineBarrier(srcStageMask,
+    commandBuffer.pipelineBarrier(srcStageMask,
                                    dstStageMask,
                                    vk::DependencyFlags(),
                                    nullptr,

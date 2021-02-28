@@ -112,7 +112,7 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+    void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                         std::shared_ptr<Tensor> copyFromTensor,
                         bool createBarrier);
 
@@ -126,7 +126,7 @@ class Tensor
      * copied before further operations. Default is true.
      */
     void recordCopyFromStagingToDevice(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      const vk::CommandBuffer& commandBuffer,
       bool createBarrier);
 
     /**
@@ -139,7 +139,7 @@ class Tensor
      * copied before further operations. Default is true.
      */
     void recordCopyFromDeviceToStaging(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      const vk::CommandBuffer& commandBuffer,
       bool createBarrier);
 
     /**
@@ -153,7 +153,7 @@ class Tensor
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
     void recordBufferMemoryBarrier(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      const vk::CommandBuffer& commandBuffer,
       vk::AccessFlagBits srcAccessMask,
       vk::AccessFlagBits dstAccessMask,
       vk::PipelineStageFlagBits srcStageMask,
@@ -204,7 +204,7 @@ class Tensor
     void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
                             std::shared_ptr<vk::DeviceMemory> memory,
                             vk::MemoryPropertyFlags memoryPropertyFlags);
-    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+    void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
                     std::shared_ptr<vk::Buffer> bufferFrom,
                     std::shared_ptr<vk::Buffer> bufferTo,
                     vk::DeviceSize bufferSize,

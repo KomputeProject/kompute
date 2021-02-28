@@ -32,17 +32,17 @@ class OpTensorCopy : public OpBase
     /**
      * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
      */
-    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Copies the local vectors for all the tensors to sync the data with the gpu.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
   private:
     // -------------- ALWAYS OWNED RESOURCES

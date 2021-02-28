@@ -26,8 +26,7 @@ public:
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},
             const std::vector<uint32_t>& spirv = {},
             const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {},
-            const Constants& pushConstants = {});
+            const Constants& specializationConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -42,8 +41,7 @@ public:
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},
             const std::vector<uint32_t>& spirv = {},
             const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {},
-            const Constants& pushConstants = {});
+            const Constants& specializationConstants = {});
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
@@ -59,7 +57,11 @@ public:
      * @param y Layout Y dispatch value
      * @param z Layout Z dispatch value
      */
-    void recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer);
+    void recordDispatch(const vk::CommandBuffer& commandBuffer);
+
+    void bindCore(const vk::CommandBuffer& commandBuffer);
+
+    void bindPush(const vk::CommandBuffer& commandBuffer, const Constants& pushConstants);
 
     bool isInit();
 
@@ -67,7 +69,6 @@ public:
 
     const Workgroup& getWorkgroup();
     const Constants& getSpecializationConstants();
-    const Constants& getPushConstants();
     const std::vector<std::shared_ptr<Tensor>>& getTensors();
 
     void destroy();
@@ -96,7 +97,6 @@ private:
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mSpirv;
     Constants mSpecializationConstants;
-    Constants mPushConstants;
     Workgroup mWorkgroup;
 
     bool mIsInit;

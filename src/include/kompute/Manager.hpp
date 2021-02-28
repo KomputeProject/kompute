@@ -87,8 +87,7 @@ class Manager
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},
             const std::vector<uint32_t>& spirv = {},
             const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {},
-            const Constants& pushConstants = {});
+            const Constants& specializationConstants = {});
 
     void destroy();
     void clear();

@@ -96,7 +96,7 @@ Sequence::evalAsync()
     this->mIsRunning = true;
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
-        this->mOperations[i]->preEval();
+        this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
     vk::SubmitInfo submitInfo(
@@ -142,7 +142,7 @@ Sequence::evalAwait(uint64_t waitFor)
     }
 
     for (size_t i = 0; i < this->mOperations.size(); i++) {
-        this->mOperations[i]->postEval();
+        this->mOperations[i]->postEval(*this->mCommandBuffer);
     }
 
     return shared_from_this();
@@ -241,7 +241,7 @@ Sequence::record(std::shared_ptr<OpBase> op)
     KP_LOG_DEBUG(
       "Kompute Sequence running record on OpBase derived class instance");
 
-    op->record(this->mCommandBuffer);
+    op->record(*this->mCommandBuffer);
 
     this->mOperations.push_back(op);
 

@@ -17,7 +17,8 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
-    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm);
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
+            const kp::Constants& pushConstants = {});
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -33,23 +34,24 @@ class OpAlgoDispatch : public OpBase
      * copy of the output data for the staging buffer so it can be read by the
      * host.
      */
-    virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    virtual void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Executes after the recorded commands are submitted, and performs a copy
      * of the GPU Device memory into the staging buffer so the output data can
      * be retrieved.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
 private:
     // -------------- ALWAYS OWNED RESOURCES
     std::shared_ptr<Algorithm> mAlgorithm;
+    Constants mPushConstants;
 };
 
 } // End namespace kp

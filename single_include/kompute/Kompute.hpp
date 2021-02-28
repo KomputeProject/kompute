@@ -25,7 +25,7 @@
 namespace kp {
 namespace shader_data {
 static const unsigned char shaders_glsl_opmult_comp_spv[] = {
-  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x08, 0x00, 0x08, 0x00,
+  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x0a, 0x00, 0x08, 0x00,
   0x2e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x02, 0x00,
   0x01, 0x00, 0x00, 0x00, 0x0b, 0x00, 0x06, 0x00, 0x01, 0x00, 0x00, 0x00,
   0x47, 0x4c, 0x53, 0x4c, 0x2e, 0x73, 0x74, 0x64, 0x2e, 0x34, 0x35, 0x30,
@@ -179,7 +179,7 @@ static const unsigned int shaders_glsl_opmult_comp_spv_len = 1464;
 namespace kp {
 namespace shader_data {
 static const unsigned char shaders_glsl_logisticregression_comp_spv[] = {
-  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x08, 0x00, 0x08, 0x00,
+  0x03, 0x02, 0x23, 0x07, 0x00, 0x00, 0x01, 0x00, 0x0a, 0x00, 0x08, 0x00,
   0xae, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x11, 0x00, 0x02, 0x00,
   0x01, 0x00, 0x00, 0x00, 0x0b, 0x00, 0x06, 0x00, 0x01, 0x00, 0x00, 0x00,
   0x47, 0x4c, 0x53, 0x4c, 0x2e, 0x73, 0x74, 0x64, 0x2e, 0x34, 0x35, 0x30,
@@ -977,7 +977,7 @@ class Tensor
      * @param createBarrier Whether to create a barrier that ensures the data is
      * copied before further operations. Default is true.
      */
-    void recordCopyFrom(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+    void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                         std::shared_ptr<Tensor> copyFromTensor,
                         bool createBarrier);
 
@@ -991,7 +991,7 @@ class Tensor
      * copied before further operations. Default is true.
      */
     void recordCopyFromStagingToDevice(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      const vk::CommandBuffer& commandBuffer,
       bool createBarrier);
 
     /**
@@ -1004,7 +1004,7 @@ class Tensor
      * copied before further operations. Default is true.
      */
     void recordCopyFromDeviceToStaging(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      const vk::CommandBuffer& commandBuffer,
       bool createBarrier);
 
     /**
@@ -1018,7 +1018,7 @@ class Tensor
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
     void recordBufferMemoryBarrier(
-      std::shared_ptr<vk::CommandBuffer> commandBuffer,
+      const vk::CommandBuffer& commandBuffer,
       vk::AccessFlagBits srcAccessMask,
       vk::AccessFlagBits dstAccessMask,
       vk::PipelineStageFlagBits srcStageMask,
@@ -1069,7 +1069,7 @@ class Tensor
     void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
                             std::shared_ptr<vk::DeviceMemory> memory,
                             vk::MemoryPropertyFlags memoryPropertyFlags);
-    void copyBuffer(std::shared_ptr<vk::CommandBuffer> commandBuffer,
+    void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
                     std::shared_ptr<vk::Buffer> bufferFrom,
                     std::shared_ptr<vk::Buffer> bufferTo,
                     vk::DeviceSize bufferSize,
@@ -1108,8 +1108,7 @@ public:
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},
             const std::vector<uint32_t>& spirv = {},
             const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {},
-            const Constants& pushConstants = {});
+            const Constants& specializationConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -1124,8 +1123,7 @@ public:
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},
             const std::vector<uint32_t>& spirv = {},
             const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {},
-            const Constants& pushConstants = {});
+            const Constants& specializationConstants = {});
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
@@ -1141,7 +1139,11 @@ public:
      * @param y Layout Y dispatch value
      * @param z Layout Z dispatch value
      */
-    void recordDispatch(std::shared_ptr<vk::CommandBuffer> commandBuffer);
+    void recordDispatch(const vk::CommandBuffer& commandBuffer);
+
+    void bindCore(const vk::CommandBuffer& commandBuffer);
+
+    void bindPush(const vk::CommandBuffer& commandBuffer, const Constants& pushConstants);
 
     bool isInit();
 
@@ -1149,7 +1151,6 @@ public:
 
     const Workgroup& getWorkgroup();
     const Constants& getSpecializationConstants();
-    const Constants& getPushConstants();
     const std::vector<std::shared_ptr<Tensor>>& getTensors();
 
     void destroy();
@@ -1178,7 +1179,6 @@ private:
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mSpirv;
     Constants mSpecializationConstants;
-    Constants mPushConstants;
     Workgroup mWorkgroup;
 
     bool mIsInit;
@@ -1222,7 +1222,7 @@ class OpBase
      * commands that are expected to record operations that are to be submitted
      * as a batch into the GPU.
      */
-    virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) = 0;
+    virtual void record(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
      * Pre eval is called before the Sequence has called eval and submitted the commands to
@@ -1232,7 +1232,7 @@ class OpBase
      * resources that are created should be idempotent in case it's called multiple
      * times in a row.
      */
-    virtual void preEval() = 0;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
      * Post eval is called after the Sequence has called eval and submitted the commands to
@@ -1242,7 +1242,7 @@ class OpBase
      * resources that are destroyed should not require a re-init unless explicitly
      * provided by the user.
      */
-    virtual void postEval() = 0;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) = 0;
 };
 
 } // End namespace kp
@@ -1273,17 +1273,17 @@ class OpTensorCopy : public OpBase
     /**
      * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
      */
-    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Copies the local vectors for all the tensors to sync the data with the gpu.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
@@ -1318,17 +1318,17 @@ class OpTensorSyncDevice : public OpBase
     /**
      * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
      */
-    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any postEval commands.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
@@ -1363,17 +1363,17 @@ class OpTensorSyncLocal : public OpBase
     /**
      * For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory.
      */
-    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * For host tensors it performs the map command from the host memory into local memory.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
@@ -1394,7 +1394,8 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
-    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm);
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
+            const kp::Constants& pushConstants = {});
 
     /**
      * Default destructor, which is in charge of destroying the algorithm
@@ -1410,23 +1411,24 @@ class OpAlgoDispatch : public OpBase
      * copy of the output data for the staging buffer so it can be read by the
      * host.
      */
-    virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    virtual void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Executes after the recorded commands are submitted, and performs a copy
      * of the GPU Device memory into the staging buffer so the output data can
      * be retrieved.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
 private:
     // -------------- ALWAYS OWNED RESOURCES
     std::shared_ptr<Algorithm> mAlgorithm;
+    Constants mPushConstants;
 };
 
 } // End namespace kp
@@ -1822,8 +1824,7 @@ class Manager
             const std::vector<std::shared_ptr<Tensor>>& tensors = {},
             const std::vector<uint32_t>& spirv = {},
             const Workgroup& workgroup = {},
-            const Constants& specializationConstants = {},
-            const Constants& pushConstants = {});
+            const Constants& specializationConstants = {});
 
     void destroy();
     void clear();

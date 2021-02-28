@@ -34,7 +34,7 @@ class OpBase
      * commands that are expected to record operations that are to be submitted
      * as a batch into the GPU.
      */
-    virtual void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) = 0;
+    virtual void record(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
      * Pre eval is called before the Sequence has called eval and submitted the commands to
@@ -44,7 +44,7 @@ class OpBase
      * resources that are created should be idempotent in case it's called multiple
      * times in a row.
      */
-    virtual void preEval() = 0;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
      * Post eval is called after the Sequence has called eval and submitted the commands to
@@ -54,7 +54,7 @@ class OpBase
      * resources that are destroyed should not require a re-init unless explicitly
      * provided by the user.
      */
-    virtual void postEval() = 0;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) = 0;
 };
 
 } // End namespace kp

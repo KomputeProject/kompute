@@ -21,7 +21,7 @@ OpTensorCopy::~OpTensorCopy()
 }
 
 void
-OpTensorCopy::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
+OpTensorCopy::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy record called");
 
@@ -33,13 +33,13 @@ OpTensorCopy::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
 }
 
 void
-OpTensorCopy::preEval()
+OpTensorCopy::preEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy preEval called");
 }
 
 void
-OpTensorCopy::postEval()
+OpTensorCopy::postEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 

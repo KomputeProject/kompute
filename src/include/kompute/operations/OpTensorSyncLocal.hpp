@@ -32,17 +32,17 @@ class OpTensorSyncLocal : public OpBase
     /**
      * For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory.
      */
-    void record(std::shared_ptr<vk::CommandBuffer> commandBuffer) override;
+    void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
      */
-    virtual void preEval() override;
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * For host tensors it performs the map command from the host memory into local memory.
      */
-    virtual void postEval() override;
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
 
   private:

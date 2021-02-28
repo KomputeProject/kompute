@@ -4,11 +4,13 @@
 
 namespace kp {
 
-OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm)
+OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
+            const kp::Constants& pushConstants)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
     this->mAlgorithm = algorithm;
+    this->mPushConstants = pushConstants;
 }
 
 OpAlgoDispatch::~OpAlgoDispatch()
@@ -17,7 +19,7 @@ OpAlgoDispatch::~OpAlgoDispatch()
 }
 
 void
-OpAlgoDispatch::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
+OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch record called");
 
@@ -31,17 +33,19 @@ OpAlgoDispatch::record(std::shared_ptr<vk::CommandBuffer> commandBuffer)
           vk::PipelineStageFlagBits::eComputeShader);
     }
 
+    this->mAlgorithm->bindCore(commandBuffer);
+    this->mAlgorithm->bindPush(commandBuffer, this->mPushConstants);
     this->mAlgorithm->recordDispatch(commandBuffer);
 }
 
 void
-OpAlgoDispatch::preEval()
+OpAlgoDispatch::preEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch preEval called");
 }
 
 void
-OpAlgoDispatch::postEval()
+OpAlgoDispatch::postEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch postSubmit called");
 }
