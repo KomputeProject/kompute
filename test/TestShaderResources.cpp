@@ -48,10 +48,10 @@ TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 } 
 
 
-TEST(TestShaderResources, TestNoWhileLoop)
+TEST(TestShaderResources, TestNoWhileLoopLimit)
 {
-    TBuiltInResource noWhileLoopResources = kp::defaultResource;
-    noWhileLoopResources.limits.whileLoops=0;
+    TBuiltInResource noWhileLoopLimitResources = kp::defaultResource;
+    noWhileLoopLimitResources.limits.whileLoops=0;
     
-    ASSERT_THROW(compileShaderWithGivenResources(shaderString, noWhileLoopResources), std::runtime_error);
+    ASSERT_THROW(compileShaderWithGivenResources(shaderString, noWhileLoopLimitResources), std::runtime_error);
 } 
