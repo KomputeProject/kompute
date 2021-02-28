@@ -33,7 +33,7 @@ class OpMult : public OpAlgoDispatch
      * @param komputeWorkgroup Optional parameter to specify the layout for processing
      */
     OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
-        : OpAlgoDispatch(algorithm, true)
+        : OpAlgoDispatch(algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 

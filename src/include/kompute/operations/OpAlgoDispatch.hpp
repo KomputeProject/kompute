@@ -17,7 +17,7 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
-    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm, bool skipAlgoCheck = false);
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm);
 
     /**
      * Default destructor, which is in charge of destroying the algorithm

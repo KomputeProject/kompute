@@ -4,8 +4,6 @@
 
 #include "kompute/Manager.hpp"
 
-#include "kompute/operations/OpAlgoDispatch.hpp"
-
 namespace kp {
 
 #if DEBUG

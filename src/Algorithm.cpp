@@ -78,7 +78,7 @@ Algorithm::destroy() {
         return;
     }
 
-    if (this->mFreePipeline) {
+    if (this->mFreePipeline && this->mPipeline) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline");
         if (!this->mPipeline) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
@@ -90,7 +90,7 @@ Algorithm::destroy() {
         this->mPipeline = nullptr;
     }
 
-    if (this->mFreePipelineCache) {
+    if (this->mFreePipelineCache && this->mPipelineCache) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
         if (!this->mPipelineCache) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
@@ -102,7 +102,7 @@ Algorithm::destroy() {
         this->mPipelineCache = nullptr;
     }
 
-    if (this->mFreePipelineLayout) {
+    if (this->mFreePipelineLayout && this->mPipelineLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
         if (!this->mPipelineLayout) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
@@ -114,7 +114,7 @@ Algorithm::destroy() {
         this->mPipelineLayout = nullptr;
     }
 
-    if (this->mFreeShaderModule) {
+    if (this->mFreeShaderModule && this->mShaderModule) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying shader module");
         if (!this->mShaderModule) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy shader "
@@ -129,7 +129,7 @@ Algorithm::destroy() {
     // We don't call freeDescriptorSet as the descriptor pool is not created with
     // VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
     // (https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-vkFreeDescriptorSets-descriptorPool-00312))
-    //if (this->mFreeDescriptorSet) {
+    //if (this->mFreeDescriptorSet && this->mDescriptorSet) {
     //    KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
     //    if (!this->mDescriptorSet) {
     //        KP_LOG_WARN(
@@ -140,7 +140,7 @@ Algorithm::destroy() {
     //    this->mDescriptorSet = nullptr;
     //}
 
-    if (this->mFreeDescriptorSetLayout) {
+    if (this->mFreeDescriptorSetLayout && this->mDescriptorSetLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
         if (!this->mDescriptorSetLayout) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
@@ -152,7 +152,7 @@ Algorithm::destroy() {
         this->mDescriptorSetLayout = nullptr;
     }
 
-    if (this->mFreeDescriptorPool) {
+    if (this->mFreeDescriptorPool && this->mDescriptorPool) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
         if (!this->mDescriptorPool) {
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "

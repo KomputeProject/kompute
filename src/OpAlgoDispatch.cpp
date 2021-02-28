@@ -4,13 +4,9 @@
 
 namespace kp {
 
-OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm, bool skipAlgoCheck)
+OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
-
-    if (!skipAlgoCheck && !algorithm->isInit()) {
-        throw std::runtime_error("Kompute OpAlgoDispatch constructor with non initialised algorithm");
-    }
 
     this->mAlgorithm = algorithm;
 }
