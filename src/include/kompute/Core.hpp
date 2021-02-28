@@ -61,8 +61,8 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 #define KP_LOG_DEBUG(...)                                                      \
-    ((void)__android_log_print(                                                \
-      ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
 #else
@@ -81,8 +81,8 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 #define KP_LOG_INFO(...)                                                       \
-    ((void)__android_log_print(                                                \
-      ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_INFO(...) kp_info(fmt::format(__VA_ARGS__))
 #else
@@ -101,8 +101,8 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 #define KP_LOG_WARN(...)                                                       \
-    ((void)__android_log_print(                                                \
-      ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_WARN(...) kp_warning(fmt::format(__VA_ARGS__))
 #else
@@ -121,8 +121,8 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 #define KP_LOG_ERROR(...)                                                      \
-    ((void)__android_log_print(                                                \
-      ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__)))
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #elif defined(KOMPUTE_BUILD_PYTHON)
 #define KP_LOG_ERROR(...) kp_error(fmt::format(__VA_ARGS__))
 #else

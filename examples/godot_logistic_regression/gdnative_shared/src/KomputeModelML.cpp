@@ -33,54 +33,41 @@ void KomputeModelML::train(Array yArr, Array xIArr, Array xJArr) {
     uint32_t ITERATIONS = 100;
     float learningRate = 0.1;
 
-    std::shared_ptr<kp::Tensor> xI{ new kp::Tensor(xIData) };
-    std::shared_ptr<kp::Tensor> xJ{ new kp::Tensor(xJData) };
-
-    std::shared_ptr<kp::Tensor> y{ new kp::Tensor(yData) };
-
-    std::shared_ptr<kp::Tensor> wIn{ new kp::Tensor({ 0.001, 0.001 }) };
-    std::shared_ptr<kp::Tensor> wOutI{ new kp::Tensor(zerosData) };
-    std::shared_ptr<kp::Tensor> wOutJ{ new kp::Tensor(zerosData) };
-
-    std::shared_ptr<kp::Tensor> bIn{ new kp::Tensor({ 0 }) };
-    std::shared_ptr<kp::Tensor> bOut{ new kp::Tensor(zerosData) };
-
-    std::shared_ptr<kp::Tensor> lOut{ new kp::Tensor(zerosData) };
-
-    std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
-                                                        wIn, wOutI, wOutJ,
-                                                        bIn, bOut,  lOut };
-
     {
         kp::Manager mgr;
 
+        std::shared_ptr<kp::Tensor> xI = mgr.tensor(xIData);
+        std::shared_ptr<kp::Tensor> xJ = mgr.tensor(xJData);
+
+        std::shared_ptr<kp::Tensor> y = mgr.tensor(yData);
+
+        std::shared_ptr<kp::Tensor> wIn = mgr.tensor({ 0.001, 0.001 });
+        std::shared_ptr<kp::Tensor> wOutI = mgr.tensor(zerosData);
+        std::shared_ptr<kp::Tensor> wOutJ = mgr.tensor(zerosData);
+
+        std::shared_ptr<kp::Tensor> bIn = mgr.tensor({ 0 });
+        std::shared_ptr<kp::Tensor> bOut = mgr.tensor(zerosData);
+
+        std::shared_ptr<kp::Tensor> lOut = mgr.tensor(zerosData);
+
+        std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
+                                                            wIn, wOutI, wOutJ,
+                                                            bIn, bOut,  lOut };
+
         {
-            mgr.rebuild(params);
+            std::vector<uint32_t> spirv(
+                        (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+                        (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
+                            + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 
-            std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, spirv);
 
-            // Record op algo base
-            sq->begin();
+            mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
-            sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
-
-#ifdef KOMPUTE_ANDROID_SHADER_FROM_STRING
-            // Newer versions of Android are able to use shaderc to read raw string
-            sq->record<kp::OpAlgoCreate>(
-                    params, std::vector<char>(LR_SHADER.begin(), LR_SHADER.end()));
-#else
-            // Older versions of Android require the SPIRV binary directly
-            sq->record<kp::OpAlgoCreate>(
-                    params, std::vector<char>(
-                            kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-                            kp::shader_data::shaders_glsl_logisticregression_comp_spv
-                                + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len
-                    ));
-#endif
-
-            sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
-
-            sq->end();
+            std::shared_ptr<kp::Sequence> sq = mgr.sequence()
+                ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+                ->record<kp::OpAlgoDispatch>(algo)
+                ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
             // Iterate across all expected iterations
             for (size_t i = 0; i < ITERATIONS; i++) {
@@ -94,15 +81,15 @@ void KomputeModelML::train(Array yArr, Array xIArr, Array xJArr) {
                 }
             }
         }
+
+        KP_LOG_INFO("RESULT: <<<<<<<<<<<<<<<<<<<");
+        KP_LOG_INFO(wIn->data()[0]);
+        KP_LOG_INFO(wIn->data()[1]);
+        KP_LOG_INFO(bIn->data()[0]);
+
+        this->mWeights = wIn;
+        this->mBias = bIn;
     }
-
-    KP_LOG_INFO("RESULT: <<<<<<<<<<<<<<<<<<<");
-    KP_LOG_INFO(wIn->data()[0]);
-    KP_LOG_INFO(wIn->data()[1]);
-    KP_LOG_INFO(bIn->data()[0]);
-
-    this->mWeights = kp::Tensor(wIn->data());
-    this->mBias = kp::Tensor(bIn->data());
 }
 
 Array KomputeModelML::predict(Array xI, Array xJ) {
@@ -116,9 +103,9 @@ Array KomputeModelML::predict(Array xI, Array xJ) {
     for (size_t i = 0; i < xI.size(); i++) {
         float xIVal = xI[i];
         float xJVal = xJ[i];
-        float result = (xIVal * this->mWeights.data()[0]
-                + xJVal * this->mWeights.data()[1]
-                + this->mBias.data()[0]);
+        float result = (xIVal * this->mWeights->data()[0]
+                + xJVal * this->mWeights->data()[1]
+                + this->mBias->data()[0]);
 
         // Instead of using sigmoid we'll just return full numbers
         Variant var = result > 0 ? 1 : 0;
@@ -131,15 +118,15 @@ Array KomputeModelML::predict(Array xI, Array xJ) {
 Array KomputeModelML::get_params() {
     Array retArray;
 
-    KP_LOG_INFO(this->mWeights.size() + this->mBias.size());
+    KP_LOG_INFO(this->mWeights->size() + this->mBias->size());
 
-    if(this->mWeights.size() + this->mBias.size() == 0) {
+    if(this->mWeights->size() + this->mBias->size() == 0) {
         return retArray;
     }
 
-    retArray.push_back(this->mWeights.data()[0]);
-    retArray.push_back(this->mWeights.data()[1]);
-    retArray.push_back(this->mBias.data()[0]);
+    retArray.push_back(this->mWeights->data()[0]);
+    retArray.push_back(this->mWeights->data()[1]);
+    retArray.push_back(this->mBias->data()[0]);
     retArray.push_back(99.0);
 
     return retArray;

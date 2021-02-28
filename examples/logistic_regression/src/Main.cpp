@@ -15,44 +15,39 @@ int main()
     uint32_t ITERATIONS = 100;
     float learningRate = 0.1;
 
-    std::shared_ptr<kp::Tensor> xI{ new kp::Tensor({ 0, 1, 1, 1, 1 }) };
-    std::shared_ptr<kp::Tensor> xJ{ new kp::Tensor({ 0, 0, 0, 1, 1 }) };
+    kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> y{ new kp::Tensor({ 0, 0, 0, 1, 1 }) };
+    std::shared_ptr<kp::Tensor> xI = mgr.tensor({ 0, 1, 1, 1, 1 });
+    std::shared_ptr<kp::Tensor> xJ = mgr.tensor({ 0, 0, 0, 1, 1 });
 
-    std::shared_ptr<kp::Tensor> wIn{ new kp::Tensor({ 0.001, 0.001 }) };
-    std::shared_ptr<kp::Tensor> wOutI{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
-    std::shared_ptr<kp::Tensor> wOutJ{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> y = mgr.tensor({ 0, 0, 0, 1, 1 });
 
-    std::shared_ptr<kp::Tensor> bIn{ new kp::Tensor({ 0 }) };
-    std::shared_ptr<kp::Tensor> bOut{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> wIn = mgr.tensor({ 0.001, 0.001 });
+    std::shared_ptr<kp::Tensor> wOutI = mgr.tensor({ 0, 0, 0, 0, 0 });
+    std::shared_ptr<kp::Tensor> wOutJ = mgr.tensor({ 0, 0, 0, 0, 0 });
 
-    std::shared_ptr<kp::Tensor> lOut{ new kp::Tensor({ 0, 0, 0, 0, 0 }) };
+    std::shared_ptr<kp::Tensor> bIn = mgr.tensor({ 0 });
+    std::shared_ptr<kp::Tensor> bOut = mgr.tensor({ 0, 0, 0, 0, 0 });
+
+    std::shared_ptr<kp::Tensor> lOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
                                                         wIn, wOutI, wOutJ,
                                                         bIn, bOut,  lOut };
 
-    kp::Manager mgr;
-
-    mgr.rebuild(params);
-
-    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
-
-    // Record op algo base
-    sq->begin();
-
-    sq->record<kp::OpTensorSyncDevice>({ wIn, bIn });
-
-    sq->record<kp::OpAlgoCreate>(
-        params, std::vector<uint32_t>(
+    std::vector<uint32_t> spirv(
                 (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
                 (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
-                    + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len)));
+                    + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 
-    sq->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, spirv);
 
-    sq->end();
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence()
+        ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+        ->record<kp::OpAlgoDispatch>(algo)
+        ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
     // Iterate across all expected iterations
     for (size_t i = 0; i < ITERATIONS; i++) {

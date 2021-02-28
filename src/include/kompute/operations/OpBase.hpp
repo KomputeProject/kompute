@@ -1,7 +1,6 @@
 #pragma once
 
 #include "kompute/Core.hpp"
-
 #include "kompute/Tensor.hpp"
 #include "kompute/Algorithm.hpp"
 
