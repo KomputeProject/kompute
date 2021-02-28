@@ -42,7 +42,7 @@ TEST(TestShaderResources, TestNoMaxLight)
 TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 {
     TBuiltInResource smallComputeWorkGroupSizeXResources = kp::defaultResource;
-    noMaxLightResources.maxComputeWorkGroupSizeX=0;
+    smallComputeWorkGroupSizeXResources.maxComputeWorkGroupSizeX=0;
     
     ASSERT_THROW(compileShaderWithGivenResources(shaderString, smallComputeWorkGroupSizeXResources), std::runtime_error);
 } 
