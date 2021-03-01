@@ -4,18 +4,22 @@ Memory Management Principles
 
 The principle in Vulkan Kompute on memory management is summarised as follows:
 
-* Explicit is better than implicit for specifying memory management 
-* Interfaces for memory management are constant until freed
-* Memory management responsibilities are acyclic from static object references
 * Memory management by Kompute is optional and only in place if resource is created by Kompute
+* Memory management ownership architecture are acyclic and with a single top manager
+* Operations do not manage any GPU memory or resources
+* Top level manager is main owner of GPU resources and removes all resources when destroyed
+* Manager holds weak pointers to ensure that if object created outside is destroyed it's released
+* Once a resource is destroyed it cannot be recreated
+* Resources can only be rebuilt if they haven't been destroyed
 
-Vulkan Kompute is responsible for managing both the CPU and GPU memory allocations and resources, and is important that they are able to explicitly define when these objects are released or destroyed. Similarly, it's important that the memory resources created by the application are released safely.
+Vulkan Kompute is responsible for managing both the CPU and GPU memory allocations and resources that it creates, and is important that they are able to explicitly define when these objects are released or destroyed. Similarly, it's important that the memory resources created by the application are released safely.
 
-Vulkan Kompute is built with the BYOV principle in mind (Bring your own Vulkan). This means that even though the top level resources are managing the memory to its owned resources, they themselves may not have full ownership of the GPU / Vulkan components themselves.
+Vulkan Kompute is built with the BYOV principle in mind (Bring your own Vulkan). This means that even though the top level resources are managing the memory to its owned resources, they themselves may not have full ownership of the GPU / Vulkan components - this is in the case that you may want to use Kompute with an existing Vulkan enabled application, and may want to initialise Kompute components with existing Vulkan resources.
 
-The memory ownership is hierarchically outlined in the component architecture - in this diagram, the arrows provide an intuition on the memory management ownership relationships (in this case you can ignore the arrow from the Algorithm, as this is the only one that as of today doesn't manage the memory of the Tensors).
+The memory ownership is hierarchically outlined in the component architecture - in this diagram, the arrows provide an intuition on the memory management ownership relationships. It's worth mentioning that the memory relationship may be different to the way components interact with each other - for this, you can see the high level component overview. More specifically:
+* The purple arrows denote GPU memory management
 
-.. image:: ../images/kompute-architecture.jpg
+.. image:: ../images/kompute-vulkan-architecture.jpg
    :width: 100%
 
 Optional Memory Management

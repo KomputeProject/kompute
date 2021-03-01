@@ -274,9 +274,7 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#flow-of-function-calls" class="md-nav__link">Flow of Function Calls</a>
         </li>
-        <li class="md-nav__item"><a href="#simple-operation-extending-opalgobase" class="md-nav__link">Simple Operation Extending OpAlgoBase</a>
-        </li>
-        <li class="md-nav__item"><a href="#more-complex-operation-extending-opalgobase" class="md-nav__link">More Complex Operation Extending OpAlgoBase</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#simple-operation-extending-opalgobase" class="md-nav__link">Simple Operation Extending OpAlgoBase</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above" class="md-nav__link">Then the implementation outlines all the implementations that perform the actions above:</a>
         </li></ul>
@@ -390,9 +388,7 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#flow-of-function-calls" class="md-nav__link">Flow of Function Calls</a>
         </li>
-        <li class="md-nav__item"><a href="#simple-operation-extending-opalgobase" class="md-nav__link">Simple Operation Extending OpAlgoBase</a>
-        </li>
-        <li class="md-nav__item"><a href="#more-complex-operation-extending-opalgobase" class="md-nav__link">More Complex Operation Extending OpAlgoBase</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#simple-operation-extending-opalgobase" class="md-nav__link">Simple Operation Extending OpAlgoBase</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above" class="md-nav__link">Then the implementation outlines all the implementations that perform the actions above:</a>
         </li></ul>
@@ -458,92 +454,71 @@
 
 
 <h2 id="simple-operation-extending-opalgobase">Simple Operation Extending OpAlgoBase<a class="headerlink" href="#simple-operation-extending-opalgobase" title="Permalink to this headline">¶</a></h2>
-<p>Below we show a very simple example that enables you to create an operation with a pre-specified shader. In this case it is the multiplication shader.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoBase</span>
+<p>You can find an example in the <a class="reference external" href="advanced-examples.rst">Advanced Examples documentation section</a> that shows how to create your own custom function.</p>
+<p>You can also see an implementation in the codebase through the <cite>OpMult</cite> class:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;fstream&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">"kompute/Core.hpp"</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">"kompute/shaders/shaderopmult.hpp"</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">"kompute/Algorithm.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">"kompute/Tensor.hpp"</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">"kompute/operations/OpAlgoDispatch.hpp"</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">kp</span> <span class="p">{</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Operation that performs multiplication on two tensors and outpus on third</span>
+<span class="cm"> * tensor.</span>
+<span class="cm"> */</span>
+<span class="k">class</span> <span class="nc">OpMult</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoDispatch</span>
 <span class="p">{</span>
   <span class="k">public</span><span class="o">:</span>
-    <span class="n">OpMyCustom</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">PhysicalDevice</span><span class="o">&gt;</span> <span class="n">physicalDevice</span><span class="p">,</span>
-           <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">Device</span><span class="o">&gt;</span> <span class="n">device</span><span class="p">,</span>
-           <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">vk</span><span class="o">::</span><span class="n">CommandBuffer</span><span class="o">&gt;</span> <span class="n">commandBuffer</span><span class="p">,</span>
-           <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="p">(</span><span class="n">physicalDevice</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">commandBuffer</span><span class="p">,</span> <span class="n">tensors</span><span class="p">,</span> <span class="s">""</span><span class="p">)</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * Default constructor with parameters that provides the bare minimum</span>
+<span class="cm">     * requirements for the operations to be able to create and manage their</span>
+<span class="cm">     * sub-components.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param physicalDevice Vulkan physical device used to find device queues</span>
+<span class="cm">     * @param device Vulkan logical device for passing to Algorithm</span>
+<span class="cm">     * @param commandBuffer Vulkan Command Buffer to record commands into</span>
+<span class="cm">     * @param tensors Tensors that are to be used in this operation</span>
+<span class="cm">     * @param komputeWorkgroup Optional parameter to specify the layout for processing</span>
+<span class="cm">     */</span>
+    <span class="n">OpMult</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algorithm</span><span class="p">)</span>
+        <span class="o">:</span> <span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
     <span class="p">{</span>
-        <span class="c1">// Perform your custom steps such as reading from a shader file</span>
-        <span class="k">this</span><span class="o">-&gt;</span><span class="n">mShaderFilePath</span> <span class="o">=</span> <span class="s">"shaders/glsl/opmult.comp"</span><span class="p">;</span>
+        <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpMult constructor with params"</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Kompute OpMult expected 3 tensors but got "</span> <span class="o">+</span> <span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+        <span class="p">}</span>
+
+        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span><span class="p">(</span>
+          <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv</span><span class="p">,</span>
+          <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv</span> <span class="o">+</span>
+            <span class="n">kp</span><span class="o">::</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv_len</span><span class="p">));</span>
+
+        <span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">spirv</span><span class="p">);</span>
     <span class="p">}</span>
-<span class="p">}</span>
 
+    <span class="cm">/**</span>
+<span class="cm">     * Default destructor, which is in charge of destroying the algorithm</span>
+<span class="cm">     * components but does not destroy the underlying tensors</span>
+<span class="cm">     */</span>
+    <span class="k">virtual</span> <span class="o">~</span><span class="n">OpMult</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
+        <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpMult destructor started"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
 
-<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
-
-    <span class="c1">// Create 3 tensors of default type float</span>
-    <span class="k">auto</span> <span class="n">tensorLhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span> <span class="p">}));</span>
-    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">}));</span>
-
-    <span class="c1">// Create tensors data explicitly in GPU with an operation</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorCreate</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
-
-    <span class="c1">// Run Kompute operation on the parameters provided with dispatch layout</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMyCustom</span><span class="o">&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
-
-    <span class="c1">// Prints the output which is { 0, 4, 12 }</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="p">}</span> <span class="c1">// End namespace kp</span>
 </pre></div>
-</td></tr></table></div>
-
-
-<h2 id="more-complex-operation-extending-opalgobase">More Complex Operation Extending OpAlgoBase<a class="headerlink" href="#more-complex-operation-extending-opalgobase" title="Permalink to this headline">¶</a></h2>
-<p>Below we show a more complex operation that performs the following:</p>
-<ul class="simple">
-<li><p>Expects three tensors for an operation, two inputs and one output</p></li>
-<li><p>Expects the tensors to be initialised</p></li>
-<li><p>Checks that the tensors are of the same size</p></li>
-<li><p>Expects output tensor to be of type TensorTypes::eDevice (and creates staging tensor)</p></li>
-<li><p>Has functionality to read shader from file or directly from spirv bytes</p></li>
-<li><p>Records relevant bufferMemoryBarriers</p></li>
-<li><p>Records dispatch command</p></li>
-<li><p>Records copy command from device tensor to staging output tensor</p></li>
-<li><p>In postEval it maps data from staging tensor to output tensor’s data</p></li>
-</ul>
-<p>For starters, the header file contains the functions that will be overriden:</p>
+</div>
 
 <h3 id="then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above">Then the implementation outlines all the implementations that perform the actions above:<a class="headerlink" href="#then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above" title="Permalink to this headline">¶</a></h3>
 

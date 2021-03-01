@@ -446,17 +446,19 @@
 27
 28
 29
-30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">OpTensorSyncDevice</span><span class="p">,</span> <span class="n">OpTensorSyncLocal</span><span class="p">,</span> <span class="n">OpAlgoDispatch</span>
 <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
 
 <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
 
 <span class="c1"># Can be initialized with List[] or np.Array</span>
-<span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="n">tensor_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">tensor_out</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">])</span>
+<span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
+
+<span class="n">sq</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">]))</span>
 
 <span class="c1"># Define the function via PyShader or directly as glsl string or spirv bytes</span>
 <span class="nd">@python2shader</span>
@@ -467,15 +469,13 @@
     <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
     <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
+ <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
+
 <span class="c1"># Run shader operation synchronously</span>
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_algo_data_def</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">))</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">OpAlgoSyncLocal</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">]))</span>
 
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_await_def</span><span class="p">()</span>
-
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_sync_local_def</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">])</span>
-
-<span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
 </pre></div>
 </td></tr></table></div>
 
@@ -519,6 +519,7 @@
 35
 36
 37</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+ <span class="kn">import</span> <span class="nn">kp</span>
  <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
 
  <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
@@ -541,20 +542,19 @@
      <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
      <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
- <span class="c1"># Run shader operation asynchronously and then await</span>
- <span class="n">mgr</span><span class="o">.</span><span class="n">eval_async_algo_data_def</span><span class="p">(</span>
-     <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
- <span class="n">mgr</span><span class="o">.</span><span class="n">eval_await_def</span><span class="p">()</span>
+ <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
 
- <span class="n">seq</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
- <span class="n">seq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">])</span>
- <span class="n">seq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_in_b</span><span class="p">])</span>
- <span class="n">seq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">])</span>
- <span class="n">seq</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+ <span class="c1"># Run shader operation asynchronously and then await</span>
+ <span class="n">mgr</span><span class="o">.</span><span class="n">eval_async</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">)))</span>
+ <span class="n">mgr</span><span class="o">.</span><span class="n">eval_await</span><span class="p">()</span>
+
+ <span class="n">seq</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">]))</span>
+ <span class="n">seq</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">tensor_in_b</span><span class="p">]))</span>
+ <span class="n">seq</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">]))</span>
 
  <span class="n">seq</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
- <span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
+ <span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
 </pre></div>
 </td></tr></table></div>
 
@@ -593,38 +593,30 @@
 30
 31
 32
-33
-34
-35
-36
-37</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span>
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span>
+ <span class="kn">import</span> <span class="nn">kp</span>
 
  <span class="c1"># We'll assume we have the shader data available</span>
  <span class="kn">from</span> <span class="nn">my_spv_shader_data</span> <span class="kn">import</span> <span class="n">mult_shader</span><span class="p">,</span> <span class="n">sum_shader</span>
 
  <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
 
- <span class="n">t1</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">build_tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
- <span class="n">t2</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">build_tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
- <span class="n">t3</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">build_tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+ <span class="n">t1</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+ <span class="n">t2</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+ <span class="n">t3</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+
+ <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t3</span><span class="p">]))</span>
 
  <span class="c1"># Create multiple separate sequences</span>
- <span class="n">sq_mult</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"SQ_MULT"</span><span class="p">)</span>
- <span class="n">sq_sum</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"SQ_SUM"</span><span class="p">)</span>
- <span class="n">sq_sync</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">(</span><span class="s2">"SQ_SYNC"</span><span class="p">)</span>
+ <span class="n">sq_mult</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
+ <span class="n">sq_sum</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
+ <span class="n">sq_sync</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
 
- <span class="c1"># Initialize sq_mult</span>
- <span class="n">sq_mult</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
- <span class="n">sq_mult</span><span class="o">.</span><span class="n">record_algo_data</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">],</span> <span class="n">add_shader</span><span class="p">)</span>
- <span class="n">sq_mult</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+ <span class="n">sq_mult</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t3</span><span class="p">],</span> <span class="n">add_shader</span><span class="p">))</span>
 
- <span class="n">sq_sum</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
- <span class="n">sq_sum</span><span class="o">.</span><span class="n">record_algo_data</span><span class="p">([</span><span class="n">t3</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">],</span> <span class="n">sum_shader</span><span class="p">)</span>
- <span class="n">sq_sum</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+ <span class="n">sq_sum</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">([</span><span class="n">t3</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">],</span> <span class="n">sum_shader</span><span class="p">))</span>
 
- <span class="n">sq_sync</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
- <span class="n">sq_sync</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t3</span><span class="p">])</span>
- <span class="n">sq_sync</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+ <span class="n">sq_sync</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">t1</span><span class="p">,</span> <span class="n">t3</span><span class="p">]))</span>
 
  <span class="c1"># Run multiple iterations</span>
  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
@@ -745,6 +737,7 @@
 103
 104
 105</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+ <span class="kn">import</span> <span class="nn">kp</span>
  <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
 
  <span class="nd">@python2shader</span>
@@ -787,38 +780,37 @@
      <span class="n">l_out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">loss</span>
 
 
+ <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+
  <span class="c1"># First we create input and ouput tensors for shader</span>
- <span class="n">tensor_x_i</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
- <span class="n">tensor_x_j</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+ <span class="n">tensor_x_i</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+ <span class="n">tensor_x_j</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 
- <span class="n">tensor_y</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+ <span class="n">tensor_y</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
 
- <span class="n">tensor_w_in</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">])</span>
- <span class="n">tensor_w_out_i</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
- <span class="n">tensor_w_out_j</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_w_in</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">])</span>
+ <span class="n">tensor_w_out_i</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_w_out_j</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 
- <span class="n">tensor_b_in</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
- <span class="n">tensor_b_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_b_in</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_b_out</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 
- <span class="n">tensor_l_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+ <span class="n">tensor_l_out</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
 
- <span class="n">tensor_m</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span> <span class="mf">5.0</span> <span class="p">])</span>
+ <span class="n">tensor_m</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span> <span class="mf">5.0</span> <span class="p">])</span>
 
  <span class="c1"># We store them in an array for easier interaction</span>
  <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor_x_i</span><span class="p">,</span> <span class="n">tensor_x_j</span><span class="p">,</span> <span class="n">tensor_y</span><span class="p">,</span> <span class="n">tensor_w_in</span><span class="p">,</span> <span class="n">tensor_w_out_i</span><span class="p">,</span>
      <span class="n">tensor_w_out_j</span><span class="p">,</span> <span class="n">tensor_b_in</span><span class="p">,</span> <span class="n">tensor_b_out</span><span class="p">,</span> <span class="n">tensor_l_out</span><span class="p">,</span> <span class="n">tensor_m</span><span class="p">]</span>
 
- <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
-
- <span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncDevice</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
 
  <span class="c1"># Record commands for efficient evaluation</span>
- <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">create_sequence</span><span class="p">()</span>
- <span class="n">sq</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span>
- <span class="n">sq</span><span class="o">.</span><span class="n">record_tensor_sync_device</span><span class="p">([</span><span class="n">tensor_w_in</span><span class="p">,</span> <span class="n">tensor_b_in</span><span class="p">])</span>
- <span class="n">sq</span><span class="o">.</span><span class="n">record_algo_data</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">compute_shader</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
- <span class="n">sq</span><span class="o">.</span><span class="n">record_tensor_sync_local</span><span class="p">([</span><span class="n">tensor_w_out_i</span><span class="p">,</span> <span class="n">tensor_w_out_j</span><span class="p">,</span> <span class="n">tensor_b_out</span><span class="p">,</span> <span class="n">tensor_l_out</span><span class="p">])</span>
- <span class="n">sq</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+ <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
+
+ <span class="n">sq</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncDevice</span><span class="p">([</span><span class="n">tensor_w_in</span><span class="p">,</span> <span class="n">tensor_b_in</span><span class="p">]))</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">compute_shader</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())))</span>
+ <span class="n">sq</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">tensor_w_out_i</span><span class="p">,</span> <span class="n">tensor_w_out_j</span><span class="p">,</span> <span class="n">tensor_b_out</span><span class="p">,</span> <span class="n">tensor_l_out</span><span class="p">]))</span>
 
  <span class="n">ITERATIONS</span> <span class="o">=</span> <span class="mi">100</span>
  <span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span>
