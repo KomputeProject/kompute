@@ -1146,8 +1146,8 @@ class Algorithm
      * @specalizationInstalces The specialization parameters to pass to the
      * function processing
      */
-    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors = {},
-                 const std::vector<uint32_t>& spirv = {},
+    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
+                 const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
                  const Constants& specializationConstants = {});
 
@@ -1554,34 +1554,17 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(
-      std::vector<std::shared_ptr<Tensor>> tensors,
-      TArgs&&... params)
+      std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
     {
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
-
         return this->record(op);
     }
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(std::shared_ptr<Algorithm> algorithm,
                                      TArgs&&... params)
     {
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
-
         return this->record(op);
     }
 
@@ -1606,34 +1589,15 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     std::shared_ptr<Sequence> eval(std::vector<std::shared_ptr<Tensor>> tensors,
                                    TArgs&&... params)
     {
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
-
-        // TODO: Aim to be able to handle errors when returning without throw
-        // except
         return this->eval(op);
     }
-    // Needded as otherise can't use initialiser list
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> eval(std::shared_ptr<Algorithm> algorithm,
                                    TArgs&&... params)
     {
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
-
         return this->eval(op);
     }
 
@@ -1658,32 +1622,15 @@ class Sequence : public std::enable_shared_from_this<Sequence>
       std::vector<std::shared_ptr<Tensor>> tensors,
       TArgs&&... params)
     {
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
-
         return this->evalAsync(op);
     }
-    // Needed as otherwise it's not possible to use initializer lists
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> evalAsync(std::shared_ptr<Algorithm> algorithm,
                                         TArgs&&... params)
     {
-        KP_LOG_DEBUG("Kompute Sequence record function started");
-
-        static_assert(std::is_base_of<OpBase, T>::value,
-                      "Kompute Sequence record(...) template only valid with "
-                      "OpBase derived classes");
-
-        KP_LOG_DEBUG("Kompute Sequence creating OpBase derived class instance");
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
-
         return this->evalAsync(op);
     }
 
@@ -1726,6 +1673,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     bool isRecording();
 
     bool isInit();
+
+    void rerecord();
 
     /**
      * Returns true if the sequence is currently running - mostly used for async
