@@ -516,35 +516,65 @@
     <span class="c1">// 2. Create and initialise Kompute Tensors through manager</span>
     <span class="k">auto</span> <span class="n">tensorInA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">});</span>
     <span class="k">auto</span> <span class="n">tensorInB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorOutA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">tensorOutB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
 
-    <span class="c1">// 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shaderString</span> <span class="o">=</span> <span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOutA</span><span class="p">,</span> <span class="n">tensorOutB</span><span class="p">};</span>
+
+    <span class="c1">// 3. Create algorithm based on shader (supports buffers &amp; push/spec constants)</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span> <span class="o">=</span> <span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
 <span class="s">        #version 450</span>
 
 <span class="s">        layout (local_size_x = 1) in;</span>
 
 <span class="s">        // The input tensors bind index is relative to index in parameter passed</span>
-<span class="s">        layout(set = 0, binding = 0) buffer bina { float tina[]; };</span>
-<span class="s">        layout(set = 0, binding = 1) buffer binb { float tinb[]; };</span>
-<span class="s">        layout(set = 0, binding = 2) buffer bout { float tout[]; };</span>
+<span class="s">        layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };</span>
+<span class="s">        layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };</span>
+<span class="s">        layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };</span>
+<span class="s">        layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };</span>
+
+<span class="s">        // Kompute supports push constants updated on dispatch</span>
+<span class="s">        layout(push_constant) uniform PushConstants {</span>
+<span class="s">            float val;</span>
+<span class="s">        } push_const;</span>
+
+<span class="s">        // Kompute also supports spec constants on initalization</span>
+<span class="s">        layout(constant_id = 0) const float const_one = 0;</span>
 
 <span class="s">        void main() {</span>
 <span class="s">            uint index = gl_GlobalInvocationID.x;</span>
-<span class="s">            tout[index] = tina[index] * tinb[index];</span>
+<span class="s">            out_a[index] += in_a[index] * in_b[index];</span>
+<span class="s">            out_b[index] += const_one * push_const.val;</span>
 <span class="s">        }</span>
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="c1">// 3. Run operation with string shader synchronously</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoBase</span><span class="o">&gt;</span><span class="p">(</span>
-        <span class="p">{</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">},</span>
-        <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shaderString</span><span class="p">));</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span> <span class="n">workgroup</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">});</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span> <span class="n">specConsts</span><span class="p">({</span> <span class="mi">2</span> <span class="p">});</span>
 
-    <span class="c1">// 4. Map results back from GPU memory to print the results</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">evalOpDefault</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOut</span> <span class="p">});</span>
+    <span class="k">auto</span> <span class="n">algorithm</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">),</span> <span class="n">workgroup</span><span class="p">,</span> <span class="n">specConsts</span><span class="p">);</span>
 
-    <span class="c1">// Prints the output which is Output: { 2, 4, 6 }</span>
-    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="kt">float</span><span class="o">&amp;</span> <span class="nl">elem</span> <span class="p">:</span> <span class="n">tensorOut</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">())</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">elem</span> <span class="o">&lt;&lt;</span> <span class="s">"  "</span><span class="p">;</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span> <span class="n">pushConstsA</span><span class="p">({</span> <span class="mf">2.0</span> <span class="p">});</span>
+    <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span> <span class="n">pushConstsB</span><span class="p">({</span> <span class="mf">3.0</span> <span class="p">});</span>
+
+    <span class="c1">// 4. Run operation synchronously using sequence</span>
+    <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">pushConstsA</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">pushConstsB</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+
+    <span class="c1">// 5. Sync results from the GPU asynchronously</span>
+    <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">);</span>
+
+    <span class="c1">// ... Do other work asynchronously whilst GPU finishes</span>
+
+    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAwait</span><span class="p">();</span>
+
+    <span class="c1">// Prints the first output which is: { 4, 8, 12 }</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="kt">float</span><span class="o">&amp;</span> <span class="nl">elem</span> <span class="p">:</span> <span class="n">tensorOutA</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">())</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">elem</span> <span class="o">&lt;&lt;</span> <span class="s">"  "</span><span class="p">;</span>
+    <span class="c1">// Prints the second output which is: { 10, 10, 10 }</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="kt">float</span><span class="o">&amp;</span> <span class="nl">elem</span> <span class="p">:</span> <span class="n">tensorOutB</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">())</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">elem</span> <span class="o">&lt;&lt;</span> <span class="s">"  "</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -553,33 +583,69 @@
 <h3 id="your-first-kompute-python">Your First Kompute (Python)<a class="headerlink" href="#your-first-kompute-python" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python package</a> provides a <a class="reference external" href="https://kompute.cc/overview/python-reference.html">high level interactive interface</a> that enables for experimentation whilst ensuring high performance and fast development workflows.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)</span>
-<span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+<span class="n">mgr</span> <span class="o">=</span> <span class="n">kp</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
 
-<span class="c1"># 2. Create and initialise Kompute Tensors (can be initialized with List[] or np.Array)</span>
-<span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-<span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="n">tensor_out</span> <span class="o">=</span> <span class="n">Tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="c1"># 2. Create and initialise Kompute Tensors through manager</span>
+<span class="n">tensor_in_a</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">tensor_in_b</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">tensor_out_a</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">tensor_out_b</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_create_def</span><span class="p">([</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">])</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out_a</span><span class="p">,</span> <span class="n">tensor_out_b</span><span class="p">]</span>
 
-<span class="c1"># 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)</span>
-<span class="nd">@python2shader</span>
-<span class="k">def</span> <span class="nf">compute_shader_multiply</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="s2">"input"</span><span class="p">,</span> <span class="s2">"GlobalInvocationId"</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">),</span>
-                            <span class="n">data1</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
-                            <span class="n">data2</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">)),</span>
-                            <span class="n">data3</span><span class="o">=</span><span class="p">(</span><span class="s2">"buffer"</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Array</span><span class="p">(</span><span class="n">f32</span><span class="p">))):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">x</span>
-    <span class="n">data3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">data1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">data2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="c1"># 3. Create algorithm based on shader (supports buffers &amp; push/spec constants)</span>
+<span class="n">shader</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">    #version 450</span>
 
-<span class="c1"># 4. Run multiplication operation synchronously</span>
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_algo_data_def</span><span class="p">(</span>
-    <span class="p">[</span><span class="n">tensor_in_a</span><span class="p">,</span> <span class="n">tensor_in_b</span><span class="p">,</span> <span class="n">tensor_out</span><span class="p">],</span> <span class="n">compute_shader_multiply</span><span class="o">.</span><span class="n">to_spirv</span><span class="p">())</span>
+<span class="s2">    layout (local_size_x = 1) in;</span>
 
-<span class="c1"># 5. Map results back from GPU memory to print the results</span>
-<span class="n">mgr</span><span class="o">.</span><span class="n">eval_tensor_sync_local_def</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">])</span>
+<span class="s2">    // The input tensors bind index is relative to index in parameter passed</span>
+<span class="s2">    layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };</span>
+<span class="s2">    layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };</span>
+<span class="s2">    layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };</span>
+<span class="s2">    layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };</span>
 
-<span class="c1"># Prints [2.0, 4.0, 6.0]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
+<span class="s2">    // Kompute supports push constants updated on dispatch</span>
+<span class="s2">    layout(push_constant) uniform PushConstants {</span>
+<span class="s2">        float val;</span>
+<span class="s2">    } push_const;</span>
+
+<span class="s2">    // Kompute also supports spec constants on initalization</span>
+<span class="s2">    layout(constant_id = 0) const float const_one = 0;</span>
+
+<span class="s2">    void main() {</span>
+<span class="s2">        uint index = gl_GlobalInvocationID.x;</span>
+<span class="s2">        out_a[index] += in_a[index] * in_b[index];</span>
+<span class="s2">        out_b[index] += const_one * push_const.val;</span>
+<span class="s2">    }</span>
+<span class="s2">"""</span>
+
+<span class="n">workgroup</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">spec_consts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">push_consts_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">push_consts_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+<span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">kp</span><span class="o">.</span><span class="n">Shader</span><span class="o">.</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">),</span> <span class="n">workgroup</span><span class="p">,</span> <span class="n">spec_consts</span><span class="p">)</span>
+
+<span class="c1"># 4. Run operation synchronously using sequence</span>
+<span class="p">(</span><span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncDevice</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">push_consts_a</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">push_consts_b</span><span class="p">))</span>
+    <span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+
+<span class="c1"># 5. Sync results from the GPU asynchronously</span>
+<span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
+<span class="n">sq</span><span class="o">.</span><span class="n">eval_async</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncLocal</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+
+<span class="c1"># ... Do other work asynchronously whilst GPU finishes</span>
+
+<span class="n">sq</span><span class="o">.</span><span class="n">eval_await</span><span class="p">()</span>
+
+<span class="c1"># Prints the first output which is: { 4, 8, 12 }</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tensor_out_a</span><span class="p">)</span>
+<span class="c1"># Prints the first output which is: { 10, 10, 10 }</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tensor_out_b</span><span class="p">)</span>
 </pre></div>
 </div>
 
@@ -640,7 +706,7 @@
 <li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#sequence">Kompute Sequence</a> - Container of operations that can be sent to GPU as batch</p></li>
 <li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#algorithm">Kompute Operation (Base)</a> - Base class from which all operations inherit</p></li>
 <li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#tensor">Kompute Tensor</a> - Tensor structured data used in GPU operations</p></li>
-<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#algorithm">Kompute Algorithm</a> - Abstraction for (shader) code executed in the GPU</p></li>
+<li><p><a class="reference external" href="https://kompute.cc/overview/reference.html#algorithm">Kompute Algorithm</a> - Abstraction for (shader) logic executed in the GPU</p></li>
 </ul>
 <p>To see a full breakdown you can read further in the <a class="reference external" href="https://kompute.cc/overview/reference.html">C++ Class Reference</a>.</p>
 <table>

@@ -2,15 +2,9 @@ var searchData=
 [
   ['edevice',['eDevice',['../classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f',1,'kp::Tensor']]],
   ['ehost',['eHost',['../classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a746241fcf54388332f43a13dd4a82f0a',1,'kp::Tensor']]],
-  ['end',['end',['../classkp_1_1Sequence.html#ac51befb176acd2064d3e85133bf66ada',1,'kp::Sequence']]],
+  ['end',['end',['../classkp_1_1Sequence.html#a1a0be1b31a574c3265ab5fc071eab988',1,'kp::Sequence']]],
   ['estorage',['eStorage',['../classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ae1a7e733531f08074becd467959f0521',1,'kp::Tensor']]],
-  ['eval',['eval',['../classkp_1_1Sequence.html#aa0b36564769ba25a43a38e14a2d510dc',1,'kp::Sequence']]],
-  ['evalasync',['evalAsync',['../classkp_1_1Sequence.html#a682cba00ed524212503f0b977f98fc56',1,'kp::Sequence']]],
-  ['evalawait',['evalAwait',['../classkp_1_1Sequence.html#a9cd3819206f56734876873656085c824',1,'kp::Sequence']]],
-  ['evalop',['evalOp',['../classkp_1_1Manager.html#aeb89ce2a56d09d056561f021132a5469',1,'kp::Manager']]],
-  ['evalopasync',['evalOpAsync',['../classkp_1_1Manager.html#a130cd4fbb2b13770aa8016aa0579755a',1,'kp::Manager']]],
-  ['evalopasyncdefault',['evalOpAsyncDefault',['../classkp_1_1Manager.html#af448f96285731d412c4c54e86536d012',1,'kp::Manager']]],
-  ['evalopawait',['evalOpAwait',['../classkp_1_1Manager.html#a568ba498f48ea25ed0e9b319412d4b76',1,'kp::Manager']]],
-  ['evalopawaitdefault',['evalOpAwaitDefault',['../classkp_1_1Manager.html#ab7353b924a9945093ea382b6e9780dba',1,'kp::Manager']]],
-  ['evalopdefault',['evalOpDefault',['../classkp_1_1Manager.html#ae7a3f54442823198af724c97c87c3dc6',1,'kp::Manager']]]
+  ['eval',['eval',['../classkp_1_1Sequence.html#a68c5ba3aca4722f9fe5d2a18be861c22',1,'kp::Sequence::eval()'],['../classkp_1_1Sequence.html#a71b1a4637647f3f26d2921f0e2f2d84e',1,'kp::Sequence::eval(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, TArgs &amp;&amp;... params)']]],
+  ['evalasync',['evalAsync',['../classkp_1_1Sequence.html#ad1e3b979160e5a535cb54026473936e6',1,'kp::Sequence::evalAsync()'],['../classkp_1_1Sequence.html#a8139aa88d7bc6024bf15712fdc995710',1,'kp::Sequence::evalAsync(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, TArgs &amp;&amp;... params)']]],
+  ['evalawait',['evalAwait',['../classkp_1_1Sequence.html#a33766e097c3e392fe70f7e63bf258025',1,'kp::Sequence']]]
 ];

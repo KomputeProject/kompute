@@ -74,16 +74,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae0d70e63b68f97b9c7fc6ffeb6ddfa14"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Shader.html#ae0d70e63b68f97b9c7fc6ffeb6ddfa14">compile_sources</a> (const std::vector&lt; std::string &gt; &amp;sources, const std::vector&lt; std::string &gt; &amp;files={}, const std::string &amp;entryPoint=&quot;main&quot;, std::vector&lt; std::pair&lt; std::string, std::string &gt;&gt; definitions={})</td></tr>
-<tr class="separator:ae0d70e63b68f97b9c7fc6ffeb6ddfa14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a272acc94fcaed0a4c82a818c28b18fe8"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Shader.html#a272acc94fcaed0a4c82a818c28b18fe8">compile_source</a> (const std::string &amp;source, const std::string &amp;entryPoint=&quot;main&quot;, std::vector&lt; std::pair&lt; std::string, std::string &gt;&gt; definitions={})</td></tr>
-<tr class="separator:a272acc94fcaed0a4c82a818c28b18fe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81e1f4de8365e1778a4d4d754d596cdc"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Shader.html#a81e1f4de8365e1778a4d4d754d596cdc">compile_sources</a> (const std::vector&lt; std::string &gt; &amp;sources, const std::vector&lt; std::string &gt; &amp;files={}, const std::string &amp;entryPoint=&quot;main&quot;, std::vector&lt; std::pair&lt; std::string, std::string &gt;&gt; definitions={}, const TBuiltInResource &amp;resources=defaultResource)</td></tr>
+<tr class="separator:a81e1f4de8365e1778a4d4d754d596cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f36ff59abacc477527a4cdd710ffdb6"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Shader.html#a2f36ff59abacc477527a4cdd710ffdb6">compile_source</a> (const std::string &amp;source, const std::string &amp;entryPoint=&quot;main&quot;, std::vector&lt; std::pair&lt; std::string, std::string &gt;&gt; definitions={}, const TBuiltInResource &amp;resources=defaultResource)</td></tr>
+<tr class="separator:a2f36ff59abacc477527a4cdd710ffdb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classkp_1_1Shader.html">Shader</a> utily class with functions to compile and process glsl files. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a272acc94fcaed0a4c82a818c28b18fe8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a272acc94fcaed0a4c82a818c28b18fe8">&#9670;&nbsp;</a></span>compile_source()</h2>
+<a id="a2f36ff59abacc477527a4cdd710ffdb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f36ff59abacc477527a4cdd710ffdb6">&#9670;&nbsp;</a></span>compile_source()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -107,7 +107,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; std::pair&lt; std::string, std::string &gt;&gt;&#160;</td>
-          <td class="paramname"><em>definitions</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>definitions</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TBuiltInResource &amp;&#160;</td>
+          <td class="paramname"><em>resources</em> = <code>defaultResource</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -127,6 +133,7 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">source</td><td>An individual raw glsl shader in string format </td></tr>
     <tr><td class="paramname">entryPoint</td><td>The function name to use as entry point </td></tr>
     <tr><td class="paramname">definitions</td><td>List of pairs containing key value definitions </td></tr>
+    <tr><td class="paramname">resourcesLimit</td><td>A list that contains the resource limits for the GLSL compiler </td></tr>
   </table>
   </dd>
 </dl>
@@ -134,8 +141,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae0d70e63b68f97b9c7fc6ffeb6ddfa14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0d70e63b68f97b9c7fc6ffeb6ddfa14">&#9670;&nbsp;</a></span>compile_sources()</h2>
+<a id="a81e1f4de8365e1778a4d4d754d596cdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81e1f4de8365e1778a4d4d754d596cdc">&#9670;&nbsp;</a></span>compile_sources()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,7 +172,13 @@ Static Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::vector&lt; std::pair&lt; std::string, std::string &gt;&gt;&#160;</td>
-          <td class="paramname"><em>definitions</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>definitions</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TBuiltInResource &amp;&#160;</td>
+          <td class="paramname"><em>resources</em> = <code>defaultResource</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -186,6 +199,7 @@ Static Public Member Functions</h2></td></tr>
     <tr><td class="paramname">files</td><td>A list of file names respective to each of the sources </td></tr>
     <tr><td class="paramname">entryPoint</td><td>The function name to use as entry point </td></tr>
     <tr><td class="paramname">definitions</td><td>List of pairs containing key value definitions </td></tr>
+    <tr><td class="paramname">resourcesLimit</td><td>A list that contains the resource limits for the GLSL compiler </td></tr>
   </table>
   </dd>
 </dl>

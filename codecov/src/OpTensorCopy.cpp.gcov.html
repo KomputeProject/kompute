@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">23</td>
-            <td class="headerCovTableEntry">27</td>
-            <td class="headerCovTableEntryMed">85.2 %</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-02-21 12:50:34</td>
+            <td class="headerValue">2021-03-01 08:15:35</td>
             <td></td>
             <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">5</td>
             <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">8</td>
-            <td class="headerCovTableEntryMed">75.0 %</td>
+            <td class="headerCovTableEntryMed">83.3 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -63,80 +63,55 @@
 <a name="1"><span class="lineNum">       1 </span>            : </a>
 <span class="lineNum">       2 </span>            : #include &quot;kompute/operations/OpTensorCopy.hpp&quot;
 <span class="lineNum">       3 </span>            : 
-<span class="lineNum">       4 </span>            : namespace kp {
+<a name="4"><span class="lineNum">       4 </span>            : namespace kp {</a>
 <span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineNoCov">          0 : OpTensorCopy::OpTensorCopy()</span>
+<span class="lineNum">       6 </span><span class="lineCov">          8 : OpTensorCopy::OpTensorCopy(const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)</span>
 <span class="lineNum">       7 </span>            : {
-<span class="lineNum">       8 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy constructor base&quot;);
-<span class="lineNum">       9 </span><span class="lineNoCov">          0 : }</span>
-<span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span><span class="lineCov">         11 : OpTensorCopy::OpTensorCopy(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</span>
-<span class="lineNum">      12 </span>            :                            std::shared_ptr&lt;vk::Device&gt; device,
-<span class="lineNum">      13 </span>            :                            std::shared_ptr&lt;vk::CommandBuffer&gt; commandBuffer,
-<span class="lineNum">      14 </span><span class="lineCov">         11 :                            std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; tensors)</span>
-<span class="lineNum">      15 </span><span class="lineCov">         55 :   : OpBase(physicalDevice, device, commandBuffer, tensors)</span>
-<span class="lineNum">      16 </span>            : {
-<span class="lineNum">      17 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy constructor with params&quot;);
-<a name="18"><span class="lineNum">      18 </span><span class="lineCov">         11 : }</span></a>
-<span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span><span class="lineCov">         11 : OpTensorCopy::~OpTensorCopy()</span>
-<span class="lineNum">      21 </span>            : {
-<span class="lineNum">      22 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy destructor started&quot;);
-<span class="lineNum">      23 </span><span class="lineCov">         11 : }</span>
-<span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span>            : void
-<span class="lineNum">      26 </span><span class="lineCov">         11 : OpTensorCopy::init()</span>
-<span class="lineNum">      27 </span>            : {
-<span class="lineNum">      28 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy init called&quot;);
-<span class="lineNum">      29 </span>            : 
-<span class="lineNum">      30 </span><span class="lineCov">         22 :     if (this-&gt;mTensors.size() &lt; 2) {</span>
-<span class="lineNum">      31 </span>            :         throw std::runtime_error(
-<span class="lineNum">      32 </span><span class="lineCov">          1 :           &quot;Kompute OpTensorCopy called with less than 2 tensor&quot;);</span>
-<span class="lineNum">      33 </span>            :     }
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineCov">         32 :     for (std::shared_ptr&lt;Tensor&gt; tensor : this-&gt;mTensors) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">         22 :         if (!tensor-&gt;isInit()) {</span>
-<span class="lineNum">      37 </span>            :             throw std::runtime_error(
-<span class="lineNum">      38 </span><span class="lineNoCov">          0 :               &quot;Kompute OpTensorCopy tensor parameter has not been initialized&quot;);</span>
-<span class="lineNum">      39 </span>            :         }
-<span class="lineNum">      40 </span><span class="lineCov">         22 :         if (tensor-&gt;tensorType() == Tensor::TensorTypes::eStorage) {</span>
-<span class="lineNum">      41 </span>            :             throw std::runtime_error(&quot;Kompute OpTensorCopy tensor parameter is &quot;
-<span class="lineNum">      42 </span>            :                                      &quot;of TensorTypes::eStorage and hence &quot;
-<span class="lineNum">      43 </span><span class="lineNoCov">          0 :                                      &quot;cannot be used to receive or pass data.&quot;);</span>
-<span class="lineNum">      44 </span>            :         }
-<span class="lineNum">      45 </span>            :     }
-<span class="lineNum">      46 </span><span class="lineCov">         10 : }</span>
-<span class="lineNum">      47 </span>            : 
-<span class="lineNum">      48 </span>            : void
-<span class="lineNum">      49 </span><span class="lineCov">         10 : OpTensorCopy::record()</span>
-<span class="lineNum">      50 </span>            : {
-<span class="lineNum">      51 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy record called&quot;);
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span>            :     // We iterate from the second tensor onwards and record a copy to all
-<span class="lineNum">      54 </span><span class="lineCov">         56 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
-<span class="lineNum">      55 </span><span class="lineCov">         36 :         this-&gt;mTensors[i]-&gt;recordCopyFrom(</span>
-<span class="lineNum">      56 </span>            :           this-&gt;mCommandBuffer, this-&gt;mTensors[0], false);
-<span class="lineNum">      57 </span>            :     }
-<span class="lineNum">      58 </span><span class="lineCov">         10 : }</span>
-<a name="59"><span class="lineNum">      59 </span>            : </a>
-<span class="lineNum">      60 </span>            : void
-<span class="lineNum">      61 </span><span class="lineCov">         19 : OpTensorCopy::preEval()</span>
-<span class="lineNum">      62 </span>            : {
-<span class="lineNum">      63 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy preEval called&quot;);
-<span class="lineNum">      64 </span><span class="lineCov">         19 : }</span>
-<span class="lineNum">      65 </span>            : 
-<span class="lineNum">      66 </span>            : void
-<span class="lineNum">      67 </span><span class="lineCov">         19 : OpTensorCopy::postEval()</span>
-<span class="lineNum">      68 </span>            : {
-<span class="lineNum">      69 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy postEval called&quot;);
-<span class="lineNum">      70 </span>            : 
-<span class="lineNum">      71 </span>            :     // Copy the data from the first tensor into all the tensors
-<span class="lineNum">      72 </span><span class="lineCov">        101 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
-<span class="lineNum">      73 </span><span class="lineCov">         21 :         this-&gt;mTensors[i]-&gt;setData(this-&gt;mTensors[0]-&gt;data());</span>
-<span class="lineNum">      74 </span>            :     }
-<span class="lineNum">      75 </span><span class="lineCov">         19 : }</span>
-<span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span>            : }
+<span class="lineNum">       8 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy constructor with params&quot;);
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span><span class="lineCov">          7 :     this-&gt;mTensors = tensors;</span>
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span><span class="lineCov">         14 :     if (this-&gt;mTensors.size() &lt; 2) {</span>
+<span class="lineNum">      13 </span>            :         throw std::runtime_error(
+<span class="lineNum">      14 </span><span class="lineCov">          1 :           &quot;Kompute OpTensorCopy called with less than 2 tensor&quot;);</span>
+<span class="lineNum">      15 </span>            :     }
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">          6 : }</span></a>
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span><span class="lineCov">          6 : OpTensorCopy::~OpTensorCopy()</span>
+<span class="lineNum">      19 </span>            : {
+<span class="lineNum">      20 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy destructor started&quot;);
+<span class="lineNum">      21 </span><span class="lineCov">          6 : }</span>
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : void
+<span class="lineNum">      24 </span><span class="lineCov">          6 : OpTensorCopy::record(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      25 </span>            : {
+<span class="lineNum">      26 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy record called&quot;);
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :     // We iterate from the second tensor onwards and record a copy to all
+<span class="lineNum">      29 </span><span class="lineCov">         36 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">      30 </span><span class="lineCov">         16 :         this-&gt;mTensors[i]-&gt;recordCopyFrom(</span>
+<span class="lineNum">      31 </span>            :           commandBuffer, this-&gt;mTensors[0], false);
+<span class="lineNum">      32 </span>            :     }
+<span class="lineNum">      33 </span><span class="lineCov">          6 : }</span>
+<a name="34"><span class="lineNum">      34 </span>            : </a>
+<span class="lineNum">      35 </span>            : void
+<span class="lineNum">      36 </span><span class="lineCov">          7 : OpTensorCopy::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      37 </span>            : {
+<span class="lineNum">      38 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy preEval called&quot;);
+<span class="lineNum">      39 </span><span class="lineCov">          7 : }</span>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : void
+<span class="lineNum">      42 </span><span class="lineCov">          7 : OpTensorCopy::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      43 </span>            : {
+<span class="lineNum">      44 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy postEval called&quot;);
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :     // Copy the data from the first tensor into all the tensors
+<span class="lineNum">      47 </span><span class="lineCov">         41 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">      48 </span><span class="lineCov">          9 :         this-&gt;mTensors[i]-&gt;setData(this-&gt;mTensors[0]-&gt;data());</span>
+<span class="lineNum">      49 </span>            :     }
+<span class="lineNum">      50 </span><span class="lineCov">          7 : }</span>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : }
 </pre>
       </td>
     </tr>

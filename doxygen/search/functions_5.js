@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['freememorydestroygpuresources',['freeMemoryDestroyGPUResources',['../classkp_1_1Sequence.html#a6c29f6b498c362b97f37185ffd9c0fc2',1,'kp::Sequence::freeMemoryDestroyGPUResources()'],['../classkp_1_1Tensor.html#afdfc816a4f040ad43e36534c6fbc69a2',1,'kp::Tensor::freeMemoryDestroyGPUResources()']]]
+  ['isrecording',['isRecording',['../classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85',1,'kp::Sequence']]],
+  ['isrunning',['isRunning',['../classkp_1_1Sequence.html#a1a783a310d7373588277df4ba6dc30da',1,'kp::Sequence']]]
 ];
