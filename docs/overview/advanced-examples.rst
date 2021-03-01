@@ -28,107 +28,6 @@ End-to-end examples
 * `Game Development Kompute ML in Godot Engine <https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0>`_
 
 
-Simple Shader Example
-~~~~~~~~~~~~~~~~~~~~~
-
-Pass compute shader data in glsl/hlsl text or compiled SPIR-V format (or as path to the file). Back to `examples list <#simple-examples>`_.
-
-.. code-block:: cpp
-   :linenos:
-    int main() {
-
-        // You can allow Kompute to create the Vulkan components, or pass your existing ones
-        kp::Manager mgr; // Selects device 0 unless explicitly requested
-
-        // Creates tensor an initializes GPU memory (below we show more granularity)
-        auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor({ 3., 4., 5. }));
-        auto tensorB = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
-
-        // Create tensors data explicitly in GPU with an operation
-        mgr.rebuild({ tensorA, tensorB });
-
-        // Define your shader as a string (using string literals for simplicity)
-        // (You can also pass the raw compiled bytes, or even path to file)
-        std::string shader(R"(
-            #version 450
-
-            layout (local_size_x = 1) in;
-
-            layout(set = 0, binding = 0) buffer a { float pa[]; };
-            layout(set = 0, binding = 1) buffer b { float pb[]; };
-
-            void main() {
-                uint index = gl_GlobalInvocationID.x;
-                pb[index] = pa[index];
-                pa[index] = index;
-            }
-        )");
-
-        // Run Kompute operation on the parameters provided with dispatch layout
-        mgr.evalOpDefault<kp::OpAlgoBase>(
-            { tensorA, tensorB }, 
-            kp::Shader::compile_source(shader));
-
-        // Sync the GPU memory back to the local tensor
-        mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
-
-        // Prints the output which is A: { 0, 1, 2 } B: { 3, 4, 5 }
-        std::cout << fmt::format("A: {}, B: {}", 
-            tensorA.data(), tensorB.data()) << std::endl;
-    }
-
-Record batch commands
-~~~~~~~~~~~~~~~~~~~~~
-
-Record commands in a single submit by using a Sequence to send in batch to GPU. Back to `examples list <#simple-examples>`_
-
-.. code-block:: cpp
-   :linenos:
-
-   int main() {
-
-       kp::Manager mgr;
-
-       std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 1., 1., 1. }) };
-       std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2., 2., 2. }) };
-       std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0., 0., 0. }) };
-
-       // Create all the tensors in memory
-       mgr.evalOpDefault<kp::OpCreateTensor>({tensorLHS, tensorRHS, tensorOutput});
-
-       // Create a new sequence
-       std::weak_ptr<kp::Sequence> sqWeakPtr = mgr.sequence();
-
-       if (std::shared_ptr<kp::Sequence> sq = sqWeakPtr.lock())
-       {
-           // Begin recording commands
-           sq->begin();
-
-           // Record batch commands to send to GPU
-           sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
-           sq->record<kp::OpTensorCopy>({tensorOutput, tensorLHS, tensorRHS});
-
-           // Stop recording
-           sq->end();
-
-           // Submit multiple batch operations to GPU
-           size_t ITERATIONS = 5;
-           for (size_t i = 0; i < ITERATIONS; i++) {
-               sq->eval();
-           }
-
-           // Sync GPU memory back to local tensor
-           sq->begin();
-           sq->record<kp::OpTensorSyncLocal>({tensorOutput});
-           sq->end();
-           sq->eval();
-       }
-
-       // Print the output which iterates through OpMult 5 times
-       // in this case the output is {32, 32 , 32}
-       std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
-   }
-
 Asynchronous Operations
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -143,10 +42,7 @@ You can submit operations asynchronously with the async/await commands in the kp
        kp::Manager mgr; // Selects device 0 unless explicitly requested
 
        // Creates tensor an initializes GPU memory (below we show more granularity)
-       auto tensor = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
-
-       // Create tensors data explicitly in GPU with an operation
-       mgr.rebuild(tensor)
+       auto tensor = mgr.tensor(10, 0.0);
 
        // Define your shader as a string (using string literals for simplicity)
        // (You can also pass the raw compiled bytes, or even path to file)
@@ -176,25 +72,19 @@ You can submit operations asynchronously with the async/await commands in the kp
 
        std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
-       // We can now await for the previous submitted command
-       // The first parameter can be the amount of time to wait
-       // The time provided is in nanoseconds
-       mgr.evalOpAwaitDefault(10000);
+       auto sq = mgr.sequence();
 
-       // Run Async Kompute operation on the parameters provided
-       mgr.evalOpAsyncDefault<kp::OpAlgoBase>(
-           { tensor }, 
-           spirv);
+       sq.eval<kp::OpTensorSyncDevice>({tensor});
 
-       // Here we can do other work
+       sq.evalAsync<kp::OpAlgoDispatch>(mgr.algorithm({tensor}, spirv));
 
        // When we're ready we can wait 
        // The default wait time is UINT64_MAX
-       mgr.evalOpAwaitDefault()
+       sq.evalAwait(10000)
 
        // Sync the GPU memory back to the local tensor
        // We can still run synchronous jobs in our created sequence
-       mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensor });
+       sq.eval<kp::OpTensorSyncLocal>({ tensor });
 
        // Prints the output: B: { 100000000, ... }
        std::cout << fmt::format("B: {}", 
@@ -225,18 +115,12 @@ Back to `examples list <#simple-examples>`_.
        // We create a manager with device index, and queues by queue family index
        kp::Manager mgr(deviceIndex, familyIndices);
 
-       // We need to create explicit sequences with their respective queues
-       // The second parameter is the index in the familyIndex array which is relative
-       //      to the vector we created the manager with.
-       mgr.sequence("queueOne", 0);
-       mgr.sequence("queueTwo", 1);
-
        // Creates tensor an initializes GPU memory (below we show more granularity)
-       auto tensorA = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
-       auto tensorB = std::make_shared<kp::Tensor>(kp::Tensor(std::vector<float>(10, 0.0)));
+       auto tensorA = mgr.tensor({ 10, 0.0 });
+       auto tensorB = mgr.tensor({ 10, 0.0 });
 
-       // We run the first step synchronously on the default sequence
-       mgr.rebuild({ tensorA, tensorB });
+       // Copies the data into GPU memory
+       mgr.sequence().eval<kp::OpTensorSyncDevice>({tensorA tensorB});
 
        // Define your shader as a string (using string literals for simplicity)
        // (You can also pass the raw compiled bytes, or even path to file)
@@ -266,26 +150,28 @@ Back to `examples list <#simple-examples>`_.
 
        std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
 
+       std::shared_ptr<kp::Algorithm> algo = mgr.algorithm({tensorA, tenssorB}, spirv);
+
+       // We need to create explicit sequences with their respective queues
+       // The second parameter is the index in the familyIndex array which is relative
+       //      to the vector we created the manager with.
+       sqOne = mgr.sequence(0);
+       sqTwo = mgr.sequence(1);
+
        // Run the first parallel operation in the `queueOne` sequence
-       mgr.evalOpAsync<kp::OpAlgoBase>(
-           { tensorA }, 
-           "queueOne",
-           spirv);
+       sqOne->evalAsync<kp::OpAlgoDispatch>(algo);
 
        // Run the second parallel operation in the `queueTwo` sequence
-       mgr.evalOpAsync<kp::OpAlgoBase>(
-           { tensorB }, 
-           "queueTwo",
-           spirv);
+       sqTwo->evalAsync<kp::OpAlgoDispatch>(algo);
 
        // Here we can do other work
 
        // We can now wait for the two parallel tasks to finish
-       mgr.evalOpAwait("queueOne")
-       mgr.evalOpAwait("queueTwo")
+       sqOne.evalOpAwait()
+       sqTwo.evalOpAwait()
 
        // Sync the GPU memory back to the local tensor
-       mgr.evalOp<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+       mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
        // Prints the output: A: 100000000 B: 100000000
        std::cout << fmt::format("A: {}, B: {}", 
@@ -302,17 +188,47 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
 .. code-block:: cpp
    :linenos:
 
-   class OpMyCustom : public OpAlgoBase
+   class OpMyCustom : public OpAlgoDispatch
    {
      public:
-       OpMyCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              std::vector<std::shared_ptr<Tensor>> tensors)
-         : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "")
+       OpMyCustom(std::vector<std::shared_ptr<Tensor>> tensors,
+            std::shared_ptr<kp::Algorithm> algorithm)
+         : OpAlgoBase(algorithm)
        {
-           // Perform your custom steps such as reading from a shader file
-           this->mShaderFilePath = "shaders/glsl/opmult.comp.spv";
+            if (tensors.size() != 3) {
+                throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
+            }
+
+            std::vector<uint32_t> spirv = kp::Shader::compile_source(R"(
+                #version 450
+
+                layout(set = 0, binding = 0) buffer tensorLhs {
+                   float valuesLhs[ ];
+                };
+
+                layout(set = 0, binding = 1) buffer tensorRhs {
+                   float valuesRhs[ ];
+                };
+
+                layout(set = 0, binding = 2) buffer tensorOutput {
+                   float valuesOutput[ ];
+                };
+
+                layout (constant_id = 0) const uint LEN_LHS = 0;
+                layout (constant_id = 1) const uint LEN_RHS = 0;
+                layout (constant_id = 2) const uint LEN_OUT = 0;
+
+                layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+
+                void main() 
+                {
+                    uint index = gl_GlobalInvocationID.x;
+
+                    valuesOutput[index] = valuesLhs[index] * valuesRhs[index];
+                }
+            )");
+
+            algorithm->rebuild(tensors, spirv);
        }
    }
 
@@ -322,16 +238,15 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
        kp::Manager mgr; // Automatically selects Device 0
 
        // Create 3 tensors of default type float
-       auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
-       auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
-       auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
+       auto tensorLhs = mgr.tensor({ 0., 1., 2. });
+       auto tensorRhs = mgr.tensor({ 2., 4., 6. });
+       auto tensorOut = mgr.tensor({ 0., 0., 0. });
 
-       // Create tensors data explicitly in GPU with an operation
-       mgr.rebuild({ tensorLhs, tensorRhs, tensorOut });
-
-       // Run Kompute operation on the parameters provided with dispatch layout
-       mgr.evalOpDefault<kp::OpMyCustom<3, 1, 1>>(
-           { tensorLhs, tensorRhs, tensorOut });
+       mgr.sequence()
+            ->record<kp::OpTensorSyncDevice>({tensorLhs, tensorRhs, tensorOut})
+            ->record<kp::OpMyCustom>({tensorLhs, tensorRhs, tensorOut}, mgr.algorithm())
+            ->record<kp::OpTensorSyncLocal>({tensorLhs, tensorRhs, tensorOut})
+            ->eval();
 
        // Prints the output which is { 0, 4, 12 }
        std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
