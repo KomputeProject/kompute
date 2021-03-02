@@ -39,74 +39,19 @@ Below you
 Simple Operation Extending OpAlgoBase
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Below we show a very simple example that enables you to create an operation with a pre-specified shader. In this case it is the multiplication shader.
+You can find an example in the `Advanced Examples documentation section <advanced-examples.rst>`_ that shows how to create your own custom function.
 
-.. code-block:: cpp
-   :linenos:
-
-   class OpMyCustom : public OpAlgoBase
-   {
-     public:
-       OpMyCustom(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-              std::shared_ptr<vk::Device> device,
-              std::shared_ptr<vk::CommandBuffer> commandBuffer,
-              std::vector<std::shared_ptr<Tensor>> tensors)
-         : OpAlgoBase(physicalDevice, device, commandBuffer, tensors, "")
-       {
-           // Perform your custom steps such as reading from a shader file
-           this->mShaderFilePath = "shaders/glsl/opmult.comp";
-       }
-   }
+You can also see an implementation in the codebase through the `OpMult` class:
 
 
-   int main() {
-
-       kp::Manager mgr; // Automatically selects Device 0
-
-       // Create 3 tensors of default type float
-       auto tensorLhs = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 1., 2. }));
-       auto tensorRhs = std::make_shared<kp::Tensor>(kp::Tensor({ 2., 4., 6. }));
-       auto tensorOut = std::make_shared<kp::Tensor>(kp::Tensor({ 0., 0., 0. }));
-
-       // Create tensors data explicitly in GPU with an operation
-       mgr.evalOpDefault<kp::OpTensorCreate>({ tensorLhs, tensorRhs, tensorOut });
-
-       // Run Kompute operation on the parameters provided with dispatch layout
-       mgr.evalOpDefault<kp::OpMyCustom>(
-           { tensorLhs, tensorRhs, tensorOut });
-
-       // Prints the output which is { 0, 4, 12 }
-       std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
-   }
-
-
-More Complex Operation Extending OpAlgoBase
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Below we show a more complex operation that performs the following:
-
-* Expects three tensors for an operation, two inputs and one output
-* Expects the tensors to be initialised
-* Checks that the tensors are of the same size
-* Expects output tensor to be of type TensorTypes::eDevice (and creates staging tensor)
-* Has functionality to read shader from file or directly from spirv bytes
-* Records relevant bufferMemoryBarriers
-* Records dispatch command
-* Records copy command from device tensor to staging output tensor
-* In postEval it maps data from staging tensor to output tensor's data
-
-
-For starters, the header file contains the functions that will be overriden:
-
-
-.. literalinclude:: ../../src/include/kompute/operations/OpAlgoLhsRhsOut.hpp
+.. literalinclude:: ../../src/include/kompute/operations/OpMult.hpp
    :language: cpp
 
 
 Then the implementation outlines all the implementations that perform the actions above:
 ~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: ../../src/OpAlgoLhsRhsOut.cpp
+.. literalinclude:: ../../src/OpMult.cpp
    :language: cpp
 
 

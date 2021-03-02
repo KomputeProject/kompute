@@ -51,6 +51,11 @@ Sequence::end()
 {
     KP_LOG_DEBUG("Kompute Sequence calling END");
 
+    if (this->isRunning()) {
+        throw std::runtime_error(
+          "Kompute Sequence begin called when sequence still running");
+    }
+
     if (!this->isRecording()) {
         KP_LOG_WARN("Kompute Sequence end called when not recording");
         return;
@@ -64,7 +69,7 @@ Sequence::end()
 void
 Sequence::clear()
 {
-    KP_LOG_DEBUG("Kompute Sequence  calling clear");
+    KP_LOG_DEBUG("Kompute Sequence calling clear");
     this->end();
 }
 
@@ -169,6 +174,17 @@ Sequence::isInit()
 {
     return this->mDevice && this->mCommandPool && this->mCommandBuffer &&
            this->mComputeQueue;
+}
+
+void
+Sequence::rerecord()
+{
+    this->end();
+    std::vector<std::shared_ptr<OpBase>> ops = this->mOperations;
+    this->mOperations.clear();
+    for (const std::shared_ptr<kp::OpBase>& op : ops) {
+        this->record(op);
+    }
 }
 
 void

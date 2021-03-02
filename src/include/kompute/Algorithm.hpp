@@ -35,8 +35,8 @@ class Algorithm
      * @specalizationInstalces The specialization parameters to pass to the
      * function processing
      */
-    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors = {},
-                 const std::vector<uint32_t>& spirv = {},
+    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
+                 const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
                  const Constants& specializationConstants = {});
 
