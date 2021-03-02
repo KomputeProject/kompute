@@ -34,8 +34,8 @@
 * [Mobile enabled](#mobile-enabled) with examples via Android NDK across several architectures
 * BYOV: [Bring-your-own-Vulkan design](#motivations) to play nice with existing Vulkan applications
 * Explicit relationships for GPU and host [memory ownership and memory management](https://kompute.cc/overview/memory-management.html)
-* Well tested codebase with [90% unit test code coverage](https://kompute.cc/codecov/)
-* Longer tutorials for [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
+* Robust codebase with [90% unit test code coverage](https://kompute.cc/codecov/)
+* Advanced use-cases on [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
 
 ![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif)
 
