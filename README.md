@@ -432,6 +432,12 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 * Uses doxygen and sphinx for documentation and autodocs
 * Uses vcpkg for finding the dependencies, it's the recommended set up to retrieve the libraries
 
+If you want to run with debug layers you can add them with the `KOMPUTE_ENV_DEBUG_LAYERS` parameter as:
+
+```
+export KOMPUTE_ENV_DEBUG_LAYERS="VK_LAYER_LUNARG_api_dump"
+```
+
 ##### Updating documentation
 
 To update the documentation you will need to:
