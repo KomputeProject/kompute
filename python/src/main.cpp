@@ -151,15 +151,16 @@ PYBIND11_MODULE(kp, m) {
                              const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
                              const py::bytes& spirv,
                              const kp::Workgroup& workgroup,
-                             const kp::Constants& spec_consts) {
+                             const kp::Constants& spec_consts,
+                             const kp::Constants& push_consts) {
                     py::buffer_info info(py::buffer(spirv).request());
                     const char *data = reinterpret_cast<const char *>(info.ptr);
                     size_t length = static_cast<size_t>(info.size);
                     std::vector<uint32_t> spirvVec((uint32_t*)data, (uint32_t*)(data + length));
-                    return self.algorithm(tensors, spirvVec, workgroup, spec_consts);
+                    return self.algorithm(tensors, spirvVec, workgroup, spec_consts, push_consts);
                 },
             "Algorithm initialisation function",
-            py::arg("tensors"), py::arg("spirv"), py::arg("workgroup") = kp::Workgroup(), py::arg("spec_consts") = kp::Constants());
+            py::arg("tensors"), py::arg("spirv"), py::arg("workgroup") = kp::Workgroup(), py::arg("spec_consts") = kp::Constants(), py::arg("push_consts") = kp::Constants());
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
