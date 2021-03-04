@@ -178,7 +178,7 @@ Manager::createInstance()
     std::istringstream iss(envLayerNamesVal);
     std::istream_iterator<std::string> beg(iss), end;
     std::vector<std::string> envLayerNames(beg, end);
-    for (const std::string& layerName : envLayerNames) {
+    for (std::string layerName : envLayerNames) {
         desiredLayerNames.push_back(layerName.c_str());
     }
     KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
