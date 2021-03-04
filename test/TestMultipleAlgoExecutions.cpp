@@ -49,12 +49,12 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     kp::Constants pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(
-      params, kp::Shader::compile_source(shader), workgroup, specConsts);
+      params, kp::Shader::compile_source(shader), workgroup, specConsts, pushConstsA);
 
     // 3. Run operation with string shader synchronously
     mgr.sequence()
       ->record<kp::OpTensorSyncDevice>(params)
-      ->record<kp::OpAlgoDispatch>(algorithm, pushConstsA)
+      ->record<kp::OpAlgoDispatch>(algorithm)
       ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
       ->eval();
 
