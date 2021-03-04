@@ -1135,7 +1135,8 @@ class Algorithm
               const std::vector<std::shared_ptr<Tensor>>& tensors = {},
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
-              const Constants& specializationConstants = {});
+              const Constants& specializationConstants = {},
+              const Constants& pushConstants = {});
 
     /**
      * Initialiser for the shader data provided to the algorithm as well as
@@ -1149,7 +1150,8 @@ class Algorithm
     void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
                  const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
-                 const Constants& specializationConstants = {});
+                 const Constants& specializationConstants = {},
+                 const Constants& pushConstants = {});
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
@@ -1169,15 +1171,16 @@ class Algorithm
 
     void bindCore(const vk::CommandBuffer& commandBuffer);
 
-    void bindPush(const vk::CommandBuffer& commandBuffer,
-                  const Constants& pushConstants);
+    void bindPush(const vk::CommandBuffer& commandBuffer);
 
     bool isInit();
 
     void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
+    void setPush(const Constants& pushConstants);
 
     const Workgroup& getWorkgroup();
     const Constants& getSpecializationConstants();
+    const Constants& getPush();
     const std::vector<std::shared_ptr<Tensor>>& getTensors();
 
     void destroy();
@@ -1206,6 +1209,7 @@ class Algorithm
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mSpirv;
     Constants mSpecializationConstants;
+    Constants mPushConstants;
     Workgroup mWorkgroup;
 
     bool mIsInit;
@@ -1801,7 +1805,8 @@ class Manager
       const std::vector<std::shared_ptr<Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
-      const Constants& specializationConstants = {});
+      const Constants& specializationConstants = {},
+      const Constants& pushConstants = {});
 
     void destroy();
     void clear();
