@@ -173,15 +173,18 @@ Manager::createInstance()
         "VK_LAYER_LUNARG_standard_validation",
         "VK_LAYER_KHRONOS_validation",
     };
-    std::string envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
+    std::vector<std::string> envLayerNames;
+    const char* envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
     KP_LOG_DEBUG("Kompute Manager adding environment layers: {}", envLayerNamesVal);
-    std::istringstream iss(envLayerNamesVal);
-    std::istream_iterator<std::string> beg(iss), end;
-    std::vector<std::string> envLayerNames(beg, end);
-    for (std::string layerName : envLayerNames) {
-        desiredLayerNames.push_back(layerName.c_str());
+    if (envLayerNamesVal != NULL && *envLayerNamesVal != '\0') {
+        std::istringstream iss(envLayerNamesVal);
+        std::istream_iterator<std::string> beg(iss), end;
+        envLayerNames = std::vector<std::string>(beg, end);
+        for (const std::string& layerName : envLayerNames) {
+            desiredLayerNames.push_back(layerName.c_str());
+        }
+        KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
     }
-    KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
 
     // Identify the valid layer names based on the desiredLayerNames
     {
