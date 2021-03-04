@@ -1,8 +1,14 @@
 
 #include <set>
 #include <string>
+#include <sstream>
+#include <iterator>
 
 #include "kompute/Manager.hpp"
+
+#if DEBUG
+#include "fmt/ranges.h"
+#endif
 
 namespace kp {
 
@@ -163,8 +169,20 @@ Manager::createInstance()
     // We'll identify the layers that are supported
     std::vector<const char*> validLayerNames;
     std::vector<const char*> desiredLayerNames = {
-        "VK_LAYER_LUNARG_assistant_layer", "VK_LAYER_LUNARG_standard_validation"
+        "VK_LAYER_LUNARG_assistant_layer",
+        "VK_LAYER_LUNARG_standard_validation",
+        "VK_LAYER_KHRONOS_validation",
     };
+    std::string envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
+    KP_LOG_DEBUG("Kompute Manager adding environment layers: {}", envLayerNamesVal);
+    std::istringstream iss(envLayerNamesVal);
+    std::istream_iterator<std::string> beg(iss), end;
+    std::vector<std::string> envLayerNames(beg, end);
+    for (const std::string& layerName : envLayerNames) {
+        desiredLayerNames.push_back(layerName.c_str());
+    }
+    KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
+
     // Identify the valid layer names based on the desiredLayerNames
     {
         std::set<std::string> uniqueLayerNames;
@@ -174,6 +192,7 @@ Manager::createInstance()
             std::string layerName(layerProperties.layerName.data());
             uniqueLayerNames.insert(layerName);
         }
+        KP_LOG_DEBUG("Available layers: {}", uniqueLayerNames);
         for (const char* desiredLayerName : desiredLayerNames) {
             if (uniqueLayerNames.count(desiredLayerName) != 0) {
                 validLayerNames.push_back(desiredLayerName);
@@ -182,9 +201,13 @@ Manager::createInstance()
     }
 
     if (validLayerNames.size() > 0) {
+        KP_LOG_DEBUG("Kompute Manager Initializing instance with valid layers: {}", validLayerNames);
         computeInstanceCreateInfo.enabledLayerCount =
           (uint32_t)validLayerNames.size();
         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
+    }
+    else {
+        KP_LOG_WARN("Kompute Manager no valid layer names found from desired layer names");
     }
 #endif
 #endif
