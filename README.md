@@ -71,13 +71,14 @@ void kompute(const std::string& shader) {
     auto algorithm = mgr.algorithm(params,
                                    kp::Shader::compile_source(shader),
                                    workgroup,
-                                   specConsts);
+                                   specConsts,
+                                   pushConstsA);
 
     // 4. Run operation synchronously using sequence
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
-        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsA)
-        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
+        ->record<kp::OpAlgoDispatch>(algorithm) // Binds default push consts
+        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB) // Overrides push consts
         ->eval();
 
     // 5. Sync results from the GPU asynchronously
@@ -155,13 +156,15 @@ def kompute(shader):
     push_consts_a = [2]
     push_consts_b = [3]
 
-    algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts)
+    spirv = kp.Shader.compile_source(shader)
+
+    algo = mgr.algorithm(params, spirv, workgroup, spec_consts, push_consts_a)
 
     # 4. Run operation synchronously using sequence
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice(params))
-        .record(kp.OpAlgoDispatch(algo, push_consts_a))
-        .record(kp.OpAlgoDispatch(algo, push_consts_b))
+        .record(kp.OpAlgoDispatch(algo)) # Binds default push consts provided
+        .record(kp.OpAlgoDispatch(algo, push_consts_b)) # Overrides push consts
         .eval())
 
     # 5. Sync results from the GPU asynchronously
