@@ -78,8 +78,9 @@ void kompute(const std::string& shader) {
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
         ->record<kp::OpAlgoDispatch>(algorithm) // Binds default push consts
+        ->eval() // Evaluates the two recorded operations
         ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB) // Overrides push consts
-        ->eval();
+        ->eval(); // Evaluates only last recorded operation
 
     // 5. Sync results from the GPU asynchronously
     sq = mgr.sequence()
@@ -164,8 +165,9 @@ def kompute(shader):
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice(params))
         .record(kp.OpAlgoDispatch(algo)) # Binds default push consts provided
+        .eval() # evaluates the two recorded ops
         .record(kp.OpAlgoDispatch(algo, push_consts_b)) # Overrides push consts
-        .eval())
+        .eval()) # evaluates only the last recorded op
 
     # 5. Sync results from the GPU asynchronously
     sq = mgr.sequence()
