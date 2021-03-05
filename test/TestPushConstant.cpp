@@ -9,6 +9,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
     {
         std::string shader(R"(
           #version 450
+          #extension GL_EXT_shader_atomic_float: enable
           layout(push_constant) uniform PushConstants {
             float x;
             float y;
@@ -17,9 +18,9 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
           layout (local_size_x = 1) in;
           layout(set = 0, binding = 0) buffer a { float pa[]; };
           void main() {
-              pa[0] += pcs.x;
-              pa[1] += pcs.y;
-              pa[2] += pcs.z;
+              atomicAdd(pa[0], pcs.x);
+              atomicAdd(pa[1], pcs.y);
+              atomicAdd(pa[2], pcs.z);
           })");
 
         std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
@@ -27,7 +28,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
         {
-            kp::Manager mgr;
+            kp::Manager mgr(0, {}, { "VK_EXT_shader_atomic_float", "SPV_EXT_shader_atomic_float_add" });
 
             std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
 
@@ -53,6 +54,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
     {
         std::string shader(R"(
           #version 450
+          #extension GL_EXT_shader_atomic_float: enable
           layout(push_constant) uniform PushConstants {
             float x;
             float y;
@@ -61,9 +63,9 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
           layout (local_size_x = 1) in;
           layout(set = 0, binding = 0) buffer a { float pa[]; };
           void main() {
-              pa[0] += pcs.x;
-              pa[1] += pcs.y;
-              pa[2] += pcs.z;
+             atomicAdd(pa[0], pcs.x);
+             atomicAdd(pa[1], pcs.y);
+             atomicAdd(pa[2], pcs.z);
           })");
 
         std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
@@ -71,7 +73,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
         {
-            kp::Manager mgr;
+            kp::Manager mgr(0, {}, { "VK_EXT_shader_atomic_float", "SPV_EXT_shader_atomic_float_add" });
 
             std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
 
@@ -96,6 +98,7 @@ TEST(TestPushConstants, TestConstantsWrongSize)
     {
         std::string shader(R"(
           #version 450
+          #extension GL_EXT_shader_atomic_float: enable
           layout(push_constant) uniform PushConstants {
             float x;
             float y;
@@ -104,9 +107,9 @@ TEST(TestPushConstants, TestConstantsWrongSize)
           layout (local_size_x = 1) in;
           layout(set = 0, binding = 0) buffer a { float pa[]; };
           void main() {
-              pa[0] += pcs.x;
-              pa[1] += pcs.y;
-              pa[2] += pcs.z;
+             atomicAdd(pa[0], pcs.x);
+             atomicAdd(pa[1], pcs.y);
+             atomicAdd(pa[2], pcs.z);
           })");
 
         std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
@@ -114,7 +117,7 @@ TEST(TestPushConstants, TestConstantsWrongSize)
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
         {
-            kp::Manager mgr;
+            kp::Manager mgr(0, {}, { "VK_EXT_shader_atomic_float", "SPV_EXT_shader_atomic_float_add" });
 
             std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
 

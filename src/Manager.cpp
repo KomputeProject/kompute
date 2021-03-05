@@ -6,9 +6,7 @@
 
 #include "kompute/Manager.hpp"
 
-#if DEBUG
 #include "fmt/ranges.h"
-#endif
 
 namespace kp {
 
@@ -35,12 +33,13 @@ Manager::Manager()
 {}
 
 Manager::Manager(uint32_t physicalDeviceIndex,
-                 const std::vector<uint32_t>& familyQueueIndices)
+                 const std::vector<uint32_t>& familyQueueIndices,
+                 const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
 
     this->createInstance();
-    this->createDevice(familyQueueIndices, physicalDeviceIndex);
+    this->createDevice(familyQueueIndices, physicalDeviceIndex, desiredExtensions);
 }
 
 Manager::Manager(std::shared_ptr<vk::Instance> instance,
@@ -152,7 +151,10 @@ Manager::createInstance()
     applicationInfo.applicationVersion = KOMPUTE_VK_API_VERSION;
 
     std::vector<const char*> applicationExtensions;
+
+#if DEBUG
     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+#endif
 
     vk::InstanceCreateInfo computeInstanceCreateInfo;
     computeInstanceCreateInfo.pApplicationInfo = &applicationInfo;
@@ -266,7 +268,8 @@ Manager::clear()
 
 void
 Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
-                      uint32_t physicalDeviceIndex)
+                      uint32_t physicalDeviceIndex,
+                      const std::vector<std::string>& desiredExtensions)
 {
 
     KP_LOG_DEBUG("Kompute Manager creating Device");
@@ -294,7 +297,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
     KP_LOG_INFO("Using physical device index {} found {}",
                 physicalDeviceIndex,
-                physicalDeviceProperties.deviceName);
+                physicalDeviceProperties.deviceName.data());
 
     if (!familyQueueIndices.size()) {
         // Find compute queue
@@ -344,9 +347,33 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
         deviceQueueCreateInfos.push_back(deviceQueueCreateInfo);
     }
 
+    KP_LOG_DEBUG("Kompute Manager desired extension layers {}", desiredExtensions);
+
+    std::vector<vk::ExtensionProperties> deviceExtensions = this->mPhysicalDevice->enumerateDeviceExtensionProperties();
+
+    std::set<std::string> uniqueExtensionNames;
+    for (const vk::ExtensionProperties& ext : deviceExtensions) {
+        std::string extName(ext.extensionName.data());
+        uniqueExtensionNames.insert(extName);
+    }
+    KP_LOG_DEBUG("Kompute Manager available extensions {}", uniqueExtensionNames);
+    std::vector<const char*> validExtensions;
+    for (std::string ext : desiredExtensions) {
+        if (uniqueExtensionNames.count(ext) != 0) {
+            validExtensions.push_back(ext.c_str());
+        }
+    }
+    if (desiredExtensions.size() != validExtensions.size()) {
+        KP_LOG_ERROR("Kompute Manager not all extensions were added: {}", validExtensions);
+    }
+
     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),
                                           deviceQueueCreateInfos.size(),
-                                          deviceQueueCreateInfos.data());
+                                          deviceQueueCreateInfos.data(),
+                                          {},
+                                          {},
+                                          validExtensions.size(),
+                                          validExtensions.data());
 
     this->mDevice = std::make_shared<vk::Device>();
     physicalDevice.createDevice(
