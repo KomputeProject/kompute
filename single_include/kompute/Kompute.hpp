@@ -1753,7 +1753,8 @@ class Manager
      * @param totalQueues The total number of compute queues to create.
      */
     Manager(uint32_t physicalDeviceIndex,
-            const std::vector<uint32_t>& familyQueueIndices = {});
+            const std::vector<uint32_t>& familyQueueIndices = {},
+            const std::vector<std::string>& desiredExtensions = {});
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
@@ -1839,7 +1840,8 @@ class Manager
     // Create functions
     void createInstance();
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
-                      uint32_t hysicalDeviceIndex = 0);
+                      uint32_t hysicalDeviceIndex = 0,
+                      const std::vector<std::string>& desiredExtensions = {});
 };
 
 } // End namespace kp

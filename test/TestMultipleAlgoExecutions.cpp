@@ -16,8 +16,6 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     std::string shader = (R"(
         #version 450
 
-        #extension GL_EXT_shader_atomic_float: enable
-
         layout (local_size_x = 1) in;
 
         // The input tensors bind index is relative to index in parameter passed
@@ -36,8 +34,8 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
 
         void main() {
             uint index = gl_GlobalInvocationID.x;
-            atomicAdd(out_a[index], in_a[index] * in_b[index]);
-            atomicAdd(out_b[index], const_one * push_const.val);
+            out_a[index] += in_a[index] * in_b[index];
+            out_b[index] += const_one * push_const.val;
         }
     )");
 
@@ -57,6 +55,7 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     mgr.sequence()
       ->record<kp::OpTensorSyncDevice>(params)
       ->record<kp::OpAlgoDispatch>(algorithm)
+      ->eval()
       ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
       ->eval();
 
