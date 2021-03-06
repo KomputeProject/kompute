@@ -66,7 +66,7 @@ TEST(TestSequence, RerecordSequence)
 
     sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(R"(
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(R"(
         #version 450
 
         layout (local_size_x = 1) in;

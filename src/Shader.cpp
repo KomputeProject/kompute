@@ -5,7 +5,7 @@
 namespace kp {
 
 std::vector<uint32_t>
-Shader::compile_sources(
+Shader::compileSources(
   const std::vector<std::string>& sources,
   const std::vector<std::string>& files,
   const std::string& entryPoint,
@@ -92,13 +92,13 @@ Shader::compile_sources(
 }
 
 std::vector<uint32_t>
-Shader::compile_source(
+Shader::compileSource(
   const std::string& source,
   const std::string& entryPoint,
   std::vector<std::pair<std::string, std::string>> definitions,
   const TBuiltInResource& resource)
 {
-    return compile_sources({ source },
+    return compileSources({ source },
                            std::vector<std::string>({}),
                            entryPoint,
                            definitions,

@@ -762,7 +762,7 @@ class Shader
      * GLSL compiler
      * @return The compiled SPIR-V binary in unsigned int32 format
      */
-    static std::vector<uint32_t> compile_sources(
+    static std::vector<uint32_t> compileSources(
       const std::vector<std::string>& sources,
       const std::vector<std::string>& files = {},
       const std::string& entryPoint = "main",
@@ -783,7 +783,7 @@ class Shader
      * GLSL compiler
      * @return The compiled SPIR-V binary in unsigned int32 format
      */
-    static std::vector<uint32_t> compile_source(
+    static std::vector<uint32_t> compileSource(
       const std::string& source,
       const std::string& entryPoint = "main",
       std::vector<std::pair<std::string, std::string>> definitions = {},

@@ -49,7 +49,7 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     kp::Constants pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(
-      params, kp::Shader::compile_source(shader), workgroup, specConsts, pushConstsA);
+      params, kp::Shader::compileSource(shader), workgroup, specConsts, pushConstsA);
 
     // 3. Run operation with string shader synchronously
     mgr.sequence()
@@ -84,7 +84,7 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     {
         mgr.sequence()
@@ -114,7 +114,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     std::shared_ptr<kp::Algorithm> algorithm =
       mgr.algorithm({ tensorA }, spirv);
@@ -150,7 +150,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     std::shared_ptr<kp::Algorithm> algorithm =
       mgr.algorithm({ tensorA }, spirv);
@@ -185,7 +185,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     std::shared_ptr<kp::Algorithm> algorithm =
       mgr.algorithm({ tensorA }, spirv);
@@ -221,7 +221,7 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
                   pa[index] = pa[index] + 1;
               })");
 
-            std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+            std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
             std::shared_ptr<kp::Algorithm> algorithm =
               mgr.algorithm({ tensorA }, spirv);
