@@ -247,8 +247,10 @@ static const char *__doc_kp_Manager_sequence =
 R"doc(Create a managed sequence that will be destroyed by this manager if it
 hasn't been destroyed by its reference count going to zero.
 
-@param queueIndex The queue to use from the available queues @returns
-Shared pointer with initialised sequence)doc";
+@param queueIndex The queue to use from the available queues @param
+nrOfTimestamps The maximum number of timestamps to allocate. If zero
+(default), disables latching of timestamps. @returns Shared pointer
+with initialised sequence)doc";
 
 static const char *__doc_kp_Manager_tensor =
 R"doc(Create a managed tensor that will be destroyed by this manager if it
@@ -264,18 +266,26 @@ of algorithm and parameter components which can be used with shaders.
 By default it enables the user to provide a dynamic number of tensors
 which are then passed as inputs.)doc";
 
-static const char *__doc_kp_OpAlgoDispatch_OpAlgoDispatch = R"doc()doc";
+static const char *__doc_kp_OpAlgoDispatch_OpAlgoDispatch =
+R"doc(Constructor that stores the algorithm to use as well as the relevant
+push constants to override when recording.
+
+@param algorithm The algorithm object to use for dispatch @param
+pushConstants The push constants to use for override)doc";
 
 static const char *__doc_kp_OpAlgoDispatch_mAlgorithm = R"doc()doc";
 
 static const char *__doc_kp_OpAlgoDispatch_mPushConstants = R"doc()doc";
 
 static const char *__doc_kp_OpAlgoDispatch_postEval =
-R"doc(Executes after the recorded commands are submitted, and performs a
-copy of the GPU Device memory into the staging buffer so the output
-data can be retrieved.)doc";
+R"doc(Does not perform any postEval commands.
 
-static const char *__doc_kp_OpAlgoDispatch_preEval = R"doc(Does not perform any preEval commands.)doc";
+@param commandBuffer The command buffer to record the command into.)doc";
+
+static const char *__doc_kp_OpAlgoDispatch_preEval =
+R"doc(Does not perform any preEval commands.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpAlgoDispatch_record =
 R"doc(This records the commands that are to be sent to the GPU. This
@@ -283,7 +293,9 @@ includes the barriers that ensure the memory has been copied before
 going in and out of the shader, as well as the dispatch operation that
 sends the shader processing to the gpu. This function also records the
 GPU memory copy of the output data for the staging buffer so it can be
-read by the host.)doc";
+read by the host.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpBase =
 R"doc(Base Operation which provides the high level interface that Kompute
@@ -299,7 +311,9 @@ the commands to the GPU for processing, and can be used to perform any
 tear-down steps required as the computation iteration finishes. It's
 worth noting that there are situations where eval can be called
 multiple times, so the resources that are destroyed should not require
-a re-init unless explicitly provided by the user.)doc";
+a re-init unless explicitly provided by the user.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpBase_preEval =
 R"doc(Pre eval is called before the Sequence has called eval and submitted
@@ -307,12 +321,16 @@ the commands to the GPU for processing, and can be used to perform any
 per-eval setup steps required as the computation iteration begins.
 It's worth noting that there are situations where eval can be called
 multiple times, so the resources that are created should be idempotent
-in case it's called multiple times in a row.)doc";
+in case it's called multiple times in a row.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpBase_record =
 R"doc(The record function is intended to only send a record command or run
 commands that are expected to record operations that are to be
-submitted as a batch into the GPU.)doc";
+submitted as a batch into the GPU.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpMult =
 R"doc(Operation that performs multiplication on two tensors and outpus on
@@ -323,12 +341,9 @@ R"doc(Default constructor with parameters that provides the bare minimum
 requirements for the operations to be able to create and manage their
 sub-components.
 
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that are to be used in this operation @param
-komputeWorkgroup Optional parameter to specify the layout for
-processing)doc";
+algorithm An algorithm that will be overridden with the OpMult shader
+data and the tensors provided which are expected to be 3)doc";
 
 static const char *__doc_kp_OpTensorCopy =
 R"doc(Operation that copies the data from the first tensor to the rest of
@@ -340,84 +355,95 @@ static const char *__doc_kp_OpTensorCopy_OpTensorCopy =
 R"doc(Default constructor with parameters that provides the core vulkan
 resources and the tensors that will be used in the operation.
 
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that will be used to create in operation.)doc";
 
 static const char *__doc_kp_OpTensorCopy_mTensors = R"doc()doc";
 
 static const char *__doc_kp_OpTensorCopy_postEval =
 R"doc(Copies the local vectors for all the tensors to sync the data with the
-gpu.)doc";
+gpu.
 
-static const char *__doc_kp_OpTensorCopy_preEval = R"doc(Does not perform any preEval commands.)doc";
+@param commandBuffer The command buffer to record the command into.)doc";
+
+static const char *__doc_kp_OpTensorCopy_preEval =
+R"doc(Does not perform any preEval commands.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpTensorCopy_record =
 R"doc(Records the copy commands from the first tensor into all the other
-tensors provided. Also optionally records a barrier.)doc";
+tensors provided. Also optionally records a barrier.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice =
 R"doc(Operation that syncs tensor's device by mapping local data into the
 device memory. For TensorTypes::eDevice it will use a record operation
 for the memory to be syncd into GPU memory which means that the
 operation will be done in sync with GPU commands. For
-TensorTypes::eStaging it will only map the data into host memory which
+TensorTypes::eHost it will only map the data into host memory which
 will happen during preEval before the recorded commands are
-dispatched. This operation won't have any effect on
-TensorTypes::eStaging.)doc";
+dispatched.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_OpTensorSyncDevice =
 R"doc(Default constructor with parameters that provides the core vulkan
 resources and the tensors that will be used in the operation. The
 tensos provided cannot be of type TensorTypes::eStorage.
 
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that will be used to create in operation.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_mTensors = R"doc()doc";
 
-static const char *__doc_kp_OpTensorSyncDevice_postEval = R"doc(Does not perform any postEval commands.)doc";
+static const char *__doc_kp_OpTensorSyncDevice_postEval =
+R"doc(Does not perform any postEval commands.
 
-static const char *__doc_kp_OpTensorSyncDevice_preEval = R"doc(Does not perform any preEval commands.)doc";
+@param commandBuffer The command buffer to record the command into.)doc";
+
+static const char *__doc_kp_OpTensorSyncDevice_preEval =
+R"doc(Does not perform any preEval commands.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_record =
 R"doc(For device tensors, it records the copy command for the tensor to copy
-the data from its staging to device memory.)doc";
+the data from its staging to device memory.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal =
 R"doc(Operation that syncs tensor's local memory by mapping device data into
 the local CPU memory. For TensorTypes::eDevice it will use a record
 operation for the memory to be syncd into GPU memory which means that
 the operation will be done in sync with GPU commands. For
-TensorTypes::eStaging it will only map the data into host memory which
+TensorTypes::eHost it will only map the data into host memory which
 will happen during preEval before the recorded commands are
-dispatched. This operation won't have any effect on
-TensorTypes::eStaging.)doc";
+dispatched.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_OpTensorSyncLocal =
 R"doc(Default constructor with parameters that provides the core vulkan
 resources and the tensors that will be used in the operation. The
 tensors provided cannot be of type TensorTypes::eStorage.
 
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that will be used to create in operation.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_mTensors = R"doc()doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_postEval =
 R"doc(For host tensors it performs the map command from the host memory into
-local memory.)doc";
+local memory.
 
-static const char *__doc_kp_OpTensorSyncLocal_preEval = R"doc(Does not perform any preEval commands.)doc";
+@param commandBuffer The command buffer to record the command into.)doc";
+
+static const char *__doc_kp_OpTensorSyncLocal_preEval =
+R"doc(Does not perform any preEval commands.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_record =
 R"doc(For device tensors, it records the copy command for the tensor to copy
-the data from its device to staging memory.)doc";
+the data from its device to staging memory.
+
+@param commandBuffer The command buffer to record the command into.)doc";
 
 static const char *__doc_kp_Sequence = R"doc(Container of operations that can be sent to GPU as batch)doc";
 
@@ -427,7 +453,8 @@ generate all dependent resources.
 
 @param physicalDevice Vulkan physical device @param device Vulkan
 logical device @param computeQueue Vulkan compute queue @param
-queueIndex Vulkan compute queue index in device)doc";
+queueIndex Vulkan compute queue index in device @param totalTimestamps
+Maximum number of timestamps to allocate)doc";
 
 static const char *__doc_kp_Sequence_begin =
 R"doc(Begins recording commands for commands to be submitted into the
@@ -442,6 +469,8 @@ recording again.)doc";
 static const char *__doc_kp_Sequence_createCommandBuffer = R"doc()doc";
 
 static const char *__doc_kp_Sequence_createCommandPool = R"doc()doc";
+
+static const char *__doc_kp_Sequence_createTimestampQueryPool = R"doc()doc";
 
 static const char *__doc_kp_Sequence_destroy =
 R"doc(Destroys and frees the GPU resources which include the buffer and
@@ -528,6 +557,10 @@ finishes, it runs the postEval of all operations.
 @param waitFor Number of milliseconds to wait before timing out.
 @return shared_ptr<Sequence> of the Sequence class itself)doc";
 
+static const char *__doc_kp_Sequence_getTimestamps =
+R"doc(Return the timestamps that were latched at the beginning and after
+each operation during the last eval() call.)doc";
+
 static const char *__doc_kp_Sequence_isInit =
 R"doc(Returns true if the sequence has been initialised, and it's based on
 the GPU resources being refrenced.
@@ -607,9 +640,11 @@ R"doc(Clears command buffer and triggers re-record of all the current
 operations saved, which is useful if the underlying kp::Tensors or
 kp::Algorithms are modified and need to be re-recorded.)doc";
 
+static const char *__doc_kp_Sequence_timestampQueryPool = R"doc()doc";
+
 static const char *__doc_kp_Shader = R"doc(Shader utily class with functions to compile and process glsl files.)doc";
 
-static const char *__doc_kp_Shader_compile_source =
+static const char *__doc_kp_Shader_compileSource =
 R"doc(Compile a single glslang source from string value. Currently this
 function uses the glslang C++ interface which is not thread safe so
 this funciton should not be called from multiple threads concurrently.
@@ -622,7 +657,7 @@ List of pairs containing key value definitions @param resourcesLimit A
 list that contains the resource limits for the GLSL compiler @return
 The compiled SPIR-V binary in unsigned int32 format)doc";
 
-static const char *__doc_kp_Shader_compile_sources =
+static const char *__doc_kp_Shader_compileSources =
 R"doc(Compile multiple sources with optional filenames. Currently this
 function uses the glslang C++ interface which is not thread safe so
 this funciton should not be called from multiple threads concurrently.
@@ -645,11 +680,13 @@ buffer, which would be used to store their respective data. The
 tensors can be used for GPU data storage or transfer.)doc";
 
 static const char *__doc_kp_Tensor_Tensor =
-R"doc(Default constructor with data provided which would be used to create
-the respective vulkan buffer and memory.
+R"doc(Constructor with data provided which would be used to create the
+respective vulkan buffer and memory.
 
+@param physicalDevice The physical device to use to fetch properties
+@param device The device to use to create the buffer and memory from
 @param data Non-zero-sized vector of data that will be used by the
-tensor @param tensorType Type for the tensor which is of type
+tensor @param tensorTypes Type for the tensor which is of type
 TensorTypes)doc";
 
 static const char *__doc_kp_Tensor_TensorTypes =
@@ -697,7 +734,11 @@ static const char *__doc_kp_Tensor_getStagingBufferUsageFlags = R"doc()doc";
 
 static const char *__doc_kp_Tensor_getStagingMemoryPropertyFlags = R"doc()doc";
 
-static const char *__doc_kp_Tensor_isInit = R"doc()doc";
+static const char *__doc_kp_Tensor_isInit =
+R"doc(Check whether tensor is initialized based on the created gpu
+resources.
+
+@returns Boolean stating whether tensor is initialized)doc";
 
 static const char *__doc_kp_Tensor_mData = R"doc()doc";
 
@@ -742,11 +783,11 @@ vector's.
 Returns the element in the position requested.)doc";
 
 static const char *__doc_kp_Tensor_rebuild =
-R"doc(Initialiser which calls the initialisation for all the respective
-tensors as well as creates the respective staging tensors. The staging
-tensors would only be created for the tensors of type
-TensorType::eDevice as otherwise there is no need to copy from host
-memory.)doc";
+R"doc(Function to trigger reinitialisation of the tensor buffer and memory
+with new data as well as new potential device type.
+
+@param data Vector of data to use to initialise vector from @param
+tensorType The type to use for the tensor)doc";
 
 static const char *__doc_kp_Tensor_recordBufferMemoryBarrier =
 R"doc(Records the buffer memory barrier into the command buffer which
