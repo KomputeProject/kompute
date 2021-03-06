@@ -6,7 +6,8 @@ namespace kp {
 Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::Queue> computeQueue,
-                   uint32_t queueIndex)
+                   uint32_t queueIndex,
+                   uint32_t nrOfTimestamps)
 {
     KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
@@ -17,6 +18,8 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
     this->createCommandPool();
     this->createCommandBuffer();
+    if(nrOfTimestamps>0)
+        this->createTimestampQueryPool(nrOfTimestamps+1); //+1 for the first one
 }
 
 Sequence::~Sequence()
@@ -44,6 +47,13 @@ Sequence::begin()
     KP_LOG_INFO("Kompute Sequence command now started recording");
     this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
     this->mRecording = true;
+
+    //latch the first timestamp before any commands are submitted
+    if(this->timestampQueryPool)
+        this->mCommandBuffer->writeTimestamp(
+            vk::PipelineStageFlagBits::eAllCommands,
+            *this->timestampQueryPool, 0
+        );
 }
 
 void
@@ -261,6 +271,12 @@ Sequence::record(std::shared_ptr<OpBase> op)
 
     this->mOperations.push_back(op);
 
+    if(this->timestampQueryPool)
+      this->mCommandBuffer->writeTimestamp(
+                vk::PipelineStageFlagBits::eAllCommands,
+                *this->timestampQueryPool, this->mOperations.size()
+        );
+    
     return shared_from_this();
 }
 
@@ -306,6 +322,51 @@ Sequence::createCommandBuffer()
     this->mDevice->allocateCommandBuffers(&commandBufferAllocateInfo,
                                           this->mCommandBuffer.get());
     KP_LOG_DEBUG("Kompute Sequence Command Buffer Created");
+}
+
+void
+Sequence::createTimestampQueryPool(uint32_t query_size)
+{
+    KP_LOG_DEBUG("Kompute Sequence creating query pool");
+    if (!this->mDevice) {
+        throw std::runtime_error("Kompute Sequence device is null");
+    }
+    if (!this->mPhysicalDevice) {
+        throw std::runtime_error("Kompute Sequence physical device is null");
+    }
+
+    vk::PhysicalDeviceProperties physicalDeviceProperties =
+      this->mPhysicalDevice->getProperties();
+    
+    if(physicalDeviceProperties.limits.timestampComputeAndGraphics){
+      vk::QueryPoolCreateInfo queryPoolInfo;
+      queryPoolInfo.setQueryCount(query_size);
+      queryPoolInfo.setQueryType(vk::QueryType::eTimestamp);
+      this->timestampQueryPool = std::make_shared<vk::QueryPool>(this->mDevice->createQueryPool(queryPoolInfo));
+
+      KP_LOG_DEBUG("Query pool for timestamps created");
+    }
+    else{
+      KP_LOG_DEBUG("Device does not support timestamps");
+    }
+}
+
+std::vector<std::uint64_t>
+Sequence::getTimestamps(){
+    if(!this->timestampQueryPool)
+        throw std::runtime_error("Timestamp latching not enabled");
+    
+    const auto n = this->mOperations.size()+1;
+    std::vector<std::uint64_t> timestamps(n, 0);
+    //XXX: the C++ method this->mDevice->getQueryPoolResults does not compile for me
+    const VkResult result = 
+      vkGetQueryPoolResults(*this->mDevice, *this->timestampQueryPool, 
+                            0, n, timestamps.size()*sizeof(std::uint64_t), timestamps.data(),
+                            sizeof(uint64_t), VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WAIT_BIT);
+    if(result!=VK_SUCCESS)
+        throw std::runtime_error("vkGetQueryPoolResults failed");
+
+    return timestamps;
 }
 
 }

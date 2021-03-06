@@ -1527,11 +1527,13 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param device Vulkan logical device
      * @param computeQueue Vulkan compute queue
      * @param queueIndex Vulkan compute queue index in device
+     * @param nrOfTimestamps Maximum number of timestamps to allocate
      */
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
-             uint32_t queueIndex);
+             uint32_t queueIndex,
+             uint32_t nrOfTimestamps = 0);
     /**
      * Destructor for sequence which is responsible for cleaning all subsequent
      * owned operations.
@@ -1650,6 +1652,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     void clear();
 
     /**
+     * Return the timestamps that were latched at the beginning and
+     * after each operation during the last eval() call.
+     */
+    std::vector<std::uint64_t> getTimestamps();
+
+    /**
      * Begins recording commands for commands to be submitted into the command
      * buffer.
      *
@@ -1706,6 +1714,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
     std::vector<std::shared_ptr<OpBase>> mOperations;
+    std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
 
     // State
     bool mRecording = false;
@@ -1714,6 +1723,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     // Create functions
     void createCommandPool();
     void createCommandBuffer();
+    void createTimestampQueryPool(uint32_t);
 };
 
 } // End namespace kp
@@ -1778,9 +1788,11 @@ class Manager
      * @param sequenceName The name for the named sequence to be retrieved or
      * created
      * @param queueIndex The queue to use from the available queues
+     * @param nrOfTimestamps The maximum number of timestamps to allocate.
+     * If zero (default), disables latching of timestamps.
      * @return Shared pointer to the manager owned sequence resource
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0, uint32_t nrOfTimestamps = 0);
 
     /**
      * Function that simplifies the common workflow of tensor creation and

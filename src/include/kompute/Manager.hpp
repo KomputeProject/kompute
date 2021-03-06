@@ -64,9 +64,11 @@ class Manager
      * @param sequenceName The name for the named sequence to be retrieved or
      * created
      * @param queueIndex The queue to use from the available queues
+     * @param nrOfTimestamps The maximum number of timestamps to allocate.
+     * If zero (default), disables latching of timestamps.
      * @return Shared pointer to the manager owned sequence resource
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0, uint32_t nrOfTimestamps = 0);
 
     /**
      * Function that simplifies the common workflow of tensor creation and
