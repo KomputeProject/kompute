@@ -51,14 +51,14 @@ class Tensor
            void* data,
            uint32_t elementTotalCount,
            uint32_t elementMemorySize,
-           const TensorDataTypes& dataType = TensorDataTypes::eFloat,
+           const TensorDataTypes& dataType,
            const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
      */
-    ~Tensor();
+    virtual ~Tensor();
 
     /**
      * Returns the size/magnitude of the Tensor, which will be the total number
@@ -68,12 +68,17 @@ class Tensor
      */
     // TODO: move to cpp
     virtual uint32_t size() {
-        return this->mElementMemorySize;
+        return this->mSize;
+    }
+
+    // TODO: move to cpp
+    virtual uint32_t dataTypeMemorySize() {
+        return this->mDataTypeMemorySize;
     }
 
     // TODO: move to cpp
     virtual uint32_t memorySize() {
-        return this->mSize * this->mElementMemorySize;
+        return this->mSize * this->mDataTypeMemorySize;
     }
 
     /**
@@ -98,8 +103,22 @@ class Tensor
 
     // TODO: Decide whether this is one we prefer to have also overriden in the underlying tensorView
     // TODO: move to cpp
-    void getRawData(void* data) {
+    virtual void getRawData(void* data) {
         this->rawMapDataFromHostMemory(data);
+    }
+
+    /**
+     * Sets / resets the vector data of the tensor. This function does not
+     * perform any copies into GPU memory and is only performed on the host.
+     */
+    virtual void setRawData(void* data, uint32_t elementTotalCount, uint32_t elementMemorySize) {
+        if (elementTotalCount * elementMemorySize != this->memorySize()) {
+            throw std::runtime_error(
+              "Kompute Tensor Cannot set data of different sizes");
+        }
+        this->mSize = elementTotalCount;
+        this->mDataTypeMemorySize = elementMemorySize;
+        this->rawMapDataIntoHostMemory(data);
     }
 
     /**
@@ -111,9 +130,7 @@ class Tensor
      */
     void rebuild(void* data,
                  uint32_t elementTotalCount,
-                 uint32_t elementMemorySize,
-                 const TensorDataTypes& dataType = TensorDataTypes::eFloat,
-                 TensorTypes tensorType = TensorTypes::eDevice);
+                 uint32_t elementMemorySize);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -134,19 +151,6 @@ class Tensor
      */
     TensorTypes tensorType();
 
-    /**
-     * Sets / resets the vector data of the tensor. This function does not
-     * perform any copies into GPU memory and is only performed on the host.
-     */
-    void setRawData(void* data, uint32_t elementTotalCount, uint32_t elementMemorySize) {
-        if (elementTotalCount * elementMemorySize != this->memorySize()) {
-            throw std::runtime_error(
-              "Kompute Tensor Cannot set data of different sizes");
-        }
-        this->mSize = elementTotalCount;
-        this->mElementMemorySize = elementMemorySize;
-        this->rawMapDataIntoHostMemory(data);
-    }
 
     /**
      * Records a copy from the memory of the tensor provided to the current
@@ -211,46 +215,7 @@ class Tensor
      */
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
 
-  private:
-    // -------------- NEVER OWNED RESOURCES
-    std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
-    std::shared_ptr<vk::Device> mDevice;
-
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<vk::Buffer> mPrimaryBuffer;
-    bool mFreePrimaryBuffer = false;
-    std::shared_ptr<vk::Buffer> mStagingBuffer;
-    bool mFreeStagingBuffer = false;
-    std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
-    bool mFreePrimaryMemory = false;
-    std::shared_ptr<vk::DeviceMemory> mStagingMemory;
-    bool mFreeStagingMemory = false;
-
-    // -------------- ALWAYS OWNED RESOURCES
-    TensorTypes mTensorType;
-    TensorDataTypes mDataType;
-    uint32_t mSize;
-    uint32_t mElementMemorySize;
-
-    void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
-    void createBuffer(std::shared_ptr<vk::Buffer> buffer,
-                      vk::BufferUsageFlags bufferUsageFlags);
-    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
-                            std::shared_ptr<vk::DeviceMemory> memory,
-                            vk::MemoryPropertyFlags memoryPropertyFlags);
-    void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
-                          std::shared_ptr<vk::Buffer> bufferFrom,
-                          std::shared_ptr<vk::Buffer> bufferTo,
-                          vk::DeviceSize bufferSize,
-                          vk::BufferCopy copyRegion,
-                          bool createBarrier);
-
-    // Private util functions
-    vk::BufferUsageFlags getPrimaryBufferUsageFlags();
-    vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
-    vk::BufferUsageFlags getStagingBufferUsageFlags();
-    vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
-
+  protected:
     void rawMapDataFromHostMemory(void* data) {
 
         KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
@@ -300,6 +265,46 @@ class Tensor
         this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
         this->mDevice->unmapMemory(*hostVisibleMemory);
     }
+  private:
+    // -------------- NEVER OWNED RESOURCES
+    std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
+    std::shared_ptr<vk::Device> mDevice;
+
+    // -------------- OPTIONALLY OWNED RESOURCES
+    std::shared_ptr<vk::Buffer> mPrimaryBuffer;
+    bool mFreePrimaryBuffer = false;
+    std::shared_ptr<vk::Buffer> mStagingBuffer;
+    bool mFreeStagingBuffer = false;
+    std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
+    bool mFreePrimaryMemory = false;
+    std::shared_ptr<vk::DeviceMemory> mStagingMemory;
+    bool mFreeStagingMemory = false;
+
+    // -------------- ALWAYS OWNED RESOURCES
+    TensorTypes mTensorType;
+    TensorDataTypes mDataType;
+    uint32_t mSize;
+    uint32_t mDataTypeMemorySize;
+
+    void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+    void createBuffer(std::shared_ptr<vk::Buffer> buffer,
+                      vk::BufferUsageFlags bufferUsageFlags);
+    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
+                            std::shared_ptr<vk::DeviceMemory> memory,
+                            vk::MemoryPropertyFlags memoryPropertyFlags);
+    void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
+                          std::shared_ptr<vk::Buffer> bufferFrom,
+                          std::shared_ptr<vk::Buffer> bufferTo,
+                          vk::DeviceSize bufferSize,
+                          vk::BufferCopy copyRegion,
+                          bool createBarrier);
+
+    // Private util functions
+    vk::BufferUsageFlags getPrimaryBufferUsageFlags();
+    vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
+    vk::BufferUsageFlags getStagingBufferUsageFlags();
+    vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
+
 };
 
 // TODO: Limit T to be only float, bool, double, etc
@@ -310,15 +315,21 @@ class TensorView: public Tensor
     TensorView(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            const std::vector<T>& data,
-           const TensorTypes& tensorType = TensorTypes::eDevice);
+           const TensorTypes& tensorType = TensorTypes::eDevice)
+        : Tensor(physicalDevice, device, (void*)data.data(), data.size(), sizeof(T), this->dataType())
+    {
 
-    ~TensorView();
+    }
+
+    ~TensorView() {
+
+    }
 
     void rebuild(const std::vector<T>& data,
             TensorTypes tensorType = TensorTypes::eDevice) {
 
         this->mData = data;
-        Tensor::rebuild(data.data(), data.size(), sizeof(T), this->dataType(), tensorType);
+        Tensor::rebuild(data.data(), data.size(), sizeof(T));
     }
 
     std::vector<T>& data() {
@@ -338,17 +349,25 @@ class TensorView: public Tensor
 
         this->mData = data;
 
-        this->setRawData(this->mData.data(), this->mData.size(), sizeof(T), this->dataType());
+        Tensor::setRawData(this->mData.data(), this->mData.size(), sizeof(T));
+    }
+
+    void setRawData(void* data, uint32_t elementTotalCount, uint32_t elementMemorySize) override 
+    {
+        assert(elementMemorySize == sizeof(T));
+
+        this->mData = { (T*)data, ((T*)data) + elementTotalCount };
+        Tensor::setRawData(this->mData.data(), this->mData.size(), sizeof(T));
     }
 
     TensorDataTypes dataType() override;
 
     uint32_t size() override {
-        return this->mData->size();
+        return this->mData.size();
     }
 
     uint32_t memorySize() override {
-        return this->mData->size() * sizeof(T);
+        return this->mData.size() * sizeof(T);
     }
 
     /**
@@ -375,35 +394,5 @@ class TensorView: public Tensor
     std::vector<T> mData;
 
 };
-
-template<>
-Tensor::TensorDataTypes
-TensorView<bool>::dataType() {
-    return Tensor::TensorDataTypes::eBool;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<int32_t>::dataType() {
-    return Tensor::TensorDataTypes::eInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<uint32_t>::dataType() {
-    return Tensor::TensorDataTypes::eUnsignedInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<float>::dataType() {
-    return Tensor::TensorDataTypes::eFloat;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<double>::dataType() {
-    return Tensor::TensorDataTypes::eDouble;
-}
 
 } // End namespace kp

@@ -74,9 +74,22 @@ class Manager
      * @param tensorType The type of tensor to initialize
      * @returns Shared pointer with initialised tensor
      */
-    std::shared_ptr<Tensor> tensor(
-      const std::vector<float>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice);
+    template <typename T>
+    std::shared_ptr<TensorView<T>> tensor(
+      const std::vector<T>& data,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
+
+        std::shared_ptr<TensorView<T>> tensor{ new kp::TensorView<T>(
+          this->mPhysicalDevice, this->mDevice, data, tensorType) };
+
+        if (this->mManageResources) {
+            this->mManagedTensors.push_back(tensor);
+        }
+
+        return tensor;
+    }
 
     /**
      * Create a managed algorithm that will be destroyed by this manager

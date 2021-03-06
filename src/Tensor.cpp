@@ -17,8 +17,10 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
+    this->mDataType = dataType;
+    this->mTensorType = tensorType;
 
-    this->rebuild(data, elementTotalCount, elementMemorySize, dataType, tensorType);
+    this->rebuild(data, elementTotalCount, elementMemorySize);
 }
 
 Tensor::~Tensor()
@@ -34,16 +36,12 @@ Tensor::~Tensor()
 void
 Tensor::rebuild(void* data,
                 uint32_t elementTotalCount,
-                uint32_t elementMemorySize,
-                const TensorDataTypes& dataType,
-                TensorTypes tensorType)
+                uint32_t elementMemorySize)
 {
     KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", elementTotalCount);
 
     this->mSize = elementTotalCount;
-    this->mElementMemorySize = elementMemorySize;
-    this->mDataType = dataType;
-    this->mTensorType = tensorType;
+    this->mDataTypeMemorySize = elementMemorySize;
 
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
         KP_LOG_DEBUG(
@@ -437,6 +435,36 @@ Tensor::destroy()
     }
 
     KP_LOG_DEBUG("Kompute Tensor successful destroy()");
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorView<bool>::dataType() {
+    return Tensor::TensorDataTypes::eBool;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorView<int32_t>::dataType() {
+    return Tensor::TensorDataTypes::eInt;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorView<uint32_t>::dataType() {
+    return Tensor::TensorDataTypes::eUnsignedInt;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorView<float>::dataType() {
+    return Tensor::TensorDataTypes::eFloat;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorView<double>::dataType() {
+    return Tensor::TensorDataTypes::eDouble;
 }
 
 }

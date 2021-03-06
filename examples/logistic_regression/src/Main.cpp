@@ -17,19 +17,19 @@ int main()
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> xI = mgr.tensor({ 0, 1, 1, 1, 1 });
-    std::shared_ptr<kp::Tensor> xJ = mgr.tensor({ 0, 0, 0, 1, 1 });
+    auto xI = mgr.tensor<float>({ 0, 1, 1, 1, 1 });
+    auto xJ = mgr.tensor<float>({ 0, 0, 0, 1, 1 });
 
-    std::shared_ptr<kp::Tensor> y = mgr.tensor({ 0, 0, 0, 1, 1 });
+    auto y = mgr.tensor<float>({ 0, 0, 0, 1, 1 });
 
-    std::shared_ptr<kp::Tensor> wIn = mgr.tensor({ 0.001, 0.001 });
-    std::shared_ptr<kp::Tensor> wOutI = mgr.tensor({ 0, 0, 0, 0, 0 });
-    std::shared_ptr<kp::Tensor> wOutJ = mgr.tensor({ 0, 0, 0, 0, 0 });
+    auto wIn = mgr.tensor<float>({ 0.001, 0.001 });
+    auto wOutI = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
+    auto wOutJ = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
 
-    std::shared_ptr<kp::Tensor> bIn = mgr.tensor({ 0 });
-    std::shared_ptr<kp::Tensor> bOut = mgr.tensor({ 0, 0, 0, 0, 0 });
+    auto bIn = mgr.tensor<float>({ 0 });
+    auto bOut = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
 
-    std::shared_ptr<kp::Tensor> lOut = mgr.tensor({ 0, 0, 0, 0, 0 });
+    auto lOut = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
                                                         wIn, wOutI, wOutJ,
