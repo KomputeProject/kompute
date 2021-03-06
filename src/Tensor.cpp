@@ -50,7 +50,9 @@ Tensor::rebuild(void* data,
     }
 
     this->allocateMemoryCreateGPUResources();
-    this->rawMapDataIntoHostMemory(data);
+    this->rawMapData();
+
+    memcpy(this->mRawData, data, this->memorySize());
 }
 
 Tensor::TensorTypes
@@ -177,18 +179,6 @@ Tensor::constructDescriptorBufferInfo()
                                     bufferSize);
 }
 
-void
-Tensor::mapDataFromHostMemory()
-{
-    KP_LOG_DEBUG("Kompute Tensor mapDataFromHostMemory - SKIPPING");
-}
-
-void
-Tensor::mapDataIntoHostMemory()
-{
-    KP_LOG_DEBUG("Kompute Tensor mapDataIntoHostMemory - SKIPPING");
-}
-
 vk::BufferUsageFlags
 Tensor::getPrimaryBufferUsageFlags()
 {
@@ -219,7 +209,8 @@ Tensor::getPrimaryMemoryPropertyFlags()
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
             break;
         case TensorTypes::eHost:
-            return vk::MemoryPropertyFlagBits::eHostVisible;
+            return vk::MemoryPropertyFlagBits::eHostVisible |
+                vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
         case TensorTypes::eStorage:
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
@@ -436,36 +427,6 @@ Tensor::destroy()
     }
 
     KP_LOG_DEBUG("Kompute Tensor successful destroy()");
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<bool>::dataType() {
-    return Tensor::TensorDataTypes::eBool;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<int32_t>::dataType() {
-    return Tensor::TensorDataTypes::eInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<uint32_t>::dataType() {
-    return Tensor::TensorDataTypes::eUnsignedInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<float>::dataType() {
-    return Tensor::TensorDataTypes::eFloat;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorView<double>::dataType() {
-    return Tensor::TensorDataTypes::eDouble;
 }
 
 }

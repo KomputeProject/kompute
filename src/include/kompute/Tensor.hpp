@@ -61,67 +61,6 @@ class Tensor
     virtual ~Tensor();
 
     /**
-     * Returns the size/magnitude of the Tensor, which will be the total number
-     * of elements across all dimensions
-     *
-     * @return Unsigned integer representing the total number of elements
-     */
-    // TODO: move to cpp
-    virtual uint32_t size() {
-        return this->mSize;
-    }
-
-    // TODO: move to cpp
-    virtual uint32_t dataTypeMemorySize() {
-        return this->mDataTypeMemorySize;
-    }
-
-    // TODO: move to cpp
-    virtual uint32_t memorySize() {
-        return this->mSize * this->mDataTypeMemorySize;
-    }
-
-    /**
-     * Retrieve the underlying data type of the Tensor
-     *
-     * @return Data type of tensor of type kp::Tensor::TensorDataTypes
-     */
-    virtual TensorDataTypes dataType() {
-        return this->mDataType;
-    }
-
-    /**
-     * Maps data from the Host Visible GPU memory into the data vector. It
-     * requires the Tensor to be of staging type for it to work.
-     */
-    virtual void mapDataFromHostMemory();
-    /**
-     * Maps data from the data vector into the Host Visible GPU memory. It
-     * requires the tensor to be of staging type for it to work.
-     */
-    virtual void mapDataIntoHostMemory();
-
-    // TODO: Decide whether this is one we prefer to have also overriden in the underlying tensorView
-    // TODO: move to cpp
-    virtual void getRawData(void* data) {
-        this->rawMapDataFromHostMemory(data);
-    }
-
-    /**
-     * Sets / resets the vector data of the tensor. This function does not
-     * perform any copies into GPU memory and is only performed on the host.
-     */
-    virtual void setRawData(void* data, uint32_t elementTotalCount, uint32_t elementMemorySize) {
-        if (elementTotalCount * elementMemorySize != this->memorySize()) {
-            throw std::runtime_error(
-              "Kompute Tensor Cannot set data of different sizes");
-        }
-        this->mSize = elementTotalCount;
-        this->mDataTypeMemorySize = elementMemorySize;
-        this->rawMapDataIntoHostMemory(data);
-    }
-
-    /**
      * Function to trigger reinitialisation of the tensor buffer and memory with
      * new data as well as new potential device type.
      *
@@ -150,7 +89,6 @@ class Tensor
      * @return Tensor type of tensor
      */
     TensorTypes tensorType();
-
 
     /**
      * Records a copy from the memory of the tensor provided to the current
@@ -215,8 +153,53 @@ class Tensor
      */
     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
 
-  protected:
-    void rawMapDataFromHostMemory(void* data) {
+    /**
+     * Returns the size/magnitude of the Tensor, which will be the total number
+     * of elements across all dimensions
+     *
+     * @return Unsigned integer representing the total number of elements
+     */
+    // TODO: move to cpp
+    uint32_t size() {
+        return this->mSize;
+    }
+
+    // TODO: move to cpp
+    uint32_t dataTypeMemorySize() {
+        return this->mDataTypeMemorySize;
+    }
+
+    // TODO: move to cpp
+    uint32_t memorySize() {
+        return this->mSize * this->mDataTypeMemorySize;
+    }
+
+    /**
+     * Retrieve the underlying data type of the Tensor
+     *
+     * @return Data type of tensor of type kp::Tensor::TensorDataTypes
+     */
+    TensorDataTypes dataType() {
+        return this->mDataType;
+    }
+
+    // TODO: move to cpp
+    const void* getRawData() {
+        return this->mRawData;
+    }
+
+    /**
+     * Sets / resets the vector data of the tensor. This function does not
+     * perform any copies into GPU memory and is only performed on the host.
+     */
+    void setRawData(const void* data) 
+    {
+        // Copy data 
+        memcpy(this->mRawData, data, this->memorySize());
+    }
+
+  private:
+    void rawMapData() {
 
         KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
@@ -233,39 +216,12 @@ class Tensor
         }
 
         vk::DeviceSize bufferSize = this->memorySize();
-        void* mapped = this->mDevice->mapMemory(
+        // Given we request coherent host memory we don't need to invalidate / flush
+        this->mRawData = this->mDevice->mapMemory(
           *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
         vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
-        this->mDevice->invalidateMappedMemoryRanges(mappedMemoryRange);
-        memcpy(data, mapped, bufferSize);
-        this->mDevice->unmapMemory(*hostVisibleMemory);
     }
 
-    void rawMapDataIntoHostMemory(void* data) {
-        KP_LOG_DEBUG("Kompute Tensor mapping data into host buffer");
-
-        std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-        if (this->mTensorType == TensorTypes::eHost) {
-            hostVisibleMemory = this->mPrimaryMemory;
-        } else if (this->mTensorType == TensorTypes::eDevice) {
-            hostVisibleMemory = this->mStagingMemory;
-        } else {
-            KP_LOG_WARN(
-              "Kompute Tensor mapping data not supported on storage tensor");
-            return;
-        }
-
-        vk::DeviceSize bufferSize = this->memorySize();
-
-        void* mapped = this->mDevice->mapMemory(
-          *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-        memcpy(mapped, data, bufferSize);
-        vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
-        this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
-        this->mDevice->unmapMemory(*hostVisibleMemory);
-    }
-  private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
@@ -285,6 +241,7 @@ class Tensor
     TensorDataTypes mDataType;
     uint32_t mSize;
     uint32_t mDataTypeMemorySize;
+    void* mRawData;
 
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer,
@@ -316,90 +273,39 @@ class TensorView: public Tensor
            std::shared_ptr<vk::Device> device,
            const std::vector<T>& data,
            const TensorTypes& tensorType = TensorTypes::eDevice)
-        : Tensor(physicalDevice, device, (void*)data.data(), data.size(), sizeof(T), this->dataType())
+        : Tensor(physicalDevice,
+                 device,
+                 (void*)data.data(),
+                 data.size(),
+                 sizeof(T),
+                 this->dataType())
     {
         KP_LOG_DEBUG("Kompute TensorView constructor with data size {}", data.size());
-        this->mData = data;
     }
 
     ~TensorView() {
         KP_LOG_DEBUG("Kompute TensorView destructor");
     }
 
-    void rebuild(const std::vector<T>& data,
-            TensorTypes tensorType = TensorTypes::eDevice) {
-        KP_LOG_DEBUG("Kompute TensorView creating with data size {}", data.size());
-        this->mData = data;
-        Tensor::rebuild(data.data(), data.size(), sizeof(T));
-    }
-
-    std::vector<T>& data() {
-        return this->mData;
+    std::vector<T> data() {
+        return { (T*)this->getRawData(), ((T*)this->getRawData()) + this->size() };
     }
 
     T& operator[](int index) {
-        return this->mData[index];
+        return ((T*)this->mRawData)[index];
     }
 
     void setData(const std::vector<T>& data) {
+
         KP_LOG_DEBUG("Kompute TensorView setting data with data size {}", data.size());
 
-        if (data.size() != this->mData.size()) {
+        if (data.size() != this->mSize) {
             throw std::runtime_error(
               "Kompute TensorView Cannot set data of different sizes");
         }
 
-        this->mData = data;
-
         Tensor::setRawData(this->mData.data(), this->mData.size(), sizeof(T));
     }
-
-    void setRawData(void* data, uint32_t elementTotalCount, uint32_t elementMemorySize) override 
-    {
-        KP_LOG_DEBUG("Kompute TensorView setRawData with data size {}", elementTotalCount);
-
-        assert(elementMemorySize == sizeof(T));
-
-        this->mData = { (T*)data, ((T*)data) + elementTotalCount };
-        Tensor::setRawData(this->mData.data(), this->mData.size(), sizeof(T));
-    }
-
-    TensorDataTypes dataType() override;
-
-    uint32_t size() override {
-        KP_LOG_DEBUG("Kompute TensorView retrieving size: {}", this->mData.size());
-
-        return this->mData.size();
-    }
-
-    uint32_t memorySize() override {
-        KP_LOG_DEBUG("Kompute TensorView retrieving memory size: {}", this->mData.size() * sizeof(T));
-
-        return this->mData.size() * sizeof(T);
-    }
-
-    /**
-     * Maps data from the Host Visible GPU memory into the data vector. It
-     * requires the Tensor to be of staging type for it to work.
-     */
-    void mapDataFromHostMemory() override {
-        KP_LOG_DEBUG("Kompute TensorView mapDataFromHostMemory copying data");
-
-        this->rawMapDataFromHostMemory(this->mData.data());
-    }
-    /**
-     * Maps data from the data vector into the Host Visible GPU memory. It
-     * requires the tensor to be of staging type for it to work.
-     */
-    void mapDataIntoHostMemory() override {
-        KP_LOG_DEBUG("Kompute TensorView mapDataIntoHostMemory copying data");
-
-        this->rawMapDataIntoHostMemory(this->mData.data());
-    }
-
-  private:
-    // -------------- ALWAYS OWNED RESOURCES
-    std::vector<T> mData;
 
 };
 

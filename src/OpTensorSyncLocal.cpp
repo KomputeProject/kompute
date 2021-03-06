@@ -48,11 +48,6 @@ OpTensorSyncLocal::postEval(const vk::CommandBuffer& commandBuffer)
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal postEval called");
 
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal mapping data into tensor local");
-    for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() != Tensor::TensorTypes::eStorage) {
-            this->mTensors[i]->mapDataFromHostMemory();
-        }
-    }
 }
 
 }
