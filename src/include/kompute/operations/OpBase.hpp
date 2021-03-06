@@ -32,6 +32,8 @@ class OpBase
      * The record function is intended to only send a record command or run
      * commands that are expected to record operations that are to be submitted
      * as a batch into the GPU.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void record(const vk::CommandBuffer& commandBuffer) = 0;
 
@@ -42,6 +44,8 @@ class OpBase
      * there are situations where eval can be called multiple times, so the 
      * resources that are created should be idempotent in case it's called multiple
      * times in a row.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) = 0;
 
@@ -52,6 +56,8 @@ class OpBase
      * there are situations where eval can be called multiple times, so the 
      * resources that are destroyed should not require a re-init unless explicitly
      * provided by the user.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) = 0;
 };

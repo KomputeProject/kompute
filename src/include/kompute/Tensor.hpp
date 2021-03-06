@@ -29,12 +29,14 @@ class Tensor
     };
 
     /**
-     *  Default constructor with data provided which would be used to create the
+     *  Constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
+     *  @param physicalDevice The physical device to use to fetch properties
+     *  @param device The device to use to create the buffer and memory from
      *  @param data Non-zero-sized vector of data that will be used by the
      * tensor
-     *  @param tensorType Type for the tensor which is of type TensorTypes
+     *  @param tensorTypes Type for the tensor which is of type TensorTypes
      */
     Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
@@ -48,10 +50,11 @@ class Tensor
     ~Tensor();
 
     /**
-     * Initialiser which calls the initialisation for all the respective tensors
-     * as well as creates the respective staging tensors. The staging tensors
-     * would only be created for the tensors of type TensorType::eDevice as
-     * otherwise there is no need to copy from host memory.
+     * Function to trigger reinitialisation of the tensor buffer and memory with
+     * new data as well as new potential device type.
+     *
+     * @param data Vector of data to use to initialise vector from
+     * @param tensorType The type to use for the tensor
      */
     void rebuild(const std::vector<float>& data,
                  TensorTypes tensorType = TensorTypes::eDevice);
@@ -61,6 +64,11 @@ class Tensor
      */
     void destroy();
 
+    /**
+     * Check whether tensor is initialized based on the created gpu resources.
+     *
+     * @returns Boolean stating whether tensor is initialized
+     */
     bool isInit();
 
     /**

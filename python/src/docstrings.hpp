@@ -28,17 +28,20 @@ R"doc(Abstraction for compute shaders that are run on top of tensors grouped
 via ParameterGroups (which group descriptorsets))doc";
 
 static const char *__doc_kp_Algorithm_Algorithm =
-R"doc(Base constructor for Algorithm. Should not be used unless explicit
-intended.)doc";
-
-static const char *__doc_kp_Algorithm_Algorithm_2 =
-R"doc(Default constructor for Algorithm
+R"doc(Main constructor for algorithm with configuration parameters to create
+the underlying resources.
 
 @param device The Vulkan device to use for creating resources @param
-commandBuffer The vulkan command buffer to bind the pipeline and
-shaders)doc";
-
-static const char *__doc_kp_Algorithm_createDescriptorPool = R"doc()doc";
+tensors (optional) The tensors to use to create the descriptor
+resources @param spirv (optional) The spirv code to use to create the
+algorithm @param workgroup (optional) The kp::Workgroup to use for the
+dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if
+not set. @param specializationConstants (optional) The kp::Constants
+to use to initialize the specialization constants which cannot be
+changed once set. @param pushConstants (optional) The kp::Constants to
+use when initializing the pipeline, which set the size of the push
+constants - these can be modified but all new values must have the
+same vector size as this initial value.)doc";
 
 static const char *__doc_kp_Algorithm_createParameters = R"doc()doc";
 
@@ -46,15 +49,35 @@ static const char *__doc_kp_Algorithm_createPipeline = R"doc()doc";
 
 static const char *__doc_kp_Algorithm_createShaderModule = R"doc()doc";
 
-static const char *__doc_kp_Algorithm_init =
-R"doc(Initialiser for the shader data provided to the algorithm as well as
-tensor parameters that will be used in shader.
+static const char *__doc_kp_Algorithm_destroy = R"doc()doc";
 
-@param shaderFileData The bytes in spir-v format of the shader
-@tensorParams The Tensors to be used in the Algorithm / shader for
-processing)doc";
+static const char *__doc_kp_Algorithm_getPush =
+R"doc(Gets the specialization constants of the current algorithm.
 
-static const char *__doc_kp_Algorithm_mCommandBuffer = R"doc()doc";
+@returns The kp::Constants currently set for push constants)doc";
+
+static const char *__doc_kp_Algorithm_getSpecializationConstants =
+R"doc(Gets the specialization constants of the current algorithm.
+
+@returns The kp::Constants currently set for specialization constants)doc";
+
+static const char *__doc_kp_Algorithm_getTensors =
+R"doc(Gets the current tensors that are used in the algorithm.
+
+@returns The list of tensors used in the algorithm.)doc";
+
+static const char *__doc_kp_Algorithm_getWorkgroup =
+R"doc(Gets the current workgroup from the algorithm.
+
+@param The kp::Constant to use to set the push constants to use in the
+next bindPush(...) calls. The constants provided must be of the same
+size as the ones created during initialization.)doc";
+
+static const char *__doc_kp_Algorithm_isInit =
+R"doc(function that checks all the gpu resource components to verify if
+these have been created and returns true if all are valid.
+
+@returns returns true if the algorithm is currently initialized.)doc";
 
 static const char *__doc_kp_Algorithm_mDescriptorPool = R"doc()doc";
 
@@ -84,14 +107,70 @@ static const char *__doc_kp_Algorithm_mPipelineCache = R"doc()doc";
 
 static const char *__doc_kp_Algorithm_mPipelineLayout = R"doc()doc";
 
+static const char *__doc_kp_Algorithm_mPushConstants = R"doc()doc";
+
 static const char *__doc_kp_Algorithm_mShaderModule = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_mSpecializationConstants = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_mSpirv = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_mTensors = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_mWorkgroup = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_rebuild =
+R"doc(Rebuild function to reconstruct algorithm with configuration
+parameters to create the underlying resources.
+
+@param tensors The tensors to use to create the descriptor resources
+@param spirv The spirv code to use to create the algorithm @param
+workgroup (optional) The kp::Workgroup to use for the dispatch which
+defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. @param
+specializationConstants (optional) The kp::Constants to use to
+initialize the specialization constants which cannot be changed once
+set. @param pushConstants (optional) The kp::Constants to use when
+initializing the pipeline, which set the size of the push constants -
+these can be modified but all new values must have the same vector
+size as this initial value.)doc";
+
+static const char *__doc_kp_Algorithm_recordBindCore =
+R"doc(Records command that binds the "core" algorithm components which
+consist of binding the pipeline and binding the descriptorsets.
+
+@param commandBuffer Command buffer to record the algorithm resources
+to)doc";
+
+static const char *__doc_kp_Algorithm_recordBindPush =
+R"doc(Records command that binds the push constants to the command buffer
+provided - it is required that the pushConstants provided are of the
+same size as the ones provided during initialization.
+
+@param commandBuffer Command buffer to record the algorithm resources
+to)doc";
 
 static const char *__doc_kp_Algorithm_recordDispatch =
 R"doc(Records the dispatch function with the provided template parameters or
 alternatively using the size of the tensor by default.
 
-@param x Layout X dispatch value @param y Layout Y dispatch value
-@param z Layout Z dispatch value)doc";
+@param commandBuffer Command buffer to record the algorithm resources
+to)doc";
+
+static const char *__doc_kp_Algorithm_setPush =
+R"doc(Sets the push constants to the new value provided to use in the next
+bindPush()
+
+@param The kp::Constant to use to set the push constants to use in the
+next bindPush(...) calls. The constants provided must be of the same
+size as the ones created during initialization.)doc";
+
+static const char *__doc_kp_Algorithm_setWorkgroup =
+R"doc(Sets the work group to use in the recordDispatch
+
+@param workgroup The kp::Workgroup value to use to update the
+algorithm. It must have a value greater than 1 on the x value (index
+1) otherwise it will be initialized on the size of the first tensor
+(ie. this->mTensor[0]->size()))doc";
 
 static const char *__doc_kp_Manager =
 R"doc(Base orchestrator which creates and manages device and child
@@ -102,13 +181,13 @@ R"doc(Base constructor and default used which creates the base resources
 including choosing the device 0 by default.)doc";
 
 static const char *__doc_kp_Manager_Manager_2 =
-R"doc(Similar to base constructor but allows the user to provide the device
-they would like to create the resources on.
+R"doc(Similar to base constructor but allows for further configuration to
+use when creating the Vulkan resources.
 
 @param physicalDeviceIndex The index of the physical device to use
 @param familyQueueIndices (Optional) List of queue indices to add for
-explicit allocation @param totalQueues The total number of compute
-queues to create.)doc";
+explicit allocation @param desiredExtensions The desired extensions to
+load from physicalDevice)doc";
 
 static const char *__doc_kp_Manager_Manager_3 =
 R"doc(Manager constructor which allows your own vulkan application to
@@ -119,98 +198,32 @@ integrate with the vulkan kompute use.
 @param device Vulkan logical device to use for all base resources
 @param physicalDeviceIndex Index for vulkan physical device used)doc";
 
+static const char *__doc_kp_Manager_algorithm =
+R"doc(Create a managed algorithm that will be destroyed by this manager if
+it hasn't been destroyed by its reference count going to zero.
+
+@param tensors (optional) The tensors to initialise the algorithm with
+@param spirv (optional) The SPIRV bytes for the algorithm to dispatch
+@param workgroup (optional) kp::Workgroup for algorithm to use, and
+defaults to (tensor[0].size(), 1, 1) @param specializationConstants
+(optional) kp::Constant to use for specialization constants, and
+defaults to an empty constant @param pushConstants (optional)
+kp::Constant to use for push constants, and defaults to an empty
+constant @returns Shared pointer with initialised algorithm)doc";
+
+static const char *__doc_kp_Manager_clear =
+R"doc(Run a pseudo-garbage collection to release all the managed resources
+that have been already freed due to these reaching to zero ref count.)doc";
+
 static const char *__doc_kp_Manager_createDevice = R"doc()doc";
 
 static const char *__doc_kp_Manager_createInstance = R"doc()doc";
 
-static const char *__doc_kp_Manager_destroy =
-R"doc(Destroy owned Vulkan GPU resources and free GPU memory for single
-tensor.
-
-@param tensors Single tensor to rebuild)doc";
-
-static const char *__doc_kp_Manager_destroy_2 =
-R"doc(Destroy owned Vulkan GPU resources and free GPU memory for vector of
-tensors.
-
-@param tensors Single tensor to rebuild)doc";
-
-static const char *__doc_kp_Manager_destroy_3 =
-R"doc(Destroy owned Vulkan GPU resources and free GPU memory for vector of
-sequences. Destroying by sequence name is more efficent and hence
-recommended instead of by object.
-
-@param sequences Vector for shared ptrs with sequences to destroy)doc";
-
-static const char *__doc_kp_Manager_destroy_4 =
-R"doc(Destroy owned Vulkan GPU resources and free GPU memory for single
-sequence. Destroying by sequence name is more efficent and hence
-recommended instead of by object.
-
-@param sequences Single sequence to rebuild)doc";
-
-static const char *__doc_kp_Manager_destroy_5 =
-R"doc(Destroy owned Vulkan GPU resources and free GPU memory for sequence by
-name.
-
-@param sequenceName Single name of named sequence to destroy)doc";
-
-static const char *__doc_kp_Manager_destroy_6 =
-R"doc(Destroy owned Vulkan GPU resources and free GPU memory for sequences
-using vector of named sequence names.
-
-@param sequenceName Vector of sequence names to destroy)doc";
-
-static const char *__doc_kp_Manager_evalOp =
-R"doc(Function that evaluates operation against named sequence.
-
-@param tensors The tensors to be used in the operation recorded @param
-sequenceName The name of the sequence to be retrieved or created
-@param TArgs Template parameters that will be used to initialise
-Operation to allow for extensible configurations on initialisation)doc";
-
-static const char *__doc_kp_Manager_evalOpAsync =
-R"doc(Function that evaluates operation against named sequence
-asynchronously.
-
-@param tensors The tensors to be used in the operation recorded @param
-sequenceName The name of the sequence to be retrieved or created
-@param params Template parameters that will be used to initialise
-Operation to allow for extensible configurations on initialisation)doc";
-
-static const char *__doc_kp_Manager_evalOpAsyncDefault =
-R"doc(Operation that evaluates operation against default sequence
-asynchronously.
-
-@param tensors The tensors to be used in the operation recorded @param
-params Template parameters that will be used to initialise Operation
-to allow for extensible configurations on initialisation)doc";
-
-static const char *__doc_kp_Manager_evalOpAwait =
-R"doc(Operation that awaits for named sequence to finish.
-
-@param sequenceName The name of the sequence to wait for termination
-@param waitFor The amount of time to wait before timing out)doc";
-
-static const char *__doc_kp_Manager_evalOpAwaitDefault =
-R"doc(Operation that awaits for default sequence to finish.
-
-@param tensors The tensors to be used in the operation recorded @param
-params Template parameters that will be used to initialise Operation
-to allow for extensible configurations on initialisation)doc";
-
-static const char *__doc_kp_Manager_evalOpDefault =
-R"doc(Function that evaluates operation against a newly created sequence.
-
-@param tensors The tensors to be used in the operation recorded @param
-TArgs Template parameters that will be used to initialise Operation to
-allow for extensible configurations on initialisation)doc";
+static const char *__doc_kp_Manager_destroy = R"doc(Destroy the GPU resources and all managed resources by manager.)doc";
 
 static const char *__doc_kp_Manager_mComputeQueueFamilyIndices = R"doc()doc";
 
 static const char *__doc_kp_Manager_mComputeQueues = R"doc()doc";
-
-static const char *__doc_kp_Manager_mCurrentSequenceIndex = R"doc()doc";
 
 static const char *__doc_kp_Manager_mDevice = R"doc()doc";
 
@@ -220,190 +233,51 @@ static const char *__doc_kp_Manager_mFreeInstance = R"doc()doc";
 
 static const char *__doc_kp_Manager_mInstance = R"doc()doc";
 
+static const char *__doc_kp_Manager_mManageResources = R"doc()doc";
+
+static const char *__doc_kp_Manager_mManagedAlgorithms = R"doc()doc";
+
 static const char *__doc_kp_Manager_mManagedSequences = R"doc()doc";
 
 static const char *__doc_kp_Manager_mManagedTensors = R"doc()doc";
 
 static const char *__doc_kp_Manager_mPhysicalDevice = R"doc()doc";
 
-static const char *__doc_kp_Manager_mPhysicalDeviceIndex = R"doc()doc";
-
-static const char *__doc_kp_Manager_rebuild =
-R"doc(Function that simplifies the common workflow of tensor initialisation.
-It will take the constructor parameters for a Tensor and will will us
-it to create a new Tensor. The tensor memory will then be managed and
-owned by the manager.
-
-@param tensors Array of tensors to rebuild @param syncDataToGPU
-Whether to sync the data to GPU memory)doc";
-
-static const char *__doc_kp_Manager_rebuild_2 =
-R"doc(Function that simplifies the common workflow of tensor initialisation.
-It will take the constructor parameters for a Tensor and will will us
-it to create a new Tensor. The tensor memory will then be managed and
-owned by the manager.
-
-@param tensors Single tensor to rebuild @param syncDataToGPU Whether
-to sync the data to GPU memory)doc";
-
 static const char *__doc_kp_Manager_sequence =
-R"doc(Get or create a managed Sequence that will be contained by this
-manager. If the named sequence does not currently exist, it would be
-created and initialised.
+R"doc(Create a managed sequence that will be destroyed by this manager if it
+hasn't been destroyed by its reference count going to zero.
 
-@param sequenceName The name for the named sequence to be retrieved or
-created @param queueIndex The queue to use from the available queues
-@return Shared pointer to the manager owned sequence resource)doc";
+@param queueIndex The queue to use from the available queues @returns
+Shared pointer with initialised sequence)doc";
 
 static const char *__doc_kp_Manager_tensor =
-R"doc(Function that simplifies the common workflow of tensor creation and
-initialization. It will take the constructor parameters for a Tensor
-and will will us it to create a new Tensor and then create it. The
-tensor memory will then be managed and owned by the manager.
+R"doc(Create a managed tensor that will be destroyed by this manager if it
+hasn't been destroyed by its reference count going to zero.
 
 @param data The data to initialize the tensor with @param tensorType
-The type of tensor to initialize @param syncDataToGPU Whether to sync
-the data to GPU memory @returns Initialized Tensor with memory Syncd
-to GPU device)doc";
+The type of tensor to initialize @returns Shared pointer with
+initialised tensor)doc";
 
-static const char *__doc_kp_OpAlgoCreate =
+static const char *__doc_kp_OpAlgoDispatch =
 R"doc(Operation that provides a general abstraction that simplifies the use
 of algorithm and parameter components which can be used with shaders.
 By default it enables the user to provide a dynamic number of tensors
 which are then passed as inputs.)doc";
 
-static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup = R"doc()doc";
+static const char *__doc_kp_OpAlgoDispatch_OpAlgoDispatch = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup_x = R"doc()doc";
+static const char *__doc_kp_OpAlgoDispatch_mAlgorithm = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup_y = R"doc()doc";
+static const char *__doc_kp_OpAlgoDispatch_mPushConstants = R"doc()doc";
 
-static const char *__doc_kp_OpAlgoCreate_KomputeWorkgroup_z = R"doc()doc";
-
-static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
-
-static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate_2 =
-R"doc(Default constructor with parameters that provides the bare minimum
-requirements for the operations to be able to create and manage their
-sub-components.
-
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that are to be used in this operation @param
-shaderFilePath Optional parameter to specify the shader to load
-(either in spirv or raw format) @param komputeWorkgroup Optional
-parameter to specify the layout for processing)doc";
-
-static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate_3 =
-R"doc(Constructor that enables a file to be passed to the operation with the
-contents of the shader. This can be either in raw format or in
-compiled SPIR-V binary format.
-
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that are to be used in this operation @param
-shaderFilePath Parameter to specify the shader to load (either in
-spirv or raw format) @param komputeWorkgroup Optional parameter to
-specify the layout for processing)doc";
-
-static const char *__doc_kp_OpAlgoCreate_OpAlgoCreate_4 =
-R"doc(Constructor that enables raw shader data to be passed to the main
-operation which can be either in raw shader glsl code or in compiled
-SPIR-V binary.
-
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that are to be used in this operation @param
-shaderDataRaw Optional parameter to specify the shader data either in
-binary or raw form @param komputeWorkgroup Optional parameter to
-specify the layout for processing)doc";
-
-static const char *__doc_kp_OpAlgoCreate_fetchSpirvBinaryData = R"doc()doc";
-
-static const char *__doc_kp_OpAlgoCreate_init =
-R"doc(The init function is responsible for the initialisation of the
-algorithm component based on the parameters specified, and allows for
-extensibility on the options provided. Further dependent classes can
-perform more specific checks such as ensuring tensors provided are
-initialised, etc.)doc";
-
-static const char *__doc_kp_OpAlgoCreate_mAlgorithm = R"doc()doc";
-
-static const char *__doc_kp_OpAlgoCreate_mFreeAlgorithm = R"doc()doc";
-
-static const char *__doc_kp_OpAlgoCreate_mKomputeWorkgroup = R"doc()doc";
-
-static const char *__doc_kp_OpAlgoCreate_mShaderDataRaw =
-R"doc(< Optional member variable which can be provided to contain either the
-raw shader content or the spirv binary content)doc";
-
-static const char *__doc_kp_OpAlgoCreate_mShaderFilePath =
-R"doc(< Optional member variable which can be provided for the OpAlgoCreate to
-find the data automatically and load for processing)doc";
-
-static const char *__doc_kp_OpAlgoCreate_postEval =
+static const char *__doc_kp_OpAlgoDispatch_postEval =
 R"doc(Executes after the recorded commands are submitted, and performs a
 copy of the GPU Device memory into the staging buffer so the output
 data can be retrieved.)doc";
 
-static const char *__doc_kp_OpAlgoCreate_preEval = R"doc(Does not perform any preEval commands.)doc";
+static const char *__doc_kp_OpAlgoDispatch_preEval = R"doc(Does not perform any preEval commands.)doc";
 
-static const char *__doc_kp_OpAlgoCreate_record =
-R"doc(This records the commands that are to be sent to the GPU. This
-includes the barriers that ensure the memory has been copied before
-going in and out of the shader, as well as the dispatch operation that
-sends the shader processing to the gpu. This function also records the
-GPU memory copy of the output data for the staging buffer so it can be
-read by the host.)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut =
-R"doc(Operation base class to simplify the creation of operations that
-require right hand and left hand side datapoints together with a
-single output. The expected data passed is two input tensors and one
-output tensor.)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_OpAlgoLhsRhsOut = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_OpAlgoLhsRhsOut_2 =
-R"doc(Default constructor with parameters that provides the bare minimum
-requirements for the operations to be able to create and manage their
-sub-components.
-
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that are to be used in this operation @param
-freeTensors Whether operation manages the memory of the Tensors @param
-komputeWorkgroup Optional parameter to specify the layout for
-processing)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_init =
-R"doc(The init function is responsible for ensuring that all of the tensors
-provided are aligned with requirements such as LHS, RHS and Output
-tensors, and creates the algorithm component which processes the
-computation.)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_mTensorLHS =
-R"doc(< Reference to the parameter used in the left hand side equation of
-the shader)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_mTensorOutput =
-R"doc(< Reference to the parameter used in the output of the shader and will
-be copied with a staging vector)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_mTensorRHS =
-R"doc(< Reference to the parameter used in the right hand side equation of
-the shader)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_postEval =
-R"doc(Executes after the recorded commands are submitted, and performs a
-copy of the GPU Device memory into the staging buffer so the output
-data can be retrieved.)doc";
-
-static const char *__doc_kp_OpAlgoLhsRhsOut_record =
+static const char *__doc_kp_OpAlgoDispatch_record =
 R"doc(This records the commands that are to be sent to the GPU. This
 includes the barriers that ensure the memory has been copied before
 going in and out of the shader, as well as the dispatch operation that
@@ -418,36 +292,6 @@ operations implement in order to perform a set of actions in the GPU.
 Operations can perform actions on tensors, and optionally can also own
 an Algorithm with respective parameters. kp::Operations with
 kp::Algorithms would inherit from kp::OpBaseAlgo.)doc";
-
-static const char *__doc_kp_OpBase_OpBase = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
-
-static const char *__doc_kp_OpBase_OpBase_2 =
-R"doc(Default constructor with parameters that provides the bare minimum
-requirements for the operations to be able to create and manage their
-sub-components.
-
-@param physicalDevice Vulkan physical device used to find device
-queues @param device Vulkan logical device for passing to Algorithm
-@param commandBuffer Vulkan Command Buffer to record commands into
-@param tensors Tensors that are to be used in this operation)doc";
-
-static const char *__doc_kp_OpBase_init =
-R"doc(The init function is responsible for setting up all the resources and
-should be called after the Operation has been created.)doc";
-
-static const char *__doc_kp_OpBase_mCommandBuffer = R"doc(< Vulkan Command Buffer)doc";
-
-static const char *__doc_kp_OpBase_mDevice = R"doc(< Vulkan Logical Device)doc";
-
-static const char *__doc_kp_OpBase_mFreeTensors =
-R"doc(< Explicit boolean that specifies whether the < tensors are freed (if
-they are managed))doc";
-
-static const char *__doc_kp_OpBase_mPhysicalDevice = R"doc(< Vulkan Physical Device)doc";
-
-static const char *__doc_kp_OpBase_mTensors =
-R"doc(< Tensors referenced by operation that can be managed < optionally by
-operation)doc";
 
 static const char *__doc_kp_OpBase_postEval =
 R"doc(Post eval is called after the Sequence has called eval and submitted
@@ -474,9 +318,7 @@ static const char *__doc_kp_OpMult =
 R"doc(Operation that performs multiplication on two tensors and outpus on
 third tensor.)doc";
 
-static const char *__doc_kp_OpMult_OpMult = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
-
-static const char *__doc_kp_OpMult_OpMult_2 =
+static const char *__doc_kp_OpMult_OpMult =
 R"doc(Default constructor with parameters that provides the bare minimum
 requirements for the operations to be able to create and manage their
 sub-components.
@@ -494,9 +336,7 @@ the tensors provided, using a record command for all the vectors. This
 operation does not own/manage the memory of the tensors passed to it.
 The operation must only receive tensors of type)doc";
 
-static const char *__doc_kp_OpTensorCopy_OpTensorCopy = R"doc()doc";
-
-static const char *__doc_kp_OpTensorCopy_OpTensorCopy_2 =
+static const char *__doc_kp_OpTensorCopy_OpTensorCopy =
 R"doc(Default constructor with parameters that provides the core vulkan
 resources and the tensors that will be used in the operation.
 
@@ -505,10 +345,7 @@ queues @param device Vulkan logical device for passing to Algorithm
 @param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that will be used to create in operation.)doc";
 
-static const char *__doc_kp_OpTensorCopy_init =
-R"doc(Performs basic checks such as ensuring there are at least two tensors
-provided, that they are initialised and that they are not of type
-TensorTypes::eStorage.)doc";
+static const char *__doc_kp_OpTensorCopy_mTensors = R"doc()doc";
 
 static const char *__doc_kp_OpTensorCopy_postEval =
 R"doc(Copies the local vectors for all the tensors to sync the data with the
@@ -530,9 +367,7 @@ will happen during preEval before the recorded commands are
 dispatched. This operation won't have any effect on
 TensorTypes::eStaging.)doc";
 
-static const char *__doc_kp_OpTensorSyncDevice_OpTensorSyncDevice = R"doc()doc";
-
-static const char *__doc_kp_OpTensorSyncDevice_OpTensorSyncDevice_2 =
+static const char *__doc_kp_OpTensorSyncDevice_OpTensorSyncDevice =
 R"doc(Default constructor with parameters that provides the core vulkan
 resources and the tensors that will be used in the operation. The
 tensos provided cannot be of type TensorTypes::eStorage.
@@ -542,9 +377,7 @@ queues @param device Vulkan logical device for passing to Algorithm
 @param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that will be used to create in operation.)doc";
 
-static const char *__doc_kp_OpTensorSyncDevice_init =
-R"doc(Performs basic checks such as ensuring that there is at least one
-tensor provided with min memory of 1 element.)doc";
+static const char *__doc_kp_OpTensorSyncDevice_mTensors = R"doc()doc";
 
 static const char *__doc_kp_OpTensorSyncDevice_postEval = R"doc(Does not perform any postEval commands.)doc";
 
@@ -564,9 +397,7 @@ will happen during preEval before the recorded commands are
 dispatched. This operation won't have any effect on
 TensorTypes::eStaging.)doc";
 
-static const char *__doc_kp_OpTensorSyncLocal_OpTensorSyncLocal = R"doc()doc";
-
-static const char *__doc_kp_OpTensorSyncLocal_OpTensorSyncLocal_2 =
+static const char *__doc_kp_OpTensorSyncLocal_OpTensorSyncLocal =
 R"doc(Default constructor with parameters that provides the core vulkan
 resources and the tensors that will be used in the operation. The
 tensors provided cannot be of type TensorTypes::eStorage.
@@ -576,9 +407,7 @@ queues @param device Vulkan logical device for passing to Algorithm
 @param commandBuffer Vulkan Command Buffer to record commands into
 @param tensors Tensors that will be used to create in operation.)doc";
 
-static const char *__doc_kp_OpTensorSyncLocal_init =
-R"doc(Performs basic checks such as ensuring that there is at least one
-tensor provided with min memory of 1 element.)doc";
+static const char *__doc_kp_OpTensorSyncLocal_mTensors = R"doc()doc";
 
 static const char *__doc_kp_OpTensorSyncLocal_postEval =
 R"doc(For host tensors it performs the map command from the host memory into
@@ -593,10 +422,6 @@ the data from its device to staging memory.)doc";
 static const char *__doc_kp_Sequence = R"doc(Container of operations that can be sent to GPU as batch)doc";
 
 static const char *__doc_kp_Sequence_Sequence =
-R"doc(Base constructor for Sequence. Should not be used unless explicit
-intended.)doc";
-
-static const char *__doc_kp_Sequence_Sequence_2 =
 R"doc(Main constructor for sequence which requires core vulkan components to
 generate all dependent resources.
 
@@ -610,9 +435,17 @@ command buffer.
 
 @return Boolean stating whether execution was successful.)doc";
 
+static const char *__doc_kp_Sequence_clear =
+R"doc(Clear function clears all operations currently recorded and starts
+recording again.)doc";
+
 static const char *__doc_kp_Sequence_createCommandBuffer = R"doc()doc";
 
 static const char *__doc_kp_Sequence_createCommandPool = R"doc()doc";
+
+static const char *__doc_kp_Sequence_destroy =
+R"doc(Destroys and frees the GPU resources which include the buffer and
+memory and sets the sequence as init=False.)doc";
 
 static const char *__doc_kp_Sequence_end =
 R"doc(Ends the recording and stops recording commands when the record
@@ -622,36 +455,84 @@ command is sent.
 
 static const char *__doc_kp_Sequence_eval =
 R"doc(Eval sends all the recorded and stored operations in the vector of
+operations into the gpu as a submit job synchronously (with a
+barrier).
+
+@return shared_ptr<Sequence> of the Sequence class itself)doc";
+
+static const char *__doc_kp_Sequence_eval_2 =
+R"doc(Resets all the recorded and stored operations, records the operation
+provided and submits into the gpu as a submit job synchronously (with
+a barrier).
+
+@return shared_ptr<Sequence> of the Sequence class itself)doc";
+
+static const char *__doc_kp_Sequence_eval_3 =
+R"doc(Eval sends all the recorded and stored operations in the vector of
 operations into the gpu as a submit job with a barrier.
 
-@return Boolean stating whether execution was successful.)doc";
+@param tensors Vector of tensors to use for the operation @param TArgs
+Template parameters that are used to initialise operation which allows
+for extensible configurations on initialisation. @return
+shared_ptr<Sequence> of the Sequence class itself)doc";
+
+static const char *__doc_kp_Sequence_eval_4 =
+R"doc(Eval sends all the recorded and stored operations in the vector of
+operations into the gpu as a submit job with a barrier.
+
+@param algorithm Algorithm to use for the record often used for OpAlgo
+operations @param TArgs Template parameters that are used to
+initialise operation which allows for extensible configurations on
+initialisation. @return shared_ptr<Sequence> of the Sequence class
+itself)doc";
 
 static const char *__doc_kp_Sequence_evalAsync =
 R"doc(Eval Async sends all the recorded and stored operations in the vector
-of operations into the gpu as a submit job with a barrier. EvalAwait()
-must be called after to ensure the sequence is terminated correctly.
+of operations into the gpu as a submit job without a barrier.
+EvalAwait() must ALWAYS be called after to ensure the sequence is
+terminated correctly.
 
 @return Boolean stating whether execution was successful.)doc";
+
+static const char *__doc_kp_Sequence_evalAsync_2 =
+R"doc(Clears currnet operations to record provided one in the vector of
+operations into the gpu as a submit job without a barrier. EvalAwait()
+must ALWAYS be called after to ensure the sequence is terminated
+correctly.
+
+@return Boolean stating whether execution was successful.)doc";
+
+static const char *__doc_kp_Sequence_evalAsync_3 =
+R"doc(Eval sends all the recorded and stored operations in the vector of
+operations into the gpu as a submit job with a barrier.
+
+@param tensors Vector of tensors to use for the operation @param TArgs
+Template parameters that are used to initialise operation which allows
+for extensible configurations on initialisation. @return
+shared_ptr<Sequence> of the Sequence class itself)doc";
+
+static const char *__doc_kp_Sequence_evalAsync_4 =
+R"doc(Eval sends all the recorded and stored operations in the vector of
+operations into the gpu as a submit job with a barrier.
+
+@param algorithm Algorithm to use for the record often used for OpAlgo
+operations @param TArgs Template parameters that are used to
+initialise operation which allows for extensible configurations on
+initialisation. @return shared_ptr<Sequence> of the Sequence class
+itself)doc";
 
 static const char *__doc_kp_Sequence_evalAwait =
 R"doc(Eval Await waits for the fence to finish processing and then once it
 finishes, it runs the postEval of all operations.
 
 @param waitFor Number of milliseconds to wait before timing out.
-@return Boolean stating whether execution was successful.)doc";
-
-static const char *__doc_kp_Sequence_freeMemoryDestroyGPUResources =
-R"doc(Destroys and frees the GPU resources which include the buffer and
-memory and sets the sequence as init=False.)doc";
-
-static const char *__doc_kp_Sequence_init =
-R"doc(Initialises sequence including the creation of the command pool and
-the command buffer.)doc";
+@return shared_ptr<Sequence> of the Sequence class itself)doc";
 
 static const char *__doc_kp_Sequence_isInit =
-R"doc(Returns true if the sequence has been successfully initialised.
+R"doc(Returns true if the sequence has been initialised, and it's based on
+the GPU resources being refrenced.
 
-@return Boolean stating if sequence has been initialised.)doc";
+@return Boolean stating if is initialized)doc";
 
 static const char *__doc_kp_Sequence_isRecording =
 R"doc(Returns true if the sequence is currently in recording activated.
@@ -678,8 +559,6 @@ static const char *__doc_kp_Sequence_mFreeCommandBuffer = R"doc()doc";
 
 static const char *__doc_kp_Sequence_mFreeCommandPool = R"doc()doc";
 
-static const char *__doc_kp_Sequence_mIsInit = R"doc()doc";
-
 static const char *__doc_kp_Sequence_mIsRunning = R"doc()doc";
 
 static const char *__doc_kp_Sequence_mOperations = R"doc()doc";
@@ -696,9 +575,66 @@ This template requires classes to be derived from the OpBase class.
 This function also requires the Sequence to be recording, otherwise it
 will not be able to add the operation.
 
+@param op Object derived from kp::BaseOp that will be recoreded by the
+sequence which will be used when the operation is evaluated. @return
+shared_ptr<Sequence> of the Sequence class itself)doc";
+
+static const char *__doc_kp_Sequence_record_2 =
+R"doc(Record function for operation to be added to the GPU queue in batch.
+This template requires classes to be derived from the OpBase class.
+This function also requires the Sequence to be recording, otherwise it
+will not be able to add the operation.
+
 @param tensors Vector of tensors to use for the operation @param TArgs
 Template parameters that are used to initialise operation which allows
-for extensible configurations on initialisation.)doc";
+for extensible configurations on initialisation. @return
+shared_ptr<Sequence> of the Sequence class itself)doc";
+
+static const char *__doc_kp_Sequence_record_3 =
+R"doc(Record function for operation to be added to the GPU queue in batch.
+This template requires classes to be derived from the OpBase class.
+This function also requires the Sequence to be recording, otherwise it
+will not be able to add the operation.
+
+@param algorithm Algorithm to use for the record often used for OpAlgo
+operations @param TArgs Template parameters that are used to
+initialise operation which allows for extensible configurations on
+initialisation. @return shared_ptr<Sequence> of the Sequence class
+itself)doc";
+
+static const char *__doc_kp_Sequence_rerecord =
+R"doc(Clears command buffer and triggers re-record of all the current
+operations saved, which is useful if the underlying kp::Tensors or
+kp::Algorithms are modified and need to be re-recorded.)doc";
+
+static const char *__doc_kp_Shader = R"doc(Shader utily class with functions to compile and process glsl files.)doc";
+
+static const char *__doc_kp_Shader_compile_source =
+R"doc(Compile a single glslang source from string value. Currently this
+function uses the glslang C++ interface which is not thread safe so
+this funciton should not be called from multiple threads concurrently.
+If you have a online shader processing multithreading use-case that
+can't use offline compilation please open an issue.
+
+@param source An individual raw glsl shader in string format @param
+entryPoint The function name to use as entry point @param definitions
+List of pairs containing key value definitions @param resourcesLimit A
+list that contains the resource limits for the GLSL compiler @return
+The compiled SPIR-V binary in unsigned int32 format)doc";
+
+static const char *__doc_kp_Shader_compile_sources =
+R"doc(Compile multiple sources with optional filenames. Currently this
+function uses the glslang C++ interface which is not thread safe so
+this funciton should not be called from multiple threads concurrently.
+If you have a online shader processing multithreading use-case that
+can't use offline compilation please open an issue.
+
+@param sources A list of raw glsl shaders in string format @param
+files A list of file names respective to each of the sources @param
+entryPoint The function name to use as entry point @param definitions
+List of pairs containing key value definitions @param resourcesLimit A
+list that contains the resource limits for the GLSL compiler @return
+The compiled SPIR-V binary in unsigned int32 format)doc";
 
 static const char *__doc_kp_Tensor =
 R"doc(Structured data used in GPU operations.
@@ -708,9 +644,7 @@ across GPUs. Each tensor would have a respective Vulkan memory and
 buffer, which would be used to store their respective data. The
 tensors can be used for GPU data storage or transfer.)doc";
 
-static const char *__doc_kp_Tensor_Tensor = R"doc(Base constructor, should not be used unless explicitly intended.)doc";
-
-static const char *__doc_kp_Tensor_Tensor_2 =
+static const char *__doc_kp_Tensor_Tensor =
 R"doc(Default constructor with data provided which would be used to create
 the respective vulkan buffer and memory.
 
@@ -741,8 +675,6 @@ without exposing it.
 
 @return Descriptor buffer info with own buffer)doc";
 
-static const char *__doc_kp_Tensor_copyBuffer = R"doc()doc";
-
 static const char *__doc_kp_Tensor_createBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_data =
@@ -753,7 +685,7 @@ memory.
 @return Reference to vector of elements representing the data in the
 tensor.)doc";
 
-static const char *__doc_kp_Tensor_freeMemoryDestroyGPUResources =
+static const char *__doc_kp_Tensor_destroy =
 R"doc(Destroys and frees the GPU resources which include the buffer and
 memory.)doc";
 
@@ -765,17 +697,7 @@ static const char *__doc_kp_Tensor_getStagingBufferUsageFlags = R"doc()doc";
 
 static const char *__doc_kp_Tensor_getStagingMemoryPropertyFlags = R"doc()doc";
 
-static const char *__doc_kp_Tensor_init =
-R"doc(Initialiser which calls the initialisation for all the respective
-tensors as well as creates the respective staging tensors. The staging
-tensors would only be created for the tensors of type
-TensorType::eDevice as otherwise there is no need to copy from host
-memory.)doc";
-
-static const char *__doc_kp_Tensor_isInit =
-R"doc(Returns true if the tensor initialisation function has been carried
-out successful, which would mean that the buffer and memory will have
-been provisioned.)doc";
+static const char *__doc_kp_Tensor_isInit = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mData = R"doc()doc";
 
@@ -789,15 +711,11 @@ static const char *__doc_kp_Tensor_mFreeStagingBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mFreeStagingMemory = R"doc()doc";
 
-static const char *__doc_kp_Tensor_mIsInit = R"doc()doc";
-
 static const char *__doc_kp_Tensor_mPhysicalDevice = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mPrimaryBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mPrimaryMemory = R"doc()doc";
-
-static const char *__doc_kp_Tensor_mShape = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mStagingBuffer = R"doc()doc";
 
@@ -823,6 +741,13 @@ vector's.
 @param i The index where the element will be returned from. @return
 Returns the element in the position requested.)doc";
 
+static const char *__doc_kp_Tensor_rebuild =
+R"doc(Initialiser which calls the initialisation for all the respective
+tensors as well as creates the respective staging tensors. The staging
+tensors would only be created for the tensors of type
+TensorType::eDevice as otherwise there is no need to copy from host
+memory.)doc";
+
 static const char *__doc_kp_Tensor_recordBufferMemoryBarrier =
 R"doc(Records the buffer memory barrier into the command buffer which
 ensures that relevant data transfers are carried out correctly.
@@ -832,6 +757,8 @@ ensures that relevant data transfers are carried out correctly.
 dstAccessMask Access flags for destination access mask @param
 scrStageMask Pipeline stage flags for source stage mask @param
 dstStageMask Pipeline stage flags for destination stage mask)doc";
+
+static const char *__doc_kp_Tensor_recordCopyBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_recordCopyFrom =
 R"doc(Records a copy from the memory of the tensor provided to the current
@@ -864,13 +791,6 @@ is copied before further operations. Default is true.)doc";
 static const char *__doc_kp_Tensor_setData =
 R"doc(Sets / resets the vector data of the tensor. This function does not
 perform any copies into GPU memory and is only performed on the host.)doc";
-
-static const char *__doc_kp_Tensor_shape =
-R"doc(Returns the shape of the tensor, which includes the number of
-dimensions and the size per dimension.
-
-@return Array containing the sizes for each dimension. Zero means
-respective dimension is not active.)doc";
 
 static const char *__doc_kp_Tensor_size =
 R"doc(Returns the size/magnitude of the Tensor, which will be the total

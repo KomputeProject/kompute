@@ -51,7 +51,7 @@ The C++ interface provides low level access to the native components of Kompute 
 
 void kompute(const std::string& shader) {
 
-    // 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+    // 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
     kp::Manager mgr; 
 
     // 2. Create and initialise Kompute Tensors through manager
@@ -71,14 +71,16 @@ void kompute(const std::string& shader) {
     auto algorithm = mgr.algorithm(params,
                                    kp::Shader::compile_source(shader),
                                    workgroup,
-                                   specConsts);
+                                   specConsts,
+                                   pushConstsA);
 
     // 4. Run operation synchronously using sequence
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
-        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsA)
-        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
-        ->eval();
+        ->record<kp::OpAlgoDispatch>(algorithm) // Binds default push consts
+        ->eval() // Evaluates the two recorded operations
+        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB) // Overrides push consts
+        ->eval(); // Evaluates only last recorded operation
 
     // 5. Sync results from the GPU asynchronously
     sq = mgr.sequence()
@@ -138,7 +140,7 @@ The [Python package](https://kompute.cc/overview/python-package.html) provides a
 ```python
 
 def kompute(shader):
-    # 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+    # 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
     mgr = kp.Manager()
 
     # 2. Create and initialise Kompute Tensors through manager
@@ -155,14 +157,17 @@ def kompute(shader):
     push_consts_a = [2]
     push_consts_b = [3]
 
-    algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts)
+    spirv = kp.Shader.compile_source(shader)
+
+    algo = mgr.algorithm(params, spirv, workgroup, spec_consts, push_consts_a)
 
     # 4. Run operation synchronously using sequence
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice(params))
-        .record(kp.OpAlgoDispatch(algo, push_consts_a))
-        .record(kp.OpAlgoDispatch(algo, push_consts_b))
-        .eval())
+        .record(kp.OpAlgoDispatch(algo)) # Binds default push consts provided
+        .eval() # evaluates the two recorded ops
+        .record(kp.OpAlgoDispatch(algo, push_consts_b)) # Overrides push consts
+        .eval()) # evaluates only the last recorded op
 
     # 5. Sync results from the GPU asynchronously
     sq = mgr.sequence()
@@ -428,6 +433,12 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
 * Uses doxygen and sphinx for documentation and autodocs
 * Uses vcpkg for finding the dependencies, it's the recommended set up to retrieve the libraries
+
+If you want to run with debug layers you can add them with the `KOMPUTE_ENV_DEBUG_LAYERS` parameter as:
+
+```
+export KOMPUTE_ENV_DEBUG_LAYERS="VK_LAYER_LUNARG_api_dump"
+```
 
 ##### Updating documentation
 

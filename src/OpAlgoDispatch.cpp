@@ -34,8 +34,12 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
           vk::PipelineStageFlagBits::eComputeShader);
     }
 
-    this->mAlgorithm->bindCore(commandBuffer);
-    this->mAlgorithm->bindPush(commandBuffer, this->mPushConstants);
+    if (this->mPushConstants.size()) {
+        this->mAlgorithm->setPush(this->mPushConstants);
+    }
+
+    this->mAlgorithm->recordBindCore(commandBuffer);
+    this->mAlgorithm->recordBindPush(commandBuffer);
     this->mAlgorithm->recordDispatch(commandBuffer);
 }
 
