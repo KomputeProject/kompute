@@ -7,6 +7,11 @@
 
 int main()
 {
+#if KOMPUTE_ENABLE_SPDLOG
+    spdlog::set_level(
+      static_cast<spdlog::level::level_enum>(SPDLOG_ACTIVE_LEVEL));
+#endif
+
     kp::Manager mgr;
 
     auto tensorInA = mgr.tensor<float>({ 2.0, 4.0, 6.0 });
@@ -39,7 +44,8 @@ int main()
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
         ->record<kp::OpAlgoDispatch>(algo)
-        ->record<kp::OpTensorSyncLocal>(params);
+        ->record<kp::OpTensorSyncLocal>(params)
+        ->eval();
 
     // prints "Output {  0  4  12  }"
     std::cout<< "Output: {  ";

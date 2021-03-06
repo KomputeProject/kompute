@@ -318,16 +318,17 @@ class TensorView: public Tensor
            const TensorTypes& tensorType = TensorTypes::eDevice)
         : Tensor(physicalDevice, device, (void*)data.data(), data.size(), sizeof(T), this->dataType())
     {
-
+        KP_LOG_DEBUG("Kompute TensorView constructor with data size {}", data.size());
+        this->mData = data;
     }
 
     ~TensorView() {
-
+        KP_LOG_DEBUG("Kompute TensorView destructor");
     }
 
     void rebuild(const std::vector<T>& data,
             TensorTypes tensorType = TensorTypes::eDevice) {
-
+        KP_LOG_DEBUG("Kompute TensorView creating with data size {}", data.size());
         this->mData = data;
         Tensor::rebuild(data.data(), data.size(), sizeof(T));
     }
@@ -341,6 +342,7 @@ class TensorView: public Tensor
     }
 
     void setData(const std::vector<T>& data) {
+        KP_LOG_DEBUG("Kompute TensorView setting data with data size {}", data.size());
 
         if (data.size() != this->mData.size()) {
             throw std::runtime_error(
@@ -354,6 +356,8 @@ class TensorView: public Tensor
 
     void setRawData(void* data, uint32_t elementTotalCount, uint32_t elementMemorySize) override 
     {
+        KP_LOG_DEBUG("Kompute TensorView setRawData with data size {}", elementTotalCount);
+
         assert(elementMemorySize == sizeof(T));
 
         this->mData = { (T*)data, ((T*)data) + elementTotalCount };
@@ -363,10 +367,14 @@ class TensorView: public Tensor
     TensorDataTypes dataType() override;
 
     uint32_t size() override {
+        KP_LOG_DEBUG("Kompute TensorView retrieving size: {}", this->mData.size());
+
         return this->mData.size();
     }
 
     uint32_t memorySize() override {
+        KP_LOG_DEBUG("Kompute TensorView retrieving memory size: {}", this->mData.size() * sizeof(T));
+
         return this->mData.size() * sizeof(T);
     }
 
