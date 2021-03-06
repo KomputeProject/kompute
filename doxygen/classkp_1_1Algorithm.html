@@ -74,50 +74,41 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a303a8ed0c0ed0780bb666cbdf91636eb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a303a8ed0c0ed0780bb666cbdf91636eb">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={})</td></tr>
-<tr class="separator:a303a8ed0c0ed0780bb666cbdf91636eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a006e22ff73d6209f20b0e95a4e389aae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a006e22ff73d6209f20b0e95a4e389aae">rebuild</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={})</td></tr>
-<tr class="separator:a006e22ff73d6209f20b0e95a4e389aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0a5dae5e1fb15ba66b8832474ad9922"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ad0a5dae5e1fb15ba66b8832474ad9922">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={}, const Constants &amp;pushConstants={})</td></tr>
+<tr class="separator:ad0a5dae5e1fb15ba66b8832474ad9922"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ef7e58948901f590e2c598802f7e5ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a8ef7e58948901f590e2c598802f7e5ef">rebuild</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, const std::vector&lt; uint32_t &gt; &amp;spirv, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={}, const Constants &amp;pushConstants={})</td></tr>
+<tr class="separator:a8ef7e58948901f590e2c598802f7e5ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">~Algorithm</a> ()</td></tr>
 <tr class="separator:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8ee096b6a4f8ae46f62273220c35423"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#aa8ee096b6a4f8ae46f62273220c35423">recordDispatch</a> (const vk::CommandBuffer &amp;commandBuffer)</td></tr>
 <tr class="separator:aa8ee096b6a4f8ae46f62273220c35423"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6401acb6d1c0fedacac2de763f3efc2"><td class="memItemLeft" align="right" valign="top"><a id="aa6401acb6d1c0fedacac2de763f3efc2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>bindCore</b> (const vk::CommandBuffer &amp;commandBuffer)</td></tr>
-<tr class="separator:aa6401acb6d1c0fedacac2de763f3efc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a9b955fc5218c46ec41304684116f61"><td class="memItemLeft" align="right" valign="top"><a id="a8a9b955fc5218c46ec41304684116f61"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>bindPush</b> (const vk::CommandBuffer &amp;commandBuffer, const Constants &amp;pushConstants)</td></tr>
-<tr class="separator:a8a9b955fc5218c46ec41304684116f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a974ac8dd9f100fd4ed3ef71312314bda"><td class="memItemLeft" align="right" valign="top"><a id="a974ac8dd9f100fd4ed3ef71312314bda"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInit</b> ()</td></tr>
+<tr class="memitem:a02656689952580a83d5f8d2c769a041e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a02656689952580a83d5f8d2c769a041e">recordBindCore</a> (const vk::CommandBuffer &amp;commandBuffer)</td></tr>
+<tr class="separator:a02656689952580a83d5f8d2c769a041e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e3277dff114031c091475a12fb3cd23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a4e3277dff114031c091475a12fb3cd23">recordBindPush</a> (const vk::CommandBuffer &amp;commandBuffer)</td></tr>
+<tr class="separator:a4e3277dff114031c091475a12fb3cd23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a974ac8dd9f100fd4ed3ef71312314bda"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a974ac8dd9f100fd4ed3ef71312314bda">isInit</a> ()</td></tr>
 <tr class="separator:a974ac8dd9f100fd4ed3ef71312314bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f195f84f2e30d5913776a6610c52c19"><td class="memItemLeft" align="right" valign="top"><a id="a3f195f84f2e30d5913776a6610c52c19"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setWorkgroup</b> (const Workgroup &amp;workgroup, uint32_t minSize=1)</td></tr>
+<tr class="memitem:a3f195f84f2e30d5913776a6610c52c19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a3f195f84f2e30d5913776a6610c52c19">setWorkgroup</a> (const Workgroup &amp;workgroup, uint32_t minSize=1)</td></tr>
 <tr class="separator:a3f195f84f2e30d5913776a6610c52c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81ce1c093ff2e837f998e9962b2c09e3"><td class="memItemLeft" align="right" valign="top"><a id="a81ce1c093ff2e837f998e9962b2c09e3"></a>
-const Workgroup &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getWorkgroup</b> ()</td></tr>
+<tr class="memitem:a2a082021e3343bce5bed1f842885c67c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a2a082021e3343bce5bed1f842885c67c">setPush</a> (const Constants &amp;pushConstants)</td></tr>
+<tr class="separator:a2a082021e3343bce5bed1f842885c67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81ce1c093ff2e837f998e9962b2c09e3"><td class="memItemLeft" align="right" valign="top">const Workgroup &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a81ce1c093ff2e837f998e9962b2c09e3">getWorkgroup</a> ()</td></tr>
 <tr class="separator:a81ce1c093ff2e837f998e9962b2c09e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad854fce0359f1d880adef5e523ac8ba0"><td class="memItemLeft" align="right" valign="top"><a id="ad854fce0359f1d880adef5e523ac8ba0"></a>
-const Constants &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getSpecializationConstants</b> ()</td></tr>
+<tr class="memitem:ad854fce0359f1d880adef5e523ac8ba0"><td class="memItemLeft" align="right" valign="top">const Constants &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ad854fce0359f1d880adef5e523ac8ba0">getSpecializationConstants</a> ()</td></tr>
 <tr class="separator:ad854fce0359f1d880adef5e523ac8ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a899e4fa43bf02bc556920fc3b4b22900"><td class="memItemLeft" align="right" valign="top"><a id="a899e4fa43bf02bc556920fc3b4b22900"></a>
-const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getTensors</b> ()</td></tr>
+<tr class="memitem:ac3b5b33da0d3d956b235c5fbfe12e3bc"><td class="memItemLeft" align="right" valign="top">const Constants &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ac3b5b33da0d3d956b235c5fbfe12e3bc">getPush</a> ()</td></tr>
+<tr class="separator:ac3b5b33da0d3d956b235c5fbfe12e3bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a899e4fa43bf02bc556920fc3b4b22900"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a899e4fa43bf02bc556920fc3b4b22900">getTensors</a> ()</td></tr>
 <tr class="separator:a899e4fa43bf02bc556920fc3b4b22900"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af38b14c24a26bd2eef13d8cb8e97214a"><td class="memItemLeft" align="right" valign="top"><a id="af38b14c24a26bd2eef13d8cb8e97214a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></tr>
 <tr class="separator:af38b14c24a26bd2eef13d8cb8e97214a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab00ba598796461653ce59d9db1a14e8d"><td class="memItemLeft" align="right" valign="top"><a id="ab00ba598796461653ce59d9db1a14e8d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Algorithm</b> (std::shared_ptr&lt; vk::Device &gt; device)</td></tr>
-<tr class="separator:ab00ba598796461653ce59d9db1a14e8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3eb6701b515c27c7aa158ce73dc59a18"><td class="memItemLeft" align="right" valign="top"><a id="a3eb6701b515c27c7aa158ce73dc59a18"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string shaderFilePath, std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; tensorParams)</td></tr>
-<tr class="separator:a3eb6701b515c27c7aa158ce73dc59a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstraction for compute shaders that are run on top of tensors grouped via ParameterGroups (which group descriptorsets) </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a303a8ed0c0ed0780bb666cbdf91636eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a303a8ed0c0ed0780bb666cbdf91636eb">&#9670;&nbsp;</a></span>Algorithm()</h2>
+<a id="ad0a5dae5e1fb15ba66b8832474ad9922"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0a5dae5e1fb15ba66b8832474ad9922">&#9670;&nbsp;</a></span>Algorithm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +141,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Constants &amp;&#160;</td>
-          <td class="paramname"><em>specializationConstants</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>specializationConstants</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramname"><em>pushConstants</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -159,11 +156,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Default constructor for <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a></p>
+<p>Main constructor for algorithm with configuration parameters to create the underlying resources.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">device</td><td>The Vulkan device to use for creating resources </td></tr>
-    <tr><td class="paramname">commandBuffer</td><td>The vulkan command buffer to bind the pipeline and shaders </td></tr>
+    <tr><td class="paramname">tensors</td><td>(optional) The tensors to use to create the descriptor resources </td></tr>
+    <tr><td class="paramname">spirv</td><td>(optional) The spirv code to use to create the algorithm </td></tr>
+    <tr><td class="paramname">workgroup</td><td>(optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </td></tr>
+    <tr><td class="paramname">specializationConstants</td><td>(optional) The kp::Constants to use to initialize the specialization constants which cannot be changed once set. </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) The kp::Constants to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </td></tr>
   </table>
   </dd>
 </dl>
@@ -189,8 +190,108 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a006e22ff73d6209f20b0e95a4e389aae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a006e22ff73d6209f20b0e95a4e389aae">&#9670;&nbsp;</a></span>rebuild()</h2>
+<a id="ac3b5b33da0d3d956b235c5fbfe12e3bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3b5b33da0d3d956b235c5fbfe12e3bc">&#9670;&nbsp;</a></span>getPush()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const Constants&amp; kp::Algorithm::getPush </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the specialization constants of the current algorithm.</p>
+<dl class="section return"><dt>Returns</dt><dd>The kp::Constants currently set for push constants </dd></dl>
+
+</div>
+</div>
+<a id="ad854fce0359f1d880adef5e523ac8ba0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad854fce0359f1d880adef5e523ac8ba0">&#9670;&nbsp;</a></span>getSpecializationConstants()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const Constants&amp; kp::Algorithm::getSpecializationConstants </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the specialization constants of the current algorithm.</p>
+<dl class="section return"><dt>Returns</dt><dd>The kp::Constants currently set for specialization constants </dd></dl>
+
+</div>
+</div>
+<a id="a899e4fa43bf02bc556920fc3b4b22900"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a899e4fa43bf02bc556920fc3b4b22900">&#9670;&nbsp;</a></span>getTensors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt;std::shared_ptr&lt;<a class="el" href="classkp_1_1Tensor.html">Tensor</a>&gt; &gt;&amp; kp::Algorithm::getTensors </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the current tensors that are used in the algorithm.</p>
+<dl class="section return"><dt>Returns</dt><dd>The list of tensors used in the algorithm. </dd></dl>
+
+</div>
+</div>
+<a id="a81ce1c093ff2e837f998e9962b2c09e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81ce1c093ff2e837f998e9962b2c09e3">&#9670;&nbsp;</a></span>getWorkgroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const Workgroup&amp; kp::Algorithm::getWorkgroup </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the current workgroup from the algorithm.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">The</td><td>kp::Constant to use to set the push constants to use in the next bindPush(...) calls. The constants provided must be of the same size as the ones created during initialization. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a974ac8dd9f100fd4ed3ef71312314bda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a974ac8dd9f100fd4ed3ef71312314bda">&#9670;&nbsp;</a></span>isInit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool kp::Algorithm::isInit </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>function that checks all the gpu resource components to verify if these have been created and returns true if all are valid.</p>
+<dl class="section return"><dt>Returns</dt><dd>returns true if the algorithm is currently initialized. </dd></dl>
+
+</div>
+</div>
+<a id="a8ef7e58948901f590e2c598802f7e5ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ef7e58948901f590e2c598802f7e5ef">&#9670;&nbsp;</a></span>rebuild()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,13 +300,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
           <td class="memname">void kp::Algorithm::rebuild </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;&#160;</td>
-          <td class="paramname"><em>tensors</em> = <code>{}</code>, </td>
+          <td class="paramname"><em>tensors</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; uint32_t &gt; &amp;&#160;</td>
-          <td class="paramname"><em>spirv</em> = <code>{}</code>, </td>
+          <td class="paramname"><em>spirv</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -217,7 +318,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const Constants &amp;&#160;</td>
-          <td class="paramname"><em>specializationConstants</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>specializationConstants</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramname"><em>pushConstants</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -226,10 +333,66 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialiser for the shader data provided to the algorithm as well as tensor parameters that will be used in shader.</p>
+<p>Rebuild function to reconstruct algorithm with configuration parameters to create the underlying resources.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">shaderFileData</td><td>The bytes in spir-v format of the shader  The Tensors to be used in the <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> / shader for  The specialization parameters to pass to the function processing </td></tr>
+    <tr><td class="paramname">tensors</td><td>The tensors to use to create the descriptor resources </td></tr>
+    <tr><td class="paramname">spirv</td><td>The spirv code to use to create the algorithm </td></tr>
+    <tr><td class="paramname">workgroup</td><td>(optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </td></tr>
+    <tr><td class="paramname">specializationConstants</td><td>(optional) The kp::Constants to use to initialize the specialization constants which cannot be changed once set. </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) The kp::Constants to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a02656689952580a83d5f8d2c769a041e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02656689952580a83d5f8d2c769a041e">&#9670;&nbsp;</a></span>recordBindCore()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::recordBindCore </td>
+          <td>(</td>
+          <td class="paramtype">const vk::CommandBuffer &amp;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Records command that binds the "core" algorithm components which consist of binding the pipeline and binding the descriptorsets.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>Command buffer to record the algorithm resources to </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4e3277dff114031c091475a12fb3cd23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e3277dff114031c091475a12fb3cd23">&#9670;&nbsp;</a></span>recordBindPush()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::recordBindPush </td>
+          <td>(</td>
+          <td class="paramtype">const vk::CommandBuffer &amp;&#160;</td>
+          <td class="paramname"><em>commandBuffer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Records command that binds the push constants to the command buffer provided</p><ul>
+<li>it is required that the pushConstants provided are of the same size as the ones provided during initialization.</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>Command buffer to record the algorithm resources to </td></tr>
   </table>
   </dd>
 </dl>
@@ -254,18 +417,75 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>init</b> (std::string
 <p>Records the dispatch function with the provided template parameters or alternatively using the size of the tensor by default.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">x</td><td>Layout X dispatch value </td></tr>
-    <tr><td class="paramname">y</td><td>Layout Y dispatch value </td></tr>
-    <tr><td class="paramname">z</td><td>Layout Z dispatch value </td></tr>
+    <tr><td class="paramname">commandBuffer</td><td>Command buffer to record the algorithm resources to </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a id="a2a082021e3343bce5bed1f842885c67c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a082021e3343bce5bed1f842885c67c">&#9670;&nbsp;</a></span>setPush()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::setPush </td>
+          <td>(</td>
+          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramname"><em>pushConstants</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the push constants to the new value provided to use in the next bindPush()</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">The</td><td>kp::Constant to use to set the push constants to use in the next bindPush(...) calls. The constants provided must be of the same size as the ones created during initialization. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3f195f84f2e30d5913776a6610c52c19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f195f84f2e30d5913776a6610c52c19">&#9670;&nbsp;</a></span>setWorkgroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::setWorkgroup </td>
+          <td>(</td>
+          <td class="paramtype">const Workgroup &amp;&#160;</td>
+          <td class="paramname"><em>workgroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>minSize</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the work group to use in the recordDispatch</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">workgroup</td><td>The kp::Workgroup value to use to update the algorithm. It must have a value greater than 1 on the x value (index 1) otherwise it will be initialized on the size of the first tensor (ie. this-&gt;mTensor[0]-&gt;size()) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>/c/Users/axsau/Programming/vulkan/vulkan-compute/src/include/kompute/<a class="el" href="Algorithm_8hpp_source.html">Algorithm.hpp</a></li>
-<li>/c/Users/axsau/Programming/vulkan/vulkan-compute/src/include/kompute/<a class="el" href="Parameter_8hpp_source.html">Parameter.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

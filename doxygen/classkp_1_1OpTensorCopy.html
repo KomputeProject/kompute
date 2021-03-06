@@ -125,9 +125,6 @@ Public Member Functions</h2></td></tr>
 <p>Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">physicalDevice</td><td>Vulkan physical device used to find device queues </td></tr>
-    <tr><td class="paramname">device</td><td>Vulkan logical device for passing to <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> </td></tr>
-    <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record commands into </td></tr>
     <tr><td class="paramname">tensors</td><td>Tensors that will be used to create in operation. </td></tr>
   </table>
   </dd>
@@ -185,7 +182,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Copies the local vectors for all the tensors to sync the data with the gpu. </p>
+<p>Copies the local vectors for all the tensors to sync the data with the gpu.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#abf8f8333d659c32dd0543ee2af4f3e61">kp::OpBase</a>.</p>
 
@@ -214,7 +217,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Does not perform any preEval commands. </p>
+<p>Does not perform any preEval commands.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a110436486db21e83bdb09f73262c0587">kp::OpBase</a>.</p>
 
@@ -243,7 +252,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier. </p>
+<p>Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a49b26daf78e1c4720d950514383019f8">kp::OpBase</a>.</p>
 

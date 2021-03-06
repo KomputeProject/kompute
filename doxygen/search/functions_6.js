@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['manager',['Manager',['../classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97',1,'kp::Manager::Manager()'],['../classkp_1_1Manager.html#a7bae4bd124b9d5692b62bf48cabcf804',1,'kp::Manager::Manager(uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndices={})'],['../classkp_1_1Manager.html#afe401feb6eeb8d462998f095d36e2b46',1,'kp::Manager::Manager(std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device)']]],
-  ['mapdatafromhostmemory',['mapDataFromHostMemory',['../classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46',1,'kp::Tensor']]],
-  ['mapdataintohostmemory',['mapDataIntoHostMemory',['../classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704',1,'kp::Tensor']]]
+  ['isinit',['isInit',['../classkp_1_1Algorithm.html#a974ac8dd9f100fd4ed3ef71312314bda',1,'kp::Algorithm::isInit()'],['../classkp_1_1Sequence.html#a84ff30d6164cc730bd554dcdfd423f74',1,'kp::Sequence::isInit()'],['../classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36',1,'kp::Tensor::isInit()']]],
+  ['isrecording',['isRecording',['../classkp_1_1Sequence.html#ac6400fc9c0fb879e1131157fef8b2e85',1,'kp::Sequence']]],
+  ['isrunning',['isRunning',['../classkp_1_1Sequence.html#a1a783a310d7373588277df4ba6dc30da',1,'kp::Sequence']]]
 ];

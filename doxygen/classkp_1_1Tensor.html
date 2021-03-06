@@ -91,8 +91,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1eb83d6d5c896eccd017f8074b2d9f38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cdbcb7abaad8f3e3a392741ea5ad275"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a5cdbcb7abaad8f3e3a392741ea5ad275">destroy</a> ()</td></tr>
 <tr class="separator:a5cdbcb7abaad8f3e3a392741ea5ad275"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memItemLeft" align="right" valign="top"><a id="af2ae7f0b57fd8e57570ab63962a97f36"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInit</b> ()</td></tr>
+<tr class="memitem:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">isInit</a> ()</td></tr>
 <tr class="separator:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a858f9a010a112983244cdf16ea0e5308"><td class="memItemLeft" align="right" valign="top">std::vector&lt; float &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a858f9a010a112983244cdf16ea0e5308">data</a> ()</td></tr>
 <tr class="separator:a858f9a010a112983244cdf16ea0e5308"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,11 +191,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInit</b> ()</td></t
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Default constructor with data provided which would be used to create the respective vulkan buffer and memory.</p>
+<p>Constructor with data provided which would be used to create the respective vulkan buffer and memory.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">physicalDevice</td><td>The physical device to use to fetch properties </td></tr>
+    <tr><td class="paramname">device</td><td>The device to use to create the buffer and memory from </td></tr>
     <tr><td class="paramname">data</td><td>Non-zero-sized vector of data that will be used by the tensor </td></tr>
-    <tr><td class="paramname">tensorType</td><td>Type for the tensor which is of type TensorTypes </td></tr>
+    <tr><td class="paramname">tensorTypes</td><td>Type for the tensor which is of type TensorTypes </td></tr>
   </table>
   </dd>
 </dl>
@@ -275,6 +276,25 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInit</b> ()</td></t
       </table>
 </div><div class="memdoc">
 <p>Destroys and frees the GPU resources which include the buffer and memory. </p>
+
+</div>
+</div>
+<a id="af2ae7f0b57fd8e57570ab63962a97f36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2ae7f0b57fd8e57570ab63962a97f36">&#9670;&nbsp;</a></span>isInit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool kp::Tensor::isInit </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Check whether tensor is initialized based on the created gpu resources.</p>
+<dl class="section return"><dt>Returns</dt><dd>Boolean stating whether tensor is initialized </dd></dl>
 
 </div>
 </div>
@@ -365,7 +385,14 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>isInit</b> ()</td></t
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Initialiser which calls the initialisation for all the respective tensors as well as creates the respective staging tensors. The staging tensors would only be created for the tensors of type TensorType::eDevice as otherwise there is no need to copy from host memory. </p>
+<p>Function to trigger reinitialisation of the tensor buffer and memory with new data as well as new potential device type.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Vector of data to use to initialise vector from </td></tr>
+    <tr><td class="paramname">tensorType</td><td>The type to use for the tensor </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

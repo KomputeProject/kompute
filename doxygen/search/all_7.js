@@ -1,10 +1,6 @@
 var searchData=
 [
-  ['opalgodispatch',['OpAlgoDispatch',['../classkp_1_1OpAlgoDispatch.html',1,'kp']]],
-  ['opbase',['OpBase',['../classkp_1_1OpBase.html',1,'kp']]],
-  ['operator_5b_5d',['operator[]',['../classkp_1_1Tensor.html#a64ff1ca98d5380cc3916e13b20f7a509',1,'kp::Tensor']]],
-  ['opmult',['OpMult',['../classkp_1_1OpMult.html',1,'kp::OpMult'],['../classkp_1_1OpMult.html#a61e02be5bc3184f900a1f2a411a18e25',1,'kp::OpMult::OpMult()']]],
-  ['optensorcopy',['OpTensorCopy',['../classkp_1_1OpTensorCopy.html',1,'kp::OpTensorCopy'],['../classkp_1_1OpTensorCopy.html#a332116c77ff4795e634b093b24e9de18',1,'kp::OpTensorCopy::OpTensorCopy()']]],
-  ['optensorsyncdevice',['OpTensorSyncDevice',['../classkp_1_1OpTensorSyncDevice.html',1,'kp::OpTensorSyncDevice'],['../classkp_1_1OpTensorSyncDevice.html#a482b739eac339555ca6183f19e850300',1,'kp::OpTensorSyncDevice::OpTensorSyncDevice()']]],
-  ['optensorsynclocal',['OpTensorSyncLocal',['../classkp_1_1OpTensorSyncLocal.html',1,'kp::OpTensorSyncLocal'],['../classkp_1_1OpTensorSyncLocal.html#ad427093c4065143a711133bd75207406',1,'kp::OpTensorSyncLocal::OpTensorSyncLocal()']]]
+  ['manager',['Manager',['../classkp_1_1Manager.html',1,'kp::Manager'],['../classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97',1,'kp::Manager::Manager()'],['../classkp_1_1Manager.html#a03870694ea0749424dc5206638b29c32',1,'kp::Manager::Manager(uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndices={}, const std::vector&lt; std::string &gt; &amp;desiredExtensions={})'],['../classkp_1_1Manager.html#afe401feb6eeb8d462998f095d36e2b46',1,'kp::Manager::Manager(std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device)']]],
+  ['mapdatafromhostmemory',['mapDataFromHostMemory',['../classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46',1,'kp::Tensor']]],
+  ['mapdataintohostmemory',['mapDataIntoHostMemory',['../classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704',1,'kp::Tensor']]]
 ];

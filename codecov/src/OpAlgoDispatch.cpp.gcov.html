@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">17</td>
-            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntry">26</td>
+            <td class="headerCovTableEntry">26</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-01 21:07:53</td>
+            <td class="headerValue">2021-03-06 12:09:42</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -64,31 +64,31 @@
 <span class="lineNum">       2 </span>            : 
 <span class="lineNum">       3 </span>            : #include &quot;kompute/operations/OpAlgoDispatch.hpp&quot;
 <span class="lineNum">       4 </span>            : 
-<span class="lineNum">       5 </span>            : namespace kp {
+<a name="5"><span class="lineNum">       5 </span>            : namespace kp {</a>
 <span class="lineNum">       6 </span>            : 
-<span class="lineNum">       7 </span><span class="lineCov">         29 : OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr&lt;kp::Algorithm&gt;&amp; algorithm,</span>
-<span class="lineNum">       8 </span><span class="lineCov">         58 :                                const kp::Constants&amp; pushConstants)</span>
+<span class="lineNum">       7 </span><span class="lineCov">         66 : OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr&lt;kp::Algorithm&gt;&amp; algorithm,</span>
+<span class="lineNum">       8 </span><span class="lineCov">         66 :                                const kp::Constants&amp; pushConstants)</span>
 <span class="lineNum">       9 </span>            : {
-<span class="lineNum">      10 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch constructor&quot;);
+<span class="lineNum">      10 </span><span class="lineCov">         66 :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch constructor&quot;);</span>
 <span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span>            :     this-&gt;mAlgorithm = algorithm;
-<span class="lineNum">      13 </span><span class="lineCov">         29 :     this-&gt;mPushConstants = pushConstants;</span>
-<a name="14"><span class="lineNum">      14 </span><span class="lineCov">         29 : }</span></a>
+<span class="lineNum">      12 </span><span class="lineCov">         66 :     this-&gt;mAlgorithm = algorithm;</span>
+<span class="lineNum">      13 </span><span class="lineCov">         66 :     this-&gt;mPushConstants = pushConstants;</span>
+<a name="14"><span class="lineNum">      14 </span><span class="lineCov">         66 : }</span></a>
 <span class="lineNum">      15 </span>            : 
-<span class="lineNum">      16 </span><span class="lineCov">         84 : OpAlgoDispatch::~OpAlgoDispatch()</span>
+<span class="lineNum">      16 </span><span class="lineCov">        192 : OpAlgoDispatch::~OpAlgoDispatch()</span>
 <span class="lineNum">      17 </span>            : {
-<span class="lineNum">      18 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch destructor started&quot;);
-<span class="lineNum">      19 </span><span class="lineCov">         55 : }</span>
-<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      18 </span><span class="lineCov">         66 :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch destructor started&quot;);</span>
+<span class="lineNum">      19 </span><span class="lineCov">        126 : }</span>
+<a name="20"><span class="lineNum">      20 </span>            : </a>
 <span class="lineNum">      21 </span>            : void
-<span class="lineNum">      22 </span><span class="lineCov">         29 : OpAlgoDispatch::record(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      22 </span><span class="lineCov">         68 : OpAlgoDispatch::record(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      23 </span>            : {
-<span class="lineNum">      24 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch record called&quot;);
+<span class="lineNum">      24 </span><span class="lineCov">         68 :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch record called&quot;);</span>
 <span class="lineNum">      25 </span>            : 
 <span class="lineNum">      26 </span>            :     // Barrier to ensure the data is finished writing to buffer memory
-<span class="lineNum">      27 </span>            :     for (const std::shared_ptr&lt;Tensor&gt;&amp; tensor :
-<span class="lineNum">      28 </span><span class="lineCov">         29 :          this-&gt;mAlgorithm-&gt;getTensors()) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">         62 :         tensor-&gt;recordBufferMemoryBarrier(</span>
+<span class="lineNum">      27 </span><span class="lineCov">        142 :     for (const std::shared_ptr&lt;Tensor&gt;&amp; tensor :</span>
+<span class="lineNum">      28 </span><span class="lineCov">         68 :          this-&gt;mAlgorithm-&gt;getTensors()) {</span>
+<span class="lineNum">      29 </span><span class="lineCov">        142 :         tensor-&gt;recordBufferMemoryBarrier(</span>
 <span class="lineNum">      30 </span>            :           commandBuffer,
 <span class="lineNum">      31 </span>            :           vk::AccessFlagBits::eHostWrite,
 <span class="lineNum">      32 </span>            :           vk::AccessFlagBits::eShaderRead,
@@ -96,24 +96,28 @@
 <span class="lineNum">      34 </span>            :           vk::PipelineStageFlagBits::eComputeShader);
 <span class="lineNum">      35 </span>            :     }
 <span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span><span class="lineCov">         29 :     this-&gt;mAlgorithm-&gt;bindCore(commandBuffer);</span>
-<span class="lineNum">      38 </span><span class="lineCov">         29 :     this-&gt;mAlgorithm-&gt;bindPush(commandBuffer, this-&gt;mPushConstants);</span>
-<span class="lineNum">      39 </span><span class="lineCov">         29 :     this-&gt;mAlgorithm-&gt;recordDispatch(commandBuffer);</span>
-<span class="lineNum">      40 </span><span class="lineCov">         29 : }</span>
-<a name="41"><span class="lineNum">      41 </span>            : </a>
-<span class="lineNum">      42 </span>            : void
-<span class="lineNum">      43 </span><span class="lineCov">        244 : OpAlgoDispatch::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      44 </span>            : {
-<span class="lineNum">      45 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch preEval called&quot;);
-<span class="lineNum">      46 </span><span class="lineCov">        244 : }</span>
-<a name="47"><span class="lineNum">      47 </span>            : </a>
-<span class="lineNum">      48 </span>            : void
-<span class="lineNum">      49 </span><span class="lineCov">        244 : OpAlgoDispatch::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      50 </span>            : {
-<span class="lineNum">      51 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch postSubmit called&quot;);
-<span class="lineNum">      52 </span><span class="lineCov">        244 : }</span>
-<span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span>            : }
+<span class="lineNum">      37 </span><span class="lineCov">         68 :     if (this-&gt;mPushConstants.size()) {</span>
+<span class="lineNum">      38 </span><span class="lineCov">         10 :         this-&gt;mAlgorithm-&gt;setPush(this-&gt;mPushConstants);</span>
+<span class="lineNum">      39 </span>            :     }
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineCov">         66 :     this-&gt;mAlgorithm-&gt;recordBindCore(commandBuffer);</span>
+<span class="lineNum">      42 </span><span class="lineCov">         66 :     this-&gt;mAlgorithm-&gt;recordBindPush(commandBuffer);</span>
+<span class="lineNum">      43 </span><span class="lineCov">         66 :     this-&gt;mAlgorithm-&gt;recordDispatch(commandBuffer);</span>
+<span class="lineNum">      44 </span><span class="lineCov">         66 : }</span>
+<a name="45"><span class="lineNum">      45 </span>            : </a>
+<span class="lineNum">      46 </span>            : void
+<span class="lineNum">      47 </span><span class="lineCov">        510 : OpAlgoDispatch::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      48 </span>            : {
+<span class="lineNum">      49 </span><span class="lineCov">        510 :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch preEval called&quot;);</span>
+<span class="lineNum">      50 </span><span class="lineCov">        510 : }</span>
+<a name="51"><span class="lineNum">      51 </span>            : </a>
+<span class="lineNum">      52 </span>            : void
+<span class="lineNum">      53 </span><span class="lineCov">        510 : OpAlgoDispatch::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span><span class="lineCov">        510 :     KP_LOG_DEBUG(&quot;Kompute OpAlgoDispatch postSubmit called&quot;);</span>
+<span class="lineNum">      56 </span><span class="lineCov">        510 : }</span>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            : }
 </pre>
       </td>
     </tr>

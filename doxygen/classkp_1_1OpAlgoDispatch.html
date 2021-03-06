@@ -91,8 +91,7 @@ Collaboration diagram for kp::OpAlgoDispatch:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2d93f88c0805970a28228b916ea7fc98"><td class="memItemLeft" align="right" valign="top"><a id="a2d93f88c0805970a28228b916ea7fc98"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>OpAlgoDispatch</b> (const std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">kp::Algorithm</a> &gt; &amp;algorithm, const kp::Constants &amp;pushConstants={})</td></tr>
+<tr class="memitem:a2d93f88c0805970a28228b916ea7fc98"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoDispatch.html#a2d93f88c0805970a28228b916ea7fc98">OpAlgoDispatch</a> (const std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">kp::Algorithm</a> &gt; &amp;algorithm, const kp::Constants &amp;pushConstants={})</td></tr>
 <tr class="separator:a2d93f88c0805970a28228b916ea7fc98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a809cda4e6f37c57a2807971e6481515b"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1OpAlgoDispatch.html#a809cda4e6f37c57a2807971e6481515b">~OpAlgoDispatch</a> () override</td></tr>
 <tr class="separator:a809cda4e6f37c57a2807971e6481515b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +108,42 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Operation that provides a general abstraction that simplifies the use of algorithm and parameter components which can be used with shaders. By default it enables the user to provide a dynamic number of tensors which are then passed as inputs. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a2d93f88c0805970a28228b916ea7fc98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d93f88c0805970a28228b916ea7fc98">&#9670;&nbsp;</a></span>OpAlgoDispatch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">kp::OpAlgoDispatch::OpAlgoDispatch </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">kp::Algorithm</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>algorithm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const kp::Constants &amp;&#160;</td>
+          <td class="paramname"><em>pushConstants</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Constructor that stores the algorithm to use as well as the relevant push constants to override when recording.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">algorithm</td><td>The algorithm object to use for dispatch </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>The push constants to use for override </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a809cda4e6f37c57a2807971e6481515b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a809cda4e6f37c57a2807971e6481515b">&#9670;&nbsp;</a></span>~OpAlgoDispatch()</h2>
 
@@ -159,7 +194,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Executes after the recorded commands are submitted, and performs a copy of the GPU Device memory into the staging buffer so the output data can be retrieved. </p>
+<p>Does not perform any postEval commands.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#abf8f8333d659c32dd0543ee2af4f3e61">kp::OpBase</a>.</p>
 
@@ -188,7 +229,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Does not perform any preEval commands. </p>
+<p>Does not perform any preEval commands.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a110436486db21e83bdb09f73262c0587">kp::OpBase</a>.</p>
 
@@ -217,7 +264,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>This records the commands that are to be sent to the GPU. This includes the barriers that ensure the memory has been copied before going in and out of the shader, as well as the dispatch operation that sends the shader processing to the gpu. This function also records the GPU memory copy of the output data for the staging buffer so it can be read by the host. </p>
+<p>This records the commands that are to be sent to the GPU. This includes the barriers that ensure the memory has been copied before going in and out of the shader, as well as the dispatch operation that sends the shader processing to the gpu. This function also records the GPU memory copy of the output data for the staging buffer so it can be read by the host.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a49b26daf78e1c4720d950514383019f8">kp::OpBase</a>.</p>
 

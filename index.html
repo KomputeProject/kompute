@@ -497,8 +497,8 @@
 <li><p><a class="reference external" href="#mobile-enabled">Mobile enabled</a> with examples via Android NDK across several architectures</p></li>
 <li><p>BYOV: <a class="reference external" href="#motivations">Bring-your-own-Vulkan design</a> to play nice with existing Vulkan applications</p></li>
 <li><p>Explicit relationships for GPU and host <a class="reference external" href="https://kompute.cc/overview/memory-management.html">memory ownership and memory management</a></p></li>
-<li><p><a class="reference external" href="#simple-examples">Hands on examples</a> showing the core features</p></li>
-<li><p>Longer tutorials for <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a> and <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
+<li><p>Robust codebase with <a class="reference external" href="https://kompute.cc/codecov/">90% unit test code coverage</a></p></li>
+<li><p>Advanced use-cases on <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a> and <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif"><img alt="" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif"/></a>
 
@@ -510,7 +510,7 @@
 <p>The C++ interface provides low level access to the native components of Kompute and Vulkan, enabling for <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">advanced optimizations</a> as well as <a class="reference external" href="https://kompute.cc/overview/reference.html">extension of components</a>.</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">kompute</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">shader</span><span class="p">)</span> <span class="p">{</span>
 
-    <span class="c1">// 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)</span>
+    <span class="c1">// 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)</span>
     <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
 
     <span class="c1">// 2. Create and initialise Kompute Tensors through manager</span>
@@ -530,14 +530,16 @@
     <span class="k">auto</span> <span class="n">algorithm</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span>
                                    <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">),</span>
                                    <span class="n">workgroup</span><span class="p">,</span>
-                                   <span class="n">specConsts</span><span class="p">);</span>
+                                   <span class="n">specConsts</span><span class="p">,</span>
+                                   <span class="n">pushConstsA</span><span class="p">);</span>
 
     <span class="c1">// 4. Run operation synchronously using sequence</span>
     <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
         <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">pushConstsA</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">pushConstsB</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span> <span class="c1">// Binds default push consts</span>
+        <span class="o">-&gt;</span><span class="n">eval</span><span class="p">()</span> <span class="c1">// Evaluates the two recorded operations</span>
+        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">pushConstsB</span><span class="p">)</span> <span class="c1">// Overrides push consts</span>
+        <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span> <span class="c1">// Evaluates only last recorded operation</span>
 
     <span class="c1">// 5. Sync results from the GPU asynchronously</span>
     <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
@@ -594,7 +596,7 @@
 <h3 id="your-first-kompute-python">Your First Kompute (Python)<a class="headerlink" href="#your-first-kompute-python" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python package</a> provides a <a class="reference external" href="https://kompute.cc/overview/python-reference.html">high level interactive interface</a> that enables for experimentation whilst ensuring high performance and fast development workflows.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">kompute</span><span class="p">(</span><span class="n">shader</span><span class="p">):</span>
-    <span class="c1"># 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)</span>
+    <span class="c1"># 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)</span>
     <span class="n">mgr</span> <span class="o">=</span> <span class="n">kp</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
 
     <span class="c1"># 2. Create and initialise Kompute Tensors through manager</span>
@@ -611,14 +613,17 @@
     <span class="n">push_consts_a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">push_consts_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
 
-    <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">kp</span><span class="o">.</span><span class="n">Shader</span><span class="o">.</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">),</span> <span class="n">workgroup</span><span class="p">,</span> <span class="n">spec_consts</span><span class="p">)</span>
+    <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">.</span><span class="n">Shader</span><span class="o">.</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
+
+    <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">spirv</span><span class="p">,</span> <span class="n">workgroup</span><span class="p">,</span> <span class="n">spec_consts</span><span class="p">,</span> <span class="n">push_consts_a</span><span class="p">)</span>
 
     <span class="c1"># 4. Run operation synchronously using sequence</span>
     <span class="p">(</span><span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
         <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpTensorSyncDevice</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">push_consts_a</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">push_consts_b</span><span class="p">))</span>
-        <span class="o">.</span><span class="n">eval</span><span class="p">())</span>
+        <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">))</span> <span class="c1"># Binds default push consts provided</span>
+        <span class="o">.</span><span class="n">eval</span><span class="p">()</span> <span class="c1"># evaluates the two recorded ops</span>
+        <span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="n">kp</span><span class="o">.</span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span> <span class="n">push_consts_b</span><span class="p">))</span> <span class="c1"># Overrides push consts</span>
+        <span class="o">.</span><span class="n">eval</span><span class="p">())</span> <span class="c1"># evaluates only the last recorded op</span>
 
     <span class="c1"># 5. Sync results from the GPU asynchronously</span>
     <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">sequence</span><span class="p">()</span>
@@ -855,6 +860,10 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 <li><p>Uses doxygen and sphinx for documentation and autodocs</p></li>
 <li><p>Uses vcpkg for finding the dependencies, it’s the recommended set up to retrieve the libraries</p></li>
 </ul>
+<p>If you want to run with debug layers you can add them with the <code class="docutils literal notranslate"><span class="pre">KOMPUTE_ENV_DEBUG_LAYERS</span></code> parameter as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">KOMPUTE_ENV_DEBUG_LAYERS</span><span class="o">=</span><span class="s2">"VK_LAYER_LUNARG_api_dump"</span>
+</pre></div>
+</div>
 
 <h5 id="updating-documentation">Updating documentation<a class="headerlink" href="#updating-documentation" title="Permalink to this headline">¶</a></h5>
 <p>To update the documentation you will need to:</p>

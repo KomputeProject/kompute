@@ -484,11 +484,9 @@
 <span class="cm">     * requirements for the operations to be able to create and manage their</span>
 <span class="cm">     * sub-components.</span>
 <span class="cm">     *</span>
-<span class="cm">     * @param physicalDevice Vulkan physical device used to find device queues</span>
-<span class="cm">     * @param device Vulkan logical device for passing to Algorithm</span>
-<span class="cm">     * @param commandBuffer Vulkan Command Buffer to record commands into</span>
 <span class="cm">     * @param tensors Tensors that are to be used in this operation</span>
-<span class="cm">     * @param komputeWorkgroup Optional parameter to specify the layout for processing</span>
+<span class="cm">     * @param algorithm An algorithm that will be overridden with the OpMult</span>
+<span class="cm">     * shader data and the tensors provided which are expected to be 3</span>
 <span class="cm">     */</span>
     <span class="n">OpMult</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algorithm</span><span class="p">)</span>
         <span class="o">:</span> <span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>

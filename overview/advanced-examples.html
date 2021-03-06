@@ -248,6 +248,8 @@
         </li>
         <li class="md-nav__item"><a href="#end-to-end-examples" class="md-nav__link">End-to-end examples</a>
         </li>
+        <li class="md-nav__item"><a href="#add-vulkan-extensions" class="md-nav__link">Add Vulkan Extensions</a>
+        </li>
         <li class="md-nav__item"><a href="#your-custom-kompute-operation" class="md-nav__link">Your Custom Kompute Operation</a>
         </li>
         <li class="md-nav__item"><a href="#async-await-example" class="md-nav__link">Async/Await Example</a><nav class="md-nav">
@@ -398,6 +400,8 @@
         </li>
         <li class="md-nav__item"><a href="#end-to-end-examples" class="md-nav__link">End-to-end examples</a>
         </li>
+        <li class="md-nav__item"><a href="#add-vulkan-extensions" class="md-nav__link">Add Vulkan Extensions</a>
+        </li>
         <li class="md-nav__item"><a href="#your-custom-kompute-operation" class="md-nav__link">Your Custom Kompute Operation</a>
         </li>
         <li class="md-nav__item"><a href="#async-await-example" class="md-nav__link">Async/Await Example</a><nav class="md-nav">
@@ -445,6 +449,104 @@
 <li><p><a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Android NDK Mobile Kompute ML Application</a></p></li>
 <li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
 </ul>
+
+
+<h2 id="add-vulkan-extensions">Add Vulkan Extensions<a class="headerlink" href="#add-vulkan-extensions" title="Permalink to this headline">¶</a></h2>
+<p>Kompute provides a simple way to add Vulkan extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.</p>
+<p>The example below shows how you can enable the “VK_EXT_shader_atomic_float” extension so we can use the adomicAdd for floats in the shaders.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+<span class="s">          #version 450</span>
+
+<span class="s">          #extension GL_EXT_shader_atomic_float: enable</span>
+
+<span class="s">          layout(push_constant) uniform PushConstants {</span>
+<span class="s">            float x;</span>
+<span class="s">            float y;</span>
+<span class="s">            float z;</span>
+<span class="s">          } pcs;</span>
+
+<span class="s">          layout (local_size_x = 1) in;</span>
+
+<span class="s">          layout(set = 0, binding = 0) buffer a { float pa[]; };</span>
+
+<span class="s">          void main() {</span>
+<span class="s">              atomicAdd(pa[0], pcs.x);</span>
+<span class="s">              atomicAdd(pa[1], pcs.y);</span>
+<span class="s">              atomicAdd(pa[2], pcs.z);</span>
+<span class="s">          }</span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+
+    <span class="p">{</span>
+        <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span> <span class="s">"VK_EXT_shader_atomic_float"</span> <span class="p">});</span>
+
+        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
+
+        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span>
+          <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">},</span> <span class="n">spirv</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span><span class="p">({</span> <span class="mi">1</span> <span class="p">}),</span> <span class="p">{},</span> <span class="p">{</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">});</span>
+
+        <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">})</span>
+               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span>
+                                            <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span><span class="p">{</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span> <span class="p">})</span>
+               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span>
+                                            <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span><span class="p">{</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">})</span>
+               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">})</span>
+               <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+
+        <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">(),</span> <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span><span class="p">({</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span> <span class="p">}));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
 
 
 <h2 id="your-custom-kompute-operation">Your Custom Kompute Operation<a class="headerlink" href="#your-custom-kompute-operation" title="Permalink to this headline">¶</a></h2>

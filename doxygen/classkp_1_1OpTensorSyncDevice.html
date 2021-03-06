@@ -105,7 +105,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aab3aa15a2a7f6482461a1ff9de3b47af inherit pub_methods_classkp_1_1OpBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging. </p>
+<div class="textblock"><p>Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eHost it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a482b739eac339555ca6183f19e850300"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a482b739eac339555ca6183f19e850300">&#9670;&nbsp;</a></span>OpTensorSyncDevice()</h2>
@@ -125,9 +125,6 @@ Public Member Functions</h2></td></tr>
 <p>Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">physicalDevice</td><td>Vulkan physical device used to find device queues </td></tr>
-    <tr><td class="paramname">device</td><td>Vulkan logical device for passing to <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> </td></tr>
-    <tr><td class="paramname">commandBuffer</td><td>Vulkan Command Buffer to record commands into </td></tr>
     <tr><td class="paramname">tensors</td><td>Tensors that will be used to create in operation. </td></tr>
   </table>
   </dd>
@@ -185,7 +182,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Does not perform any postEval commands. </p>
+<p>Does not perform any postEval commands.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#abf8f8333d659c32dd0543ee2af4f3e61">kp::OpBase</a>.</p>
 
@@ -214,7 +217,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Does not perform any preEval commands. </p>
+<p>Does not perform any preEval commands.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a110436486db21e83bdb09f73262c0587">kp::OpBase</a>.</p>
 
@@ -243,7 +252,13 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory. </p>
+<p>For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">commandBuffer</td><td>The command buffer to record the command into. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classkp_1_1OpBase.html#a49b26daf78e1c4720d950514383019f8">kp::OpBase</a>.</p>
 
