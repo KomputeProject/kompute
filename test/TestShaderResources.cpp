@@ -32,7 +32,7 @@ void compileShaderWithGivenResources(const std::string shaderString, const TBuil
 
 TEST(TestShaderResources, TestNoMaxLight)
 {
-    TBuiltInResource noMaxLightResources = kp::defaultResource;
+    TBuiltInResource noMaxLightResources = kp::Shader::defaultResource;
     noMaxLightResources.maxLights=0;
         
     EXPECT_NO_THROW(compileShaderWithGivenResources(shaderString, noMaxLightResources));
@@ -41,7 +41,7 @@ TEST(TestShaderResources, TestNoMaxLight)
 
 TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 {
-    TBuiltInResource smallComputeWorkGroupSizeXResources = kp::defaultResource;
+    TBuiltInResource smallComputeWorkGroupSizeXResources = kp::Shader::defaultResource;
     smallComputeWorkGroupSizeXResources.maxComputeWorkGroupSizeX=0;
     
     ASSERT_THROW(compileShaderWithGivenResources(shaderString, smallComputeWorkGroupSizeXResources), std::runtime_error);
@@ -50,7 +50,7 @@ TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 
 TEST(TestShaderResources, TestNoWhileLoopLimit)
 {
-    TBuiltInResource noWhileLoopLimitResources = kp::defaultResource;
+    TBuiltInResource noWhileLoopLimitResources = kp::Shader::defaultResource;
     noWhileLoopLimitResources.limits.whileLoops=0;
     
     ASSERT_THROW(compileShaderWithGivenResources(shaderString, noWhileLoopLimitResources), std::runtime_error);

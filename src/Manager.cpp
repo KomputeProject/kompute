@@ -1,8 +1,12 @@
 
 #include <set>
 #include <string>
+#include <sstream>
+#include <iterator>
 
 #include "kompute/Manager.hpp"
+
+#include "fmt/ranges.h"
 
 namespace kp {
 
@@ -29,12 +33,13 @@ Manager::Manager()
 {}
 
 Manager::Manager(uint32_t physicalDeviceIndex,
-                 const std::vector<uint32_t>& familyQueueIndices)
+                 const std::vector<uint32_t>& familyQueueIndices,
+                 const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
 
     this->createInstance();
-    this->createDevice(familyQueueIndices, physicalDeviceIndex);
+    this->createDevice(familyQueueIndices, physicalDeviceIndex, desiredExtensions);
 }
 
 Manager::Manager(std::shared_ptr<vk::Instance> instance,
@@ -146,7 +151,10 @@ Manager::createInstance()
     applicationInfo.applicationVersion = KOMPUTE_VK_API_VERSION;
 
     std::vector<const char*> applicationExtensions;
+
+#if DEBUG
     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+#endif
 
     vk::InstanceCreateInfo computeInstanceCreateInfo;
     computeInstanceCreateInfo.pApplicationInfo = &applicationInfo;
@@ -163,8 +171,23 @@ Manager::createInstance()
     // We'll identify the layers that are supported
     std::vector<const char*> validLayerNames;
     std::vector<const char*> desiredLayerNames = {
-        "VK_LAYER_LUNARG_assistant_layer", "VK_LAYER_LUNARG_standard_validation"
+        "VK_LAYER_LUNARG_assistant_layer",
+        "VK_LAYER_LUNARG_standard_validation",
+        "VK_LAYER_KHRONOS_validation",
     };
+    std::vector<std::string> envLayerNames;
+    const char* envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
+    KP_LOG_DEBUG("Kompute Manager adding environment layers: {}", envLayerNamesVal);
+    if (envLayerNamesVal != NULL && *envLayerNamesVal != '\0') {
+        std::istringstream iss(envLayerNamesVal);
+        std::istream_iterator<std::string> beg(iss), end;
+        envLayerNames = std::vector<std::string>(beg, end);
+        for (const std::string& layerName : envLayerNames) {
+            desiredLayerNames.push_back(layerName.c_str());
+        }
+        KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
+    }
+
     // Identify the valid layer names based on the desiredLayerNames
     {
         std::set<std::string> uniqueLayerNames;
@@ -174,6 +197,7 @@ Manager::createInstance()
             std::string layerName(layerProperties.layerName.data());
             uniqueLayerNames.insert(layerName);
         }
+        KP_LOG_DEBUG("Available layers: {}", uniqueLayerNames);
         for (const char* desiredLayerName : desiredLayerNames) {
             if (uniqueLayerNames.count(desiredLayerName) != 0) {
                 validLayerNames.push_back(desiredLayerName);
@@ -182,9 +206,13 @@ Manager::createInstance()
     }
 
     if (validLayerNames.size() > 0) {
+        KP_LOG_DEBUG("Kompute Manager Initializing instance with valid layers: {}", validLayerNames);
         computeInstanceCreateInfo.enabledLayerCount =
           (uint32_t)validLayerNames.size();
         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
+    }
+    else {
+        KP_LOG_WARN("Kompute Manager no valid layer names found from desired layer names");
     }
 #endif
 #endif
@@ -240,7 +268,8 @@ Manager::clear()
 
 void
 Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
-                      uint32_t physicalDeviceIndex)
+                      uint32_t physicalDeviceIndex,
+                      const std::vector<std::string>& desiredExtensions)
 {
 
     KP_LOG_DEBUG("Kompute Manager creating Device");
@@ -268,7 +297,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
     KP_LOG_INFO("Using physical device index {} found {}",
                 physicalDeviceIndex,
-                physicalDeviceProperties.deviceName);
+                physicalDeviceProperties.deviceName.data());
 
     if (!familyQueueIndices.size()) {
         // Find compute queue
@@ -318,9 +347,33 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
         deviceQueueCreateInfos.push_back(deviceQueueCreateInfo);
     }
 
+    KP_LOG_DEBUG("Kompute Manager desired extension layers {}", desiredExtensions);
+
+    std::vector<vk::ExtensionProperties> deviceExtensions = this->mPhysicalDevice->enumerateDeviceExtensionProperties();
+
+    std::set<std::string> uniqueExtensionNames;
+    for (const vk::ExtensionProperties& ext : deviceExtensions) {
+        std::string extName(ext.extensionName.data());
+        uniqueExtensionNames.insert(extName);
+    }
+    KP_LOG_DEBUG("Kompute Manager available extensions {}", uniqueExtensionNames);
+    std::vector<const char*> validExtensions;
+    for (std::string ext : desiredExtensions) {
+        if (uniqueExtensionNames.count(ext) != 0) {
+            validExtensions.push_back(ext.c_str());
+        }
+    }
+    if (desiredExtensions.size() != validExtensions.size()) {
+        KP_LOG_ERROR("Kompute Manager not all extensions were added: {}", validExtensions);
+    }
+
     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),
                                           deviceQueueCreateInfos.size(),
-                                          deviceQueueCreateInfos.data());
+                                          deviceQueueCreateInfos.data(),
+                                          {},
+                                          {},
+                                          validExtensions.size(),
+                                          validExtensions.data());
 
     this->mDevice = std::make_shared<vk::Device>();
     physicalDevice.createDevice(
@@ -361,13 +414,14 @@ std::shared_ptr<Algorithm>
 Manager::algorithm(const std::vector<std::shared_ptr<Tensor>>& tensors,
                    const std::vector<uint32_t>& spirv,
                    const Workgroup& workgroup,
-                   const Constants& specializationConstants)
+                   const Constants& specializationConstants,
+                   const Constants& pushConstants)
 {
 
     KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
     std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
-      this->mDevice, tensors, spirv, workgroup, specializationConstants) };
+      this->mDevice, tensors, spirv, workgroup, specializationConstants, pushConstants) };
 
     if (this->mManageResources) {
         this->mManagedAlgorithms.push_back(algorithm);

@@ -24,18 +24,17 @@ class Manager
     Manager();
 
     /**
-     * Similar to base constructor but allows the user to provide the device
-     * they would like to create the resources on.
+     * Similar to base constructor but allows for further configuration to use when
+     * creating the Vulkan resources.
      *
      * @param physicalDeviceIndex The index of the physical device to use
-     * @param manageResources (Optional) Whether to manage the memory of the
-     * resources created and destroy when the manager is destroyed.
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
-     * @param totalQueues The total number of compute queues to create.
+     * @param desiredExtensions The desired extensions to load from physicalDevice
      */
     Manager(uint32_t physicalDeviceIndex,
-            const std::vector<uint32_t>& familyQueueIndices = {});
+            const std::vector<uint32_t>& familyQueueIndices = {},
+            const std::vector<std::string>& desiredExtensions = {});
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
@@ -57,39 +56,55 @@ class Manager
     ~Manager();
 
     /**
-     * Get or create a managed Sequence that will be contained by this manager.
-     * If the named sequence does not currently exist, it would be created and
-     * initialised.
+     * Create a managed sequence that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
      *
-     * @param sequenceName The name for the named sequence to be retrieved or
-     * created
      * @param queueIndex The queue to use from the available queues
-     * @return Shared pointer to the manager owned sequence resource
+     * @returns Shared pointer with initialised sequence
      */
     std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
 
     /**
-     * Function that simplifies the common workflow of tensor creation and
-     * initialization. It will take the constructor parameters for a Tensor
-     * and will will us it to create a new Tensor and then create it. The
-     * tensor memory will then be managed and owned by the manager.
+     * Create a managed tensor that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
-     * @param syncDataToGPU Whether to sync the data to GPU memory
-     * @returns Initialized Tensor with memory Syncd to GPU device
+     * @returns Shared pointer with initialised tensor
      */
     std::shared_ptr<Tensor> tensor(
       const std::vector<float>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice);
 
+    /**
+     * Create a managed algorithm that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
+     *
+     * @param tensors (optional) The tensors to initialise the algorithm with
+     * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
+     * @param workgroup (optional) kp::Workgroup for algorithm to use, and
+     * defaults to (tensor[0].size(), 1, 1)
+     * @param specializationConstants (optional) kp::Constant to use for
+     * specialization constants, and defaults to an empty constant
+     * @param pushConstants (optional) kp::Constant to use for push constants,
+     * and defaults to an empty constant
+     * @returns Shared pointer with initialised algorithm
+     */
     std::shared_ptr<Algorithm> algorithm(
       const std::vector<std::shared_ptr<Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
-      const Constants& specializationConstants = {});
+      const Constants& specializationConstants = {},
+      const Constants& pushConstants = {});
 
+    /**
+     * Destroy the GPU resources and all managed resources by manager.
+     **/
     void destroy();
+    /**
+     * Run a pseudo-garbage collection to release all the managed resources
+     * that have been already freed due to these reaching to zero ref count.
+     **/
     void clear();
 
   private:
@@ -120,7 +135,8 @@ class Manager
     // Create functions
     void createInstance();
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
-                      uint32_t hysicalDeviceIndex = 0);
+                      uint32_t hysicalDeviceIndex = 0,
+                      const std::vector<std::string>& desiredExtensions = {});
 };
 
 } // End namespace kp

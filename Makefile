@@ -163,6 +163,9 @@ generate_python_docstrings:
 	python -m pybind11_mkdoc \
 		-o python/src/docstrings.hpp \
 		single_include/kompute/Kompute.hpp \
+		-Iexternal/fmt/include/ \
+		-Iexternal/spdlog/include/ \
+		-Iexternal/glslang/ \
 		-I/usr/include/c++/7.5.0/
 
 install_python_reqs:

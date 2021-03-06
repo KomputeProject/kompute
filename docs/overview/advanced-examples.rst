@@ -23,6 +23,63 @@ End-to-end examples
 * `Android NDK Mobile Kompute ML Application <https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617>`_
 * `Game Development Kompute ML in Godot Engine <https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0>`_
 
+Add Vulkan Extensions
+^^^^^^^^^^^^^^^^^^^^
+
+Kompute provides a simple way to add Vulkan extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.
+
+The example below shows how you can enable the "VK_EXT_shader_atomic_float" extension so we can use the adomicAdd for floats in the shaders.
+
+.. code-block:: cpp
+   :linenos:
+
+   int main() {
+       std::string shader(R"(
+             #version 450
+
+             #extension GL_EXT_shader_atomic_float: enable
+
+             layout(push_constant) uniform PushConstants {
+               float x;
+               float y;
+               float z;
+             } pcs;
+
+             layout (local_size_x = 1) in;
+
+             layout(set = 0, binding = 0) buffer a { float pa[]; };
+
+             void main() {
+                 atomicAdd(pa[0], pcs.x);
+                 atomicAdd(pa[1], pcs.y);
+                 atomicAdd(pa[2], pcs.z);
+             })");
+
+       std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+
+       std::shared_ptr<kp::Sequence> sq = nullptr;
+
+       {
+           kp::Manager mgr(0, {}, { "VK_EXT_shader_atomic_float" });
+
+           std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
+
+           std::shared_ptr<kp::Algorithm> algo =
+             mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0, 0.0, 0.0 });
+
+           sq = mgr.sequence()
+                  ->record<kp::OpTensorSyncDevice>({ tensor })
+                  ->record<kp::OpAlgoDispatch>(algo,
+                                               kp::Constants{ 0.1, 0.2, 0.3 })
+                  ->record<kp::OpAlgoDispatch>(algo,
+                                               kp::Constants{ 0.3, 0.2, 0.1 })
+                  ->record<kp::OpTensorSyncLocal>({ tensor })
+                  ->eval();
+
+           EXPECT_EQ(tensor->data(), kp::Constants({ 0.4, 0.4, 0.4 }));
+       }
+   }
+
 
 Your Custom Kompute Operation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

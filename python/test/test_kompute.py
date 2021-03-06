@@ -72,11 +72,11 @@ def test_end_to_end():
     push_consts_a = [2]
     push_consts_b = [3]
 
-    algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts)
+    algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts, push_consts_a)
 
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice(params))
-        .record(kp.OpAlgoDispatch(algo, push_consts_a))
+        .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpAlgoDispatch(algo, push_consts_b))
         .eval())
 
@@ -206,11 +206,11 @@ def test_pushconsts():
 
     tensor = mgr.tensor([0, 0, 0])
 
-    algo = mgr.algorithm([tensor], spirv, (1, 1, 1))
+    algo = mgr.algorithm([tensor], spirv, (1, 1, 1), [], [0.1, 0.2, 0.3])
 
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice([tensor]))
-        .record(kp.OpAlgoDispatch(algo, [0.1, 0.2, 0.3]))
+        .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
         .record(kp.OpTensorSyncLocal([tensor]))
         .eval())
