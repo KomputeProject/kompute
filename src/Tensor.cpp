@@ -5,17 +5,20 @@ namespace kp {
 
 Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                std::shared_ptr<vk::Device> device,
-               const std::vector<float>& data,
+               void* data,
+               uint32_t elementTotalCount,
+               uint32_t elementMemorySize,
+               const TensorDataTypes& dataType,
                const TensorTypes& tensorType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
-                 data.size(),
+                 elementTotalCount,
                  tensorType);
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
 
-    this->rebuild(data, tensorType);
+    this->rebuild(data, elementTotalCount, elementMemorySize, dataType, tensorType);
 }
 
 Tensor::~Tensor()
@@ -29,11 +32,17 @@ Tensor::~Tensor()
 }
 
 void
-Tensor::rebuild(const std::vector<float>& data, TensorTypes tensorType)
+Tensor::rebuild(void* data,
+                uint32_t elementTotalCount,
+                uint32_t elementMemorySize,
+                const TensorDataTypes& dataType,
+                TensorTypes tensorType)
 {
-    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", data.size());
+    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", elementTotalCount);
 
-    this->mData = data;
+    this->mSize = elementTotalCount;
+    this->mElementMemorySize = elementMemorySize;
+    this->mDataType = dataType;
     this->mTensorType = tensorType;
 
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
@@ -43,30 +52,7 @@ Tensor::rebuild(const std::vector<float>& data, TensorTypes tensorType)
     }
 
     this->allocateMemoryCreateGPUResources();
-}
-
-std::vector<float>&
-Tensor::data()
-{
-    return this->mData;
-}
-
-float&
-Tensor::operator[](int index)
-{
-    return this->mData[index];
-}
-
-uint64_t
-Tensor::memorySize()
-{
-    return this->size() * sizeof(float);
-}
-
-uint32_t
-Tensor::size()
-{
-    return static_cast<uint32_t>(this->mData.size());
+    this->rawMapDataIntoHostMemory(data);
 }
 
 Tensor::TensorTypes
@@ -81,15 +67,6 @@ Tensor::isInit()
     return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory;
 }
 
-void
-Tensor::setData(const std::vector<float>& data)
-{
-    if (data.size() != this->mData.size()) {
-        throw std::runtime_error(
-          "Kompute Tensor Cannot set data of different sizes");
-    }
-    this->mData = data;
-}
 
 void
 Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
@@ -204,55 +181,13 @@ Tensor::constructDescriptorBufferInfo()
 void
 Tensor::mapDataFromHostMemory()
 {
-    KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
-
-    std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-    if (this->mTensorType == TensorTypes::eHost) {
-        hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
-        hostVisibleMemory = this->mStagingMemory;
-    } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
-        return;
-    }
-
-    vk::DeviceSize bufferSize = this->memorySize();
-    void* mapped = this->mDevice->mapMemory(
-      *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-    vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
-    this->mDevice->invalidateMappedMemoryRanges(mappedMemoryRange);
-    memcpy(this->mData.data(), mapped, bufferSize);
-    this->mDevice->unmapMemory(*hostVisibleMemory);
+    KP_LOG_DEBUG("Kompute Tensor mapDataFromHostMemory - SKIPPING");
 }
 
 void
 Tensor::mapDataIntoHostMemory()
 {
-
-    KP_LOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
-
-    std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-    if (this->mTensorType == TensorTypes::eHost) {
-        hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
-        hostVisibleMemory = this->mStagingMemory;
-    } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
-        return;
-    }
-
-    vk::DeviceSize bufferSize = this->memorySize();
-
-    void* mapped = this->mDevice->mapMemory(
-      *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-    memcpy(mapped, this->mData.data(), bufferSize);
-    vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
-    this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
-    this->mDevice->unmapMemory(*hostVisibleMemory);
+    KP_LOG_DEBUG("Kompute Tensor mapDataIntoHostMemory - SKIPPING");
 }
 
 vk::BufferUsageFlags
