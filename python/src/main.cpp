@@ -135,8 +135,8 @@ PYBIND11_MODULE(kp, m) {
     py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(m, "Manager")
         .def(py::init())
         .def(py::init<uint32_t>())
-        .def(py::init<uint32_t,const std::vector<uint32_t>&>())
-        .def("sequence", &kp::Manager::sequence, py::arg("queueIndex") = 0)
+        .def(py::init<uint32_t,const std::vector<uint32_t>&,const std::vector<std::string>&>())
+        .def("sequence", &kp::Manager::sequence, py::arg("queueIndex") = 0, py::arg("desired_extensions") = std::vector<std::string>())
         .def("tensor", [np](kp::Manager& self,
                             const py::array_t<float> data,
                             kp::Tensor::TensorTypes tensor_type) {
