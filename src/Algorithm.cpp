@@ -359,7 +359,7 @@ Algorithm::createPipeline()
 }
 
 void
-Algorithm::bindCore(const vk::CommandBuffer& commandBuffer)
+Algorithm::recordBindCore(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm binding pipeline");
 
@@ -377,7 +377,7 @@ Algorithm::bindCore(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-Algorithm::bindPush(const vk::CommandBuffer& commandBuffer)
+Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
 {
     if (this->mPushConstants.size()) {
         KP_LOG_DEBUG("Kompute Algorithm binding push constants size: {}",

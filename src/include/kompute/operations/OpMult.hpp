@@ -26,11 +26,9 @@ class OpMult : public OpAlgoDispatch
      * requirements for the operations to be able to create and manage their
      * sub-components.
      *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param komputeWorkgroup Optional parameter to specify the layout for processing
+     * @param algorithm An algorithm that will be overridden with the OpMult
+     * shader data and the tensors provided which are expected to be 3
      */
     OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
         : OpAlgoDispatch(algorithm)

@@ -38,8 +38,8 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
         this->mAlgorithm->setPush(this->mPushConstants);
     }
 
-    this->mAlgorithm->bindCore(commandBuffer);
-    this->mAlgorithm->bindPush(commandBuffer);
+    this->mAlgorithm->recordBindCore(commandBuffer);
+    this->mAlgorithm->recordBindPush(commandBuffer);
     this->mAlgorithm->recordDispatch(commandBuffer);
 }
 

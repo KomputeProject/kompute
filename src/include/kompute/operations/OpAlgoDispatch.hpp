@@ -17,6 +17,13 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
+    /**
+     * Constructor that stores the algorithm to use as well as the relevant
+     * push constants to override when recording.
+     *
+     * @param algorithm The algorithm object to use for dispatch
+     * @param pushConstants The push constants to use for override
+     */
     OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
             const kp::Constants& pushConstants = {});
 
@@ -33,18 +40,22 @@ class OpAlgoDispatch : public OpBase
      * shader processing to the gpu. This function also records the GPU memory
      * copy of the output data for the staging buffer so it can be read by the
      * host.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
-     * Executes after the recorded commands are submitted, and performs a copy
-     * of the GPU Device memory into the staging buffer so the output data can
-     * be retrieved.
+     * Does not perform any postEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
