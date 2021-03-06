@@ -51,7 +51,7 @@ The C++ interface provides low level access to the native components of Kompute 
 
 void kompute(const std::string& shader) {
 
-    // 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+    // 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
     kp::Manager mgr; 
 
     // 2. Create and initialise Kompute Tensors through manager
@@ -140,7 +140,7 @@ The [Python package](https://kompute.cc/overview/python-package.html) provides a
 ```python
 
 def kompute(shader):
-    # 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+    # 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
     mgr = kp.Manager()
 
     # 2. Create and initialise Kompute Tensors through manager
