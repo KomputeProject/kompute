@@ -735,124 +735,18 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 
 namespace kp {
 
-// The default resource limit for the GLSL compiler, can be overwritten
-// Has been adobted by:
-// https://github.com/KhronosGroup/glslang/blob/master/StandAlone/ResourceLimits.cpp
-const TBuiltInResource defaultResource = {
-    /* .MaxLights = */ 0,
-    /* .MaxClipPlanes = */ 0,
-    /* .MaxTextureUnits = */ 0,
-    /* .MaxTextureCoords = */ 0,
-    /* .MaxVertexAttribs = */ 64,
-    /* .MaxVertexUniformComponents = */ 4096,
-    /* .MaxVaryingFloats = */ 64,
-    /* .MaxVertexTextureImageUnits = */ 0,
-    /* .MaxCombinedTextureImageUnits = */ 0,
-    /* .MaxTextureImageUnits = */ 0,
-    /* .MaxFragmentUniformComponents = */ 0,
-    /* .MaxDrawBuffers = */ 0,
-    /* .MaxVertexUniformVectors = */ 128,
-    /* .MaxVaryingVectors = */ 8,
-    /* .MaxFragmentUniformVectors = */ 0,
-    /* .MaxVertexOutputVectors = */ 16,
-    /* .MaxFragmentInputVectors = */ 0,
-    /* .MinProgramTexelOffset = */ -8,
-    /* .MaxProgramTexelOffset = */ 7,
-    /* .MaxClipDistances = */ 8,
-    /* .MaxComputeWorkGroupCountX = */ 65535,
-    /* .MaxComputeWorkGroupCountY = */ 65535,
-    /* .MaxComputeWorkGroupCountZ = */ 65535,
-    /* .MaxComputeWorkGroupSizeX = */ 1024,
-    /* .MaxComputeWorkGroupSizeY = */ 1024,
-    /* .MaxComputeWorkGroupSizeZ = */ 64,
-    /* .MaxComputeUniformComponents = */ 1024,
-    /* .MaxComputeTextureImageUnits = */ 16,
-    /* .MaxComputeImageUniforms = */ 8,
-    /* .MaxComputeAtomicCounters = */ 8,
-    /* .MaxComputeAtomicCounterBuffers = */ 1,
-    /* .MaxVaryingComponents = */ 60,
-    /* .MaxVertexOutputComponents = */ 64,
-    /* .MaxGeometryInputComponents = */ 64,
-    /* .MaxGeometryOutputComponents = */ 128,
-    /* .MaxFragmentInputComponents = */ 0,
-    /* .MaxImageUnits = */ 0,
-    /* .MaxCombinedImageUnitsAndFragmentOutputs = */ 0,
-    /* .MaxCombinedShaderOutputResources = */ 8,
-    /* .MaxImageSamples = */ 0,
-    /* .MaxVertexImageUniforms = */ 0,
-    /* .MaxTessControlImageUniforms = */ 0,
-    /* .MaxTessEvaluationImageUniforms = */ 0,
-    /* .MaxGeometryImageUniforms = */ 0,
-    /* .MaxFragmentImageUniforms = */ 0,
-    /* .MaxCombinedImageUniforms = */ 0,
-    /* .MaxGeometryTextureImageUnits = */ 0,
-    /* .MaxGeometryOutputVertices = */ 256,
-    /* .MaxGeometryTotalOutputComponents = */ 1024,
-    /* .MaxGeometryUniformComponents = */ 1024,
-    /* .MaxGeometryVaryingComponents = */ 64,
-    /* .MaxTessControlInputComponents = */ 128,
-    /* .MaxTessControlOutputComponents = */ 128,
-    /* .MaxTessControlTextureImageUnits = */ 0,
-    /* .MaxTessControlUniformComponents = */ 1024,
-    /* .MaxTessControlTotalOutputComponents = */ 4096,
-    /* .MaxTessEvaluationInputComponents = */ 128,
-    /* .MaxTessEvaluationOutputComponents = */ 128,
-    /* .MaxTessEvaluationTextureImageUnits = */ 16,
-    /* .MaxTessEvaluationUniformComponents = */ 1024,
-    /* .MaxTessPatchComponents = */ 120,
-    /* .MaxPatchVertices = */ 32,
-    /* .MaxTessGenLevel = */ 64,
-    /* .MaxViewports = */ 16,
-    /* .MaxVertexAtomicCounters = */ 0,
-    /* .MaxTessControlAtomicCounters = */ 0,
-    /* .MaxTessEvaluationAtomicCounters = */ 0,
-    /* .MaxGeometryAtomicCounters = */ 0,
-    /* .MaxFragmentAtomicCounters = */ 0,
-    /* .MaxCombinedAtomicCounters = */ 8,
-    /* .MaxAtomicCounterBindings = */ 1,
-    /* .MaxVertexAtomicCounterBuffers = */ 0,
-    /* .MaxTessControlAtomicCounterBuffers = */ 0,
-    /* .MaxTessEvaluationAtomicCounterBuffers = */ 0,
-    /* .MaxGeometryAtomicCounterBuffers = */ 0,
-    /* .MaxFragmentAtomicCounterBuffers = */ 0,
-    /* .MaxCombinedAtomicCounterBuffers = */ 1,
-    /* .MaxAtomicCounterBufferSize = */ 16384,
-    /* .MaxTransformFeedbackBuffers = */ 4,
-    /* .MaxTransformFeedbackInterleavedComponents = */ 64,
-    /* .MaxCullDistances = */ 8,
-    /* .MaxCombinedClipAndCullDistances = */ 8,
-    /* .MaxSamples = */ 4,
-    /* .maxMeshOutputVerticesNV = */ 256,
-    /* .maxMeshOutputPrimitivesNV = */ 512,
-    /* .maxMeshWorkGroupSizeX_NV = */ 32,
-    /* .maxMeshWorkGroupSizeY_NV = */ 1,
-    /* .maxMeshWorkGroupSizeZ_NV = */ 1,
-    /* .maxTaskWorkGroupSizeX_NV = */ 32,
-    /* .maxTaskWorkGroupSizeY_NV = */ 1,
-    /* .maxTaskWorkGroupSizeZ_NV = */ 1,
-    /* .maxMeshViewCountNV = */ 4,
-    /* .maxDualSourceDrawBuffersEXT = */ 1,
-
-    /* .limits = */
-    {
-      /* .nonInductiveForLoops = */ 1,
-      /* .whileLoops = */ 1,
-      /* .doWhileLoops = */ 1,
-      /* .generalUniformIndexing = */ 1,
-      /* .generalAttributeMatrixVectorIndexing = */ 1,
-      /* .generalVaryingIndexing = */ 1,
-      /* .generalSamplerIndexing = */ 1,
-      /* .generalVariableIndexing = */ 1,
-      /* .generalConstantMatrixVectorIndexing = */ 1,
-    }
-};
-
 /**
     Shader utily class with functions to compile and process glsl files.
 */
 class Shader
 {
   public:
+
+    // The default resource limit for the GLSL compiler, can be overwritten
+    // Has been adopted by:
+    // https://github.com/KhronosGroup/glslang/blob/master/StandAlone/ResourceLimits.cpp
+    const static TBuiltInResource defaultResource;
+
     /**
      * Compile multiple sources with optional filenames. Currently this function
      * uses the glslang C++ interface which is not thread safe so this funciton
@@ -873,7 +767,7 @@ class Shader
       const std::vector<std::string>& files = {},
       const std::string& entryPoint = "main",
       std::vector<std::pair<std::string, std::string>> definitions = {},
-      const TBuiltInResource& resources = defaultResource);
+      const TBuiltInResource& resources = Shader::defaultResource);
 
     /**
      * Compile a single glslang source from string value. Currently this
@@ -893,7 +787,7 @@ class Shader
       const std::string& source,
       const std::string& entryPoint = "main",
       std::vector<std::pair<std::string, std::string>> definitions = {},
-      const TBuiltInResource& resources = defaultResource);
+      const TBuiltInResource& resources = Shader::defaultResource);
 };
 
 }
@@ -1125,11 +1019,19 @@ class Algorithm
 {
   public:
     /**
-     *  Default constructor for Algorithm
+     *  Main constructor for algorithm with configuration parameters to create
+     *  the underlying resources.
      *
      *  @param device The Vulkan device to use for creating resources
-     *  @param commandBuffer The vulkan command buffer to bind the pipeline and
-     * shaders
+     *  @param tensors (optional) The tensors to use to create the descriptor resources
+     *  @param spirv (optional) The spirv code to use to create the algorithm
+     *  @param workgroup (optional) The kp::Workgroup to use for the dispatch which defaults to
+     *  kp::Workgroup(tensor[0].size(), 1, 1) if not set.
+     *  @param specializationConstants (optional) The kp::Constants to use to initialize
+     *  the specialization constants which cannot be changed once set.
+     *  @param pushConstants (optional) The kp::Constants to use when initializing the
+     *  pipeline, which set the size of the push constants - these can be modified but
+     *  all new values must have the same vector size as this initial value.
      */
     Algorithm(std::shared_ptr<vk::Device> device,
               const std::vector<std::shared_ptr<Tensor>>& tensors = {},
@@ -1139,13 +1041,18 @@ class Algorithm
               const Constants& pushConstants = {});
 
     /**
-     * Initialiser for the shader data provided to the algorithm as well as
-     * tensor parameters that will be used in shader.
+     *  Rebuild function to reconstruct algorithm with configuration parameters to create
+     *  the underlying resources.
      *
-     * @param shaderFileData The bytes in spir-v format of the shader
-     * @tensorParams The Tensors to be used in the Algorithm / shader for
-     * @specalizationInstalces The specialization parameters to pass to the
-     * function processing
+     *  @param tensors The tensors to use to create the descriptor resources
+     *  @param spirv The spirv code to use to create the algorithm
+     *  @param workgroup (optional) The kp::Workgroup to use for the dispatch which defaults to
+     *  kp::Workgroup(tensor[0].size(), 1, 1) if not set.
+     *  @param specializationConstants (optional) The kp::Constants to use to initialize
+     *  the specialization constants which cannot be changed once set.
+     *  @param pushConstants (optional) The kp::Constants to use when initializing the
+     *  pipeline, which set the size of the push constants - these can be modified but
+     *  all new values must have the same vector size as this initial value.
      */
     void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
                  const std::vector<uint32_t>& spirv,
@@ -1163,24 +1070,77 @@ class Algorithm
      * Records the dispatch function with the provided template parameters or
      * alternatively using the size of the tensor by default.
      *
-     * @param x Layout X dispatch value
-     * @param y Layout Y dispatch value
-     * @param z Layout Z dispatch value
+     * @param commandBuffer Command buffer to record the algorithm resources to
      */
     void recordDispatch(const vk::CommandBuffer& commandBuffer);
 
-    void bindCore(const vk::CommandBuffer& commandBuffer);
+    /**
+     * Records command that binds the "core" algorithm components which consist of
+     * binding the pipeline and binding the descriptorsets.
+     *
+     * @param commandBuffer Command buffer to record the algorithm resources to
+     */
+    void recordBindCore(const vk::CommandBuffer& commandBuffer);
 
-    void bindPush(const vk::CommandBuffer& commandBuffer);
+    /**
+     * Records command that binds the push constants to the command buffer provided
+     * - it is required that the pushConstants provided are of the same size as the
+     *   ones provided during initialization.
+     *
+     * @param commandBuffer Command buffer to record the algorithm resources to
+     */
+    void recordBindPush(const vk::CommandBuffer& commandBuffer);
 
+    /**
+     * function that checks all the gpu resource components to verify if these have
+     * been created and returns true if all are valid.
+     *
+     * @returns returns true if the algorithm is currently initialized.
+     */
     bool isInit();
 
+    /**
+     * Sets the work group to use in the recordDispatch
+     *
+     * @param workgroup The kp::Workgroup value to use to update the algorithm. It
+     * must have a value greater than 1 on the x value (index 1) otherwise it will
+     * be initialized on the size of the first tensor (ie. this->mTensor[0]->size())
+     */
     void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
+    /**
+     * Sets the push constants to the new value provided to use in the next bindPush()
+     *
+     * @param The kp::Constant to use to set the push constants to use in the next
+     * bindPush(...) calls. The constants provided must be of the same size as the
+     * ones created during initialization.
+     */
     void setPush(const Constants& pushConstants);
 
+    /**
+     * Gets the current workgroup from the algorithm.
+     *
+     * @param The kp::Constant to use to set the push constants to use in the next
+     * bindPush(...) calls. The constants provided must be of the same size as the
+     * ones created during initialization.
+     */
     const Workgroup& getWorkgroup();
+    /**
+     * Gets the specialization constants of the current algorithm.
+     *
+     * @returns The kp::Constants currently set for specialization constants
+     */
     const Constants& getSpecializationConstants();
+    /**
+     * Gets the specialization constants of the current algorithm.
+     *
+     * @returns The kp::Constants currently set for push constants
+     */
     const Constants& getPush();
+    /**
+     * Gets the current tensors that are used in the algorithm.
+     *
+     * @returns The list of tensors used in the algorithm.
+     */
     const std::vector<std::shared_ptr<Tensor>>& getTensors();
 
     void destroy();
@@ -1211,8 +1171,6 @@ class Algorithm
     Constants mSpecializationConstants;
     Constants mPushConstants;
     Workgroup mWorkgroup;
-
-    bool mIsInit;
 
     // Create util functions
     void createShaderModule();
@@ -1543,6 +1501,14 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     ~Sequence();
 
     /**
+     * Record function for operation to be added to the GPU queue in batch. This
+     * template requires classes to be derived from the OpBase class. This
+     * function also requires the Sequence to be recording, otherwise it will
+     * not be able to add the operation.
+     *
+     * @param op Object derived from kp::BaseOp that will be recoreded by the sequence
+     * which will be used when the operation is evaluated.
+     * @return shared_ptr<Sequence> of the Sequence class itself
      */
     std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
 
@@ -1555,6 +1521,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param tensors Vector of tensors to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
+     * @return shared_ptr<Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(
@@ -1563,6 +1530,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->record(op);
     }
+    /**
+     * Record function for operation to be added to the GPU queue in batch. This
+     * template requires classes to be derived from the OpBase class. This
+     * function also requires the Sequence to be recording, otherwise it will
+     * not be able to add the operation.
+     *
+     * @param algorithm Algorithm to use for the record often used for OpAlgo
+     * operations
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(std::shared_ptr<Algorithm> algorithm,
                                      TArgs&&... params)
@@ -1574,21 +1553,29 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Eval sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job with a barrier.
+     * operations into the gpu as a submit job synchronously (with a barrier).
      *
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     std::shared_ptr<Sequence> eval();
 
+    /**
+     * Resets all the recorded and stored operations, records the operation 
+     * provided and submits into the gpu as a submit job synchronously (with a barrier).
+     *
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
     std::shared_ptr<Sequence> eval(std::shared_ptr<OpBase> op);
 
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
      *
+     * @param tensors Vector of tensors to use for the operation
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
-    // TODO: Aim to have only a single function with tensors/algorithm
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> eval(std::vector<std::shared_ptr<Tensor>> tensors,
                                    TArgs&&... params)
@@ -1596,6 +1583,16 @@ class Sequence : public std::enable_shared_from_this<Sequence>
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->eval(op);
     }
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @param algorithm Algorithm to use for the record often used for OpAlgo
+     * operations
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> eval(std::shared_ptr<Algorithm> algorithm,
                                    TArgs&&... params)
@@ -1607,18 +1604,27 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job with a barrier. EvalAwait() must
-     * be called after to ensure the sequence is terminated correctly.
+     * operations into the gpu as a submit job without a barrier. EvalAwait() must
+     * ALWAYS be called after to ensure the sequence is terminated correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync();
+    /**
+     * Clears currnet operations to record provided one in the vector of
+     * operations into the gpu as a submit job without a barrier. EvalAwait() must
+     * ALWAYS be called after to ensure the sequence is terminated correctly.
+     *
+     * @return Boolean stating whether execution was successful.
+     */
     std::shared_ptr<Sequence> evalAsync(std::shared_ptr<OpBase> op);
-
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
      *
+     * @param tensors Vector of tensors to use for the operation
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
@@ -1629,6 +1635,16 @@ class Sequence : public std::enable_shared_from_this<Sequence>
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->evalAsync(op);
     }
+    /**
+     * Eval sends all the recorded and stored operations in the vector of
+     * operations into the gpu as a submit job with a barrier.
+     *
+     * @param algorithm Algorithm to use for the record often used for OpAlgo
+     * operations
+     * @param TArgs Template parameters that are used to initialise operation
+     * which allows for extensible configurations on initialisation.
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> evalAsync(std::shared_ptr<Algorithm> algorithm,
                                         TArgs&&... params)
@@ -1643,7 +1659,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * finishes, it runs the postEval of all operations.
      *
      * @param waitFor Number of milliseconds to wait before timing out.
-     * @return Boolean stating whether execution was successful.
+     * @return shared_ptr<Sequence> of the Sequence class itself
      */
     std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
 
@@ -1676,8 +1692,19 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      */
     bool isRecording();
 
+    /**
+     * Returns true if the sequence has been initialised, and it's based on the
+     * GPU resources being refrenced.
+     *
+     * @return Boolean stating if is initialized
+     */
     bool isInit();
 
+    /**
+     * Clears command buffer and triggers re-record of all the current operations 
+     * saved, which is useful if the underlying kp::Tensors or kp::Algorithms
+     * are modified and need to be re-recorded.
+     */
     void rerecord();
 
     /**
@@ -1742,15 +1769,13 @@ class Manager
     Manager();
 
     /**
-     * Similar to base constructor but allows the user to provide the device
-     * they would like to create the resources on.
+     * Similar to base constructor but allows for further configuration to use when
+     * creating the Vulkan resources.
      *
      * @param physicalDeviceIndex The index of the physical device to use
-     * @param manageResources (Optional) Whether to manage the memory of the
-     * resources created and destroy when the manager is destroyed.
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
-     * @param totalQueues The total number of compute queues to create.
+     * @param desiredExtensions The desired extensions to load from physicalDevice
      */
     Manager(uint32_t physicalDeviceIndex,
             const std::vector<uint32_t>& familyQueueIndices = {},
@@ -1776,32 +1801,40 @@ class Manager
     ~Manager();
 
     /**
-     * Get or create a managed Sequence that will be contained by this manager.
-     * If the named sequence does not currently exist, it would be created and
-     * initialised.
+     * Create a managed sequence that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
      *
-     * @param sequenceName The name for the named sequence to be retrieved or
-     * created
      * @param queueIndex The queue to use from the available queues
-     * @return Shared pointer to the manager owned sequence resource
+     * @returns Shared pointer with initialised sequence
      */
     std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
 
     /**
-     * Function that simplifies the common workflow of tensor creation and
-     * initialization. It will take the constructor parameters for a Tensor
-     * and will will us it to create a new Tensor and then create it. The
-     * tensor memory will then be managed and owned by the manager.
+     * Create a managed tensor that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
-     * @param syncDataToGPU Whether to sync the data to GPU memory
-     * @returns Initialized Tensor with memory Syncd to GPU device
+     * @returns Shared pointer with initialised tensor
      */
     std::shared_ptr<Tensor> tensor(
       const std::vector<float>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice);
 
+    /**
+     * Create a managed algorithm that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
+     *
+     * @param tensors (optional) The tensors to initialise the algorithm with
+     * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
+     * @param workgroup (optional) kp::Workgroup for algorithm to use, and
+     * defaults to (tensor[0].size(), 1, 1)
+     * @param specializationConstants (optional) kp::Constant to use for
+     * specialization constants, and defaults to an empty constant
+     * @param pushConstants (optional) kp::Constant to use for push constants,
+     * and defaults to an empty constant
+     * @returns Shared pointer with initialised algorithm
+     */
     std::shared_ptr<Algorithm> algorithm(
       const std::vector<std::shared_ptr<Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
@@ -1809,7 +1842,14 @@ class Manager
       const Constants& specializationConstants = {},
       const Constants& pushConstants = {});
 
+    /**
+     * Destroy the GPU resources and all managed resources by manager.
+     **/
     void destroy();
+    /**
+     * Run a pseudo-garbage collection to release all the managed resources
+     * that have been already freed due to these reaching to zero ref count.
+     **/
     void clear();
 
   private:
