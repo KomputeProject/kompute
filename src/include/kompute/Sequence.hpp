@@ -21,13 +21,13 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param device Vulkan logical device
      * @param computeQueue Vulkan compute queue
      * @param queueIndex Vulkan compute queue index in device
-     * @param nrOfTimestamps Maximum number of timestamps to allocate
+     * @param totalTimestamps Maximum number of timestamps to allocate
      */
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
-             uint32_t nrOfTimestamps = 0);
+             uint32_t totalTimestamps = 0);
     /**
      * Destructor for sequence which is responsible for cleaning all subsequent
      * owned operations.
@@ -286,7 +286,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     // Create functions
     void createCommandPool();
     void createCommandBuffer();
-    void createTimestampQueryPool(uint32_t);
+    void createTimestampQueryPool(uint32_t totalTimestamps);
 };
 
 } // End namespace kp

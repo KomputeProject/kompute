@@ -820,12 +820,14 @@ class Tensor
     };
 
     /**
-     *  Default constructor with data provided which would be used to create the
+     *  Constructor with data provided which would be used to create the
      * respective vulkan buffer and memory.
      *
+     *  @param physicalDevice The physical device to use to fetch properties
+     *  @param device The device to use to create the buffer and memory from
      *  @param data Non-zero-sized vector of data that will be used by the
      * tensor
-     *  @param tensorType Type for the tensor which is of type TensorTypes
+     *  @param tensorTypes Type for the tensor which is of type TensorTypes
      */
     Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
@@ -839,10 +841,11 @@ class Tensor
     ~Tensor();
 
     /**
-     * Initialiser which calls the initialisation for all the respective tensors
-     * as well as creates the respective staging tensors. The staging tensors
-     * would only be created for the tensors of type TensorType::eDevice as
-     * otherwise there is no need to copy from host memory.
+     * Function to trigger reinitialisation of the tensor buffer and memory with
+     * new data as well as new potential device type.
+     *
+     * @param data Vector of data to use to initialise vector from
+     * @param tensorType The type to use for the tensor
      */
     void rebuild(const std::vector<float>& data,
                  TensorTypes tensorType = TensorTypes::eDevice);
@@ -852,6 +855,11 @@ class Tensor
      */
     void destroy();
 
+    /**
+     * Check whether tensor is initialized based on the created gpu resources.
+     *
+     * @returns Boolean stating whether tensor is initialized
+     */
     bool isInit();
 
     /**
@@ -1210,6 +1218,8 @@ class OpBase
      * The record function is intended to only send a record command or run
      * commands that are expected to record operations that are to be submitted
      * as a batch into the GPU.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void record(const vk::CommandBuffer& commandBuffer) = 0;
 
@@ -1220,6 +1230,8 @@ class OpBase
      * there are situations where eval can be called multiple times, so the 
      * resources that are created should be idempotent in case it's called multiple
      * times in a row.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) = 0;
 
@@ -1230,6 +1242,8 @@ class OpBase
      * there are situations where eval can be called multiple times, so the 
      * resources that are destroyed should not require a re-init unless explicitly
      * provided by the user.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) = 0;
 };
@@ -1239,38 +1253,47 @@ class OpBase
 namespace kp {
 
 /**
-    Operation that copies the data from the first tensor to the rest of the tensors provided, using a record command for all the vectors. This operation does not own/manage the memory of the tensors passed to it. The operation must only receive tensors of type 
+ * Operation that copies the data from the first tensor to the rest of the tensors 
+ * provided, using a record command for all the vectors. This operation does not 
+ * own/manage the memory of the tensors passed to it. The operation must only 
+ * receive tensors of type 
 */
 class OpTensorCopy : public OpBase
 {
   public:
     /**
-     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation.
+     * Default constructor with parameters that provides the core vulkan resources 
+     * and the tensors that will be used in the operation.
      *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
     OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
-     * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
+     * Default destructor. This class does not manage memory so it won't be 
+     * expecting the parent to perform a release.
      */
     ~OpTensorCopy() override;
 
     /**
-     * Records the copy commands from the first tensor into all the other tensors provided. Also optionally records a barrier.
+     * Records the copy commands from the first tensor into all the other 
+     * tensors provided. Also optionally records a barrier.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Copies the local vectors for all the tensors to sync the data with the gpu.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
@@ -1284,17 +1307,20 @@ class OpTensorCopy : public OpBase
 namespace kp {
 
 /**
-    Operation that syncs tensor's device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
+ * Operation that syncs tensor's device by mapping local data into the device memory. 
+ * For TensorTypes::eDevice it will use a record operation for the memory to be syncd 
+ * into GPU memory which means that the operation will be done in sync with GPU commands. 
+ * For TensorTypes::eHost it will only map the data into host memory which will 
+ * happen during preEval before the recorded commands are dispatched.
 */
 class OpTensorSyncDevice : public OpBase
 {
   public:
     /**
-     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.
+     * Default constructor with parameters that provides the core vulkan resources 
+     * and the tensors that will be used in the operation. The tensos provided cannot 
+     * be of type TensorTypes::eStorage.
      *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
     OpTensorSyncDevice(const std::vector<std::shared_ptr<Tensor>>& tensors);
@@ -1305,17 +1331,24 @@ class OpTensorSyncDevice : public OpBase
     ~OpTensorSyncDevice() override;
 
     /**
-     * For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.
+     * For device tensors, it records the copy command for the tensor to copy the 
+     * data from its staging to device memory.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any postEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
@@ -1329,38 +1362,50 @@ class OpTensorSyncDevice : public OpBase
 namespace kp {
 
 /**
-    Operation that syncs tensor's local memory by mapping device data into the local CPU memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eStaging it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. This operation won't have any effect on TensorTypes::eStaging.
+ * Operation that syncs tensor's local memory by mapping device data into the 
+ * local CPU memory. For TensorTypes::eDevice it will use a record operation 
+ * for the memory to be syncd into GPU memory which means that the operation 
+ * will be done in sync with GPU commands. For TensorTypes::eHost it will 
+ * only map the data into host memory which will happen during preEval before 
+ * the recorded commands are dispatched.
 */
 class OpTensorSyncLocal : public OpBase
 {
   public:
     /**
-     * Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensors provided cannot be of type TensorTypes::eStorage.
+     * Default constructor with parameters that provides the core vulkan resources 
+     * and the tensors that will be used in the operation. The tensors provided 
+     * cannot be of type TensorTypes::eStorage.
      *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that will be used to create in operation.
      */
     OpTensorSyncLocal(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
-     * Default destructor. This class does not manage memory so it won't be expecting the parent to perform a release.
+     * Default destructor. This class does not manage memory so it won't be expecting 
+     * the parent to perform a release.
      */
     ~OpTensorSyncLocal() override;
 
     /**
-     * For device tensors, it records the copy command for the tensor to copy the data from its device to staging memory.
+     * For device tensors, it records the copy command for the tensor to copy the 
+     * data from its device to staging memory.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * For host tensors it performs the map command from the host memory into local memory.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
@@ -1383,6 +1428,13 @@ class OpAlgoDispatch : public OpBase
 {
   public:
 
+    /**
+     * Constructor that stores the algorithm to use as well as the relevant
+     * push constants to override when recording.
+     *
+     * @param algorithm The algorithm object to use for dispatch
+     * @param pushConstants The push constants to use for override
+     */
     OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
             const kp::Constants& pushConstants = {});
 
@@ -1399,18 +1451,22 @@ class OpAlgoDispatch : public OpBase
      * shader processing to the gpu. This function also records the GPU memory
      * copy of the output data for the staging buffer so it can be read by the
      * host.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void record(const vk::CommandBuffer& commandBuffer) override;
 
     /**
      * Does not perform any preEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
-     * Executes after the recorded commands are submitted, and performs a copy
-     * of the GPU Device memory into the staging buffer so the output data can
-     * be retrieved.
+     * Does not perform any postEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
@@ -1439,11 +1495,9 @@ class OpMult : public OpAlgoDispatch
      * requirements for the operations to be able to create and manage their
      * sub-components.
      *
-     * @param physicalDevice Vulkan physical device used to find device queues
-     * @param device Vulkan logical device for passing to Algorithm
-     * @param commandBuffer Vulkan Command Buffer to record commands into
      * @param tensors Tensors that are to be used in this operation
-     * @param komputeWorkgroup Optional parameter to specify the layout for processing
+     * @param algorithm An algorithm that will be overridden with the OpMult
+     * shader data and the tensors provided which are expected to be 3
      */
     OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
         : OpAlgoDispatch(algorithm)
@@ -1489,13 +1543,13 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param device Vulkan logical device
      * @param computeQueue Vulkan compute queue
      * @param queueIndex Vulkan compute queue index in device
-     * @param nrOfTimestamps Maximum number of timestamps to allocate
+     * @param totalTimestamps Maximum number of timestamps to allocate
      */
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
-             uint32_t nrOfTimestamps = 0);
+             uint32_t totalTimestamps = 0);
     /**
      * Destructor for sequence which is responsible for cleaning all subsequent
      * owned operations.
@@ -1754,7 +1808,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     // Create functions
     void createCommandPool();
     void createCommandBuffer();
-    void createTimestampQueryPool(uint32_t);
+    void createTimestampQueryPool(uint32_t totalTimestamps);
 };
 
 } // End namespace kp
