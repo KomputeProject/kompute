@@ -60,9 +60,9 @@ TEST(TestSequence, RerecordSequence)
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({1, 2, 3});
-    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({2, 2, 2});
-    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({0, 0, 0});
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 1, 2, 3 });
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 2, 2, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({ 0, 0, 0 });
 
     sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
 
@@ -83,24 +83,23 @@ TEST(TestSequence, RerecordSequence)
     )");
 
     std::shared_ptr<kp::Algorithm> algo =
-        mgr.algorithm({tensorA, tensorB, tensorOut}, spirv);
+      mgr.algorithm({ tensorA, tensorB, tensorOut }, spirv);
 
-    sq->record<kp::OpAlgoDispatch>(algo)
-        ->record<kp::OpTensorSyncLocal>({tensorA, tensorB, tensorOut});
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpTensorSyncLocal>(
+      { tensorA, tensorB, tensorOut });
 
     sq->eval();
 
-    EXPECT_EQ(tensorOut->vector(), std::vector<float>({2, 4, 6}));
+    EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 
-    algo->rebuild({tensorOut, tensorA, tensorB}, spirv);
+    algo->rebuild({ tensorOut, tensorA, tensorB }, spirv);
 
     // Refresh and trigger a rerecord
     sq->rerecord();
     sq->eval();
 
-    EXPECT_EQ(tensorB->vector(), std::vector<float>({2, 8, 18}));
+    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 2, 8, 18 }));
 }
-
 
 TEST(TestSequence, SequenceTimestamps)
 {
@@ -118,15 +117,16 @@ TEST(TestSequence, SequenceTimestamps)
       })");
 
     std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
-    
-    auto seq = mgr.sequence(0, 100); //100 timestamps
+
+    auto seq = mgr.sequence(0, 100); // 100 timestamps
     seq->record<kp::OpTensorSyncDevice>({ tensorA })
-        ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-        ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-        ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-        ->record<kp::OpTensorSyncLocal>({ tensorA })
-        ->eval();
+      ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+      ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+      ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+      ->record<kp::OpTensorSyncLocal>({ tensorA })
+      ->eval();
     const std::vector<uint64_t> timestamps = seq->getTimestamps();
-    
-    EXPECT_EQ(timestamps.size(), 6); //1 timestamp at start + 1 after each operation
+
+    EXPECT_EQ(timestamps.size(),
+              6); // 1 timestamp at start + 1 after each operation
 }

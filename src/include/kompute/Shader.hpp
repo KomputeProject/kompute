@@ -18,7 +18,6 @@ namespace kp {
 class Shader
 {
   public:
-
     // The default resource limit for the GLSL compiler, can be overwritten
     // Has been adopted by:
     // https://github.com/KhronosGroup/glslang/blob/master/StandAlone/ResourceLimits.cpp

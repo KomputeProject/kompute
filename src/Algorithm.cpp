@@ -20,7 +20,8 @@ Algorithm::Algorithm(std::shared_ptr<vk::Device> device,
                     "spirv size: {}",
                     tensors.size(),
                     spirv.size());
-        this->rebuild(tensors, spirv, workgroup, specializationConstants, pushConstants);
+        this->rebuild(
+          tensors, spirv, workgroup, specializationConstants, pushConstants);
     } else {
         KP_LOG_INFO("Kompute Algorithm constructor with empty tensors and or "
                     "spirv so not rebuilding vulkan components");
@@ -425,15 +426,18 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize)
 }
 
 void
-Algorithm::setPush(const Constants& pushConstants) {
+Algorithm::setPush(const Constants& pushConstants)
+{
 
-        if (pushConstants.size() != this->mPushConstants.size()) {
-            throw std::runtime_error(fmt::format("Kompute Algorithm push "
-                        "constant provided is size {} but expected size {}",
-                    pushConstants.size(), this->mPushConstants.size()));
-        }
+    if (pushConstants.size() != this->mPushConstants.size()) {
+        throw std::runtime_error(
+          fmt::format("Kompute Algorithm push "
+                      "constant provided is size {} but expected size {}",
+                      pushConstants.size(),
+                      this->mPushConstants.size()));
+    }
 
-        this->mPushConstants = pushConstants;
+    this->mPushConstants = pushConstants;
 }
 
 const Workgroup&
@@ -449,7 +453,8 @@ Algorithm::getSpecializationConstants()
 }
 
 const Constants&
-Algorithm::getPush() {
+Algorithm::getPush()
+{
     return this->mPushConstants;
 }
 

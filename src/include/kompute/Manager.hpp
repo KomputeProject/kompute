@@ -24,13 +24,14 @@ class Manager
     Manager();
 
     /**
-     * Similar to base constructor but allows for further configuration to use when
-     * creating the Vulkan resources.
+     * Similar to base constructor but allows for further configuration to use
+     * when creating the Vulkan resources.
      *
      * @param physicalDeviceIndex The index of the physical device to use
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
-     * @param desiredExtensions The desired extensions to load from physicalDevice
+     * @param desiredExtensions The desired extensions to load from
+     * physicalDevice
      */
     Manager(uint32_t physicalDeviceIndex,
             const std::vector<uint32_t>& familyQueueIndices = {},
@@ -64,7 +65,8 @@ class Manager
      * If zero (default), disables latching of timestamps.
      * @returns Shared pointer with initialised sequence
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0, uint32_t totalTimestamps = 0);
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0,
+                                       uint32_t totalTimestamps = 0);
 
     /**
      * Create a managed tensor that will be destroyed by this manager
@@ -74,7 +76,7 @@ class Manager
      * @param tensorType The type of tensor to initialize
      * @returns Shared pointer with initialised tensor
      */
-    template <typename T>
+    template<typename T>
     std::shared_ptr<TensorT<T>> tensorT(
       const std::vector<T>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
@@ -105,8 +107,13 @@ class Manager
       const Tensor::TensorDataTypes& dataType,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        std::shared_ptr<Tensor> tensor{ new kp::Tensor(
-          this->mPhysicalDevice, this->mDevice, data, elementTotalCount, elementMemorySize, dataType, tensorType) };
+        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
+                                                       this->mDevice,
+                                                       data,
+                                                       elementTotalCount,
+                                                       elementMemorySize,
+                                                       dataType,
+                                                       tensorType) };
 
         if (this->mManageResources) {
             this->mManagedTensors.push_back(tensor);

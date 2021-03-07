@@ -71,9 +71,9 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 //{
 //    kp::Manager mgr;
 //
-//    std::shared_ptr<kp::TensorT<float>> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
-//    std::shared_ptr<kp::TensorT<float>> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-//    mgr.rebuild({ tensorA, tensorB });
+//    std::shared_ptr<kp::TensorT<float>> tensorA{ new kp::Tensor({ 3, 4, 5 })
+//    }; std::shared_ptr<kp::TensorT<float>> tensorB{ new kp::Tensor({ 0, 0, 0
+//    }) }; mgr.rebuild({ tensorA, tensorB });
 //
 //    mgr.evalOpDefault<kp::OpAlgoCreate>(
 //      { tensorA, tensorB },

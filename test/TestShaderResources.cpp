@@ -24,34 +24,43 @@ static const std::string shaderString = (R"(
     }
 )");
 
-void compileShaderWithGivenResources(const std::string shaderString, const TBuiltInResource resources) {
-    kp::Shader::compileSource(shaderString,  std::string("main"), std::vector<std::pair<std::string,std::string>>({}), resources);
+void
+compileShaderWithGivenResources(const std::string shaderString,
+                                const TBuiltInResource resources)
+{
+    kp::Shader::compileSource(
+      shaderString,
+      std::string("main"),
+      std::vector<std::pair<std::string, std::string>>({}),
+      resources);
 }
-
-
 
 TEST(TestShaderResources, TestNoMaxLight)
 {
     TBuiltInResource noMaxLightResources = kp::Shader::defaultResource;
-    noMaxLightResources.maxLights=0;
-        
-    EXPECT_NO_THROW(compileShaderWithGivenResources(shaderString, noMaxLightResources));
-}
+    noMaxLightResources.maxLights = 0;
 
+    EXPECT_NO_THROW(
+      compileShaderWithGivenResources(shaderString, noMaxLightResources));
+}
 
 TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 {
-    TBuiltInResource smallComputeWorkGroupSizeXResources = kp::Shader::defaultResource;
-    smallComputeWorkGroupSizeXResources.maxComputeWorkGroupSizeX=0;
-    
-    ASSERT_THROW(compileShaderWithGivenResources(shaderString, smallComputeWorkGroupSizeXResources), std::runtime_error);
-} 
+    TBuiltInResource smallComputeWorkGroupSizeXResources =
+      kp::Shader::defaultResource;
+    smallComputeWorkGroupSizeXResources.maxComputeWorkGroupSizeX = 0;
 
+    ASSERT_THROW(compileShaderWithGivenResources(
+                   shaderString, smallComputeWorkGroupSizeXResources),
+                 std::runtime_error);
+}
 
 TEST(TestShaderResources, TestNoWhileLoopLimit)
 {
     TBuiltInResource noWhileLoopLimitResources = kp::Shader::defaultResource;
-    noWhileLoopLimitResources.limits.whileLoops=0;
-    
-    ASSERT_THROW(compileShaderWithGivenResources(shaderString, noWhileLoopLimitResources), std::runtime_error);
-} 
+    noWhileLoopLimitResources.limits.whileLoops = 0;
+
+    ASSERT_THROW(
+      compileShaderWithGivenResources(shaderString, noWhileLoopLimitResources),
+      std::runtime_error);
+}

@@ -29,15 +29,17 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensor =
+              mgr.tensor({ 0, 0, 0 });
 
-            std::shared_ptr<kp::Algorithm> algo =
-              mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0, 0.0, 0.0 });
+            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(
+              { tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0, 0.0, 0.0 });
 
             sq = mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensor });
 
             // We need to run this in sequence to avoid race condition
-            // We can't use atomicAdd as swiftshader doesn't support it for float
+            // We can't use atomicAdd as swiftshader doesn't support it for
+            // float
             sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.1, 0.2, 0.3 });
             sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.3, 0.2, 0.1 });
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
@@ -72,15 +74,17 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensor =
+              mgr.tensor({ 0, 0, 0 });
 
-            std::shared_ptr<kp::Algorithm> algo =
-              mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.1, 0.2, 0.3 });
+            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(
+              { tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.1, 0.2, 0.3 });
 
             sq = mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensor });
 
             // We need to run this in sequence to avoid race condition
-            // We can't use atomicAdd as swiftshader doesn't support it for float
+            // We can't use atomicAdd as swiftshader doesn't support it for
+            // float
             sq->eval<kp::OpAlgoDispatch>(algo);
             sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.3, 0.2, 0.1 });
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
@@ -115,15 +119,17 @@ TEST(TestPushConstants, TestConstantsWrongSize)
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensor =
+              mgr.tensor({ 0, 0, 0 });
 
-            std::shared_ptr<kp::Algorithm> algo =
-              mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0 });
+            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(
+              { tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0 });
 
-            sq = mgr.sequence()
-                   ->record<kp::OpTensorSyncDevice>({ tensor });
+            sq = mgr.sequence()->record<kp::OpTensorSyncDevice>({ tensor });
 
-            EXPECT_THROW(sq->record<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.1, 0.2, 0.3 }), std::runtime_error);
+            EXPECT_THROW(sq->record<kp::OpAlgoDispatch>(
+                           algo, kp::Constants{ 0.1, 0.2, 0.3 }),
+                         std::runtime_error);
         }
     }
 }

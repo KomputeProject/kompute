@@ -18,8 +18,9 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
     this->createCommandPool();
     this->createCommandBuffer();
-    if(totalTimestamps>0)
-        this->createTimestampQueryPool(totalTimestamps+1); //+1 for the first one
+    if (totalTimestamps > 0)
+        this->createTimestampQueryPool(totalTimestamps +
+                                       1); //+1 for the first one
 }
 
 Sequence::~Sequence()
@@ -48,12 +49,12 @@ Sequence::begin()
     this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
     this->mRecording = true;
 
-    //latch the first timestamp before any commands are submitted
-    if(this->timestampQueryPool)
+    // latch the first timestamp before any commands are submitted
+    if (this->timestampQueryPool)
         this->mCommandBuffer->writeTimestamp(
-            vk::PipelineStageFlagBits::eAllCommands,
-            *this->timestampQueryPool, 0
-        );
+          vk::PipelineStageFlagBits::eAllCommands,
+          *this->timestampQueryPool,
+          0);
 }
 
 void
@@ -246,12 +247,12 @@ Sequence::destroy()
         this->mOperations.clear();
     }
 
-    if(this->timestampQueryPool){
+    if (this->timestampQueryPool) {
         KP_LOG_INFO("Destroying QueryPool");
         this->mDevice->destroy(
-            *this->timestampQueryPool,
-            (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        
+          *this->timestampQueryPool,
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+
         this->timestampQueryPool = nullptr;
         KP_LOG_DEBUG("Kompute Sequence Destroyed QueryPool");
     }
@@ -281,12 +282,12 @@ Sequence::record(std::shared_ptr<OpBase> op)
 
     this->mOperations.push_back(op);
 
-    if(this->timestampQueryPool)
-      this->mCommandBuffer->writeTimestamp(
-                vk::PipelineStageFlagBits::eAllCommands,
-                *this->timestampQueryPool, this->mOperations.size()
-        );
-    
+    if (this->timestampQueryPool)
+        this->mCommandBuffer->writeTimestamp(
+          vk::PipelineStageFlagBits::eAllCommands,
+          *this->timestampQueryPool,
+          this->mOperations.size());
+
     return shared_from_this();
 }
 
@@ -339,7 +340,8 @@ Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Sequence creating query pool");
     if (!this->isInit()) {
-        throw std::runtime_error("createTimestampQueryPool() called on uninitialized Sequence");
+        throw std::runtime_error(
+          "createTimestampQueryPool() called on uninitialized Sequence");
     }
     if (!this->mPhysicalDevice) {
         throw std::runtime_error("Kompute Sequence physical device is null");
@@ -347,16 +349,16 @@ Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
 
     vk::PhysicalDeviceProperties physicalDeviceProperties =
       this->mPhysicalDevice->getProperties();
-    
-    if(physicalDeviceProperties.limits.timestampComputeAndGraphics){
+
+    if (physicalDeviceProperties.limits.timestampComputeAndGraphics) {
         vk::QueryPoolCreateInfo queryPoolInfo;
         queryPoolInfo.setQueryCount(totalTimestamps);
         queryPoolInfo.setQueryType(vk::QueryType::eTimestamp);
-        this->timestampQueryPool = std::make_shared<vk::QueryPool>(this->mDevice->createQueryPool(queryPoolInfo));
+        this->timestampQueryPool = std::make_shared<vk::QueryPool>(
+          this->mDevice->createQueryPool(queryPoolInfo));
 
         KP_LOG_DEBUG("Query pool for timestamps created");
-    }
-    else{
+    } else {
         throw std::runtime_error("Device does not support timestamps");
     }
 }
@@ -364,14 +366,19 @@ Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
 std::vector<std::uint64_t>
 Sequence::getTimestamps()
 {
-    if(!this->timestampQueryPool)
+    if (!this->timestampQueryPool)
         throw std::runtime_error("Timestamp latching not enabled");
-    
-    const auto n = this->mOperations.size()+1;
+
+    const auto n = this->mOperations.size() + 1;
     std::vector<std::uint64_t> timestamps(n, 0);
-    this->mDevice->getQueryPoolResults(*this->timestampQueryPool, 
-                                       0, n, timestamps.size()*sizeof(std::uint64_t), timestamps.data(),
-                                       sizeof(uint64_t), vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait);
+    this->mDevice->getQueryPoolResults(
+      *this->timestampQueryPool,
+      0,
+      n,
+      timestamps.size() * sizeof(std::uint64_t),
+      timestamps.data(),
+      sizeof(uint64_t),
+      vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait);
 
     return timestamps;
 }

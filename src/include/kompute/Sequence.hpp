@@ -2,8 +2,8 @@
 
 #include "kompute/Core.hpp"
 
-#include "kompute/operations/OpBase.hpp"
 #include "kompute/operations/OpAlgoDispatch.hpp"
+#include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 
@@ -40,8 +40,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * function also requires the Sequence to be recording, otherwise it will
      * not be able to add the operation.
      *
-     * @param op Object derived from kp::BaseOp that will be recoreded by the sequence
-     * which will be used when the operation is evaluated.
+     * @param op Object derived from kp::BaseOp that will be recoreded by the
+     * sequence which will be used when the operation is evaluated.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
@@ -59,7 +59,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(
-      std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+      std::vector<std::shared_ptr<Tensor>> tensors,
+      TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->record(op);
@@ -94,8 +95,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     std::shared_ptr<Sequence> eval();
 
     /**
-     * Resets all the recorded and stored operations, records the operation 
-     * provided and submits into the gpu as a submit job synchronously (with a barrier).
+     * Resets all the recorded and stored operations, records the operation
+     * provided and submits into the gpu as a submit job synchronously (with a
+     * barrier).
      *
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
@@ -138,16 +140,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait() must
-     * ALWAYS be called after to ensure the sequence is terminated correctly.
+     * operations into the gpu as a submit job without a barrier. EvalAwait()
+     * must ALWAYS be called after to ensure the sequence is terminated
+     * correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync();
     /**
      * Clears currnet operations to record provided one in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait() must
-     * ALWAYS be called after to ensure the sequence is terminated correctly.
+     * operations into the gpu as a submit job without a barrier. EvalAwait()
+     * must ALWAYS be called after to ensure the sequence is terminated
+     * correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
@@ -241,9 +245,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     bool isInit();
 
     /**
-     * Clears command buffer and triggers re-record of all the current operations 
-     * saved, which is useful if the underlying kp::Tensors or kp::Algorithms
-     * are modified and need to be re-recorded.
+     * Clears command buffer and triggers re-record of all the current
+     * operations saved, which is useful if the underlying kp::Tensors or
+     * kp::Algorithms are modified and need to be re-recorded.
      */
     void rerecord();
 

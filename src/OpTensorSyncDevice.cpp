@@ -40,7 +40,6 @@ void
 OpTensorSyncDevice::preEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
-
 }
 
 void

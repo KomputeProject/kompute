@@ -25,8 +25,10 @@ TEST(TestSpecializationConstants, TestTwoConstants)
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
-            std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensorA =
+              mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensorB =
+              mgr.tensor({ 0, 0, 0 });
 
             std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
                                                                 tensorB };

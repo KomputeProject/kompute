@@ -50,8 +50,11 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     kp::Constants pushConstsA({ 2.0 });
     kp::Constants pushConstsB({ 3.0 });
 
-    auto algorithm = mgr.algorithm(
-      params, kp::Shader::compileSource(shader), workgroup, specConsts, pushConstsA);
+    auto algorithm = mgr.algorithm(params,
+                                   kp::Shader::compileSource(shader),
+                                   workgroup,
+                                   specConsts,
+                                   pushConstsA);
 
     // 3. Run operation with string shader synchronously
     mgr.sequence()
@@ -202,4 +205,3 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
-

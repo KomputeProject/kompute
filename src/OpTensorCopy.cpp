@@ -18,13 +18,16 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
     uint32_t size = this->mTensors[0]->size();
     for (const std::shared_ptr<Tensor>& tensor : tensors) {
         if (tensor->dataType() != dataType) {
-            throw std::runtime_error(fmt::format("Attempting to copy tensors of different types from {} to {}",
-                        dataType, tensor->dataType()));
+            throw std::runtime_error(fmt::format(
+              "Attempting to copy tensors of different types from {} to {}",
+              dataType,
+              tensor->dataType()));
         }
         if (tensor->size() != size) {
-            throw std::runtime_error(fmt::format("Attempting to copy tensors of different sizes from {} to {}",
-                        size, tensor->size()));
-
+            throw std::runtime_error(fmt::format(
+              "Attempting to copy tensors of different sizes from {} to {}",
+              size,
+              tensor->size()));
         }
     }
 }

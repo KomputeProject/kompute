@@ -64,12 +64,9 @@ Tensor::tensorType()
 bool
 Tensor::isInit()
 {
-    return this->mDevice
-        && this->mPrimaryBuffer
-        && this->mPrimaryMemory
-        && this->mRawData;
+    return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory &&
+           this->mRawData;
 }
-
 
 void
 Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
@@ -175,7 +172,8 @@ Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
 vk::DescriptorBufferInfo
 Tensor::constructDescriptorBufferInfo()
 {
-    KP_LOG_DEBUG("Kompute Tensor construct descriptor buffer info size {}", this->memorySize());
+    KP_LOG_DEBUG("Kompute Tensor construct descriptor buffer info size {}",
+                 this->memorySize());
     vk::DeviceSize bufferSize = this->memorySize();
     return vk::DescriptorBufferInfo(*this->mPrimaryBuffer,
                                     0, // offset
@@ -213,7 +211,7 @@ Tensor::getPrimaryMemoryPropertyFlags()
             break;
         case TensorTypes::eHost:
             return vk::MemoryPropertyFlagBits::eHostVisible |
-                vk::MemoryPropertyFlagBits::eHostCoherent;
+                   vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
         case TensorTypes::eStorage:
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
@@ -363,7 +361,8 @@ Tensor::destroy()
 {
     KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
-    // Setting raw data to null regardless whether device is available to invalidate Tensor
+    // Setting raw data to null regardless whether device is available to
+    // invalidate Tensor
     this->mRawData = nullptr;
     this->mSize = 0;
     this->mDataTypeMemorySize = 0;
@@ -442,31 +441,36 @@ Tensor::destroy()
 
 template<>
 Tensor::TensorDataTypes
-TensorT<bool>::dataType() {
+TensorT<bool>::dataType()
+{
     return Tensor::TensorDataTypes::eBool;
 }
 
 template<>
 Tensor::TensorDataTypes
-TensorT<int32_t>::dataType() {
+TensorT<int32_t>::dataType()
+{
     return Tensor::TensorDataTypes::eInt;
 }
 
 template<>
 Tensor::TensorDataTypes
-TensorT<uint32_t>::dataType() {
+TensorT<uint32_t>::dataType()
+{
     return Tensor::TensorDataTypes::eUnsignedInt;
 }
 
 template<>
 Tensor::TensorDataTypes
-TensorT<float>::dataType() {
+TensorT<float>::dataType()
+{
     return Tensor::TensorDataTypes::eFloat;
 }
 
 template<>
 Tensor::TensorDataTypes
-TensorT<double>::dataType() {
+TensorT<double>::dataType()
+{
     return Tensor::TensorDataTypes::eDouble;
 }
 

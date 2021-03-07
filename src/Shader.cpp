@@ -99,10 +99,10 @@ Shader::compileSource(
   const TBuiltInResource& resource)
 {
     return compileSources({ source },
-                           std::vector<std::string>({}),
-                           entryPoint,
-                           definitions,
-                           resource);
+                          std::vector<std::string>({}),
+                          entryPoint,
+                          definitions,
+                          resource);
 }
 
 const TBuiltInResource Shader::defaultResource = {
