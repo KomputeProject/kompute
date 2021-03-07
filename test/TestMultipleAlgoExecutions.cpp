@@ -8,10 +8,12 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
 
     kp::Manager mgr;
 
+    // Default tensor constructor simplifies creation of float values
     auto tensorInA = mgr.tensor({ 2., 2., 2. });
     auto tensorInB = mgr.tensor({ 1., 2., 3. });
-    auto tensorOutA = mgr.tensor({ 0., 0., 0. });
-    auto tensorOutB = mgr.tensor({ 0., 0., 0. });
+    // Explicit type constructor supports int, in32, double, float and int
+    auto tensorOutA = mgr.tensorT<uint32_t>({ 0, 0, 0 });
+    auto tensorOutB = mgr.tensorT<uint32_t>({ 0, 0, 0 });
 
     std::string shader = (R"(
         #version 450
@@ -21,8 +23,8 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
         // The input tensors bind index is relative to index in parameter passed
         layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
         layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
-        layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };
-        layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { uint out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { uint out_b[]; };
 
         // Kompute supports push constants updated on dispatch
         layout(push_constant) uniform PushConstants {
@@ -34,8 +36,8 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
 
         void main() {
             uint index = gl_GlobalInvocationID.x;
-            out_a[index] += in_a[index] * in_b[index];
-            out_b[index] += const_one * push_const.val;
+            out_a[index] += uint( in_a[index] * in_b[index] );
+            out_b[index] += uint( const_one * push_const.val );
         }
     )");
 
@@ -64,8 +66,8 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
 
     sq->evalAwait();
 
-    EXPECT_EQ(tensorOutA->vector(), std::vector<float>({ 4, 8, 12 }));
-    EXPECT_EQ(tensorOutB->vector(), std::vector<float>({ 10, 10, 10 }));
+    EXPECT_EQ(tensorOutA->vector(), std::vector<uint32_t>({ 4, 8, 12 }));
+    EXPECT_EQ(tensorOutB->vector(), std::vector<uint32_t>({ 10, 10, 10 }));
 }
 
 TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)

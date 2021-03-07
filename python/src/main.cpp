@@ -173,6 +173,7 @@ PYBIND11_MODULE(kp, m) {
                             kp::Tensor::TensorTypes tensor_type) {
                 const py::array_t<float>& flatdata = np.attr("ravel")(data);
                 const py::buffer_info info        = flatdata.request();
+                KP_LOG_DEBUG("Kompute Python Manager tensor() creating tensor float with data size {}", flatdata.size());
                 return self.tensor(
                         info.ptr,
                         flatdata.size(),
@@ -186,8 +187,10 @@ PYBIND11_MODULE(kp, m) {
                             const py::array& data,
                             kp::Tensor::TensorTypes tensor_type) {
                 // TODO: Suppport strides in numpy format
-                const py::array_t<float>& flatdata = np.attr("ravel")(data);
+                const py::array& flatdata = np.attr("ravel")(data);
                 const py::buffer_info info        = flatdata.request();
+                KP_LOG_DEBUG("Kompute Python Manager creating tensor_T with data size {} dtype {}",
+                        flatdata.size(), std::string(py::str(flatdata.dtype())));
                 if (flatdata.dtype() == py::dtype::of<std::float_t>()) {
                     return self.tensor(
                             info.ptr, flatdata.size(), sizeof(float), kp::Tensor::TensorDataTypes::eFloat, tensor_type);
