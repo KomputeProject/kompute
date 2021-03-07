@@ -395,21 +395,6 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     KP_LOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
-std::shared_ptr<Tensor>
-Manager::tensor(const std::vector<float>& data, Tensor::TensorTypes tensorType)
-{
-    KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
-
-    std::shared_ptr<Tensor> tensor{ new kp::Tensor(
-      this->mPhysicalDevice, this->mDevice, data, tensorType) };
-
-    if (this->mManageResources) {
-        this->mManagedTensors.push_back(tensor);
-    }
-
-    return tensor;
-}
-
 std::shared_ptr<Algorithm>
 Manager::algorithm(const std::vector<std::shared_ptr<Tensor>>& tensors,
                    const std::vector<uint32_t>& spirv,

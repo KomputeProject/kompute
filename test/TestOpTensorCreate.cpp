@@ -6,7 +6,7 @@
 TEST(TestOpTensorCreate, CreateSingleTensorSingleOp)
 {
     std::vector<float> testVecA{ 9, 8, 7 };
-    std::shared_ptr<kp::Tensor> tensorA = nullptr;
+    std::shared_ptr<kp::TensorT<float>> tensorA = nullptr;
 
     {
         kp::Manager mgr;
@@ -15,7 +15,7 @@ TEST(TestOpTensorCreate, CreateSingleTensorSingleOp)
 
         EXPECT_TRUE(tensorA->isInit());
 
-        EXPECT_EQ(tensorA->data(), testVecA);
+        EXPECT_EQ(tensorA->vector(), testVecA);
     }
 
     EXPECT_FALSE(tensorA->isInit());
@@ -29,11 +29,11 @@ TEST(TestOpTensorCreate, NoErrorIfTensorFreedBefore)
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor(testVecA);
-    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor(testVecB);
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecA);
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor(testVecB);
 
-    EXPECT_EQ(tensorA->data(), testVecA);
-    EXPECT_EQ(tensorB->data(), testVecB);
+    EXPECT_EQ(tensorA->vector(), testVecA);
+    EXPECT_EQ(tensorB->vector(), testVecB);
 
     tensorA->destroy();
     tensorB->destroy();
@@ -49,7 +49,7 @@ TEST(TestOpTensorCreate, ExceptionOnZeroSizeTensor)
     kp::Manager mgr;
 
     try {
-        std::shared_ptr<kp::Tensor> tensorA = mgr.tensor(testVecA);
+        std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecA);
     } catch (const std::runtime_error& err) {
         // check exception
         ASSERT_TRUE(std::string(err.what()).find("zero-sized") !=

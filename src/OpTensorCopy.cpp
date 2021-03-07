@@ -13,6 +13,20 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
         throw std::runtime_error(
           "Kompute OpTensorCopy called with less than 2 tensor");
     }
+
+    kp::Tensor::TensorDataTypes dataType = this->mTensors[0]->dataType();
+    uint32_t size = this->mTensors[0]->size();
+    for (const std::shared_ptr<Tensor>& tensor : tensors) {
+        if (tensor->dataType() != dataType) {
+            throw std::runtime_error(fmt::format("Attempting to copy tensors of different types from {} to {}",
+                        dataType, tensor->dataType()));
+        }
+        if (tensor->size() != size) {
+            throw std::runtime_error(fmt::format("Attempting to copy tensors of different sizes from {} to {}",
+                        size, tensor->size()));
+
+        }
+    }
 }
 
 OpTensorCopy::~OpTensorCopy()
@@ -43,9 +57,15 @@ OpTensorCopy::postEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 
+    // TODO: Simplify with a copyRawData
+    uint32_t size = this->mTensors[0]->size();
+    uint32_t dataTypeMemSize = this->mTensors[0]->dataTypeMemorySize();
+    uint32_t memSize = size * dataTypeMemSize;
+    void* data = this->mTensors[0]->rawData();
+
     // Copy the data from the first tensor into all the tensors
     for (size_t i = 1; i < this->mTensors.size(); i++) {
-        this->mTensors[i]->setData(this->mTensors[0]->data());
+        this->mTensors[i]->setRawData(data);
     }
 }
 

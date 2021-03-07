@@ -55,10 +55,13 @@ void kompute(const std::string& shader) {
     kp::Manager mgr; 
 
     // 2. Create and initialise Kompute Tensors through manager
+
+    // Default tensor constructor simplifies creation of float values
     auto tensorInA = mgr.tensor({ 2., 2., 2. });
     auto tensorInB = mgr.tensor({ 1., 2., 3. });
-    auto tensorOutA = mgr.tensor({ 0., 0., 0. });
-    auto tensorOutB = mgr.tensor({ 0., 0., 0. });
+    // Explicit type constructor supports uint32, int32, double, float and bool
+    auto tensorOutA = mgr.tensorT<uint32_t>({ 0, 0, 0 });
+    auto tensorOutB = mgr.tensorT<uint32_t>({ 0, 0, 0 });
 
     std::vector<std::shared_ptr<kp::Tensor>> params = {tensorInA, tensorInB, tensorOutA, tensorOutB};
 
@@ -109,8 +112,8 @@ int main() {
         // The input tensors bind index is relative to index in parameter passed
         layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
         layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
-        layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };
-        layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { uint out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { uint out_b[]; };
 
         // Kompute supports push constants updated on dispatch
         layout(push_constant) uniform PushConstants {
@@ -122,8 +125,8 @@ int main() {
 
         void main() {
             uint index = gl_GlobalInvocationID.x;
-            out_a[index] += in_a[index] * in_b[index];
-            out_b[index] += const_one * push_const.val;
+            out_a[index] += uint( in_a[index] * in_b[index] );
+            out_b[index] += uint( const_one * push_const.val );
         }
     )");
 
@@ -144,10 +147,13 @@ def kompute(shader):
     mgr = kp.Manager()
 
     # 2. Create and initialise Kompute Tensors through manager
+
+    # Default tensor constructor simplifies creation of float values
     tensor_in_a = mgr.tensor([2, 2, 2])
     tensor_in_b = mgr.tensor([1, 2, 3])
-    tensor_out_a = mgr.tensor([0, 0, 0])
-    tensor_out_b = mgr.tensor([0, 0, 0])
+    # Explicit type constructor supports uint32, int32, double, float and bool
+    tensor_out_a = mgr.tensor_t(np.array([0, 0, 0], dtype=np.uint32))
+    tensor_out_b = mgr.tensor_t(np.array([0, 0, 0], dtype=np.uint32))
 
     params = [tensor_in_a, tensor_in_b, tensor_out_a, tensor_out_b]
 
@@ -194,8 +200,8 @@ if __name__ == "__main__":
         // The input tensors bind index is relative to index in parameter passed
         layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
         layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
-        layout(set = 0, binding = 2) buffer buf_out_a { float out_a[]; };
-        layout(set = 0, binding = 3) buffer buf_out_b { float out_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { uint out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { uint out_b[]; };
 
         // Kompute supports push constants updated on dispatch
         layout(push_constant) uniform PushConstants {
@@ -207,8 +213,8 @@ if __name__ == "__main__":
 
         void main() {
             uint index = gl_GlobalInvocationID.x;
-            out_a[index] += in_a[index] * in_b[index];
-            out_b[index] += const_one * push_const.val;
+            out_a[index] += uint( in_a[index] * in_b[index] );
+            out_b[index] += uint( const_one * push_const.val );
         }
     """
 

@@ -41,12 +41,6 @@ OpTensorSyncDevice::preEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
 
-    // Performing sync of data as eval can be called multiple times with same op
-    for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() != Tensor::TensorTypes::eStorage) {
-            this->mTensors[i]->mapDataIntoHostMemory();
-        }
-    }
 }
 
 void

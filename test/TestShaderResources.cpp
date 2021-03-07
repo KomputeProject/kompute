@@ -25,7 +25,7 @@ static const std::string shaderString = (R"(
 )");
 
 void compileShaderWithGivenResources(const std::string shaderString, const TBuiltInResource resources) {
-    kp::Shader::compile_source(shaderString,  std::string("main"), std::vector<std::pair<std::string,std::string>>({}), resources);
+    kp::Shader::compileSource(shaderString,  std::string("main"), std::vector<std::pair<std::string,std::string>>({}), resources);
 }
 
 

@@ -15,8 +15,11 @@ This project has the option to either import the Kompute dependency relative to 
 To build you just need to run the cmake command in this folder as follows:
 
 ```
-cmake \
-    -Bbuild
+cmake -Bbuild/ \
+          -DCMAKE_BUILD_TYPE=Debug                   \
+          -DKOMPUTE_OPT_INSTALL=0                    \
+          -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
+          -DKOMPUTE_OPT_ENABLE_SPDLOG=1
 ```
 
 You can pass the following optional parameters based on your desired configuration:

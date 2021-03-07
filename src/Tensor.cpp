@@ -5,17 +5,22 @@ namespace kp {
 
 Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                std::shared_ptr<vk::Device> device,
-               const std::vector<float>& data,
+               void* data,
+               uint32_t elementTotalCount,
+               uint32_t elementMemorySize,
+               const TensorDataTypes& dataType,
                const TensorTypes& tensorType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
-                 data.size(),
+                 elementTotalCount,
                  tensorType);
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
+    this->mDataType = dataType;
+    this->mTensorType = tensorType;
 
-    this->rebuild(data, tensorType);
+    this->rebuild(data, elementTotalCount, elementMemorySize);
 }
 
 Tensor::~Tensor()
@@ -29,12 +34,14 @@ Tensor::~Tensor()
 }
 
 void
-Tensor::rebuild(const std::vector<float>& data, TensorTypes tensorType)
+Tensor::rebuild(void* data,
+                uint32_t elementTotalCount,
+                uint32_t elementMemorySize)
 {
-    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", data.size());
+    KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", elementTotalCount);
 
-    this->mData = data;
-    this->mTensorType = tensorType;
+    this->mSize = elementTotalCount;
+    this->mDataTypeMemorySize = elementMemorySize;
 
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
         KP_LOG_DEBUG(
@@ -43,30 +50,9 @@ Tensor::rebuild(const std::vector<float>& data, TensorTypes tensorType)
     }
 
     this->allocateMemoryCreateGPUResources();
-}
+    this->mapRawData();
 
-std::vector<float>&
-Tensor::data()
-{
-    return this->mData;
-}
-
-float&
-Tensor::operator[](int index)
-{
-    return this->mData[index];
-}
-
-uint64_t
-Tensor::memorySize()
-{
-    return this->size() * sizeof(float);
-}
-
-uint32_t
-Tensor::size()
-{
-    return static_cast<uint32_t>(this->mData.size());
+    memcpy(this->mRawData, data, this->memorySize());
 }
 
 Tensor::TensorTypes
@@ -78,18 +64,12 @@ Tensor::tensorType()
 bool
 Tensor::isInit()
 {
-    return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory;
+    return this->mDevice
+        && this->mPrimaryBuffer
+        && this->mPrimaryMemory
+        && this->mRawData;
 }
 
-void
-Tensor::setData(const std::vector<float>& data)
-{
-    if (data.size() != this->mData.size()) {
-        throw std::runtime_error(
-          "Kompute Tensor Cannot set data of different sizes");
-    }
-    this->mData = data;
-}
 
 void
 Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
@@ -195,64 +175,11 @@ Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
 vk::DescriptorBufferInfo
 Tensor::constructDescriptorBufferInfo()
 {
+    KP_LOG_DEBUG("Kompute Tensor construct descriptor buffer info size {}", this->memorySize());
     vk::DeviceSize bufferSize = this->memorySize();
     return vk::DescriptorBufferInfo(*this->mPrimaryBuffer,
                                     0, // offset
                                     bufferSize);
-}
-
-void
-Tensor::mapDataFromHostMemory()
-{
-    KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
-
-    std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-    if (this->mTensorType == TensorTypes::eHost) {
-        hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
-        hostVisibleMemory = this->mStagingMemory;
-    } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
-        return;
-    }
-
-    vk::DeviceSize bufferSize = this->memorySize();
-    void* mapped = this->mDevice->mapMemory(
-      *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-    vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
-    this->mDevice->invalidateMappedMemoryRanges(mappedMemoryRange);
-    memcpy(this->mData.data(), mapped, bufferSize);
-    this->mDevice->unmapMemory(*hostVisibleMemory);
-}
-
-void
-Tensor::mapDataIntoHostMemory()
-{
-
-    KP_LOG_DEBUG("Kompute Tensor local mapping tensor data to host buffer");
-
-    std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-    if (this->mTensorType == TensorTypes::eHost) {
-        hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
-        hostVisibleMemory = this->mStagingMemory;
-    } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
-        return;
-    }
-
-    vk::DeviceSize bufferSize = this->memorySize();
-
-    void* mapped = this->mDevice->mapMemory(
-      *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-    memcpy(mapped, this->mData.data(), bufferSize);
-    vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
-    this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
-    this->mDevice->unmapMemory(*hostVisibleMemory);
 }
 
 vk::BufferUsageFlags
@@ -285,7 +212,8 @@ Tensor::getPrimaryMemoryPropertyFlags()
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
             break;
         case TensorTypes::eHost:
-            return vk::MemoryPropertyFlagBits::eHostVisible;
+            return vk::MemoryPropertyFlagBits::eHostVisible |
+                vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
         case TensorTypes::eStorage:
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
@@ -435,11 +363,19 @@ Tensor::destroy()
 {
     KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
+    // Setting raw data to null regardless whether device is available to invalidate Tensor
+    this->mRawData = nullptr;
+    this->mSize = 0;
+    this->mDataTypeMemorySize = 0;
+
     if (!this->mDevice) {
         KP_LOG_WARN(
           "Kompute Tensor destructor reached with null Device pointer");
         return;
     }
+
+    // Unmap the current memory data
+    this->unmapRawData();
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
@@ -502,6 +438,36 @@ Tensor::destroy()
     }
 
     KP_LOG_DEBUG("Kompute Tensor successful destroy()");
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<bool>::dataType() {
+    return Tensor::TensorDataTypes::eBool;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<int32_t>::dataType() {
+    return Tensor::TensorDataTypes::eInt;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<uint32_t>::dataType() {
+    return Tensor::TensorDataTypes::eUnsignedInt;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<float>::dataType() {
+    return Tensor::TensorDataTypes::eFloat;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<double>::dataType() {
+    return Tensor::TensorDataTypes::eDouble;
 }
 
 }

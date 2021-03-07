@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.4.1)
 project(kompute_array_mult VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -22,10 +22,6 @@ else()
 endif()
 
 find_package(Vulkan REQUIRED)
-
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    find_package(spdlog REQUIRED)
-endif()
 
 add_executable(kompute_array_mult
     src/Main.cpp)

@@ -9,9 +9,9 @@ def test_array_multiplication():
     mgr = kp.Manager()
 
     # 2. Create Kompute Tensors to hold data
-    tensor_in_a = mgr.tensor([2, 2, 2])
-    tensor_in_b = mgr.tensor([1, 2, 3])
-    tensor_out = mgr.tensor([0, 0, 0])
+    tensor_in_a = mgr.tensor(np.array([2, 2, 2]))
+    tensor_in_b = mgr.tensor(np.array([1, 2, 3]))
+    tensor_out = mgr.tensor(np.array([0, 0, 0]))
 
     params = [tensor_in_a, tensor_in_b, tensor_out]
 

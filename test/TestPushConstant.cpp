@@ -22,14 +22,14 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
               pa[2] += pcs.z;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 0, 0, 0 });
 
             std::shared_ptr<kp::Algorithm> algo =
               mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0, 0.0, 0.0 });
@@ -42,7 +42,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
             sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.3, 0.2, 0.1 });
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
 
-            EXPECT_EQ(tensor->data(), kp::Constants({ 0.4, 0.4, 0.4 }));
+            EXPECT_EQ(tensor->vector(), kp::Constants({ 0.4, 0.4, 0.4 }));
         }
     }
 }
@@ -65,14 +65,14 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
               pa[2] += pcs.z;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 0, 0, 0 });
 
             std::shared_ptr<kp::Algorithm> algo =
               mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.1, 0.2, 0.3 });
@@ -85,7 +85,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
             sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.3, 0.2, 0.1 });
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
 
-            EXPECT_EQ(tensor->data(), kp::Constants({ 0.4, 0.4, 0.4 }));
+            EXPECT_EQ(tensor->vector(), kp::Constants({ 0.4, 0.4, 0.4 }));
         }
     }
 }
@@ -108,14 +108,14 @@ TEST(TestPushConstants, TestConstantsWrongSize)
               pa[2] += pcs.z;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::Tensor> tensor = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 0, 0, 0 });
 
             std::shared_ptr<kp::Algorithm> algo =
               mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0 });

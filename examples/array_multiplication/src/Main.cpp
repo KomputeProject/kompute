@@ -39,16 +39,17 @@ int main()
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA, tensorInB, tensorOut };
 
-    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, kp::Shader::compile_source(shader));
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, kp::Shader::compileSource(shader));
 
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
         ->record<kp::OpAlgoDispatch>(algo)
-        ->record<kp::OpTensorSyncLocal>(params);
+        ->record<kp::OpTensorSyncLocal>(params)
+        ->eval();
 
     // prints "Output {  0  4  12  }"
     std::cout<< "Output: {  ";
-    for (const float& elem : tensorOut->data()) {
+    for (const float& elem : tensorOut->vector()) {
       std::cout << elem << "  ";
     }
     std::cout << "}" << std::endl;

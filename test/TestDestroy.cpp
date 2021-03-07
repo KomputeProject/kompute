@@ -5,9 +5,9 @@
 
 TEST(TestDestroy, TestDestroyTensorSingle)
 {
-    std::shared_ptr<kp::Tensor> tensorA = nullptr;
+    std::shared_ptr<kp::TensorT<float>> tensorA = nullptr;
 
-    std::string shader(R"(
+        std::string shader(R"(
       #version 450
       layout (local_size_x = 1) in;
       layout(set = 0, binding = 0) buffer a { float pa[]; };
@@ -16,7 +16,7 @@ TEST(TestDestroy, TestDestroyTensorSingle)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     {
         std::shared_ptr<kp::Sequence> sq = nullptr;
@@ -34,18 +34,19 @@ TEST(TestDestroy, TestDestroyTensorSingle)
               ->eval()
               ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
 
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 1, 1, 1 }));
+
             tensorA->destroy();
             EXPECT_FALSE(tensorA->isInit());
         }
         EXPECT_FALSE(tensorA->isInit());
     }
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 1, 1, 1 }));
 }
 
 TEST(TestDestroy, TestDestroyTensorVector)
 {
-    std::shared_ptr<kp::Tensor> tensorA = nullptr;
-    std::shared_ptr<kp::Tensor> tensorB = nullptr;
+    std::shared_ptr<kp::TensorT<float>> tensorA = nullptr;
+    std::shared_ptr<kp::TensorT<float>> tensorB = nullptr;
 
     std::string shader(R"(
       #version 450
@@ -57,7 +58,7 @@ TEST(TestDestroy, TestDestroyTensorVector)
           pa[index] = pa[index] + 1;
           pb[index] = pb[index] + 2;
       })");
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     {
         std::shared_ptr<kp::Sequence> sq = nullptr;
@@ -77,6 +78,9 @@ TEST(TestDestroy, TestDestroyTensorVector)
               ->record<kp::OpTensorSyncLocal>(algo->getTensors())
               ->eval();
 
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 2, 2, 2 }));
+            EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 3, 3 }));
+
             tensorA->destroy();
             tensorB->destroy();
 
@@ -84,13 +88,11 @@ TEST(TestDestroy, TestDestroyTensorVector)
             EXPECT_FALSE(tensorB->isInit());
         }
     }
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 2, 2, 2 }));
-    EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestDestroy, TestDestroySequenceSingle)
 {
-    std::shared_ptr<kp::Tensor> tensorA = nullptr;
+    std::shared_ptr<kp::TensorT<float>> tensorA = nullptr;
 
     std::string shader(R"(
       #version 450
@@ -101,7 +103,7 @@ TEST(TestDestroy, TestDestroySequenceSingle)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     {
         std::shared_ptr<kp::Sequence> sq = nullptr;
@@ -121,7 +123,8 @@ TEST(TestDestroy, TestDestroySequenceSingle)
             sq->destroy();
 
             EXPECT_FALSE(sq->isInit());
+
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 1, 1, 1 }));
         }
     }
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 1, 1, 1 }));
 }

@@ -37,7 +37,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     std::vector<float> data(size, 0.0);
     std::vector<float> resultSync(size, 100000000);
@@ -73,7 +73,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
     sq->eval<kp::OpTensorSyncLocal>(inputsSyncB);
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        EXPECT_EQ(inputsSyncB[i]->data(), resultSync);
+        EXPECT_EQ(inputsSyncB[i]->vector<float>(), resultSync);
     }
 
     kp::Manager mgrAsync(0, { 0, 2 });
@@ -111,7 +111,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
     sq->eval<kp::OpTensorSyncLocal>({ inputsAsyncB });
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        EXPECT_EQ(inputsAsyncB[i]->data(), resultAsync);
+        EXPECT_EQ((inputsAsyncB[i]->vector<float>()), resultAsync);
     }
 
     // The speedup should be at least 40%
@@ -145,15 +145,15 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     std::vector<float> data(size, 0.0);
     std::vector<float> resultAsync(size, 100000000);
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor(data);
-    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor(data);
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(data);
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor(data);
 
     std::shared_ptr<kp::Sequence> sq1 = mgr.sequence();
     std::shared_ptr<kp::Sequence> sq2 = mgr.sequence();
@@ -172,6 +172,6 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });
     sq1->evalAwait();
 
-    EXPECT_EQ(tensorA->data(), resultAsync);
-    EXPECT_EQ(tensorB->data(), resultAsync);
+    EXPECT_EQ(tensorA->vector(), resultAsync);
+    EXPECT_EQ(tensorB->vector(), resultAsync);
 }
