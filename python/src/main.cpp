@@ -169,12 +169,13 @@ PYBIND11_MODULE(kp, m) {
         .def("sequence", &kp::Manager::sequence, DOC(kp, Manager, sequence),
                 py::arg("queue_index") = 0, py::arg("total_timestamps") = 0)
         .def("tensor", [np](kp::Manager& self,
-                            const py::array_t<float> data,
+                            const py::array_t<float>& data,
                             kp::Tensor::TensorTypes tensor_type) {
-                const py::buffer_info info        = data.request();
+                const py::array_t<float>& flatdata = np.attr("ravel")(data);
+                const py::buffer_info info        = flatdata.request();
                 return self.tensor(
                         info.ptr,
-                        data.size(),
+                        flatdata.size(),
                         sizeof(float),
                         kp::Tensor::TensorDataTypes::eFloat,
                         tensor_type);
@@ -182,27 +183,26 @@ PYBIND11_MODULE(kp, m) {
             DOC(kp, Manager, tensor),
             py::arg("data"), py::arg("tensor_type") = kp::Tensor::TensorTypes::eDevice)
         .def("tensor_t", [np](kp::Manager& self,
-                            const py::array data,
+                            const py::array& data,
                             kp::Tensor::TensorTypes tensor_type) {
-                // TODO: confirm if ravel is required as numpy data is always flat
-                //const py::array_t<float> flatdata = np.attr("ravel")(data);
-                //const py::buffer_info info        = flatdata.request();
-                const py::buffer_info info        = data.request();
-                if (data.dtype() == py::dtype::of<std::float_t>()) {
+                // TODO: Suppport strides in numpy format
+                const py::array_t<float>& flatdata = np.attr("ravel")(data);
+                const py::buffer_info info        = flatdata.request();
+                if (flatdata.dtype() == py::dtype::of<std::float_t>()) {
                     return self.tensor(
-                            info.ptr, data.size(), sizeof(float), kp::Tensor::TensorDataTypes::eFloat, tensor_type);
-                } else if (data.dtype() == py::dtype::of<std::uint32_t>()) {
+                            info.ptr, flatdata.size(), sizeof(float), kp::Tensor::TensorDataTypes::eFloat, tensor_type);
+                } else if (flatdata.dtype() == py::dtype::of<std::uint32_t>()) {
                     return self.tensor(
-                            info.ptr, data.size(), sizeof(uint32_t), kp::Tensor::TensorDataTypes::eUnsignedInt, tensor_type);
-                } else if (data.dtype() == py::dtype::of<std::int32_t>()) {
+                            info.ptr, flatdata.size(), sizeof(uint32_t), kp::Tensor::TensorDataTypes::eUnsignedInt, tensor_type);
+                } else if (flatdata.dtype() == py::dtype::of<std::int32_t>()) {
                     return self.tensor(
-                            info.ptr, data.size(), sizeof(int32_t), kp::Tensor::TensorDataTypes::eInt, tensor_type);
-                } else if (data.dtype() == py::dtype::of<std::double_t>()) {
+                            info.ptr, flatdata.size(), sizeof(int32_t), kp::Tensor::TensorDataTypes::eInt, tensor_type);
+                } else if (flatdata.dtype() == py::dtype::of<std::double_t>()) {
                     return self.tensor(
-                            info.ptr, data.size(), sizeof(double), kp::Tensor::TensorDataTypes::eDouble, tensor_type);
-                } else if (data.dtype() == py::dtype::of<bool>()) {
+                            info.ptr, flatdata.size(), sizeof(double), kp::Tensor::TensorDataTypes::eDouble, tensor_type);
+                } else if (flatdata.dtype() == py::dtype::of<bool>()) {
                     return self.tensor(
-                            info.ptr, data.size(), sizeof(bool), kp::Tensor::TensorDataTypes::eBool, tensor_type);
+                            info.ptr, flatdata.size(), sizeof(bool), kp::Tensor::TensorDataTypes::eBool, tensor_type);
                 } else {
                     throw std::runtime_error("Kompute Python no valid dtype supported");
                 }
