@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-06 12:09:42</td>
+            <td class="headerValue">2021-03-07 13:40:19</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">2</td>
@@ -76,7 +76,7 @@
 <span class="lineNum">      14 </span>            :  *  Algorithm with respective parameters. kp::Operations with kp::Algorithms
 <a name="15"><span class="lineNum">      15 </span>            :  *  would inherit from kp::OpBaseAlgo.</a>
 <span class="lineNum">      16 </span>            :  */
-<span class="lineNum">      17 </span><span class="lineCov">        200 : class OpBase</span>
+<span class="lineNum">      17 </span><span class="lineCov">        218 : class OpBase</span>
 <span class="lineNum">      18 </span>            : {
 <span class="lineNum">      19 </span>            :   public:
 <span class="lineNum">      20 </span>            : 
@@ -85,10 +85,10 @@
 <span class="lineNum">      23 </span>            :      * always be called to destroy and free owned resources unless it is
 <a name="24"><span class="lineNum">      24 </span>            :      * intended to destroy the resources in the parent class.</a>
 <span class="lineNum">      25 </span>            :      */
-<span class="lineNum">      26 </span><span class="lineCov">        200 :     virtual ~OpBase()</span>
-<span class="lineNum">      27 </span><span class="lineCov">        400 :     {</span>
-<span class="lineNum">      28 </span><span class="lineCov">        200 :         KP_LOG_DEBUG(&quot;Kompute OpBase destructor started&quot;);</span>
-<span class="lineNum">      29 </span><span class="lineCov">        200 :     }</span>
+<span class="lineNum">      26 </span><span class="lineCov">        218 :     virtual ~OpBase()</span>
+<span class="lineNum">      27 </span><span class="lineCov">        436 :     {</span>
+<span class="lineNum">      28 </span><span class="lineCov">        218 :         KP_LOG_DEBUG(&quot;Kompute OpBase destructor started&quot;);</span>
+<span class="lineNum">      29 </span><span class="lineCov">        218 :     }</span>
 <span class="lineNum">      30 </span>            : 
 <span class="lineNum">      31 </span>            :     /**
 <span class="lineNum">      32 </span>            :      * The record function is intended to only send a record command or run

@@ -65,6 +65,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classkp_1_1Tensor-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">kp::Tensor Class Reference</div>  </div>
@@ -72,6 +73,14 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="Tensor_8hpp_source.html">Tensor.hpp</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for kp::Tensor:</div>
+<div class="dyncontent">
+<div class="center"><img src="classkp_1_1Tensor__inherit__graph.png" border="0" usemap="#kp_1_1Tensor_inherit__map" alt="Inheritance graph"/></div>
+<map name="kp_1_1Tensor_inherit__map" id="kp_1_1Tensor_inherit__map">
+<area shape="rect" id="node2" href="classkp_1_1TensorT.html" title="kp::TensorT\&lt; T \&gt;" alt="" coords="5,80,140,107"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -80,29 +89,31 @@ Public Types</h2></td></tr>
 <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4ae1a7e733531f08074becd467959f0521">TensorTypes::eStorage</a> = 2
  }</td></tr>
 <tr class="separator:a1b2af1c0e8dc0f154e11780e7103beb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf1a3b45fa490ebd1b628d373e89f903"><td class="memItemLeft" align="right" valign="top"><a id="adf1a3b45fa490ebd1b628d373e89f903"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>TensorDataTypes</b> { <br />
+&#160;&#160;<b>eBool</b> = 0, 
+<b>eInt</b> = 1, 
+<b>eUnsignedInt</b> = 2, 
+<b>eFloat</b> = 3, 
+<br />
+&#160;&#160;<b>eDouble</b> = 4
+<br />
+ }</td></tr>
+<tr class="separator:adf1a3b45fa490ebd1b628d373e89f903"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a41f9d2cfc069fd4f57781c8f0de3a135"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a41f9d2cfc069fd4f57781c8f0de3a135">Tensor</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, const std::vector&lt; float &gt; &amp;<a class="el" href="classkp_1_1Tensor.html#a858f9a010a112983244cdf16ea0e5308">data</a>, const <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> &amp;<a class="el" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a>=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">TensorTypes::eDevice</a>)</td></tr>
-<tr class="separator:a41f9d2cfc069fd4f57781c8f0de3a135"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38e886e69103a956b994790f320a254e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a38e886e69103a956b994790f320a254e">~Tensor</a> ()</td></tr>
-<tr class="separator:a38e886e69103a956b994790f320a254e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1eb83d6d5c896eccd017f8074b2d9f38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a1eb83d6d5c896eccd017f8074b2d9f38">rebuild</a> (const std::vector&lt; float &gt; &amp;<a class="el" href="classkp_1_1Tensor.html#a858f9a010a112983244cdf16ea0e5308">data</a>, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> <a class="el" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a>=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">TensorTypes::eDevice</a>)</td></tr>
-<tr class="separator:a1eb83d6d5c896eccd017f8074b2d9f38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfce13e44a6ab46d7ebf6618b09bcd14"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#acfce13e44a6ab46d7ebf6618b09bcd14">Tensor</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, void *data, uint32_t elementTotalCount, uint32_t elementMemorySize, const TensorDataTypes &amp;<a class="el" href="classkp_1_1Tensor.html#a4addb015014f14da3d6019400c9771e4">dataType</a>, const <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a> &amp;<a class="el" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a>=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">TensorTypes::eDevice</a>)</td></tr>
+<tr class="separator:acfce13e44a6ab46d7ebf6618b09bcd14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab71ac92ecaac55d9bcc75f1571bfd47f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#ab71ac92ecaac55d9bcc75f1571bfd47f">~Tensor</a> ()</td></tr>
+<tr class="separator:ab71ac92ecaac55d9bcc75f1571bfd47f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece585e97c20ed7133fdfe9fabed9bd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#aece585e97c20ed7133fdfe9fabed9bd6">rebuild</a> (void *data, uint32_t elementTotalCount, uint32_t elementMemorySize)</td></tr>
+<tr class="separator:aece585e97c20ed7133fdfe9fabed9bd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cdbcb7abaad8f3e3a392741ea5ad275"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a5cdbcb7abaad8f3e3a392741ea5ad275">destroy</a> ()</td></tr>
 <tr class="separator:a5cdbcb7abaad8f3e3a392741ea5ad275"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#af2ae7f0b57fd8e57570ab63962a97f36">isInit</a> ()</td></tr>
 <tr class="separator:af2ae7f0b57fd8e57570ab63962a97f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a858f9a010a112983244cdf16ea0e5308"><td class="memItemLeft" align="right" valign="top">std::vector&lt; float &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a858f9a010a112983244cdf16ea0e5308">data</a> ()</td></tr>
-<tr class="separator:a858f9a010a112983244cdf16ea0e5308"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64ff1ca98d5380cc3916e13b20f7a509"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a64ff1ca98d5380cc3916e13b20f7a509">operator[]</a> (int index)</td></tr>
-<tr class="separator:a64ff1ca98d5380cc3916e13b20f7a509"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fb937df6cc482c1f37c74d8fab0f9a9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">size</a> ()</td></tr>
-<tr class="separator:a1fb937df6cc482c1f37c74d8fab0f9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59452f1c62fd738536bb0a6cbf8d896b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b">tensorType</a> ()</td></tr>
 <tr class="separator:a59452f1c62fd738536bb0a6cbf8d896b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3618a3e5a86cfaad31820f9910525424"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a3618a3e5a86cfaad31820f9910525424">setData</a> (const std::vector&lt; float &gt; &amp;<a class="el" href="classkp_1_1Tensor.html#a858f9a010a112983244cdf16ea0e5308">data</a>)</td></tr>
-<tr class="separator:a3618a3e5a86cfaad31820f9910525424"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a391daa58dae36aa1d9b539e85937478f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a391daa58dae36aa1d9b539e85937478f">recordCopyFrom</a> (const vk::CommandBuffer &amp;commandBuffer, std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; copyFromTensor, bool createBarrier)</td></tr>
 <tr class="separator:a391daa58dae36aa1d9b539e85937478f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff5e4c626cc66e24d0055a8468174d97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#aff5e4c626cc66e24d0055a8468174d97">recordCopyFromStagingToDevice</a> (const vk::CommandBuffer &amp;commandBuffer, bool createBarrier)</td></tr>
@@ -113,10 +124,47 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aecfaadf43600fb9e742aac6e35883851"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a805e6050a935763488116e071c0ce461"><td class="memItemLeft" align="right" valign="top">vk::DescriptorBufferInfo&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a805e6050a935763488116e071c0ce461">constructDescriptorBufferInfo</a> ()</td></tr>
 <tr class="separator:a805e6050a935763488116e071c0ce461"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8e16f48058f17d55d313727c9ceaa46"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#ae8e16f48058f17d55d313727c9ceaa46">mapDataFromHostMemory</a> ()</td></tr>
-<tr class="separator:ae8e16f48058f17d55d313727c9ceaa46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeeb1b7d8ed4681565f17e44c98fb704"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#aeeeb1b7d8ed4681565f17e44c98fb704">mapDataIntoHostMemory</a> ()</td></tr>
-<tr class="separator:aeeeb1b7d8ed4681565f17e44c98fb704"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fb937df6cc482c1f37c74d8fab0f9a9"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9">size</a> ()</td></tr>
+<tr class="separator:a1fb937df6cc482c1f37c74d8fab0f9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47634859d03a074e27084589e5c0511d"><td class="memItemLeft" align="right" valign="top"><a id="a47634859d03a074e27084589e5c0511d"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>dataTypeMemorySize</b> ()</td></tr>
+<tr class="separator:a47634859d03a074e27084589e5c0511d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4be971eaffcb3192c46c6e49a3fe2773"><td class="memItemLeft" align="right" valign="top"><a id="a4be971eaffcb3192c46c6e49a3fe2773"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>memorySize</b> ()</td></tr>
+<tr class="separator:a4be971eaffcb3192c46c6e49a3fe2773"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4addb015014f14da3d6019400c9771e4"><td class="memItemLeft" align="right" valign="top">TensorDataTypes&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a4addb015014f14da3d6019400c9771e4">dataType</a> ()</td></tr>
+<tr class="separator:a4addb015014f14da3d6019400c9771e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f554cac913805efb542243fcc94d252"><td class="memItemLeft" align="right" valign="top"><a id="a3f554cac913805efb542243fcc94d252"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>rawData</b> ()</td></tr>
+<tr class="separator:a3f554cac913805efb542243fcc94d252"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4c8d1bdeb1e057bd0d1aea1207bc98e"><td class="memTemplParams" colspan="2"><a id="af4c8d1bdeb1e057bd0d1aea1207bc98e"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af4c8d1bdeb1e057bd0d1aea1207bc98e"><td class="memTemplItemLeft" align="right" valign="top">T *&#160;</td><td class="memTemplItemRight" valign="bottom"><b>data</b> ()</td></tr>
+<tr class="separator:af4c8d1bdeb1e057bd0d1aea1207bc98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f59eceb0e7440501e11e1c8af598e84"><td class="memTemplParams" colspan="2"><a id="a0f59eceb0e7440501e11e1c8af598e84"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0f59eceb0e7440501e11e1c8af598e84"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>vector</b> ()</td></tr>
+<tr class="separator:a0f59eceb0e7440501e11e1c8af598e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70b8a0e812aa2746726052c4bfa7307e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Tensor.html#a70b8a0e812aa2746726052c4bfa7307e">setRawData</a> (const void *data)</td></tr>
+<tr class="separator:a70b8a0e812aa2746726052c4bfa7307e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:adb314877043b92b0aefb60d394608d6f"><td class="memItemLeft" align="right" valign="top"><a id="adb314877043b92b0aefb60d394608d6f"></a>
+<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a>&#160;</td><td class="memItemRight" valign="bottom"><b>mTensorType</b></td></tr>
+<tr class="separator:adb314877043b92b0aefb60d394608d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb855bcbcf07453dae4a211bdebd4276"><td class="memItemLeft" align="right" valign="top"><a id="afb855bcbcf07453dae4a211bdebd4276"></a>
+TensorDataTypes&#160;</td><td class="memItemRight" valign="bottom"><b>mDataType</b></td></tr>
+<tr class="separator:afb855bcbcf07453dae4a211bdebd4276"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af759d40f29dfdcc1e44a9cb839380fcc"><td class="memItemLeft" align="right" valign="top"><a id="af759d40f29dfdcc1e44a9cb839380fcc"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>mSize</b></td></tr>
+<tr class="separator:af759d40f29dfdcc1e44a9cb839380fcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22de8c7b3f3bb746a85a527a110d8f83"><td class="memItemLeft" align="right" valign="top"><a id="a22de8c7b3f3bb746a85a527a110d8f83"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>mDataTypeMemorySize</b></td></tr>
+<tr class="separator:a22de8c7b3f3bb746a85a527a110d8f83"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c72d8305b33842b276a3d53df3b976d"><td class="memItemLeft" align="right" valign="top"><a id="a8c72d8305b33842b276a3d53df3b976d"></a>
+void *&#160;</td><td class="memItemRight" valign="bottom"><b>mRawData</b></td></tr>
+<tr class="separator:a8c72d8305b33842b276a3d53df3b976d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Structured data used in GPU operations.</p>
@@ -154,8 +202,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a41f9d2cfc069fd4f57781c8f0de3a135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41f9d2cfc069fd4f57781c8f0de3a135">&#9670;&nbsp;</a></span>Tensor()</h2>
+<a id="acfce13e44a6ab46d7ebf6618b09bcd14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfce13e44a6ab46d7ebf6618b09bcd14">&#9670;&nbsp;</a></span>Tensor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,8 +223,26 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
+          <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>elementTotalCount</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>elementMemorySize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TensorDataTypes &amp;&#160;</td>
+          <td class="paramname"><em>dataType</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -204,19 +270,27 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a38e886e69103a956b994790f320a254e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38e886e69103a956b994790f320a254e">&#9670;&nbsp;</a></span>~Tensor()</h2>
+<a id="ab71ac92ecaac55d9bcc75f1571bfd47f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab71ac92ecaac55d9bcc75f1571bfd47f">&#9670;&nbsp;</a></span>~Tensor()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">kp::Tensor::~Tensor </td>
+          <td class="memname">virtual kp::Tensor::~Tensor </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Destructor which is in charge of freeing vulkan resources unless they have been provided externally. </p>
 
@@ -242,22 +316,30 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a858f9a010a112983244cdf16ea0e5308"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a858f9a010a112983244cdf16ea0e5308">&#9670;&nbsp;</a></span>data()</h2>
+<a id="a4addb015014f14da3d6019400c9771e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4addb015014f14da3d6019400c9771e4">&#9670;&nbsp;</a></span>dataType()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;float&gt;&amp; kp::Tensor::data </td>
+          <td class="memname">TensorDataTypes kp::Tensor::dataType </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns the vector of data currently contained by the <a class="el" href="classkp_1_1Tensor.html">Tensor</a>. It is important to ensure that there is no out-of-sync data with the GPU memory.</p>
-<dl class="section return"><dt>Returns</dt><dd>Reference to vector of elements representing the data in the tensor. </dd></dl>
+<p>Retrieve the underlying data type of the <a class="el" href="classkp_1_1Tensor.html">Tensor</a></p>
+<dl class="section return"><dt>Returns</dt><dd>Data type of tensor of type kp::Tensor::TensorDataTypes </dd></dl>
 
 </div>
 </div>
@@ -298,70 +380,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae8e16f48058f17d55d313727c9ceaa46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8e16f48058f17d55d313727c9ceaa46">&#9670;&nbsp;</a></span>mapDataFromHostMemory()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void kp::Tensor::mapDataFromHostMemory </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Maps data from the Host Visible GPU memory into the data vector. It requires the <a class="el" href="classkp_1_1Tensor.html">Tensor</a> to be of staging type for it to work. </p>
-
-</div>
-</div>
-<a id="aeeeb1b7d8ed4681565f17e44c98fb704"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeeeb1b7d8ed4681565f17e44c98fb704">&#9670;&nbsp;</a></span>mapDataIntoHostMemory()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void kp::Tensor::mapDataIntoHostMemory </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Maps data from the data vector into the Host Visible GPU memory. It requires the tensor to be of staging type for it to work. </p>
-
-</div>
-</div>
-<a id="a64ff1ca98d5380cc3916e13b20f7a509"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64ff1ca98d5380cc3916e13b20f7a509">&#9670;&nbsp;</a></span>operator[]()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">float&amp; kp::Tensor::operator[] </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>index</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Overrides the subscript operator to expose the underlying data's subscript operator which in this case would be its underlying vector's.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">i</td><td>The index where the element will be returned from. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns the element in the position requested. </dd></dl>
-
-</div>
-</div>
-<a id="a1eb83d6d5c896eccd017f8074b2d9f38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1eb83d6d5c896eccd017f8074b2d9f38">&#9670;&nbsp;</a></span>rebuild()</h2>
+<a id="aece585e97c20ed7133fdfe9fabed9bd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aece585e97c20ed7133fdfe9fabed9bd6">&#9670;&nbsp;</a></span>rebuild()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -369,14 +389,20 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void kp::Tensor::rebuild </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
+          <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">TensorTypes</a>&#160;</td>
-          <td class="paramname"><em>tensorType</em> = <code><a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">TensorTypes::eDevice</a></code>&#160;</td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>elementTotalCount</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>elementMemorySize</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -568,20 +594,28 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3618a3e5a86cfaad31820f9910525424"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3618a3e5a86cfaad31820f9910525424">&#9670;&nbsp;</a></span>setData()</h2>
+<a id="a70b8a0e812aa2746726052c4bfa7307e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70b8a0e812aa2746726052c4bfa7307e">&#9670;&nbsp;</a></span>setRawData()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void kp::Tensor::setData </td>
+          <td class="memname">void kp::Tensor::setRawData </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
+          <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>data</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host. </p>
 
@@ -592,6 +626,9 @@ Public Member Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">uint32_t kp::Tensor::size </td>
@@ -600,6 +637,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Returns the size/magnitude of the <a class="el" href="classkp_1_1Tensor.html">Tensor</a>, which will be the total number of elements across all dimensions</p>
 <dl class="section return"><dt>Returns</dt><dd>Unsigned integer representing the total number of elements </dd></dl>

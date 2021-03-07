@@ -84,8 +84,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af9b31d91851f8b7bb8d95c32a905b1ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d0c4070458e5949bfa18a589fe75e41"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a9d0c4070458e5949bfa18a589fe75e41">sequence</a> (uint32_t queueIndex=0)</td></tr>
 <tr class="separator:a9d0c4070458e5949bfa18a589fe75e41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66ee928a897d81d84e228900bea1c264"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a66ee928a897d81d84e228900bea1c264">tensor</a> (const std::vector&lt; float &gt; &amp;data, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
-<tr class="separator:a66ee928a897d81d84e228900bea1c264"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad48ebcd90c1f1cec859d7c9092279570"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ad48ebcd90c1f1cec859d7c9092279570"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1TensorT.html">TensorT</a>&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ad48ebcd90c1f1cec859d7c9092279570">tensorT</a> (const std::vector&lt; T &gt; &amp;data, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
+<tr class="separator:ad48ebcd90c1f1cec859d7c9092279570"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a047c52664797078be2032d6235922022"><td class="memItemLeft" align="right" valign="top"><a id="a047c52664797078be2032d6235922022"></a>
+std::shared_ptr&lt; <a class="el" href="classkp_1_1TensorT.html">TensorT</a>&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tensor</b> (const std::vector&lt; float &gt; &amp;data, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
+<tr class="separator:a047c52664797078be2032d6235922022"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e6ca20845baf932efeb30f9fdbbe251"><td class="memItemLeft" align="right" valign="top"><a id="a8e6ca20845baf932efeb30f9fdbbe251"></a>
+std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tensor</b> (void *data, uint32_t elementTotalCount, uint32_t elementMemorySize, const Tensor::TensorDataTypes &amp;dataType, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
+<tr class="separator:a8e6ca20845baf932efeb30f9fdbbe251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5d97ff9e1f6055356cd71ec91dc40b1"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ad5d97ff9e1f6055356cd71ec91dc40b1">algorithm</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={}, const Constants &amp;pushConstants={})</td></tr>
 <tr class="separator:ad5d97ff9e1f6055356cd71ec91dc40b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69ab19202bee0c3e0c4f96f9abd6dcc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a69ab19202bee0c3e0c4f96f9abd6dcc8">destroy</a> ()</td></tr>
@@ -340,16 +347,21 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a66ee928a897d81d84e228900bea1c264"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66ee928a897d81d84e228900bea1c264">&#9670;&nbsp;</a></span>tensor()</h2>
+<a id="ad48ebcd90c1f1cec859d7c9092279570"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad48ebcd90c1f1cec859d7c9092279570">&#9670;&nbsp;</a></span>tensorT()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1Tensor.html">Tensor</a>&gt; kp::Manager::tensor </td>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1TensorT.html">TensorT</a>&lt;T&gt; &gt; kp::Manager::tensorT </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -364,6 +376,11 @@ Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Create a managed tensor that will be destroyed by this manager if it hasn't been destroyed by its reference count going to zero.</p>
 <dl class="params"><dt>Parameters</dt><dd>

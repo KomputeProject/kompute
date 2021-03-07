@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['tensor',['Tensor',['../classkp_1_1Tensor.html#a41f9d2cfc069fd4f57781c8f0de3a135',1,'kp::Tensor::Tensor()'],['../classkp_1_1Manager.html#a66ee928a897d81d84e228900bea1c264',1,'kp::Manager::tensor()']]],
+  ['tensor',['Tensor',['../classkp_1_1Tensor.html#acfce13e44a6ab46d7ebf6618b09bcd14',1,'kp::Tensor']]],
+  ['tensort',['tensorT',['../classkp_1_1Manager.html#ad48ebcd90c1f1cec859d7c9092279570',1,'kp::Manager']]],
   ['tensortype',['tensorType',['../classkp_1_1Tensor.html#a59452f1c62fd738536bb0a6cbf8d896b',1,'kp::Tensor']]]
 ];

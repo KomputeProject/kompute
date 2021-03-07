@@ -9,5 +9,5 @@ var searchData=
   ['_7eoptensorsyncdevice',['~OpTensorSyncDevice',['../classkp_1_1OpTensorSyncDevice.html#a990df433f503d85828392e4d50db77c1',1,'kp::OpTensorSyncDevice']]],
   ['_7eoptensorsynclocal',['~OpTensorSyncLocal',['../classkp_1_1OpTensorSyncLocal.html#abe9a817363d192a190b93cf520449397',1,'kp::OpTensorSyncLocal']]],
   ['_7esequence',['~Sequence',['../classkp_1_1Sequence.html#a657bf520b64ddbd42e12095c5241ef52',1,'kp::Sequence']]],
-  ['_7etensor',['~Tensor',['../classkp_1_1Tensor.html#a38e886e69103a956b994790f320a254e',1,'kp::Tensor']]]
+  ['_7etensor',['~Tensor',['../classkp_1_1Tensor.html#ab71ac92ecaac55d9bcc75f1571bfd47f',1,'kp::Tensor']]]
 ];

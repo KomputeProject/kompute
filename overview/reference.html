@@ -507,8 +507,8 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp7Manager6tensorERKNSt6vectorIfEEN6Tensor11TensorTypesE">
-<span id="_CPPv3N2kp7Manager6tensorERKNSt6vectorIfEEN6Tensor11TensorTypesE"></span><span id="_CPPv2N2kp7Manager6tensorERKNSt6vectorIfEEN6Tensor11TensorTypesE"></span><span id="kp::Manager::tensor__std::vector:float:CR.Tensor::TensorTypes"></span><span class="target" id="classkp_1_1Manager_1a66ee928a897d81d84e228900bea1c264"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt; <code class="sig-name descname">tensor</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;float&gt; &amp;<em>data</em>, <a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager6tensorERKNSt6vectorIfEEN6Tensor11TensorTypesE" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I0EN2kp7Manager7tensorTENSt10shared_ptrI7TensorTI1TEEERKNSt6vectorI1TEEN6Tensor11TensorTypesE">
+<span id="_CPPv3I0EN2kp7Manager7tensorTERKNSt6vectorI1TEEN6Tensor11TensorTypesE"></span><span id="_CPPv2I0EN2kp7Manager7tensorTERKNSt6vectorI1TEEN6Tensor11TensorTypesE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br/><span class="target" id="classkp_1_1Manager_1ad48ebcd90c1f1cec859d7c9092279570"></span>std::shared_ptr&lt;TensorT&lt;<a class="reference internal" href="#_CPPv4I0EN2kp7Manager7tensorTENSt10shared_ptrI7TensorTI1TEEERKNSt6vectorI1TEEN6Tensor11TensorTypesE" title="kp::Manager::tensorT::T">T</a>&gt;&gt; <code class="sig-name descname">tensorT</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN2kp7Manager7tensorTENSt10shared_ptrI7TensorTI1TEEERKNSt6vectorI1TEEN6Tensor11TensorTypesE" title="kp::Manager::tensorT::T">T</a>&gt; &amp;<em>data</em>, <a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp7Manager7tensorTENSt10shared_ptrI7TensorTI1TEEERKNSt6vectorI1TEEN6Tensor11TensorTypesE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Create a managed tensor that will be destroyed by this manager if it hasn’t been destroyed by its reference count going to zero.</p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Shared pointer with initialised tensor </p>
@@ -817,6 +817,7 @@
 <span id="_CPPv3N2kp6TensorE"></span><span id="_CPPv2N2kp6TensorE"></span><span id="kp::Tensor"></span><span class="target" id="classkp_1_1Tensor"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#_CPPv4N2kp6TensorE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Structured data used in GPU operations.</p>
 <p>Tensors are the base building block in Kompute to perform operations across GPUs. Each tensor would have a respective Vulkan memory and buffer, which would be used to store their respective data. The tensors can be used for GPU data storage or transfer. </p>
+<p>Subclassed by kp::TensorT&lt; T &gt;</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="cpp enum">
@@ -844,8 +845,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorIfEERK11TensorTypes">
-<span id="_CPPv3N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorIfEERK11TensorTypes"></span><span id="_CPPv2N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorIfEERK11TensorTypes"></span><span id="kp::Tensor::Tensor__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::vector:float:CR.TensorTypesCR"></span><span class="target" id="classkp_1_1Tensor_1a41f9d2cfc069fd4f57781c8f0de3a135"></span><code class="sig-name descname">Tensor</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, <em class="property">const</em> std::vector&lt;float&gt; &amp;<em>data</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> &amp;<em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorIfEERK11TensorTypes" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEEPv8uint32_t8uint32_tRK15TensorDataTypesRK11TensorTypes">
+<span id="_CPPv3N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEEPv8uint32_t8uint32_tRK15TensorDataTypesRK11TensorTypes"></span><span id="_CPPv2N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEEPv8uint32_t8uint32_tRK15TensorDataTypesRK11TensorTypes"></span><span id="kp::Tensor::Tensor__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.voidP.uint32_t.uint32_t.TensorDataTypesCR.TensorTypesCR"></span><span class="target" id="classkp_1_1Tensor_1acfce13e44a6ab46d7ebf6618b09bcd14"></span><code class="sig-name descname">Tensor</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, void *<em>data</em>, uint32_t <em>elementTotalCount</em>, uint32_t <em>elementMemorySize</em>, <em class="property">const</em> TensorDataTypes &amp;<em>dataType</em>, <em class="property">const</em> <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> &amp;<em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor6TensorENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEEPv8uint32_t8uint32_tRK15TensorDataTypesRK11TensorTypes" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Constructor with data provided which would be used to create the respective vulkan buffer and memory.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -860,12 +861,12 @@
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp6TensorD0Ev">
-<span id="_CPPv3N2kp6TensorD0Ev"></span><span id="_CPPv2N2kp6TensorD0Ev"></span><span id="kp::Tensor::~Tensor"></span><span class="target" id="classkp_1_1Tensor_1a38e886e69103a956b994790f320a254e"></span><code class="sig-name descname">~Tensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6TensorD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<span id="_CPPv3N2kp6TensorD0Ev"></span><span id="_CPPv2N2kp6TensorD0Ev"></span><span id="kp::Tensor::~Tensor"></span><span class="target" id="classkp_1_1Tensor_1ab71ac92ecaac55d9bcc75f1571bfd47f"></span><code class="sig-name descname">~Tensor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6TensorD0Ev" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Destructor which is in charge of freeing vulkan resources unless they have been provided externally. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor7rebuildERKNSt6vectorIfEE11TensorTypes">
-<span id="_CPPv3N2kp6Tensor7rebuildERKNSt6vectorIfEE11TensorTypes"></span><span id="_CPPv2N2kp6Tensor7rebuildERKNSt6vectorIfEE11TensorTypes"></span><span id="kp::Tensor::rebuild__std::vector:float:CR.TensorTypes"></span><span class="target" id="classkp_1_1Tensor_1a1eb83d6d5c896eccd017f8074b2d9f38"></span>void <code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;float&gt; &amp;<em>data</em>, <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <em>tensorType</em> = <a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a>::<a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypes7eDeviceE" title="kp::Tensor::TensorTypes::eDevice">eDevice</a><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7rebuildERKNSt6vectorIfEE11TensorTypes" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor7rebuildEPv8uint32_t8uint32_t">
+<span id="_CPPv3N2kp6Tensor7rebuildEPv8uint32_t8uint32_t"></span><span id="_CPPv2N2kp6Tensor7rebuildEPv8uint32_t8uint32_t"></span><span id="kp::Tensor::rebuild__voidP.uint32_t.uint32_t"></span><span class="target" id="classkp_1_1Tensor_1aece585e97c20ed7133fdfe9fabed9bd6"></span>void <code class="sig-name descname">rebuild</code><span class="sig-paren">(</span>void *<em>data</em>, uint32_t <em>elementTotalCount</em>, uint32_t <em>elementMemorySize</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7rebuildEPv8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Function to trigger reinitialisation of the tensor buffer and memory with new data as well as new potential device type.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -892,40 +893,6 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor4dataEv">
-<span id="_CPPv3N2kp6Tensor4dataEv"></span><span id="_CPPv2N2kp6Tensor4dataEv"></span><span id="kp::Tensor::data"></span><span class="target" id="classkp_1_1Tensor_1a858f9a010a112983244cdf16ea0e5308"></span>std::vector&lt;float&gt; &amp;<code class="sig-name descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4dataEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Returns the vector of data currently contained by the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>. It is important to ensure that there is no out-of-sync data with the GPU memory.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Reference to vector of elements representing the data in the tensor. </p>
-</dd>
-</dl>
-</p>
-</dd></dl>
-<dl class="cpp function">
-<dt id="_CPPv4N2kp6TensorixEi">
-<span id="_CPPv3N2kp6TensorixEi"></span><span id="_CPPv2N2kp6TensorixEi"></span><span id="kp::Tensor::subscript-operator__i"></span><span class="target" id="classkp_1_1Tensor_1a64ff1ca98d5380cc3916e13b20f7a509"></span>float &amp;<code class="sig-name descname">operator[]</code><span class="sig-paren">(</span>int <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6TensorixEi" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Overrides the subscript operator to expose the underlying data’s subscript operator which in this case would be its underlying vector’s.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Returns the element in the position requested. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code>: The index where the element will be returned from. </p></li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-<dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor4sizeEv">
-<span id="_CPPv3N2kp6Tensor4sizeEv"></span><span id="_CPPv2N2kp6Tensor4sizeEv"></span><span id="kp::Tensor::size"></span><span class="target" id="classkp_1_1Tensor_1a1fb937df6cc482c1f37c74d8fab0f9a9"></span>uint32_t <code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4sizeEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Returns the size/magnitude of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>, which will be the total number of elements across all dimensions</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Unsigned integer representing the total number of elements </p>
-</dd>
-</dl>
-</p>
-</dd></dl>
-<dl class="cpp function">
 <dt id="_CPPv4N2kp6Tensor10tensorTypeEv">
 <span id="_CPPv3N2kp6Tensor10tensorTypeEv"></span><span id="_CPPv2N2kp6Tensor10tensorTypeEv"></span><span id="kp::Tensor::tensorType"></span><span class="target" id="classkp_1_1Tensor_1a59452f1c62fd738536bb0a6cbf8d896b"></span><a class="reference internal" href="#_CPPv4N2kp6Tensor11TensorTypesE" title="kp::Tensor::TensorTypes">TensorTypes</a> <code class="sig-name descname">tensorType</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor10tensorTypeEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Retrieve the tensor type of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a></p>
@@ -934,11 +901,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-<dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor7setDataERKNSt6vectorIfEE">
-<span id="_CPPv3N2kp6Tensor7setDataERKNSt6vectorIfEE"></span><span id="_CPPv2N2kp6Tensor7setDataERKNSt6vectorIfEE"></span><span id="kp::Tensor::setData__std::vector:float:CR"></span><span class="target" id="classkp_1_1Tensor_1a3618a3e5a86cfaad31820f9910525424"></span>void <code class="sig-name descname">setData</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;float&gt; &amp;<em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7setDataERKNSt6vectorIfEE" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host. </p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEEb">
@@ -1007,14 +969,29 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor21mapDataFromHostMemoryEv">
-<span id="_CPPv3N2kp6Tensor21mapDataFromHostMemoryEv"></span><span id="_CPPv2N2kp6Tensor21mapDataFromHostMemoryEv"></span><span id="kp::Tensor::mapDataFromHostMemory"></span><span class="target" id="classkp_1_1Tensor_1ae8e16f48058f17d55d313727c9ceaa46"></span>void <code class="sig-name descname">mapDataFromHostMemory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor21mapDataFromHostMemoryEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Maps data from the Host Visible GPU memory into the data vector. It requires the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> to be of staging type for it to work. </p>
+<dt id="_CPPv4N2kp6Tensor4sizeEv">
+<span id="_CPPv3N2kp6Tensor4sizeEv"></span><span id="_CPPv2N2kp6Tensor4sizeEv"></span><span id="kp::Tensor::size"></span><span class="target" id="classkp_1_1Tensor_1a1fb937df6cc482c1f37c74d8fab0f9a9"></span>uint32_t <code class="sig-name descname">size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor4sizeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns the size/magnitude of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>, which will be the total number of elements across all dimensions</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Unsigned integer representing the total number of elements </p>
+</dd>
+</dl>
+</p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor21mapDataIntoHostMemoryEv">
-<span id="_CPPv3N2kp6Tensor21mapDataIntoHostMemoryEv"></span><span id="_CPPv2N2kp6Tensor21mapDataIntoHostMemoryEv"></span><span id="kp::Tensor::mapDataIntoHostMemory"></span><span class="target" id="classkp_1_1Tensor_1aeeeb1b7d8ed4681565f17e44c98fb704"></span>void <code class="sig-name descname">mapDataIntoHostMemory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor21mapDataIntoHostMemoryEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Maps data from the data vector into the Host Visible GPU memory. It requires the tensor to be of staging type for it to work. </p>
+<dt id="_CPPv4N2kp6Tensor8dataTypeEv">
+<span id="_CPPv3N2kp6Tensor8dataTypeEv"></span><span id="_CPPv2N2kp6Tensor8dataTypeEv"></span><span id="kp::Tensor::dataType"></span><span class="target" id="classkp_1_1Tensor_1a4addb015014f14da3d6019400c9771e4"></span>TensorDataTypes <code class="sig-name descname">dataType</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor8dataTypeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Retrieve the underlying data type of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a></p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Data type of tensor of type kp::Tensor::TensorDataTypes </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor10setRawDataEPKv">
+<span id="_CPPv3N2kp6Tensor10setRawDataEPKv"></span><span id="_CPPv2N2kp6Tensor10setRawDataEPKv"></span><span id="kp::Tensor::setRawData__voidCP"></span><span class="target" id="classkp_1_1Tensor_1a70b8a0e812aa2746726052c4bfa7307e"></span>void <code class="sig-name descname">setRawData</code><span class="sig-paren">(</span><em class="property">const</em> void *<em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor10setRawDataEPKv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host. </p>
 </dd></dl>
 </div>
 </dd></dl>
