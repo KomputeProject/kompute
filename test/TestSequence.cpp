@@ -117,7 +117,7 @@ TEST(TestSequence, SequenceTimestamps)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
     
     auto seq = mgr.sequence(0, 100); //100 timestamps
     seq->record<kp::OpTensorSyncDevice>({ tensorA })
