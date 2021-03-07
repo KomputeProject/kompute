@@ -252,7 +252,11 @@ nrOfTimestamps The maximum number of timestamps to allocate. If zero
 (default), disables latching of timestamps. @returns Shared pointer
 with initialised sequence)doc";
 
-static const char *__doc_kp_Manager_tensor =
+static const char *__doc_kp_Manager_tensor = R"doc()doc";
+
+static const char *__doc_kp_Manager_tensor_2 = R"doc()doc";
+
+static const char *__doc_kp_Manager_tensorT =
 R"doc(Create a managed tensor that will be destroyed by this manager if it
 hasn't been destroyed by its reference count going to zero.
 
@@ -679,6 +683,20 @@ across GPUs. Each tensor would have a respective Vulkan memory and
 buffer, which would be used to store their respective data. The
 tensors can be used for GPU data storage or transfer.)doc";
 
+static const char *__doc_kp_TensorT = R"doc()doc";
+
+static const char *__doc_kp_TensorT_TensorT = R"doc()doc";
+
+static const char *__doc_kp_TensorT_data = R"doc()doc";
+
+static const char *__doc_kp_TensorT_dataType = R"doc()doc";
+
+static const char *__doc_kp_TensorT_operator_array = R"doc()doc";
+
+static const char *__doc_kp_TensorT_setData = R"doc()doc";
+
+static const char *__doc_kp_TensorT_vector = R"doc()doc";
+
 static const char *__doc_kp_Tensor_Tensor =
 R"doc(Constructor with data provided which would be used to create the
 respective vulkan buffer and memory.
@@ -688,6 +706,18 @@ respective vulkan buffer and memory.
 @param data Non-zero-sized vector of data that will be used by the
 tensor @param tensorTypes Type for the tensor which is of type
 TensorTypes)doc";
+
+static const char *__doc_kp_Tensor_TensorDataTypes = R"doc()doc";
+
+static const char *__doc_kp_Tensor_TensorDataTypes_eBool = R"doc()doc";
+
+static const char *__doc_kp_Tensor_TensorDataTypes_eDouble = R"doc()doc";
+
+static const char *__doc_kp_Tensor_TensorDataTypes_eFloat = R"doc()doc";
+
+static const char *__doc_kp_Tensor_TensorDataTypes_eInt = R"doc()doc";
+
+static const char *__doc_kp_Tensor_TensorDataTypes_eUnsignedInt = R"doc()doc";
 
 static const char *__doc_kp_Tensor_TensorTypes =
 R"doc(Type for tensors created: Device allows memory to be transferred from
@@ -714,13 +744,14 @@ without exposing it.
 
 static const char *__doc_kp_Tensor_createBuffer = R"doc()doc";
 
-static const char *__doc_kp_Tensor_data =
-R"doc(Returns the vector of data currently contained by the Tensor. It is
-important to ensure that there is no out-of-sync data with the GPU
-memory.
+static const char *__doc_kp_Tensor_data = R"doc()doc";
 
-@return Reference to vector of elements representing the data in the
-tensor.)doc";
+static const char *__doc_kp_Tensor_dataType =
+R"doc(Retrieve the underlying data type of the Tensor
+
+@return Data type of tensor of type kp::Tensor::TensorDataTypes)doc";
+
+static const char *__doc_kp_Tensor_dataTypeMemorySize = R"doc()doc";
 
 static const char *__doc_kp_Tensor_destroy =
 R"doc(Destroys and frees the GPU resources which include the buffer and
@@ -740,7 +771,9 @@ resources.
 
 @returns Boolean stating whether tensor is initialized)doc";
 
-static const char *__doc_kp_Tensor_mData = R"doc()doc";
+static const char *__doc_kp_Tensor_mDataType = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mDataTypeMemorySize = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mDevice = R"doc()doc";
 
@@ -758,29 +791,21 @@ static const char *__doc_kp_Tensor_mPrimaryBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mPrimaryMemory = R"doc()doc";
 
+static const char *__doc_kp_Tensor_mRawData = R"doc()doc";
+
+static const char *__doc_kp_Tensor_mSize = R"doc()doc";
+
 static const char *__doc_kp_Tensor_mStagingBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mStagingMemory = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mTensorType = R"doc()doc";
 
-static const char *__doc_kp_Tensor_mapDataFromHostMemory =
-R"doc(Maps data from the Host Visible GPU memory into the data vector. It
-requires the Tensor to be of staging type for it to work.)doc";
-
-static const char *__doc_kp_Tensor_mapDataIntoHostMemory =
-R"doc(Maps data from the data vector into the Host Visible GPU memory. It
-requires the tensor to be of staging type for it to work.)doc";
+static const char *__doc_kp_Tensor_mapRawData = R"doc()doc";
 
 static const char *__doc_kp_Tensor_memorySize = R"doc()doc";
 
-static const char *__doc_kp_Tensor_operator_array =
-R"doc(Overrides the subscript operator to expose the underlying data's
-subscript operator which in this case would be its underlying
-vector's.
-
-@param i The index where the element will be returned from. @return
-Returns the element in the position requested.)doc";
+static const char *__doc_kp_Tensor_rawData = R"doc()doc";
 
 static const char *__doc_kp_Tensor_rebuild =
 R"doc(Function to trigger reinitialisation of the tensor buffer and memory
@@ -829,7 +854,7 @@ would only be relevant for kp::Tensors of type eDevice.
 @param createBarrier Whether to create a barrier that ensures the data
 is copied before further operations. Default is true.)doc";
 
-static const char *__doc_kp_Tensor_setData =
+static const char *__doc_kp_Tensor_setRawData =
 R"doc(Sets / resets the vector data of the tensor. This function does not
 perform any copies into GPU memory and is only performed on the host.)doc";
 
@@ -843,6 +868,10 @@ static const char *__doc_kp_Tensor_tensorType =
 R"doc(Retrieve the tensor type of the Tensor
 
 @return Tensor type of tensor)doc";
+
+static const char *__doc_kp_Tensor_unmapRawData = R"doc()doc";
+
+static const char *__doc_kp_Tensor_vector = R"doc()doc";
 
 #if defined(__GNUG__)
 #pragma GCC diagnostic pop

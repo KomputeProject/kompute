@@ -131,7 +131,6 @@ PYBIND11_MODULE(kp, m) {
                 DOC(kp, Sequence, evalAwait))
         .def("eval_await", [](kp::Sequence& self, uint32_t wait) { return self.evalAwait(wait); },
                 DOC(kp, Sequence, evalAwait))
-<<<<<<< HEAD
         .def("is_recording", &kp::Sequence::isRecording,
                 DOC(kp, Sequence, isRecording))
         .def("is_running", &kp::Sequence::isRunning,
@@ -150,17 +149,6 @@ PYBIND11_MODULE(kp, m) {
     py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(m, "Manager", DOC(kp, Manager))
         .def(py::init(), DOC(kp, Manager, Manager))
         .def(py::init<uint32_t>(), DOC(kp, Manager, Manager_2))
-=======
-        .def("is_recording", &kp::Sequence::isRecording, DOC(kp, Sequence, isRecording))
-        .def("is_running", &kp::Sequence::isRunning, DOC(kp, Sequence, isRunning))
-        .def("is_init", &kp::Sequence::isInit, DOC(kp, Sequence, isInit))
-        .def("clear", &kp::Sequence::clear, DOC(kp, Sequence, clear))
-        .def("destroy", &kp::Sequence::destroy, DOC(kp, Sequence, destroy));
-
-    py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(m, "Manager")
-        .def(py::init())
-        .def(py::init<uint32_t>())
->>>>>>> cc1a6cc (Updated tests and rebased)
         .def(py::init<uint32_t,const std::vector<uint32_t>&,const std::vector<std::string>&>(),
                 DOC(kp, Manager, Manager_2),
                 py::arg("device") = 0,
