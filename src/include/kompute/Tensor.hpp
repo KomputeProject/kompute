@@ -190,7 +190,7 @@ class Tensor
     // TODO: move to cpp
     template <typename T>
     T* data() {
-        return this->mRawData;
+        return (T*)this->mRawData;
     }
 
     template <typename T>

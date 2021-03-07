@@ -57,7 +57,7 @@ class CMakeBuild(build_ext):
         else:
             cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS="-fPIC"']
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-            build_args += ['--', '-j2']
+            build_args += ['--', '-j']
 
         env = os.environ.copy()
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),

@@ -98,6 +98,23 @@ class Manager
         return this->tensorT<float>(data, tensorType);
     }
 
+    std::shared_ptr<Tensor> tensor(
+      void* data,
+      uint32_t elementTotalCount,
+      uint32_t elementMemorySize,
+      const Tensor::TensorDataTypes& dataType,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        std::shared_ptr<Tensor> tensor{ new kp::Tensor(
+          this->mPhysicalDevice, this->mDevice, data, elementTotalCount, elementMemorySize, dataType, tensorType) };
+
+        if (this->mManageResources) {
+            this->mManagedTensors.push_back(tensor);
+        }
+
+        return tensor;
+    }
+
     /**
      * Create a managed algorithm that will be destroyed by this manager
      * if it hasn't been destroyed by its reference count going to zero.

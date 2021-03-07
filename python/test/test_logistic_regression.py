@@ -1,4 +1,5 @@
 import pyshader as ps
+import numpy as np
 import kp
 
 def test_logistic_regression():
@@ -46,21 +47,21 @@ def test_logistic_regression():
     mgr = kp.Manager(0)
 
     # First we create input and ouput tensors for shader
-    tensor_x_i = mgr.tensor([0.0, 1.0, 1.0, 1.0, 1.0])
-    tensor_x_j = mgr.tensor([0.0, 0.0, 0.0, 1.0, 1.0])
+    tensor_x_i = mgr.tensor(np.array([0.0, 1.0, 1.0, 1.0, 1.0]))
+    tensor_x_j = mgr.tensor(np.array([0.0, 0.0, 0.0, 1.0, 1.0]))
 
-    tensor_y = mgr.tensor([0.0, 0.0, 0.0, 1.0, 1.0])
+    tensor_y = mgr.tensor(np.array([0.0, 0.0, 0.0, 1.0, 1.0]))
 
-    tensor_w_in = mgr.tensor([0.001, 0.001])
-    tensor_w_out_i = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
-    tensor_w_out_j = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_w_in = mgr.tensor(np.array([0.001, 0.001]))
+    tensor_w_out_i = mgr.tensor(np.array([0.0, 0.0, 0.0, 0.0, 0.0]))
+    tensor_w_out_j = mgr.tensor(np.array([0.0, 0.0, 0.0, 0.0, 0.0]))
 
-    tensor_b_in = mgr.tensor([0.0])
-    tensor_b_out = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_b_in = mgr.tensor(np.array([0.0]))
+    tensor_b_out = mgr.tensor(np.array([0.0, 0.0, 0.0, 0.0, 0.0]))
 
-    tensor_l_out = mgr.tensor([0.0, 0.0, 0.0, 0.0, 0.0])
+    tensor_l_out = mgr.tensor(np.array([0.0, 0.0, 0.0, 0.0, 0.0]))
 
-    tensor_m = mgr.tensor([ tensor_y.size() ])
+    tensor_m = mgr.tensor(np.array([ tensor_y.size() ]))
 
     # We store them in an array for easier interaction
     params = [tensor_x_i, tensor_x_j, tensor_y, tensor_w_in, tensor_w_out_i,
@@ -91,9 +92,9 @@ def test_logistic_regression():
 
         # Calculate the parameters based on the respective derivatives calculated
         for j_iter in range(tensor_b_out.size()):
-            tensor_w_in[0] -= learning_rate * tensor_w_out_i.data()[j_iter]
-            tensor_w_in[1] -= learning_rate * tensor_w_out_j.data()[j_iter]
-            tensor_b_in[0] -= learning_rate * tensor_b_out.data()[j_iter]
+            tensor_w_in.data()[0] -= learning_rate * tensor_w_out_i.data()[j_iter]
+            tensor_w_in.data()[1] -= learning_rate * tensor_w_out_j.data()[j_iter]
+            tensor_b_in.data()[0] -= learning_rate * tensor_b_out.data()[j_iter]
 
     assert tensor_w_in.data()[0] < 0.01
     assert tensor_w_in.data()[0] > 0.0

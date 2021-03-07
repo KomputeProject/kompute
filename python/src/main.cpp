@@ -92,59 +92,46 @@ PYBIND11_MODULE(kp, m) {
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
         .def("data", [](kp::Tensor& self) {
-                return py::array(self.data().size(), self.data().data());
-            }, DOC(kp, Tensor, data))
-        .def("__getitem__", [](kp::Tensor &self, size_t index) -> float { return self.data()[index]; },
-                "When only an index is necessary")
-        .def("__setitem__", [](kp::Tensor &self, size_t index, float value) {
-                self.data()[index] = value; })
-        .def("set_data", [np](kp::Tensor &self, const py::array_t<float> data){
-                const py::array_t<float> flatdata = np.attr("ravel")(data);
-                const py::buffer_info info        = flatdata.request();
-                const float* ptr                  = (float*) info.ptr;
-                self.setData(std::vector<float>(ptr, ptr+flatdata.size()));
-            }, DOC(kp, Tensor, setData))
-        .def("__iter__", [](kp::Tensor &self) {
-                return py::make_iterator(self.data().begin(), self.data().end());
-            }, py::keep_alive<0, 1>(), // Required to keep alive iterator while exists
-            "Iterator to enable looping within data structure as required.")
-        .def("__contains__", [](kp::Tensor &self, float v) {
-                for (size_t i = 0; i < self.data().size(); ++i) {
-                    if (v == self.data()[i]) {
-                            return true;
-                        }
-                    }
-                return false;
-            })
-        .def("__reversed__", [](kp::Tensor &self) { 
-                size_t size = self.data().size();
-                std::vector<float> reversed(size);
-                for (size_t i = 0; i < size; i++) {
-                    reversed[size - i - 1] = self.data()[i];
+                // Non-owning container exposing the underlying pointer
+                py::str dummyDataOwner; // Explicitly request data to not be owned by np
+                switch (self.dataType()) {
+                case kp::Tensor::TensorDataTypes::eFloat:
+                    return py::array(self.size(), self.data<float>(), dummyDataOwner);
+                case kp::Tensor::TensorDataTypes::eUnsignedInt:
+                    return py::array(self.size(), self.data<uint32_t>(), dummyDataOwner);
+                case kp::Tensor::TensorDataTypes::eInt:
+                    return py::array(self.size(), self.data<int32_t>(), dummyDataOwner);
+                case kp::Tensor::TensorDataTypes::eDouble:
+                    return py::array(self.size(), self.data<double>(), dummyDataOwner);
+                case kp::Tensor::TensorDataTypes::eBool:
+                    return py::array(self.size(), self.data<bool>(), dummyDataOwner);
+                default:
+                    throw std::runtime_error("Kompute Python data type not supported");
                 }
-                return reversed;
-            })
+            }, DOC(kp, Tensor, data))
         .def("size", &kp::Tensor::size, DOC(kp, Tensor, size))
         .def("__len__", &kp::Tensor::size, DOC(kp, Tensor, size))
         .def("tensor_type", &kp::Tensor::tensorType, DOC(kp, Tensor, tensorType))
+        .def("data_type", &kp::Tensor::dataType, DOC(kp, Tensor, dataType))
         .def("is_init", &kp::Tensor::isInit, DOC(kp, Tensor, isInit))
         .def("destroy", &kp::Tensor::destroy, DOC(kp, Tensor, destroy));
 
-    py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence", DOC(kp, Sequence))
+    py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
         .def("record", [](kp::Sequence& self, std::shared_ptr<kp::OpBase> op) { return self.record(op); },
                 DOC(kp, Sequence, record))
         .def("eval", [](kp::Sequence& self) { return self.eval(); },
                 DOC(kp, Sequence, eval))
         .def("eval", [](kp::Sequence& self, std::shared_ptr<kp::OpBase> op) { return self.eval(op); },
-                DOC(kp, Sequence, eval))
+                DOC(kp, Sequence, eval_2))
         .def("eval_async", [](kp::Sequence& self) { return self.eval(); },
-                DOC(kp, Sequence, evalAsync))
+                DOC(kp, Sequence, evalAwait))
         .def("eval_async", [](kp::Sequence& self, std::shared_ptr<kp::OpBase> op) { return self.evalAsync(op); },
                 DOC(kp, Sequence, evalAsync))
         .def("eval_await", [](kp::Sequence& self) { return self.evalAwait(); },
                 DOC(kp, Sequence, evalAwait))
         .def("eval_await", [](kp::Sequence& self, uint32_t wait) { return self.evalAwait(wait); },
                 DOC(kp, Sequence, evalAwait))
+<<<<<<< HEAD
         .def("is_recording", &kp::Sequence::isRecording,
                 DOC(kp, Sequence, isRecording))
         .def("is_running", &kp::Sequence::isRunning,
@@ -163,6 +150,17 @@ PYBIND11_MODULE(kp, m) {
     py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(m, "Manager", DOC(kp, Manager))
         .def(py::init(), DOC(kp, Manager, Manager))
         .def(py::init<uint32_t>(), DOC(kp, Manager, Manager_2))
+=======
+        .def("is_recording", &kp::Sequence::isRecording, DOC(kp, Sequence, isRecording))
+        .def("is_running", &kp::Sequence::isRunning, DOC(kp, Sequence, isRunning))
+        .def("is_init", &kp::Sequence::isInit, DOC(kp, Sequence, isInit))
+        .def("clear", &kp::Sequence::clear, DOC(kp, Sequence, clear))
+        .def("destroy", &kp::Sequence::destroy, DOC(kp, Sequence, destroy));
+
+    py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(m, "Manager")
+        .def(py::init())
+        .def(py::init<uint32_t>())
+>>>>>>> cc1a6cc (Updated tests and rebased)
         .def(py::init<uint32_t,const std::vector<uint32_t>&,const std::vector<std::string>&>(),
                 DOC(kp, Manager, Manager_2),
                 py::arg("device") = 0,
@@ -173,12 +171,43 @@ PYBIND11_MODULE(kp, m) {
         .def("tensor", [np](kp::Manager& self,
                             const py::array_t<float> data,
                             kp::Tensor::TensorTypes tensor_type) {
-                const py::array_t<float> flatdata = np.attr("ravel")(data);
-                const py::buffer_info info        = flatdata.request();
-                const float* ptr                  = (float*) info.ptr;
-                return self.tensor(std::vector<float>(ptr, ptr+flatdata.size()), tensor_type);
+                const py::buffer_info info        = data.request();
+                return self.tensor(
+                        info.ptr,
+                        data.size(),
+                        sizeof(float),
+                        kp::Tensor::TensorDataTypes::eFloat,
+                        tensor_type);
             },
             DOC(kp, Manager, tensor),
+            py::arg("data"), py::arg("tensor_type") = kp::Tensor::TensorTypes::eDevice)
+        .def("tensor_t", [np](kp::Manager& self,
+                            const py::array data,
+                            kp::Tensor::TensorTypes tensor_type) {
+                // TODO: confirm if ravel is required as numpy data is always flat
+                //const py::array_t<float> flatdata = np.attr("ravel")(data);
+                //const py::buffer_info info        = flatdata.request();
+                const py::buffer_info info        = data.request();
+                if (data.dtype() == py::dtype::of<std::float_t>()) {
+                    return self.tensor(
+                            info.ptr, data.size(), sizeof(float), kp::Tensor::TensorDataTypes::eFloat, tensor_type);
+                } else if (data.dtype() == py::dtype::of<std::uint32_t>()) {
+                    return self.tensor(
+                            info.ptr, data.size(), sizeof(uint32_t), kp::Tensor::TensorDataTypes::eUnsignedInt, tensor_type);
+                } else if (data.dtype() == py::dtype::of<std::int32_t>()) {
+                    return self.tensor(
+                            info.ptr, data.size(), sizeof(int32_t), kp::Tensor::TensorDataTypes::eInt, tensor_type);
+                } else if (data.dtype() == py::dtype::of<std::double_t>()) {
+                    return self.tensor(
+                            info.ptr, data.size(), sizeof(double), kp::Tensor::TensorDataTypes::eDouble, tensor_type);
+                } else if (data.dtype() == py::dtype::of<bool>()) {
+                    return self.tensor(
+                            info.ptr, data.size(), sizeof(bool), kp::Tensor::TensorDataTypes::eBool, tensor_type);
+                } else {
+                    throw std::runtime_error("Kompute Python no valid dtype supported");
+                }
+            },
+            DOC(kp, Manager, tensorT),
             py::arg("data"), py::arg("tensor_type") = kp::Tensor::TensorTypes::eDevice)
         .def("algorithm", [](kp::Manager& self,
                              const std::vector<std::shared_ptr<kp::Tensor>>& tensors,

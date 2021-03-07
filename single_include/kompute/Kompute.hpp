@@ -762,7 +762,7 @@ class Shader
      * GLSL compiler
      * @return The compiled SPIR-V binary in unsigned int32 format
      */
-    static std::vector<uint32_t> compile_sources(
+    static std::vector<uint32_t> compileSources(
       const std::vector<std::string>& sources,
       const std::vector<std::string>& files = {},
       const std::string& entryPoint = "main",
@@ -783,7 +783,7 @@ class Shader
      * GLSL compiler
      * @return The compiled SPIR-V binary in unsigned int32 format
      */
-    static std::vector<uint32_t> compile_source(
+    static std::vector<uint32_t> compileSource(
       const std::string& source,
       const std::string& entryPoint = "main",
       std::vector<std::pair<std::string, std::string>> definitions = {},
@@ -981,7 +981,7 @@ class Tensor
     // TODO: move to cpp
     template <typename T>
     T* data() {
-        return this->mRawData;
+        return (T*)this->mRawData;
     }
 
     template <typename T>
@@ -1008,7 +1008,7 @@ class Tensor
     void* mRawData;
 
   private:
-    void rawMapData() {
+    void mapRawData() {
 
         KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
@@ -1025,10 +1025,34 @@ class Tensor
         }
 
         vk::DeviceSize bufferSize = this->memorySize();
+
         // Given we request coherent host memory we don't need to invalidate / flush
         this->mRawData = this->mDevice->mapMemory(
           *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
+
         vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
+    }
+
+    void unmapRawData() {
+
+        KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
+
+        std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
+
+        if (this->mTensorType == TensorTypes::eHost) {
+            hostVisibleMemory = this->mPrimaryMemory;
+        } else if (this->mTensorType == TensorTypes::eDevice) {
+            hostVisibleMemory = this->mStagingMemory;
+        } else {
+            KP_LOG_WARN(
+              "Kompute Tensor mapping data not supported on storage tensor");
+            return;
+        }
+
+        vk::DeviceSize bufferSize = this->memorySize();
+        vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
+        this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
+        this->mDevice->unmapMemory(*hostVisibleMemory);
     }
 
     // -------------- NEVER OWNED RESOURCES
@@ -2009,6 +2033,23 @@ class Manager
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         return this->tensorT<float>(data, tensorType);
+    }
+
+    std::shared_ptr<Tensor> tensor(
+      void* data,
+      uint32_t elementTotalCount,
+      uint32_t elementMemorySize,
+      const Tensor::TensorDataTypes& dataType,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        std::shared_ptr<Tensor> tensor{ new kp::Tensor(
+          this->mPhysicalDevice, this->mDevice, data, elementTotalCount, elementMemorySize, dataType, tensorType) };
+
+        if (this->mManageResources) {
+            this->mManagedTensors.push_back(tensor);
+        }
+
+        return tensor;
     }
 
     /**
