@@ -360,6 +360,10 @@ Tensor::destroy()
 {
     KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
+    this->mRawData = nullptr;
+    this->mSize = 0;
+    this->mDataTypeMemorySize = 0;
+
     if (!this->mDevice) {
         KP_LOG_WARN(
           "Kompute Tensor destructor reached with null Device pointer");
