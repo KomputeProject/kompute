@@ -25,7 +25,7 @@ sudo apt-get upgrade
 ## Install dependencies for building mesa and running Vulkan Kompute
 
 ```
-sudo apt-get install 
+sudo apt-get install \
     git build-essential cmake \
     python3-dev python3-mako python3-venv \
     flex bison meson ninja-build \
