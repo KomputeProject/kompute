@@ -9,8 +9,8 @@ TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 3, 4, 5 });
-    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 3, 4, 5 });
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
         #version 450
@@ -36,16 +36,16 @@ TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
       ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
       ->eval<kp::OpTensorSyncLocal>(params);
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
-    EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
+    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 }
 
 TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 3, 4, 5 });
-    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 3, 4, 5 });
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
 
     std::vector<uint32_t> spirv = std::vector<uint32_t>(
       (uint32_t*)
@@ -62,8 +62,8 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
       ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
       ->eval<kp::OpTensorSyncLocal>(params);
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
-    EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
+    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 }
 
 // TODO: Add support to read from file for shader
@@ -71,8 +71,8 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 //{
 //    kp::Manager mgr;
 //
-//    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
-//    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
+//    std::shared_ptr<kp::TensorT<float>> tensorA{ new kp::Tensor({ 3, 4, 5 }) };
+//    std::shared_ptr<kp::TensorT<float>> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
 //    mgr.rebuild({ tensorA, tensorB });
 //
 //    mgr.evalOpDefault<kp::OpAlgoCreate>(
@@ -81,6 +81,6 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 //
 //    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 //
-//    EXPECT_EQ(tensorA->data(), std::vector<float>({ 0, 1, 2 }));
-//    EXPECT_EQ(tensorB->data(), std::vector<float>({ 3, 4, 5 }));
+//    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
+//    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 //}

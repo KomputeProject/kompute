@@ -25,8 +25,8 @@ TEST(TestSpecializationConstants, TestTwoConstants)
         {
             kp::Manager mgr;
 
-            std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
-            std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
+            std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
 
             std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
                                                                 tensorB };
@@ -42,8 +42,8 @@ TEST(TestSpecializationConstants, TestTwoConstants)
                    ->record<kp::OpTensorSyncLocal>(params)
                    ->eval();
 
-            EXPECT_EQ(tensorA->data(), std::vector<float>({ 5, 5, 5 }));
-            EXPECT_EQ(tensorB->data(), std::vector<float>({ 0.3, 0.3, 0.3 }));
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 5, 5, 5 }));
+            EXPECT_EQ(tensorB->vector(), std::vector<float>({ 0.3, 0.3, 0.3 }));
         }
     }
 }

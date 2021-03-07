@@ -75,13 +75,13 @@ class Manager
      * @returns Shared pointer with initialised tensor
      */
     template <typename T>
-    std::shared_ptr<TensorView<T>> tensor(
+    std::shared_ptr<TensorT<T>> tensorT(
       const std::vector<T>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        std::shared_ptr<TensorView<T>> tensor{ new kp::TensorView<T>(
+        std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
           this->mPhysicalDevice, this->mDevice, data, tensorType) };
 
         if (this->mManageResources) {
@@ -89,6 +89,13 @@ class Manager
         }
 
         return tensor;
+    }
+
+    std::shared_ptr<TensorT<float>> tensor(
+      const std::vector<float>& data,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        return this->tensorT<float>(data, tensorType);
     }
 
     /**

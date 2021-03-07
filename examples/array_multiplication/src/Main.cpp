@@ -14,9 +14,9 @@ int main()
 
     kp::Manager mgr;
 
-    auto tensorInA = mgr.tensor<float>({ 2.0, 4.0, 6.0 });
-    auto tensorInB = mgr.tensor<float>({ 0.0, 1.0, 2.0 });
-    auto tensorOut = mgr.tensor<float>({ 0.0, 0.0, 0.0 });
+    auto tensorInA = mgr.tensor({ 2.0, 4.0, 6.0 });
+    auto tensorInB = mgr.tensor({ 0.0, 1.0, 2.0 });
+    auto tensorOut = mgr.tensor({ 0.0, 0.0, 0.0 });
 
     std::string shader(R"(
         // The version to use 
@@ -49,7 +49,7 @@ int main()
 
     // prints "Output {  0  4  12  }"
     std::cout<< "Output: {  ";
-    for (const float& elem : tensorOut->data()) {
+    for (const float& elem : tensorOut->vector()) {
       std::cout << elem << "  ";
     }
     std::cout << "}" << std::endl;

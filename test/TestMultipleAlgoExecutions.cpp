@@ -64,8 +64,8 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
 
     sq->evalAwait();
 
-    EXPECT_EQ(tensorOutA->data(), std::vector<float>({ 4, 8, 12 }));
-    EXPECT_EQ(tensorOutB->data(), std::vector<float>({ 10, 10, 10 }));
+    EXPECT_EQ(tensorOutA->vector(), std::vector<float>({ 4, 8, 12 }));
+    EXPECT_EQ(tensorOutB->vector(), std::vector<float>({ 10, 10, 10 }));
 }
 
 TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
@@ -73,7 +73,7 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -96,14 +96,14 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           ->eval();
     }
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -131,7 +131,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     mgr.sequence()->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, MultipleSequences)
@@ -139,7 +139,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -167,14 +167,14 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -198,12 +198,12 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
 {
-    std::shared_ptr<kp::Tensor> tensorA = nullptr;
+    std::shared_ptr<kp::TensorT<float>> tensorA = nullptr;
 
     {
         std::shared_ptr<kp::Sequence> sq = nullptr;
@@ -236,5 +236,5 @@ TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
         }
     }
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }

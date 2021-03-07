@@ -429,4 +429,34 @@ Tensor::destroy()
     KP_LOG_DEBUG("Kompute Tensor successful destroy()");
 }
 
+template<>
+Tensor::TensorDataTypes
+TensorT<bool>::dataType() {
+    return Tensor::TensorDataTypes::eBool;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<int32_t>::dataType() {
+    return Tensor::TensorDataTypes::eInt;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<uint32_t>::dataType() {
+    return Tensor::TensorDataTypes::eUnsignedInt;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<float>::dataType() {
+    return Tensor::TensorDataTypes::eFloat;
+}
+
+template<>
+Tensor::TensorDataTypes
+TensorT<double>::dataType() {
+    return Tensor::TensorDataTypes::eDouble;
+}
+
 }

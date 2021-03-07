@@ -60,9 +60,9 @@ TEST(TestSequence, RerecordSequence)
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({1, 2, 3});
-    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({2, 2, 2});
-    std::shared_ptr<kp::Tensor> tensorOut = mgr.tensor({0, 0, 0});
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({1, 2, 3});
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({2, 2, 2});
+    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({0, 0, 0});
 
     sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
 
@@ -90,7 +90,7 @@ TEST(TestSequence, RerecordSequence)
 
     sq->eval();
 
-    EXPECT_EQ(tensorOut->data(), std::vector<float>({2, 4, 6}));
+    EXPECT_EQ(tensorOut->vector(), std::vector<float>({2, 4, 6}));
 
     algo->rebuild({tensorOut, tensorA, tensorB}, spirv);
 
@@ -98,7 +98,7 @@ TEST(TestSequence, RerecordSequence)
     sq->rerecord();
     sq->eval();
 
-    EXPECT_EQ(tensorB->data(), std::vector<float>({2, 8, 18}));
+    EXPECT_EQ(tensorB->vector(), std::vector<float>({2, 8, 18}));
 }
 
 

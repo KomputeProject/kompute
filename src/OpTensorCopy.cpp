@@ -61,7 +61,7 @@ OpTensorCopy::postEval(const vk::CommandBuffer& commandBuffer)
     uint32_t size = this->mTensors[0]->size();
     uint32_t dataTypeMemSize = this->mTensors[0]->dataTypeMemorySize();
     uint32_t memSize = size * dataTypeMemSize;
-    const void* data = this->mTensors[0]->getRawData();
+    void* data = this->mTensors[0]->rawData();
 
     // Copy the data from the first tensor into all the tensors
     for (size_t i = 1; i < this->mTensors.size(); i++) {

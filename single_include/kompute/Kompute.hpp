@@ -974,9 +974,19 @@ class Tensor
         return this->mDataType;
     }
 
-    // TODO: move to cpp
-    const void* getRawData() {
+    void* rawData() {
         return this->mRawData;
+    }
+
+    // TODO: move to cpp
+    template <typename T>
+    T* data() {
+        return this->mRawData;
+    }
+
+    template <typename T>
+    std::vector<T> vector() {
+        return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
     /**
@@ -988,6 +998,14 @@ class Tensor
         // Copy data 
         memcpy(this->mRawData, data, this->memorySize());
     }
+
+  protected:
+    // -------------- ALWAYS OWNED RESOURCES
+    TensorTypes mTensorType;
+    TensorDataTypes mDataType;
+    uint32_t mSize;
+    uint32_t mDataTypeMemorySize;
+    void* mRawData;
 
   private:
     void rawMapData() {
@@ -1027,13 +1045,6 @@ class Tensor
     std::shared_ptr<vk::DeviceMemory> mStagingMemory;
     bool mFreeStagingMemory = false;
 
-    // -------------- ALWAYS OWNED RESOURCES
-    TensorTypes mTensorType;
-    TensorDataTypes mDataType;
-    uint32_t mSize;
-    uint32_t mDataTypeMemorySize;
-    void* mRawData;
-
     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer,
                       vk::BufferUsageFlags bufferUsageFlags);
@@ -1057,10 +1068,11 @@ class Tensor
 
 // TODO: Limit T to be only float, bool, double, etc
 template <typename T>
-class TensorView: public Tensor
+class TensorT: public Tensor
 {
+
   public:
-    TensorView(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+    TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            const std::vector<T>& data,
            const TensorTypes& tensorType = TensorTypes::eDevice)
@@ -1069,34 +1081,41 @@ class TensorView: public Tensor
                  (void*)data.data(),
                  data.size(),
                  sizeof(T),
-                 this->dataType())
+                 this->dataType(),
+                 tensorType)
     {
-        KP_LOG_DEBUG("Kompute TensorView constructor with data size {}", data.size());
+        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}", data.size());
     }
 
-    ~TensorView() {
-        KP_LOG_DEBUG("Kompute TensorView destructor");
+    ~TensorT() {
+        KP_LOG_DEBUG("Kompute TensorT destructor");
     }
 
-    std::vector<T> data() {
-        return { (T*)this->getRawData(), ((T*)this->getRawData()) + this->size() };
+    T* data() {
+        return (T*)this->mRawData;
+    }
+
+    std::vector<T> vector() {
+        return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
     T& operator[](int index) {
-        return ((T*)this->mRawData)[index];
+        return *(((T*)this->mRawData) + index);
     }
 
     void setData(const std::vector<T>& data) {
 
-        KP_LOG_DEBUG("Kompute TensorView setting data with data size {}", data.size());
+        KP_LOG_DEBUG("Kompute TensorT setting data with data size {}", data.size());
 
         if (data.size() != this->mSize) {
             throw std::runtime_error(
-              "Kompute TensorView Cannot set data of different sizes");
+              "Kompute TensorT Cannot set data of different sizes");
         }
 
-        Tensor::setRawData(this->mData.data(), this->mData.size(), sizeof(T));
+        Tensor::setRawData(data.data());
     }
+
+    TensorDataTypes dataType();
 
 };
 
@@ -1969,13 +1988,13 @@ class Manager
      * @returns Shared pointer with initialised tensor
      */
     template <typename T>
-    std::shared_ptr<TensorView<T>> tensor(
+    std::shared_ptr<TensorT<T>> tensorT(
       const std::vector<T>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        std::shared_ptr<TensorView<T>> tensor{ new kp::TensorView<T>(
+        std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
           this->mPhysicalDevice, this->mDevice, data, tensorType) };
 
         if (this->mManageResources) {
@@ -1983,6 +2002,13 @@ class Manager
         }
 
         return tensor;
+    }
+
+    std::shared_ptr<TensorT<float>> tensor(
+      const std::vector<float>& data,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        return this->tensorT<float>(data, tensorType);
     }
 
     /**

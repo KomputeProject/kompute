@@ -17,19 +17,19 @@ int main()
 
     kp::Manager mgr;
 
-    auto xI = mgr.tensor<float>({ 0, 1, 1, 1, 1 });
-    auto xJ = mgr.tensor<float>({ 0, 0, 0, 1, 1 });
+    auto xI = mgr.tensor({ 0, 1, 1, 1, 1 });
+    auto xJ = mgr.tensor({ 0, 0, 0, 1, 1 });
 
-    auto y = mgr.tensor<float>({ 0, 0, 0, 1, 1 });
+    auto y = mgr.tensor({ 0, 0, 0, 1, 1 });
 
-    auto wIn = mgr.tensor<float>({ 0.001, 0.001 });
-    auto wOutI = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
-    auto wOutJ = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
+    auto wIn = mgr.tensor({ 0.001, 0.001 });
+    auto wOutI = mgr.tensor({ 0, 0, 0, 0, 0 });
+    auto wOutJ = mgr.tensor({ 0, 0, 0, 0, 0 });
 
-    auto bIn = mgr.tensor<float>({ 0 });
-    auto bOut = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
+    auto bIn = mgr.tensor({ 0 });
+    auto bOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
-    auto lOut = mgr.tensor<float>({ 0, 0, 0, 0, 0 });
+    auto lOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
                                                         wIn, wOutI, wOutJ,
@@ -40,7 +40,8 @@ int main()
                 (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
                     + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 
-    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, spirv);
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(
+            params, spirv, kp::Workgroup({ 5 }), kp::Constants({ 5.0 }));
 
     mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
