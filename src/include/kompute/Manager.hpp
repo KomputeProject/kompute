@@ -60,9 +60,11 @@ class Manager
      * if it hasn't been destroyed by its reference count going to zero.
      *
      * @param queueIndex The queue to use from the available queues
+     * @param nrOfTimestamps The maximum number of timestamps to allocate.
+     * If zero (default), disables latching of timestamps.
      * @returns Shared pointer with initialised sequence
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0);
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0, uint32_t totalTimestamps = 0);
 
     /**
      * Create a managed tensor that will be destroyed by this manager

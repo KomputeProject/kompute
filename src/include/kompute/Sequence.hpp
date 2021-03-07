@@ -3,6 +3,7 @@
 #include "kompute/Core.hpp"
 
 #include "kompute/operations/OpBase.hpp"
+#include "kompute/operations/OpAlgoDispatch.hpp"
 
 namespace kp {
 
@@ -20,11 +21,13 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param device Vulkan logical device
      * @param computeQueue Vulkan compute queue
      * @param queueIndex Vulkan compute queue index in device
+     * @param totalTimestamps Maximum number of timestamps to allocate
      */
     Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
-             uint32_t queueIndex);
+             uint32_t queueIndex,
+             uint32_t totalTimestamps = 0);
     /**
      * Destructor for sequence which is responsible for cleaning all subsequent
      * owned operations.
@@ -201,6 +204,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     void clear();
 
     /**
+     * Return the timestamps that were latched at the beginning and
+     * after each operation during the last eval() call.
+     */
+    std::vector<std::uint64_t> getTimestamps();
+
+    /**
      * Begins recording commands for commands to be submitted into the command
      * buffer.
      *
@@ -268,6 +277,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
     std::vector<std::shared_ptr<OpBase>> mOperations;
+    std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
 
     // State
     bool mRecording = false;
@@ -276,6 +286,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     // Create functions
     void createCommandPool();
     void createCommandBuffer();
+    void createTimestampQueryPool(uint32_t totalTimestamps);
 };
 
 } // End namespace kp

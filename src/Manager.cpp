@@ -431,7 +431,7 @@ Manager::algorithm(const std::vector<std::shared_ptr<Tensor>>& tensors,
 }
 
 std::shared_ptr<Sequence>
-Manager::sequence(uint32_t queueIndex)
+Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
@@ -439,7 +439,8 @@ Manager::sequence(uint32_t queueIndex)
       this->mPhysicalDevice,
       this->mDevice,
       this->mComputeQueues[queueIndex],
-      this->mComputeQueueFamilyIndices[queueIndex]) };
+      this->mComputeQueueFamilyIndices[queueIndex],
+      totalTimestamps) };
 
     if (this->mManageResources) {
         this->mManagedSequences.push_back(sq);

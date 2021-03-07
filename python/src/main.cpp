@@ -129,6 +129,7 @@ PYBIND11_MODULE(kp, m) {
         .def("is_recording", &kp::Sequence::isRecording)
         .def("is_running", &kp::Sequence::isRunning)
         .def("is_init", &kp::Sequence::isInit)
+        .def("get_timestamps", &kp::Sequence::getTimestamps)
         .def("clear", &kp::Sequence::clear)
         .def("destroy", &kp::Sequence::destroy);
 
@@ -139,7 +140,7 @@ PYBIND11_MODULE(kp, m) {
                 py::arg("device") = 0,
                 py::arg("family_queue_indices") = std::vector<uint32_t>(),
                 py::arg("desired_extensions") = std::vector<std::string>())
-        .def("sequence", &kp::Manager::sequence, py::arg("queueIndex") = 0)
+        .def("sequence", &kp::Manager::sequence, py::arg("queue_index") = 0, py::arg("total_timestamps") = 0)
         .def("tensor", [np](kp::Manager& self,
                             const py::array_t<float> data,
                             kp::Tensor::TensorTypes tensor_type) {
