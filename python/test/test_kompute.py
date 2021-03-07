@@ -9,27 +9,6 @@ DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 kp_log = logging.getLogger("kp")
 
-# TODO: Add example with file
-#def test_opalgobase_file():
-#    """
-#    Test basic OpMult operation
-#    """
-#
-#    tensor_in_a = kp.Tensor([2, 2, 2])
-#    tensor_in_b = kp.Tensor([1, 2, 3])
-#    tensor_out = kp.Tensor([0, 0, 0])
-#
-#    mgr = kp.Manager()
-#    mgr.rebuild([tensor_in_a, tensor_in_b, tensor_out])
-#
-#    shader_path = os.path.join(DIRNAME, "../../shaders/glsl/opmult.comp.spv")
-#
-#    mgr.eval_algo_file_def([tensor_in_a, tensor_in_b, tensor_out], shader_path)
-#
-#    mgr.eval_tensor_sync_local_def([tensor_out])
-#
-#    assert tensor_out.data() == [2.0, 4.0, 6.0]
-
 def test_end_to_end():
 
     mgr = kp.Manager()

@@ -175,7 +175,7 @@ Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
 vk::DescriptorBufferInfo
 Tensor::constructDescriptorBufferInfo()
 {
-    KP_LOG_WARN("Kompute Tensor construct descriptor buffer info size {}", this->memorySize());
+    KP_LOG_DEBUG("Kompute Tensor construct descriptor buffer info size {}", this->memorySize());
     vk::DeviceSize bufferSize = this->memorySize();
     return vk::DescriptorBufferInfo(*this->mPrimaryBuffer,
                                     0, // offset
