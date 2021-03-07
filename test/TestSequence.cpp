@@ -100,3 +100,33 @@ TEST(TestSequence, RerecordSequence)
 
     EXPECT_EQ(tensorB->data(), std::vector<float>({2, 8, 18}));
 }
+
+
+TEST(TestSequence, SequenceTimestamps)
+{
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 0, 0 });
+
+    std::string shader(R"(
+      #version 450
+      layout (local_size_x = 1) in;
+      layout(set = 0, binding = 0) buffer a { float pa[]; };
+      void main() {
+          uint index = gl_GlobalInvocationID.x;
+          pa[index] = pa[index] + 1;
+      })");
+
+    std::vector<uint32_t> spirv = kp::Shader::compile_source(shader);
+    
+    auto seq = mgr.sequence(0, 100); //100 timestamps
+    seq->record<kp::OpTensorSyncDevice>({ tensorA })
+        ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+        ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+        ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+        ->record<kp::OpTensorSyncLocal>({ tensorA })
+        ->eval();
+    const std::vector<uint64_t> timestamps = seq->getTimestamps();
+    
+    EXPECT_EQ(timestamps.size(), 6); //1 timestamp at start + 1 after each operation
+}
