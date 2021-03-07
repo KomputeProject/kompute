@@ -34,12 +34,13 @@ TEST(TestDestroy, TestDestroyTensorSingle)
               ->eval()
               ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
 
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 1, 1, 1 }));
+
             tensorA->destroy();
             EXPECT_FALSE(tensorA->isInit());
         }
         EXPECT_FALSE(tensorA->isInit());
     }
-    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 1, 1, 1 }));
 }
 
 TEST(TestDestroy, TestDestroyTensorVector)
@@ -82,10 +83,11 @@ TEST(TestDestroy, TestDestroyTensorVector)
 
             EXPECT_FALSE(tensorA->isInit());
             EXPECT_FALSE(tensorB->isInit());
+
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 2, 2, 2 }));
+            EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 3, 3 }));
         }
     }
-    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 2, 2, 2 }));
-    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestDestroy, TestDestroySequenceSingle)
@@ -121,7 +123,8 @@ TEST(TestDestroy, TestDestroySequenceSingle)
             sq->destroy();
 
             EXPECT_FALSE(sq->isInit());
+
+            EXPECT_EQ(tensorA->vector(), std::vector<float>({ 1, 1, 1 }));
         }
     }
-    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 1, 1, 1 }));
 }

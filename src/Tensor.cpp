@@ -50,7 +50,7 @@ Tensor::rebuild(void* data,
     }
 
     this->allocateMemoryCreateGPUResources();
-    this->rawMapData();
+    this->mapRawData();
 
     memcpy(this->mRawData, data, this->memorySize());
 }
@@ -64,7 +64,10 @@ Tensor::tensorType()
 bool
 Tensor::isInit()
 {
-    return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory;
+    return this->mDevice
+        && this->mPrimaryBuffer
+        && this->mPrimaryMemory
+        && this->mRawData;
 }
 
 
@@ -360,6 +363,7 @@ Tensor::destroy()
 {
     KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
+    // Setting raw data to null regardless whether device is available to invalidate Tensor
     this->mRawData = nullptr;
     this->mSize = 0;
     this->mDataTypeMemorySize = 0;
@@ -369,6 +373,9 @@ Tensor::destroy()
           "Kompute Tensor destructor reached with null Device pointer");
         return;
     }
+
+    // Unmap the current memory data
+    this->unmapRawData();
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {

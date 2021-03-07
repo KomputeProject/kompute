@@ -217,7 +217,7 @@ class Tensor
     void* mRawData;
 
   private:
-    void rawMapData() {
+    void mapRawData() {
 
         KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
@@ -234,10 +234,34 @@ class Tensor
         }
 
         vk::DeviceSize bufferSize = this->memorySize();
+
         // Given we request coherent host memory we don't need to invalidate / flush
         this->mRawData = this->mDevice->mapMemory(
           *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
+
         vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
+    }
+
+    void unmapRawData() {
+
+        KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
+
+        std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
+
+        if (this->mTensorType == TensorTypes::eHost) {
+            hostVisibleMemory = this->mPrimaryMemory;
+        } else if (this->mTensorType == TensorTypes::eDevice) {
+            hostVisibleMemory = this->mStagingMemory;
+        } else {
+            KP_LOG_WARN(
+              "Kompute Tensor mapping data not supported on storage tensor");
+            return;
+        }
+
+        vk::DeviceSize bufferSize = this->memorySize();
+        vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
+        this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
+        this->mDevice->unmapMemory(*hostVisibleMemory);
     }
 
     // -------------- NEVER OWNED RESOURCES
