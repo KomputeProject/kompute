@@ -38,6 +38,12 @@ OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
                                         vk::PipelineStageFlagBits::eTransfer);
 
             this->mTensors[i]->recordCopyFromDeviceToStaging(commandBuffer);
+
+            this->mTensors[i]->recordPrimaryBufferMemoryBarrier(commandBuffer,
+                                        vk::AccessFlagBits::eTransferWrite,
+                                        vk::AccessFlagBits::eHostRead,
+                                        vk::PipelineStageFlagBits::eTransfer,
+                                        vk::PipelineStageFlagBits::eHost);
         }
     }
 }
