@@ -70,8 +70,7 @@ Tensor::isInit()
 
 void
 Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                       std::shared_ptr<Tensor> copyFromTensor,
-                       bool createBarrier)
+                       std::shared_ptr<Tensor> copyFromTensor)
 {
 
     vk::DeviceSize bufferSize(this->memorySize());
@@ -83,13 +82,11 @@ Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                            copyFromTensor->mPrimaryBuffer,
                            this->mPrimaryBuffer,
                            bufferSize,
-                           copyRegion,
-                           createBarrier);
+                           copyRegion);
 }
 
 void
-Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
-                                      bool createBarrier)
+Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
@@ -100,13 +97,11 @@ Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
                            this->mStagingBuffer,
                            this->mPrimaryBuffer,
                            bufferSize,
-                           copyRegion,
-                           createBarrier);
+                           copyRegion);
 }
 
 void
-Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
-                                      bool createBarrier)
+Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
@@ -117,8 +112,7 @@ Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
                            this->mPrimaryBuffer,
                            this->mStagingBuffer,
                            bufferSize,
-                           copyRegion,
-                           createBarrier);
+                           copyRegion);
 }
 
 void
@@ -126,24 +120,49 @@ Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
                          std::shared_ptr<vk::Buffer> bufferFrom,
                          std::shared_ptr<vk::Buffer> bufferTo,
                          vk::DeviceSize bufferSize,
-                         vk::BufferCopy copyRegion,
-                         bool createBarrier)
+                         vk::BufferCopy copyRegion)
 {
 
     commandBuffer.copyBuffer(*bufferFrom, *bufferTo, copyRegion);
+}
 
-    if (createBarrier) {
-        // Buffer to ensure wait until data is copied to staging buffer
-        this->recordBufferMemoryBarrier(commandBuffer,
-                                        vk::AccessFlagBits::eTransferWrite,
-                                        vk::AccessFlagBits::eHostRead,
-                                        vk::PipelineStageFlagBits::eTransfer,
-                                        vk::PipelineStageFlagBits::eHost);
-    }
+void
+Tensor::recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                  vk::AccessFlagBits srcAccessMask,
+                                  vk::AccessFlagBits dstAccessMask,
+                                  vk::PipelineStageFlagBits srcStageMask,
+                                  vk::PipelineStageFlagBits dstStageMask)
+{
+    KP_LOG_DEBUG("Kompute Tensor recording PRIMARY buffer memory barrier");
+
+    this->recordBufferMemoryBarrier(commandBuffer,
+            *this->mPrimaryBuffer,
+            srcAccessMask,
+            dstAccessMask,
+            srcStageMask,
+            dstStageMask);
+}
+
+void
+Tensor::recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                  vk::AccessFlagBits srcAccessMask,
+                                  vk::AccessFlagBits dstAccessMask,
+                                  vk::PipelineStageFlagBits srcStageMask,
+                                  vk::PipelineStageFlagBits dstStageMask)
+{
+    KP_LOG_DEBUG("Kompute Tensor recording PRIMARY buffer memory barrier");
+
+    this->recordBufferMemoryBarrier(commandBuffer,
+            *this->mStagingBuffer,
+            srcAccessMask,
+            dstAccessMask,
+            srcStageMask,
+            dstStageMask);
 }
 
 void
 Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                  const vk::Buffer& buffer,
                                   vk::AccessFlagBits srcAccessMask,
                                   vk::AccessFlagBits dstAccessMask,
                                   vk::PipelineStageFlagBits srcStageMask,
@@ -154,7 +173,7 @@ Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
     vk::DeviceSize bufferSize = this->memorySize();
 
     vk::BufferMemoryBarrier bufferMemoryBarrier;
-    bufferMemoryBarrier.buffer = *this->mPrimaryBuffer;
+    bufferMemoryBarrier.buffer = buffer;
     bufferMemoryBarrier.size = bufferSize;
     bufferMemoryBarrier.srcAccessMask = srcAccessMask;
     bufferMemoryBarrier.dstAccessMask = dstAccessMask;

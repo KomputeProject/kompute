@@ -741,7 +741,6 @@ namespace kp {
 class Shader
 {
   public:
-
     // The default resource limit for the GLSL compiler, can be overwritten
     // Has been adopted by:
     // https://github.com/KhronosGroup/glslang/blob/master/StandAlone/ResourceLimits.cpp
@@ -888,12 +887,9 @@ class Tensor
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param copyFromTensor Tensor to copy the data from
-     * @param createBarrier Whether to create a barrier that ensures the data is
-     * copied before further operations. Default is true.
      */
     void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                        std::shared_ptr<Tensor> copyFromTensor,
-                        bool createBarrier);
+                        std::shared_ptr<Tensor> copyFromTensor);
 
     /**
      * Records a copy from the internal staging memory to the device memory
@@ -901,11 +897,8 @@ class Tensor
      * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
-     * @param createBarrier Whether to create a barrier that ensures the data is
-     * copied before further operations. Default is true.
      */
-    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
-                                       bool createBarrier);
+    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer);
 
     /**
      * Records a copy from the internal device memory to the staging memory
@@ -913,14 +906,11 @@ class Tensor
      * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
-     * @param createBarrier Whether to create a barrier that ensures the data is
-     * copied before further operations. Default is true.
      */
-    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
-                                       bool createBarrier);
+    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer);
 
     /**
-     * Records the buffer memory barrier into the command buffer which
+     * Records the buffer memory barrier into the primary buffer and command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
@@ -929,11 +919,26 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                   vk::AccessFlagBits srcAccessMask,
-                                   vk::AccessFlagBits dstAccessMask,
-                                   vk::PipelineStageFlagBits srcStageMask,
-                                   vk::PipelineStageFlagBits dstStageMask);
+    void recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                          vk::AccessFlagBits srcAccessMask,
+                                          vk::AccessFlagBits dstAccessMask,
+                                          vk::PipelineStageFlagBits srcStageMask,
+                                          vk::PipelineStageFlagBits dstStageMask);
+    /**
+     * Records the buffer memory barrier into the staging buffer and command buffer which
+     * ensures that relevant data transfers are carried out correctly.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param srcAccessMask Access flags for source access mask
+     * @param dstAccessMask Access flags for destination access mask
+     * @param scrStageMask Pipeline stage flags for source stage mask
+     * @param dstStageMask Pipeline stage flags for destination stage mask
+     */
+    void recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                          vk::AccessFlagBits srcAccessMask,
+                                          vk::AccessFlagBits dstAccessMask,
+                                          vk::PipelineStageFlagBits srcStageMask,
+                                          vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
@@ -951,41 +956,33 @@ class Tensor
      * @return Unsigned integer representing the total number of elements
      */
     // TODO: move to cpp
-    uint32_t size() {
-        return this->mSize;
-    }
+    uint32_t size() { return this->mSize; }
 
     // TODO: move to cpp
-    uint32_t dataTypeMemorySize() {
-        return this->mDataTypeMemorySize;
-    }
+    uint32_t dataTypeMemorySize() { return this->mDataTypeMemorySize; }
 
     // TODO: move to cpp
-    uint32_t memorySize() {
-        return this->mSize * this->mDataTypeMemorySize;
-    }
+    uint32_t memorySize() { return this->mSize * this->mDataTypeMemorySize; }
 
     /**
      * Retrieve the underlying data type of the Tensor
      *
      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
      */
-    TensorDataTypes dataType() {
-        return this->mDataType;
-    }
+    TensorDataTypes dataType() { return this->mDataType; }
 
-    void* rawData() {
-        return this->mRawData;
-    }
+    void* rawData() { return this->mRawData; }
 
     // TODO: move to cpp
-    template <typename T>
-    T* data() {
+    template<typename T>
+    T* data()
+    {
         return (T*)this->mRawData;
     }
 
-    template <typename T>
-    std::vector<T> vector() {
+    template<typename T>
+    std::vector<T> vector()
+    {
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
@@ -993,9 +990,9 @@ class Tensor
      * Sets / resets the vector data of the tensor. This function does not
      * perform any copies into GPU memory and is only performed on the host.
      */
-    void setRawData(const void* data) 
+    void setRawData(const void* data)
     {
-        // Copy data 
+        // Copy data
         memcpy(this->mRawData, data, this->memorySize());
     }
 
@@ -1008,7 +1005,8 @@ class Tensor
     void* mRawData;
 
   private:
-    void mapRawData() {
+    void mapRawData()
+    {
 
         KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
@@ -1026,14 +1024,17 @@ class Tensor
 
         vk::DeviceSize bufferSize = this->memorySize();
 
-        // Given we request coherent host memory we don't need to invalidate / flush
+        // Given we request coherent host memory we don't need to invalidate /
+        // flush
         this->mRawData = this->mDevice->mapMemory(
           *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
 
-        vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
+        vk::MappedMemoryRange mappedMemoryRange(
+          *hostVisibleMemory, 0, bufferSize);
     }
 
-    void unmapRawData() {
+    void unmapRawData()
+    {
 
         KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
@@ -1079,57 +1080,59 @@ class Tensor
                           std::shared_ptr<vk::Buffer> bufferFrom,
                           std::shared_ptr<vk::Buffer> bufferTo,
                           vk::DeviceSize bufferSize,
-                          vk::BufferCopy copyRegion,
-                          bool createBarrier);
+                          vk::BufferCopy copyRegion);
+    void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                   const vk::Buffer& buffer,
+                                   vk::AccessFlagBits srcAccessMask,
+                                   vk::AccessFlagBits dstAccessMask,
+                                   vk::PipelineStageFlagBits srcStageMask,
+                                   vk::PipelineStageFlagBits dstStageMask);
 
     // Private util functions
     vk::BufferUsageFlags getPrimaryBufferUsageFlags();
     vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
     vk::BufferUsageFlags getStagingBufferUsageFlags();
     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
-
 };
 
 // TODO: Limit T to be only float, bool, double, etc
-template <typename T>
-class TensorT: public Tensor
+template<typename T>
+class TensorT : public Tensor
 {
 
   public:
     TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-           std::shared_ptr<vk::Device> device,
-           const std::vector<T>& data,
-           const TensorTypes& tensorType = TensorTypes::eDevice)
-        : Tensor(physicalDevice,
-                 device,
-                 (void*)data.data(),
-                 data.size(),
-                 sizeof(T),
-                 this->dataType(),
-                 tensorType)
+            std::shared_ptr<vk::Device> device,
+            const std::vector<T>& data,
+            const TensorTypes& tensorType = TensorTypes::eDevice)
+      : Tensor(physicalDevice,
+               device,
+               (void*)data.data(),
+               data.size(),
+               sizeof(T),
+               this->dataType(),
+               tensorType)
     {
-        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}", data.size());
+        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}",
+                     data.size());
     }
 
-    ~TensorT() {
-        KP_LOG_DEBUG("Kompute TensorT destructor");
-    }
+    ~TensorT() { KP_LOG_DEBUG("Kompute TensorT destructor"); }
 
-    T* data() {
-        return (T*)this->mRawData;
-    }
+    T* data() { return (T*)this->mRawData; }
 
-    std::vector<T> vector() {
+    std::vector<T> vector()
+    {
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
-    T& operator[](int index) {
-        return *(((T*)this->mRawData) + index);
-    }
+    T& operator[](int index) { return *(((T*)this->mRawData) + index); }
 
-    void setData(const std::vector<T>& data) {
+    void setData(const std::vector<T>& data)
+    {
 
-        KP_LOG_DEBUG("Kompute TensorT setting data with data size {}", data.size());
+        KP_LOG_DEBUG("Kompute TensorT setting data with data size {}",
+                     data.size());
 
         if (data.size() != this->mSize) {
             throw std::runtime_error(
@@ -1140,7 +1143,6 @@ class TensorT: public Tensor
     }
 
     TensorDataTypes dataType();
-
 };
 
 } // End namespace kp
@@ -1159,15 +1161,17 @@ class Algorithm
      *  the underlying resources.
      *
      *  @param device The Vulkan device to use for creating resources
-     *  @param tensors (optional) The tensors to use to create the descriptor resources
+     *  @param tensors (optional) The tensors to use to create the descriptor
+     * resources
      *  @param spirv (optional) The spirv code to use to create the algorithm
-     *  @param workgroup (optional) The kp::Workgroup to use for the dispatch which defaults to
-     *  kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-     *  @param specializationConstants (optional) The kp::Constants to use to initialize
-     *  the specialization constants which cannot be changed once set.
-     *  @param pushConstants (optional) The kp::Constants to use when initializing the
-     *  pipeline, which set the size of the push constants - these can be modified but
-     *  all new values must have the same vector size as this initial value.
+     *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
+     * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
+     *  @param specializationConstants (optional) The kp::Constants to use to
+     * initialize the specialization constants which cannot be changed once set.
+     *  @param pushConstants (optional) The kp::Constants to use when
+     * initializing the pipeline, which set the size of the push constants -
+     * these can be modified but all new values must have the same vector size
+     * as this initial value.
      */
     Algorithm(std::shared_ptr<vk::Device> device,
               const std::vector<std::shared_ptr<Tensor>>& tensors = {},
@@ -1177,18 +1181,19 @@ class Algorithm
               const Constants& pushConstants = {});
 
     /**
-     *  Rebuild function to reconstruct algorithm with configuration parameters to create
-     *  the underlying resources.
+     *  Rebuild function to reconstruct algorithm with configuration parameters
+     * to create the underlying resources.
      *
      *  @param tensors The tensors to use to create the descriptor resources
      *  @param spirv The spirv code to use to create the algorithm
-     *  @param workgroup (optional) The kp::Workgroup to use for the dispatch which defaults to
-     *  kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-     *  @param specializationConstants (optional) The kp::Constants to use to initialize
-     *  the specialization constants which cannot be changed once set.
-     *  @param pushConstants (optional) The kp::Constants to use when initializing the
-     *  pipeline, which set the size of the push constants - these can be modified but
-     *  all new values must have the same vector size as this initial value.
+     *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
+     * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
+     *  @param specializationConstants (optional) The kp::Constants to use to
+     * initialize the specialization constants which cannot be changed once set.
+     *  @param pushConstants (optional) The kp::Constants to use when
+     * initializing the pipeline, which set the size of the push constants -
+     * these can be modified but all new values must have the same vector size
+     * as this initial value.
      */
     void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
                  const std::vector<uint32_t>& spirv,
@@ -1211,25 +1216,26 @@ class Algorithm
     void recordDispatch(const vk::CommandBuffer& commandBuffer);
 
     /**
-     * Records command that binds the "core" algorithm components which consist of
-     * binding the pipeline and binding the descriptorsets.
+     * Records command that binds the "core" algorithm components which consist
+     * of binding the pipeline and binding the descriptorsets.
      *
      * @param commandBuffer Command buffer to record the algorithm resources to
      */
     void recordBindCore(const vk::CommandBuffer& commandBuffer);
 
     /**
-     * Records command that binds the push constants to the command buffer provided
-     * - it is required that the pushConstants provided are of the same size as the
-     *   ones provided during initialization.
+     * Records command that binds the push constants to the command buffer
+     * provided
+     * - it is required that the pushConstants provided are of the same size as
+     * the ones provided during initialization.
      *
      * @param commandBuffer Command buffer to record the algorithm resources to
      */
     void recordBindPush(const vk::CommandBuffer& commandBuffer);
 
     /**
-     * function that checks all the gpu resource components to verify if these have
-     * been created and returns true if all are valid.
+     * function that checks all the gpu resource components to verify if these
+     * have been created and returns true if all are valid.
      *
      * @returns returns true if the algorithm is currently initialized.
      */
@@ -1238,26 +1244,28 @@ class Algorithm
     /**
      * Sets the work group to use in the recordDispatch
      *
-     * @param workgroup The kp::Workgroup value to use to update the algorithm. It
-     * must have a value greater than 1 on the x value (index 1) otherwise it will
-     * be initialized on the size of the first tensor (ie. this->mTensor[0]->size())
+     * @param workgroup The kp::Workgroup value to use to update the algorithm.
+     * It must have a value greater than 1 on the x value (index 1) otherwise it
+     * will be initialized on the size of the first tensor (ie.
+     * this->mTensor[0]->size())
      */
     void setWorkgroup(const Workgroup& workgroup, uint32_t minSize = 1);
     /**
-     * Sets the push constants to the new value provided to use in the next bindPush()
+     * Sets the push constants to the new value provided to use in the next
+     * bindPush()
      *
-     * @param The kp::Constant to use to set the push constants to use in the next
-     * bindPush(...) calls. The constants provided must be of the same size as the
-     * ones created during initialization.
+     * @param The kp::Constant to use to set the push constants to use in the
+     * next bindPush(...) calls. The constants provided must be of the same size
+     * as the ones created during initialization.
      */
     void setPush(const Constants& pushConstants);
 
     /**
      * Gets the current workgroup from the algorithm.
      *
-     * @param The kp::Constant to use to set the push constants to use in the next
-     * bindPush(...) calls. The constants provided must be of the same size as the
-     * ones created during initialization.
+     * @param The kp::Constant to use to set the push constants to use in the
+     * next bindPush(...) calls. The constants provided must be of the same size
+     * as the ones created during initialization.
      */
     const Workgroup& getWorkgroup();
     /**
@@ -1690,8 +1698,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * function also requires the Sequence to be recording, otherwise it will
      * not be able to add the operation.
      *
-     * @param op Object derived from kp::BaseOp that will be recoreded by the sequence
-     * which will be used when the operation is evaluated.
+     * @param op Object derived from kp::BaseOp that will be recoreded by the
+     * sequence which will be used when the operation is evaluated.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
@@ -1709,7 +1717,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(
-      std::vector<std::shared_ptr<Tensor>> tensors, TArgs&&... params)
+      std::vector<std::shared_ptr<Tensor>> tensors,
+      TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->record(op);
@@ -1744,8 +1753,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     std::shared_ptr<Sequence> eval();
 
     /**
-     * Resets all the recorded and stored operations, records the operation 
-     * provided and submits into the gpu as a submit job synchronously (with a barrier).
+     * Resets all the recorded and stored operations, records the operation
+     * provided and submits into the gpu as a submit job synchronously (with a
+     * barrier).
      *
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
@@ -1788,16 +1798,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait() must
-     * ALWAYS be called after to ensure the sequence is terminated correctly.
+     * operations into the gpu as a submit job without a barrier. EvalAwait()
+     * must ALWAYS be called after to ensure the sequence is terminated
+     * correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync();
     /**
      * Clears currnet operations to record provided one in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait() must
-     * ALWAYS be called after to ensure the sequence is terminated correctly.
+     * operations into the gpu as a submit job without a barrier. EvalAwait()
+     * must ALWAYS be called after to ensure the sequence is terminated
+     * correctly.
      *
      * @return Boolean stating whether execution was successful.
      */
@@ -1891,9 +1903,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     bool isInit();
 
     /**
-     * Clears command buffer and triggers re-record of all the current operations 
-     * saved, which is useful if the underlying kp::Tensors or kp::Algorithms
-     * are modified and need to be re-recorded.
+     * Clears command buffer and triggers re-record of all the current
+     * operations saved, which is useful if the underlying kp::Tensors or
+     * kp::Algorithms are modified and need to be re-recorded.
      */
     void rerecord();
 
@@ -1961,13 +1973,14 @@ class Manager
     Manager();
 
     /**
-     * Similar to base constructor but allows for further configuration to use when
-     * creating the Vulkan resources.
+     * Similar to base constructor but allows for further configuration to use
+     * when creating the Vulkan resources.
      *
      * @param physicalDeviceIndex The index of the physical device to use
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
-     * @param desiredExtensions The desired extensions to load from physicalDevice
+     * @param desiredExtensions The desired extensions to load from
+     * physicalDevice
      */
     Manager(uint32_t physicalDeviceIndex,
             const std::vector<uint32_t>& familyQueueIndices = {},
@@ -2001,7 +2014,8 @@ class Manager
      * If zero (default), disables latching of timestamps.
      * @returns Shared pointer with initialised sequence
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0, uint32_t totalTimestamps = 0);
+    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0,
+                                       uint32_t totalTimestamps = 0);
 
     /**
      * Create a managed tensor that will be destroyed by this manager
@@ -2011,7 +2025,7 @@ class Manager
      * @param tensorType The type of tensor to initialize
      * @returns Shared pointer with initialised tensor
      */
-    template <typename T>
+    template<typename T>
     std::shared_ptr<TensorT<T>> tensorT(
       const std::vector<T>& data,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
@@ -2042,8 +2056,13 @@ class Manager
       const Tensor::TensorDataTypes& dataType,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        std::shared_ptr<Tensor> tensor{ new kp::Tensor(
-          this->mPhysicalDevice, this->mDevice, data, elementTotalCount, elementMemorySize, dataType, tensorType) };
+        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
+                                                       this->mDevice,
+                                                       data,
+                                                       elementTotalCount,
+                                                       elementMemorySize,
+                                                       dataType,
+                                                       tensorType) };
 
         if (this->mManageResources) {
             this->mManagedTensors.push_back(tensor);

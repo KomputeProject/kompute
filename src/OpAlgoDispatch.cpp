@@ -26,7 +26,7 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
     // Barrier to ensure the data is finished writing to buffer memory
     for (const std::shared_ptr<Tensor>& tensor :
          this->mAlgorithm->getTensors()) {
-        tensor->recordBufferMemoryBarrier(
+        tensor->recordPrimaryBufferMemoryBarrier(
           commandBuffer,
           vk::AccessFlagBits::eHostWrite,
           vk::AccessFlagBits::eShaderRead,
