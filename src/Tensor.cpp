@@ -28,7 +28,8 @@ Tensor::~Tensor()
     KP_LOG_DEBUG("Kompute Tensor destructor started. Type: {}",
                  this->tensorType());
 
-    this->destroy();
+    if (this->mDevice)
+        this->destroy();
 
     KP_LOG_DEBUG("Kompute Tensor destructor success");
 }
