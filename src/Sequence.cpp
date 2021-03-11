@@ -27,7 +27,9 @@ Sequence::~Sequence()
 {
     KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
-    this->destroy();
+    if (this->mDevice) {
+        this->destroy();
+    }
 }
 
 void
@@ -81,7 +83,9 @@ void
 Sequence::clear()
 {
     KP_LOG_DEBUG("Kompute Sequence calling clear");
-    this->end();
+    if (this->isRecording()) {
+        this->end();
+    }
 }
 
 std::shared_ptr<Sequence>
