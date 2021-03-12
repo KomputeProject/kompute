@@ -447,4 +447,10 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
     return sq;
 }
 
+vk::PhysicalDeviceProperties
+Manager::getDeviceProperties() const
+{
+    return this->mPhysicalDevice->getProperties();
+}
+
 }

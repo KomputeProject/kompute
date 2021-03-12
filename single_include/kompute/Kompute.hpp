@@ -2091,6 +2091,11 @@ class Manager
      **/
     void clear();
 
+    /**
+     * Return a struct containing information about the device.
+     **/
+    vk::PhysicalDeviceProperties getDeviceProperties() const;
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;

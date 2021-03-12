@@ -9,6 +9,8 @@
 #include "docstrings.hpp"
 
 namespace py = pybind11;
+using namespace pybind11::literals; // for the `_a` literal
+
 //used in Core.hpp
 py::object kp_debug, kp_info, kp_warning, kp_error;
 
@@ -217,7 +219,24 @@ PYBIND11_MODULE(kp, m) {
             py::arg("spirv"),
             py::arg("workgroup") = kp::Workgroup(),
             py::arg("spec_consts") = kp::Constants(),
-            py::arg("push_consts") = kp::Constants());
+            py::arg("push_consts") = kp::Constants())
+        .def("get_device_properties", [](kp::Manager& self){
+            const auto properties = self.getDeviceProperties();
+            py::dict py_props(
+                "device_name"_a = std::string(properties.deviceName.data()),
+                "max_work_group_count"_a       = py::make_tuple(properties.limits.maxComputeWorkGroupCount[0],
+                                                                properties.limits.maxComputeWorkGroupCount[1],
+                                                                properties.limits.maxComputeWorkGroupCount[2]),
+                "max_work_group_invocations"_a = properties.limits.maxComputeWorkGroupInvocations,
+                "max_work_group_size"_a        = py::make_tuple(properties.limits.maxComputeWorkGroupSize[0],
+                                                                properties.limits.maxComputeWorkGroupSize[1],
+                                                                properties.limits.maxComputeWorkGroupSize[2]),
+                "timestamps_supported"_a       = (bool)properties.limits.timestampComputeAndGraphics
+            );
+
+            return py_props;
+        }, "Return a dict containing information about the device");
+
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
