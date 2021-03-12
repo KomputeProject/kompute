@@ -67,6 +67,5 @@ TEST(TestManager, TestDeviceProperties)
 {
     kp::Manager mgr;
     const auto properties = mgr.getDeviceProperties();
-
     EXPECT_GT(properties.deviceName.size(), 0);
 }

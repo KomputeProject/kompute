@@ -1949,21 +1949,6 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
 namespace kp {
 
-struct DeviceProperties
-{
-  //Name of the device
-  const std::string             deviceName;
-  //Maximum number of workgroups that can be dispatched per shader
-  const std::array<uint32_t,3>  maxWorkGroupCount;
-  //Maximum number of shader invocations per local workgroup
-  //i.e. the product of maxWorkGroupSize must not exceed this value
-  const uint32_t                maxWorkGroupInvocations;
-  //Maximum number of shader invocations per local workgroup
-  const std::array<uint32_t,3>  maxWorkGroupSize;
-  //Whether timestamping is supported by this device or not
-  const bool                    timestampsSupported;
-};
-
 /**
     Base orchestrator which creates and manages device and child components
 */
@@ -2109,7 +2094,7 @@ class Manager
     /**
      * Return a struct containing information about the device.
      **/
-    DeviceProperties getDeviceProperties() const;
+    vk::PhysicalDeviceProperties getDeviceProperties() const;
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
