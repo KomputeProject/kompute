@@ -88,8 +88,8 @@ Collaboration diagram for kp::Sequence:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a83518e6c7f249680a9a0a9e7d5270b9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a83518e6c7f249680a9a0a9e7d5270b9a">Sequence</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::Queue &gt; computeQueue, uint32_t queueIndex)</td></tr>
-<tr class="separator:a83518e6c7f249680a9a0a9e7d5270b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb1974c612652d9c58b6e0bcfb83db4a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#afb1974c612652d9c58b6e0bcfb83db4a">Sequence</a> (std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device, std::shared_ptr&lt; vk::Queue &gt; computeQueue, uint32_t queueIndex, uint32_t totalTimestamps=0)</td></tr>
+<tr class="separator:afb1974c612652d9c58b6e0bcfb83db4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a657bf520b64ddbd42e12095c5241ef52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a657bf520b64ddbd42e12095c5241ef52">~Sequence</a> ()</td></tr>
 <tr class="separator:a657bf520b64ddbd42e12095c5241ef52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8fb61022e531b4536210e8da262c297b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Sequence.html">Sequence</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a8fb61022e531b4536210e8da262c297b">record</a> (std::shared_ptr&lt; <a class="el" href="classkp_1_1OpBase.html">OpBase</a> &gt; op)</td></tr>
@@ -124,6 +124,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a33766e097c3e392fe70f7e63bf258025"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93e9693ac1a2f81ced4e3edb7a81e515"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a93e9693ac1a2f81ced4e3edb7a81e515">clear</a> ()</td></tr>
 <tr class="separator:a93e9693ac1a2f81ced4e3edb7a81e515"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4e0b9a04695b9b936aa1e51468cccb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::uint64_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a4b4e0b9a04695b9b936aa1e51468cccb">getTimestamps</a> ()</td></tr>
+<tr class="separator:a4b4e0b9a04695b9b936aa1e51468cccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5cda43db45350b31cd78b3f48226296"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#aa5cda43db45350b31cd78b3f48226296">begin</a> ()</td></tr>
 <tr class="separator:aa5cda43db45350b31cd78b3f48226296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a0be1b31a574c3265ab5fc071eab988"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Sequence.html#a1a0be1b31a574c3265ab5fc071eab988">end</a> ()</td></tr>
@@ -142,8 +144,8 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Container of operations that can be sent to GPU as batch </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a83518e6c7f249680a9a0a9e7d5270b9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83518e6c7f249680a9a0a9e7d5270b9a">&#9670;&nbsp;</a></span>Sequence()</h2>
+<a id="afb1974c612652d9c58b6e0bcfb83db4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb1974c612652d9c58b6e0bcfb83db4a">&#9670;&nbsp;</a></span>Sequence()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -170,7 +172,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>queueIndex</em>&#160;</td>
+          <td class="paramname"><em>queueIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>totalTimestamps</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -186,6 +194,7 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">device</td><td>Vulkan logical device </td></tr>
     <tr><td class="paramname">computeQueue</td><td>Vulkan compute queue </td></tr>
     <tr><td class="paramname">queueIndex</td><td>Vulkan compute queue index in device </td></tr>
+    <tr><td class="paramname">totalTimestamps</td><td>Maximum number of timestamps to allocate </td></tr>
   </table>
   </dd>
 </dl>
@@ -574,6 +583,24 @@ template&lt;typename T , typename... TArgs&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>shared_ptr&lt;Sequence&gt; of the <a class="el" href="classkp_1_1Sequence.html">Sequence</a> class itself </dd></dl>
+
+</div>
+</div>
+<a id="a4b4e0b9a04695b9b936aa1e51468cccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b4e0b9a04695b9b936aa1e51468cccb">&#9670;&nbsp;</a></span>getTimestamps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::uint64_t&gt; kp::Sequence::getTimestamps </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Return the timestamps that were latched at the beginning and after each operation during the last <a class="el" href="classkp_1_1Sequence.html#a68c5ba3aca4722f9fe5d2a18be861c22">eval()</a> call. </p>
 
 </div>
 </div>

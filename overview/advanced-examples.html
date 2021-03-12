@@ -521,7 +521,7 @@
 <span class="s">              atomicAdd(pa[2], pcs.z);</span>
 <span class="s">          }</span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
 
@@ -625,7 +625,7 @@
              <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Kompute OpMult expected 3 tensors but got "</span> <span class="o">+</span> <span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
          <span class="p">}</span>
 
-         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
 <span class="s">             #version 450</span>
 
 <span class="s">             layout(set = 0, binding = 0) buffer tensorLhs {</span>
@@ -756,7 +756,7 @@
 <span class="s">    }</span>
 <span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-<span class="k">auto</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensor</span><span class="p">},</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">));</span>
+<span class="k">auto</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensor</span><span class="p">},</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">));</span>
 </pre></div>
 </td></tr></table></div>
 <p>Now we are able to run the await function on the default sequence.</p>
@@ -921,7 +921,7 @@
 <span class="s">       }</span>
 <span class="s">   </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensorA</span><span class="p">,</span> <span class="n">tenssorB</span><span class="p">},</span> <span class="n">spirv</span><span class="p">);</span>
 </pre></div>

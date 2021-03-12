@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">139</td>
-            <td class="headerCovTableEntry">153</td>
-            <td class="headerCovTableEntryHi">90.8 %</td>
+            <td class="headerCovTableEntry">102</td>
+            <td class="headerCovTableEntry">142</td>
+            <td class="headerCovTableEntryLo">71.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-07 13:40:19</td>
+            <td class="headerValue">2021-03-12 07:29:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">18</td>
-            <td class="headerCovTableEntry">18</td>
-            <td class="headerCovTableEntryHi">100.0 %</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryMed">75.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -63,314 +63,393 @@
 <a name="1"><span class="lineNum">       1 </span>            : </a>
 <span class="lineNum">       2 </span>            : #include &quot;kompute/Sequence.hpp&quot;
 <span class="lineNum">       3 </span>            : 
-<a name="4"><span class="lineNum">       4 </span>            : namespace kp {</a>
+<span class="lineNum">       4 </span>            : namespace kp {
 <span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineCov">        116 : Sequence::Sequence(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</span>
+<span class="lineNum">       6 </span><span class="lineCov">         53 : Sequence::Sequence(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</span>
 <span class="lineNum">       7 </span>            :                    std::shared_ptr&lt;vk::Device&gt; device,
 <span class="lineNum">       8 </span>            :                    std::shared_ptr&lt;vk::Queue&gt; computeQueue,
-<span class="lineNum">       9 </span><span class="lineCov">        116 :                    uint32_t queueIndex)</span>
-<span class="lineNum">      10 </span>            : {
-<span class="lineNum">      11 </span><span class="lineCov">        116 :     KP_LOG_DEBUG(&quot;Kompute Sequence Constructor with existing device &amp; queue&quot;);</span>
-<span class="lineNum">      12 </span>            : 
-<span class="lineNum">      13 </span><span class="lineCov">        116 :     this-&gt;mPhysicalDevice = physicalDevice;</span>
-<span class="lineNum">      14 </span><span class="lineCov">        116 :     this-&gt;mDevice = device;</span>
-<span class="lineNum">      15 </span><span class="lineCov">        116 :     this-&gt;mComputeQueue = computeQueue;</span>
-<span class="lineNum">      16 </span><span class="lineCov">        116 :     this-&gt;mQueueIndex = queueIndex;</span>
-<span class="lineNum">      17 </span>            : 
-<span class="lineNum">      18 </span><span class="lineCov">        116 :     this-&gt;createCommandPool();</span>
-<span class="lineNum">      19 </span><span class="lineCov">        116 :     this-&gt;createCommandBuffer();</span>
-<a name="20"><span class="lineNum">      20 </span><span class="lineCov">        116 : }</span></a>
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span><span class="lineCov">        232 : Sequence::~Sequence()</span>
-<span class="lineNum">      23 </span>            : {
-<span class="lineNum">      24 </span><span class="lineCov">        116 :     KP_LOG_DEBUG(&quot;Kompute Sequence Destructor started&quot;);</span>
+<span class="lineNum">       9 </span>            :                    uint32_t queueIndex,
+<span class="lineNum">      10 </span><span class="lineCov">        318 :                    uint32_t totalTimestamps)</span>
+<span class="lineNum">      11 </span>            : {
+<span class="lineNum">      12 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence Constructor with existing device &amp; queue&quot;);
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :     this-&gt;mPhysicalDevice = physicalDevice;
+<span class="lineNum">      15 </span>            :     this-&gt;mDevice = device;
+<span class="lineNum">      16 </span>            :     this-&gt;mComputeQueue = computeQueue;
+<span class="lineNum">      17 </span><span class="lineCov">         53 :     this-&gt;mQueueIndex = queueIndex;</span>
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span><span class="lineCov">         53 :     this-&gt;createCommandPool();</span>
+<span class="lineNum">      20 </span><span class="lineCov">         53 :     this-&gt;createCommandBuffer();</span>
+<span class="lineNum">      21 </span><span class="lineCov">         53 :     if (totalTimestamps &gt; 0)</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :         this-&gt;createTimestampQueryPool(totalTimestamps +</span>
+<span class="lineNum">      23 </span>            :                                        1); //+1 for the first one
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         53 : }</span></a>
 <span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span><span class="lineCov">        116 :     this-&gt;destroy();</span>
-<span class="lineNum">      27 </span><span class="lineCov">        116 : }</span>
-<span class="lineNum">      28 </span>            : 
-<span class="lineNum">      29 </span>            : void
-<span class="lineNum">      30 </span><span class="lineCov">        222 : Sequence::begin()</span>
-<span class="lineNum">      31 </span>            : {
-<span class="lineNum">      32 </span><span class="lineCov">        222 :     KP_LOG_DEBUG(&quot;Kompute sequence called BEGIN&quot;);</span>
-<span class="lineNum">      33 </span>            : 
-<span class="lineNum">      34 </span><span class="lineCov">        222 :     if (this-&gt;isRecording()) {</span>
-<span class="lineNum">      35 </span><span class="lineCov">         55 :         KP_LOG_DEBUG(&quot;Kompute Sequence begin called when already recording&quot;);</span>
-<span class="lineNum">      36 </span><span class="lineCov">         55 :         return;</span>
-<span class="lineNum">      37 </span>            :     }
-<span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span><span class="lineCov">        167 :     if (this-&gt;isRunning()) {</span>
-<span class="lineNum">      40 </span>            :         throw std::runtime_error(
-<span class="lineNum">      41 </span><span class="lineNoCov">          0 :           &quot;Kompute Sequence begin called when sequence still running&quot;);</span>
-<span class="lineNum">      42 </span>            :     }
-<span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span><span class="lineCov">        167 :     KP_LOG_INFO(&quot;Kompute Sequence command now started recording&quot;);</span>
-<span class="lineNum">      45 </span><span class="lineCov">        334 :     this-&gt;mCommandBuffer-&gt;begin(vk::CommandBufferBeginInfo());</span>
-<span class="lineNum">      46 </span><span class="lineCov">        167 :     this-&gt;mRecording = true;</span>
-<span class="lineNum">      47 </span>            : }
-<span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span>            : void
-<span class="lineNum">      50 </span><span class="lineCov">        266 : Sequence::end()</span>
-<span class="lineNum">      51 </span>            : {
-<span class="lineNum">      52 </span><span class="lineCov">        266 :     KP_LOG_DEBUG(&quot;Kompute Sequence calling END&quot;);</span>
+<span class="lineNum">      26 </span><span class="lineCov">        159 : Sequence::~Sequence()</span>
+<span class="lineNum">      27 </span>            : {
+<span class="lineNum">      28 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence Destructor started&quot;);
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span><span class="lineCov">         53 :     if (this-&gt;mDevice) {</span>
+<span class="lineNum">      31 </span><span class="lineCov">         45 :         this-&gt;destroy();</span>
+<span class="lineNum">      32 </span>            :     }
+<span class="lineNum">      33 </span><span class="lineCov">         53 : }</span>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            : void
+<span class="lineNum">      36 </span><span class="lineCov">         99 : Sequence::begin()</span>
+<span class="lineNum">      37 </span>            : {
+<span class="lineNum">      38 </span>            :     KP_LOG_DEBUG(&quot;Kompute sequence called BEGIN&quot;);
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span><span class="lineCov">         99 :     if (this-&gt;isRecording()) {</span>
+<span class="lineNum">      41 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence begin called when already recording&quot;);
+<span class="lineNum">      42 </span>            :         return;
+<span class="lineNum">      43 </span>            :     }
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineCov">         76 :     if (this-&gt;isRunning()) {</span>
+<span class="lineNum">      46 </span>            :         throw std::runtime_error(
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 :           &quot;Kompute Sequence begin called when sequence still running&quot;);</span>
+<span class="lineNum">      48 </span>            :     }
+<span class="lineNum">      49 </span>            : 
+<span class="lineNum">      50 </span><span class="lineCov">        152 :     KP_LOG_INFO(&quot;Kompute Sequence command now started recording&quot;);</span>
+<span class="lineNum">      51 </span><span class="lineCov">         76 :     this-&gt;mCommandBuffer-&gt;begin(vk::CommandBufferBeginInfo());</span>
+<span class="lineNum">      52 </span><span class="lineCov">         76 :     this-&gt;mRecording = true;</span>
 <span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span><span class="lineCov">        266 :     if (this-&gt;isRunning()) {</span>
-<span class="lineNum">      55 </span>            :         throw std::runtime_error(
-<span class="lineNum">      56 </span><span class="lineNoCov">          0 :           &quot;Kompute Sequence begin called when sequence still running&quot;);</span>
-<span class="lineNum">      57 </span>            :     }
-<span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span><span class="lineCov">        266 :     if (!this-&gt;isRecording()) {</span>
-<span class="lineNum">      60 </span><span class="lineCov">        101 :         KP_LOG_WARN(&quot;Kompute Sequence end called when not recording&quot;);</span>
-<span class="lineNum">      61 </span><span class="lineCov">        101 :         return;</span>
-<span class="lineNum">      62 </span>            :     } else {
-<span class="lineNum">      63 </span><span class="lineCov">        165 :         KP_LOG_INFO(&quot;Kompute Sequence command recording END&quot;);</span>
-<span class="lineNum">      64 </span><span class="lineCov">        330 :         this-&gt;mCommandBuffer-&gt;end();</span>
-<span class="lineNum">      65 </span><span class="lineCov">        165 :         this-&gt;mRecording = false;</span>
-<span class="lineNum">      66 </span>            :     }
-<span class="lineNum">      67 </span>            : }
-<a name="68"><span class="lineNum">      68 </span>            : </a>
-<span class="lineNum">      69 </span>            : void
-<span class="lineNum">      70 </span><span class="lineCov">         99 : Sequence::clear()</span>
-<span class="lineNum">      71 </span>            : {
-<span class="lineNum">      72 </span><span class="lineCov">         99 :     KP_LOG_DEBUG(&quot;Kompute Sequence calling clear&quot;);</span>
-<span class="lineNum">      73 </span><span class="lineCov">         99 :     this-&gt;end();</span>
-<span class="lineNum">      74 </span><span class="lineCov">         99 : }</span>
-<a name="75"><span class="lineNum">      75 </span>            : </a>
-<span class="lineNum">      76 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">      77 </span><span class="lineCov">        556 : Sequence::eval()</span>
-<span class="lineNum">      78 </span>            : {
-<span class="lineNum">      79 </span><span class="lineCov">        556 :     KP_LOG_DEBUG(&quot;Kompute sequence EVAL BEGIN&quot;);</span>
-<span class="lineNum">      80 </span>            : 
-<span class="lineNum">      81 </span><span class="lineCov">        556 :     return this-&gt;evalAsync()-&gt;evalAwait();</span>
-<span class="lineNum">      82 </span>            : }
-<a name="83"><span class="lineNum">      83 </span>            : </a>
-<span class="lineNum">      84 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">      85 </span><span class="lineCov">         88 : Sequence::eval(std::shared_ptr&lt;OpBase&gt; op)</span>
-<span class="lineNum">      86 </span>            : {
-<span class="lineNum">      87 </span><span class="lineCov">         88 :     this-&gt;clear();</span>
-<span class="lineNum">      88 </span><span class="lineCov">         88 :     return this-&gt;record(op)-&gt;eval();</span>
-<span class="lineNum">      89 </span>            : }
-<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      54 </span>            :     // latch the first timestamp before any commands are submitted
+<span class="lineNum">      55 </span><span class="lineCov">         76 :     if (this-&gt;timestampQueryPool)</span>
+<span class="lineNum">      56 </span>            :         this-&gt;mCommandBuffer-&gt;writeTimestamp(
+<span class="lineNum">      57 </span>            :           vk::PipelineStageFlagBits::eAllCommands,
+<span class="lineNum">      58 </span>            :           *this-&gt;timestampQueryPool,
+<span class="lineNum">      59 </span>            :           0);
+<span class="lineNum">      60 </span>            : }
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : void
+<span class="lineNum">      63 </span><span class="lineCov">         76 : Sequence::end()</span>
+<span class="lineNum">      64 </span>            : {
+<span class="lineNum">      65 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence calling END&quot;);
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineCov">         76 :     if (this-&gt;isRunning()) {</span>
+<span class="lineNum">      68 </span>            :         throw std::runtime_error(
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :           &quot;Kompute Sequence begin called when sequence still running&quot;);</span>
+<span class="lineNum">      70 </span>            :     }
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span><span class="lineCov">         76 :     if (!this-&gt;isRecording()) {</span>
+<span class="lineNum">      73 </span><span class="lineCov">          2 :         KP_LOG_WARN(&quot;Kompute Sequence end called when not recording&quot;);</span>
+<span class="lineNum">      74 </span><span class="lineCov">          1 :         return;</span>
+<span class="lineNum">      75 </span>            :     } else {
+<span class="lineNum">      76 </span><span class="lineCov">        150 :         KP_LOG_INFO(&quot;Kompute Sequence command recording END&quot;);</span>
+<span class="lineNum">      77 </span>            :         this-&gt;mCommandBuffer-&gt;end();
+<span class="lineNum">      78 </span><span class="lineCov">         75 :         this-&gt;mRecording = false;</span>
+<span class="lineNum">      79 </span>            :     }
+<span class="lineNum">      80 </span>            : }
+<a name="81"><span class="lineNum">      81 </span>            : </a>
+<span class="lineNum">      82 </span>            : void
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 : Sequence::clear()</span>
+<span class="lineNum">      84 </span>            : {
+<span class="lineNum">      85 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence calling clear&quot;);
+<span class="lineNum">      86 </span><span class="lineCov">         48 :     if (this-&gt;isRecording()) {</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :         this-&gt;end();</span>
+<span class="lineNum">      88 </span>            :     }
+<span class="lineNum">      89 </span><span class="lineNoCov">          0 : }</span>
+<a name="90"><span class="lineNum">      90 </span>            : </a>
 <span class="lineNum">      91 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">      92 </span><span class="lineCov">        567 : Sequence::evalAsync()</span>
+<span class="lineNum">      92 </span><span class="lineCov">        271 : Sequence::eval()</span>
 <span class="lineNum">      93 </span>            : {
-<span class="lineNum">      94 </span><span class="lineCov">        567 :     if (this-&gt;isRecording()) {</span>
-<span class="lineNum">      95 </span><span class="lineCov">        165 :         this-&gt;end();</span>
-<span class="lineNum">      96 </span>            :     }
-<span class="lineNum">      97 </span>            : 
-<span class="lineNum">      98 </span><span class="lineCov">        567 :     if (this-&gt;mIsRunning) {</span>
-<span class="lineNum">      99 </span>            :         throw std::runtime_error(
-<span class="lineNum">     100 </span>            :           &quot;Kompute Sequence evalAsync called when an eval async was &quot;
-<span class="lineNum">     101 </span><span class="lineNoCov">          0 :           &quot;called without successful wait&quot;);</span>
-<span class="lineNum">     102 </span>            :     }
-<span class="lineNum">     103 </span>            : 
-<span class="lineNum">     104 </span><span class="lineCov">        567 :     this-&gt;mIsRunning = true;</span>
+<span class="lineNum">      94 </span>            :     KP_LOG_DEBUG(&quot;Kompute sequence EVAL BEGIN&quot;);
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineCov">        813 :     return this-&gt;evalAsync()-&gt;evalAwait();</span>
+<span class="lineNum">      97 </span>            : }
+<a name="98"><span class="lineNum">      98 </span>            : </a>
+<span class="lineNum">      99 </span>            : std::shared_ptr&lt;Sequence&gt;
+<span class="lineNum">     100 </span><span class="lineCov">         44 : Sequence::eval(std::shared_ptr&lt;OpBase&gt; op)</span>
+<span class="lineNum">     101 </span>            : {
+<span class="lineNum">     102 </span>            :     this-&gt;clear();
+<span class="lineNum">     103 </span><span class="lineCov">        176 :     return this-&gt;record(op)-&gt;eval();</span>
+<span class="lineNum">     104 </span>            : }
 <span class="lineNum">     105 </span>            : 
-<span class="lineNum">     106 </span><span class="lineCov">       2086 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
-<span class="lineNum">     107 </span><span class="lineCov">       1519 :         this-&gt;mOperations[i]-&gt;preEval(*this-&gt;mCommandBuffer);</span>
-<span class="lineNum">     108 </span>            :     }
-<span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span>            :     vk::SubmitInfo submitInfo(
-<span class="lineNum">     111 </span><span class="lineCov">        567 :       0, nullptr, nullptr, 1, this-&gt;mCommandBuffer.get());</span>
+<span class="lineNum">     106 </span>            : std::shared_ptr&lt;Sequence&gt;
+<span class="lineNum">     107 </span><span class="lineCov">        275 : Sequence::evalAsync()</span>
+<span class="lineNum">     108 </span>            : {
+<span class="lineNum">     109 </span><span class="lineCov">        275 :     if (this-&gt;isRecording()) {</span>
+<span class="lineNum">     110 </span><span class="lineCov">         75 :         this-&gt;end();</span>
+<span class="lineNum">     111 </span>            :     }
 <span class="lineNum">     112 </span>            : 
-<span class="lineNum">     113 </span><span class="lineCov">       1134 :     this-&gt;mFence = this-&gt;mDevice-&gt;createFence(vk::FenceCreateInfo());</span>
-<span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span><span class="lineCov">        567 :     KP_LOG_DEBUG(</span>
-<span class="lineNum">     116 </span>            :       &quot;Kompute sequence submitting command buffer into compute queue&quot;);
-<span class="lineNum">     117 </span>            : 
-<span class="lineNum">     118 </span><span class="lineCov">       1134 :     this-&gt;mComputeQueue-&gt;submit(1, &amp;submitInfo, this-&gt;mFence);</span>
-<span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span><span class="lineCov">        567 :     return shared_from_this();</span>
-<span class="lineNum">     121 </span>            : }
-<a name="122"><span class="lineNum">     122 </span>            : </a>
-<span class="lineNum">     123 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">     124 </span><span class="lineCov">         11 : Sequence::evalAsync(std::shared_ptr&lt;OpBase&gt; op)</span>
-<span class="lineNum">     125 </span>            : {
-<span class="lineNum">     126 </span><span class="lineCov">         11 :     this-&gt;clear();</span>
-<span class="lineNum">     127 </span><span class="lineCov">         11 :     this-&gt;record(op);</span>
-<span class="lineNum">     128 </span><span class="lineCov">         11 :     this-&gt;evalAsync();</span>
-<span class="lineNum">     129 </span><span class="lineCov">         11 :     return shared_from_this();</span>
-<span class="lineNum">     130 </span>            : }
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">     133 </span><span class="lineCov">        567 : Sequence::evalAwait(uint64_t waitFor)</span>
-<span class="lineNum">     134 </span>            : {
-<span class="lineNum">     135 </span><span class="lineCov">        567 :     if (!this-&gt;mIsRunning) {</span>
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(&quot;Kompute Sequence evalAwait called without existing eval&quot;);</span>
-<span class="lineNum">     137 </span><span class="lineNoCov">          0 :         return shared_from_this();</span>
-<span class="lineNum">     138 </span>            :     }
-<span class="lineNum">     139 </span>            : 
-<span class="lineNum">     140 </span>            :     vk::Result result =
-<span class="lineNum">     141 </span><span class="lineCov">       1134 :       this-&gt;mDevice-&gt;waitForFences(1, &amp;this-&gt;mFence, VK_TRUE, waitFor);</span>
-<span class="lineNum">     142 </span><span class="lineCov">       1134 :     this-&gt;mDevice-&gt;destroy(</span>
-<span class="lineNum">     143 </span>            :       this-&gt;mFence, (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
-<span class="lineNum">     144 </span>            : 
-<span class="lineNum">     145 </span><span class="lineCov">        567 :     this-&gt;mIsRunning = false;</span>
+<span class="lineNum">     113 </span><span class="lineCov">        275 :     if (this-&gt;mIsRunning) {</span>
+<span class="lineNum">     114 </span>            :         throw std::runtime_error(
+<span class="lineNum">     115 </span>            :           &quot;Kompute Sequence evalAsync called when an eval async was &quot;
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :           &quot;called without successful wait&quot;);</span>
+<span class="lineNum">     117 </span>            :     }
+<span class="lineNum">     118 </span>            : 
+<span class="lineNum">     119 </span><span class="lineCov">        275 :     this-&gt;mIsRunning = true;</span>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span><span class="lineCov">       2773 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
+<span class="lineNum">     122 </span><span class="lineCov">       1482 :         this-&gt;mOperations[i]-&gt;preEval(*this-&gt;mCommandBuffer);</span>
+<span class="lineNum">     123 </span>            :     }
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :     vk::SubmitInfo submitInfo(
+<span class="lineNum">     126 </span><span class="lineCov">        275 :       0, nullptr, nullptr, 1, this-&gt;mCommandBuffer.get());</span>
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span><span class="lineCov">        275 :     this-&gt;mFence = this-&gt;mDevice-&gt;createFence(vk::FenceCreateInfo());</span>
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span>            :     KP_LOG_DEBUG(
+<span class="lineNum">     131 </span>            :       &quot;Kompute sequence submitting command buffer into compute queue&quot;);
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            :     this-&gt;mComputeQueue-&gt;submit(1, &amp;submitInfo, this-&gt;mFence);
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span><span class="lineCov">        275 :     return shared_from_this();</span>
+<span class="lineNum">     136 </span>            : }
+<a name="137"><span class="lineNum">     137 </span>            : </a>
+<span class="lineNum">     138 </span>            : std::shared_ptr&lt;Sequence&gt;
+<span class="lineNum">     139 </span><span class="lineCov">          4 : Sequence::evalAsync(std::shared_ptr&lt;OpBase&gt; op)</span>
+<span class="lineNum">     140 </span>            : {
+<span class="lineNum">     141 </span>            :     this-&gt;clear();
+<span class="lineNum">     142 </span><span class="lineCov">         12 :     this-&gt;record(op);</span>
+<span class="lineNum">     143 </span><span class="lineCov">          8 :     this-&gt;evalAsync();</span>
+<span class="lineNum">     144 </span><span class="lineCov">          4 :     return shared_from_this();</span>
+<span class="lineNum">     145 </span>            : }
 <span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span><span class="lineCov">        567 :     if (result == vk::Result::eTimeout) {</span>
-<span class="lineNum">     148 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(&quot;Kompute Sequence evalAwait reached timeout of {}&quot;,</span>
-<span class="lineNum">     149 </span>            :                     waitFor);
-<span class="lineNum">     150 </span><span class="lineNoCov">          0 :         return shared_from_this();</span>
-<span class="lineNum">     151 </span>            :     }
-<span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span><span class="lineCov">       2086 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
-<span class="lineNum">     154 </span><span class="lineCov">       1519 :         this-&gt;mOperations[i]-&gt;postEval(*this-&gt;mCommandBuffer);</span>
-<span class="lineNum">     155 </span>            :     }
-<span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span><span class="lineCov">        567 :     return shared_from_this();</span>
-<span class="lineNum">     158 </span>            : }
-<a name="159"><span class="lineNum">     159 </span>            : </a>
-<span class="lineNum">     160 </span>            : bool
-<span class="lineNum">     161 </span><span class="lineCov">        433 : Sequence::isRunning()</span>
-<span class="lineNum">     162 </span>            : {
-<span class="lineNum">     163 </span><span class="lineCov">        433 :     return this-&gt;mIsRunning;</span>
-<span class="lineNum">     164 </span>            : }
-<a name="165"><span class="lineNum">     165 </span>            : </a>
-<span class="lineNum">     166 </span>            : bool
-<span class="lineNum">     167 </span><span class="lineCov">       1055 : Sequence::isRecording()</span>
-<span class="lineNum">     168 </span>            : {
-<span class="lineNum">     169 </span><span class="lineCov">       1055 :     return this-&gt;mRecording;</span>
-<span class="lineNum">     170 </span>            : }
-<a name="171"><span class="lineNum">     171 </span>            : </a>
-<span class="lineNum">     172 </span>            : bool
-<span class="lineNum">     173 </span><span class="lineCov">         14 : Sequence::isInit()</span>
-<span class="lineNum">     174 </span>            : {
-<span class="lineNum">     175 </span><span class="lineCov">         20 :     return this-&gt;mDevice &amp;&amp; this-&gt;mCommandPool &amp;&amp; this-&gt;mCommandBuffer &amp;&amp;</span>
-<span class="lineNum">     176 </span><span class="lineCov">         20 :            this-&gt;mComputeQueue;</span>
-<span class="lineNum">     177 </span>            : }
-<a name="178"><span class="lineNum">     178 </span>            : </a>
-<span class="lineNum">     179 </span>            : void
-<span class="lineNum">     180 </span><span class="lineCov">          2 : Sequence::rerecord()</span>
-<span class="lineNum">     181 </span>            : {
-<span class="lineNum">     182 </span><span class="lineCov">          2 :     this-&gt;end();</span>
-<span class="lineNum">     183 </span><span class="lineCov">          4 :     std::vector&lt;std::shared_ptr&lt;OpBase&gt;&gt; ops = this-&gt;mOperations;</span>
-<span class="lineNum">     184 </span><span class="lineCov">          2 :     this-&gt;mOperations.clear();</span>
-<span class="lineNum">     185 </span><span class="lineCov">          8 :     for (const std::shared_ptr&lt;kp::OpBase&gt;&amp; op : ops) {</span>
-<span class="lineNum">     186 </span><span class="lineCov">          6 :         this-&gt;record(op);</span>
-<span class="lineNum">     187 </span>            :     }
-<span class="lineNum">     188 </span><span class="lineCov">          2 : }</span>
-<span class="lineNum">     189 </span>            : 
-<span class="lineNum">     190 </span>            : void
-<span class="lineNum">     191 </span><span class="lineCov">        138 : Sequence::destroy()</span>
-<span class="lineNum">     192 </span>            : {
-<span class="lineNum">     193 </span><span class="lineCov">        138 :     KP_LOG_DEBUG(&quot;Kompute Sequence destroy called&quot;);</span>
-<span class="lineNum">     194 </span>            : 
-<span class="lineNum">     195 </span><span class="lineCov">        138 :     if (!this-&gt;mDevice) {</span>
-<span class="lineNum">     196 </span><span class="lineCov">         22 :         KP_LOG_WARN(&quot;Kompute Sequence destroy called &quot;</span>
-<span class="lineNum">     197 </span>            :                     &quot;with null Device pointer&quot;);
-<span class="lineNum">     198 </span><span class="lineCov">         22 :         return;</span>
-<span class="lineNum">     199 </span>            :     }
-<span class="lineNum">     200 </span>            : 
-<span class="lineNum">     201 </span><span class="lineCov">        116 :     if (this-&gt;mFreeCommandBuffer) {</span>
-<span class="lineNum">     202 </span><span class="lineCov">        116 :         KP_LOG_INFO(&quot;Freeing CommandBuffer&quot;);</span>
-<span class="lineNum">     203 </span><span class="lineCov">        116 :         if (!this-&gt;mCommandBuffer) {</span>
-<span class="lineNum">     204 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(&quot;Kompute Sequence destroy called with null &quot;</span>
-<span class="lineNum">     205 </span>            :                         &quot;CommandPool pointer&quot;);
-<span class="lineNum">     206 </span><span class="lineNoCov">          0 :             return;</span>
-<span class="lineNum">     207 </span>            :         }
-<span class="lineNum">     208 </span><span class="lineCov">        232 :         this-&gt;mDevice-&gt;freeCommandBuffers(</span>
-<span class="lineNum">     209 </span><span class="lineCov">        116 :           *this-&gt;mCommandPool, 1, this-&gt;mCommandBuffer.get());</span>
-<span class="lineNum">     210 </span>            : 
-<span class="lineNum">     211 </span><span class="lineCov">        116 :         this-&gt;mCommandBuffer = nullptr;</span>
-<span class="lineNum">     212 </span><span class="lineCov">        116 :         this-&gt;mFreeCommandBuffer = false;</span>
-<span class="lineNum">     213 </span>            : 
-<span class="lineNum">     214 </span><span class="lineCov">        116 :         KP_LOG_DEBUG(&quot;Kompute Sequence Freed CommandBuffer&quot;);</span>
-<span class="lineNum">     215 </span>            :     }
-<span class="lineNum">     216 </span>            : 
-<span class="lineNum">     217 </span><span class="lineCov">        116 :     if (this-&gt;mFreeCommandPool) {</span>
-<span class="lineNum">     218 </span><span class="lineCov">        116 :         KP_LOG_INFO(&quot;Destroying CommandPool&quot;);</span>
-<span class="lineNum">     219 </span><span class="lineCov">        116 :         if (this-&gt;mCommandPool == nullptr) {</span>
-<span class="lineNum">     220 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(&quot;Kompute Sequence destroy called with null &quot;</span>
-<span class="lineNum">     221 </span>            :                         &quot;CommandPool pointer&quot;);
-<span class="lineNum">     222 </span><span class="lineNoCov">          0 :             return;</span>
-<span class="lineNum">     223 </span>            :         }
-<span class="lineNum">     224 </span><span class="lineCov">        232 :         this-&gt;mDevice-&gt;destroy(</span>
-<span class="lineNum">     225 </span><span class="lineCov">        116 :           *this-&gt;mCommandPool,</span>
-<span class="lineNum">     226 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
-<span class="lineNum">     227 </span>            : 
-<span class="lineNum">     228 </span><span class="lineCov">        116 :         this-&gt;mCommandPool = nullptr;</span>
-<span class="lineNum">     229 </span><span class="lineCov">        116 :         this-&gt;mFreeCommandPool = false;</span>
-<span class="lineNum">     230 </span>            : 
-<span class="lineNum">     231 </span><span class="lineCov">        116 :         KP_LOG_DEBUG(&quot;Kompute Sequence Destroyed CommandPool&quot;);</span>
-<span class="lineNum">     232 </span>            :     }
-<span class="lineNum">     233 </span>            : 
-<span class="lineNum">     234 </span><span class="lineCov">        116 :     if (this-&gt;mOperations.size()) {</span>
-<span class="lineNum">     235 </span><span class="lineCov">        106 :         KP_LOG_INFO(&quot;Kompute Sequence clearing operations buffer&quot;);</span>
-<span class="lineNum">     236 </span><span class="lineCov">        106 :         this-&gt;mOperations.clear();</span>
-<span class="lineNum">     237 </span>            :     }
-<span class="lineNum">     238 </span>            : 
-<span class="lineNum">     239 </span><span class="lineCov">        116 :     if (this-&gt;mDevice) {</span>
-<span class="lineNum">     240 </span><span class="lineCov">        116 :         this-&gt;mDevice = nullptr;</span>
-<span class="lineNum">     241 </span>            :     }
-<span class="lineNum">     242 </span><span class="lineCov">        116 :     if (this-&gt;mPhysicalDevice) {</span>
-<span class="lineNum">     243 </span><span class="lineCov">        116 :         this-&gt;mPhysicalDevice = nullptr;</span>
-<span class="lineNum">     244 </span>            :     }
-<span class="lineNum">     245 </span><span class="lineCov">        116 :     if (this-&gt;mComputeQueue) {</span>
-<span class="lineNum">     246 </span><span class="lineCov">        116 :         this-&gt;mComputeQueue = nullptr;</span>
+<span class="lineNum">     147 </span>            : std::shared_ptr&lt;Sequence&gt;
+<span class="lineNum">     148 </span><span class="lineCov">        275 : Sequence::evalAwait(uint64_t waitFor)</span>
+<span class="lineNum">     149 </span>            : {
+<span class="lineNum">     150 </span><span class="lineCov">        275 :     if (!this-&gt;mIsRunning) {</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(&quot;Kompute Sequence evalAwait called without existing eval&quot;);</span>
+<span class="lineNum">     152 </span>            :         return shared_from_this();
+<span class="lineNum">     153 </span>            :     }
+<span class="lineNum">     154 </span>            : 
+<span class="lineNum">     155 </span>            :     vk::Result result =
+<span class="lineNum">     156 </span><span class="lineCov">        275 :       this-&gt;mDevice-&gt;waitForFences(1, &amp;this-&gt;mFence, VK_TRUE, waitFor);</span>
+<span class="lineNum">     157 </span>            :     this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">     158 </span>            :       this-&gt;mFence, (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span><span class="lineCov">        275 :     this-&gt;mIsRunning = false;</span>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineCov">        275 :     if (result == vk::Result::eTimeout) {</span>
+<span class="lineNum">     163 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(&quot;Kompute Sequence evalAwait reached timeout of {}&quot;,</span>
+<span class="lineNum">     164 </span>            :                     waitFor);
+<span class="lineNum">     165 </span>            :         return shared_from_this();
+<span class="lineNum">     166 </span>            :     }
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineCov">       2773 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">       1482 :         this-&gt;mOperations[i]-&gt;postEval(*this-&gt;mCommandBuffer);</span>
+<span class="lineNum">     170 </span>            :     }
+<span class="lineNum">     171 </span>            : 
+<span class="lineNum">     172 </span>            :     return shared_from_this();
+<span class="lineNum">     173 </span>            : }
+<a name="174"><span class="lineNum">     174 </span>            : </a>
+<span class="lineNum">     175 </span>            : bool
+<span class="lineNum">     176 </span><span class="lineNoCov">          0 : Sequence::isRunning()</span>
+<span class="lineNum">     177 </span>            : {
+<span class="lineNum">     178 </span><span class="lineCov">        152 :     return this-&gt;mIsRunning;</span>
+<span class="lineNum">     179 </span>            : }
+<a name="180"><span class="lineNum">     180 </span>            : </a>
+<span class="lineNum">     181 </span>            : bool
+<span class="lineNum">     182 </span><span class="lineNoCov">          0 : Sequence::isRecording()</span>
+<span class="lineNum">     183 </span>            : {
+<span class="lineNum">     184 </span><span class="lineCov">        498 :     return this-&gt;mRecording;</span>
+<span class="lineNum">     185 </span>            : }
+<a name="186"><span class="lineNum">     186 </span>            : </a>
+<span class="lineNum">     187 </span>            : bool
+<span class="lineNum">     188 </span><span class="lineCov">          7 : Sequence::isInit()</span>
+<span class="lineNum">     189 </span>            : {
+<span class="lineNum">     190 </span><span class="lineCov">         10 :     return this-&gt;mDevice &amp;&amp; this-&gt;mCommandPool &amp;&amp; this-&gt;mCommandBuffer &amp;&amp;</span>
+<span class="lineNum">     191 </span><span class="lineCov">         10 :            this-&gt;mComputeQueue;</span>
+<span class="lineNum">     192 </span>            : }
+<a name="193"><span class="lineNum">     193 </span>            : </a>
+<span class="lineNum">     194 </span>            : void
+<span class="lineNum">     195 </span><span class="lineCov">          1 : Sequence::rerecord()</span>
+<span class="lineNum">     196 </span>            : {
+<span class="lineNum">     197 </span><span class="lineCov">          1 :     this-&gt;end();</span>
+<span class="lineNum">     198 </span><span class="lineCov">          2 :     std::vector&lt;std::shared_ptr&lt;OpBase&gt;&gt; ops = this-&gt;mOperations;</span>
+<span class="lineNum">     199 </span><span class="lineCov">          1 :     this-&gt;mOperations.clear();</span>
+<span class="lineNum">     200 </span><span class="lineCov">          4 :     for (const std::shared_ptr&lt;kp::OpBase&gt;&amp; op : ops) {</span>
+<span class="lineNum">     201 </span><span class="lineCov">          9 :         this-&gt;record(op);</span>
+<span class="lineNum">     202 </span>            :     }
+<span class="lineNum">     203 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     204 </span>            : 
+<span class="lineNum">     205 </span>            : void
+<span class="lineNum">     206 </span><span class="lineCov">         55 : Sequence::destroy()</span>
+<span class="lineNum">     207 </span>            : {
+<span class="lineNum">     208 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence destroy called&quot;);
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span><span class="lineCov">         55 :     if (!this-&gt;mDevice) {</span>
+<span class="lineNum">     211 </span><span class="lineCov">          4 :         KP_LOG_WARN(&quot;Kompute Sequence destroy called &quot;</span>
+<span class="lineNum">     212 </span>            :                     &quot;with null Device pointer&quot;);
+<span class="lineNum">     213 </span><span class="lineCov">          2 :         return;</span>
+<span class="lineNum">     214 </span>            :     }
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineCov">         53 :     if (this-&gt;mFreeCommandBuffer) {</span>
+<span class="lineNum">     217 </span><span class="lineCov">        106 :         KP_LOG_INFO(&quot;Freeing CommandBuffer&quot;);</span>
+<span class="lineNum">     218 </span><span class="lineCov">         53 :         if (!this-&gt;mCommandBuffer) {</span>
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(&quot;Kompute Sequence destroy called with null &quot;</span>
+<span class="lineNum">     220 </span>            :                         &quot;CommandPool pointer&quot;);
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     222 </span>            :         }
+<span class="lineNum">     223 </span>            :         this-&gt;mDevice-&gt;freeCommandBuffers(
+<span class="lineNum">     224 </span>            :           *this-&gt;mCommandPool, 1, this-&gt;mCommandBuffer.get());
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            :         this-&gt;mCommandBuffer = nullptr;
+<span class="lineNum">     227 </span><span class="lineCov">         53 :         this-&gt;mFreeCommandBuffer = false;</span>
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence Freed CommandBuffer&quot;);
+<span class="lineNum">     230 </span>            :     }
+<span class="lineNum">     231 </span>            : 
+<span class="lineNum">     232 </span><span class="lineCov">         53 :     if (this-&gt;mFreeCommandPool) {</span>
+<span class="lineNum">     233 </span><span class="lineCov">        106 :         KP_LOG_INFO(&quot;Destroying CommandPool&quot;);</span>
+<span class="lineNum">     234 </span><span class="lineCov">         53 :         if (this-&gt;mCommandPool == nullptr) {</span>
+<span class="lineNum">     235 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(&quot;Kompute Sequence destroy called with null &quot;</span>
+<span class="lineNum">     236 </span>            :                         &quot;CommandPool pointer&quot;);
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 :             return;</span>
+<span class="lineNum">     238 </span>            :         }
+<span class="lineNum">     239 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">     240 </span>            :           *this-&gt;mCommandPool,
+<span class="lineNum">     241 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            :         this-&gt;mCommandPool = nullptr;
+<span class="lineNum">     244 </span><span class="lineCov">         53 :         this-&gt;mFreeCommandPool = false;</span>
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence Destroyed CommandPool&quot;);
 <span class="lineNum">     247 </span>            :     }
-<span class="lineNum">     248 </span>            : }
-<a name="249"><span class="lineNum">     249 </span>            : </a>
-<span class="lineNum">     250 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">     251 </span><span class="lineCov">        222 : Sequence::record(std::shared_ptr&lt;OpBase&gt; op)</span>
-<span class="lineNum">     252 </span>            : {
-<span class="lineNum">     253 </span><span class="lineCov">        222 :     KP_LOG_DEBUG(&quot;Kompute Sequence record function started&quot;);</span>
-<span class="lineNum">     254 </span>            : 
-<span class="lineNum">     255 </span><span class="lineCov">        222 :     this-&gt;begin();</span>
-<span class="lineNum">     256 </span>            : 
-<span class="lineNum">     257 </span><span class="lineCov">        222 :     KP_LOG_DEBUG(</span>
-<span class="lineNum">     258 </span>            :       &quot;Kompute Sequence running record on OpBase derived class instance&quot;);
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span><span class="lineCov">        106 :     if (this-&gt;mOperations.size()) {</span>
+<span class="lineNum">     250 </span><span class="lineCov">         96 :         KP_LOG_INFO(&quot;Kompute Sequence clearing operations buffer&quot;);</span>
+<span class="lineNum">     251 </span><span class="lineCov">         48 :         this-&gt;mOperations.clear();</span>
+<span class="lineNum">     252 </span>            :     }
+<span class="lineNum">     253 </span>            : 
+<span class="lineNum">     254 </span><span class="lineCov">         53 :     if (this-&gt;timestampQueryPool) {</span>
+<span class="lineNum">     255 </span><span class="lineNoCov">          0 :         KP_LOG_INFO(&quot;Destroying QueryPool&quot;);</span>
+<span class="lineNum">     256 </span>            :         this-&gt;mDevice-&gt;destroy(
+<span class="lineNum">     257 </span>            :           *this-&gt;timestampQueryPool,
+<span class="lineNum">     258 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
 <span class="lineNum">     259 </span>            : 
-<span class="lineNum">     260 </span><span class="lineCov">        222 :     op-&gt;record(*this-&gt;mCommandBuffer);</span>
-<span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span><span class="lineCov">        220 :     this-&gt;mOperations.push_back(op);</span>
+<span class="lineNum">     260 </span>            :         this-&gt;timestampQueryPool = nullptr;
+<span class="lineNum">     261 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence Destroyed QueryPool&quot;);
+<span class="lineNum">     262 </span>            :     }
 <span class="lineNum">     263 </span>            : 
-<span class="lineNum">     264 </span><span class="lineCov">        220 :     return shared_from_this();</span>
-<span class="lineNum">     265 </span>            : }
-<span class="lineNum">     266 </span>            : 
-<span class="lineNum">     267 </span>            : void
-<span class="lineNum">     268 </span><span class="lineCov">        116 : Sequence::createCommandPool()</span>
-<span class="lineNum">     269 </span>            : {
-<span class="lineNum">     270 </span><span class="lineCov">        116 :     KP_LOG_DEBUG(&quot;Kompute Sequence creating command pool&quot;);</span>
-<span class="lineNum">     271 </span>            : 
-<span class="lineNum">     272 </span><span class="lineCov">        116 :     if (!this-&gt;mDevice) {</span>
-<span class="lineNum">     273 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence device is null&quot;);</span>
-<span class="lineNum">     274 </span>            :     }
-<span class="lineNum">     275 </span>            :     if (this-&gt;mQueueIndex &lt; 0) {
-<span class="lineNum">     276 </span>            :         throw std::runtime_error(&quot;Kompute Sequence queue index not provided&quot;);
-<span class="lineNum">     277 </span>            :     }
-<span class="lineNum">     278 </span>            : 
-<span class="lineNum">     279 </span><span class="lineCov">        116 :     this-&gt;mFreeCommandPool = true;</span>
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span><span class="lineCov">        116 :     vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlags(),</span>
-<span class="lineNum">     282 </span><span class="lineCov">        116 :                                               this-&gt;mQueueIndex);</span>
-<span class="lineNum">     283 </span><span class="lineCov">        116 :     this-&gt;mCommandPool = std::make_shared&lt;vk::CommandPool&gt;();</span>
-<span class="lineNum">     284 </span><span class="lineCov">        232 :     this-&gt;mDevice-&gt;createCommandPool(</span>
-<span class="lineNum">     285 </span>            :       &amp;commandPoolInfo, nullptr, this-&gt;mCommandPool.get());
-<span class="lineNum">     286 </span><span class="lineCov">        116 :     KP_LOG_DEBUG(&quot;Kompute Sequence Command Pool Created&quot;);</span>
-<span class="lineNum">     287 </span><span class="lineCov">        116 : }</span>
+<span class="lineNum">     264 </span><span class="lineCov">         53 :     if (this-&gt;mDevice) {</span>
+<span class="lineNum">     265 </span>            :         this-&gt;mDevice = nullptr;
+<span class="lineNum">     266 </span>            :     }
+<span class="lineNum">     267 </span><span class="lineCov">         53 :     if (this-&gt;mPhysicalDevice) {</span>
+<span class="lineNum">     268 </span>            :         this-&gt;mPhysicalDevice = nullptr;
+<span class="lineNum">     269 </span>            :     }
+<span class="lineNum">     270 </span><span class="lineCov">         53 :     if (this-&gt;mComputeQueue) {</span>
+<span class="lineNum">     271 </span>            :         this-&gt;mComputeQueue = nullptr;
+<span class="lineNum">     272 </span>            :     }
+<span class="lineNum">     273 </span>            : }
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            : std::shared_ptr&lt;Sequence&gt;
+<span class="lineNum">     276 </span><span class="lineCov">         99 : Sequence::record(std::shared_ptr&lt;OpBase&gt; op)</span>
+<span class="lineNum">     277 </span>            : {
+<span class="lineNum">     278 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence record function started&quot;);
+<span class="lineNum">     279 </span>            : 
+<span class="lineNum">     280 </span><span class="lineCov">         99 :     this-&gt;begin();</span>
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span>            :     KP_LOG_DEBUG(
+<span class="lineNum">     283 </span>            :       &quot;Kompute Sequence running record on OpBase derived class instance&quot;);
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span><span class="lineCov">        198 :     op-&gt;record(*this-&gt;mCommandBuffer);</span>
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span><span class="lineCov">         98 :     this-&gt;mOperations.push_back(op);</span>
 <span class="lineNum">     288 </span>            : 
-<span class="lineNum">     289 </span>            : void
-<span class="lineNum">     290 </span><span class="lineCov">        116 : Sequence::createCommandBuffer()</span>
-<span class="lineNum">     291 </span>            : {
-<span class="lineNum">     292 </span><span class="lineCov">        116 :     KP_LOG_DEBUG(&quot;Kompute Sequence creating command buffer&quot;);</span>
-<span class="lineNum">     293 </span><span class="lineCov">        116 :     if (!this-&gt;mDevice) {</span>
-<span class="lineNum">     294 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence device is null&quot;);</span>
-<span class="lineNum">     295 </span>            :     }
-<span class="lineNum">     296 </span><span class="lineCov">        116 :     if (!this-&gt;mCommandPool) {</span>
-<span class="lineNum">     297 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence command pool is null&quot;);</span>
-<span class="lineNum">     298 </span>            :     }
-<span class="lineNum">     299 </span>            : 
-<span class="lineNum">     300 </span><span class="lineCov">        116 :     this-&gt;mFreeCommandBuffer = true;</span>
-<span class="lineNum">     301 </span>            : 
-<span class="lineNum">     302 </span>            :     vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
-<span class="lineNum">     303 </span><span class="lineCov">        116 :       *this-&gt;mCommandPool, vk::CommandBufferLevel::ePrimary, 1);</span>
-<span class="lineNum">     304 </span>            : 
-<span class="lineNum">     305 </span><span class="lineCov">        116 :     this-&gt;mCommandBuffer = std::make_shared&lt;vk::CommandBuffer&gt;();</span>
-<span class="lineNum">     306 </span><span class="lineCov">        232 :     this-&gt;mDevice-&gt;allocateCommandBuffers(&amp;commandBufferAllocateInfo,</span>
-<span class="lineNum">     307 </span>            :                                           this-&gt;mCommandBuffer.get());
-<span class="lineNum">     308 </span><span class="lineCov">        116 :     KP_LOG_DEBUG(&quot;Kompute Sequence Command Buffer Created&quot;);</span>
-<span class="lineNum">     309 </span><span class="lineCov">        116 : }</span>
-<span class="lineNum">     310 </span>            : 
-<span class="lineNum">     311 </span>            : }
+<span class="lineNum">     289 </span><span class="lineCov">         98 :     if (this-&gt;timestampQueryPool)</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :         this-&gt;mCommandBuffer-&gt;writeTimestamp(</span>
+<span class="lineNum">     291 </span>            :           vk::PipelineStageFlagBits::eAllCommands,
+<span class="lineNum">     292 </span>            :           *this-&gt;timestampQueryPool,
+<span class="lineNum">     293 </span><span class="lineNoCov">          0 :           this-&gt;mOperations.size());</span>
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span><span class="lineCov">         98 :     return shared_from_this();</span>
+<span class="lineNum">     296 </span>            : }
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span>            : void
+<span class="lineNum">     299 </span><span class="lineCov">         53 : Sequence::createCommandPool()</span>
+<span class="lineNum">     300 </span>            : {
+<span class="lineNum">     301 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence creating command pool&quot;);
+<span class="lineNum">     302 </span>            : 
+<span class="lineNum">     303 </span><span class="lineCov">         53 :     if (!this-&gt;mDevice) {</span>
+<span class="lineNum">     304 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence device is null&quot;);</span>
+<span class="lineNum">     305 </span>            :     }
+<span class="lineNum">     306 </span>            :     if (this-&gt;mQueueIndex &lt; 0) {
+<span class="lineNum">     307 </span>            :         throw std::runtime_error(&quot;Kompute Sequence queue index not provided&quot;);
+<span class="lineNum">     308 </span>            :     }
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span><span class="lineCov">         53 :     this-&gt;mFreeCommandPool = true;</span>
+<span class="lineNum">     311 </span>            : 
+<span class="lineNum">     312 </span>            :     vk::CommandPoolCreateInfo commandPoolInfo(vk::CommandPoolCreateFlags(),
+<span class="lineNum">     313 </span><span class="lineCov">         53 :                                               this-&gt;mQueueIndex);</span>
+<span class="lineNum">     314 </span><span class="lineCov">         53 :     this-&gt;mCommandPool = std::make_shared&lt;vk::CommandPool&gt;();</span>
+<span class="lineNum">     315 </span><span class="lineCov">         53 :     this-&gt;mDevice-&gt;createCommandPool(</span>
+<span class="lineNum">     316 </span>            :       &amp;commandPoolInfo, nullptr, this-&gt;mCommandPool.get());
+<span class="lineNum">     317 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence Command Pool Created&quot;);
+<span class="lineNum">     318 </span><span class="lineCov">         53 : }</span>
+<span class="lineNum">     319 </span>            : 
+<span class="lineNum">     320 </span>            : void
+<span class="lineNum">     321 </span><span class="lineCov">         53 : Sequence::createCommandBuffer()</span>
+<span class="lineNum">     322 </span>            : {
+<span class="lineNum">     323 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence creating command buffer&quot;);
+<span class="lineNum">     324 </span><span class="lineCov">         53 :     if (!this-&gt;mDevice) {</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence device is null&quot;);</span>
+<span class="lineNum">     326 </span>            :     }
+<span class="lineNum">     327 </span><span class="lineCov">         53 :     if (!this-&gt;mCommandPool) {</span>
+<span class="lineNum">     328 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence command pool is null&quot;);</span>
+<span class="lineNum">     329 </span>            :     }
+<span class="lineNum">     330 </span>            : 
+<span class="lineNum">     331 </span><span class="lineCov">         53 :     this-&gt;mFreeCommandBuffer = true;</span>
+<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     333 </span>            :     vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
+<span class="lineNum">     334 </span>            :       *this-&gt;mCommandPool, vk::CommandBufferLevel::ePrimary, 1);
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span><span class="lineCov">         53 :     this-&gt;mCommandBuffer = std::make_shared&lt;vk::CommandBuffer&gt;();</span>
+<span class="lineNum">     337 </span><span class="lineCov">         53 :     this-&gt;mDevice-&gt;allocateCommandBuffers(&amp;commandBufferAllocateInfo,</span>
+<span class="lineNum">     338 </span>            :                                           this-&gt;mCommandBuffer.get());
+<span class="lineNum">     339 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence Command Buffer Created&quot;);
+<span class="lineNum">     340 </span><span class="lineCov">         53 : }</span>
+<span class="lineNum">     341 </span>            : 
+<span class="lineNum">     342 </span>            : void
+<span class="lineNum">     343 </span><span class="lineNoCov">          0 : Sequence::createTimestampQueryPool(uint32_t totalTimestamps)</span>
+<span class="lineNum">     344 </span>            : {
+<span class="lineNum">     345 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence creating query pool&quot;);
+<span class="lineNum">     346 </span>            :     if (!this-&gt;isInit()) {
+<span class="lineNum">     347 </span>            :         throw std::runtime_error(
+<span class="lineNum">     348 </span><span class="lineNoCov">          0 :           &quot;createTimestampQueryPool() called on uninitialized Sequence&quot;);</span>
+<span class="lineNum">     349 </span>            :     }
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :     if (!this-&gt;mPhysicalDevice) {</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Sequence physical device is null&quot;);</span>
+<span class="lineNum">     352 </span>            :     }
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            :     vk::PhysicalDeviceProperties physicalDeviceProperties =
+<span class="lineNum">     355 </span>            :       this-&gt;mPhysicalDevice-&gt;getProperties();
+<span class="lineNum">     356 </span>            : 
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :     if (physicalDeviceProperties.limits.timestampComputeAndGraphics) {</span>
+<span class="lineNum">     358 </span><span class="lineNoCov">          0 :         vk::QueryPoolCreateInfo queryPoolInfo;</span>
+<span class="lineNum">     359 </span>            :         queryPoolInfo.setQueryCount(totalTimestamps);
+<span class="lineNum">     360 </span>            :         queryPoolInfo.setQueryType(vk::QueryType::eTimestamp);
+<span class="lineNum">     361 </span><span class="lineNoCov">          0 :         this-&gt;timestampQueryPool = std::make_shared&lt;vk::QueryPool&gt;(</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 :           this-&gt;mDevice-&gt;createQueryPool(queryPoolInfo));</span>
+<span class="lineNum">     363 </span>            : 
+<span class="lineNum">     364 </span>            :         KP_LOG_DEBUG(&quot;Query pool for timestamps created&quot;);
+<span class="lineNum">     365 </span>            :     } else {
+<span class="lineNum">     366 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Device does not support timestamps&quot;);</span>
+<span class="lineNum">     367 </span>            :     }
+<span class="lineNum">     368 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     369 </span>            : 
+<span class="lineNum">     370 </span>            : std::vector&lt;std::uint64_t&gt;
+<span class="lineNum">     371 </span><span class="lineNoCov">          0 : Sequence::getTimestamps()</span>
+<span class="lineNum">     372 </span>            : {
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :     if (!this-&gt;timestampQueryPool)</span>
+<span class="lineNum">     374 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Timestamp latching not enabled&quot;);</span>
+<span class="lineNum">     375 </span>            : 
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :     const auto n = this-&gt;mOperations.size() + 1;</span>
+<span class="lineNum">     377 </span><span class="lineNoCov">          0 :     std::vector&lt;std::uint64_t&gt; timestamps(n, 0);</span>
+<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     this-&gt;mDevice-&gt;getQueryPoolResults(</span>
+<span class="lineNum">     379 </span>            :       *this-&gt;timestampQueryPool,
+<span class="lineNum">     380 </span>            :       0,
+<span class="lineNum">     381 </span>            :       n,
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :       timestamps.size() * sizeof(std::uint64_t),</span>
+<span class="lineNum">     383 </span><span class="lineNoCov">          0 :       timestamps.data(),</span>
+<span class="lineNum">     384 </span>            :       sizeof(uint64_t),
+<span class="lineNum">     385 </span>            :       vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait);
+<span class="lineNum">     386 </span>            : 
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :     return timestamps;</span>
+<span class="lineNum">     388 </span>            : }
+<span class="lineNum">     389 </span>            : 
+<span class="lineNum">     390 </span>            : }
 </pre>
       </td>
     </tr>

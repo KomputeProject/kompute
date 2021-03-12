@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">22</td>
-            <td class="headerCovTableEntry">23</td>
-            <td class="headerCovTableEntryHi">95.7 %</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntry">17</td>
+            <td class="headerCovTableEntryHi">94.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-07 13:40:19</td>
+            <td class="headerValue">2021-03-12 07:29:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">5</td>
             <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntryHi">100.0 %</td>
+            <td class="headerCovTableEntryMed">83.3 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -67,50 +67,50 @@
 <span class="lineNum">       5 </span>            : 
 <a name="6"><span class="lineNum">       6 </span>            : namespace kp {</a>
 <span class="lineNum">       7 </span>            : 
-<span class="lineNum">       8 </span><span class="lineCov">         67 : OpTensorSyncLocal::OpTensorSyncLocal(</span>
-<span class="lineNum">       9 </span><span class="lineCov">         67 :   const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)</span>
+<span class="lineNum">       8 </span><span class="lineCov">         30 : OpTensorSyncLocal::OpTensorSyncLocal(</span>
+<span class="lineNum">       9 </span><span class="lineCov">         30 :   const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)</span>
 <span class="lineNum">      10 </span>            : {
-<span class="lineNum">      11 </span><span class="lineCov">         67 :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal constructor with params&quot;);</span>
+<span class="lineNum">      11 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal constructor with params&quot;);
 <span class="lineNum">      12 </span>            : 
-<span class="lineNum">      13 </span><span class="lineCov">         67 :     if (tensors.size() &lt; 1) {</span>
+<span class="lineNum">      13 </span><span class="lineCov">         60 :     if (tensors.size() &lt; 1) {</span>
 <span class="lineNum">      14 </span>            :         throw std::runtime_error(
 <span class="lineNum">      15 </span><span class="lineNoCov">          0 :           &quot;Kompute OpTensorSyncLocal called with less than 1 tensor&quot;);</span>
 <span class="lineNum">      16 </span>            :     }
 <span class="lineNum">      17 </span>            : 
-<span class="lineNum">      18 </span><span class="lineCov">         67 :     this-&gt;mTensors = tensors;</span>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         67 : }</span></a>
+<span class="lineNum">      18 </span><span class="lineCov">         30 :     this-&gt;mTensors = tensors;</span>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">         30 : }</span></a>
 <span class="lineNum">      20 </span>            : 
-<span class="lineNum">      21 </span><span class="lineCov">        201 : OpTensorSyncLocal::~OpTensorSyncLocal()</span>
+<span class="lineNum">      21 </span><span class="lineCov">         30 : OpTensorSyncLocal::~OpTensorSyncLocal()</span>
 <span class="lineNum">      22 </span>            : {
-<span class="lineNum">      23 </span><span class="lineCov">         67 :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal destructor started&quot;);</span>
-<span class="lineNum">      24 </span><span class="lineCov">        134 : }</span>
-<a name="25"><span class="lineNum">      25 </span>            : </a>
+<span class="lineNum">      23 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal destructor started&quot;);
+<span class="lineNum">      24 </span><span class="lineCov">         30 : }</span>
+<span class="lineNum">      25 </span>            : 
 <span class="lineNum">      26 </span>            : void
-<span class="lineNum">      27 </span><span class="lineCov">         69 : OpTensorSyncLocal::record(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      27 </span><span class="lineCov">         31 : OpTensorSyncLocal::record(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      28 </span>            : {
-<span class="lineNum">      29 </span><span class="lineCov">         69 :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal record called&quot;);</span>
+<span class="lineNum">      29 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal record called&quot;);
 <span class="lineNum">      30 </span>            : 
-<span class="lineNum">      31 </span><span class="lineCov">        214 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
-<span class="lineNum">      32 </span><span class="lineCov">        145 :         if (this-&gt;mTensors[i]-&gt;tensorType() == Tensor::TensorTypes::eDevice) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">        141 :             this-&gt;mTensors[i]-&gt;recordCopyFromDeviceToStaging(commandBuffer,</span>
+<span class="lineNum">      31 </span><span class="lineCov">        251 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">      32 </span><span class="lineCov">         63 :         if (this-&gt;mTensors[i]-&gt;tensorType() == Tensor::TensorTypes::eDevice) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordCopyFromDeviceToStaging(commandBuffer,</span>
 <span class="lineNum">      34 </span>            :                                                              true);
 <span class="lineNum">      35 </span>            :         }
 <span class="lineNum">      36 </span>            :     }
-<span class="lineNum">      37 </span><span class="lineCov">         69 : }</span>
+<span class="lineNum">      37 </span><span class="lineCov">         31 : }</span>
 <a name="38"><span class="lineNum">      38 </span>            : </a>
 <span class="lineNum">      39 </span>            : void
-<span class="lineNum">      40 </span><span class="lineCov">        471 : OpTensorSyncLocal::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      40 </span><span class="lineCov">        232 : OpTensorSyncLocal::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      41 </span>            : {
-<span class="lineNum">      42 </span><span class="lineCov">        471 :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal preEval called&quot;);</span>
-<span class="lineNum">      43 </span><span class="lineCov">        471 : }</span>
+<span class="lineNum">      42 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal preEval called&quot;);
+<span class="lineNum">      43 </span><span class="lineCov">        232 : }</span>
 <a name="44"><span class="lineNum">      44 </span>            : </a>
 <span class="lineNum">      45 </span>            : void
-<span class="lineNum">      46 </span><span class="lineCov">        471 : OpTensorSyncLocal::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      46 </span><span class="lineCov">        232 : OpTensorSyncLocal::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      47 </span>            : {
-<span class="lineNum">      48 </span><span class="lineCov">        471 :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal postEval called&quot;);</span>
+<span class="lineNum">      48 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal postEval called&quot;);
 <span class="lineNum">      49 </span>            : 
-<span class="lineNum">      50 </span><span class="lineCov">        471 :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal mapping data into tensor local&quot;);</span>
-<span class="lineNum">      51 </span><span class="lineCov">        471 : }</span>
+<span class="lineNum">      50 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal mapping data into tensor local&quot;);
+<span class="lineNum">      51 </span><span class="lineCov">        232 : }</span>
 <span class="lineNum">      52 </span>            : 
 <span class="lineNum">      53 </span>            : }
 </pre>

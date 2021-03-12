@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">28</td>
-            <td class="headerCovTableEntry">39</td>
-            <td class="headerCovTableEntryLo">71.8 %</td>
+            <td class="headerCovTableEntry">11</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntryMed">78.6 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-07 13:40:19</td>
+            <td class="headerValue">2021-03-12 07:29:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">5</td>
-            <td class="headerCovTableEntry">8</td>
-            <td class="headerCovTableEntryLo">62.5 %</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
           </tr>
           <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -220,201 +220,193 @@
 <span class="lineNum">     158 </span>            :      * of elements across all dimensions
 <span class="lineNum">     159 </span>            :      *
 <span class="lineNum">     160 </span>            :      * @return Unsigned integer representing the total number of elements
-<a name="161"><span class="lineNum">     161 </span>            :      */</a>
+<span class="lineNum">     161 </span>            :      */
 <span class="lineNum">     162 </span>            :     // TODO: move to cpp
-<span class="lineNum">     163 </span><span class="lineNoCov">          0 :     uint32_t size() {</span>
-<span class="lineNum">     164 </span><span class="lineNoCov">          0 :         return this-&gt;mSize;</span>
-<span class="lineNum">     165 </span>            :     }
-<a name="166"><span class="lineNum">     166 </span>            : </a>
-<span class="lineNum">     167 </span>            :     // TODO: move to cpp
-<span class="lineNum">     168 </span><span class="lineCov">         28 :     uint32_t dataTypeMemorySize() {</span>
-<span class="lineNum">     169 </span><span class="lineCov">         28 :         return this-&gt;mDataTypeMemorySize;</span>
-<span class="lineNum">     170 </span>            :     }
-<a name="171"><span class="lineNum">     171 </span>            : </a>
-<span class="lineNum">     172 </span>            :     // TODO: move to cpp
-<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     uint32_t memorySize() {</span>
-<span class="lineNum">     174 </span><span class="lineNoCov">          0 :         return this-&gt;mSize * this-&gt;mDataTypeMemorySize;</span>
-<span class="lineNum">     175 </span>            :     }
-<span class="lineNum">     176 </span>            : 
-<span class="lineNum">     177 </span>            :     /**
-<span class="lineNum">     178 </span>            :      * Retrieve the underlying data type of the Tensor
-<span class="lineNum">     179 </span>            :      *
-<a name="180"><span class="lineNum">     180 </span>            :      * @return Data type of tensor of type kp::Tensor::TensorDataTypes</a>
-<span class="lineNum">     181 </span>            :      */
-<span class="lineNum">     182 </span><span class="lineCov">         80 :     TensorDataTypes dataType() {</span>
-<span class="lineNum">     183 </span><span class="lineCov">         80 :         return this-&gt;mDataType;</span>
-<a name="184"><span class="lineNum">     184 </span>            :     }</a>
-<span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span><span class="lineCov">         28 :     void* rawData() {</span>
-<span class="lineNum">     187 </span><span class="lineCov">         28 :         return this-&gt;mRawData;</span>
-<span class="lineNum">     188 </span>            :     }
-<span class="lineNum">     189 </span>            : 
-<span class="lineNum">     190 </span>            :     // TODO: move to cpp
-<span class="lineNum">     191 </span>            :     template &lt;typename T&gt;
-<span class="lineNum">     192 </span>            :     T* data() {
-<span class="lineNum">     193 </span>            :         return (T*)this-&gt;mRawData;
-<span class="lineNum">     194 </span>            :     }
-<span class="lineNum">     195 </span>            : 
-<span class="lineNum">     196 </span>            :     template &lt;typename T&gt;
-<span class="lineNum">     197 </span>            :     std::vector&lt;T&gt; vector() {
-<span class="lineNum">     198 </span>            :         return { (T*)this-&gt;mRawData, ((T*)this-&gt;mRawData) + this-&gt;size() };
-<span class="lineNum">     199 </span>            :     }
-<span class="lineNum">     200 </span>            : 
-<span class="lineNum">     201 </span>            :     /**
-<span class="lineNum">     202 </span>            :      * Sets / resets the vector data of the tensor. This function does not
-<a name="203"><span class="lineNum">     203 </span>            :      * perform any copies into GPU memory and is only performed on the host.</a>
-<span class="lineNum">     204 </span>            :      */
-<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     void setRawData(const void* data) </span>
-<span class="lineNum">     206 </span>            :     {
-<span class="lineNum">     207 </span>            :         // Copy data 
-<span class="lineNum">     208 </span><span class="lineNoCov">          0 :         memcpy(this-&gt;mRawData, data, this-&gt;memorySize());</span>
-<span class="lineNum">     209 </span><span class="lineNoCov">          0 :     }</span>
+<span class="lineNum">     163 </span>            :     uint32_t size() { return this-&gt;mSize; }
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :     // TODO: move to cpp
+<span class="lineNum">     166 </span>            :     uint32_t dataTypeMemorySize() { return this-&gt;mDataTypeMemorySize; }
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :     // TODO: move to cpp
+<span class="lineNum">     169 </span><span class="lineCov">        699 :     uint32_t memorySize() { return this-&gt;mSize * this-&gt;mDataTypeMemorySize; }</span>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span>            :     /**
+<span class="lineNum">     172 </span>            :      * Retrieve the underlying data type of the Tensor
+<span class="lineNum">     173 </span>            :      *
+<span class="lineNum">     174 </span>            :      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
+<span class="lineNum">     175 </span>            :      */
+<span class="lineNum">     176 </span>            :     TensorDataTypes dataType() { return this-&gt;mDataType; }
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span>            :     void* rawData() { return this-&gt;mRawData; }
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span>            :     // TODO: move to cpp
+<span class="lineNum">     181 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     182 </span>            :     T* data()
+<span class="lineNum">     183 </span>            :     {
+<span class="lineNum">     184 </span>            :         return (T*)this-&gt;mRawData;
+<span class="lineNum">     185 </span>            :     }
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     188 </span>            :     std::vector&lt;T&gt; vector()
+<span class="lineNum">     189 </span>            :     {
+<span class="lineNum">     190 </span>            :         return { (T*)this-&gt;mRawData, ((T*)this-&gt;mRawData) + this-&gt;size() };
+<span class="lineNum">     191 </span>            :     }
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            :     /**
+<span class="lineNum">     194 </span>            :      * Sets / resets the vector data of the tensor. This function does not
+<span class="lineNum">     195 </span>            :      * perform any copies into GPU memory and is only performed on the host.
+<span class="lineNum">     196 </span>            :      */
+<span class="lineNum">     197 </span>            :     void setRawData(const void* data)
+<span class="lineNum">     198 </span>            :     {
+<span class="lineNum">     199 </span>            :         // Copy data
+<span class="lineNum">     200 </span><span class="lineCov">         18 :         memcpy(this-&gt;mRawData, data, this-&gt;memorySize());</span>
+<span class="lineNum">     201 </span>            :     }
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :   protected:
+<span class="lineNum">     204 </span>            :     // -------------- ALWAYS OWNED RESOURCES
+<span class="lineNum">     205 </span>            :     TensorTypes mTensorType;
+<span class="lineNum">     206 </span>            :     TensorDataTypes mDataType;
+<span class="lineNum">     207 </span>            :     uint32_t mSize;
+<span class="lineNum">     208 </span>            :     uint32_t mDataTypeMemorySize;
+<span class="lineNum">     209 </span>            :     void* mRawData;
 <span class="lineNum">     210 </span>            : 
-<span class="lineNum">     211 </span>            :   protected:
-<span class="lineNum">     212 </span>            :     // -------------- ALWAYS OWNED RESOURCES
-<span class="lineNum">     213 </span>            :     TensorTypes mTensorType;
-<span class="lineNum">     214 </span>            :     TensorDataTypes mDataType;
-<span class="lineNum">     215 </span>            :     uint32_t mSize;
-<span class="lineNum">     216 </span>            :     uint32_t mDataTypeMemorySize;
-<span class="lineNum">     217 </span>            :     void* mRawData;
+<span class="lineNum">     211 </span>            :   private:
+<span class="lineNum">     212 </span><span class="lineCov">         75 :     void mapRawData()</span>
+<span class="lineNum">     213 </span>            :     {
+<span class="lineNum">     214 </span>            : 
+<span class="lineNum">     215 </span>            :         KP_LOG_DEBUG(&quot;Kompute Tensor mapping data from host buffer&quot;);
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span>            :         std::shared_ptr&lt;vk::DeviceMemory&gt; hostVisibleMemory = nullptr;
 <span class="lineNum">     218 </span>            : 
-<span class="lineNum">     219 </span>            :   private:
-<span class="lineNum">     220 </span><span class="lineCov">        150 :     void mapRawData() {</span>
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span><span class="lineCov">        150 :         KP_LOG_DEBUG(&quot;Kompute Tensor mapping data from host buffer&quot;);</span>
-<span class="lineNum">     223 </span>            : 
-<span class="lineNum">     224 </span><span class="lineCov">        300 :         std::shared_ptr&lt;vk::DeviceMemory&gt; hostVisibleMemory = nullptr;</span>
-<span class="lineNum">     225 </span>            : 
-<span class="lineNum">     226 </span><span class="lineCov">        150 :         if (this-&gt;mTensorType == TensorTypes::eHost) {</span>
-<span class="lineNum">     227 </span><span class="lineCov">         14 :             hostVisibleMemory = this-&gt;mPrimaryMemory;</span>
-<span class="lineNum">     228 </span><span class="lineCov">        136 :         } else if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
-<span class="lineNum">     229 </span><span class="lineCov">        136 :             hostVisibleMemory = this-&gt;mStagingMemory;</span>
-<span class="lineNum">     230 </span>            :         } else {
-<span class="lineNum">     231 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(</span>
-<span class="lineNum">     232 </span>            :               &quot;Kompute Tensor mapping data not supported on storage tensor&quot;);
-<span class="lineNum">     233 </span><span class="lineNoCov">          0 :             return;</span>
-<span class="lineNum">     234 </span>            :         }
+<span class="lineNum">     219 </span><span class="lineCov">         75 :         if (this-&gt;mTensorType == TensorTypes::eHost) {</span>
+<span class="lineNum">     220 </span>            :             hostVisibleMemory = this-&gt;mPrimaryMemory;
+<span class="lineNum">     221 </span><span class="lineCov">         68 :         } else if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
+<span class="lineNum">     222 </span>            :             hostVisibleMemory = this-&gt;mStagingMemory;
+<span class="lineNum">     223 </span>            :         } else {
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(</span>
+<span class="lineNum">     225 </span>            :               &quot;Kompute Tensor mapping data not supported on storage tensor&quot;);
+<span class="lineNum">     226 </span>            :             return;
+<span class="lineNum">     227 </span>            :         }
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span><span class="lineCov">        150 :         vk::DeviceSize bufferSize = this-&gt;memorySize();</span>
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :         // Given we request coherent host memory we don't need to invalidate /
+<span class="lineNum">     232 </span>            :         // flush
+<span class="lineNum">     233 </span><span class="lineCov">         75 :         this-&gt;mRawData = this-&gt;mDevice-&gt;mapMemory(</span>
+<span class="lineNum">     234 </span>            :           *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
 <span class="lineNum">     235 </span>            : 
-<span class="lineNum">     236 </span><span class="lineCov">        150 :         vk::DeviceSize bufferSize = this-&gt;memorySize();</span>
-<span class="lineNum">     237 </span>            : 
-<span class="lineNum">     238 </span>            :         // Given we request coherent host memory we don't need to invalidate / flush
-<span class="lineNum">     239 </span><span class="lineCov">        450 :         this-&gt;mRawData = this-&gt;mDevice-&gt;mapMemory(</span>
-<span class="lineNum">     240 </span><span class="lineCov">        300 :           *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());</span>
-<span class="lineNum">     241 </span>            : 
-<span class="lineNum">     242 </span><span class="lineCov">        150 :         vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);</span>
-<span class="lineNum">     243 </span>            :     }
+<span class="lineNum">     236 </span>            :         vk::MappedMemoryRange mappedMemoryRange(
+<span class="lineNum">     237 </span>            :           *hostVisibleMemory, 0, bufferSize);
+<span class="lineNum">     238 </span>            :     }
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span><span class="lineCov">         75 :     void unmapRawData()</span>
+<span class="lineNum">     241 </span>            :     {
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            :         KP_LOG_DEBUG(&quot;Kompute Tensor mapping data from host buffer&quot;);
 <span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span><span class="lineCov">        150 :     void unmapRawData() {</span>
+<span class="lineNum">     245 </span>            :         std::shared_ptr&lt;vk::DeviceMemory&gt; hostVisibleMemory = nullptr;
 <span class="lineNum">     246 </span>            : 
-<span class="lineNum">     247 </span><span class="lineCov">        150 :         KP_LOG_DEBUG(&quot;Kompute Tensor mapping data from host buffer&quot;);</span>
-<span class="lineNum">     248 </span>            : 
-<span class="lineNum">     249 </span><span class="lineCov">        300 :         std::shared_ptr&lt;vk::DeviceMemory&gt; hostVisibleMemory = nullptr;</span>
-<span class="lineNum">     250 </span>            : 
-<span class="lineNum">     251 </span><span class="lineCov">        150 :         if (this-&gt;mTensorType == TensorTypes::eHost) {</span>
-<span class="lineNum">     252 </span><span class="lineCov">         14 :             hostVisibleMemory = this-&gt;mPrimaryMemory;</span>
-<span class="lineNum">     253 </span><span class="lineCov">        136 :         } else if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
-<span class="lineNum">     254 </span><span class="lineCov">        136 :             hostVisibleMemory = this-&gt;mStagingMemory;</span>
-<span class="lineNum">     255 </span>            :         } else {
-<span class="lineNum">     256 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(</span>
-<span class="lineNum">     257 </span>            :               &quot;Kompute Tensor mapping data not supported on storage tensor&quot;);
-<span class="lineNum">     258 </span><span class="lineNoCov">          0 :             return;</span>
-<span class="lineNum">     259 </span>            :         }
-<span class="lineNum">     260 </span>            : 
-<span class="lineNum">     261 </span><span class="lineCov">        150 :         vk::DeviceSize bufferSize = this-&gt;memorySize();</span>
-<span class="lineNum">     262 </span><span class="lineCov">        150 :         vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);</span>
-<span class="lineNum">     263 </span><span class="lineCov">        300 :         this-&gt;mDevice-&gt;flushMappedMemoryRanges(1, &amp;mappedRange);</span>
-<span class="lineNum">     264 </span><span class="lineCov">        300 :         this-&gt;mDevice-&gt;unmapMemory(*hostVisibleMemory);</span>
-<span class="lineNum">     265 </span>            :     }
+<span class="lineNum">     247 </span><span class="lineCov">         75 :         if (this-&gt;mTensorType == TensorTypes::eHost) {</span>
+<span class="lineNum">     248 </span>            :             hostVisibleMemory = this-&gt;mPrimaryMemory;
+<span class="lineNum">     249 </span><span class="lineCov">         68 :         } else if (this-&gt;mTensorType == TensorTypes::eDevice) {</span>
+<span class="lineNum">     250 </span>            :             hostVisibleMemory = this-&gt;mStagingMemory;
+<span class="lineNum">     251 </span>            :         } else {
+<span class="lineNum">     252 </span><span class="lineNoCov">          0 :             KP_LOG_WARN(</span>
+<span class="lineNum">     253 </span>            :               &quot;Kompute Tensor mapping data not supported on storage tensor&quot;);
+<span class="lineNum">     254 </span>            :             return;
+<span class="lineNum">     255 </span>            :         }
+<span class="lineNum">     256 </span>            : 
+<span class="lineNum">     257 </span><span class="lineCov">        150 :         vk::DeviceSize bufferSize = this-&gt;memorySize();</span>
+<span class="lineNum">     258 </span>            :         vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
+<span class="lineNum">     259 </span>            :         this-&gt;mDevice-&gt;flushMappedMemoryRanges(1, &amp;mappedRange);
+<span class="lineNum">     260 </span>            :         this-&gt;mDevice-&gt;unmapMemory(*hostVisibleMemory);
+<span class="lineNum">     261 </span>            :     }
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span>            :     // -------------- NEVER OWNED RESOURCES
+<span class="lineNum">     264 </span>            :     std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice;
+<span class="lineNum">     265 </span>            :     std::shared_ptr&lt;vk::Device&gt; mDevice;
 <span class="lineNum">     266 </span>            : 
-<span class="lineNum">     267 </span>            :     // -------------- NEVER OWNED RESOURCES
-<span class="lineNum">     268 </span>            :     std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice;
-<span class="lineNum">     269 </span>            :     std::shared_ptr&lt;vk::Device&gt; mDevice;
-<span class="lineNum">     270 </span>            : 
-<span class="lineNum">     271 </span>            :     // -------------- OPTIONALLY OWNED RESOURCES
-<span class="lineNum">     272 </span>            :     std::shared_ptr&lt;vk::Buffer&gt; mPrimaryBuffer;
-<span class="lineNum">     273 </span>            :     bool mFreePrimaryBuffer = false;
-<span class="lineNum">     274 </span>            :     std::shared_ptr&lt;vk::Buffer&gt; mStagingBuffer;
-<span class="lineNum">     275 </span>            :     bool mFreeStagingBuffer = false;
-<span class="lineNum">     276 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; mPrimaryMemory;
-<span class="lineNum">     277 </span>            :     bool mFreePrimaryMemory = false;
-<span class="lineNum">     278 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; mStagingMemory;
-<span class="lineNum">     279 </span>            :     bool mFreeStagingMemory = false;
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span>            :     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
-<span class="lineNum">     282 </span>            :     void createBuffer(std::shared_ptr&lt;vk::Buffer&gt; buffer,
-<span class="lineNum">     283 </span>            :                       vk::BufferUsageFlags bufferUsageFlags);
-<span class="lineNum">     284 </span>            :     void allocateBindMemory(std::shared_ptr&lt;vk::Buffer&gt; buffer,
-<span class="lineNum">     285 </span>            :                             std::shared_ptr&lt;vk::DeviceMemory&gt; memory,
-<span class="lineNum">     286 </span>            :                             vk::MemoryPropertyFlags memoryPropertyFlags);
-<span class="lineNum">     287 </span>            :     void recordCopyBuffer(const vk::CommandBuffer&amp; commandBuffer,
-<span class="lineNum">     288 </span>            :                           std::shared_ptr&lt;vk::Buffer&gt; bufferFrom,
-<span class="lineNum">     289 </span>            :                           std::shared_ptr&lt;vk::Buffer&gt; bufferTo,
-<span class="lineNum">     290 </span>            :                           vk::DeviceSize bufferSize,
-<span class="lineNum">     291 </span>            :                           vk::BufferCopy copyRegion,
-<span class="lineNum">     292 </span>            :                           bool createBarrier);
-<span class="lineNum">     293 </span>            : 
-<span class="lineNum">     294 </span>            :     // Private util functions
-<span class="lineNum">     295 </span>            :     vk::BufferUsageFlags getPrimaryBufferUsageFlags();
-<span class="lineNum">     296 </span>            :     vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
-<span class="lineNum">     297 </span>            :     vk::BufferUsageFlags getStagingBufferUsageFlags();
-<span class="lineNum">     298 </span>            :     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
-<span class="lineNum">     299 </span>            : 
-<span class="lineNum">     300 </span>            : };
+<span class="lineNum">     267 </span>            :     // -------------- OPTIONALLY OWNED RESOURCES
+<span class="lineNum">     268 </span>            :     std::shared_ptr&lt;vk::Buffer&gt; mPrimaryBuffer;
+<span class="lineNum">     269 </span>            :     bool mFreePrimaryBuffer = false;
+<span class="lineNum">     270 </span>            :     std::shared_ptr&lt;vk::Buffer&gt; mStagingBuffer;
+<span class="lineNum">     271 </span>            :     bool mFreeStagingBuffer = false;
+<span class="lineNum">     272 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; mPrimaryMemory;
+<span class="lineNum">     273 </span>            :     bool mFreePrimaryMemory = false;
+<span class="lineNum">     274 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; mStagingMemory;
+<span class="lineNum">     275 </span>            :     bool mFreeStagingMemory = false;
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span>            :     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+<span class="lineNum">     278 </span>            :     void createBuffer(std::shared_ptr&lt;vk::Buffer&gt; buffer,
+<span class="lineNum">     279 </span>            :                       vk::BufferUsageFlags bufferUsageFlags);
+<span class="lineNum">     280 </span>            :     void allocateBindMemory(std::shared_ptr&lt;vk::Buffer&gt; buffer,
+<span class="lineNum">     281 </span>            :                             std::shared_ptr&lt;vk::DeviceMemory&gt; memory,
+<span class="lineNum">     282 </span>            :                             vk::MemoryPropertyFlags memoryPropertyFlags);
+<span class="lineNum">     283 </span>            :     void recordCopyBuffer(const vk::CommandBuffer&amp; commandBuffer,
+<span class="lineNum">     284 </span>            :                           std::shared_ptr&lt;vk::Buffer&gt; bufferFrom,
+<span class="lineNum">     285 </span>            :                           std::shared_ptr&lt;vk::Buffer&gt; bufferTo,
+<span class="lineNum">     286 </span>            :                           vk::DeviceSize bufferSize,
+<span class="lineNum">     287 </span>            :                           vk::BufferCopy copyRegion,
+<span class="lineNum">     288 </span>            :                           bool createBarrier);
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span>            :     // Private util functions
+<span class="lineNum">     291 </span>            :     vk::BufferUsageFlags getPrimaryBufferUsageFlags();
+<span class="lineNum">     292 </span>            :     vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
+<span class="lineNum">     293 </span>            :     vk::BufferUsageFlags getStagingBufferUsageFlags();
+<span class="lineNum">     294 </span>            :     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
+<span class="lineNum">     295 </span>            : };
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span>            : // TODO: Limit T to be only float, bool, double, etc
+<span class="lineNum">     298 </span>            : template&lt;typename T&gt;
+<span class="lineNum">     299 </span>            : class TensorT : public Tensor
+<span class="lineNum">     300 </span>            : {
 <span class="lineNum">     301 </span>            : 
-<span class="lineNum">     302 </span>            : // TODO: Limit T to be only float, bool, double, etc
-<span class="lineNum">     303 </span>            : template &lt;typename T&gt;
-<span class="lineNum">     304 </span>            : class TensorT: public Tensor
-<span class="lineNum">     305 </span>            : {
-<span class="lineNum">     306 </span>            : 
-<span class="lineNum">     307 </span>            :   public:
-<span class="lineNum">     308 </span>            :     TensorT(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,
-<span class="lineNum">     309 </span>            :            std::shared_ptr&lt;vk::Device&gt; device,
-<span class="lineNum">     310 </span>            :            const std::vector&lt;T&gt;&amp; data,
-<span class="lineNum">     311 </span>            :            const TensorTypes&amp; tensorType = TensorTypes::eDevice)
-<span class="lineNum">     312 </span>            :         : Tensor(physicalDevice,
-<span class="lineNum">     313 </span>            :                  device,
-<span class="lineNum">     314 </span>            :                  (void*)data.data(),
-<span class="lineNum">     315 </span>            :                  data.size(),
-<span class="lineNum">     316 </span>            :                  sizeof(T),
-<span class="lineNum">     317 </span>            :                  this-&gt;dataType(),
-<span class="lineNum">     318 </span>            :                  tensorType)
-<span class="lineNum">     319 </span>            :     {
-<span class="lineNum">     320 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT constructor with data size {}&quot;, data.size());
-<span class="lineNum">     321 </span>            :     }
+<span class="lineNum">     302 </span>            :   public:
+<span class="lineNum">     303 </span>            :     TensorT(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,
+<span class="lineNum">     304 </span>            :             std::shared_ptr&lt;vk::Device&gt; device,
+<span class="lineNum">     305 </span>            :             const std::vector&lt;T&gt;&amp; data,
+<span class="lineNum">     306 </span>            :             const TensorTypes&amp; tensorType = TensorTypes::eDevice)
+<span class="lineNum">     307 </span>            :       : Tensor(physicalDevice,
+<span class="lineNum">     308 </span>            :                device,
+<span class="lineNum">     309 </span>            :                (void*)data.data(),
+<span class="lineNum">     310 </span>            :                data.size(),
+<span class="lineNum">     311 </span>            :                sizeof(T),
+<span class="lineNum">     312 </span>            :                this-&gt;dataType(),
+<span class="lineNum">     313 </span>            :                tensorType)
+<span class="lineNum">     314 </span>            :     {
+<span class="lineNum">     315 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT constructor with data size {}&quot;,
+<span class="lineNum">     316 </span>            :                      data.size());
+<a name="317"><span class="lineNum">     317 </span>            :     }</a>
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :     ~TensorT() { KP_LOG_DEBUG(&quot;Kompute TensorT destructor&quot;); }</span>
+<span class="lineNum">     320 </span>            : 
+<span class="lineNum">     321 </span>            :     T* data() { return (T*)this-&gt;mRawData; }
 <span class="lineNum">     322 </span>            : 
-<span class="lineNum">     323 </span>            :     ~TensorT() {
-<span class="lineNum">     324 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT destructor&quot;);
-<span class="lineNum">     325 </span>            :     }
-<span class="lineNum">     326 </span>            : 
-<span class="lineNum">     327 </span>            :     T* data() {
-<span class="lineNum">     328 </span>            :         return (T*)this-&gt;mRawData;
-<span class="lineNum">     329 </span>            :     }
-<span class="lineNum">     330 </span>            : 
-<span class="lineNum">     331 </span>            :     std::vector&lt;T&gt; vector() {
-<span class="lineNum">     332 </span>            :         return { (T*)this-&gt;mRawData, ((T*)this-&gt;mRawData) + this-&gt;size() };
-<span class="lineNum">     333 </span>            :     }
-<span class="lineNum">     334 </span>            : 
-<span class="lineNum">     335 </span>            :     T&amp; operator[](int index) {
-<span class="lineNum">     336 </span>            :         return *(((T*)this-&gt;mRawData) + index);
-<span class="lineNum">     337 </span>            :     }
-<span class="lineNum">     338 </span>            : 
-<span class="lineNum">     339 </span>            :     void setData(const std::vector&lt;T&gt;&amp; data) {
+<span class="lineNum">     323 </span>            :     std::vector&lt;T&gt; vector()
+<span class="lineNum">     324 </span>            :     {
+<span class="lineNum">     325 </span>            :         return { (T*)this-&gt;mRawData, ((T*)this-&gt;mRawData) + this-&gt;size() };
+<span class="lineNum">     326 </span>            :     }
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span>            :     T&amp; operator[](int index) { return *(((T*)this-&gt;mRawData) + index); }
+<span class="lineNum">     329 </span>            : 
+<span class="lineNum">     330 </span>            :     void setData(const std::vector&lt;T&gt;&amp; data)
+<span class="lineNum">     331 </span>            :     {
+<span class="lineNum">     332 </span>            : 
+<span class="lineNum">     333 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT setting data with data size {}&quot;,
+<span class="lineNum">     334 </span>            :                      data.size());
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span>            :         if (data.size() != this-&gt;mSize) {
+<span class="lineNum">     337 </span>            :             throw std::runtime_error(
+<span class="lineNum">     338 </span>            :               &quot;Kompute TensorT Cannot set data of different sizes&quot;);
+<span class="lineNum">     339 </span>            :         }
 <span class="lineNum">     340 </span>            : 
-<span class="lineNum">     341 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT setting data with data size {}&quot;, data.size());
-<span class="lineNum">     342 </span>            : 
-<span class="lineNum">     343 </span>            :         if (data.size() != this-&gt;mSize) {
-<span class="lineNum">     344 </span>            :             throw std::runtime_error(
-<span class="lineNum">     345 </span>            :               &quot;Kompute TensorT Cannot set data of different sizes&quot;);
-<span class="lineNum">     346 </span>            :         }
-<span class="lineNum">     347 </span>            : 
-<span class="lineNum">     348 </span>            :         Tensor::setRawData(data.data());
-<span class="lineNum">     349 </span>            :     }
-<span class="lineNum">     350 </span>            : 
-<span class="lineNum">     351 </span>            :     TensorDataTypes dataType();
-<span class="lineNum">     352 </span>            : 
-<span class="lineNum">     353 </span>            : };
-<span class="lineNum">     354 </span>            : 
-<span class="lineNum">     355 </span>            : } // End namespace kp
+<span class="lineNum">     341 </span>            :         Tensor::setRawData(data.data());
+<span class="lineNum">     342 </span>            :     }
+<span class="lineNum">     343 </span>            : 
+<span class="lineNum">     344 </span>            :     TensorDataTypes dataType();
+<span class="lineNum">     345 </span>            : };
+<span class="lineNum">     346 </span>            : 
+<span class="lineNum">     347 </span>            : } // End namespace kp
 </pre>
       </td>
     </tr>

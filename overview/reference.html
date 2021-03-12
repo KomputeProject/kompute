@@ -289,7 +289,7 @@
         </li>
         <li class="md-nav__item"><a href="#opbase" class="md-nav__link">OpBase</a>
         </li>
-        <li class="md-nav__item"><a href="#opalgobase" class="md-nav__link">OpAlgoBase</a>
+        <li class="md-nav__item"><a href="#opalgodispatch" class="md-nav__link">OpAlgoDispatch</a>
         </li>
         <li class="md-nav__item"><a href="#opmult" class="md-nav__link">OpMult</a>
         </li>
@@ -298,6 +298,8 @@
         <li class="md-nav__item"><a href="#optensorsynclocal" class="md-nav__link">OpTensorSyncLocal</a>
         </li>
         <li class="md-nav__item"><a href="#optensorsyncdevice" class="md-nav__link">OpTensorSyncDevice</a>
+        </li>
+        <li class="md-nav__item"><a href="#opmemorybarrier" class="md-nav__link">OpMemoryBarrier</a>
         </li>
         <li class="md-nav__item"><a href="#shader" class="md-nav__link">Shader</a>
         </li></ul>
@@ -410,7 +412,7 @@
         </li>
         <li class="md-nav__item"><a href="#opbase" class="md-nav__link">OpBase</a>
         </li>
-        <li class="md-nav__item"><a href="#opalgobase" class="md-nav__link">OpAlgoBase</a>
+        <li class="md-nav__item"><a href="#opalgodispatch" class="md-nav__link">OpAlgoDispatch</a>
         </li>
         <li class="md-nav__item"><a href="#opmult" class="md-nav__link">OpMult</a>
         </li>
@@ -419,6 +421,8 @@
         <li class="md-nav__item"><a href="#optensorsynclocal" class="md-nav__link">OpTensorSyncLocal</a>
         </li>
         <li class="md-nav__item"><a href="#optensorsyncdevice" class="md-nav__link">OpTensorSyncDevice</a>
+        </li>
+        <li class="md-nav__item"><a href="#opmemorybarrier" class="md-nav__link">OpMemoryBarrier</a>
         </li>
         <li class="md-nav__item"><a href="#shader" class="md-nav__link">Shader</a>
         </li></ul>
@@ -493,14 +497,15 @@
 <dd><p><a class="reference internal" href="#classkp_1_1Manager"><span class="std std-ref">Manager</span></a> destructor which would ensure all owned resources are destroyed unless explicitly stated that resources should not be destroyed or freed. </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp7Manager8sequenceE8uint32_t">
-<span id="_CPPv3N2kp7Manager8sequenceE8uint32_t"></span><span id="_CPPv2N2kp7Manager8sequenceE8uint32_t"></span><span id="kp::Manager::sequence__uint32_t"></span><span class="target" id="classkp_1_1Manager_1a9d0c4070458e5949bfa18a589fe75e41"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp8SequenceE" title="kp::Sequence">Sequence</a>&gt; <code class="sig-name descname">sequence</code><span class="sig-paren">(</span>uint32_t <em>queueIndex</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager8sequenceE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp7Manager8sequenceE8uint32_t8uint32_t">
+<span id="_CPPv3N2kp7Manager8sequenceE8uint32_t8uint32_t"></span><span id="_CPPv2N2kp7Manager8sequenceE8uint32_t8uint32_t"></span><span id="kp::Manager::sequence__uint32_t.uint32_t"></span><span class="target" id="classkp_1_1Manager_1a5fac648ac65d2e1314120ebf6f91de91"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp8SequenceE" title="kp::Sequence">Sequence</a>&gt; <code class="sig-name descname">sequence</code><span class="sig-paren">(</span>uint32_t <em>queueIndex</em> = 0, uint32_t <em>totalTimestamps</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager8sequenceE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Create a managed sequence that will be destroyed by this manager if it hasn’t been destroyed by its reference count going to zero.</p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Shared pointer with initialised sequence </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">queueIndex</span></code>: The queue to use from the available queues </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nrOfTimestamps</span></code>: The maximum number of timestamps to allocate. If zero (default), disables latching of timestamps. </p></li>
 </ul>
 </dd>
 </dl>
@@ -563,8 +568,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t">
-<span id="_CPPv3N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t"></span><span id="_CPPv2N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t"></span><span id="kp::Sequence::Sequence__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::Queue:.uint32_t"></span><span class="target" id="classkp_1_1Sequence_1a83518e6c7f249680a9a0a9e7d5270b9a"></span><code class="sig-name descname">Sequence</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::Queue&gt; <em>computeQueue</em>, uint32_t <em>queueIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t8uint32_t">
+<span id="_CPPv3N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t8uint32_t"></span><span id="_CPPv2N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t8uint32_t"></span><span id="kp::Sequence::Sequence__std::shared_ptr:vk::PhysicalDevice:.std::shared_ptr:vk::Device:.std::shared_ptr:vk::Queue:.uint32_t.uint32_t"></span><span class="target" id="classkp_1_1Sequence_1afb1974c612652d9c58b6e0bcfb83db4a"></span><code class="sig-name descname">Sequence</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::PhysicalDevice&gt; <em>physicalDevice</em>, std::shared_ptr&lt;vk::Device&gt; <em>device</em>, std::shared_ptr&lt;vk::Queue&gt; <em>computeQueue</em>, uint32_t <em>queueIndex</em>, uint32_t <em>totalTimestamps</em> = 0<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence8SequenceENSt10shared_ptrIN2vk14PhysicalDeviceEEENSt10shared_ptrIN2vk6DeviceEEENSt10shared_ptrIN2vk5QueueEEE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Main constructor for sequence which requires core vulkan components to generate all dependent resources.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -572,6 +577,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">device</span></code>: Vulkan logical device </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">computeQueue</span></code>: Vulkan compute queue </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">queueIndex</span></code>: Vulkan compute queue index in device </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">totalTimestamps</span></code>: Maximum number of timestamps to allocate </p></li>
 </ul>
 </dd>
 </dl>
@@ -744,6 +750,11 @@
 <dt id="_CPPv4N2kp8Sequence5clearEv">
 <span id="_CPPv3N2kp8Sequence5clearEv"></span><span id="_CPPv2N2kp8Sequence5clearEv"></span><span id="kp::Sequence::clear"></span><span class="target" id="classkp_1_1Sequence_1a93e9693ac1a2f81ced4e3edb7a81e515"></span>void <code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence5clearEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Clear function clears all operations currently recorded and starts recording again. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp8Sequence13getTimestampsEv">
+<span id="_CPPv3N2kp8Sequence13getTimestampsEv"></span><span id="_CPPv2N2kp8Sequence13getTimestampsEv"></span><span id="kp::Sequence::getTimestamps"></span><span class="target" id="classkp_1_1Sequence_1a4b4e0b9a04695b9b936aa1e51468cccb"></span>std::vector&lt;std::uint64_t&gt; <code class="sig-name descname">getTimestamps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp8Sequence13getTimestampsEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Return the timestamps that were latched at the beginning and after each operation during the last <a class="reference internal" href="#classkp_1_1Sequence_1a68c5ba3aca4722f9fe5d2a18be861c22"><span class="std std-ref">eval()</span></a> call. </p>
 </dd></dl>
 <dl class="cpp function">
 <dt id="_CPPv4N2kp8Sequence5beginEv">
@@ -1171,7 +1182,7 @@
 <span id="_CPPv3N2kp6OpBaseE"></span><span id="_CPPv2N2kp6OpBaseE"></span><span id="kp::OpBase"></span><span class="target" id="classkp_1_1OpBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpBase</code><a class="headerlink" href="#_CPPv4N2kp6OpBaseE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Base Operation which provides the high level interface that Kompute operations implement in order to perform a set of actions in the GPU.</p>
 <p>Operations can perform actions on tensors, and optionally can also own an <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> with respective parameters. kp::Operations with kp::Algorithms would inherit from kp::OpBaseAlgo. </p>
-<p>Subclassed by kp::OpAlgoDispatch, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorSyncDevice"><span class="std std-ref">kp::OpTensorSyncDevice</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorSyncLocal"><span class="std std-ref">kp::OpTensorSyncLocal</span></a></p>
+<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoDispatch"><span class="std std-ref">kp::OpAlgoDispatch</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, kp::OpTensorSyncDevice, <a class="reference internal" href="#classkp_1_1OpTensorSyncLocal"><span class="std std-ref">kp::OpTensorSyncLocal</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
@@ -1219,13 +1230,72 @@
 </dd></dl>
 
 
-<h2 id="opalgobase">OpAlgoBase<a class="headerlink" href="#opalgobase" title="Permalink to this headline">¶</a></h2>
-<p>The vk::OpAlgoBase extends the vk::OpBase class, and provides the base for shader-based operations. Besides of consisting of one or more vk::Tensor as per the vk::OpBase, it also contains a unique vk::Algorithm.</p>
+<h2 id="opalgodispatch">OpAlgoDispatch<a class="headerlink" href="#opalgodispatch" title="Permalink to this headline">¶</a></h2>
+<p>The <cite>vk::OpAlgoDispatch</cite> extends the <cite>vk::OpBase</cite> class, and provides the base for shader-based operations. Besides of consisting of one or more <cite>vk::Tensor</cite> as per the <cite>vk::OpBase</cite>, it also contains a unique <cite>vk::Algorithm</cite>.</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygenclass: Cannot find class “kp::OpAlgoBase” in doxygen xml output for project “Kompute” from directory: /c/Users/axsau/Programming/vulkan/vulkan-compute/build/docs/doxygen/xml/</p>
+<dl class="cpp class">
+<dt id="_CPPv4N2kp14OpAlgoDispatchE">
+<span id="_CPPv3N2kp14OpAlgoDispatchE"></span><span id="_CPPv2N2kp14OpAlgoDispatchE"></span><span id="kp::OpAlgoDispatch"></span><span class="target" id="classkp_1_1OpAlgoDispatch"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpAlgoDispatch</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatchE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Operation that provides a general abstraction that simplifies the use of algorithm and parameter components which can be used with shaders. By default it enables the user to provide a dynamic number of tensors which are then passed as inputs. </p>
+<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpMult"><span class="std std-ref">kp::OpMult</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE">
+<span id="_CPPv3N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE"></span><span id="_CPPv2N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE"></span><span id="kp::OpAlgoDispatch::OpAlgoDispatch__std::shared_ptr:kp::Algorithm:CR.kp::ConstantsCR"></span><span class="target" id="classkp_1_1OpAlgoDispatch_1a2d93f88c0805970a28228b916ea7fc98"></span><code class="sig-name descname">OpAlgoDispatch</code><span class="sig-paren">(</span><em class="property">const</em> std::shared_ptr&lt;kp::<a class="reference internal" href="#_CPPv4N2kp9AlgorithmE" title="kp::Algorithm">Algorithm</a>&gt; &amp;<em>algorithm</em>, <em class="property">const</em> kp::Constants &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Constructor that stores the algorithm to use as well as the relevant push constants to override when recording.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code>: The algorithm object to use for dispatch </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: The push constants to use for override </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpAlgoDispatchD0Ev">
+<span id="_CPPv3N2kp14OpAlgoDispatchD0Ev"></span><span id="_CPPv2N2kp14OpAlgoDispatchD0Ev"></span><span id="kp::OpAlgoDispatch::~OpAlgoDispatch"></span><span class="target" id="classkp_1_1OpAlgoDispatch_1a809cda4e6f37c57a2807971e6481515b"></span><code class="sig-name descname">~OpAlgoDispatch</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatchD0Ev" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default destructor, which is in charge of destroying the algorithm components but does not destroy the underlying tensors </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpAlgoDispatch6recordERKN2vk13CommandBufferE">
+<span id="_CPPv3N2kp14OpAlgoDispatch6recordERKN2vk13CommandBufferE"></span><span id="_CPPv2N2kp14OpAlgoDispatch6recordERKN2vk13CommandBufferE"></span><span id="kp::OpAlgoDispatch::record__vk::CommandBufferCR"></span><span class="target" id="classkp_1_1OpAlgoDispatch_1ae1b8e6a0f402859acab6ace0590a9fb9"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatch6recordERKN2vk13CommandBufferE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>This records the commands that are to be sent to the GPU. This includes the barriers that ensure the memory has been copied before going in and out of the shader, as well as the dispatch operation that sends the shader processing to the gpu. This function also records the GPU memory copy of the output data for the staging buffer so it can be read by the host.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The command buffer to record the command into. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpAlgoDispatch7preEvalERKN2vk13CommandBufferE">
+<span id="_CPPv3N2kp14OpAlgoDispatch7preEvalERKN2vk13CommandBufferE"></span><span id="_CPPv2N2kp14OpAlgoDispatch7preEvalERKN2vk13CommandBufferE"></span><span id="kp::OpAlgoDispatch::preEval__vk::CommandBufferCR"></span><span class="target" id="classkp_1_1OpAlgoDispatch_1a4eef6dff7c2b4a88b7a8e96da8888d2c"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatch7preEvalERKN2vk13CommandBufferE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any preEval commands.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The command buffer to record the command into. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp14OpAlgoDispatch8postEvalERKN2vk13CommandBufferE">
+<span id="_CPPv3N2kp14OpAlgoDispatch8postEvalERKN2vk13CommandBufferE"></span><span id="_CPPv2N2kp14OpAlgoDispatch8postEvalERKN2vk13CommandBufferE"></span><span id="kp::OpAlgoDispatch::postEval__vk::CommandBufferCR"></span><span class="target" id="classkp_1_1OpAlgoDispatch_1afdd5d229f12be1798a03ed3ccd2995fc"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatch8postEvalERKN2vk13CommandBufferE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any postEval commands.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The command buffer to record the command into. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 </div>
+</dd></dl>
 
 
 <h2 id="opmult">OpMult<a class="headerlink" href="#opmult" title="Permalink to this headline">¶</a></h2>
@@ -1233,7 +1303,7 @@
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture-opmult.jpg"><img alt="../_images/kompute-vulkan-architecture-opmult.jpg" src="../_images/kompute-vulkan-architecture-opmult.jpg" style="width: 100%;"/></a>
 <dl class="cpp class">
 <dt id="_CPPv4N2kp6OpMultE">
-<span id="_CPPv3N2kp6OpMultE"></span><span id="_CPPv2N2kp6OpMultE"></span><span id="kp::OpMult"></span><span class="target" id="classkp_1_1OpMult"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpMult</code> : <em class="property">public</em> kp::OpAlgoDispatch<a class="headerlink" href="#_CPPv4N2kp6OpMultE" title="Permalink to this definition">¶</a><br/></dt>
+<span id="_CPPv3N2kp6OpMultE"></span><span id="_CPPv2N2kp6OpMultE"></span><span id="kp::OpMult"></span><span class="target" id="classkp_1_1OpMult"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpMult</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp14OpAlgoDispatchE" title="kp::OpAlgoDispatch">OpAlgoDispatch</a><a class="headerlink" href="#_CPPv4N2kp6OpMultE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Operation that performs multiplication on two tensors and outpus on third tensor. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
@@ -1441,6 +1511,71 @@
 <dl class="cpp function">
 <dt id="_CPPv4N2kp18OpTensorSyncDevice8postEvalERKN2vk13CommandBufferE">
 <span id="_CPPv3N2kp18OpTensorSyncDevice8postEvalERKN2vk13CommandBufferE"></span><span id="_CPPv2N2kp18OpTensorSyncDevice8postEvalERKN2vk13CommandBufferE"></span><span id="kp::OpTensorSyncDevice::postEval__vk::CommandBufferCR"></span><span class="target" id="classkp_1_1OpTensorSyncDevice_1afc889aea4c633071afa6214cad0b1bc0"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><a class="headerlink" href="#_CPPv4N2kp18OpTensorSyncDevice8postEvalERKN2vk13CommandBufferE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Does not perform any postEval commands.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The command buffer to record the command into. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+</div>
+</dd></dl>
+
+
+<h2 id="opmemorybarrier">OpMemoryBarrier<a class="headerlink" href="#opmemorybarrier" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpMemoryBarrier</span></code> is a tensor only operation which adds memory barriers to the tensors provided with the access and stage masks provided.</p>
+<dl class="cpp class">
+<dt>
+<span class="target" id="classkp_1_1OpTensorSyncDevice"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpTensorSyncDevice</code> : <em class="property">public</em> kp::<a class="reference internal" href="#_CPPv4N2kp6OpBaseE" title="kp::OpBase">OpBase</a><br/></dt>
+<dd><p>Operation that syncs tensor’s device by mapping local data into the device memory. For TensorTypes::eDevice it will use a record operation for the memory to be syncd into GPU memory which means that the operation will be done in sync with GPU commands. For TensorTypes::eHost it will only map the data into host memory which will happen during preEval before the recorded commands are dispatched. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt>
+<span class="target" id="classkp_1_1OpTensorSyncDevice_1a482b739eac339555ca6183f19e850300"></span><code class="sig-name descname">OpTensorSyncDevice</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em><span class="sig-paren">)</span><br/></dt>
+<dd><p>Default constructor with parameters that provides the core vulkan resources and the tensors that will be used in the operation. The tensos provided cannot be of type TensorTypes::eStorage.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: Tensors that will be used to create in operation. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="classkp_1_1OpTensorSyncDevice_1a990df433f503d85828392e4d50db77c1"></span><code class="sig-name descname">~OpTensorSyncDevice</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">override</em><br/></dt>
+<dd><p>Default destructor. This class does not manage memory so it won’t be expecting the parent to perform a release. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="classkp_1_1OpTensorSyncDevice_1a93f73c1d9a154ae1518dec924519cdb4"></span>void <code class="sig-name descname">record</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><br/></dt>
+<dd><p>For device tensors, it records the copy command for the tensor to copy the data from its staging to device memory.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The command buffer to record the command into. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="classkp_1_1OpTensorSyncDevice_1a36094f5e8304432ba1adb018f0d2ecb6"></span>void <code class="sig-name descname">preEval</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><br/></dt>
+<dd><p>Does not perform any preEval commands.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: The command buffer to record the command into. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt>
+<span class="target" id="classkp_1_1OpTensorSyncDevice_1afc889aea4c633071afa6214cad0b1bc0"></span>void <code class="sig-name descname">postEval</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span> <em class="property">override</em><br/></dt>
 <dd><p>Does not perform any postEval commands.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
