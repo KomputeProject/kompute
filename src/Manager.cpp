@@ -447,4 +447,17 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
     return sq;
 }
 
+DeviceProperties Manager::getDeviceProperties() const
+{
+  const vk::PhysicalDeviceProperties properties = this->mPhysicalDevice->getProperties();
+  const DeviceProperties output{
+    std::string(properties.deviceName.data()),
+    properties.limits.maxComputeWorkGroupCount,
+    properties.limits.maxComputeWorkGroupInvocations,
+    properties.limits.maxComputeWorkGroupSize,
+    properties.limits.timestampComputeAndGraphics,
+  };
+  return output;
+}
+
 }
