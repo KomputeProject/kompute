@@ -6,6 +6,7 @@
 #include "kompute/Tensor.hpp"
 #include "kompute/Algorithm.hpp"
 #include "kompute/operations/OpBase.hpp"
+#include "kompute/operations/OpMemoryBarrier.hpp"
 #include "kompute/operations/OpTensorCopy.hpp"
 #include "kompute/operations/OpTensorSyncDevice.hpp"
 #include "kompute/operations/OpTensorSyncLocal.hpp"

@@ -887,12 +887,9 @@ class Tensor
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param copyFromTensor Tensor to copy the data from
-     * @param createBarrier Whether to create a barrier that ensures the data is
-     * copied before further operations. Default is true.
      */
     void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                        std::shared_ptr<Tensor> copyFromTensor,
-                        bool createBarrier);
+                        std::shared_ptr<Tensor> copyFromTensor);
 
     /**
      * Records a copy from the internal staging memory to the device memory
@@ -900,11 +897,8 @@ class Tensor
      * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
-     * @param createBarrier Whether to create a barrier that ensures the data is
-     * copied before further operations. Default is true.
      */
-    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer,
-                                       bool createBarrier);
+    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer);
 
     /**
      * Records a copy from the internal device memory to the staging memory
@@ -912,14 +906,11 @@ class Tensor
      * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
-     * @param createBarrier Whether to create a barrier that ensures the data is
-     * copied before further operations. Default is true.
      */
-    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
-                                       bool createBarrier);
+    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer);
 
     /**
-     * Records the buffer memory barrier into the command buffer which
+     * Records the buffer memory barrier into the primary buffer and command buffer which
      * ensures that relevant data transfers are carried out correctly.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
@@ -928,11 +919,26 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                   vk::AccessFlagBits srcAccessMask,
-                                   vk::AccessFlagBits dstAccessMask,
-                                   vk::PipelineStageFlagBits srcStageMask,
-                                   vk::PipelineStageFlagBits dstStageMask);
+    void recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                          vk::AccessFlagBits srcAccessMask,
+                                          vk::AccessFlagBits dstAccessMask,
+                                          vk::PipelineStageFlagBits srcStageMask,
+                                          vk::PipelineStageFlagBits dstStageMask);
+    /**
+     * Records the buffer memory barrier into the staging buffer and command buffer which
+     * ensures that relevant data transfers are carried out correctly.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param srcAccessMask Access flags for source access mask
+     * @param dstAccessMask Access flags for destination access mask
+     * @param scrStageMask Pipeline stage flags for source stage mask
+     * @param dstStageMask Pipeline stage flags for destination stage mask
+     */
+    void recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                          vk::AccessFlagBits srcAccessMask,
+                                          vk::AccessFlagBits dstAccessMask,
+                                          vk::PipelineStageFlagBits srcStageMask,
+                                          vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
@@ -1074,8 +1080,13 @@ class Tensor
                           std::shared_ptr<vk::Buffer> bufferFrom,
                           std::shared_ptr<vk::Buffer> bufferTo,
                           vk::DeviceSize bufferSize,
-                          vk::BufferCopy copyRegion,
-                          bool createBarrier);
+                          vk::BufferCopy copyRegion);
+    void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                   const vk::Buffer& buffer,
+                                   vk::AccessFlagBits srcAccessMask,
+                                   vk::AccessFlagBits dstAccessMask,
+                                   vk::PipelineStageFlagBits srcStageMask,
+                                   vk::PipelineStageFlagBits dstStageMask);
 
     // Private util functions
     vk::BufferUsageFlags getPrimaryBufferUsageFlags();
@@ -1371,6 +1382,77 @@ class OpBase
      * @param commandBuffer The command buffer to record the command into.
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) = 0;
+};
+
+} // End namespace kp
+
+namespace kp {
+
+/**
+ * Operation that provides a general abstraction that simplifies the use of 
+ * algorithm and parameter components which can be used with shaders.
+ * It exposes the pipeline barrier functionality specifically for memory
+ * barriers that can be configured through the respective source and destination
+ * masks
+ */
+class OpMemoryBarrier : public OpBase
+{
+  public:
+
+    /**
+     * Constructor that stores tensors as well as memory barrier parameters to be
+     * used to create a pipeline barrier on the respective primary or staging tensor.
+     *
+     * @param tensors The tensors to apply the memory barriers on
+     * @param srcAccessMask The kp::AccessFlagBits for the source access mask
+     * @param dstAccessMask The kp::AccessFlagBits for the destination access mask
+     * @param srcStageMask The kp::PipelineStageFlagBits for the source stage mask
+     * @param dstStageMask The kp::PipelineStageFlagBits for the destination stage mask
+     * @param barrierOnPrimary Boolean to select primary or secondary buffers on tensors
+     */
+    OpMemoryBarrier(
+            const std::vector<std::shared_ptr<Tensor>>& tensors,
+            const vk::AccessFlagBits& srcAccessMask,
+            const vk::AccessFlagBits& dstAccessMask,
+            const vk::PipelineStageFlagBits& srcStageMask,
+            const vk::PipelineStageFlagBits& dstStageMask,
+            bool barrierOnPrimary = true);
+
+    /**
+     * Default destructor, which is in charge of destroying the reference to the tensors
+     * and all the relevant access / stage masks created
+     */
+    virtual ~OpMemoryBarrier() override;
+
+    /**
+     * This records the memory barrier with the access and stage masks provided
+     * across all relevant tensors.
+     *
+     * @param commandBuffer The command buffer to record the command into.
+     */
+    virtual void record(const vk::CommandBuffer& commandBuffer) override;
+
+    /**
+     * Does not perform any preEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
+     */
+    virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
+
+    /**
+     * Does not perform any postEval commands.
+     *
+     * @param commandBuffer The command buffer to record the command into.
+     */
+    virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
+
+private:
+    const vk::AccessFlagBits mSrcAccessMask;
+    const vk::AccessFlagBits mDstAccessMask;
+    const vk::PipelineStageFlagBits mSrcStageMask;
+    const vk::PipelineStageFlagBits mDstStageMask;
+    const bool mBarrierOnPrimary;
+    const std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp
