@@ -31,19 +31,21 @@ OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
 
-            this->mTensors[i]->recordPrimaryBufferMemoryBarrier(commandBuffer,
-                                        vk::AccessFlagBits::eShaderWrite,
-                                        vk::AccessFlagBits::eTransferRead,
-                                        vk::PipelineStageFlagBits::eComputeShader,
-                                        vk::PipelineStageFlagBits::eTransfer);
+            this->mTensors[i]->recordPrimaryBufferMemoryBarrier(
+              commandBuffer,
+              vk::AccessFlagBits::eShaderWrite,
+              vk::AccessFlagBits::eTransferRead,
+              vk::PipelineStageFlagBits::eComputeShader,
+              vk::PipelineStageFlagBits::eTransfer);
 
             this->mTensors[i]->recordCopyFromDeviceToStaging(commandBuffer);
 
-            this->mTensors[i]->recordPrimaryBufferMemoryBarrier(commandBuffer,
-                                        vk::AccessFlagBits::eTransferWrite,
-                                        vk::AccessFlagBits::eHostRead,
-                                        vk::PipelineStageFlagBits::eTransfer,
-                                        vk::PipelineStageFlagBits::eHost);
+            this->mTensors[i]->recordPrimaryBufferMemoryBarrier(
+              commandBuffer,
+              vk::AccessFlagBits::eTransferWrite,
+              vk::AccessFlagBits::eHostRead,
+              vk::PipelineStageFlagBits::eTransfer,
+              vk::PipelineStageFlagBits::eHost);
         }
     }
 }
