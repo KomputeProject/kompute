@@ -258,7 +258,8 @@ Tensor::getStagingMemoryPropertyFlags()
 {
     switch (this->mTensorType) {
         case TensorTypes::eDevice:
-            return vk::MemoryPropertyFlagBits::eHostVisible;
+            return vk::MemoryPropertyFlagBits::eHostVisible |
+                   vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
         default:
             throw std::runtime_error("Kompute Tensor invalid tensor type");
