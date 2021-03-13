@@ -131,8 +131,7 @@ Tensor::mapRawData()
     this->mRawData = this->mDevice->mapMemory(
       *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
 
-    vk::MappedMemoryRange mappedMemoryRange(
-      *hostVisibleMemory, 0, bufferSize);
+    vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
 }
 
 void
@@ -219,36 +218,36 @@ Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
 
 void
 Tensor::recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                  vk::AccessFlagBits srcAccessMask,
-                                  vk::AccessFlagBits dstAccessMask,
-                                  vk::PipelineStageFlagBits srcStageMask,
-                                  vk::PipelineStageFlagBits dstStageMask)
+                                         vk::AccessFlagBits srcAccessMask,
+                                         vk::AccessFlagBits dstAccessMask,
+                                         vk::PipelineStageFlagBits srcStageMask,
+                                         vk::PipelineStageFlagBits dstStageMask)
 {
     KP_LOG_DEBUG("Kompute Tensor recording PRIMARY buffer memory barrier");
 
     this->recordBufferMemoryBarrier(commandBuffer,
-            *this->mPrimaryBuffer,
-            srcAccessMask,
-            dstAccessMask,
-            srcStageMask,
-            dstStageMask);
+                                    *this->mPrimaryBuffer,
+                                    srcAccessMask,
+                                    dstAccessMask,
+                                    srcStageMask,
+                                    dstStageMask);
 }
 
 void
 Tensor::recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                  vk::AccessFlagBits srcAccessMask,
-                                  vk::AccessFlagBits dstAccessMask,
-                                  vk::PipelineStageFlagBits srcStageMask,
-                                  vk::PipelineStageFlagBits dstStageMask)
+                                         vk::AccessFlagBits srcAccessMask,
+                                         vk::AccessFlagBits dstAccessMask,
+                                         vk::PipelineStageFlagBits srcStageMask,
+                                         vk::PipelineStageFlagBits dstStageMask)
 {
     KP_LOG_DEBUG("Kompute Tensor recording PRIMARY buffer memory barrier");
 
     this->recordBufferMemoryBarrier(commandBuffer,
-            *this->mStagingBuffer,
-            srcAccessMask,
-            dstAccessMask,
-            srcStageMask,
-            dstStageMask);
+                                    *this->mStagingBuffer,
+                                    srcAccessMask,
+                                    dstAccessMask,
+                                    srcStageMask,
+                                    dstStageMask);
 }
 
 void

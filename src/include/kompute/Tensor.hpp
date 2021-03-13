@@ -120,8 +120,9 @@ class Tensor
     void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer);
 
     /**
-     * Records the buffer memory barrier into the primary buffer and command buffer which
-     * ensures that relevant data transfers are carried out correctly.
+     * Records the buffer memory barrier into the primary buffer and command
+     * buffer which ensures that relevant data transfers are carried out
+     * correctly.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param srcAccessMask Access flags for source access mask
@@ -129,14 +130,16 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                          vk::AccessFlagBits srcAccessMask,
-                                          vk::AccessFlagBits dstAccessMask,
-                                          vk::PipelineStageFlagBits srcStageMask,
-                                          vk::PipelineStageFlagBits dstStageMask);
+    void recordPrimaryBufferMemoryBarrier(
+      const vk::CommandBuffer& commandBuffer,
+      vk::AccessFlagBits srcAccessMask,
+      vk::AccessFlagBits dstAccessMask,
+      vk::PipelineStageFlagBits srcStageMask,
+      vk::PipelineStageFlagBits dstStageMask);
     /**
-     * Records the buffer memory barrier into the staging buffer and command buffer which
-     * ensures that relevant data transfers are carried out correctly.
+     * Records the buffer memory barrier into the staging buffer and command
+     * buffer which ensures that relevant data transfers are carried out
+     * correctly.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param srcAccessMask Access flags for source access mask
@@ -144,12 +147,12 @@ class Tensor
      * @param scrStageMask Pipeline stage flags for source stage mask
      * @param dstStageMask Pipeline stage flags for destination stage mask
      */
-    void recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                          vk::AccessFlagBits srcAccessMask,
-                                          vk::AccessFlagBits dstAccessMask,
-                                          vk::PipelineStageFlagBits srcStageMask,
-                                          vk::PipelineStageFlagBits dstStageMask);
-
+    void recordStagingBufferMemoryBarrier(
+      const vk::CommandBuffer& commandBuffer,
+      vk::AccessFlagBits srcAccessMask,
+      vk::AccessFlagBits dstAccessMask,
+      vk::PipelineStageFlagBits srcStageMask,
+      vk::PipelineStageFlagBits dstStageMask);
 
     /**
      * Constructs a vulkan descriptor buffer info which can be used to specify
@@ -172,17 +175,17 @@ class Tensor
      * Returns the total size of a single element of the respective data type
      * that this tensor holds.
      *
-     * @return Unsigned integer representing the memory of a single element of the
-     * respective data type.
+     * @return Unsigned integer representing the memory of a single element of
+     * the respective data type.
      */
     uint32_t dataTypeMemorySize();
 
     /**
-     * Returns the total memory size of the data contained by the Tensor object which
-     * would equate to (this->size() * this->dataTypeMemorySize())
+     * Returns the total memory size of the data contained by the Tensor object
+     * which would equate to (this->size() * this->dataTypeMemorySize())
      *
-     * @return Unsigned integer representing the memory of a single element of the
-     * respective data type.
+     * @return Unsigned integer representing the memory of a single element of
+     * the respective data type.
      */
     uint32_t memorySize();
 
@@ -194,23 +197,24 @@ class Tensor
     TensorDataTypes dataType();
 
     /**
-     * Retrieve the raw data via the pointer to the memory that contains the raw memory
-     * of this current tensor. This tensor gets changed to a nullptr when the Tensor is 
-     * removed.
+     * Retrieve the raw data via the pointer to the memory that contains the raw
+     * memory of this current tensor. This tensor gets changed to a nullptr when
+     * the Tensor is removed.
      *
      * @return Pointer to raw memory containing raw bytes data of Tensor.
      */
     void* rawData();
 
     /**
-     * Sets / resets the data of the tensor which is directly done on the GPU host visible
-     * memory available by the tensor.
+     * Sets / resets the data of the tensor which is directly done on the GPU
+     * host visible memory available by the tensor.
      */
     void setRawData(const void* data);
 
     /**
-     * Template to return the pointer data converted by specific type, which would be
-     * any of the supported types including float, double, int32, uint32 and bool.
+     * Template to return the pointer data converted by specific type, which
+     * would be any of the supported types including float, double, int32,
+     * uint32 and bool.
      *
      * @return Pointer to raw memory containing raw bytes data of Tensor.
      */
@@ -221,8 +225,9 @@ class Tensor
     }
 
     /**
-     * Template to get the data of the current tensor as a vector of specific type, which would be
-     * any of the supported types including float, double, int32, uint32 and bool.
+     * Template to get the data of the current tensor as a vector of specific
+     * type, which would be any of the supported types including float, double,
+     * int32, uint32 and bool.
      *
      * @return Vector of type provided by template.
      */
@@ -241,7 +246,6 @@ class Tensor
     void* mRawData;
 
   private:
-
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;

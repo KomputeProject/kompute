@@ -44,8 +44,7 @@ OpTensorCopy::record(const vk::CommandBuffer& commandBuffer)
 
     // We iterate from the second tensor onwards and record a copy to all
     for (size_t i = 1; i < this->mTensors.size(); i++) {
-        this->mTensors[i]->recordCopyFrom(
-          commandBuffer, this->mTensors[0]);
+        this->mTensors[i]->recordCopyFrom(commandBuffer, this->mTensors[0]);
     }
 }
 

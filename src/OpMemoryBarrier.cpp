@@ -5,21 +5,20 @@
 namespace kp {
 
 OpMemoryBarrier::OpMemoryBarrier(
-            const std::vector<std::shared_ptr<Tensor>>& tensors,
-            const vk::AccessFlagBits& srcAccessMask,
-            const vk::AccessFlagBits& dstAccessMask,
-            const vk::PipelineStageFlagBits& srcStageMask,
-            const vk::PipelineStageFlagBits& dstStageMask,
-            bool barrierOnPrimary)
-    : mTensors(tensors),
-      mSrcAccessMask(srcAccessMask),
-      mDstAccessMask(dstAccessMask),
-      mSrcStageMask(srcStageMask),
-      mDstStageMask(dstStageMask),
-      mBarrierOnPrimary(barrierOnPrimary)
+  const std::vector<std::shared_ptr<Tensor>>& tensors,
+  const vk::AccessFlagBits& srcAccessMask,
+  const vk::AccessFlagBits& dstAccessMask,
+  const vk::PipelineStageFlagBits& srcStageMask,
+  const vk::PipelineStageFlagBits& dstStageMask,
+  bool barrierOnPrimary)
+  : mTensors(tensors)
+  , mSrcAccessMask(srcAccessMask)
+  , mDstAccessMask(dstAccessMask)
+  , mSrcStageMask(srcStageMask)
+  , mDstStageMask(dstStageMask)
+  , mBarrierOnPrimary(barrierOnPrimary)
 {
     KP_LOG_DEBUG("Kompute OpMemoryBarrier constructor");
-
 }
 
 OpMemoryBarrier::~OpMemoryBarrier()
@@ -35,21 +34,19 @@ OpMemoryBarrier::record(const vk::CommandBuffer& commandBuffer)
     // Barrier to ensure the data is finished writing to buffer memory
     if (this->mBarrierOnPrimary) {
         for (const std::shared_ptr<Tensor>& tensor : this->mTensors) {
-            tensor->recordPrimaryBufferMemoryBarrier(
-              commandBuffer,
-              this->mSrcAccessMask,
-              this->mDstAccessMask,
-              this->mSrcStageMask,
-              this->mDstStageMask);
+            tensor->recordPrimaryBufferMemoryBarrier(commandBuffer,
+                                                     this->mSrcAccessMask,
+                                                     this->mDstAccessMask,
+                                                     this->mSrcStageMask,
+                                                     this->mDstStageMask);
         }
     } else {
         for (const std::shared_ptr<Tensor>& tensor : this->mTensors) {
-            tensor->recordStagingBufferMemoryBarrier(
-              commandBuffer,
-              this->mSrcAccessMask,
-              this->mDstAccessMask,
-              this->mSrcStageMask,
-              this->mDstStageMask);
+            tensor->recordStagingBufferMemoryBarrier(commandBuffer,
+                                                     this->mSrcAccessMask,
+                                                     this->mDstAccessMask,
+                                                     this->mSrcStageMask,
+                                                     this->mDstStageMask);
         }
     }
 }
