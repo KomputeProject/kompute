@@ -955,45 +955,70 @@ class Tensor
      *
      * @return Unsigned integer representing the total number of elements
      */
-    // TODO: move to cpp
-    uint32_t size() { return this->mSize; }
-
-    // TODO: move to cpp
-    uint32_t dataTypeMemorySize() { return this->mDataTypeMemorySize; }
-
-    // TODO: move to cpp
-    uint32_t memorySize() { return this->mSize * this->mDataTypeMemorySize; }
+    uint32_t size();
 
     /**
-     * Retrieve the underlying data type of the Tensor
+     * Returns the total size of a single element of the respective data type
+     * that this tensor holds.
+     *
+     * @return Unsigned integer representing the memory of a single element of the
+     * respective data type.
+     */
+    uint32_t dataTypeMemorySize();
+
+    /**
+     * Returns the total memory size of the data contained by the Tensor object which
+     * would equate to (this->size() * this->dataTypeMemorySize())
+     *
+     * @return Unsigned integer representing the memory of a single element of the
+     * respective data type.
+     */
+    uint32_t memorySize();
+
+    /**
+     * Retrieve the data type of the tensor (host, device, storage)
      *
      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
      */
-    TensorDataTypes dataType() { return this->mDataType; }
+    TensorDataTypes dataType();
 
-    void* rawData() { return this->mRawData; }
+    /**
+     * Retrieve the raw data via the pointer to the memory that contains the raw memory
+     * of this current tensor. This tensor gets changed to a nullptr when the Tensor is 
+     * removed.
+     *
+     * @return Pointer to raw memory containing raw bytes data of Tensor.
+     */
+    void* rawData();
 
-    // TODO: move to cpp
+    /**
+     * Sets / resets the data of the tensor which is directly done on the GPU host visible
+     * memory available by the tensor.
+     */
+    void setRawData(const void* data);
+
+    /**
+     * Template to return the pointer data converted by specific type, which would be
+     * any of the supported types including float, double, int32, uint32 and bool.
+     *
+     * @return Pointer to raw memory containing raw bytes data of Tensor.
+     */
     template<typename T>
     T* data()
     {
         return (T*)this->mRawData;
     }
 
+    /**
+     * Template to get the data of the current tensor as a vector of specific type, which would be
+     * any of the supported types including float, double, int32, uint32 and bool.
+     *
+     * @return Vector of type provided by template.
+     */
     template<typename T>
     std::vector<T> vector()
     {
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
-    }
-
-    /**
-     * Sets / resets the vector data of the tensor. This function does not
-     * perform any copies into GPU memory and is only performed on the host.
-     */
-    void setRawData(const void* data)
-    {
-        // Copy data
-        memcpy(this->mRawData, data, this->memorySize());
     }
 
   protected:
@@ -1005,56 +1030,6 @@ class Tensor
     void* mRawData;
 
   private:
-    void mapRawData()
-    {
-
-        KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
-
-        std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-        if (this->mTensorType == TensorTypes::eHost) {
-            hostVisibleMemory = this->mPrimaryMemory;
-        } else if (this->mTensorType == TensorTypes::eDevice) {
-            hostVisibleMemory = this->mStagingMemory;
-        } else {
-            KP_LOG_WARN(
-              "Kompute Tensor mapping data not supported on storage tensor");
-            return;
-        }
-
-        vk::DeviceSize bufferSize = this->memorySize();
-
-        // Given we request coherent host memory we don't need to invalidate /
-        // flush
-        this->mRawData = this->mDevice->mapMemory(
-          *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-
-        vk::MappedMemoryRange mappedMemoryRange(
-          *hostVisibleMemory, 0, bufferSize);
-    }
-
-    void unmapRawData()
-    {
-
-        KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
-
-        std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-        if (this->mTensorType == TensorTypes::eHost) {
-            hostVisibleMemory = this->mPrimaryMemory;
-        } else if (this->mTensorType == TensorTypes::eDevice) {
-            hostVisibleMemory = this->mStagingMemory;
-        } else {
-            KP_LOG_WARN(
-              "Kompute Tensor mapping data not supported on storage tensor");
-            return;
-        }
-
-        vk::DeviceSize bufferSize = this->memorySize();
-        vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
-        this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
-        this->mDevice->unmapMemory(*hostVisibleMemory);
-    }
 
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
@@ -1093,9 +1068,11 @@ class Tensor
     vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
     vk::BufferUsageFlags getStagingBufferUsageFlags();
     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
+
+    void mapRawData();
+    void unmapRawData();
 };
 
-// TODO: Limit T to be only float, bool, double, etc
 template<typename T>
 class TensorT : public Tensor
 {
