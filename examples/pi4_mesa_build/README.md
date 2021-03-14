@@ -45,8 +45,6 @@ git clone --depth 1 https://gitlab.freedesktop.org/mesa/mesa.git
 
 Use meson and ninja to build mesa using the Broadcom Vulkan drivers. For information on the Gallium drivers please see [V3D — The Mesa 3D Graphics Library latest documentation](https://docs.mesa3d.org/drivers/v3d.html).
 
-TODO: Experiment adding kmsro and vc4 gallium drivers
-
 ```
 meson --libdir lib \
     --prefix /mesa-install \
@@ -63,13 +61,31 @@ sudo ninja -C build install
 
 ## Configure preferred Vulkan driver
 
-Export the path for the Broadcom drivers. This command will need to be run for every new terminal session. Alternatively adding this line to `~/.bash_profile` (os similar) will export the environment variable for every terminal session.
+Export the path for the Broadcom drivers, this command will need to be run for every new terminal session.
 
 ```
 export VK_ICD_FILENAMES=/mesa-install/share/vulkan/icd.d/broadcom_icd.armv7l.json
 ```
 
-To confirm that mesa was configured and built correctly use.
+## Allow access to render
+
+In order to access the render from remote login there are two options. Both options work.
+
+**Option 1: provide read write access to everyone.**
+
+```
+sudo chmod ugo+rw /dev/dri/renderD128
+```
+
+**Option 2: Change group from render to video.**
+
+```
+sudo chown root:video /dev/dri/renderD128
+```
+
+## Confirm correct Vulkan operation
+
+To confirm that mesa was configured and built correctly run the following command.
 
 ```
 vulkaninfo
@@ -93,11 +109,31 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip wheel
 pip install -r requirements-dev.txt
-pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
+pip install git+git://github.com/EthicalML/vulkan-kompute.git
 ```
 
 ## Run the available tests
 
+Use the following command to run the python tests for Vulkan Kompute.
+
 ```
 pytest
 ```
+
+If the tests pass then congratulations! You are now able to make full use of the Pi 4 Broadcom GPU for running parallel computing. If however, there are any issues with the tests they can be run in debug mode to see the Vulkan logs.
+
+```
+pytest --log-cli-level debug
+```
+
+Please share any issues with the maintainers and they will be more than happy to help.
+
+## Closing remarks
+
+To avoid the need to export `VK_ICD_FILENAMES` every time you login, it is possible to symlink the json file into the default directory. The Vulkan loader looks in the `/etc/vulkan/icd.d/` directory for `.json` files.
+
+```
+sudo ln -s /mesa-install/share/vulkan/icd.d/broadcom_icd.armv7l.json /etc/vulkan/icd.d/broadcom_icd.armv7l.json
+```
+
+As a word of warning, configuring the icd filenames in this way will stop certain tests being skipped. At the time of writing this will mean that some tests fail when running on the Pi.
