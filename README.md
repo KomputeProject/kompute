@@ -34,8 +34,8 @@
 * [Mobile enabled](#mobile-enabled) with examples via Android NDK across several architectures
 * BYOV: [Bring-your-own-Vulkan design](#motivations) to play nice with existing Vulkan applications
 * Explicit relationships for GPU and host [memory ownership and memory management](https://kompute.cc/overview/memory-management.html)
-* [Hands on examples](#simple-examples) showing the core features 
-* Longer tutorials for [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
+* Robust codebase with [90% unit test code coverage](https://kompute.cc/codecov/)
+* Advanced use-cases on [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
 
 ![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif)
 
@@ -48,43 +48,90 @@ Below you can find a GPU multiplication example using the C++ and Python Kompute
 The C++ interface provides low level access to the native components of Kompute and Vulkan, enabling for [advanced optimizations](https://kompute.cc/overview/async-parallel.html) as well as [extension of components](https://kompute.cc/overview/reference.html).
 
 ```c++
-int main() {
 
-    // 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
+void kompute(const std::string& shader) {
+
+    // 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
     kp::Manager mgr; 
 
     // 2. Create and initialise Kompute Tensors through manager
+
+    // Default tensor constructor simplifies creation of float values
     auto tensorInA = mgr.tensor({ 2., 2., 2. });
     auto tensorInB = mgr.tensor({ 1., 2., 3. });
-    auto tensorOut = mgr.tensor({ 0., 0., 0. });
+    // Explicit type constructor supports uint32, int32, double, float and bool
+    auto tensorOutA = mgr.tensorT<uint32_t>({ 0, 0, 0 });
+    auto tensorOutB = mgr.tensorT<uint32_t>({ 0, 0, 0 });
 
-    // 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-    std::string shaderString = (R"(
+    std::vector<std::shared_ptr<kp::Tensor>> params = {tensorInA, tensorInB, tensorOutA, tensorOutB};
+
+    // 3. Create algorithm based on shader (supports buffers & push/spec constants)
+    kp::Workgroup workgroup({3, 1, 1});
+    kp::Constants specConsts({ 2 });
+    kp::Constants pushConstsA({ 2.0 });
+    kp::Constants pushConstsB({ 3.0 });
+
+    auto algorithm = mgr.algorithm(params,
+                                   kp::Shader::compile_source(shader),
+                                   workgroup,
+                                   specConsts,
+                                   pushConstsA);
+
+    // 4. Run operation synchronously using sequence
+    mgr.sequence()
+        ->record<kp::OpTensorSyncDevice>(params)
+        ->record<kp::OpAlgoDispatch>(algorithm) // Binds default push consts
+        ->eval() // Evaluates the two recorded operations
+        ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB) // Overrides push consts
+        ->eval(); // Evaluates only last recorded operation
+
+    // 5. Sync results from the GPU asynchronously
+    sq = mgr.sequence()
+    sq->evalAsync<kp::OpTensorSyncLocal>(params);
+
+    // ... Do other work asynchronously whilst GPU finishes
+
+    sq->evalAwait();
+
+    // Prints the first output which is: { 4, 8, 12 }
+    for (const float& elem : tensorOutA->data()) std::cout << elem << "  ";
+    // Prints the second output which is: { 10, 10, 10 }
+    for (const float& elem : tensorOutB->data()) std::cout << elem << "  ";
+
+} // Manages / releases all CPU and GPU memory resources
+
+int main() {
+
+    // Define a raw string shader (or use the Kompute tools to compile to SPIRV / C++ header
+    // files). This shader shows some of the main components including constants, buffers, etc
+    std::string shader = (R"(
         #version 450
 
         layout (local_size_x = 1) in;
 
         // The input tensors bind index is relative to index in parameter passed
-        layout(set = 0, binding = 0) buffer bina { float tina[]; };
-        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
-        layout(set = 0, binding = 2) buffer bout { float tout[]; };
+        layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
+        layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { uint out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { uint out_b[]; };
+
+        // Kompute supports push constants updated on dispatch
+        layout(push_constant) uniform PushConstants {
+            float val;
+        } push_const;
+
+        // Kompute also supports spec constants on initalization
+        layout(constant_id = 0) const float const_one = 0;
 
         void main() {
             uint index = gl_GlobalInvocationID.x;
-            tout[index] = tina[index] * tinb[index];
+            out_a[index] += uint( in_a[index] * in_b[index] );
+            out_b[index] += uint( const_one * push_const.val );
         }
     )");
 
-    // 3. Run operation with string shader synchronously
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-        { tensorInA, tensorInB, tensorOut },
-        kp::Shader::compile_source(shaderString));
-
-    // 4. Map results back from GPU memory to print the results
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorInA, tensorInB, tensorOut });
-
-    // Prints the output which is Output: { 2, 4, 6 }
-    for (const float& elem : tensorOut->data()) std::cout << elem << "  ";
+    // Run the function declared above with our raw string shader
+    kompute(shader);
 }
 
 ```
@@ -94,34 +141,85 @@ int main() {
 The [Python package](https://kompute.cc/overview/python-package.html) provides a [high level interactive interface](https://kompute.cc/overview/python-reference.html) that enables for experimentation whilst ensuring high performance and fast development workflows.
 
 ```python
-# 1. Create Kompute Manager with default settings (device 0 and first compute compatible queue)
-mgr = Manager()
 
-# 2. Create and initialise Kompute Tensors (can be initialized with List[] or np.Array)
-tensor_in_a = Tensor([2, 2, 2])
-tensor_in_b = Tensor([1, 2, 3])
-tensor_out = Tensor([0, 0, 0])
+def kompute(shader):
+    # 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
+    mgr = kp.Manager()
 
-mgr.eval_tensor_create_def([tensor_in_a, tensor_in_b, tensor_out])
+    # 2. Create and initialise Kompute Tensors through manager
 
-# 3. Specify "multiply shader" code (can also be raw string, spir-v bytes or file path)
-@python2shader
-def compute_shader_multiply(index=("input", "GlobalInvocationId", ivec3),
-                            data1=("buffer", 0, Array(f32)),
-                            data2=("buffer", 1, Array(f32)),
-                            data3=("buffer", 2, Array(f32))):
-    i = index.x
-    data3[i] = data1[i] * data2[i]
+    # Default tensor constructor simplifies creation of float values
+    tensor_in_a = mgr.tensor([2, 2, 2])
+    tensor_in_b = mgr.tensor([1, 2, 3])
+    # Explicit type constructor supports uint32, int32, double, float and bool
+    tensor_out_a = mgr.tensor_t(np.array([0, 0, 0], dtype=np.uint32))
+    tensor_out_b = mgr.tensor_t(np.array([0, 0, 0], dtype=np.uint32))
 
-# 4. Run multiplication operation synchronously
-mgr.eval_algo_data_def(
-    [tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
+    params = [tensor_in_a, tensor_in_b, tensor_out_a, tensor_out_b]
 
-# 5. Map results back from GPU memory to print the results
-mgr.eval_tensor_sync_local_def([tensor_out])
+    # 3. Create algorithm based on shader (supports buffers & push/spec constants)
+    workgroup = (3, 1, 1)
+    spec_consts = [2]
+    push_consts_a = [2]
+    push_consts_b = [3]
 
-# Prints [2.0, 4.0, 6.0]
-print(tensor_out.data())
+    spirv = kp.Shader.compile_source(shader)
+
+    algo = mgr.algorithm(params, spirv, workgroup, spec_consts, push_consts_a)
+
+    # 4. Run operation synchronously using sequence
+    (mgr.sequence()
+        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpAlgoDispatch(algo)) # Binds default push consts provided
+        .eval() # evaluates the two recorded ops
+        .record(kp.OpAlgoDispatch(algo, push_consts_b)) # Overrides push consts
+        .eval()) # evaluates only the last recorded op
+
+    # 5. Sync results from the GPU asynchronously
+    sq = mgr.sequence()
+    sq.eval_async(kp.OpTensorSyncLocal(params))
+
+    # ... Do other work asynchronously whilst GPU finishes
+
+    sq.eval_await()
+
+    # Prints the first output which is: { 4, 8, 12 }
+    print(tensor_out_a)
+    # Prints the first output which is: { 10, 10, 10 }
+    print(tensor_out_b)
+
+if __name__ == "__main__":
+
+    # Define a raw string shader (or use the Kompute tools to compile to SPIRV / C++ header
+    # files). This shader shows some of the main components including constants, buffers, etc
+    shader = """
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
+        layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { uint out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { uint out_b[]; };
+
+        // Kompute supports push constants updated on dispatch
+        layout(push_constant) uniform PushConstants {
+            float val;
+        } push_const;
+
+        // Kompute also supports spec constants on initalization
+        layout(constant_id = 0) const float const_one = 0;
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            out_a[index] += uint( in_a[index] * in_b[index] );
+            out_b[index] += uint( const_one * push_const.val );
+        }
+    """
+
+    kompute(shader)
+
 ```
 
 ### Interactive Notebooks & Hands on Videos
@@ -199,7 +297,7 @@ The core architecture of Kompute includes the following:
 * [Kompute Sequence](https://kompute.cc/overview/reference.html#sequence) - Container of operations that can be sent to GPU as batch
 * [Kompute Operation (Base)](https://kompute.cc/overview/reference.html#algorithm) - Base class from which all operations inherit
 * [Kompute Tensor](https://kompute.cc/overview/reference.html#tensor) - Tensor structured data used in GPU operations
-* [Kompute Algorithm](https://kompute.cc/overview/reference.html#algorithm) - Abstraction for (shader) code executed in the GPU
+* [Kompute Algorithm](https://kompute.cc/overview/reference.html#algorithm) - Abstraction for (shader) logic executed in the GPU
 
 To see a full breakdown you can read further in the [C++ Class Reference](https://kompute.cc/overview/reference.html).
 
@@ -341,6 +439,12 @@ We appreciate PRs and Issues. If you want to contribute try checking the "Good f
 * Uses xxd (or xxd.exe windows 64bit port) to convert shader spirv to header files
 * Uses doxygen and sphinx for documentation and autodocs
 * Uses vcpkg for finding the dependencies, it's the recommended set up to retrieve the libraries
+
+If you want to run with debug layers you can add them with the `KOMPUTE_ENV_DEBUG_LAYERS` parameter as:
+
+```
+export KOMPUTE_ENV_DEBUG_LAYERS="VK_LAYER_LUNARG_api_dump"
+```
 
 ##### Updating documentation
 

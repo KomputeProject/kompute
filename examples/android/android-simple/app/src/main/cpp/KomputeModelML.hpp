@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "kompute/Kompute.hpp"
 
@@ -20,8 +21,8 @@ public:
     std::vector<float> get_params();
 
 private:
-    kp::Tensor mWeights;
-    kp::Tensor mBias;
+    std::shared_ptr<kp::Tensor> mWeights;
+    std::shared_ptr<kp::Tensor> mBias;
 
 };
 

@@ -64,15 +64,15 @@ The :class:`kp::OpBase` provides a top level class for an operation in Kompute, 
 .. doxygenclass:: kp::OpBase
    :members:
 
-OpAlgoBase
+OpAlgoDispatch
 -------
 
-The vk::OpAlgoBase extends the vk::OpBase class, and provides the base for shader-based operations. Besides of consisting of one or more vk::Tensor as per the vk::OpBase, it also contains a unique vk::Algorithm.
+The `vk::OpAlgoDispatch` extends the `vk::OpBase` class, and provides the base for shader-based operations. Besides of consisting of one or more `vk::Tensor` as per the `vk::OpBase`, it also contains a unique `vk::Algorithm`.
 
 .. image:: ../images/kompute-vulkan-architecture-opmult.jpg
    :width: 100%
 
-.. doxygenclass:: kp::OpAlgoBase
+.. doxygenclass:: kp::OpAlgoDispatch
    :members:
 
 OpMult
@@ -111,6 +111,13 @@ The :class:`kp::OpTensorSyncDevice` is a tensor only operation that maps the dat
 .. doxygenclass:: kp::OpTensorSyncDevice
    :members:
 
+OpMemoryBarrier
+-------
+
+The :class:`kp::OpMemoryBarrier` is a tensor only operation which adds memory barriers to the tensors provided with the access and stage masks provided.
+
+.. doxygenclass:: kp::OpTensorSyncDevice
+   :members:
 
 Shader
 --------

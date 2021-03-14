@@ -56,9 +56,9 @@ void KomputeSummator::_init() {
                 { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
-        this->mSequence->record<kp::OpAlgoBase>(
+        this->mSequence->record<kp::OpAlgoCreate>(
             { this->mPrimaryTensor, this->mSecondaryTensor }, 
-            kp::Shader::compile_source(shader));
+            kp::Shader::compileSource(shader));
 
         // We map the result back to local 
         this->mSequence->record<kp::OpTensorSyncLocal>(

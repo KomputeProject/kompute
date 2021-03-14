@@ -11,19 +11,17 @@ TEST(TestOpTensorSync, SyncToDeviceMemorySingleTensor)
     std::vector<float> testVecPreA{ 0, 0, 0 };
     std::vector<float> testVecPostA{ 9, 8, 7 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecPreA) };
-
-    mgr.rebuild({ tensorA }, false);
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecPreA);
 
     EXPECT_TRUE(tensorA->isInit());
 
     tensorA->setData(testVecPostA);
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA });
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensorA });
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorA });
 
-    EXPECT_EQ(tensorA->data(), testVecPostA);
+    EXPECT_EQ(tensorA->vector(), testVecPostA);
 }
 
 TEST(TestOpTensorSync, SyncToDeviceMemoryMultiTensor)
@@ -33,11 +31,9 @@ TEST(TestOpTensorSync, SyncToDeviceMemoryMultiTensor)
 
     std::vector<float> testVec{ 9, 8, 7 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor({ 0, 0, 0 }) };
-    std::shared_ptr<kp::Tensor> tensorC{ new kp::Tensor({ 0, 0, 0 }) };
-
-    mgr.rebuild({ tensorA, tensorB, tensorC }, false);
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
+    std::shared_ptr<kp::TensorT<float>> tensorC = mgr.tensor({ 0, 0, 0 });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -45,13 +41,13 @@ TEST(TestOpTensorSync, SyncToDeviceMemoryMultiTensor)
 
     tensorA->setData(testVec);
 
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA });
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensorA });
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB, tensorC });
+    mgr.sequence()->eval<kp::OpTensorCopy>({ tensorA, tensorB, tensorC });
 
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB, tensorC });
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB, tensorC });
 
-    EXPECT_EQ(tensorA->data(), testVec);
-    EXPECT_EQ(tensorB->data(), testVec);
-    EXPECT_EQ(tensorC->data(), testVec);
+    EXPECT_EQ(tensorA->vector(), testVec);
+    EXPECT_EQ(tensorB->vector(), testVec);
+    EXPECT_EQ(tensorC->vector(), testVec);
 }

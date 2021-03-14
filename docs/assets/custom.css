@@ -46,6 +46,9 @@ a:hover {
 .md-nav__item a:hover {
     color: #0091ea;
 }
+.md-nav__item a[data-md-state="blur"] {
+    color: #1a7c80;
+}
 
 .md-source {
 	color: #fff;

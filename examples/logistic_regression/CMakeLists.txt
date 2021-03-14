@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17.0)
+cmake_minimum_required(VERSION 3.4.1)
 project(kompute_linear_reg VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -23,10 +23,6 @@ endif()
 
 find_package(Vulkan REQUIRED)
 
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    find_package(spdlog REQUIRED)
-endif()
-
 add_executable(kompute_linear_reg
     src/Main.cpp)
 
@@ -39,7 +35,7 @@ include_directories(
         ../../single_include/)
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    target_link_libraries(kompute_array_mult
+    target_link_libraries(kompute_linear_reg
         spdlog::spdlog)
 endif()
 

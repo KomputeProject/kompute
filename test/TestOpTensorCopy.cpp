@@ -11,21 +11,19 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensor)
     std::vector<float> testVecA{ 1, 2, 3 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
-
-    mgr.rebuild({ tensorA, tensorB });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecA);
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor(testVecB);
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB })
+      ->eval<kp::OpTensorCopy>({ tensorA, tensorB })
+      ->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
 
-    EXPECT_EQ(tensorA->data(), tensorB->data());
-
-    // Making sure the GPU holds the same data
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB });
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    // Making sure the GPU holds the same vector
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 }
 
 TEST(TestOpTensorCopy, CopyDeviceToDeviceTensorMulti)
@@ -37,25 +35,26 @@ TEST(TestOpTensorCopy, CopyDeviceToDeviceTensorMulti)
     std::vector<float> testVecB{ 0, 0, 0 };
     std::vector<float> testVecC{ 0, 0, 0 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
-    std::shared_ptr<kp::Tensor> tensorC{ new kp::Tensor(testVecC) };
-
-    mgr.rebuild({ tensorA, tensorB, tensorC });
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecA);
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor(testVecB);
+    std::shared_ptr<kp::TensorT<float>> tensorC = mgr.tensor(testVecC);
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
     EXPECT_TRUE(tensorC->isInit());
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB, tensorC });
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB, tensorC })
+      ->eval<kp::OpTensorCopy>({ tensorA, tensorB, tensorC });
 
-    EXPECT_EQ(tensorA->data(), tensorB->data());
-    EXPECT_EQ(tensorA->data(), tensorC->data());
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
+    EXPECT_EQ(tensorA->vector(), tensorC->vector());
 
-    // Making sure the GPU holds the same data
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB, tensorC });
-    EXPECT_EQ(tensorA->data(), tensorB->data());
-    EXPECT_EQ(tensorA->data(), tensorC->data());
+    // Making sure the GPU holds the same vector
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorB, tensorC });
+
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
+    EXPECT_EQ(tensorA->vector(), tensorC->vector());
 }
 
 TEST(TestOpTensorCopy, CopyDeviceToHostTensor)
@@ -66,25 +65,23 @@ TEST(TestOpTensorCopy, CopyDeviceToHostTensor)
     std::vector<float> testVecA{ 3, 4, 5 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(testVecA) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
-      testVecB, kp::Tensor::TensorTypes::eHost) };
-
-    mgr.rebuild({ tensorA, tensorB }, false);
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecA);
+    std::shared_ptr<kp::TensorT<float>> tensorB =
+      mgr.tensor(testVecB, kp::Tensor::TensorTypes::eHost);
 
     //  Only calling sync on device type tensor
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorA });
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensorA });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
+    mgr.sequence()->eval<kp::OpTensorCopy>({ tensorA, tensorB });
 
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 
-    // Making sure the GPU holds the same data
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB });
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    // Making sure the GPU holds the same vector
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorB });
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 }
 
 TEST(TestOpTensorCopy, CopyHostToDeviceTensor)
@@ -95,28 +92,23 @@ TEST(TestOpTensorCopy, CopyHostToDeviceTensor)
     std::vector<float> testVecA{ 4, 5, 6 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
-      testVecA, kp::Tensor::TensorTypes::eHost) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(testVecB) };
-
-    mgr.rebuild({ tensorA, tensorB }, false);
-
-    // Manually copy data into host memory of Tensor
-    tensorA->mapDataIntoHostMemory();
+    std::shared_ptr<kp::TensorT<float>> tensorA =
+      mgr.tensor(testVecA, kp::Tensor::TensorTypes::eHost);
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor(testVecB);
 
     //  Only calling sync on device type tensor
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>({ tensorB });
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
+    mgr.sequence()->eval<kp::OpTensorCopy>({ tensorA, tensorB });
 
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 
-    // Making sure the GPU holds the same data
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB });
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    // Making sure the GPU holds the same vector
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorB });
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 }
 
 TEST(TestOpTensorCopy, CopyHostToHostTensor)
@@ -127,23 +119,23 @@ TEST(TestOpTensorCopy, CopyHostToHostTensor)
     std::vector<float> testVecA{ 5, 6, 7 };
     std::vector<float> testVecB{ 0, 0, 0 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
-      testVecA, kp::Tensor::TensorTypes::eHost) };
-    std::shared_ptr<kp::Tensor> tensorB{ new kp::Tensor(
-      testVecB, kp::Tensor::TensorTypes::eHost) };
-
-    mgr.rebuild({ tensorA, tensorB });
+    std::shared_ptr<kp::TensorT<float>> tensorA =
+      mgr.tensor(testVecA, kp::Tensor::TensorTypes::eHost);
+    std::shared_ptr<kp::TensorT<float>> tensorB =
+      mgr.tensor(testVecB, kp::Tensor::TensorTypes::eHost);
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
 
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>({ tensorA })
+      ->eval<kp::OpTensorCopy>({ tensorA, tensorB });
 
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 
-    // Making sure the GPU holds the same data
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB });
-    EXPECT_EQ(tensorA->data(), tensorB->data());
+    // Making sure the GPU holds the same vector
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorB });
+    EXPECT_EQ(tensorA->vector(), tensorB->vector());
 }
 
 TEST(TestOpTensorCopy, SingleTensorShouldFail)
@@ -153,13 +145,11 @@ TEST(TestOpTensorCopy, SingleTensorShouldFail)
 
     std::vector<float> testVecA{ 6, 7, 8 };
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor(
-      testVecA, kp::Tensor::TensorTypes::eHost) };
-
-    mgr.rebuild({ tensorA }, false);
+    std::shared_ptr<kp::TensorT<float>> tensorA =
+      mgr.tensor(testVecA, kp::Tensor::TensorTypes::eHost);
 
     EXPECT_TRUE(tensorA->isInit());
 
-    EXPECT_THROW(mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA }),
+    EXPECT_THROW(mgr.sequence()->eval<kp::OpTensorCopy>({ tensorA }),
                  std::runtime_error);
 }

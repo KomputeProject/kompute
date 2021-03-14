@@ -1,82 +1,48 @@
 
-#include "kompute/Tensor.hpp"
-
 #include "kompute/operations/OpTensorSyncDevice.hpp"
 
 namespace kp {
 
-OpTensorSyncDevice::OpTensorSyncDevice()
-{
-    KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor base");
-}
-
 OpTensorSyncDevice::OpTensorSyncDevice(
-  std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-  std::shared_ptr<vk::Device> device,
-  std::shared_ptr<vk::CommandBuffer> commandBuffer,
-  std::vector<std::shared_ptr<Tensor>> tensors)
-  : OpBase(physicalDevice, device, commandBuffer, tensors)
+  const std::vector<std::shared_ptr<Tensor>>& tensors)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
+
+    if (tensors.size() < 1) {
+        throw std::runtime_error(
+          "Kompute OpTensorSyncDevice called with less than 1 tensor");
+    }
+
+    this->mTensors = tensors;
 }
 
 OpTensorSyncDevice::~OpTensorSyncDevice()
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice destructor started");
+
+    this->mTensors.clear();
 }
 
 void
-OpTensorSyncDevice::init()
-{
-    KP_LOG_DEBUG("Kompute OpTensorSyncDevice init called");
-
-    if (this->mTensors.size() < 1) {
-        throw std::runtime_error(
-          "Kompute OpTensorSyncDevice called with less than 1 tensor");
-    }
-
-    for (std::shared_ptr<Tensor> tensor : this->mTensors) {
-        if (!tensor->isInit()) {
-            throw std::runtime_error("Kompute OpTensorSyncDevice: Tensor param "
-                                     "has not been initialized");
-        }
-        if (tensor->tensorType() == Tensor::TensorTypes::eStorage) {
-            KP_LOG_WARN(
-              "Kompute OpTensorSyncLocal tensor parameter is of type "
-              "TensorTypes::eStorage and hence cannot be used to receive or "
-              "pass data.");
-        }
-    }
-}
-
-void
-OpTensorSyncDevice::record()
+OpTensorSyncDevice::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
         if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
-            this->mTensors[i]->recordCopyFromStagingToDevice(
-              this->mCommandBuffer, false);
+            this->mTensors[i]->recordCopyFromStagingToDevice(commandBuffer);
         }
     }
 }
 
 void
-OpTensorSyncDevice::preEval()
+OpTensorSyncDevice::preEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
-
-    // Performing sync of data as eval can be called multiple times with same op
-    for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() != Tensor::TensorTypes::eStorage) {
-            this->mTensors[i]->mapDataIntoHostMemory();
-        }
-    }
 }
 
 void
-OpTensorSyncDevice::postEval()
+OpTensorSyncDevice::postEval(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice postEval called");
 }

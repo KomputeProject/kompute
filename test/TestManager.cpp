@@ -3,130 +3,69 @@
 
 #include "kompute/Kompute.hpp"
 
-TEST(TestManager, EndToEndOpMultFlow)
+TEST(TestManager, EndToEndOpMultEvalFlow)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
-    mgr.rebuild({ tensorLHS });
+    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
+    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
-    mgr.rebuild({ tensorRHS });
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+                                                        tensorRHS,
+                                                        tensorOutput };
 
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpMult>(params, mgr.algorithm())
+      ->eval<kp::OpTensorSyncLocal>(params);
 
-    mgr.rebuild({ tensorOutput });
-
-    mgr.evalOpDefault<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
-
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOutput });
-
-    EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
+    EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
 }
 
-TEST(TestManager, OpMultSequenceFlow)
+TEST(TestManager, EndToEndOpMultSeqFlow)
 {
-
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
-
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
-
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
-
     kp::Manager mgr;
 
-    {
-        mgr.rebuild({ tensorLHS, tensorRHS, tensorOutput });
+    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
+    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence");
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+                                                        tensorRHS,
+                                                        tensorOutput };
 
-        sq->begin();
+    mgr.sequence()
+      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpMult>(params, mgr.algorithm())
+      ->record<kp::OpTensorSyncLocal>(params)
+      ->eval();
 
-        sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
-
-        sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
-
-        sq->end();
-        sq->eval();
-    }
-
-    EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
+    EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
 }
 
 TEST(TestManager, TestMultipleSequences)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Sequence> sqOne =
-      mgr.sequence("sqOne");
+    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
+    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::shared_ptr<kp::Sequence> sqTwo =
-      mgr.sequence("sqTwo");
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+                                                        tensorRHS,
+                                                        tensorOutput };
 
-    std::shared_ptr<kp::Sequence> sqOneRef =
-      mgr.sequence("sqOne");
+    mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+    mgr.sequence()->eval<kp::OpMult>(params, mgr.algorithm());
+    mgr.sequence()->eval<kp::OpTensorSyncLocal>(params);
 
-    std::shared_ptr<kp::Sequence> sqTwoRef =
-      mgr.sequence("sqTwo");
-
-    EXPECT_EQ(sqOne, sqOneRef);
-    EXPECT_NE(sqTwo, sqOneRef);
-    EXPECT_EQ(sqTwo, sqTwoRef);
-    EXPECT_NE(sqOneRef, sqTwoRef);
+    EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
 }
 
-TEST(TestManager, TestMultipleTensorsAtOnce)
-{
-
-    std::shared_ptr<kp::Tensor> tensorLHS{ new kp::Tensor({ 0, 1, 2 }) };
-
-    std::shared_ptr<kp::Tensor> tensorRHS{ new kp::Tensor({ 2, 4, 6 }) };
-
-    std::shared_ptr<kp::Tensor> tensorOutput{ new kp::Tensor({ 0, 0, 0 }) };
-
-    kp::Manager mgr;
-
-    std::shared_ptr<kp::Sequence> sq =
-      mgr.sequence("newSequence");
-
-    {
-        mgr.rebuild({ tensorLHS, tensorRHS, tensorOutput });
-
-        EXPECT_TRUE(tensorLHS->isInit());
-        EXPECT_TRUE(tensorRHS->isInit());
-        EXPECT_TRUE(tensorOutput->isInit());
-
-        sq->begin();
-
-        sq->record<kp::OpMult>({ tensorLHS, tensorRHS, tensorOutput });
-
-        sq->record<kp::OpTensorSyncLocal>({ tensorOutput });
-
-        sq->end();
-        sq->eval();
-    }
-
-    EXPECT_EQ(tensorOutput->data(), std::vector<float>({ 0, 4, 12 }));
-}
-
-TEST(TestManager, TestCreateInitTensor)
+TEST(TestManager, TestDeviceProperties)
 {
     kp::Manager mgr;
-
-    std::shared_ptr<kp::Tensor> tensorA = mgr.tensor({ 0, 1, 2 });
-    std::shared_ptr<kp::Tensor> tensorB = mgr.tensor({ 0, 0, 0 });
-
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorB });
-
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorB });
-
-    EXPECT_EQ(tensorB->data(), std::vector<float>({ 0, 1, 2 }));
-
-    std::shared_ptr<kp::Tensor> tensorC =
-      mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eHost);
-
-    mgr.evalOpDefault<kp::OpTensorCopy>({ tensorA, tensorC });
-
-    EXPECT_EQ(tensorC->data(), std::vector<float>({ 0, 1, 2 }));
+    const auto properties = mgr.getDeviceProperties();
+    EXPECT_GT(properties.deviceName.size(), 0);
 }

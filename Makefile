@@ -13,7 +13,7 @@ VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsyst
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 # Regext to pass to catch2 to filter tests
-FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution"
+FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
@@ -57,7 +57,6 @@ MK_KOMPUTE_EXTRA_CXX_FLAGS ?= ""
 mk_cmake:
 	cmake \
 		-Bbuild \
-		$(MK_CMAKE_EXTRA_FLAGS) \
 		-DKOMPUTE_EXTRA_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_BUILD_TYPE=$(MK_BUILD_TYPE) \
 		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
@@ -69,6 +68,7 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
+		$(MK_CMAKE_EXTRA_FLAGS) \
 		-G "Unix Makefiles"
 
 mk_build_all:
@@ -163,6 +163,9 @@ generate_python_docstrings:
 	python -m pybind11_mkdoc \
 		-o python/src/docstrings.hpp \
 		single_include/kompute/Kompute.hpp \
+		-Iexternal/fmt/include/ \
+		-Iexternal/spdlog/include/ \
+		-Iexternal/glslang/ \
 		-I/usr/include/c++/7.5.0/
 
 install_python_reqs:
@@ -196,4 +199,4 @@ format:
 build_changelog:
 	docker run --rm -it -v "$(PWD)":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN} ferrarimarco/github-changelog-generator:1.15.2 -u EthicalML -p vulkan-kompute
 	chmod 664 CHANGELOG.md # (Read+Write, Read+Write, Read)
-	sed -i -e 's/\(HEAD\|Unreleased\)/v0.6.0/g' CHANGELOG.md # Replacing unreleased version with latest tag
+	sed -i -e 's/\(HEAD\|Unreleased\)/v${VERSION}/g' CHANGELOG.md # Replacing unreleased version with latest tag

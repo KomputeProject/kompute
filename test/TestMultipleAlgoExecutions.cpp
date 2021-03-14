@@ -3,12 +3,82 @@
 
 #include "kompute/Kompute.hpp"
 
+TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
+{
+
+    kp::Manager mgr;
+
+    // Default tensor constructor simplifies creation of float values
+    auto tensorInA = mgr.tensor({ 2., 2., 2. });
+    auto tensorInB = mgr.tensor({ 1., 2., 3. });
+    // Explicit type constructor supports int, in32, double, float and int
+    auto tensorOutA = mgr.tensorT<uint32_t>({ 0, 0, 0 });
+    auto tensorOutB = mgr.tensorT<uint32_t>({ 0, 0, 0 });
+
+    std::string shader = (R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer buf_in_a { float in_a[]; };
+        layout(set = 0, binding = 1) buffer buf_in_b { float in_b[]; };
+        layout(set = 0, binding = 2) buffer buf_out_a { uint out_a[]; };
+        layout(set = 0, binding = 3) buffer buf_out_b { uint out_b[]; };
+
+        // Kompute supports push constants updated on dispatch
+        layout(push_constant) uniform PushConstants {
+            float val;
+        } push_const;
+
+        // Kompute also supports spec constants on initalization
+        layout(constant_id = 0) const float const_one = 0;
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            out_a[index] += uint( in_a[index] * in_b[index] );
+            out_b[index] += uint( const_one * push_const.val );
+        }
+    )");
+
+    std::vector<std::shared_ptr<kp::Tensor>> params = {
+        tensorInA, tensorInB, tensorOutA, tensorOutB
+    };
+
+    kp::Workgroup workgroup({ 3, 1, 1 });
+    kp::Constants specConsts({ 2 });
+    kp::Constants pushConstsA({ 2.0 });
+    kp::Constants pushConstsB({ 3.0 });
+
+    auto algorithm = mgr.algorithm(params,
+                                   kp::Shader::compileSource(shader),
+                                   workgroup,
+                                   specConsts,
+                                   pushConstsA);
+
+    // 3. Run operation with string shader synchronously
+    mgr.sequence()
+      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpAlgoDispatch>(algorithm)
+      ->eval()
+      ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
+      ->eval();
+
+    auto sq = mgr.sequence();
+    sq->evalAsync<kp::OpTensorSyncLocal>(params);
+
+    sq->evalAwait();
+
+    EXPECT_EQ(tensorOutA->vector(), std::vector<uint32_t>({ 4, 8, 12 }));
+    EXPECT_EQ(tensorOutB->vector(), std::vector<uint32_t>({ 10, 10, 10 }));
+}
+
 TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
 {
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -19,35 +89,26 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuild({ tensorA });
-
-    std::shared_ptr<kp::Sequence> sq =
-      mgr.sequence("newSequence");
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     {
-        sq->begin();
-
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
-
-        sq->record<kp::OpTensorSyncLocal>({ tensorA });
-
-        sq->end();
-        sq->eval();
+        mgr.sequence()
+          ->record<kp::OpTensorSyncDevice>({ tensorA })
+          ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record<kp::OpTensorSyncLocal>({ tensorA })
+          ->eval();
     }
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -58,43 +119,24 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuild({ tensorA }, false);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
-    std::shared_ptr<kp::Sequence> sqTensor = mgr.sequence();
+    std::shared_ptr<kp::Algorithm> algorithm =
+      mgr.algorithm({ tensorA }, spirv);
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    // First create the tensor in a separate sequence
-    sqTensor->begin();
-    sqTensor->record<kp::OpTensorSyncDevice>({ tensorA });
-    sqTensor->end();
-    sqTensor->eval();
+    mgr.sequence()->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-    // Then perform the computations
-    sq->begin();
-    sq->record<kp::OpAlgoBase>({ tensorA },
-                               kp::Shader::compile_source(shader));
-    sq->end();
-    sq->eval();
+    mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->begin();
-    sq->record<kp::OpAlgoBase>({ tensorA },
-                               kp::Shader::compile_source(shader));
-    sq->end();
-    sq->eval();
+    mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->begin();
-    sq->record<kp::OpAlgoBase>({ tensorA },
-                               kp::Shader::compile_source(shader));
-    sq->end();
-    sq->eval();
+    mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->begin();
-    sq->record<kp::OpTensorSyncLocal>({ tensorA });
-    sq->end();
-    sq->eval();
+    mgr.sequence()->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, MultipleSequences)
@@ -102,7 +144,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -113,68 +155,31 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuild({ tensorA });
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence");
+    std::shared_ptr<kp::Algorithm> algorithm =
+      mgr.algorithm({ tensorA }, spirv);
 
-        sq->begin();
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
+    sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-        sq->end();
-        sq->eval();
-    }
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence2");
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-        sq->begin();
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
+    sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
-        sq->end();
-        sq->eval();
-    }
-
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence3");
-
-        sq->begin();
-
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
-
-        sq->end();
-        sq->eval();
-    }
-
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence5");
-
-        sq->begin();
-
-        sq->record<kp::OpTensorSyncLocal>({ tensorA });
-
-        sq->end();
-        sq->eval();
-    }
-
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
 TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 {
-
     kp::Manager mgr;
 
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
 
     std::string shader(R"(
       #version 450
@@ -185,169 +190,18 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
           pa[index] = pa[index] + 1;
       })");
 
-    mgr.rebuild({ tensorA }, false);
+    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence");
+    std::shared_ptr<kp::Algorithm> algorithm =
+      mgr.algorithm({ tensorA }, spirv);
 
-        sq->begin();
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-        sq->record<kp::OpTensorSyncDevice>({ tensorA });
+    sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
 
-        sq->end();
-        sq->eval();
-    }
+    sq->record<kp::OpAlgoDispatch>(algorithm)->eval()->eval()->eval();
 
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence2");
+    sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
 
-        sq->begin();
-
-        sq->record<kp::OpAlgoBase>(
-          { tensorA }, kp::Shader::compile_source(shader));
-
-        sq->end();
-
-        sq->eval();
-        sq->eval();
-        sq->eval();
-    }
-
-    {
-        std::shared_ptr<kp::Sequence> sq =
-          mgr.sequence("newSequence3");
-
-        sq->begin();
-
-        sq->record<kp::OpTensorSyncLocal>({ tensorA });
-
-        sq->end();
-
-        sq->eval();
-        sq->eval();
-        sq->eval();
-    }
-
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 3, 3, 3 }));
+    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
-
-TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrOpCreate)
-{
-
-    kp::Manager mgr;
-
-    std::shared_ptr<kp::Tensor> tensorInA{ new kp::Tensor({ 2.0, 4.0, 6.0 }) };
-    std::shared_ptr<kp::Tensor> tensorInB{ new kp::Tensor({ 0.0, 1.0, 2.0 }) };
-    std::shared_ptr<kp::Tensor> tensorOut{ new kp::Tensor({ 0.0, 0.0, 0.0 }) };
-
-    mgr.rebuild({ tensorInA, tensorInB, tensorOut });
-
-    std::string shader(R"(
-        // The version to use 
-        #version 450
-
-        // The execution structure
-        layout (local_size_x = 1) in;
-
-        // The buffers are provided via the tensors
-        layout(binding = 0) buffer bufA { float a[]; };
-        layout(binding = 1) buffer bufB { float b[]; };
-        layout(binding = 2) buffer bufOut { float o[]; };
-
-        void main() {
-            uint index = gl_GlobalInvocationID.x;
-
-            o[index] = a[index] * b[index];
-        }
-      )");
-
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorInA, tensorInB, tensorOut },
-      kp::Shader::compile_source(shader));
-
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOut });
-
-    EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
-}
-
-TEST(TestMultipleAlgoExecutions, ManagerEvalMultSourceStrMgrCreate)
-{
-
-    kp::Manager mgr;
-
-    auto tensorInA = mgr.tensor(
-      { 2.0, 4.0, 6.0 }, kp::Tensor::TensorTypes::eDevice, false);
-    auto tensorInB = mgr.tensor(
-      { 0.0, 1.0, 2.0 }, kp::Tensor::TensorTypes::eDevice, false);
-    auto tensorOut = mgr.tensor(
-      { 0.0, 0.0, 0.0 }, kp::Tensor::TensorTypes::eDevice, false);
-
-    std::string shader(R"(
-        // The version to use 
-        #version 450
-
-        // The execution structure
-        layout (local_size_x = 1) in;
-
-        // The buffers are provided via the tensors
-        layout(binding = 0) buffer bufA { float a[]; };
-        layout(binding = 1) buffer bufB { float b[]; };
-        layout(binding = 2) buffer bufOut { float o[]; };
-
-        void main() {
-            uint index = gl_GlobalInvocationID.x;
-
-            o[index] = a[index] * b[index];
-        }
-      )");
-
-    mgr.evalOpDefault<kp::OpTensorSyncDevice>(
-      { tensorInA, tensorInB, tensorOut });
-
-    mgr.evalOpDefault<kp::OpAlgoBase>(
-      { tensorInA, tensorInB, tensorOut },
-      kp::Shader::compile_source(shader));
-
-    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorOut });
-
-    EXPECT_EQ(tensorOut->data(), std::vector<float>({ 0.0, 4.0, 12.0 }));
-}
-
-TEST(TestMultipleAlgoExecutions, SequenceAlgoDestroyOutsideManagerScope)
-{
-    std::shared_ptr<kp::Tensor> tensorA{ new kp::Tensor({ 0, 0, 0 }) };
-
-    std::string shader(R"(
-      #version 450
-      layout (local_size_x = 1) in;
-      layout(set = 0, binding = 0) buffer a { float pa[]; };
-      void main() {
-          uint index = gl_GlobalInvocationID.x;
-          pa[index] = pa[index] + 1;
-      })");
-
-    {
-        std::shared_ptr<kp::Sequence> sq = nullptr;
-
-        {
-            kp::Manager mgr;
-
-            mgr.rebuild({ tensorA });
-
-            sq = mgr.sequence();
-
-            sq->begin();
-            sq->record<kp::OpAlgoBase>(
-              { tensorA }, kp::Shader::compile_source(shader));
-            sq->end();
-
-            sq->eval();
-
-            mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA });
-        }
-    }
-    EXPECT_EQ(tensorA->data(), std::vector<float>({ 1, 1, 1 }));
-}
-
