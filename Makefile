@@ -199,4 +199,4 @@ format:
 build_changelog:
 	docker run --rm -it -v "$(PWD)":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN} ferrarimarco/github-changelog-generator:1.15.2 -u EthicalML -p vulkan-kompute
 	chmod 664 CHANGELOG.md # (Read+Write, Read+Write, Read)
-	sed -i -e 's/\(HEAD\|Unreleased\)/v0.6.0/g' CHANGELOG.md # Replacing unreleased version with latest tag
+	sed -i -e 's/\(HEAD\|Unreleased\)/v${VERSION}/g' CHANGELOG.md # Replacing unreleased version with latest tag
