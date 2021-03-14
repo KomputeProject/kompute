@@ -51,8 +51,8 @@ endif()
 
 target_include_directories(
     kompute PUBLIC
-    $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/single_include
 )
 
 if(NOT KOMPUTE_OPT_ANDOID_BUILD)
