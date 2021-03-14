@@ -57,7 +57,7 @@ target_include_directories(
 
 if(NOT KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
-        kompute PRIVATE
+        kompute
         Vulkan::Vulkan
     )
 else()
@@ -87,7 +87,7 @@ else()
 endif()
 
 target_link_libraries(
-    kompute PUBLIC
+    kompute 
     fmt::fmt
 )
 
@@ -103,7 +103,7 @@ if(KOMPUTE_OPT_ENABLE_SPDLOG)
     endif()
 
     target_link_libraries(
-        kompute PUBLIC
+        kompute 
         spdlog::spdlog
     )
 endif()
@@ -114,7 +114,7 @@ endif()
 
 if(KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
-        kompute PRIVATE
+        kompute 
         kompute_vk_ndk_wrapper
         log
         android
@@ -152,8 +152,7 @@ if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
             kompute PRIVATE
             ${PROJECT_SOURCE_DIR}/external/glslang)
 
-        target_link_libraries(
-            kompute PUBLIC
+        target_link_libraries(kompute
             # Not including hlsl support
             # HLSL
             # glslang includes OGLCompiler, OSDependent, MachineIndependent
@@ -166,8 +165,7 @@ if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
             kompute PRIVATE
             ${GLSLANG_GENERATED_INCLUDEDIR})
 
-        target_link_libraries(
-            kompute PUBLIC
+        target_link_libraries(kompute
             # Not including hlsl support
             # glslang::HLSL
             # Adding explicit dependencies to match above
