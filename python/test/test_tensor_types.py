@@ -82,7 +82,7 @@ def test_type_float_double_incorrect():
 
     assert np.all(tensor_out.data() != arr_in_a * arr_in_b)
 
-@pytest.mark.skipif("swiftshader" in os.environ.get("VK_ICD_FILENAMES"),
+@pytest.mark.skipif("swiftshader" in os.environ.get("VK_ICD_FILENAMES", ""),
                     reason="Swiftshader doesn't support double")
 def test_type_double():
 
