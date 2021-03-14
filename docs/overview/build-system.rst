@@ -33,6 +33,10 @@ This by default configures without any of the extra build tasks (such as buildin
      - Disables the install step in the cmake file (useful for android build)
    * - -DKOMPUTE_OPT_ANDROID_BUILD=1
      - Enables android build which includes and excludes relevant libraries
+   * - -DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=1
+     - Ensures dependencies are referenced as shared libraries for kompute install
+   * - -DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=1
+     - Whether to build Kompute as shared lib instead of static
 
 
 Compile Flags

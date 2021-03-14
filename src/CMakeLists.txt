@@ -39,9 +39,15 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
         ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
 endif()
 
-add_library(
-    kompute STATIC
-    ${kompute_CPP})
+if(NOT KOMPUTE_OPT_BUILD_AS_SHARED_LIB)
+    add_library(
+        kompute STATIC
+        ${kompute_CPP})
+else()
+    add_library(
+        kompute SHARED
+        ${kompute_CPP})
+endif()
 
 target_include_directories(
     kompute PUBLIC
