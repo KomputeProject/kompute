@@ -1,6 +1,76 @@
 # Changelog
 
-## [v0.6.0](https://github.com/EthicalML/vulkan-kompute/tree/v0.6.0)
+## [v0.7.0](https://github.com/EthicalML/vulkan-kompute/tree/v0.7.0)
+
+[Full Changelog](https://github.com/EthicalML/vulkan-kompute/compare/v0.6.0...v0.7.0)
+
+**Implemented enhancements:**
+
+- Extend non-spdlog print functions to use std::format [\#158](https://github.com/EthicalML/vulkan-kompute/issues/158)
+- Add code coverage reports with codecov [\#145](https://github.com/EthicalML/vulkan-kompute/issues/145)
+- Explore removing `std::vector mData;` completely from Tensor in favour of always storing data in hostVisible buffer memory \(TBC\) [\#144](https://github.com/EthicalML/vulkan-kompute/issues/144)
+- Update all examples to match breaking changes in 0.7.0 [\#141](https://github.com/EthicalML/vulkan-kompute/issues/141)
+- Avoid copy when returning python numpy / array [\#139](https://github.com/EthicalML/vulkan-kompute/issues/139)
+- Cover all Python & C++ tests in CI  [\#121](https://github.com/EthicalML/vulkan-kompute/issues/121)
+- Add C++ Test for Simple Work Groups Example [\#117](https://github.com/EthicalML/vulkan-kompute/issues/117)
+- Expose push constants in OpAlgo [\#54](https://github.com/EthicalML/vulkan-kompute/issues/54)
+- Expose ability to create barriers in OpTensor operations [\#45](https://github.com/EthicalML/vulkan-kompute/issues/45)
+- Create delete function in manager to free / destroy sequence [\#36](https://github.com/EthicalML/vulkan-kompute/issues/36)
+- Make specialisation data extensible [\#12](https://github.com/EthicalML/vulkan-kompute/issues/12)
+- Support multiple types for Kompute Tensors [\#2](https://github.com/EthicalML/vulkan-kompute/issues/2)
+- Added re-record sequence functionality and updated docs [\#171](https://github.com/EthicalML/vulkan-kompute/pull/171) ([axsaucedo](https://github.com/axsaucedo))
+- Extend non-spdlog print functions to use fmt::format / fmt::print [\#159](https://github.com/EthicalML/vulkan-kompute/pull/159) ([axsaucedo](https://github.com/axsaucedo))
+- Added support for custom SpecializedConstants and removed KomputeWorkgroup class [\#151](https://github.com/EthicalML/vulkan-kompute/pull/151) ([axsaucedo](https://github.com/axsaucedo))
+- Added destroy functions for tensors and sequences \(named and object\) [\#146](https://github.com/EthicalML/vulkan-kompute/pull/146) ([axsaucedo](https://github.com/axsaucedo))
+
+**Fixed bugs:**
+
+- push\_constant not working in my case? [\#168](https://github.com/EthicalML/vulkan-kompute/issues/168)
+- DescriptorPool set is not being freed [\#155](https://github.com/EthicalML/vulkan-kompute/issues/155)
+- Updated memory barriers to include staging buffers [\#182](https://github.com/EthicalML/vulkan-kompute/pull/182) ([axsaucedo](https://github.com/axsaucedo))
+- Adds push const ranges in pipelinelayout to fix \#168 [\#174](https://github.com/EthicalML/vulkan-kompute/pull/174) ([axsaucedo](https://github.com/axsaucedo))
+- Added destructor for staging tensors [\#134](https://github.com/EthicalML/vulkan-kompute/pull/134) ([axsaucedo](https://github.com/axsaucedo))
+
+**Closed issues:**
+
+- Update memory barriers to align with tensor staging/primary memory revamp [\#181](https://github.com/EthicalML/vulkan-kompute/issues/181)
+- Move shader defaultResource inside kp::Shader class [\#175](https://github.com/EthicalML/vulkan-kompute/issues/175)
+- Reach at least 90% code coverage on tests [\#170](https://github.com/EthicalML/vulkan-kompute/issues/170)
+- Add functionality to re-record sequence as now it's possible to update the underlying algorithm [\#169](https://github.com/EthicalML/vulkan-kompute/issues/169)
+- Use numpy arrays as default return value [\#166](https://github.com/EthicalML/vulkan-kompute/issues/166)
+- Update all shared\_ptr value passes to be by ref or const ref [\#161](https://github.com/EthicalML/vulkan-kompute/issues/161)
+- Amend memory hierarchy for kp::Operations so they can be created separately [\#160](https://github.com/EthicalML/vulkan-kompute/issues/160)
+- Customise theme of documentation [\#156](https://github.com/EthicalML/vulkan-kompute/issues/156)
+- Remove KomputeWorkgroup class in favour of std::array\<uint32\_t, 3\> [\#152](https://github.com/EthicalML/vulkan-kompute/issues/152)
+- Passing raw GLSL string to Shader Module depricated so remove this method from supported approach [\#150](https://github.com/EthicalML/vulkan-kompute/issues/150)
+- Add python backwards compatibility for eval\_tensor\_create\_def [\#147](https://github.com/EthicalML/vulkan-kompute/issues/147)
+- Document breaking changes for 0.7.0 [\#140](https://github.com/EthicalML/vulkan-kompute/issues/140)
+- Tensor memory management and memory hierarchy redesign [\#136](https://github.com/EthicalML/vulkan-kompute/issues/136)
+- Staging tensor GPU memory is not freed as part of OpCreateTensor removal [\#133](https://github.com/EthicalML/vulkan-kompute/issues/133)
+- eStorage Tensors are currently unusable as OpTensorCreate calls mapDataIntoHostMemory [\#132](https://github.com/EthicalML/vulkan-kompute/issues/132)
+- 0.6.0 Release [\#126](https://github.com/EthicalML/vulkan-kompute/issues/126)
+- java.lang.UnsatisfiedLinkError: dlopen failed: library "libkompute-jni.so" not found [\#125](https://github.com/EthicalML/vulkan-kompute/issues/125)
+- Initial exploration: Include explicit GLSL to SPIRV compilation [\#107](https://github.com/EthicalML/vulkan-kompute/issues/107)
+- Add support for push constants [\#106](https://github.com/EthicalML/vulkan-kompute/issues/106)
+
+**Merged pull requests:**
+
+- Resolve moving all functions from tensor HPP to CPP [\#186](https://github.com/EthicalML/vulkan-kompute/pull/186) ([axsaucedo](https://github.com/axsaucedo))
+- Device Properties [\#184](https://github.com/EthicalML/vulkan-kompute/pull/184) ([alexander-g](https://github.com/alexander-g))
+- Too many warnings [\#183](https://github.com/EthicalML/vulkan-kompute/pull/183) ([alexander-g](https://github.com/alexander-g))
+- Add support for bool, double, int32, uint32 and float32 on Tensors via TensorT [\#177](https://github.com/EthicalML/vulkan-kompute/pull/177) ([axsaucedo](https://github.com/axsaucedo))
+- Support for Timestamping [\#176](https://github.com/EthicalML/vulkan-kompute/pull/176) ([alexander-g](https://github.com/alexander-g))
+- Test for ShaderResources [\#165](https://github.com/EthicalML/vulkan-kompute/pull/165) ([aliPMPAINT](https://github.com/aliPMPAINT))
+- Amend memory hierarchy to enable for push constants and functional interface for more flexible operations [\#164](https://github.com/EthicalML/vulkan-kompute/pull/164) ([axsaucedo](https://github.com/axsaucedo))
+- made changes for include paths for complete installation [\#163](https://github.com/EthicalML/vulkan-kompute/pull/163) ([aliPMPAINT](https://github.com/aliPMPAINT))
+- Added dark mode on docs [\#157](https://github.com/EthicalML/vulkan-kompute/pull/157) ([axsaucedo](https://github.com/axsaucedo))
+- Glslang implementation for online shader compilation [\#154](https://github.com/EthicalML/vulkan-kompute/pull/154) ([axsaucedo](https://github.com/axsaucedo))
+- Adding test code coverage using gcov and lcov [\#149](https://github.com/EthicalML/vulkan-kompute/pull/149) ([axsaucedo](https://github.com/axsaucedo))
+- Added temporary backwards compatibility for eval\_tensor\_create\_def function [\#148](https://github.com/EthicalML/vulkan-kompute/pull/148) ([axsaucedo](https://github.com/axsaucedo))
+- Amend memory ownership hierarchy to have Tensor owned by Manager instead of OpCreateTensor / OpBase [\#138](https://github.com/EthicalML/vulkan-kompute/pull/138) ([axsaucedo](https://github.com/axsaucedo))
+- Removed Staging Tensors in favour of having two buffer & memory in a Tensor to minimise data transfer [\#137](https://github.com/EthicalML/vulkan-kompute/pull/137) ([axsaucedo](https://github.com/axsaucedo))
+
+## [v0.6.0](https://github.com/EthicalML/vulkan-kompute/tree/v0.6.0) (2021-01-31)
 
 [Full Changelog](https://github.com/EthicalML/vulkan-kompute/compare/v0.5.1...v0.6.0)
 
@@ -49,7 +119,6 @@
 - Remove the template params from OpAlgoBase for dispatch layout [\#57](https://github.com/EthicalML/vulkan-kompute/issues/57)
 - Enable layout to be configured dynamically within shaders [\#26](https://github.com/EthicalML/vulkan-kompute/issues/26)
 - replaced "static unsigned const" to "static const unsigned" to avoid SWIG parsing error. [\#95](https://github.com/EthicalML/vulkan-kompute/pull/95) ([0x0f0f0f](https://github.com/0x0f0f0f))
-- Added python bindings with kp as python module  [\#88](https://github.com/EthicalML/vulkan-kompute/pull/88) ([axsaucedo](https://github.com/axsaucedo))
 
 **Closed issues:**
 
@@ -69,6 +138,7 @@
 - Adding Python package for Kompute [\#87](https://github.com/EthicalML/vulkan-kompute/issues/87)
 - Python shader extension [\#91](https://github.com/EthicalML/vulkan-kompute/pull/91) ([axsaucedo](https://github.com/axsaucedo))
 - Enhanced python build [\#89](https://github.com/EthicalML/vulkan-kompute/pull/89) ([axsaucedo](https://github.com/axsaucedo))
+- Added python bindings with kp as python module  [\#88](https://github.com/EthicalML/vulkan-kompute/pull/88) ([axsaucedo](https://github.com/axsaucedo))
 
 **Closed issues:**
 

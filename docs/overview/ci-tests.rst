@@ -81,6 +81,7 @@ Performing Release
 In order to perform the release the following steps need to be carried out:
 
 * Build changelog
+    * Create branch called `v<VERSION>-release`
     * Generate latest changelog `make build_changelog`
     * Update latest tag in new CHANGELOG.md to be the vesion to release 
 * Python Release
@@ -96,9 +97,5 @@ In order to perform the release the following steps need to be carried out:
         * Push to test repo `python -m twine upload dist/*`
         * Install package from prod pypi `pip install kp`
         * Ensure all tests pass in GPU and CPU: `python -m pytest`
-
-
-```
-```
 
 

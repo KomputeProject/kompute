@@ -39,19 +39,25 @@ if(KOMPUTE_OPT_ANDOID_BUILD)
         ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
 endif()
 
-add_library(
-    kompute STATIC
-    ${kompute_CPP})
+if(NOT KOMPUTE_OPT_BUILD_AS_SHARED_LIB)
+    add_library(
+        kompute STATIC
+        ${kompute_CPP})
+else()
+    add_library(
+        kompute SHARED
+        ${kompute_CPP})
+endif()
 
 target_include_directories(
     kompute PUBLIC
-    $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/single_include
 )
 
 if(NOT KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
-        kompute 
+        kompute
         Vulkan::Vulkan
     )
 else()
