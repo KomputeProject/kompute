@@ -453,4 +453,10 @@ Manager::getDeviceProperties() const
     return this->mPhysicalDevice->getProperties();
 }
 
+std::vector<vk::PhysicalDevice>
+Manager::listDevices() const
+{
+    return this->mInstance->enumeratePhysicalDevices();
+}
+
 }
