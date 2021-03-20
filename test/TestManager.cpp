@@ -66,6 +66,14 @@ TEST(TestManager, TestMultipleSequences)
 TEST(TestManager, TestDeviceProperties)
 {
     kp::Manager mgr;
-    const auto properties = mgr.getDeviceProperties();
+    const vk::PhysicalDeviceProperties properties = mgr.getDeviceProperties();
     EXPECT_GT(properties.deviceName.size(), 0);
+}
+
+TEST(TestManager, TestListDevices)
+{
+    kp::Manager mgr;
+    const std::vector<vk::PhysicalDevice> devices = mgr.listDevices();
+    EXPECT_GT(devices.size(), 0);
+    EXPECT_GT(devices[0].getProperties().deviceName.size(), 0);
 }
