@@ -227,3 +227,15 @@ def test_workgroup():
     assert np.all(tensor_a.data() == np.stack([np.arange(16)]*8, axis=1).ravel())
     assert np.all(tensor_b.data() == np.stack([np.arange(8)]*16, axis=0).ravel())
 
+def test_mgr_utils():
+    mgr = kp.Manager()
+
+    props = mgr.get_device_properties()
+
+    assert "device_name" in props
+
+    devices = mgr.list_devices()
+
+    assert len(devices) == 1
+    assert "device_name" in devices[0]
+
