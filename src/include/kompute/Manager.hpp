@@ -154,9 +154,19 @@ class Manager
     void clear();
 
     /**
-     * Return a struct containing information about the device.
+     * Information about the current device.
+     *
+     * @return vk::PhysicalDeviceProperties containing information about the device
      **/
     vk::PhysicalDeviceProperties getDeviceProperties() const;
+
+    /**
+     * List the devices available in the current vulkan instance.
+     *
+     * @return vector of physical devices containing their respective properties
+     **/
+    std::vector<vk::PhysicalDevice> listDevices() const;
+
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
