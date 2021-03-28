@@ -92,11 +92,23 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
     std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
 
     {
+        // A sharedMemoryBarrier is required as the shader is not thread-safe:w
+        std::shared_ptr<kp::OpMemoryBarrier> shaderBarrier{
+                  new kp::OpMemoryBarrier({ tensorA },
+                  vk::AccessFlagBits::eTransferRead,
+                  vk::AccessFlagBits::eShaderWrite,
+                  vk::PipelineStageFlagBits::eComputeShader,
+                  vk::PipelineStageFlagBits::eComputeShader)
+        };
+
         mgr.sequence()
           ->record<kp::OpTensorSyncDevice>({ tensorA })
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record(shaderBarrier)
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record(shaderBarrier)
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
+          ->record(shaderBarrier)
           ->record<kp::OpTensorSyncLocal>({ tensorA })
           ->eval();
     }
