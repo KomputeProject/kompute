@@ -108,7 +108,6 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
           ->record(shaderBarrier)
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-          ->record(shaderBarrier)
           ->record<kp::OpTensorSyncLocal>({ tensorA })
           ->eval();
     }
