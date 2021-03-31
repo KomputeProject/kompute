@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#if USE_EXTERNAL_SHADER
+#ifdef USE_EXTERNAL_GLSLANG
 #include <SPIRV/GlslangToSpv.h>
 #else 
 #include <glslang/SPIRV/GlslangToSpv.h>

@@ -88,6 +88,11 @@ if(KOMPUTE_OPT_CODE_COVERAGE)
         ${CODECOV_DIR}html/)
 endif()
 
+# If glslag was cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+        add_compile_definitions(USE_EXTERNAL_GLSLANG)
+endif()
+
 # Allow scripts to call main kompute Makefile
 function(kompute_make KOMPUTE_MAKE_TARGET)
     add_custom_target(${KOMPUTE_MAKE_TARGET}

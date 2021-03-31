@@ -145,11 +145,6 @@ endif()
 #################### GLSLANG #######################
 #####################################################
 
-# If glslag was cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
-if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        add_compile_definitions(USE_EXTERNAL_SHADER=1)
-endif()
-
 if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
     if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
         add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang
