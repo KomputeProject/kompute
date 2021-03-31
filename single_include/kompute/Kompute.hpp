@@ -729,7 +729,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #include <iostream>
 #include <vector>
 
-#if USE_EXTERNAL_SHADER
+#ifdef USE_EXTERNAL_GLSLANG
 #include <SPIRV/GlslangToSpv.h>
 #else 
 #include <glslang/SPIRV/GlslangToSpv.h>
