@@ -90,7 +90,7 @@ endif()
 
 # If glslang was cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        add_compile_definitions(USE_EXTERNAL_GLSLANG)
+        add_definitions(-DUSE_EXTERNAL_GLSLANG)
 endif()
 
 # Allow scripts to call main kompute Makefile
