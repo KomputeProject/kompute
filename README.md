@@ -24,7 +24,7 @@
 
 <h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.</h4>
 
-🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
+💬 [Join the Discord for Questions / Chat](https://discord.gg/ywjaBH6v24) 🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
 
 
 ## Principles & Features
@@ -42,6 +42,8 @@
 ## Getting Started
 
 Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.
+
+You can [join the Discord](https://discord.gg/ywjaBH6v24) for questions/discussion, open a [github issue](https://github.com/EthicalML/vulkan-kompute/issues/new), or read [the documentation](https://kompute.cc/).
 
 ### Your First Kompute (C++)
 
