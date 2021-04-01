@@ -88,7 +88,8 @@ if(KOMPUTE_OPT_CODE_COVERAGE)
         ${CODECOV_DIR}html/)
 endif()
 
-# If glslang was cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
+# If glslang is cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
+# As after installation, SPIRV/ header files will be found in glslang/SPIRV/ , more info in #193
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
         add_definitions(-DUSE_EXTERNAL_GLSLANG)
 endif()
