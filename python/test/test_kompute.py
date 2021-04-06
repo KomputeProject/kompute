@@ -236,6 +236,6 @@ def test_mgr_utils():
 
     devices = mgr.list_devices()
 
-    assert len(devices) == 1
+    assert len(devices) > 0
     assert "device_name" in devices[0]
 
