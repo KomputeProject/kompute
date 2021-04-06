@@ -16,7 +16,7 @@ option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
 # Build options
 option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" 0)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
-option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD, "Use the submodule repos instead of external package manager" 0)
+option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDOID_BUILD "Enable android compilation flags required" 0)
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
 option(KOMPUTE_OPT_DISABLE_SHADER_UTILS "Remove shader util code and dependencies including glslang" 0)
