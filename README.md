@@ -74,7 +74,7 @@ void kompute(const std::string& shader) {
     kp::Constants pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(params,
-                                   kp::Shader::compile_source(shader),
+                                   kp::Shader::compileSource(shader),
                                    workgroup,
                                    specConsts,
                                    pushConstsA);
