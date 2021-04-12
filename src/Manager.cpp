@@ -294,8 +294,8 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     
     // This means there are no devices at all
     if (deviceCount == 0) {
-    throw std::runtime_error("Failed to find GPUs with Vulkan support! "
-                             "Maybe you haven't installed vulkan drivers?");
+        throw std::runtime_error("Failed to find GPUs with Vulkan support! "
+                                 "Maybe you haven't installed vulkan drivers?");
     }
     
     // This means that we're exceeding our device limit, for
@@ -303,8 +303,8 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     // 0 and 1 are acceptable. Hence, physicalDeviceIndex should
     // always be less than deviceCount, else we raise an error
     if ( !(deviceCount > physicalDeviceIndex) ) {
-    throw std::runtime_error("There is no such physical index or device, "
-                             "please use your existing device");
+        throw std::runtime_error("There is no such physical index or device, "
+                                 "please use your existing device");
     }
 
     std::vector<vk::PhysicalDevice> physicalDevices =
