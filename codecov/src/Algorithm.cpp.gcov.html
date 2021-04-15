@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-12 07:29:00</td>
+            <td class="headerValue">2021-04-15 19:18:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">14</td>
@@ -66,39 +66,39 @@
 <span class="lineNum">       4 </span>            : 
 <a name="5"><span class="lineNum">       5 </span>            : namespace kp {</a>
 <span class="lineNum">       6 </span>            : 
-<span class="lineNum">       7 </span><span class="lineCov">         50 : Algorithm::Algorithm(std::shared_ptr&lt;vk::Device&gt; device,</span>
+<span class="lineNum">       7 </span><span class="lineCov">         25 : Algorithm::Algorithm(std::shared_ptr&lt;vk::Device&gt; device,</span>
 <span class="lineNum">       8 </span>            :                      const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,
 <span class="lineNum">       9 </span>            :                      const std::vector&lt;uint32_t&gt;&amp; spirv,
 <span class="lineNum">      10 </span>            :                      const Workgroup&amp; workgroup,
 <span class="lineNum">      11 </span>            :                      const Constants&amp; specializationConstants,
-<span class="lineNum">      12 </span><span class="lineCov">        450 :                      const Constants&amp; pushConstants)</span>
+<span class="lineNum">      12 </span><span class="lineCov">        225 :                      const Constants&amp; pushConstants)</span>
 <span class="lineNum">      13 </span>            : {
 <span class="lineNum">      14 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm Constructor with device&quot;);
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            :     this-&gt;mDevice = device;
 <span class="lineNum">      17 </span>            : 
-<span class="lineNum">      18 </span><span class="lineCov">        144 :     if (tensors.size() &amp;&amp; spirv.size()) {</span>
-<span class="lineNum">      19 </span><span class="lineCov">        220 :         KP_LOG_INFO(&quot;Kompute Algorithm initialising with tensor size: {} and &quot;</span>
+<span class="lineNum">      18 </span><span class="lineCov">         72 :     if (tensors.size() &amp;&amp; spirv.size()) {</span>
+<span class="lineNum">      19 </span><span class="lineCov">        110 :         KP_LOG_INFO(&quot;Kompute Algorithm initialising with tensor size: {} and &quot;</span>
 <span class="lineNum">      20 </span>            :                     &quot;spirv size: {}&quot;,
 <span class="lineNum">      21 </span>            :                     tensors.size(),
 <span class="lineNum">      22 </span>            :                     spirv.size());
-<span class="lineNum">      23 </span><span class="lineCov">         44 :         this-&gt;rebuild(</span>
+<span class="lineNum">      23 </span><span class="lineCov">         22 :         this-&gt;rebuild(</span>
 <span class="lineNum">      24 </span>            :           tensors, spirv, workgroup, specializationConstants, pushConstants);
 <span class="lineNum">      25 </span>            :     } else {
-<span class="lineNum">      26 </span><span class="lineCov">         12 :         KP_LOG_INFO(&quot;Kompute Algorithm constructor with empty tensors and or &quot;</span>
+<span class="lineNum">      26 </span><span class="lineCov">          6 :         KP_LOG_INFO(&quot;Kompute Algorithm constructor with empty tensors and or &quot;</span>
 <span class="lineNum">      27 </span>            :                     &quot;spirv so not rebuilding vulkan components&quot;);
 <span class="lineNum">      28 </span>            :     }
-<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         50 : }</span></a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineCov">         25 : }</span></a>
 <span class="lineNum">      30 </span>            : 
-<span class="lineNum">      31 </span><span class="lineCov">        150 : Algorithm::~Algorithm()</span>
+<span class="lineNum">      31 </span><span class="lineCov">         75 : Algorithm::~Algorithm()</span>
 <span class="lineNum">      32 </span>            : {
 <span class="lineNum">      33 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm Destructor started&quot;);
 <span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span><span class="lineCov">         50 :     this-&gt;destroy();</span>
-<span class="lineNum">      36 </span><span class="lineCov">         50 : }</span>
+<span class="lineNum">      35 </span><span class="lineCov">         25 :     this-&gt;destroy();</span>
+<span class="lineNum">      36 </span><span class="lineCov">         25 : }</span>
 <a name="37"><span class="lineNum">      37 </span>            : </a>
 <span class="lineNum">      38 </span>            : void
-<span class="lineNum">      39 </span><span class="lineCov">         52 : Algorithm::rebuild(const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</span>
+<span class="lineNum">      39 </span><span class="lineCov">         26 : Algorithm::rebuild(const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,</span>
 <span class="lineNum">      40 </span>            :                    const std::vector&lt;uint32_t&gt;&amp; spirv,
 <span class="lineNum">      41 </span>            :                    const Workgroup&amp; workgroup,
 <span class="lineNum">      42 </span>            :                    const Constants&amp; specializationConstants,
@@ -106,43 +106,43 @@
 <span class="lineNum">      44 </span>            : {
 <span class="lineNum">      45 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm rebuild started&quot;);
 <span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span><span class="lineCov">         52 :     this-&gt;mTensors = tensors;</span>
-<span class="lineNum">      48 </span><span class="lineCov">         52 :     this-&gt;mSpirv = spirv;</span>
-<span class="lineNum">      49 </span><span class="lineCov">         52 :     this-&gt;mSpecializationConstants = specializationConstants;</span>
-<span class="lineNum">      50 </span><span class="lineCov">         52 :     this-&gt;mPushConstants = pushConstants;</span>
-<span class="lineNum">      51 </span><span class="lineCov">        104 :     this-&gt;setWorkgroup(workgroup,</span>
-<span class="lineNum">      52 </span><span class="lineCov">         52 :                        this-&gt;mTensors.size() ? this-&gt;mTensors[0]-&gt;size() : 1);</span>
+<span class="lineNum">      47 </span><span class="lineCov">         26 :     this-&gt;mTensors = tensors;</span>
+<span class="lineNum">      48 </span><span class="lineCov">         26 :     this-&gt;mSpirv = spirv;</span>
+<span class="lineNum">      49 </span><span class="lineCov">         26 :     this-&gt;mSpecializationConstants = specializationConstants;</span>
+<span class="lineNum">      50 </span><span class="lineCov">         26 :     this-&gt;mPushConstants = pushConstants;</span>
+<span class="lineNum">      51 </span><span class="lineCov">         52 :     this-&gt;setWorkgroup(workgroup,</span>
+<span class="lineNum">      52 </span><span class="lineCov">         26 :                        this-&gt;mTensors.size() ? this-&gt;mTensors[0]-&gt;size() : 1);</span>
 <span class="lineNum">      53 </span>            : 
 <span class="lineNum">      54 </span>            :     // Descriptor pool is created first so if available then destroy all before
 <span class="lineNum">      55 </span>            :     // rebuild
-<span class="lineNum">      56 </span><span class="lineCov">         52 :     if (this-&gt;isInit()) {</span>
-<span class="lineNum">      57 </span><span class="lineCov">          2 :         this-&gt;destroy();</span>
+<span class="lineNum">      56 </span><span class="lineCov">         26 :     if (this-&gt;isInit()) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">          1 :         this-&gt;destroy();</span>
 <span class="lineNum">      58 </span>            :     }
 <span class="lineNum">      59 </span>            : 
-<span class="lineNum">      60 </span><span class="lineCov">         52 :     this-&gt;createParameters();</span>
-<span class="lineNum">      61 </span><span class="lineCov">         52 :     this-&gt;createShaderModule();</span>
-<span class="lineNum">      62 </span><span class="lineCov">         52 :     this-&gt;createPipeline();</span>
-<span class="lineNum">      63 </span><span class="lineCov">         52 : }</span>
+<span class="lineNum">      60 </span><span class="lineCov">         26 :     this-&gt;createParameters();</span>
+<span class="lineNum">      61 </span><span class="lineCov">         26 :     this-&gt;createShaderModule();</span>
+<span class="lineNum">      62 </span><span class="lineCov">         26 :     this-&gt;createPipeline();</span>
+<span class="lineNum">      63 </span><span class="lineCov">         26 : }</span>
 <a name="64"><span class="lineNum">      64 </span>            : </a>
 <span class="lineNum">      65 </span>            : bool
-<span class="lineNum">      66 </span><span class="lineCov">         52 : Algorithm::isInit()</span>
+<span class="lineNum">      66 </span><span class="lineCov">         26 : Algorithm::isInit()</span>
 <span class="lineNum">      67 </span>            : {
-<span class="lineNum">      68 </span><span class="lineCov">         56 :     return this-&gt;mPipeline &amp;&amp; this-&gt;mPipelineCache &amp;&amp; this-&gt;mPipelineLayout &amp;&amp;</span>
-<span class="lineNum">      69 </span><span class="lineCov">          6 :            this-&gt;mDescriptorPool &amp;&amp; this-&gt;mDescriptorSet &amp;&amp;</span>
-<span class="lineNum">      70 </span><span class="lineCov">         56 :            this-&gt;mDescriptorSetLayout &amp;&amp; this-&gt;mShaderModule;</span>
+<span class="lineNum">      68 </span><span class="lineCov">         28 :     return this-&gt;mPipeline &amp;&amp; this-&gt;mPipelineCache &amp;&amp; this-&gt;mPipelineLayout &amp;&amp;</span>
+<span class="lineNum">      69 </span><span class="lineCov">          3 :            this-&gt;mDescriptorPool &amp;&amp; this-&gt;mDescriptorSet &amp;&amp;</span>
+<span class="lineNum">      70 </span><span class="lineCov">         28 :            this-&gt;mDescriptorSetLayout &amp;&amp; this-&gt;mShaderModule;</span>
 <span class="lineNum">      71 </span>            : }
 <span class="lineNum">      72 </span>            : 
 <span class="lineNum">      73 </span>            : void
-<span class="lineNum">      74 </span><span class="lineCov">         52 : Algorithm::destroy()</span>
+<span class="lineNum">      74 </span><span class="lineCov">         26 : Algorithm::destroy()</span>
 <span class="lineNum">      75 </span>            : {
 <span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span><span class="lineCov">         52 :     if (!this-&gt;mDevice) {</span>
+<span class="lineNum">      77 </span><span class="lineCov">         26 :     if (!this-&gt;mDevice) {</span>
 <span class="lineNum">      78 </span><span class="lineNoCov">          0 :         KP_LOG_WARN(&quot;Kompute Algorithm destroy function reached with null &quot;</span>
 <span class="lineNum">      79 </span>            :                     &quot;Device pointer&quot;);
 <span class="lineNum">      80 </span><span class="lineNoCov">          0 :         return;</span>
 <span class="lineNum">      81 </span>            :     }
 <span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span><span class="lineCov">         52 :     if (this-&gt;mFreePipeline &amp;&amp; this-&gt;mPipeline) {</span>
+<span class="lineNum">      83 </span><span class="lineCov">         26 :     if (this-&gt;mFreePipeline &amp;&amp; this-&gt;mPipeline) {</span>
 <span class="lineNum">      84 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Destroying pipeline&quot;);
 <span class="lineNum">      85 </span>            :         if (!this-&gt;mPipeline) {
 <span class="lineNum">      86 </span>            :             KP_LOG_WARN(&quot;Kompute Algorithm Error requested to destroy &quot;
@@ -154,7 +154,7 @@
 <span class="lineNum">      92 </span>            :         this-&gt;mPipeline = nullptr;
 <span class="lineNum">      93 </span>            :     }
 <span class="lineNum">      94 </span>            : 
-<span class="lineNum">      95 </span><span class="lineCov">         52 :     if (this-&gt;mFreePipelineCache &amp;&amp; this-&gt;mPipelineCache) {</span>
+<span class="lineNum">      95 </span><span class="lineCov">         26 :     if (this-&gt;mFreePipelineCache &amp;&amp; this-&gt;mPipelineCache) {</span>
 <span class="lineNum">      96 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Destroying pipeline cache&quot;);
 <span class="lineNum">      97 </span>            :         if (!this-&gt;mPipelineCache) {
 <span class="lineNum">      98 </span>            :             KP_LOG_WARN(&quot;Kompute Algorithm Error requested to destroy &quot;
@@ -166,7 +166,7 @@
 <span class="lineNum">     104 </span>            :         this-&gt;mPipelineCache = nullptr;
 <span class="lineNum">     105 </span>            :     }
 <span class="lineNum">     106 </span>            : 
-<span class="lineNum">     107 </span><span class="lineCov">         52 :     if (this-&gt;mFreePipelineLayout &amp;&amp; this-&gt;mPipelineLayout) {</span>
+<span class="lineNum">     107 </span><span class="lineCov">         26 :     if (this-&gt;mFreePipelineLayout &amp;&amp; this-&gt;mPipelineLayout) {</span>
 <span class="lineNum">     108 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Destroying pipeline layout&quot;);
 <span class="lineNum">     109 </span>            :         if (!this-&gt;mPipelineLayout) {
 <span class="lineNum">     110 </span>            :             KP_LOG_WARN(&quot;Kompute Algorithm Error requested to destroy &quot;
@@ -178,7 +178,7 @@
 <span class="lineNum">     116 </span>            :         this-&gt;mPipelineLayout = nullptr;
 <span class="lineNum">     117 </span>            :     }
 <span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span><span class="lineCov">         52 :     if (this-&gt;mFreeShaderModule &amp;&amp; this-&gt;mShaderModule) {</span>
+<span class="lineNum">     119 </span><span class="lineCov">         26 :     if (this-&gt;mFreeShaderModule &amp;&amp; this-&gt;mShaderModule) {</span>
 <span class="lineNum">     120 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Destroying shader module&quot;);
 <span class="lineNum">     121 </span>            :         if (!this-&gt;mShaderModule) {
 <span class="lineNum">     122 </span>            :             KP_LOG_WARN(&quot;Kompute Algorithm Error requested to destroy shader &quot;
@@ -204,7 +204,7 @@
 <span class="lineNum">     142 </span>            :     //    this-&gt;mDescriptorSet = nullptr;
 <span class="lineNum">     143 </span>            :     //}
 <span class="lineNum">     144 </span>            : 
-<span class="lineNum">     145 </span><span class="lineCov">         52 :     if (this-&gt;mFreeDescriptorSetLayout &amp;&amp; this-&gt;mDescriptorSetLayout) {</span>
+<span class="lineNum">     145 </span><span class="lineCov">         26 :     if (this-&gt;mFreeDescriptorSetLayout &amp;&amp; this-&gt;mDescriptorSetLayout) {</span>
 <span class="lineNum">     146 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Destroying Descriptor Set Layout&quot;);
 <span class="lineNum">     147 </span>            :         if (!this-&gt;mDescriptorSetLayout) {
 <span class="lineNum">     148 </span>            :             KP_LOG_WARN(&quot;Kompute Algorithm Error requested to destroy &quot;
@@ -216,7 +216,7 @@
 <span class="lineNum">     154 </span>            :         this-&gt;mDescriptorSetLayout = nullptr;
 <span class="lineNum">     155 </span>            :     }
 <span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span><span class="lineCov">         52 :     if (this-&gt;mFreeDescriptorPool &amp;&amp; this-&gt;mDescriptorPool) {</span>
+<span class="lineNum">     157 </span><span class="lineCov">         26 :     if (this-&gt;mFreeDescriptorPool &amp;&amp; this-&gt;mDescriptorPool) {</span>
 <span class="lineNum">     158 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Destroying Descriptor Pool&quot;);
 <span class="lineNum">     159 </span>            :         if (!this-&gt;mDescriptorPool) {
 <span class="lineNum">     160 </span>            :             KP_LOG_WARN(&quot;Kompute Algorithm Error requested to destroy &quot;
@@ -230,33 +230,33 @@
 <span class="lineNum">     168 </span>            : }
 <span class="lineNum">     169 </span>            : 
 <span class="lineNum">     170 </span>            : void
-<span class="lineNum">     171 </span><span class="lineCov">         52 : Algorithm::createParameters()</span>
+<span class="lineNum">     171 </span><span class="lineCov">         26 : Algorithm::createParameters()</span>
 <span class="lineNum">     172 </span>            : {
 <span class="lineNum">     173 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm createParameters started&quot;);
 <span class="lineNum">     174 </span>            : 
 <span class="lineNum">     175 </span>            :     std::vector&lt;vk::DescriptorPoolSize&gt; descriptorPoolSizes = {
 <span class="lineNum">     176 </span>            :         vk::DescriptorPoolSize(
 <span class="lineNum">     177 </span>            :           vk::DescriptorType::eStorageBuffer,
-<span class="lineNum">     178 </span><span class="lineCov">         52 :           static_cast&lt;uint32_t&gt;(this-&gt;mTensors.size()) // Descriptor count</span>
+<span class="lineNum">     178 </span><span class="lineCov">         26 :           static_cast&lt;uint32_t&gt;(this-&gt;mTensors.size()) // Descriptor count</span>
 <span class="lineNum">     179 </span>            :           )
-<span class="lineNum">     180 </span><span class="lineCov">        104 :     };</span>
+<span class="lineNum">     180 </span><span class="lineCov">         52 :     };</span>
 <span class="lineNum">     181 </span>            : 
 <span class="lineNum">     182 </span>            :     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
 <span class="lineNum">     183 </span>            :       vk::DescriptorPoolCreateFlags(),
 <span class="lineNum">     184 </span>            :       1, // Max sets
-<span class="lineNum">     185 </span><span class="lineCov">         52 :       static_cast&lt;uint32_t&gt;(descriptorPoolSizes.size()),</span>
-<span class="lineNum">     186 </span><span class="lineCov">        104 :       descriptorPoolSizes.data());</span>
+<span class="lineNum">     185 </span><span class="lineCov">         26 :       static_cast&lt;uint32_t&gt;(descriptorPoolSizes.size()),</span>
+<span class="lineNum">     186 </span><span class="lineCov">         52 :       descriptorPoolSizes.data());</span>
 <span class="lineNum">     187 </span>            : 
 <span class="lineNum">     188 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm creating descriptor pool&quot;);
-<span class="lineNum">     189 </span><span class="lineCov">         52 :     this-&gt;mDescriptorPool = std::make_shared&lt;vk::DescriptorPool&gt;();</span>
-<span class="lineNum">     190 </span><span class="lineCov">         52 :     this-&gt;mDevice-&gt;createDescriptorPool(</span>
+<span class="lineNum">     189 </span><span class="lineCov">         26 :     this-&gt;mDescriptorPool = std::make_shared&lt;vk::DescriptorPool&gt;();</span>
+<span class="lineNum">     190 </span><span class="lineCov">         26 :     this-&gt;mDevice-&gt;createDescriptorPool(</span>
 <span class="lineNum">     191 </span>            :       &amp;descriptorPoolInfo, nullptr, this-&gt;mDescriptorPool.get());
-<span class="lineNum">     192 </span><span class="lineCov">         52 :     this-&gt;mFreeDescriptorPool = true;</span>
+<span class="lineNum">     192 </span><span class="lineCov">         26 :     this-&gt;mFreeDescriptorPool = true;</span>
 <span class="lineNum">     193 </span>            : 
 <span class="lineNum">     194 </span>            :     std::vector&lt;vk::DescriptorSetLayoutBinding&gt; descriptorSetBindings;
-<span class="lineNum">     195 </span><span class="lineCov">        464 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">     195 </span><span class="lineCov">        232 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
 <span class="lineNum">     196 </span>            :         descriptorSetBindings.push_back(
-<span class="lineNum">     197 </span><span class="lineCov">        240 :           vk::DescriptorSetLayoutBinding(i, // Binding index</span>
+<span class="lineNum">     197 </span><span class="lineCov">        120 :           vk::DescriptorSetLayoutBinding(i, // Binding index</span>
 <span class="lineNum">     198 </span>            :                                          vk::DescriptorType::eStorageBuffer,
 <span class="lineNum">     199 </span>            :                                          1, // Descriptor count
 <span class="lineNum">     200 </span>            :                                          vk::ShaderStageFlagBits::eCompute));
@@ -265,35 +265,35 @@
 <span class="lineNum">     203 </span>            :     // This is the component that is fed into the pipeline
 <span class="lineNum">     204 </span>            :     vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo(
 <span class="lineNum">     205 </span>            :       vk::DescriptorSetLayoutCreateFlags(),
-<span class="lineNum">     206 </span><span class="lineCov">         52 :       static_cast&lt;uint32_t&gt;(descriptorSetBindings.size()),</span>
-<span class="lineNum">     207 </span><span class="lineCov">        104 :       descriptorSetBindings.data());</span>
+<span class="lineNum">     206 </span><span class="lineCov">         26 :       static_cast&lt;uint32_t&gt;(descriptorSetBindings.size()),</span>
+<span class="lineNum">     207 </span><span class="lineCov">         52 :       descriptorSetBindings.data());</span>
 <span class="lineNum">     208 </span>            : 
 <span class="lineNum">     209 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm creating descriptor set layout&quot;);
-<span class="lineNum">     210 </span><span class="lineCov">         52 :     this-&gt;mDescriptorSetLayout = std::make_shared&lt;vk::DescriptorSetLayout&gt;();</span>
-<span class="lineNum">     211 </span><span class="lineCov">         52 :     this-&gt;mDevice-&gt;createDescriptorSetLayout(</span>
+<span class="lineNum">     210 </span><span class="lineCov">         26 :     this-&gt;mDescriptorSetLayout = std::make_shared&lt;vk::DescriptorSetLayout&gt;();</span>
+<span class="lineNum">     211 </span><span class="lineCov">         26 :     this-&gt;mDevice-&gt;createDescriptorSetLayout(</span>
 <span class="lineNum">     212 </span>            :       &amp;descriptorSetLayoutInfo, nullptr, this-&gt;mDescriptorSetLayout.get());
-<span class="lineNum">     213 </span><span class="lineCov">         52 :     this-&gt;mFreeDescriptorSetLayout = true;</span>
+<span class="lineNum">     213 </span><span class="lineCov">         26 :     this-&gt;mFreeDescriptorSetLayout = true;</span>
 <span class="lineNum">     214 </span>            : 
 <span class="lineNum">     215 </span>            :     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
 <span class="lineNum">     216 </span>            :       *this-&gt;mDescriptorPool,
 <span class="lineNum">     217 </span>            :       1, // Descriptor set layout count
-<span class="lineNum">     218 </span><span class="lineCov">         52 :       this-&gt;mDescriptorSetLayout.get());</span>
+<span class="lineNum">     218 </span><span class="lineCov">         26 :       this-&gt;mDescriptorSetLayout.get());</span>
 <span class="lineNum">     219 </span>            : 
 <span class="lineNum">     220 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm allocating descriptor sets&quot;);
-<span class="lineNum">     221 </span><span class="lineCov">         52 :     this-&gt;mDescriptorSet = std::make_shared&lt;vk::DescriptorSet&gt;();</span>
-<span class="lineNum">     222 </span><span class="lineCov">         52 :     this-&gt;mDevice-&gt;allocateDescriptorSets(&amp;descriptorSetAllocateInfo,</span>
+<span class="lineNum">     221 </span><span class="lineCov">         26 :     this-&gt;mDescriptorSet = std::make_shared&lt;vk::DescriptorSet&gt;();</span>
+<span class="lineNum">     222 </span><span class="lineCov">         26 :     this-&gt;mDevice-&gt;allocateDescriptorSets(&amp;descriptorSetAllocateInfo,</span>
 <span class="lineNum">     223 </span>            :                                           this-&gt;mDescriptorSet.get());
-<span class="lineNum">     224 </span><span class="lineCov">         52 :     this-&gt;mFreeDescriptorSet = true;</span>
+<span class="lineNum">     224 </span><span class="lineCov">         26 :     this-&gt;mFreeDescriptorSet = true;</span>
 <span class="lineNum">     225 </span>            : 
 <span class="lineNum">     226 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm updating descriptor sets&quot;);
-<span class="lineNum">     227 </span><span class="lineCov">        464 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">     227 </span><span class="lineCov">        232 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
 <span class="lineNum">     228 </span>            :         std::vector&lt;vk::WriteDescriptorSet&gt; computeWriteDescriptorSets;
 <span class="lineNum">     229 </span>            : 
 <span class="lineNum">     230 </span>            :         vk::DescriptorBufferInfo descriptorBufferInfo =
-<span class="lineNum">     231 </span><span class="lineCov">        120 :           this-&gt;mTensors[i]-&gt;constructDescriptorBufferInfo();</span>
+<span class="lineNum">     231 </span><span class="lineCov">         60 :           this-&gt;mTensors[i]-&gt;constructDescriptorBufferInfo();</span>
 <span class="lineNum">     232 </span>            : 
 <span class="lineNum">     233 </span>            :         computeWriteDescriptorSets.push_back(
-<span class="lineNum">     234 </span><span class="lineCov">        240 :           vk::WriteDescriptorSet(*this-&gt;mDescriptorSet,</span>
+<span class="lineNum">     234 </span><span class="lineCov">        120 :           vk::WriteDescriptorSet(*this-&gt;mDescriptorSet,</span>
 <span class="lineNum">     235 </span>            :                                  i, // Destination binding
 <span class="lineNum">     236 </span>            :                                  0, // Destination array element
 <span class="lineNum">     237 </span>            :                                  1, // Descriptor count
@@ -306,72 +306,72 @@
 <span class="lineNum">     244 </span>            :     }
 <span class="lineNum">     245 </span>            : 
 <span class="lineNum">     246 </span>            :     KP_LOG_DEBUG(&quot;Kompue Algorithm successfully run init&quot;);
-<span class="lineNum">     247 </span><span class="lineCov">         52 : }</span>
+<span class="lineNum">     247 </span><span class="lineCov">         26 : }</span>
 <span class="lineNum">     248 </span>            : 
 <span class="lineNum">     249 </span>            : void
-<span class="lineNum">     250 </span><span class="lineCov">         52 : Algorithm::createShaderModule()</span>
+<span class="lineNum">     250 </span><span class="lineCov">         26 : Algorithm::createShaderModule()</span>
 <span class="lineNum">     251 </span>            : {
 <span class="lineNum">     252 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm createShaderModule started&quot;);
 <span class="lineNum">     253 </span>            : 
 <span class="lineNum">     254 </span>            :     vk::ShaderModuleCreateInfo shaderModuleInfo(vk::ShaderModuleCreateFlags(),
 <span class="lineNum">     255 </span>            :                                                 sizeof(uint32_t) *
-<span class="lineNum">     256 </span><span class="lineCov">         52 :                                                   this-&gt;mSpirv.size(),</span>
-<span class="lineNum">     257 </span><span class="lineCov">        104 :                                                 this-&gt;mSpirv.data());</span>
+<span class="lineNum">     256 </span><span class="lineCov">         26 :                                                   this-&gt;mSpirv.size(),</span>
+<span class="lineNum">     257 </span><span class="lineCov">         52 :                                                 this-&gt;mSpirv.data());</span>
 <span class="lineNum">     258 </span>            : 
 <span class="lineNum">     259 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm Creating shader module. ShaderFileSize: {}&quot;,
 <span class="lineNum">     260 </span>            :                  this-&gt;mSpirv.size());
-<span class="lineNum">     261 </span><span class="lineCov">         52 :     this-&gt;mFreeShaderModule = true;</span>
-<span class="lineNum">     262 </span><span class="lineCov">         52 :     this-&gt;mShaderModule = std::make_shared&lt;vk::ShaderModule&gt;();</span>
-<span class="lineNum">     263 </span><span class="lineCov">         52 :     this-&gt;mDevice-&gt;createShaderModule(</span>
+<span class="lineNum">     261 </span><span class="lineCov">         26 :     this-&gt;mFreeShaderModule = true;</span>
+<span class="lineNum">     262 </span><span class="lineCov">         26 :     this-&gt;mShaderModule = std::make_shared&lt;vk::ShaderModule&gt;();</span>
+<span class="lineNum">     263 </span><span class="lineCov">         26 :     this-&gt;mDevice-&gt;createShaderModule(</span>
 <span class="lineNum">     264 </span>            :       &amp;shaderModuleInfo, nullptr, this-&gt;mShaderModule.get());
-<span class="lineNum">     265 </span><span class="lineCov">         52 :     this-&gt;mFreeShaderModule = true;</span>
+<span class="lineNum">     265 </span><span class="lineCov">         26 :     this-&gt;mFreeShaderModule = true;</span>
 <span class="lineNum">     266 </span>            : 
 <span class="lineNum">     267 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm create shader module success&quot;);
-<span class="lineNum">     268 </span><span class="lineCov">         52 : }</span>
+<span class="lineNum">     268 </span><span class="lineCov">         26 : }</span>
 <span class="lineNum">     269 </span>            : 
 <span class="lineNum">     270 </span>            : void
-<span class="lineNum">     271 </span><span class="lineCov">         52 : Algorithm::createPipeline()</span>
+<span class="lineNum">     271 </span><span class="lineCov">         26 : Algorithm::createPipeline()</span>
 <span class="lineNum">     272 </span>            : {
 <span class="lineNum">     273 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm calling create Pipeline&quot;);
 <span class="lineNum">     274 </span>            : 
 <span class="lineNum">     275 </span>            :     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
 <span class="lineNum">     276 </span>            :       vk::PipelineLayoutCreateFlags(),
 <span class="lineNum">     277 </span>            :       1, // Set layout count
-<span class="lineNum">     278 </span><span class="lineCov">         52 :       this-&gt;mDescriptorSetLayout.get());</span>
+<span class="lineNum">     278 </span><span class="lineCov">         26 :       this-&gt;mDescriptorSetLayout.get());</span>
 <span class="lineNum">     279 </span>            : 
-<span class="lineNum">     280 </span><span class="lineCov">         52 :     vk::PushConstantRange pushConstantRange;</span>
-<span class="lineNum">     281 </span><span class="lineCov">        104 :     if (this-&gt;mPushConstants.size()) {</span>
+<span class="lineNum">     280 </span><span class="lineCov">         26 :     vk::PushConstantRange pushConstantRange;</span>
+<span class="lineNum">     281 </span><span class="lineCov">         52 :     if (this-&gt;mPushConstants.size()) {</span>
 <span class="lineNum">     282 </span>            :         pushConstantRange.setStageFlags(vk::ShaderStageFlagBits::eCompute);
 <span class="lineNum">     283 </span>            :         pushConstantRange.setOffset(0);
-<span class="lineNum">     284 </span><span class="lineCov">          8 :         pushConstantRange.setSize(sizeof(float) * this-&gt;mPushConstants.size());</span>
+<span class="lineNum">     284 </span><span class="lineCov">          4 :         pushConstantRange.setSize(sizeof(float) * this-&gt;mPushConstants.size());</span>
 <span class="lineNum">     285 </span>            : 
 <span class="lineNum">     286 </span>            :         pipelineLayoutInfo.setPushConstantRangeCount(1);
 <span class="lineNum">     287 </span>            :         pipelineLayoutInfo.setPPushConstantRanges(&amp;pushConstantRange);
 <span class="lineNum">     288 </span>            :     }
 <span class="lineNum">     289 </span>            : 
-<span class="lineNum">     290 </span><span class="lineCov">         52 :     this-&gt;mPipelineLayout = std::make_shared&lt;vk::PipelineLayout&gt;();</span>
-<span class="lineNum">     291 </span><span class="lineCov">         52 :     this-&gt;mDevice-&gt;createPipelineLayout(</span>
+<span class="lineNum">     290 </span><span class="lineCov">         26 :     this-&gt;mPipelineLayout = std::make_shared&lt;vk::PipelineLayout&gt;();</span>
+<span class="lineNum">     291 </span><span class="lineCov">         26 :     this-&gt;mDevice-&gt;createPipelineLayout(</span>
 <span class="lineNum">     292 </span>            :       &amp;pipelineLayoutInfo, nullptr, this-&gt;mPipelineLayout.get());
-<span class="lineNum">     293 </span><span class="lineCov">         52 :     this-&gt;mFreePipelineLayout = true;</span>
+<span class="lineNum">     293 </span><span class="lineCov">         26 :     this-&gt;mFreePipelineLayout = true;</span>
 <span class="lineNum">     294 </span>            : 
 <span class="lineNum">     295 </span>            :     std::vector&lt;vk::SpecializationMapEntry&gt; specializationEntries;
 <span class="lineNum">     296 </span>            : 
-<span class="lineNum">     297 </span><span class="lineCov">        134 :     for (uint32_t i = 0; i &lt; this-&gt;mSpecializationConstants.size(); i++) {</span>
+<span class="lineNum">     297 </span><span class="lineCov">         67 :     for (uint32_t i = 0; i &lt; this-&gt;mSpecializationConstants.size(); i++) {</span>
 <span class="lineNum">     298 </span>            :         vk::SpecializationMapEntry specializationEntry(
 <span class="lineNum">     299 </span>            :           static_cast&lt;uint32_t&gt;(i),
 <span class="lineNum">     300 </span>            :           static_cast&lt;uint32_t&gt;(sizeof(float) * i),
-<span class="lineNum">     301 </span><span class="lineCov">         10 :           sizeof(float));</span>
+<span class="lineNum">     301 </span><span class="lineCov">          5 :           sizeof(float));</span>
 <span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span><span class="lineCov">         10 :         specializationEntries.push_back(specializationEntry);</span>
+<span class="lineNum">     303 </span><span class="lineCov">          5 :         specializationEntries.push_back(specializationEntry);</span>
 <span class="lineNum">     304 </span>            :     }
 <span class="lineNum">     305 </span>            : 
 <span class="lineNum">     306 </span>            :     // This passes ownership of the memory so we remove ownership from
 <span class="lineNum">     307 </span>            :     // specialization container by using &quot;transferDataOwnership&quot;
 <span class="lineNum">     308 </span>            :     vk::SpecializationInfo specializationInfo(
-<span class="lineNum">     309 </span><span class="lineCov">         52 :       static_cast&lt;uint32_t&gt;(specializationEntries.size()),</span>
-<span class="lineNum">     310 </span><span class="lineCov">         52 :       specializationEntries.data(),</span>
+<span class="lineNum">     309 </span><span class="lineCov">         26 :       static_cast&lt;uint32_t&gt;(specializationEntries.size()),</span>
+<span class="lineNum">     310 </span><span class="lineCov">         26 :       specializationEntries.data(),</span>
 <span class="lineNum">     311 </span>            :       sizeof(float) * this-&gt;mSpecializationConstants.size(),
-<span class="lineNum">     312 </span><span class="lineCov">        104 :       this-&gt;mSpecializationConstants.data());</span>
+<span class="lineNum">     312 </span><span class="lineCov">         52 :       this-&gt;mSpecializationConstants.data());</span>
 <span class="lineNum">     313 </span>            : 
 <span class="lineNum">     314 </span>            :     vk::PipelineShaderStageCreateInfo shaderStage(
 <span class="lineNum">     315 </span>            :       vk::PipelineShaderStageCreateFlags(),
@@ -386,12 +386,12 @@
 <span class="lineNum">     324 </span>            :                                                vk::Pipeline(),
 <span class="lineNum">     325 </span>            :                                                0);
 <span class="lineNum">     326 </span>            : 
-<span class="lineNum">     327 </span><span class="lineCov">         52 :     vk::PipelineCacheCreateInfo pipelineCacheInfo =</span>
+<span class="lineNum">     327 </span><span class="lineCov">         26 :     vk::PipelineCacheCreateInfo pipelineCacheInfo =</span>
 <span class="lineNum">     328 </span>            :       vk::PipelineCacheCreateInfo();
-<span class="lineNum">     329 </span><span class="lineCov">         52 :     this-&gt;mPipelineCache = std::make_shared&lt;vk::PipelineCache&gt;();</span>
-<span class="lineNum">     330 </span><span class="lineCov">         52 :     this-&gt;mDevice-&gt;createPipelineCache(</span>
+<span class="lineNum">     329 </span><span class="lineCov">         26 :     this-&gt;mPipelineCache = std::make_shared&lt;vk::PipelineCache&gt;();</span>
+<span class="lineNum">     330 </span><span class="lineCov">         26 :     this-&gt;mDevice-&gt;createPipelineCache(</span>
 <span class="lineNum">     331 </span>            :       &amp;pipelineCacheInfo, nullptr, this-&gt;mPipelineCache.get());
-<span class="lineNum">     332 </span><span class="lineCov">         52 :     this-&gt;mFreePipelineCache = true;</span>
+<span class="lineNum">     332 </span><span class="lineCov">         26 :     this-&gt;mFreePipelineCache = true;</span>
 <span class="lineNum">     333 </span>            : 
 <span class="lineNum">     334 </span>            : #ifdef KOMPUTE_CREATE_PIPELINE_RESULT_VALUE
 <span class="lineNum">     335 </span>            :     vk::ResultValue&lt;vk::Pipeline&gt; pipelineResult =
@@ -407,9 +407,9 @@
 <span class="lineNum">     345 </span>            :     this-&gt;mFreePipeline = true;
 <span class="lineNum">     346 </span>            : #else
 <span class="lineNum">     347 </span>            :     vk::Pipeline pipeline =
-<span class="lineNum">     348 </span><span class="lineCov">         52 :       this-&gt;mDevice-&gt;createComputePipeline(*this-&gt;mPipelineCache, pipelineInfo);</span>
-<span class="lineNum">     349 </span><span class="lineCov">         52 :     this-&gt;mPipeline = std::make_shared&lt;vk::Pipeline&gt;(pipeline);</span>
-<span class="lineNum">     350 </span><span class="lineCov">         52 :     this-&gt;mFreePipeline = true;</span>
+<span class="lineNum">     348 </span><span class="lineCov">         26 :       this-&gt;mDevice-&gt;createComputePipeline(*this-&gt;mPipelineCache, pipelineInfo);</span>
+<span class="lineNum">     349 </span><span class="lineCov">         26 :     this-&gt;mPipeline = std::make_shared&lt;vk::Pipeline&gt;(pipeline);</span>
+<span class="lineNum">     350 </span><span class="lineCov">         26 :     this-&gt;mFreePipeline = true;</span>
 <span class="lineNum">     351 </span>            : #endif
 <span class="lineNum">     352 </span>            : 
 <span class="lineNum">     353 </span>            :     // TODO: Update to consistent
@@ -419,10 +419,10 @@
 <span class="lineNum">     357 </span>            :     //         this-&gt;mPipeline.get());
 <span class="lineNum">     358 </span>            : 
 <span class="lineNum">     359 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm Create Pipeline Success&quot;);
-<span class="lineNum">     360 </span><span class="lineCov">         52 : }</span>
+<span class="lineNum">     360 </span><span class="lineCov">         26 : }</span>
 <span class="lineNum">     361 </span>            : 
 <span class="lineNum">     362 </span>            : void
-<span class="lineNum">     363 </span><span class="lineCov">         64 : Algorithm::recordBindCore(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">     363 </span><span class="lineCov">         32 : Algorithm::recordBindCore(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">     364 </span>            : {
 <span class="lineNum">     365 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm binding pipeline&quot;);
 <span class="lineNum">     366 </span>            : 
@@ -437,70 +437,70 @@
 <span class="lineNum">     375 </span>            :                                      *this-&gt;mDescriptorSet,
 <span class="lineNum">     376 </span>            :                                      nullptr // Dispatcher
 <span class="lineNum">     377 </span>            :     );
-<span class="lineNum">     378 </span><span class="lineCov">         64 : }</span>
+<span class="lineNum">     378 </span><span class="lineCov">         32 : }</span>
 <span class="lineNum">     379 </span>            : 
 <span class="lineNum">     380 </span>            : void
-<span class="lineNum">     381 </span><span class="lineCov">         64 : Algorithm::recordBindPush(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">     381 </span><span class="lineCov">         32 : Algorithm::recordBindPush(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">     382 </span>            : {
-<span class="lineNum">     383 </span><span class="lineCov">        128 :     if (this-&gt;mPushConstants.size()) {</span>
+<span class="lineNum">     383 </span><span class="lineCov">         64 :     if (this-&gt;mPushConstants.size()) {</span>
 <span class="lineNum">     384 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm binding push constants size: {}&quot;,
 <span class="lineNum">     385 </span>            :                      this-&gt;mPushConstants.size());
 <span class="lineNum">     386 </span>            : 
-<span class="lineNum">     387 </span><span class="lineCov">         12 :         commandBuffer.pushConstants(*this-&gt;mPipelineLayout,</span>
+<span class="lineNum">     387 </span><span class="lineCov">          6 :         commandBuffer.pushConstants(*this-&gt;mPipelineLayout,</span>
 <span class="lineNum">     388 </span>            :                                     vk::ShaderStageFlagBits::eCompute,
 <span class="lineNum">     389 </span>            :                                     0,
 <span class="lineNum">     390 </span>            :                                     this-&gt;mPushConstants.size() * sizeof(float),
 <span class="lineNum">     391 </span>            :                                     this-&gt;mPushConstants.data());
 <span class="lineNum">     392 </span>            :     }
-<span class="lineNum">     393 </span><span class="lineCov">         64 : }</span>
+<span class="lineNum">     393 </span><span class="lineCov">         32 : }</span>
 <span class="lineNum">     394 </span>            : 
 <span class="lineNum">     395 </span>            : void
-<span class="lineNum">     396 </span><span class="lineCov">         64 : Algorithm::recordDispatch(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">     396 </span><span class="lineCov">         32 : Algorithm::recordDispatch(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">     397 </span>            : {
 <span class="lineNum">     398 </span>            :     KP_LOG_DEBUG(&quot;Kompute Algorithm recording dispatch&quot;);
 <span class="lineNum">     399 </span>            : 
-<span class="lineNum">     400 </span><span class="lineCov">         64 :     commandBuffer.dispatch(</span>
+<span class="lineNum">     400 </span><span class="lineCov">         32 :     commandBuffer.dispatch(</span>
 <span class="lineNum">     401 </span>            :       this-&gt;mWorkgroup[0], this-&gt;mWorkgroup[1], this-&gt;mWorkgroup[2]);
-<span class="lineNum">     402 </span><span class="lineCov">         64 : }</span>
+<span class="lineNum">     402 </span><span class="lineCov">         32 : }</span>
 <a name="403"><span class="lineNum">     403 </span>            : </a>
 <span class="lineNum">     404 </span>            : void
-<span class="lineNum">     405 </span><span class="lineCov">         52 : Algorithm::setWorkgroup(const Workgroup&amp; workgroup, uint32_t minSize)</span>
+<span class="lineNum">     405 </span><span class="lineCov">         26 : Algorithm::setWorkgroup(const Workgroup&amp; workgroup, uint32_t minSize)</span>
 <span class="lineNum">     406 </span>            : {
 <span class="lineNum">     407 </span>            : 
-<span class="lineNum">     408 </span><span class="lineCov">        104 :     KP_LOG_INFO(&quot;Kompute OpAlgoCreate setting dispatch size&quot;);</span>
+<span class="lineNum">     408 </span><span class="lineCov">         52 :     KP_LOG_INFO(&quot;Kompute OpAlgoCreate setting dispatch size&quot;);</span>
 <span class="lineNum">     409 </span>            : 
 <span class="lineNum">     410 </span>            :     // The dispatch size is set up based on either explicitly provided template
 <span class="lineNum">     411 </span>            :     // parameters or by default it would take the shape and size of the tensors
-<span class="lineNum">     412 </span><span class="lineCov">         52 :     if (workgroup[0] &gt; 0) {</span>
+<span class="lineNum">     412 </span><span class="lineCov">         26 :     if (workgroup[0] &gt; 0) {</span>
 <span class="lineNum">     413 </span>            :         // If at least the x value is provided we use mainly the parameters
 <span class="lineNum">     414 </span>            :         // provided
-<span class="lineNum">     415 </span><span class="lineCov">         12 :         this-&gt;mWorkgroup = { workgroup[0],</span>
-<span class="lineNum">     416 </span><span class="lineCov">         12 :                              workgroup[1] &gt; 0 ? workgroup[1] : 1,</span>
-<span class="lineNum">     417 </span><span class="lineCov">         12 :                              workgroup[2] &gt; 0 ? workgroup[2] : 1 };</span>
+<span class="lineNum">     415 </span><span class="lineCov">          6 :         this-&gt;mWorkgroup = { workgroup[0],</span>
+<span class="lineNum">     416 </span><span class="lineCov">          6 :                              workgroup[1] &gt; 0 ? workgroup[1] : 1,</span>
+<span class="lineNum">     417 </span><span class="lineCov">          6 :                              workgroup[2] &gt; 0 ? workgroup[2] : 1 };</span>
 <span class="lineNum">     418 </span>            :     } else {
-<span class="lineNum">     419 </span><span class="lineCov">         40 :         this-&gt;mWorkgroup = { minSize, 1, 1 };</span>
+<span class="lineNum">     419 </span><span class="lineCov">         20 :         this-&gt;mWorkgroup = { minSize, 1, 1 };</span>
 <span class="lineNum">     420 </span>            :     }
 <span class="lineNum">     421 </span>            : 
-<span class="lineNum">     422 </span><span class="lineCov">         52 :     KP_LOG_INFO(&quot;Kompute OpAlgoCreate set dispatch size X: {}, Y: {}, Z: {}&quot;,</span>
+<span class="lineNum">     422 </span><span class="lineCov">         26 :     KP_LOG_INFO(&quot;Kompute OpAlgoCreate set dispatch size X: {}, Y: {}, Z: {}&quot;,</span>
 <span class="lineNum">     423 </span>            :                 this-&gt;mWorkgroup[0],
 <span class="lineNum">     424 </span>            :                 this-&gt;mWorkgroup[1],
 <span class="lineNum">     425 </span>            :                 this-&gt;mWorkgroup[2]);
-<span class="lineNum">     426 </span><span class="lineCov">         52 : }</span>
+<span class="lineNum">     426 </span><span class="lineCov">         26 : }</span>
 <a name="427"><span class="lineNum">     427 </span>            : </a>
 <span class="lineNum">     428 </span>            : void
-<span class="lineNum">     429 </span><span class="lineCov">         10 : Algorithm::setPush(const Constants&amp; pushConstants)</span>
+<span class="lineNum">     429 </span><span class="lineCov">          5 : Algorithm::setPush(const Constants&amp; pushConstants)</span>
 <span class="lineNum">     430 </span>            : {
 <span class="lineNum">     431 </span>            : 
-<span class="lineNum">     432 </span><span class="lineCov">         30 :     if (pushConstants.size() != this-&gt;mPushConstants.size()) {</span>
+<span class="lineNum">     432 </span><span class="lineCov">         15 :     if (pushConstants.size() != this-&gt;mPushConstants.size()) {</span>
 <span class="lineNum">     433 </span>            :         throw std::runtime_error(
-<span class="lineNum">     434 </span><span class="lineCov">          2 :           fmt::format(&quot;Kompute Algorithm push &quot;</span>
+<span class="lineNum">     434 </span><span class="lineCov">          1 :           fmt::format(&quot;Kompute Algorithm push &quot;</span>
 <span class="lineNum">     435 </span>            :                       &quot;constant provided is size {} but expected size {}&quot;,
-<span class="lineNum">     436 </span><span class="lineCov">          2 :                       pushConstants.size(),</span>
-<span class="lineNum">     437 </span><span class="lineCov">          6 :                       this-&gt;mPushConstants.size()));</span>
+<span class="lineNum">     436 </span><span class="lineCov">          1 :                       pushConstants.size(),</span>
+<span class="lineNum">     437 </span><span class="lineCov">          3 :                       this-&gt;mPushConstants.size()));</span>
 <span class="lineNum">     438 </span>            :     }
 <span class="lineNum">     439 </span>            : 
-<span class="lineNum">     440 </span><span class="lineCov">          8 :     this-&gt;mPushConstants = pushConstants;</span>
-<span class="lineNum">     441 </span><span class="lineCov">          8 : }</span>
+<span class="lineNum">     440 </span><span class="lineCov">          4 :     this-&gt;mPushConstants = pushConstants;</span>
+<span class="lineNum">     441 </span><span class="lineCov">          4 : }</span>
 <a name="442"><span class="lineNum">     442 </span>            : </a>
 <span class="lineNum">     443 </span>            : const Workgroup&amp;
 <span class="lineNum">     444 </span><span class="lineNoCov">          0 : Algorithm::getWorkgroup()</span>
@@ -521,9 +521,9 @@
 <span class="lineNum">     459 </span>            : }
 <a name="460"><span class="lineNum">     460 </span>            : </a>
 <span class="lineNum">     461 </span>            : const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp;
-<span class="lineNum">     462 </span><span class="lineCov">         72 : Algorithm::getTensors()</span>
+<span class="lineNum">     462 </span><span class="lineCov">         36 : Algorithm::getTensors()</span>
 <span class="lineNum">     463 </span>            : {
-<span class="lineNum">     464 </span><span class="lineCov">         72 :     return this-&gt;mTensors;</span>
+<span class="lineNum">     464 </span><span class="lineCov">         36 :     return this-&gt;mTensors;</span>
 <span class="lineNum">     465 </span>            : }
 <span class="lineNum">     466 </span>            : 
 <span class="lineNum">     467 </span>            : }

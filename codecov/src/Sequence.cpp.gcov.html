@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-12 07:29:00</td>
+            <td class="headerValue">2021-04-15 19:18:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">15</td>
@@ -95,11 +95,11 @@
 <span class="lineNum">      33 </span><span class="lineCov">         53 : }</span>
 <span class="lineNum">      34 </span>            : 
 <span class="lineNum">      35 </span>            : void
-<span class="lineNum">      36 </span><span class="lineCov">         99 : Sequence::begin()</span>
+<span class="lineNum">      36 </span><span class="lineCov">        101 : Sequence::begin()</span>
 <span class="lineNum">      37 </span>            : {
 <span class="lineNum">      38 </span>            :     KP_LOG_DEBUG(&quot;Kompute sequence called BEGIN&quot;);
 <span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span><span class="lineCov">         99 :     if (this-&gt;isRecording()) {</span>
+<span class="lineNum">      40 </span><span class="lineCov">        101 :     if (this-&gt;isRecording()) {</span>
 <span class="lineNum">      41 </span>            :         KP_LOG_DEBUG(&quot;Kompute Sequence begin called when already recording&quot;);
 <span class="lineNum">      42 </span>            :         return;
 <span class="lineNum">      43 </span>            :     }
@@ -180,8 +180,8 @@
 <span class="lineNum">     118 </span>            : 
 <span class="lineNum">     119 </span><span class="lineCov">        275 :     this-&gt;mIsRunning = true;</span>
 <span class="lineNum">     120 </span>            : 
-<span class="lineNum">     121 </span><span class="lineCov">       2773 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
-<span class="lineNum">     122 </span><span class="lineCov">       1482 :         this-&gt;mOperations[i]-&gt;preEval(*this-&gt;mCommandBuffer);</span>
+<span class="lineNum">     121 </span><span class="lineCov">       2779 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
+<span class="lineNum">     122 </span><span class="lineCov">       1486 :         this-&gt;mOperations[i]-&gt;preEval(*this-&gt;mCommandBuffer);</span>
 <span class="lineNum">     123 </span>            :     }
 <span class="lineNum">     124 </span>            : 
 <span class="lineNum">     125 </span>            :     vk::SubmitInfo submitInfo(
@@ -227,8 +227,8 @@
 <span class="lineNum">     165 </span>            :         return shared_from_this();
 <span class="lineNum">     166 </span>            :     }
 <span class="lineNum">     167 </span>            : 
-<span class="lineNum">     168 </span><span class="lineCov">       2773 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
-<span class="lineNum">     169 </span><span class="lineCov">       1482 :         this-&gt;mOperations[i]-&gt;postEval(*this-&gt;mCommandBuffer);</span>
+<span class="lineNum">     168 </span><span class="lineCov">       2779 :     for (size_t i = 0; i &lt; this-&gt;mOperations.size(); i++) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">       1486 :         this-&gt;mOperations[i]-&gt;postEval(*this-&gt;mCommandBuffer);</span>
 <span class="lineNum">     170 </span>            :     }
 <span class="lineNum">     171 </span>            : 
 <span class="lineNum">     172 </span>            :     return shared_from_this();
@@ -243,7 +243,7 @@
 <span class="lineNum">     181 </span>            : bool
 <span class="lineNum">     182 </span><span class="lineNoCov">          0 : Sequence::isRecording()</span>
 <span class="lineNum">     183 </span>            : {
-<span class="lineNum">     184 </span><span class="lineCov">        498 :     return this-&gt;mRecording;</span>
+<span class="lineNum">     184 </span><span class="lineCov">        500 :     return this-&gt;mRecording;</span>
 <span class="lineNum">     185 </span>            : }
 <a name="186"><span class="lineNum">     186 </span>            : </a>
 <span class="lineNum">     187 </span>            : bool
@@ -335,26 +335,26 @@
 <span class="lineNum">     273 </span>            : }
 <span class="lineNum">     274 </span>            : 
 <span class="lineNum">     275 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">     276 </span><span class="lineCov">         99 : Sequence::record(std::shared_ptr&lt;OpBase&gt; op)</span>
+<span class="lineNum">     276 </span><span class="lineCov">        101 : Sequence::record(std::shared_ptr&lt;OpBase&gt; op)</span>
 <span class="lineNum">     277 </span>            : {
 <span class="lineNum">     278 </span>            :     KP_LOG_DEBUG(&quot;Kompute Sequence record function started&quot;);
 <span class="lineNum">     279 </span>            : 
-<span class="lineNum">     280 </span><span class="lineCov">         99 :     this-&gt;begin();</span>
+<span class="lineNum">     280 </span><span class="lineCov">        101 :     this-&gt;begin();</span>
 <span class="lineNum">     281 </span>            : 
 <span class="lineNum">     282 </span>            :     KP_LOG_DEBUG(
 <span class="lineNum">     283 </span>            :       &quot;Kompute Sequence running record on OpBase derived class instance&quot;);
 <span class="lineNum">     284 </span>            : 
-<span class="lineNum">     285 </span><span class="lineCov">        198 :     op-&gt;record(*this-&gt;mCommandBuffer);</span>
+<span class="lineNum">     285 </span><span class="lineCov">        202 :     op-&gt;record(*this-&gt;mCommandBuffer);</span>
 <span class="lineNum">     286 </span>            : 
-<span class="lineNum">     287 </span><span class="lineCov">         98 :     this-&gt;mOperations.push_back(op);</span>
+<span class="lineNum">     287 </span><span class="lineCov">        100 :     this-&gt;mOperations.push_back(op);</span>
 <span class="lineNum">     288 </span>            : 
-<span class="lineNum">     289 </span><span class="lineCov">         98 :     if (this-&gt;timestampQueryPool)</span>
+<span class="lineNum">     289 </span><span class="lineCov">        100 :     if (this-&gt;timestampQueryPool)</span>
 <span class="lineNum">     290 </span><span class="lineNoCov">          0 :         this-&gt;mCommandBuffer-&gt;writeTimestamp(</span>
 <span class="lineNum">     291 </span>            :           vk::PipelineStageFlagBits::eAllCommands,
 <span class="lineNum">     292 </span>            :           *this-&gt;timestampQueryPool,
 <span class="lineNum">     293 </span><span class="lineNoCov">          0 :           this-&gt;mOperations.size());</span>
 <span class="lineNum">     294 </span>            : 
-<span class="lineNum">     295 </span><span class="lineCov">         98 :     return shared_from_this();</span>
+<span class="lineNum">     295 </span><span class="lineCov">        100 :     return shared_from_this();</span>
 <span class="lineNum">     296 </span>            : }
 <span class="lineNum">     297 </span>            : 
 <span class="lineNum">     298 </span>            : void

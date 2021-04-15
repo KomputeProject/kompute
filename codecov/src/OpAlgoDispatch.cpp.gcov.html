@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-12 07:29:00</td>
+            <td class="headerValue">2021-04-15 19:18:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -88,11 +88,11 @@
 <span class="lineNum">      26 </span>            :     // Barrier to ensure the data is finished writing to buffer memory
 <span class="lineNum">      27 </span>            :     for (const std::shared_ptr&lt;Tensor&gt;&amp; tensor :
 <span class="lineNum">      28 </span><span class="lineCov">         33 :          this-&gt;mAlgorithm-&gt;getTensors()) {</span>
-<span class="lineNum">      29 </span><span class="lineCov">         70 :         tensor-&gt;recordBufferMemoryBarrier(</span>
+<span class="lineNum">      29 </span><span class="lineCov">         70 :         tensor-&gt;recordPrimaryBufferMemoryBarrier(</span>
 <span class="lineNum">      30 </span>            :           commandBuffer,
-<span class="lineNum">      31 </span>            :           vk::AccessFlagBits::eHostWrite,
+<span class="lineNum">      31 </span>            :           vk::AccessFlagBits::eTransferWrite,
 <span class="lineNum">      32 </span>            :           vk::AccessFlagBits::eShaderRead,
-<span class="lineNum">      33 </span>            :           vk::PipelineStageFlagBits::eHost,
+<span class="lineNum">      33 </span>            :           vk::PipelineStageFlagBits::eTransfer,
 <span class="lineNum">      34 </span>            :           vk::PipelineStageFlagBits::eComputeShader);
 <span class="lineNum">      35 </span>            :     }
 <span class="lineNum">      36 </span>            : 

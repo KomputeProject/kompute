@@ -554,6 +554,26 @@
 <span id="_CPPv3N2kp7Manager5clearEv"></span><span id="_CPPv2N2kp7Manager5clearEv"></span><span id="kp::Manager::clear"></span><span class="target" id="classkp_1_1Manager_1a88bae28eafe571f204a29803f712a0f1"></span>void <code class="sig-name descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager5clearEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Run a pseudo-garbage collection to release all the managed resources that have been already freed due to these reaching to zero ref count. </p>
 </dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4NK2kp7Manager19getDevicePropertiesEv">
+<span id="_CPPv3NK2kp7Manager19getDevicePropertiesEv"></span><span id="_CPPv2NK2kp7Manager19getDevicePropertiesEv"></span><span id="kp::Manager::getDevicePropertiesC"></span><span class="target" id="classkp_1_1Manager_1a27f0c61059156fac4d1f81ee59f70a05"></span>vk::PhysicalDeviceProperties <code class="sig-name descname">getDeviceProperties</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK2kp7Manager19getDevicePropertiesEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Information about the current device.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vk::PhysicalDeviceProperties containing information about the device </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4NK2kp7Manager11listDevicesEv">
+<span id="_CPPv3NK2kp7Manager11listDevicesEv"></span><span id="_CPPv2NK2kp7Manager11listDevicesEv"></span><span id="kp::Manager::listDevicesC"></span><span class="target" id="classkp_1_1Manager_1a5aada58e5b79bc30be715f7df515064a"></span>std::vector&lt;vk::PhysicalDevice&gt; <code class="sig-name descname">listDevices</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK2kp7Manager11listDevicesEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>List the devices available in the current vulkan instance.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>vector of physical devices containing their respective properties </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
 </div>
 </dd></dl>
 
@@ -914,49 +934,62 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEEb">
-<span id="_CPPv3N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEEb"></span><span id="_CPPv2N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEEb"></span><span id="kp::Tensor::recordCopyFrom__vk::CommandBufferCR.std::shared_ptr:Tensor:.b"></span><span class="target" id="classkp_1_1Tensor_1a391daa58dae36aa1d9b539e85937478f"></span>void <code class="sig-name descname">recordCopyFrom</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt; <em>copyFromTensor</em>, bool <em>createBarrier</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEEb" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEE">
+<span id="_CPPv3N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEE"></span><span id="_CPPv2N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEE"></span><span id="kp::Tensor::recordCopyFrom__vk::CommandBufferCR.std::shared_ptr:Tensor:"></span><span class="target" id="classkp_1_1Tensor_1afe8b7b81913863523c7a3e580cf91d8e"></span>void <code class="sig-name descname">recordCopyFrom</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt; <em>copyFromTensor</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor14recordCopyFromERKN2vk13CommandBufferENSt10shared_ptrI6TensorEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Records a copy from the memory of the tensor provided to the current thensor. This is intended to pass memory into a processing, to perform a staging buffer transfer, or to gather output (between others).</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record the commands into </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">copyFromTensor</span></code>: <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> to copy the data from </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">createBarrier</span></code>: Whether to create a barrier that ensures the data is copied before further operations. Default is true. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferEb">
-<span id="_CPPv3N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferEb"></span><span id="_CPPv2N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferEb"></span><span id="kp::Tensor::recordCopyFromStagingToDevice__vk::CommandBufferCR.b"></span><span class="target" id="classkp_1_1Tensor_1aff5e4c626cc66e24d0055a8468174d97"></span>void <code class="sig-name descname">recordCopyFromStagingToDevice</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, bool <em>createBarrier</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferEb" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferE">
+<span id="_CPPv3N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferE"></span><span id="_CPPv2N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferE"></span><span id="kp::Tensor::recordCopyFromStagingToDevice__vk::CommandBufferCR"></span><span class="target" id="classkp_1_1Tensor_1ac565adf645121120c0b9ec31c04c743b"></span>void <code class="sig-name descname">recordCopyFromStagingToDevice</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor29recordCopyFromStagingToDeviceERKN2vk13CommandBufferE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Records a copy from the internal staging memory to the device memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record the commands into </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">createBarrier</span></code>: Whether to create a barrier that ensures the data is copied before further operations. Default is true. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferEb">
-<span id="_CPPv3N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferEb"></span><span id="_CPPv2N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferEb"></span><span id="kp::Tensor::recordCopyFromDeviceToStaging__vk::CommandBufferCR.b"></span><span class="target" id="classkp_1_1Tensor_1a9779708781431ce758cc9044a02c4582"></span>void <code class="sig-name descname">recordCopyFromDeviceToStaging</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, bool <em>createBarrier</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferEb" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferE">
+<span id="_CPPv3N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferE"></span><span id="_CPPv2N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferE"></span><span id="kp::Tensor::recordCopyFromDeviceToStaging__vk::CommandBufferCR"></span><span class="target" id="classkp_1_1Tensor_1ab4be54f0063ffc1687006d6f0b417fcb"></span>void <code class="sig-name descname">recordCopyFromDeviceToStaging</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor29recordCopyFromDeviceToStagingERKN2vk13CommandBufferE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Records a copy from the internal device memory to the staging memory using an optional barrier to wait for the operation. This function would only be relevant for kp::Tensors of type eDevice.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record the commands into </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">createBarrier</span></code>: Whether to create a barrier that ensures the data is copied before further operations. Default is true. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp6Tensor25recordBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE">
-<span id="_CPPv3N2kp6Tensor25recordBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="_CPPv2N2kp6Tensor25recordBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="kp::Tensor::recordBufferMemoryBarrier__vk::CommandBufferCR.vk::AccessFlagBits.vk::AccessFlagBits.vk::PipelineStageFlagBits.vk::PipelineStageFlagBits"></span><span class="target" id="classkp_1_1Tensor_1aecfaadf43600fb9e742aac6e35883851"></span>void <code class="sig-name descname">recordBufferMemoryBarrier</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, vk::AccessFlagBits <em>srcAccessMask</em>, vk::AccessFlagBits <em>dstAccessMask</em>, vk::PipelineStageFlagBits <em>srcStageMask</em>, vk::PipelineStageFlagBits <em>dstStageMask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor25recordBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Records the buffer memory barrier into the command buffer which ensures that relevant data transfers are carried out correctly.</p>
+<dt id="_CPPv4N2kp6Tensor32recordPrimaryBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE">
+<span id="_CPPv3N2kp6Tensor32recordPrimaryBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="_CPPv2N2kp6Tensor32recordPrimaryBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="kp::Tensor::recordPrimaryBufferMemoryBarrier__vk::CommandBufferCR.vk::AccessFlagBits.vk::AccessFlagBits.vk::PipelineStageFlagBits.vk::PipelineStageFlagBits"></span><span class="target" id="classkp_1_1Tensor_1a1bacad91d866079585f18feb3ec6d8f7"></span>void <code class="sig-name descname">recordPrimaryBufferMemoryBarrier</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, vk::AccessFlagBits <em>srcAccessMask</em>, vk::AccessFlagBits <em>dstAccessMask</em>, vk::PipelineStageFlagBits <em>srcStageMask</em>, vk::PipelineStageFlagBits <em>dstStageMask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor32recordPrimaryBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Records the buffer memory barrier into the primary buffer and command buffer which ensures that relevant data transfers are carried out correctly.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record the commands into </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">srcAccessMask</span></code>: Access flags for source access mask </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dstAccessMask</span></code>: Access flags for destination access mask </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scrStageMask</span></code>: Pipeline stage flags for source stage mask </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dstStageMask</span></code>: Pipeline stage flags for destination stage mask </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor32recordStagingBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE">
+<span id="_CPPv3N2kp6Tensor32recordStagingBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="_CPPv2N2kp6Tensor32recordStagingBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE"></span><span id="kp::Tensor::recordStagingBufferMemoryBarrier__vk::CommandBufferCR.vk::AccessFlagBits.vk::AccessFlagBits.vk::PipelineStageFlagBits.vk::PipelineStageFlagBits"></span><span class="target" id="classkp_1_1Tensor_1ae1c2ef6acb0b74dcba7d92c870b2daa1"></span>void <code class="sig-name descname">recordStagingBufferMemoryBarrier</code><span class="sig-paren">(</span><em class="property">const</em> vk::CommandBuffer &amp;<em>commandBuffer</em>, vk::AccessFlagBits <em>srcAccessMask</em>, vk::AccessFlagBits <em>dstAccessMask</em>, vk::PipelineStageFlagBits <em>srcStageMask</em>, vk::PipelineStageFlagBits <em>dstStageMask</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor32recordStagingBufferMemoryBarrierERKN2vk13CommandBufferEN2vk14AccessFlagBitsEN2vk14AccessFlagBitsEN2vk21PipelineStageFlagBitsEN2vk21PipelineStageFlagBitsE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Records the buffer memory barrier into the staging buffer and command buffer which ensures that relevant data transfers are carried out correctly.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">commandBuffer</span></code>: Vulkan Command Buffer to record the commands into </p></li>
@@ -990,9 +1023,29 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor18dataTypeMemorySizeEv">
+<span id="_CPPv3N2kp6Tensor18dataTypeMemorySizeEv"></span><span id="_CPPv2N2kp6Tensor18dataTypeMemorySizeEv"></span><span id="kp::Tensor::dataTypeMemorySize"></span><span class="target" id="classkp_1_1Tensor_1a47634859d03a074e27084589e5c0511d"></span>uint32_t <code class="sig-name descname">dataTypeMemorySize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor18dataTypeMemorySizeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns the total size of a single element of the respective data type that this tensor holds.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Unsigned integer representing the memory of a single element of the respective data type. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor10memorySizeEv">
+<span id="_CPPv3N2kp6Tensor10memorySizeEv"></span><span id="_CPPv2N2kp6Tensor10memorySizeEv"></span><span id="kp::Tensor::memorySize"></span><span class="target" id="classkp_1_1Tensor_1a4be971eaffcb3192c46c6e49a3fe2773"></span>uint32_t <code class="sig-name descname">memorySize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor10memorySizeEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Returns the total memory size of the data contained by the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> object which would equate to (this-&gt;<a class="reference internal" href="#classkp_1_1Tensor_1a1fb937df6cc482c1f37c74d8fab0f9a9"><span class="std std-ref">size()</span></a> * this-&gt;<a class="reference internal" href="#classkp_1_1Tensor_1a47634859d03a074e27084589e5c0511d"><span class="std std-ref">dataTypeMemorySize()</span></a>)</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Unsigned integer representing the memory of a single element of the respective data type. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
 <dt id="_CPPv4N2kp6Tensor8dataTypeEv">
 <span id="_CPPv3N2kp6Tensor8dataTypeEv"></span><span id="_CPPv2N2kp6Tensor8dataTypeEv"></span><span id="kp::Tensor::dataType"></span><span class="target" id="classkp_1_1Tensor_1a4addb015014f14da3d6019400c9771e4"></span>TensorDataTypes <code class="sig-name descname">dataType</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor8dataTypeEv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Retrieve the underlying data type of the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a></p>
+<dd><p>Retrieve the data type of the tensor (host, device, storage)</p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Data type of tensor of type kp::Tensor::TensorDataTypes </p>
 </dd>
@@ -1000,9 +1053,39 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
+<dt id="_CPPv4N2kp6Tensor7rawDataEv">
+<span id="_CPPv3N2kp6Tensor7rawDataEv"></span><span id="_CPPv2N2kp6Tensor7rawDataEv"></span><span id="kp::Tensor::rawData"></span><span class="target" id="classkp_1_1Tensor_1a3f554cac913805efb542243fcc94d252"></span>void *<code class="sig-name descname">rawData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor7rawDataEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Retrieve the raw data via the pointer to the memory that contains the raw memory of this current tensor. This tensor gets changed to a nullptr when the <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a> is removed.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to raw memory containing raw bytes data of <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
 <dt id="_CPPv4N2kp6Tensor10setRawDataEPKv">
 <span id="_CPPv3N2kp6Tensor10setRawDataEPKv"></span><span id="_CPPv2N2kp6Tensor10setRawDataEPKv"></span><span id="kp::Tensor::setRawData__voidCP"></span><span class="target" id="classkp_1_1Tensor_1a70b8a0e812aa2746726052c4bfa7307e"></span>void <code class="sig-name descname">setRawData</code><span class="sig-paren">(</span><em class="property">const</em> void *<em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp6Tensor10setRawDataEPKv" title="Permalink to this definition">¶</a><br/></dt>
-<dd><p>Sets / resets the vector data of the tensor. This function does not perform any copies into GPU memory and is only performed on the host. </p>
+<dd><p>Sets / resets the data of the tensor which is directly done on the GPU host visible memory available by the tensor. </p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0EN2kp6Tensor4dataEP1Tv">
+<span id="_CPPv3I0EN2kp6Tensor4dataEv"></span><span id="_CPPv2I0EN2kp6Tensor4dataEv"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br/><span class="target" id="classkp_1_1Tensor_1af4c8d1bdeb1e057bd0d1aea1207bc98e"></span><a class="reference internal" href="#_CPPv4I0EN2kp6Tensor4dataEP1Tv" title="kp::Tensor::data::T">T</a> *<code class="sig-name descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp6Tensor4dataEP1Tv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Template to return the pointer data converted by specific type, which would be any of the supported types including float, double, int32, uint32 and bool.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Pointer to raw memory containing raw bytes data of <a class="reference internal" href="#classkp_1_1Tensor"><span class="std std-ref">Tensor</span></a>. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I0EN2kp6Tensor6vectorENSt6vectorI1TEEv">
+<span id="_CPPv3I0EN2kp6Tensor6vectorEv"></span><span id="_CPPv2I0EN2kp6Tensor6vectorEv"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br/><span class="target" id="classkp_1_1Tensor_1a0f59eceb0e7440501e11e1c8af598e84"></span>std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN2kp6Tensor6vectorENSt6vectorI1TEEv" title="kp::Tensor::vector::T">T</a>&gt; <code class="sig-name descname">vector</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp6Tensor6vectorENSt6vectorI1TEEv" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Template to get the data of the current tensor as a vector of specific type, which would be any of the supported types including float, double, int32, uint32 and bool.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Vector of type provided by template. </p>
+</dd>
+</dl>
+</p>
 </dd></dl>
 </div>
 </dd></dl>
@@ -1182,7 +1265,7 @@
 <span id="_CPPv3N2kp6OpBaseE"></span><span id="_CPPv2N2kp6OpBaseE"></span><span id="kp::OpBase"></span><span class="target" id="classkp_1_1OpBase"></span><em class="property">class </em><code class="sig-prename descclassname">kp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">OpBase</code><a class="headerlink" href="#_CPPv4N2kp6OpBaseE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Base Operation which provides the high level interface that Kompute operations implement in order to perform a set of actions in the GPU.</p>
 <p>Operations can perform actions on tensors, and optionally can also own an <a class="reference internal" href="#classkp_1_1Algorithm"><span class="std std-ref">Algorithm</span></a> with respective parameters. kp::Operations with kp::Algorithms would inherit from kp::OpBaseAlgo. </p>
-<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoDispatch"><span class="std std-ref">kp::OpAlgoDispatch</span></a>, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, kp::OpTensorSyncDevice, <a class="reference internal" href="#classkp_1_1OpTensorSyncLocal"><span class="std std-ref">kp::OpTensorSyncLocal</span></a></p>
+<p>Subclassed by <a class="reference internal" href="#classkp_1_1OpAlgoDispatch"><span class="std std-ref">kp::OpAlgoDispatch</span></a>, kp::OpMemoryBarrier, <a class="reference internal" href="#classkp_1_1OpTensorCopy"><span class="std std-ref">kp::OpTensorCopy</span></a>, kp::OpTensorSyncDevice, <a class="reference internal" href="#classkp_1_1OpTensorSyncLocal"><span class="std std-ref">kp::OpTensorSyncLocal</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">

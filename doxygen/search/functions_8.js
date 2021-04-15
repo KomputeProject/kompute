@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['opalgodispatch',['OpAlgoDispatch',['../classkp_1_1OpAlgoDispatch.html#a2d93f88c0805970a28228b916ea7fc98',1,'kp::OpAlgoDispatch']]],
-  ['opmult',['OpMult',['../classkp_1_1OpMult.html#a61e02be5bc3184f900a1f2a411a18e25',1,'kp::OpMult']]],
-  ['optensorcopy',['OpTensorCopy',['../classkp_1_1OpTensorCopy.html#a332116c77ff4795e634b093b24e9de18',1,'kp::OpTensorCopy']]],
-  ['optensorsyncdevice',['OpTensorSyncDevice',['../classkp_1_1OpTensorSyncDevice.html#a482b739eac339555ca6183f19e850300',1,'kp::OpTensorSyncDevice']]],
-  ['optensorsynclocal',['OpTensorSyncLocal',['../classkp_1_1OpTensorSyncLocal.html#ad427093c4065143a711133bd75207406',1,'kp::OpTensorSyncLocal']]]
+  ['manager',['Manager',['../classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97',1,'kp::Manager::Manager()'],['../classkp_1_1Manager.html#a03870694ea0749424dc5206638b29c32',1,'kp::Manager::Manager(uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndices={}, const std::vector&lt; std::string &gt; &amp;desiredExtensions={})'],['../classkp_1_1Manager.html#afe401feb6eeb8d462998f095d36e2b46',1,'kp::Manager::Manager(std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device)']]],
+  ['memorysize',['memorySize',['../classkp_1_1Tensor.html#a4be971eaffcb3192c46c6e49a3fe2773',1,'kp::Tensor']]]
 ];

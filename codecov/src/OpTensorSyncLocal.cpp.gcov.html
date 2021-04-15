@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">16</td>
-            <td class="headerCovTableEntry">17</td>
-            <td class="headerCovTableEntryHi">94.1 %</td>
+            <td class="headerCovTableEntry">18</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryHi">94.7 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-12 07:29:00</td>
+            <td class="headerValue">2021-04-15 19:18:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -92,27 +92,41 @@
 <span class="lineNum">      30 </span>            : 
 <span class="lineNum">      31 </span><span class="lineCov">        251 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
 <span class="lineNum">      32 </span><span class="lineCov">         63 :         if (this-&gt;mTensors[i]-&gt;tensorType() == Tensor::TensorTypes::eDevice) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordCopyFromDeviceToStaging(commandBuffer,</span>
-<span class="lineNum">      34 </span>            :                                                              true);
-<span class="lineNum">      35 </span>            :         }
-<span class="lineNum">      36 </span>            :     }
-<span class="lineNum">      37 </span><span class="lineCov">         31 : }</span>
-<a name="38"><span class="lineNum">      38 </span>            : </a>
-<span class="lineNum">      39 </span>            : void
-<span class="lineNum">      40 </span><span class="lineCov">        232 : OpTensorSyncLocal::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      41 </span>            : {
-<span class="lineNum">      42 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal preEval called&quot;);
-<span class="lineNum">      43 </span><span class="lineCov">        232 : }</span>
-<a name="44"><span class="lineNum">      44 </span>            : </a>
-<span class="lineNum">      45 </span>            : void
-<span class="lineNum">      46 </span><span class="lineCov">        232 : OpTensorSyncLocal::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      47 </span>            : {
-<span class="lineNum">      48 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal postEval called&quot;);
-<span class="lineNum">      49 </span>            : 
-<span class="lineNum">      50 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal mapping data into tensor local&quot;);
-<span class="lineNum">      51 </span><span class="lineCov">        232 : }</span>
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span>            : }
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordPrimaryBufferMemoryBarrier(</span>
+<span class="lineNum">      35 </span>            :               commandBuffer,
+<span class="lineNum">      36 </span>            :               vk::AccessFlagBits::eShaderWrite,
+<span class="lineNum">      37 </span>            :               vk::AccessFlagBits::eTransferRead,
+<span class="lineNum">      38 </span>            :               vk::PipelineStageFlagBits::eComputeShader,
+<span class="lineNum">      39 </span>            :               vk::PipelineStageFlagBits::eTransfer);
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordCopyFromDeviceToStaging(commandBuffer);</span>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordPrimaryBufferMemoryBarrier(</span>
+<span class="lineNum">      44 </span>            :               commandBuffer,
+<span class="lineNum">      45 </span>            :               vk::AccessFlagBits::eTransferWrite,
+<span class="lineNum">      46 </span>            :               vk::AccessFlagBits::eHostRead,
+<span class="lineNum">      47 </span>            :               vk::PipelineStageFlagBits::eTransfer,
+<span class="lineNum">      48 </span>            :               vk::PipelineStageFlagBits::eHost);
+<span class="lineNum">      49 </span>            :         }
+<span class="lineNum">      50 </span>            :     }
+<span class="lineNum">      51 </span><span class="lineCov">         31 : }</span>
+<a name="52"><span class="lineNum">      52 </span>            : </a>
+<span class="lineNum">      53 </span>            : void
+<span class="lineNum">      54 </span><span class="lineCov">        232 : OpTensorSyncLocal::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      55 </span>            : {
+<span class="lineNum">      56 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal preEval called&quot;);
+<span class="lineNum">      57 </span><span class="lineCov">        232 : }</span>
+<a name="58"><span class="lineNum">      58 </span>            : </a>
+<span class="lineNum">      59 </span>            : void
+<span class="lineNum">      60 </span><span class="lineCov">        232 : OpTensorSyncLocal::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      61 </span>            : {
+<span class="lineNum">      62 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal postEval called&quot;);
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncLocal mapping data into tensor local&quot;);
+<span class="lineNum">      65 </span><span class="lineCov">        232 : }</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            : }
 </pre>
       </td>
     </tr>

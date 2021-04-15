@@ -99,6 +99,10 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&
 <tr class="separator:a69ab19202bee0c3e0c4f96f9abd6dcc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88bae28eafe571f204a29803f712a0f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a88bae28eafe571f204a29803f712a0f1">clear</a> ()</td></tr>
 <tr class="separator:a88bae28eafe571f204a29803f712a0f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27f0c61059156fac4d1f81ee59f70a05"><td class="memItemLeft" align="right" valign="top">vk::PhysicalDeviceProperties&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a27f0c61059156fac4d1f81ee59f70a05">getDeviceProperties</a> () const</td></tr>
+<tr class="separator:a27f0c61059156fac4d1f81ee59f70a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aada58e5b79bc30be715f7df515064a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; vk::PhysicalDevice &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a5aada58e5b79bc30be715f7df515064a">listDevices</a> () const</td></tr>
+<tr class="separator:a5aada58e5b79bc30be715f7df515064a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Base orchestrator which creates and manages device and child components </p>
@@ -321,6 +325,44 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&
 
 </div>
 </div>
+<a id="a27f0c61059156fac4d1f81ee59f70a05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27f0c61059156fac4d1f81ee59f70a05">&#9670;&nbsp;</a></span>getDeviceProperties()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">vk::PhysicalDeviceProperties kp::Manager::getDeviceProperties </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Information about the current device.</p>
+<dl class="section return"><dt>Returns</dt><dd>vk::PhysicalDeviceProperties containing information about the device </dd></dl>
+
+</div>
+</div>
+<a id="a5aada58e5b79bc30be715f7df515064a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5aada58e5b79bc30be715f7df515064a">&#9670;&nbsp;</a></span>listDevices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;vk::PhysicalDevice&gt; kp::Manager::listDevices </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>List the devices available in the current vulkan instance.</p>
+<dl class="section return"><dt>Returns</dt><dd>vector of physical devices containing their respective properties </dd></dl>
+
+</div>
+</div>
 <a id="a5fac648ac65d2e1314120ebf6f91de91"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5fac648ac65d2e1314120ebf6f91de91">&#9670;&nbsp;</a></span>sequence()</h2>
 
@@ -406,7 +448,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>/c/Users/axsau/Programming/vulkan/vulkan-compute/src/include/kompute/<a class="el" href="Manager_8hpp_source.html">Manager.hpp</a></li>
+<li>/home/alejandro/Programming/kubernetes/seldon/vulkan-kompute/src/include/kompute/<a class="el" href="Manager_8hpp_source.html">Manager.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

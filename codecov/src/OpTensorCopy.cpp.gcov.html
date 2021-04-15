@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-12 07:29:00</td>
+            <td class="headerValue">2021-04-15 19:18:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -77,7 +77,7 @@
 <span class="lineNum">      15 </span>            :     }
 <span class="lineNum">      16 </span>            : 
 <span class="lineNum">      17 </span><span class="lineCov">          6 :     kp::Tensor::TensorDataTypes dataType = this-&gt;mTensors[0]-&gt;dataType();</span>
-<span class="lineNum">      18 </span><span class="lineCov">          6 :     uint32_t size = this-&gt;mTensors[0]-&gt;size();</span>
+<span class="lineNum">      18 </span><span class="lineCov">         12 :     uint32_t size = this-&gt;mTensors[0]-&gt;size();</span>
 <span class="lineNum">      19 </span><span class="lineCov">          6 :     for (const std::shared_ptr&lt;Tensor&gt;&amp; tensor : tensors) {</span>
 <span class="lineNum">      20 </span><span class="lineCov">         14 :         if (tensor-&gt;dataType() != dataType) {</span>
 <span class="lineNum">      21 </span><span class="lineNoCov">          0 :             throw std::runtime_error(fmt::format(</span>
@@ -106,35 +106,30 @@
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            :     // We iterate from the second tensor onwards and record a copy to all
 <span class="lineNum">      46 </span><span class="lineCov">         36 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
-<span class="lineNum">      47 </span><span class="lineCov">         16 :         this-&gt;mTensors[i]-&gt;recordCopyFrom(</span>
-<span class="lineNum">      48 </span>            :           commandBuffer, this-&gt;mTensors[0], false);
-<span class="lineNum">      49 </span>            :     }
-<span class="lineNum">      50 </span><span class="lineCov">          6 : }</span>
-<a name="51"><span class="lineNum">      51 </span>            : </a>
-<span class="lineNum">      52 </span>            : void
-<span class="lineNum">      53 </span><span class="lineCov">          7 : OpTensorCopy::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      54 </span>            : {
-<span class="lineNum">      55 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy preEval called&quot;);
-<span class="lineNum">      56 </span><span class="lineCov">          7 : }</span>
-<span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span>            : void
-<span class="lineNum">      59 </span><span class="lineCov">          7 : OpTensorCopy::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      60 </span>            : {
-<span class="lineNum">      61 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy postEval called&quot;);
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span>            :     // TODO: Simplify with a copyRawData
-<span class="lineNum">      64 </span><span class="lineCov">          7 :     uint32_t size = this-&gt;mTensors[0]-&gt;size();</span>
-<span class="lineNum">      65 </span>            :     uint32_t dataTypeMemSize = this-&gt;mTensors[0]-&gt;dataTypeMemorySize();
-<span class="lineNum">      66 </span>            :     uint32_t memSize = size * dataTypeMemSize;
-<span class="lineNum">      67 </span><span class="lineCov">          7 :     void* data = this-&gt;mTensors[0]-&gt;rawData();</span>
-<span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span>            :     // Copy the data from the first tensor into all the tensors
-<span class="lineNum">      70 </span><span class="lineCov">         41 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
-<span class="lineNum">      71 </span>            :         this-&gt;mTensors[i]-&gt;setRawData(data);
-<span class="lineNum">      72 </span>            :     }
-<span class="lineNum">      73 </span><span class="lineCov">          7 : }</span>
-<span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span>            : }
+<span class="lineNum">      47 </span><span class="lineCov">         16 :         this-&gt;mTensors[i]-&gt;recordCopyFrom(commandBuffer, this-&gt;mTensors[0]);</span>
+<span class="lineNum">      48 </span>            :     }
+<span class="lineNum">      49 </span><span class="lineCov">          6 : }</span>
+<a name="50"><span class="lineNum">      50 </span>            : </a>
+<span class="lineNum">      51 </span>            : void
+<span class="lineNum">      52 </span><span class="lineCov">          7 : OpTensorCopy::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      53 </span>            : {
+<span class="lineNum">      54 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy preEval called&quot;);
+<span class="lineNum">      55 </span><span class="lineCov">          7 : }</span>
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            : void
+<span class="lineNum">      58 </span><span class="lineCov">          7 : OpTensorCopy::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      59 </span>            : {
+<span class="lineNum">      60 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorCopy postEval called&quot;);
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span><span class="lineCov">         14 :     void* data = this-&gt;mTensors[0]-&gt;rawData();</span>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :     // Copy the data from the first tensor into all the tensors
+<span class="lineNum">      65 </span><span class="lineCov">         41 :     for (size_t i = 1; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">      66 </span><span class="lineCov">          9 :         this-&gt;mTensors[i]-&gt;setRawData(data);</span>
+<span class="lineNum">      67 </span>            :     }
+<span class="lineNum">      68 </span><span class="lineCov">          7 : }</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            : }
 </pre>
       </td>
     </tr>

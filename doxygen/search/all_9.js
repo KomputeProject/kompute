@@ -1,5 +1,10 @@
 var searchData=
 [
-  ['posteval',['postEval',['../classkp_1_1OpAlgoDispatch.html#afdd5d229f12be1798a03ed3ccd2995fc',1,'kp::OpAlgoDispatch::postEval()'],['../classkp_1_1OpBase.html#abf8f8333d659c32dd0543ee2af4f3e61',1,'kp::OpBase::postEval()'],['../classkp_1_1OpTensorCopy.html#a5383b711faae74ee42a6d1d688e0be1c',1,'kp::OpTensorCopy::postEval()'],['../classkp_1_1OpTensorSyncDevice.html#afc889aea4c633071afa6214cad0b1bc0',1,'kp::OpTensorSyncDevice::postEval()'],['../classkp_1_1OpTensorSyncLocal.html#aeb180833e8c7906cd66e1eabb65631c7',1,'kp::OpTensorSyncLocal::postEval()']]],
-  ['preeval',['preEval',['../classkp_1_1OpAlgoDispatch.html#a4eef6dff7c2b4a88b7a8e96da8888d2c',1,'kp::OpAlgoDispatch::preEval()'],['../classkp_1_1OpBase.html#a110436486db21e83bdb09f73262c0587',1,'kp::OpBase::preEval()'],['../classkp_1_1OpTensorCopy.html#ad8acbf4b1ae712300e4882d88ece0976',1,'kp::OpTensorCopy::preEval()'],['../classkp_1_1OpTensorSyncDevice.html#a36094f5e8304432ba1adb018f0d2ecb6',1,'kp::OpTensorSyncDevice::preEval()'],['../classkp_1_1OpTensorSyncLocal.html#af517bbd1bf2043247c1814771669cf6c',1,'kp::OpTensorSyncLocal::preEval()']]]
+  ['opalgodispatch',['OpAlgoDispatch',['../classkp_1_1OpAlgoDispatch.html',1,'kp::OpAlgoDispatch'],['../classkp_1_1OpAlgoDispatch.html#a2d93f88c0805970a28228b916ea7fc98',1,'kp::OpAlgoDispatch::OpAlgoDispatch()']]],
+  ['opbase',['OpBase',['../classkp_1_1OpBase.html',1,'kp']]],
+  ['opmemorybarrier',['OpMemoryBarrier',['../classkp_1_1OpMemoryBarrier.html',1,'kp::OpMemoryBarrier'],['../classkp_1_1OpMemoryBarrier.html#a7ebead7bcbc8d87716a388a094acf05a',1,'kp::OpMemoryBarrier::OpMemoryBarrier()']]],
+  ['opmult',['OpMult',['../classkp_1_1OpMult.html',1,'kp::OpMult'],['../classkp_1_1OpMult.html#a61e02be5bc3184f900a1f2a411a18e25',1,'kp::OpMult::OpMult()']]],
+  ['optensorcopy',['OpTensorCopy',['../classkp_1_1OpTensorCopy.html',1,'kp::OpTensorCopy'],['../classkp_1_1OpTensorCopy.html#a332116c77ff4795e634b093b24e9de18',1,'kp::OpTensorCopy::OpTensorCopy()']]],
+  ['optensorsyncdevice',['OpTensorSyncDevice',['../classkp_1_1OpTensorSyncDevice.html',1,'kp::OpTensorSyncDevice'],['../classkp_1_1OpTensorSyncDevice.html#a482b739eac339555ca6183f19e850300',1,'kp::OpTensorSyncDevice::OpTensorSyncDevice()']]],
+  ['optensorsynclocal',['OpTensorSyncLocal',['../classkp_1_1OpTensorSyncLocal.html',1,'kp::OpTensorSyncLocal'],['../classkp_1_1OpTensorSyncLocal.html#ad427093c4065143a711133bd75207406',1,'kp::OpTensorSyncLocal::OpTensorSyncLocal()']]]
 ];
