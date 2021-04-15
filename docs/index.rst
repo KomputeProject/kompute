@@ -2,6 +2,12 @@
 Kompute Docs Home
 ==========================================
 
+High Level Overview (from README)
+--------
+
+.. mdinclude:: ../README.md
+
+
 Documentation Index (as per sidebar)
 --------
 
@@ -39,9 +45,4 @@ Documentation Index (as per sidebar)
     Mobile App Integration (Android) <overview/mobile-android>
     Game Engine Integration (Godot Engine) <overview/game-engine-godot>
     Code Index <genindex>
-
-High Level Overview (from README)
---------
-
-.. mdinclude:: ../README.md
 
