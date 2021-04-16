@@ -290,7 +290,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     
     // Getting an integer that says how many vuklan devices we have
     uint32_t deviceCount = 0;
-    vkEnumeratePhysicalDevices(*(this->mInstance), &deviceCount, nullptr);
+    this->mInstance->enumeratePhysicalDevices(&deviceCount, nullptr);
     
     // This means there are no devices at all
     if (deviceCount == 0) {
