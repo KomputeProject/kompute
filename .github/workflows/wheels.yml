@@ -1,0 +1,261 @@
+name: wheels
+
+on:
+  release:
+    types: [published]
+
+
+# TODO: Build wheels for win32 and MacOS ARM as well
+
+# This workflow can be a bit complicated, mainly because
+# it does several things at once for different OS/Arches
+# The logic simply boils down into these steps:
+# 1: Building Vulkan from source
+# 2: Configuring cibuildwheel to specify the desired
+# OSes and architectures and also, how to build kp
+# 3: building kp for different versions of Python
+# 4: Installing and testing the wheels
+# 5: Publishing wheels
+
+
+
+jobs: 
+  wheels:
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          
+          # cibw-arch: wheel's OS and architecture
+          # vulkan-extra-arguemnts: extra arguements
+          # to build Vulkan Loader for the desired architecture
+          # extra-apt-dependency: Extra packagesc needed for
+          # compiling Vulkan Loader for different architecture
+        
+        
+          - runs-on: ubuntu-latest
+            cibw-arch: manylinux_x86_64
+            python-version: 3.8
+
+            # aarch64 can take a long time, speaking of 2-3 hours
+          - runs-on: ubuntu-latest
+            cibw-arch: manylinux_i686
+            python-version: 3.8
+            vulkan-extra-arguemnts: -DCMAKE_C_FLAGS=-m32
+            extra-apt-dependency: gcc-multilib g++-multilib
+            
+          - runs-on: ubuntu-latest
+            cibw-arch: manylinux_aarch64
+            python-version: 3.8
+            vulkan-extra-arguemnts: -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc  -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+            extra-apt-dependency: gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+
+          - runs-on: macos-latest
+            cibw-arch: macosx_x86_64
+            python-version: 3.8
+
+          #- runs-on: macos-latest
+            #cibw-arch: macosx_arm64
+            #python-version: 3.7
+
+          #- runs-on: macos-latest
+            #cibw-arch: macosx_universal2
+            #python-version: 3.7
+
+          - runs-on: windows-latest
+            cibw-arch: win_amd64
+            python-version: 3.8
+
+          #- runs-on: windows-latest
+            #cibw-arch: win32
+            #python-version: 3.7
+            #python-arch: x86
+            #vulkan-extra-arguemnts: -A Win32
+
+    name: Wheels • ${{ matrix.cibw-arch }}
+    runs-on: ${{ matrix.runs-on }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '${{ matrix.python-version }}'
+          architecture: ${{ matrix.python-arch }}
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.8
+
+ 
+      # Inspired from https://github.com/humbletim/setup-vulkan-sdk
+      # Vulkan Loader needs some x11 related libraries
+      # and ninja-build to build it from source, also compiler is needed
+      - name: Install Vulkan Loader's Build Dependencies
+        shell: bash
+        run: |
+          case `uname -s` in
+            Linux)
+              sudo apt-get install -y ninja-build libxrandr-dev gcc g++ ${{ matrix.extra-apt-dependency }}
+          esac
+        
+      # Inspired from https://github.com/humbletim/setup-vulkan-sdk
+      # Vulkan Kompute depends on Vulkan Loader so we will install it
+      - name: Install Vulkan SDK
+        shell: bash
+        run: |
+          VULKAN_VERSION=sdk-1.2.162
+          mkdir VULKAN_SDK
+          mkdir VULKAN_SDK/_build
+          cd VULKAN_SDK/_build
+          git clone https://github.com/KhronosGroup/Vulkan-Headers.git --branch $VULKAN_VERSION
+          cd Vulkan-Headers
+          cmake -DCMAKE_INSTALL_PREFIX=../.. -DCMAKE_BUILD_TYPE=Release ${{ matrix.vulkan-extra-arguemnts }} . 
+          cmake --build . --config Release
+          cmake --install .
+          cd ..
+          git clone https://github.com/KhronosGroup/Vulkan-Loader.git --branch $VULKAN_VERSION
+          cd Vulkan-Loader
+          cmake -DVULKAN_HEADERS_INSTALL_DIR=../.. -DCMAKE_INSTALL_PREFIX=../.. -DCMAKE_BUILD_TYPE=Release   \
+              ${{ matrix.vulkan-extra-arguemnts }} . -DBUILD_WSI_WAYLAND_SUPPORT=OFF -DBUILD_WSI_XLIB_SUPPORT=OFF
+          cmake --build . --config Release
+          cmake --install .
+          cd ../..
+          rm -rf VULKAN_SDK/_build
+      # cibuildwheel is used to build wheels
+      - name: Install requirements
+        run: |
+          python -m pip install cibuildwheel
+      # QEMU emulates an architecture for linux, in this case, emulating arm64
+      # We emulate because there is no native support for ARM in github actions
+      - name: Set up QEMU
+        if: matrix.cibw-arch == 'manylinux_aarch64'
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: arm64
+      
+      # Configuring cibuildwheel, in a nutshell telling cibuildwheel what OSes,
+      # architectures and python versions is should build for and how to build kp
+      - name: Configure cibuildwheel
+        shell: bash
+        run: |
+          # These settings are for disabled builds
+          # # Telling cibuildwheel to build kp for win32 
+          # CMAKE_ARCH="${{ matrix.cibw-arch == 'win32' && '-A Win32' || '' }}"
+          # # Telling cibuildwheel what architecture to build kp for in Mac OS
+          # CMAKE_OSX_ARCHITECTURES=${{ matrix.cibw-arch == 'macosx_x86_64' && 'x86_64' || matrix.cibw-arch == 'macosx_arm64' && 'arm64' || matrix.cibw-arch == 'macosx_universal2' && '"arm64;x86_64"' || '' }}
+          # echo "CIBW_ARCHS_MACOS=x86_64 arm64 universal2" >> $GITHUB_ENV
+          
+          # Telling cibuildwheel what architecture to build kp for in Linux
+          echo "CIBW_ARCHS_LINUX=x86_64 aarch64 i686" >> $GITHUB_ENV
+          # I'm not using manylinux2010 because it doesn't contain python3 libraries&headers that kp
+          # pybind needs in order to build, also, I think manylinux2014 is old enough but this should
+          # be revisited
+          echo "CIBW_MANYLINUX_X86_64_IMAGE=manylinux2014" >> $GITHUB_ENV
+          echo "CIBW_MANYLINUX_AARCH64_IMAGE=manylinux2014" >> $GITHUB_ENV
+          echo "CIBW_MANYLINUX_I686_IMAGE=manylinux2014" >> $GITHUB_ENV
+          # Telling cibuildwheel what OS/architecture it should build for
+          echo "CIBW_BUILD=*-${{ matrix.cibw-arch }}" >> $GITHUB_ENV
+          # We're gonna skip python 2.7 builds because Vulkan Kompute only supports python 3.5+
+          # Vulkan Kompute doesn't work on PyPy yet (but will revisit this), so we're gonna exclude them
+          echo "CIBW_SKIP=cp27-* pp*" >> $GITHUB_ENV
+          # Telling cibuildwheel how to build kp (specifying options)
+          CIBW_BEFORE_ALL_COMMON="cmake -S . -B build_dependencies -DCMAKE_BUILD_TYPE=Release -DKOMPUTE_OPT_INSTALL=1 -DKOMPUTE_OPT_ENABLE_SPDLOG=0"
+          CIBW_BEFORE_ALL_COMMON="$CIBW_BEFORE_ALL_COMMON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DKOMPUTE_OPT_BUILD_PYTHON=1"
+          CIBW_BEFORE_ALL_COMMON="$CIBW_BEFORE_ALL_COMMON -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1 $CMAKE_ARCH && cmake --build build_dependencies -j 2"
+          # We're not going to repair wheels, the reason is that we do not want to include vulkan libs
+          # into wheels, as it SHOULD exist by default on a machine which has vulkan, otherwise
+          # they haven't installed vulkan drivers at all, which is of course not going to work
+          echo "CIBW_REPAIR_WHEEL_COMMAND_LINUX=""" >> $GITHUB_ENV
+          echo "CIBW_REPAIR_WHEEL_COMMAND_MACOS=""" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL=$CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
+          # To build Vulkan Kompute, we need python3 libs; i.e libpython3.6m.so ,
+          # if anyone wanted to change Manylinux image, install the corresponding
+          # libraries, for example in manylinux_2_24 we would be using:
+          # apt update && apt install python3-dev -y
+          echo "CIBW_BEFORE_ALL_LINUX=yum install python3-devel -y && pip install cmake && ln -fs \$(which cmake) /usr/local/bin/cmake && $CIBW_BEFORE_ALL_COMMON" >> $GITHUB_ENV
+          echo "CIBW_BEFORE_ALL_WINDOWS=$CIBW_BEFORE_ALL_COMMON --config Release" >> $GITHUB_ENV
+      
+      - name: Run cibuildwheel
+        run: |
+          cibuildwheel
+      # In order to install kp, we need Vulkan dll (ofcourse) but
+      # python is not going to find it automatically, so we're gonna
+      # move it to a place were it will find it
+      - name: Copying vulkan-1.dll
+        if: matrix.runs-on == 'windows-latest'
+        run: xcopy VULKAN_SDK\bin C:\Windows\System32
+
+      # Some mistakes might occure, generally if python tests have passed,
+      # and the tests below(checking for kp classes) work, it's almost
+      # guaranteed that it's working
+      - name: Installing wheels
+        if: matrix.cibw-arch != 'manylinux_i686' && matrix.cibw-arch != 'manylinux_aarch64'
+        shell: bash
+        run: |
+          # In order to install kp we need Vulkan lib (ofcourse) but python is not
+          # going to find it automatically, so we're gonna include the path into
+          # DYLD_LIBRARY_PATH (this variable specifies the paths to search for libs on Mac)
+          case `uname -s` in
+            Darwin)
+              export DYLD_LIBRARY_PATH="$(pwd)/VULKAN_SDK/lib:$DYLD_LIBRARY_PATH"
+          esac
+          
+          # Obtaining the version of installed python so that we can pick the right wheel
+          python_version=$(python -c "print('${{ matrix.python-version }}'.replace('.', ''))")
+          WANTED_WHEEL=$(find wheelhouse -iname "*$python_version*")
+          pip install $WANTED_WHEEL
+          
+          # We're testing whether the class "Manager" exists ot not
+          # if it exists, class_exists output would be true and if not,
+          # the out put would be false
+          class_exists=$(python -c "import kp; class_exists = 'Manager' in dir(kp); print(str(class_exists).lower())")
+          echo "class_exists=$class_exists" >> $GITHUB_ENV
+      
+      # If the class exists, then the test passes, else it'll fail
+      - name: Testing wheels
+        if: matrix.cibw-arch != 'manylinux_i686' && matrix.cibw-arch != 'manylinux_aarch64'
+        uses: nick-invision/assert-action@v1
+        with:
+          expected: true
+          actual: ${{ env.class_exists }}
+          comparison: exact
+
+      # Because we didn't use auditwheel, we have to change linux to
+      # manylinux manually (because PyPI won't accept them otherwise)
+      - name: Changing Linux wheel names
+        shell: bash
+        run: for filename in wheelhouse/*.whl; do mv "$filename" "${filename//linux/manylinux2014}"; done
+
+      # Uploading wheels so that we can use them for the next job (uploading to PyPI)
+      - name: Store wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: wheelhouse/*.whl
+
+          
+# This will automatically release kp to PyPI
+  publish:
+    
+    name: Publish Wheels
+    runs-on: ubuntu-latest
+    needs: [wheels]
+
+    steps:
+
+      # Downloads the wheels that just got built
+      - uses: actions/download-artifact@v2
+        with:
+          name: wheels
+          path: dist
+
+      - name: Publish packages to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }} 
