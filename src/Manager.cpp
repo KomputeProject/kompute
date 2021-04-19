@@ -320,7 +320,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
     KP_LOG_INFO("Using physical device index {} found {}",
                 physicalDeviceIndex,
-                physicalDeviceProperties.deviceName.data());
+                physicalDeviceProperties.deviceName);
 
     if (!familyQueueIndices.size()) {
         // Find compute queue
@@ -378,8 +378,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
     std::set<std::string> uniqueExtensionNames;
     for (const vk::ExtensionProperties& ext : deviceExtensions) {
-        std::string extName(ext.extensionName.data());
-        uniqueExtensionNames.insert(extName);
+        uniqueExtensionNames.insert(ext.extensionName);
     }
     KP_LOG_DEBUG("Kompute Manager available extensions {}",
                  uniqueExtensionNames);
