@@ -51,11 +51,23 @@ endif()
 
 target_include_directories(
     kompute PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
-    $<INSTALL_INTERFACE:include>
-    $<INSTALL_INTERFACE:single_include>
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/single_include
 )
+
+# To build the Android example without installing Vulkan Kompute,
+# We need to specify the paths for include directories directly
+# NOTE: This is a temporary fix
+if(KOMPUTE_OPT_ANDOID_BUILD)
+    target_include_directories(
+        kompute PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
+        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:single_include>
+    )
+endif()
+
 
 if(NOT KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
