@@ -160,7 +160,7 @@ if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
             glslang
             SPIRV)
     else()
-        find_package(glslang CONFIG REQUIRED)
+        find_library(glslang INTERFACE)
 
         target_include_directories(
             kompute PRIVATE
@@ -170,8 +170,8 @@ if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
             # Not including hlsl support
             # glslang::HLSL
             # Adding explicit dependencies to match above
-            glslang::glslang
-            glslang::SPIRV)
+            glslang
+            SPIRV)
     endif()
 endif()
 
