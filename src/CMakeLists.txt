@@ -51,10 +51,11 @@ endif()
 
 target_include_directories(
     kompute PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${PROJECT_SOURCE_DIR}/single_include
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
+    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:single_include>
 )
-
 
 if(NOT KOMPUTE_OPT_ANDOID_BUILD)
     target_link_libraries(
