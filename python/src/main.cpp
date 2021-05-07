@@ -156,6 +156,8 @@ PYBIND11_MODULE(kp, m) {
                 py::arg("device") = 0,
                 py::arg("family_queue_indices") = std::vector<uint32_t>(),
                 py::arg("desired_extensions") = std::vector<std::string>())
+        .def("destroy", &kp::Manager::destroy,
+                DOC(kp, Manager, destroy))
         .def("sequence", &kp::Manager::sequence, DOC(kp, Manager, sequence),
                 py::arg("queue_index") = 0, py::arg("total_timestamps") = 0)
         .def("tensor", [np](kp::Manager& self,
