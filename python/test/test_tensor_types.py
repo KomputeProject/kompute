@@ -207,3 +207,26 @@ def test_type_unsigned_int():
 
     assert np.all(tensor_out.data() == arr_in_a * arr_in_b)
 
+def test_tensor_numpy_ownership():
+
+    arr_in = np.array([1, 2, 3])
+
+    m = kp.Manager()
+
+    t = m.tensor(arr_in)
+
+    # This should increment refcount for tensor sharedptr
+    td = t.data()
+
+    assert td.base.is_init() == True
+    assert np.all(td == arr_in)
+
+    del t
+
+    assert td.base.is_init() == True
+    assert np.all(td == arr_in)
+
+    m.destroy()
+
+    assert td.base.is_init() == False
+
