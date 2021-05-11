@@ -1,3 +1,3 @@
-# Python Package for Vulkan Kompute
+# Python Package for Kompute
 
 

@@ -34,7 +34,7 @@ In order to run this example, you will need the following dependencies:
 * REQUIRED
     + The Vulkan SDK must be installed
 * OPTIONAL
-    + Vulkan Kompute library must be accessible (by default it uses the source directory)
+    + Kompute library must be accessible (by default it uses the source directory)
     + SPDLOG - for logging
     + FMT - for text formatting
 

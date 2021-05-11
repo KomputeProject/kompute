@@ -1,4 +1,4 @@
-# Vulkan Kompute Godot Example
+# Kompute Godot Example
 
 ![](https://github.com/EthicalML/vulkan-kompute/raw/master/docs/images/komputer-godot-4.gif)
 

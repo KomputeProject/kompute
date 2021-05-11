@@ -2046,7 +2046,7 @@ class Manager
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
-     * with the vulkan kompute use.
+     * with the kompute use.
      *
      * @param instance Vulkan compute instance to base this application
      * @param physicalDevice Vulkan physical device to use for application

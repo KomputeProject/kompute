@@ -72,7 +72,7 @@ setup(
     name='kp',
     version='0.7.0',
     author='Alejandro Saucedo',
-    description='Vulkan Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
+    description='Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     ext_modules=[CMakeExtension('kp')],

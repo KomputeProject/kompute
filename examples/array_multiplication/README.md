@@ -34,11 +34,11 @@ In order to run this example, you will need the following dependencies:
 * REQUIRED
     + The Vulkan SDK must be installed
 * OPTIONAL
-    + Vulkan Kompute library must be accessible (by default it uses the source directory)
+    + Kompute library must be accessible (by default it uses the source directory)
     + SPDLOG - for logging
     + FMT - for text formatting
 
-We will cover how you can install Vulkan Kompute in the next section.
+We will cover how you can install Kompute in the next section.
 
 For the Vulkan SDK, the simplest way to install it is through [their website](https://vulkan.lunarg.com/sdk/home). You just have to follow the instructions for the relevant platform.
 

@@ -145,8 +145,8 @@ Manager::createInstance()
     this->mFreeInstance = true;
 
     vk::ApplicationInfo applicationInfo;
-    applicationInfo.pApplicationName = "Vulkan Kompute";
-    applicationInfo.pEngineName = "VulkanKompute";
+    applicationInfo.pApplicationName = "Kompute";
+    applicationInfo.pEngineName = "Kompute";
     applicationInfo.apiVersion = KOMPUTE_VK_API_VERSION;
     applicationInfo.engineVersion = KOMPUTE_VK_API_VERSION;
     applicationInfo.applicationVersion = KOMPUTE_VK_API_VERSION;

@@ -1,12 +1,12 @@
 # Kompute Pi4 Mesa Build Example
 
-The Raspberry Pi 4 is an impressive little computer when you consider that the Broadcom GPU is able to run 2x 4K displays. This example intends to show how to get Vulkan Kompute up and running on a Raspberry Pi 4. This has huge potential for edge processing using the power of the Pi 4 GPU.
+The Raspberry Pi 4 is an impressive little computer when you consider that the Broadcom GPU is able to run 2x 4K displays. This example intends to show how to get Kompute up and running on a Raspberry Pi 4. This has huge potential for edge processing using the power of the Pi 4 GPU.
 
 Special thanks to [Alejandro Piñeiro](https://blogs.igalia.com/apinheiro/) and others for their work on Broadcom drivers for [Mesa](https://gitlab.freedesktop.org/mesa/mesa) which make this example possible.
 
 ## Raspberry Pi Operating System
 
-For this experiment we used [RaspiOS Lite 2021-01-12](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-01-12/2021-01-11-raspios-buster-armhf-lite.zip), though it is likely best to start with the latest available operation system from [Raspberry Pi operating system images](https://www.raspberrypi.org/software/operating-systems/). In other experiments the full Raspberry Pi operating system (with desktop environment) was found to work. However, when attempting to use Ubuntu on the Raspberry Pi we were not able to run the Python Vulkan Kompute examples.
+For this experiment we used [RaspiOS Lite 2021-01-12](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-01-12/2021-01-11-raspios-buster-armhf-lite.zip), though it is likely best to start with the latest available operation system from [Raspberry Pi operating system images](https://www.raspberrypi.org/software/operating-systems/). In other experiments the full Raspberry Pi operating system (with desktop environment) was found to work. However, when attempting to use Ubuntu on the Raspberry Pi we were not able to run the Python Kompute examples.
 
 ## Running the Pi headless
 
@@ -22,7 +22,7 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
-## Install dependencies for building mesa and running Vulkan Kompute
+## Install dependencies for building mesa and running Kompute
 
 ```
 sudo apt-get install \
@@ -43,7 +43,7 @@ git clone --depth 1 https://gitlab.freedesktop.org/mesa/mesa.git
 
 ## Build mesa
 
-Use meson and ninja to build mesa using the Broadcom Vulkan drivers. For information on the Gallium drivers please see [V3D — The Mesa 3D Graphics Library latest documentation](https://docs.mesa3d.org/drivers/v3d.html).
+Use meson and ninja to build mesa using the Broadcom Vulkan SDK drivers. For information on the Gallium drivers please see [V3D — The Mesa 3D Graphics Library latest documentation](https://docs.mesa3d.org/drivers/v3d.html).
 
 ```
 meson --libdir lib \
@@ -59,7 +59,7 @@ ninja -C build
 sudo ninja -C build install
 ```
 
-## Configure preferred Vulkan driver
+## Configure preferred Vulkan SDK driver
 
 Export the path for the Broadcom drivers, this command will need to be run for every new terminal session.
 
@@ -83,7 +83,7 @@ sudo chmod ugo+rw /dev/dri/renderD128
 sudo chown root:video /dev/dri/renderD128
 ```
 
-## Confirm correct Vulkan operation
+## Confirm correct Vulkan SDK operation
 
 To confirm that mesa was configured and built correctly run the following command.
 
@@ -91,9 +91,9 @@ To confirm that mesa was configured and built correctly run the following comman
 vulkaninfo
 ```
 
-## Clone Vulkan Kompute
+## Clone Kompute
 
-Clone Vulkan Kompute for access to the latest Python tests.
+Clone Kompute for access to the latest Python tests.
 
 ```
 git clone https://github.com/EthicalML/vulkan-kompute.git
@@ -114,13 +114,13 @@ pip install git+git://github.com/EthicalML/vulkan-kompute.git
 
 ## Run the available tests
 
-Use the following command to run the python tests for Vulkan Kompute.
+Use the following command to run the python tests for Kompute.
 
 ```
 pytest
 ```
 
-If the tests pass then congratulations! You are now able to make full use of the Pi 4 Broadcom GPU for running parallel computing. If however, there are any issues with the tests they can be run in debug mode to see the Vulkan logs.
+If the tests pass then congratulations! You are now able to make full use of the Pi 4 Broadcom GPU for running parallel computing. If however, there are any issues with the tests they can be run in debug mode to see the logs.
 
 ```
 pytest --log-cli-level debug
@@ -130,7 +130,7 @@ Please share any issues with the maintainers and they will be more than happy to
 
 ## Closing remarks
 
-To avoid the need to export `VK_ICD_FILENAMES` every time you login, it is possible to symlink the json file into the default directory. The Vulkan loader looks in the `/etc/vulkan/icd.d/` directory for `.json` files.
+To avoid the need to export `VK_ICD_FILENAMES` every time you login, it is possible to symlink the json file into the default directory. The Vulkan SDK loader looks in the `/etc/vulkan/icd.d/` directory for `.json` files.
 
 ```
 sudo ln -s /mesa-install/share/vulkan/icd.d/broadcom_icd.armv7l.json /etc/vulkan/icd.d/broadcom_icd.armv7l.json

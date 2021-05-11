@@ -21,9 +21,9 @@ import os
 import kp
 import sphinx_material
 
-project = 'Vulkan Kompute'
+project = 'Kompute'
 copyright = '2020, The Institute for Ethical AI & Machine Learning'
-html_title = "Vulkan Kompute Documentation (Python & C++)"
+html_title = "Kompute Documentation (Python & C++)"
 author = 'Alejandro Saucedo'
 
 # The full version, including alpha/beta/rc tags
@@ -74,7 +74,7 @@ if html_theme == 'sphinx_material':
         'color_primary': 'red',
         'color_accent': 'light-blue',
         'repo_url': 'https://github.com/EthicalML/vulkan-kompute/',
-        'repo_name': 'Vulkan Kompute',
+        'repo_name': 'Kompute',
         'globaltoc_depth': 2,
         'globaltoc_collapse': False,
         'globaltoc_includehidden': False,

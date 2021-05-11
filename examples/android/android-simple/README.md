@@ -1,13 +1,13 @@
 
 # Kompute Mobile App Integration (Android)
 
-This is the accompanying code for the Blog post ["Supercharging your Mobile Apps with On-Device GPU Accelerated Machine Learning using the Android NDK & Vulkan Kompute"](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617). 
+This is the accompanying code for the Blog post ["Supercharging your Mobile Apps with On-Device GPU Accelerated Machine Learning using the Android NDK & Kompute"](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617). 
 
 <table>
 <tr>
 
 <td width="70%">
-<h3>Example Running Logistic Regression with Vulkan Kompute in Android Phones</h3>
+<h3>Example Running Logistic Regression with Kompute in Android Phones</h3>
 
 <p>
 This example provides an end to end example that can be run using android studio.

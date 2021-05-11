@@ -191,7 +191,7 @@ load from physicalDevice)doc";
 
 static const char *__doc_kp_Manager_Manager_3 =
 R"doc(Manager constructor which allows your own vulkan application to
-integrate with the vulkan kompute use.
+integrate with the kompute use.
 
 @param instance Vulkan compute instance to base this application
 @param physicalDevice Vulkan physical device to use for application
