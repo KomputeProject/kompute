@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Python Package Overview &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>Python Package Overview &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Python Package Overview </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
+       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
     </div>
@@ -409,7 +409,7 @@
   
 <h1 id="overview-python-package--page-root">Python Package Overview<a class="headerlink" href="#overview-python-package--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section provides an overview of the Python Package from a functionality perspective. If you wish to see examples check the <a class="reference external" href="python-examples.html">Python Simple &amp; Advanced Examples section</a> all the classes and their respective functions you can find that in the <a class="reference external" href="python-reference.html">Python Class Reference Section</a>.</p>
-<p>Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
+<p>Below is a diagram that provides insights on the relationship between Kompute objects and Vulkan SDK resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
 <a class="reference internal image-reference" href="../_images/kompute-architecture.jpg"><img alt="../_images/kompute-architecture.jpg" src="../_images/kompute-architecture.jpg" style="width: 70%;"/></a>
 
 <h2 id="package-installation">Package Installation<a class="headerlink" href="#package-installation" title="Permalink to this headline">¶</a></h2>
@@ -432,9 +432,9 @@
 <h2 id="core-python-components">Core Python Components<a class="headerlink" href="#core-python-components" title="Permalink to this headline">¶</a></h2>
 <p>The Python package exposes three main classes:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> - Manages all high level Vulkan and Kompute resources created</p></li>
+<li><p><a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> - Manages all high level GPU and Kompute resources created</p></li>
 <li><p><a class="reference internal" href="python-reference.html#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> - Contains a set of recorded operations that can be reused</p></li>
-<li><p><a class="reference internal" href="python-reference.html#id7" title="kp.Tensor"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Tensor</span></code></a> - Core data component to manage GPU and host data used in operations</p></li>
+<li><p><a class="reference internal" href="python-reference.html#id8" title="kp.Tensor"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Tensor</span></code></a> - Core data component to manage GPU and host data used in operations</p></li>
 </ul>
 <p>One thing that you will notice is that the class <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpBase</span></code> and all its relevant operator subclasses are not exposed in Python.</p>
 <p>This is primarily because the way to interact with the operations are through the respective <a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> and <a class="reference internal" href="python-reference.html#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> functions.</p>

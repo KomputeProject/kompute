@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>C++ Build System Deep Dive &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>C++ Build System Deep Dive &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> C++ Build System Deep Dive </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
+       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
     </div>
@@ -482,13 +482,13 @@
 <td><p>Ensure the return value of createPipeline is processed as ResultValue instead of Result</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_VK_API_VERSION=”…”</p></td>
-<td><p>Sets the default api version to use for vulkan kompute api</p></td>
+<td><p>Sets the default api version to use for kompute api</p></td>
 </tr>
 <tr class="row-even"><td><p>-DKOMPUTE_VK_API_MAJOR_VERSION=1</p></td>
-<td><p>Major version to use for the Vulkan API</p></td>
+<td><p>Major version to use for the Vulkan SDK</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_VK_API_MINOR_VERSION=1</p></td>
-<td><p>Minor version to use for the Vulkan API</p></td>
+<td><p>Minor version to use for the Vulkan SDK</p></td>
 </tr>
 <tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
 <td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
@@ -509,7 +509,7 @@
 <td><p>Enable debug build including debug flags (enabled by cmake debug build)</p></td>
 </tr>
 <tr class="row-even"><td><p>-DKOMPUTE_DISABLE_VK_DEBUG_LAYERS</p></td>
-<td><p>Disable the debug Vulkan layers, mainly used for android builds</p></td>
+<td><p>Disable the debug Vulkan SDK Layers, mainly used for android builds</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_DISABLE_SHADER_UTILS</p></td>
 <td><p>Disable the shader utils and skip adding glslang as dependency</p></td>
@@ -523,11 +523,11 @@
 
 
 <h2 id="required-dependencies">Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>The only required dependency in the build is Vulkan. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven’t installed the Vulkan SDK yet, you can <a class="reference external" href="https://vulkan.lunarg.com/">download it here</a>.</p>
+<p>The only required dependency in the build is the Vulkan SDK. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven’t installed the Vulkan SDK yet, you can <a class="reference external" href="https://vulkan.lunarg.com/">download it here</a>.</p>
 
 
 <h2 id="optional-dependencies">Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:</p>
+<p>SPDLOG is the preferred logging library, however by default Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef KOMPUTE_LOG_OVERRIDE </span><span class="c1">// Use this if you want to define custom macro overrides</span>
 <span class="cp">#if KOMPUTE_SPDLOG_ENABLED </span><span class="c1">// Use this if you want to enable SPDLOG</span>
 <span class="cp">#include</span> <span class="cpf">&lt;spdlog/spdlog.h&gt;</span><span class="cp"></span>

@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>C++ Examples &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>C++ Examples &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> C++ Examples </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
+       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
     </div>
@@ -248,7 +248,7 @@
         </li>
         <li class="md-nav__item"><a href="#end-to-end-examples" class="md-nav__link">End-to-end examples</a>
         </li>
-        <li class="md-nav__item"><a href="#add-vulkan-extensions" class="md-nav__link">Add Vulkan Extensions</a>
+        <li class="md-nav__item"><a href="#add-extensions" class="md-nav__link">Add Extensions</a>
         </li>
         <li class="md-nav__item"><a href="#your-custom-kompute-operation" class="md-nav__link">Your Custom Kompute Operation</a>
         </li>
@@ -400,7 +400,7 @@
         </li>
         <li class="md-nav__item"><a href="#end-to-end-examples" class="md-nav__link">End-to-end examples</a>
         </li>
-        <li class="md-nav__item"><a href="#add-vulkan-extensions" class="md-nav__link">Add Vulkan Extensions</a>
+        <li class="md-nav__item"><a href="#add-extensions" class="md-nav__link">Add Extensions</a>
         </li>
         <li class="md-nav__item"><a href="#your-custom-kompute-operation" class="md-nav__link">Your Custom Kompute Operation</a>
         </li>
@@ -451,8 +451,8 @@
 </ul>
 
 
-<h2 id="add-vulkan-extensions">Add Vulkan Extensions<a class="headerlink" href="#add-vulkan-extensions" title="Permalink to this headline">¶</a></h2>
-<p>Kompute provides a simple way to add Vulkan extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.</p>
+<h2 id="add-extensions">Add Extensions<a class="headerlink" href="#add-extensions" title="Permalink to this headline">¶</a></h2>
+<p>Kompute provides a simple way to add extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.</p>
 <p>The example below shows how you can enable the “VK_EXT_shader_atomic_float” extension so we can use the adomicAdd for floats in the shaders.</p>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -688,7 +688,7 @@
 2
 3
 4
-5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// You can allow Kompute to create the Vulkan components, or pass your existing ones</span>
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// You can allow Kompute to create the GPU resources, or pass your existing ones</span>
 <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
 
 <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
@@ -807,12 +807,12 @@
 
 
 <h2 id="conceptual-overview">Conceptual Overview<a class="headerlink" href="#conceptual-overview" title="Permalink to this headline">¶</a></h2>
-<p>If you are familiar with Vulkan, you will have experience that the first few things you do is fetching the physical Queues from the device. The queues themselves tend to have three main particular features - they can be GRAPHICS, TRANSFER and COMPUTE (between a few others we’ll skip for simplicity).</p>
+<p>If you are familiar with the Vulkan SDK, you will have experience that the first few things you do is fetching the physical Queues from the device. The queues themselves tend to have three main particular features - they can be GRAPHICS, TRANSFER and COMPUTE (between a few others we’ll skip for simplicity).</p>
 <p>Queues can have multiple properties - namely a queue can be of type GRAPHICS+TRANSFER+COMPUTE, etc. Now here comes the key point: the underlying hardware may (or may not) support parallelized processing at multiple levels.</p>
 <p>Let’s take a tangible example. The [NVIDIA 1650](<a class="reference external" href="http://vulkan.gpuinfo.org/displayreport.php?id=9700#queuefamilies">http://vulkan.gpuinfo.org/displayreport.php?id=9700#queuefamilies</a>) for example has 16 <cite>GRAPHICS+TRANSFER+COMPUTE</cite> queues on <cite>familyIndex 0</cite>, then 2 <cite>TRANSFER</cite> queues in <cite>familyIndex 1</cite> and finally 8 <cite>COMPUTE+TRANSFER</cite> queues in <cite>familyIndex 2</cite>.</p>
 <p>With this in mind, the NVIDIA 1650 as of today does not support intra-family parallelization, which means that if you were to submit commands in multiple queues of the same family, these would still be exectured synchronously.</p>
 <p>However the NVIDIA 1650 does support inter-family parallelization, which means that if we were to submit commands across multiple queues from different families, these would execute in parallel.</p>
-<p>This means that we would be able to execute parallel workloads as long as we’re running them across multiple queue families. This is one of the reasons why Vulkan Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.</p>
+<p>This means that we would be able to execute parallel workloads as long as we’re running them across multiple queue families. This is one of the reasons why Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.</p>
 <p>It is important that you understand what are the capabilities and limitations of your hardware, as parallelization capabilities can vary, so you will want to make sure you account for potential discrepancies in processing structures, mainyl to avoid undesired/unexpected race conditions.</p>
 
 

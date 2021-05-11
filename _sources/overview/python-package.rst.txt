@@ -4,7 +4,7 @@ Python Package Overview
 
 This section provides an overview of the Python Package from a functionality perspective. If you wish to see examples check the `Python Simple & Advanced Examples section <python-examples.html>`_ all the classes and their respective functions you can find that in the `Python Class Reference Section <python-reference.html>`_.
 
-Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.
+Below is a diagram that provides insights on the relationship between Kompute objects and Vulkan SDK resources, which primarily encompass ownership of either CPU and/or GPU memory.
 
 .. image:: ../images/kompute-architecture.jpg
    :width: 70%
@@ -36,7 +36,7 @@ Core Python Components
 
 The Python package exposes three main classes:
 
-* :class:`kp.Manager` - Manages all high level Vulkan and Kompute resources created
+* :class:`kp.Manager` - Manages all high level GPU and Kompute resources created
 * :class:`kp.Sequence` - Contains a set of recorded operations that can be reused
 * :class:`kp.Tensor` - Core data component to manage GPU and host data used in operations
 

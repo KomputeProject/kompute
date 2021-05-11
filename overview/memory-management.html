@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Memory Management Principles &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>Memory Management Principles &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Memory Management Principles </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
+       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
     </div>
@@ -400,7 +400,7 @@
             
   
 <h1 id="overview-memory-management--page-root">Memory Management Principles<a class="headerlink" href="#overview-memory-management--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The principle in Vulkan Kompute on memory management is summarised as follows:</p>
+<p>The principle in Kompute on memory management is summarised as follows:</p>
 <ul class="simple">
 <li><p>Memory management by Kompute is optional and only in place if resource is created by Kompute</p></li>
 <li><p>Memory management ownership architecture are acyclic and with a single top manager</p></li>
@@ -410,14 +410,14 @@
 <li><p>Once a resource is destroyed it cannot be recreated</p></li>
 <li><p>Resources can only be rebuilt if they haven’t been destroyed</p></li>
 </ul>
-<p>Vulkan Kompute is responsible for managing both the CPU and GPU memory allocations and resources that it creates, and is important that they are able to explicitly define when these objects are released or destroyed. Similarly, it’s important that the memory resources created by the application are released safely.</p>
-<p>Vulkan Kompute is built with the BYOV principle in mind (Bring your own Vulkan). This means that even though the top level resources are managing the memory to its owned resources, they themselves may not have full ownership of the GPU / Vulkan components - this is in the case that you may want to use Kompute with an existing Vulkan enabled application, and may want to initialise Kompute components with existing Vulkan resources.</p>
+<p>Kompute is responsible for managing both the CPU and GPU memory allocations and resources that it creates, and is important that they are able to explicitly define when these objects are released or destroyed. Similarly, it’s important that the memory resources created by the application are released safely.</p>
+<p>Kompute is built with the BYOV principle in mind (Bring your own VulkanSDK). This means that even though the top level resources are managing the memory to its owned resources, they themselves may not have full ownership of the GPU / Vulkan SDK components - this is in the case that you may want to use Kompute with an existing Vulkan SDK enabled application, and may want to initialise Kompute components with existing Vulkan SDK resources.</p>
 <p>The memory ownership is hierarchically outlined in the component architecture - in this diagram, the arrows provide an intuition on the memory management ownership relationships. It’s worth mentioning that the memory relationship may be different to the way components interact with each other - for this, you can see the high level component overview. More specifically:
 * The purple arrows denote GPU memory management</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture.jpg"><img alt="../_images/kompute-vulkan-architecture.jpg" src="../_images/kompute-vulkan-architecture.jpg" style="width: 100%;"/></a>
 
 <h2 id="optional-memory-management">Optional Memory Management<a class="headerlink" href="#optional-memory-management" title="Permalink to this headline">¶</a></h2>
-<p>As outlined above, resource memory is only managed by Kompute if the resources are created by Kompute. Each of the Kompute components can also be initialised with externally managed resources. The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Manager</span></code> for example can be initialized with an external Vulkan Device. The first principle ensures that all memory ownership is explicitly defined when managing and creating Kompute resources.</p>
+<p>As outlined above, resource memory is only managed by Kompute if the resources are created by Kompute. Each of the Kompute components can also be initialised with externally managed resources. The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Manager</span></code> for example can be initialized with an external vk::Device. The first principle ensures that all memory ownership is explicitly defined when managing and creating Kompute resources.</p>
 
 
 
