@@ -14,7 +14,7 @@
 
 <td>
 
-<h1>Vulkan Kompute</h1>
+<h1>Kompute</h1>
 <h3>The general purpose GPU compute framework for cross vendor graphics cards (AMD, Qualcomm, NVIDIA & friends).</h3>
 
 </td>
@@ -47,7 +47,7 @@ You can [join the Discord](https://discord.gg/ywjaBH6v24) for questions/discussi
 
 ### Your First Kompute (C++)
 
-The C++ interface provides low level access to the native components of Kompute and Vulkan, enabling for [advanced optimizations](https://kompute.cc/overview/async-parallel.html) as well as [extension of components](https://kompute.cc/overview/reference.html).
+The C++ interface provides low level access to the native components of Kompute, enabling for [advanced optimizations](https://kompute.cc/overview/async-parallel.html) as well as [extension of components](https://kompute.cc/overview/reference.html).
 
 ```c++
 
@@ -266,7 +266,7 @@ Both videos have timestamps which will allow you to skip to the most relevant se
 <tr>
 
 <td width="50%">
-<h5>Watch the video for <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">C++ & Vulkan SDK</a> Enthusiasts</h5>
+<h5>Watch the video for <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">C++ Enthusiasts</a> </h5>
 </td>
 
 <td>
@@ -305,7 +305,7 @@ To see a full breakdown you can read further in the [C++ Class Reference](https:
 
 <table>
 <th>
-Full Vulkan Components
+Full Architecture
 </th>
 <th>
 Simplified Kompute Components
@@ -334,7 +334,7 @@ Simplified Kompute Components
 
 ## Asynchronous and Parallel Operations
 
-Kompute provides flexibility to run operations in an asynrchonous way through Vulkan Fences. Furthermore, Kompute enables for explicit allocation of queues, which allow for parallel execution of operations across queue families.
+Kompute provides flexibility to run operations in an asynrchonous way through vk::Fences. Furthermore, Kompute enables for explicit allocation of queues, which allow for parallel execution of operations across queue families.
 
 The image below provides an intuition on how Kompute Sequences can be allocated to different queues to enable parallel execution based on hardware. You can see the [hands on example](https://kompute.cc/overview/advanced-examples.html#parallel-operations), as well as the [detailed documentation page](https://kompute.cc/overview/async-parallel.html) describing how it would work using an NVIDIA 1650 as an example. 
 
@@ -342,7 +342,7 @@ The image below provides an intuition on how Kompute Sequences can be allocated 
 
 ## Mobile Enabled
 
-Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments, together with a working [Android NDK Vulkan wrapper](https://github.com/EthicalML/vulkan-kompute/tree/master/vk_ndk_wrapper_include) for the CPP headers.
+Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments, together with a working [Android NDK wrapper](https://github.com/EthicalML/vulkan-kompute/tree/master/vk_ndk_wrapper_include) for the CPP headers.
 
 <table>
 <tr>
@@ -420,7 +420,7 @@ For a more advanced overview of the build configuration check out the [Build Sys
 
 ## Kompute Development
 
-We appreciate PRs and Issues. If you want to contribute try checking the "Good first issue" tag, but even using Vulkan Kompute and reporting issues is a great contribution!
+We appreciate PRs and Issues. If you want to contribute try checking the "Good first issue" tag, but even using Kompute and reporting issues is a great contribution!
 
 ### Contributing
 
@@ -483,7 +483,7 @@ For more information on how the CI and tests are setup, you can go to the [CI, D
 
 This project started after seeing that a lot of new and renowned ML & DL projects like Pytorch, Tensorflow, Alibaba DNN, Tencent NCNN - among others - have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.
 
-The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of Vulkan. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.
+The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of the Vulkan SDK. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.
 
-We are currently developing Vulkan Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on Vulkan's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Vulkan Kompute architecture.
+We are currently developing Kompute not to hide the Vulkan SDK interface (as it's incredibly well designed) but to augment it with a direct focus on the Vulkan SDK's GPU computing capabilities. [This article](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Kompute architecture.
 
