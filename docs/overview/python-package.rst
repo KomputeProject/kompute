@@ -52,6 +52,39 @@ More specifically, it can be through the following functions:
 * mgr.eval_async_<opname>_def - Runs operation asynchronously under a new anonymous sequence
 * seq.record_<opname> - Records operation in sequence (requires sequence to be in recording mode)
 
+Tensor Component
+------------------
+
+The `kp.Tensor` component provides utilities to load and manage data into GPU memory.
+
+The primary interface to the GPU image leverage `np.array` containers which wrap the GPU memory.
+
+One of the key things to take into consideration is the GPU memory and resource management that is provided by Kompute - namely the `kp.Tensor` allows for the memory to be managed until the python object refcount goes down to zero or is explicitly destroyed with the `destroy()` function.
+
+Another thing to bare in mind is that when the `.data()` function is called, the numpy array would add an extra refcount, and the underlying resources won't be destroyed until that object is destroyed. This is shown more intuitively in the example below:
+
+.. code-block:: python
+   :linenos:
+
+    m = kp.Manager()
+
+    t = m.tensor([1,2,3])
+
+    td = t.data()
+
+    del t
+
+    td
+    # this is OK
+
+    assert td.base.is_init() == True # OK
+
+    m.destroy() # Frees all memory inside tensors
+
+    assert td.base.is_init() == False # Consistent to expected setup
+
+    del td # Now this calls tensor destructor as refcount reaches 0
+
 
 Log Level Configuration
 ^^^^^^
