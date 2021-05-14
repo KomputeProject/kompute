@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Python Package Overview &#8212; Kompute Documentation (Python &amp; C++)</title>
+    <title>Python Package Overview &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Python Package Overview </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Kompute
+    Vulkan Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
+       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Kompute
+    Vulkan Kompute
   </div>
 </a>
     </div>
@@ -300,7 +300,11 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#package-installation" class="md-nav__link">Package Installation</a>
         </li>
-        <li class="md-nav__item"><a href="#core-python-components" class="md-nav__link">Core Python Components</a>
+        <li class="md-nav__item"><a href="#core-python-components" class="md-nav__link">Core Python Components</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#tensor-component" class="md-nav__link">Tensor Component</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#log-level-configuration" class="md-nav__link">Log Level Configuration</a>
         </li></ul>
@@ -386,7 +390,11 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#package-installation" class="md-nav__link">Package Installation</a>
         </li>
-        <li class="md-nav__item"><a href="#core-python-components" class="md-nav__link">Core Python Components</a>
+        <li class="md-nav__item"><a href="#core-python-components" class="md-nav__link">Core Python Components</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#tensor-component" class="md-nav__link">Tensor Component</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#log-level-configuration" class="md-nav__link">Log Level Configuration</a>
         </li></ul>
@@ -409,7 +417,7 @@
   
 <h1 id="overview-python-package--page-root">Python Package Overview<a class="headerlink" href="#overview-python-package--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section provides an overview of the Python Package from a functionality perspective. If you wish to see examples check the <a class="reference external" href="python-examples.html">Python Simple &amp; Advanced Examples section</a> all the classes and their respective functions you can find that in the <a class="reference external" href="python-reference.html">Python Class Reference Section</a>.</p>
-<p>Below is a diagram that provides insights on the relationship between Kompute objects and Vulkan SDK resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
+<p>Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
 <a class="reference internal image-reference" href="../_images/kompute-architecture.jpg"><img alt="../_images/kompute-architecture.jpg" src="../_images/kompute-architecture.jpg" style="width: 70%;"/></a>
 
 <h2 id="package-installation">Package Installation<a class="headerlink" href="#package-installation" title="Permalink to this headline">¶</a></h2>
@@ -432,7 +440,7 @@
 <h2 id="core-python-components">Core Python Components<a class="headerlink" href="#core-python-components" title="Permalink to this headline">¶</a></h2>
 <p>The Python package exposes three main classes:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> - Manages all high level GPU and Kompute resources created</p></li>
+<li><p><a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> - Manages all high level Vulkan and Kompute resources created</p></li>
 <li><p><a class="reference internal" href="python-reference.html#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> - Contains a set of recorded operations that can be reused</p></li>
 <li><p><a class="reference internal" href="python-reference.html#id8" title="kp.Tensor"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Tensor</span></code></a> - Core data component to manage GPU and host data used in operations</p></li>
 </ul>
@@ -446,6 +454,50 @@
 <li><p>mgr.eval_async_&lt;opname&gt;_def - Runs operation asynchronously under a new anonymous sequence</p></li>
 <li><p>seq.record_&lt;opname&gt; - Records operation in sequence (requires sequence to be in recording mode)</p></li>
 </ul>
+
+<h3 id="tensor-component">Tensor Component<a class="headerlink" href="#tensor-component" title="Permalink to this headline">¶</a></h3>
+<p>The <cite>kp.Tensor</cite> component provides utilities to load and manage data into GPU memory.</p>
+<p>The primary interface to the GPU image leverage <cite>np.array</cite> containers which wrap the GPU memory.</p>
+<p>One of the key things to take into consideration is the GPU memory and resource management that is provided by Kompute - namely the <cite>kp.Tensor</cite> allows for the memory to be managed until the python object refcount goes down to zero or is explicitly destroyed with the <cite>destroy()</cite> function.</p>
+<p>Another thing to bare in mind is that when the <cite>.data()</cite> function is called, the numpy array would add an extra refcount, and the underlying resources won’t be destroyed until that object is destroyed. This is shown more intuitively in the example below:</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="n">m</span> <span class="o">=</span> <span class="n">kp</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
+
+ <span class="n">t</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+
+ <span class="n">td</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+
+ <span class="k">del</span> <span class="n">t</span>
+
+ <span class="n">td</span>
+ <span class="c1"># this is OK</span>
+
+ <span class="k">assert</span> <span class="n">td</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">is_init</span><span class="p">()</span> <span class="o">==</span> <span class="kc">True</span> <span class="c1"># OK</span>
+
+ <span class="n">m</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span> <span class="c1"># Frees all memory inside tensors</span>
+
+ <span class="k">assert</span> <span class="n">td</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">is_init</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span> <span class="c1"># Consistent to expected setup</span>
+
+ <span class="k">del</span> <span class="n">td</span> <span class="c1"># Now this calls tensor destructor as refcount reaches 0</span>
+</pre></div>
+</td></tr></table></div>
+
 
 
 <h2 id="log-level-configuration">Log Level Configuration<a class="headerlink" href="#log-level-configuration" title="Permalink to this headline">¶</a></h2>

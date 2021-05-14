@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Extending Kompute with Custom C++ Operations &#8212; Kompute Documentation (Python &amp; C++)</title>
+    <title>Extending Kompute with Custom C++ Operations &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Extending Kompute with Custom C++ Operations </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Kompute
+    Vulkan Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
+       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Kompute
+    Vulkan Kompute
   </div>
 </a>
     </div>
@@ -418,7 +418,7 @@
 
 <h2 id="flow-of-function-calls">Flow of Function Calls<a class="headerlink" href="#flow-of-function-calls" title="Permalink to this headline">¶</a></h2>
 <p>The top level operation which all operations inherit from is the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpBase</span></code> class. Some of the “Core Native Operations” like <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCopy</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCreate</span></code>, etc all inherit from the base operation class.</p>
-<p>The <cite>kp::OpAlgoBase</cite> is another base operation that is specifically built to enable users to create their own operations that contain custom shader logic (i.e. requiring Compute Pipelines, DescriptorSets, etc). The next section contains an example which shows how to extend the OpAlgoBase class.</p>
+<p>The <cite>kp::OpAlgoBase</cite> is another base operation that is specifically built to enable users to create their own operations that contain custom shader logic (i.e. requiring Vulkan Compute Pipelines, DescriptorSets, etc). The next section contains an example which shows how to extend the OpAlgoBase class.</p>
 <p>Below you</p>
 <table>
 <colgroup>
@@ -435,13 +435,13 @@
 <td><p>Constructor for class where you can load/define resources such as shaders, etc.</p></td>
 </tr>
 <tr class="row-odd"><td><p>~OpBase()</p></td>
-<td><p>Destructor that frees GPU resources (if owned) which should be used to manage any memory allocations created through the operation.</p></td>
+<td><p>Destructor that frees vulkan resources (if owned) which should be used to manage any memory allocations created through the operation.</p></td>
 </tr>
 <tr class="row-even"><td><p>init()</p></td>
 <td><p>Init function gets called in the Sequence / Manager inside the record step. This function allows for relevant objects to be initialised within the operation.</p></td>
 </tr>
 <tr class="row-odd"><td><p>record()</p></td>
-<td><p>Record function that gets called in the Sequence / Manager inside the record step after init(). In this function you can directly record to the vk::CommandBuffer.</p></td>
+<td><p>Record function that gets called in the Sequence / Manager inside the record step after init(). In this function you can directly record to the Vulkan command buffer.</p></td>
 </tr>
 <tr class="row-even"><td><p>preEval()</p></td>
 <td><p>When the Sequence is Evaluated this preEval is called across all operations before dispatching the batch of recorded commands to the GPU. This is useful for example if you need to copy data from local to host memory.</p></td>

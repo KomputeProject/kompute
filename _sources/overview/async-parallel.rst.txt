@@ -23,7 +23,7 @@ Asynchronous operation submission
 
 As the name implies, this refers to the asynchronous submission of operations. This means that operations can be submitted to the GPU, and the C++ / host CPU can continue performing tasks, until when the user desires to run `await` to wait until the operation finishes.
 
-This basically provides further granularity on vk::Fences, which is its means to enable the CPU host to know when GPU commands have finished executing. 
+This basically provides further granularity on Vulkan Fences, which is its means to enable the CPU host to know when GPU commands have finished executing. 
 
 It is important that submitting tasks asynchronously, does not mean that these will be executed in parallel. Parallel execution of operations will be covered in the following section.
 

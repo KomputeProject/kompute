@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Asynchronous and Parallel Operations &#8212; Kompute Documentation (Python &amp; C++)</title>
+    <title>Asynchronous and Parallel Operations &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Asynchronous and Parallel Operations </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Kompute
+    Vulkan Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
+       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Kompute
+    Vulkan Kompute
   </div>
 </a>
     </div>
@@ -425,7 +425,7 @@
 
 <h2 id="asynchronous-operation-submission">Asynchronous operation submission<a class="headerlink" href="#asynchronous-operation-submission" title="Permalink to this headline">¶</a></h2>
 <p>As the name implies, this refers to the asynchronous submission of operations. This means that operations can be submitted to the GPU, and the C++ / host CPU can continue performing tasks, until when the user desires to run <cite>await</cite> to wait until the operation finishes.</p>
-<p>This basically provides further granularity on vk::Fences, which is its means to enable the CPU host to know when GPU commands have finished executing.</p>
+<p>This basically provides further granularity on Vulkan Fences, which is its means to enable the CPU host to know when GPU commands have finished executing.</p>
 <p>It is important that submitting tasks asynchronously, does not mean that these will be executed in parallel. Parallel execution of operations will be covered in the following section.</p>
 <p>Asynchronous operation submission can be achieved through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Manager</span></code>, or directly through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Sequence</span></code>. Below is an example using the Kompute manager.</p>
 

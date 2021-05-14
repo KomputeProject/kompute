@@ -23,10 +23,10 @@ End-to-end examples
 * `Android NDK Mobile Kompute ML Application <https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617>`_
 * `Game Development Kompute ML in Godot Engine <https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0>`_
 
-Add Extensions
+Add Vulkan Extensions
 ^^^^^^^^^^^^^^^^^^^^
 
-Kompute provides a simple way to add extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.
+Kompute provides a simple way to add Vulkan extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.
 
 The example below shows how you can enable the "VK_EXT_shader_atomic_float" extension so we can use the adomicAdd for floats in the shaders.
 
@@ -165,7 +165,7 @@ First we are able to create the manager as we normally would.
 .. code-block:: cpp
     :linenos:
 
-    // You can allow Kompute to create the GPU resources, or pass your existing ones
+    // You can allow Kompute to create the Vulkan components, or pass your existing ones
     kp::Manager mgr; // Selects device 0 unless explicitly requested
 
     // Creates tensor an initializes GPU memory (below we show more granularity)
@@ -262,7 +262,7 @@ In order to work with parallel execution of tasks, it is important that you unde
 Conceptual Overview
 ^^^^^^^^^^^^^^^^^^^^^
 
-If you are familiar with the Vulkan SDK, you will have experience that the first few things you do is fetching the physical Queues from the device. The queues themselves tend to have three main particular features - they can be GRAPHICS, TRANSFER and COMPUTE (between a few others we'll skip for simplicity).
+If you are familiar with Vulkan, you will have experience that the first few things you do is fetching the physical Queues from the device. The queues themselves tend to have three main particular features - they can be GRAPHICS, TRANSFER and COMPUTE (between a few others we'll skip for simplicity).
 
 Queues can have multiple properties - namely a queue can be of type GRAPHICS+TRANSFER+COMPUTE, etc. Now here comes the key point: the underlying hardware may (or may not) support parallelized processing at multiple levels.
 
@@ -272,7 +272,7 @@ With this in mind, the NVIDIA 1650 as of today does not support intra-family par
 
 However the NVIDIA 1650 does support inter-family parallelization, which means that if we were to submit commands across multiple queues from different families, these would execute in parallel.
 
-This means that we would be able to execute parallel workloads as long as we're running them across multiple queue families. This is one of the reasons why Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.
+This means that we would be able to execute parallel workloads as long as we're running them across multiple queue families. This is one of the reasons why Vulkan Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.
 
 It is important that you understand what are the capabilities and limitations of your hardware, as parallelization capabilities can vary, so you will want to make sure you account for potential discrepancies in processing structures, mainyl to avoid undesired/unexpected race conditions.
 

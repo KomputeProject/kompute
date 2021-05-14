@@ -50,11 +50,11 @@ Compile Flags
    * - KOMPUTE_CREATE_PIPELINE_RESULT_VALUE
      - Ensure the return value of createPipeline is processed as ResultValue instead of Result
    * - -DKOMPUTE_VK_API_VERSION="..."
-     - Sets the default api version to use for kompute api
+     - Sets the default api version to use for vulkan kompute api
    * - -DKOMPUTE_VK_API_MAJOR_VERSION=1
-     - Major version to use for the Vulkan SDK
+     - Major version to use for the Vulkan API
    * - -DKOMPUTE_VK_API_MINOR_VERSION=1
-     - Minor version to use for the Vulkan SDK
+     - Minor version to use for the Vulkan API
    * - -DKOMPUTE_ENABLE_SPDLOG=1
      - Enables the build with SPDLOG and FMT dependencies (must be installed)
    * - -DKOMPUTE_LOG_VERRIDE=1
@@ -68,7 +68,7 @@ Compile Flags
    * - -DDEBUG=1
      - Enable debug build including debug flags (enabled by cmake debug build)
    * - -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS
-     - Disable the debug Vulkan SDK Layers, mainly used for android builds
+     - Disable the debug Vulkan layers, mainly used for android builds
    * - -DKOMPUTE_DISABLE_SHADER_UTILS
      - Disable the shader utils and skip adding glslang as dependency
 
@@ -81,12 +81,12 @@ Given Kompute is expected to be used across a broad range of architectures and h
 Required dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
-The only required dependency in the build is the Vulkan SDK. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven't installed the Vulkan SDK yet, you can `download it here <https://vulkan.lunarg.com/>`_.
+The only required dependency in the build is Vulkan. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven't installed the Vulkan SDK yet, you can `download it here <https://vulkan.lunarg.com/>`_.
 
 Optional dependencies
 ~~~~~~~~~~~~~~~~~~~~~
 
-SPDLOG is the preferred logging library, however by default Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:
+SPDLOG is the preferred logging library, however by default Vulkan Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:
 
 .. code-block:: c++
 

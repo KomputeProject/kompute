@@ -4,7 +4,7 @@ Class Documentation and C++ Reference
 
 This section provides a breakdown of the cpp classes and what each of their functions provide. It is partially generated and augomented from the Doxygen autodoc content. You can also go directly to the `raw doxygen docs <../doxygen/annotated.html>`_.
 
-Below is a diagram that provides insights on the relationship between Kompute objects and Vulkan SDK resources, which primarily encompass ownership of either CPU and/or GPU memory.
+Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.
 
 .. image:: ../images/kompute-vulkan-architecture.jpg
    :width: 100%
@@ -45,7 +45,7 @@ The :class:`kp::Tensor` is the atomic unit in Kompute, and it is used primarily 
 Algorithm
 -------
 
-The :class:`kp::Algorithm` consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan SDK resources as outlined in the architectural diagram.
+The :class:`kp::Algorithm` consists primarily of the components required for shader code execution, including the relevant vk::DescriptorSet relatedresources as well as vk::Pipeline and all the relevant Vulkan resources as outlined in the architectural diagram.
 
 .. image:: ../images/kompute-vulkan-architecture-algorithm.jpg
    :width: 100%

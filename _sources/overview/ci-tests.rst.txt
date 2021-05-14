@@ -2,7 +2,7 @@
 CI, Docker Images, Docs & Tests
 ======================
 
-This section contains an overview of the steps run on CI, as well as the tools used to simplify the testing (such as running on CPU).
+This section contains an overview of the steps run on CI, as well as the tools used to simplify the testing (such as running Vulkan on CPU).
 
 We use Github Actions to run the tests, which simplifies the workflows significantly for contributors. 
 
@@ -33,12 +33,12 @@ When submitting a PR or merging a PR into master, both of these will run - you c
 
 
 
-Running on the CPU
+Running Vulkan on the CPU
 ~~~~~~~~~~~~~
 
-We use `Swiftshader <https://github.com/google/swiftshader>`_ to enable us to run the Kompute framework directly on the CPU for the CI tests.
+We use `Swiftshader <https://github.com/google/swiftshader>`_ to enable us to run the Vulkan Kompute framework directly on the CPU for the CI tests.
 
-Even though Swiftshader is optimized to function as a high-performance CPU backend for the Vulkan SDK, there are several limitations, the most notable in context of Kompute are:
+Even though Swiftshader is optimized to function as a high-performance CPU backend for Vulkan, there are several limitations, the most notable in context of Kompute are:
 
 * Loading files (spirv or text) leads to segfault
 * Loading raw text string shaders leads to segfault
