@@ -72,6 +72,20 @@ Compile Flags
    * - -DKOMPUTE_DISABLE_SHADER_UTILS
      - Disable the shader utils and skip adding glslang as dependency
 
+Other CMake Flags
+~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :header-rows: 1
+
+   * - Flag
+     - Description
+   * - -DPYTHON_INCLUDE_DIR
+     - Path to where Python.h is found, used for specifying installation of Python (see `this PR <https://github.com/EthicalML/vulkan-kompute/pull/222>`_)
+   * - -DPYTHON_LIBRARY
+     - Path to the Python library, used for specifying installation of Python (see `this PR <https://github.com/EthicalML/vulkan-kompute/pull/222>`_)
+   * - -DCMAKE_OSX_ARCHITECTURES
+     - Specifies the target architecture for Apple platforms (see `this issue <https://github.com/EthicalML/vulkan-kompute/issues/223>`_)
 
 Dependencies
 ^^^^^^^^^^^^
