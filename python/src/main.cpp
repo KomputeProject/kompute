@@ -235,6 +235,13 @@ PYBIND11_MODULE(kp, m) {
             return kp::py::vkPropertiesToDict(properties);
         }, "Return a dict containing information about the device");
 
+    auto atexit = py::module_::import("atexit");
+    atexit.attr("register")(py::cpp_function([](){
+        kp_debug = py::none();
+        kp_info = py::none();
+        kp_warning = py::none();
+        kp_error = py::none();
+    }));
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;
