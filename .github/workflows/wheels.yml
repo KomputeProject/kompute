@@ -1,6 +1,8 @@
 name: wheels
 
-on: push
+on:
+  release:
+    types: [published]
 
 
 # TODO: Build wheels for win32 and MacOS ARM as well
