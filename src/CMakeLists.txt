@@ -1,17 +1,17 @@
 
-if(KOMPUTE_OPT_ANDOID_BUILD)
+if(KOMPUTE_OPT_ANDROID_BUILD)
     find_library(android android)
 endif()
 
 # We don't import Vulkan library if Android build as its build dynamically
-# Otherwise it is expected that the Vulkan SDK and dependencies are installed 
-if(NOT KOMPUTE_OPT_ANDOID_BUILD)
+# Otherwise it is expected that the Vulkan SDK and dependencies are installed
+if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     find_package(Vulkan REQUIRED)
 endif()
 
 if(KOMPUTE_OPT_BUILD_SHADERS)
 # all shaders are compiled into cpp files
-    kompute_make(build_shaders 
+    kompute_make(build_shaders
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
 endif()
 
@@ -25,7 +25,7 @@ file(GLOB kompute_CPP
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
-if(KOMPUTE_OPT_ANDOID_BUILD)
+if(KOMPUTE_OPT_ANDROID_BUILD)
     set(VK_ANDROID_COMMON_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/common)
     set(VK_ANDROID_PATCH_DIR ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/)
     set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
@@ -57,14 +57,14 @@ target_include_directories(
     $<INSTALL_INTERFACE:single_include>
 )
 
-if(NOT KOMPUTE_OPT_ANDOID_BUILD)
+if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(
         kompute
         Vulkan::Vulkan
     )
 else()
     target_link_libraries(
-        kompute 
+        kompute
     )
 endif()
 
@@ -89,7 +89,7 @@ else()
 endif()
 
 target_link_libraries(
-    kompute 
+    kompute
     fmt::fmt
 )
 
@@ -105,7 +105,7 @@ if(KOMPUTE_OPT_ENABLE_SPDLOG)
     endif()
 
     target_link_libraries(
-        kompute 
+        kompute
         spdlog::spdlog
     )
 endif()
@@ -114,9 +114,9 @@ endif()
 #################### Android #######################
 #####################################################
 
-if(KOMPUTE_OPT_ANDOID_BUILD)
+if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(
-        kompute 
+        kompute
         kompute_vk_ndk_wrapper
         log
         android
