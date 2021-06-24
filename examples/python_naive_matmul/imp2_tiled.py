@@ -24,7 +24,7 @@ class MatMulOp:
         assert tile_size <= max_workgroup_size[1]
         self.tile_size = tile_size
 
-        self.shader = kp.Shader.compile_source(f'''
+        self.shader = f'''
 #version 450
 
 layout (local_size_x = {tile_size}, local_size_y = {tile_size}) in;
@@ -40,20 +40,21 @@ shared float sub_tensor_2[{tile_size}][{tile_size}];
 
 void main()
 {{
-    uint row = gl_GlobalInvocationID.x;
-    uint col = gl_GlobalInvocationID.y;
-    uint globalRow = {tile_size} * gl_WorkGroupID.x + row;
-    uint globalCol = {tile_size} * gl_WorkGroupID.y + row;
+    uint row = gl_LocalInvocationID.x; // 0 .. tile_size
+    uint col = gl_LocalInvocationID.y; // 0 .. tile_size
+    // gl_WorkGroupID : 0 .. tensor_size / tile_size
+    uint globalRow = ({tile_size} * gl_WorkGroupID.x) + row;
+    uint globalCol = ({tile_size} * gl_WorkGroupID.y) + col;
 
     uint tensor_size = uint(tensor_size_f);
     float acc = 0.0;
     uint numTiles = tensor_size / {tile_size};
     for(uint t = 0u; t < numTiles; t++)
     {{
-        uint tiledRow = {tile_size} * t + row;
-        uint tiledCol = {tile_size} * t + col;
-        sub_tensor_1[col][row] = in_tensor_1[tiledCol * tensor_size + globalRow];
-        sub_tensor_2[col][row] = in_tensor_2[globalCol * tensor_size + tiledRow];
+        uint tiledRow = ({tile_size} * t) + row;
+        uint tiledCol = ({tile_size} * t) + col;
+        sub_tensor_1[col][row] = in_tensor_1[(tiledCol * tensor_size) + globalRow];
+        sub_tensor_2[col][row] = in_tensor_2[(globalCol * tensor_size) + tiledRow];
 
         memoryBarrierShared();
         barrier();
@@ -63,8 +64,10 @@ void main()
 
         barrier();
     }}
-    out_tensor[(globalCol * tensor_size) + globalRow] = acc;
-}}''')
+    uint globalIndex = (tensor_size * globalCol) + globalRow;
+    out_tensor[globalIndex] = acc;
+}}'''
+        self.compiled_shader = kp.Shader.compile_source(self.shader)
         self.tensor_shape: tuple[int, int] = (0, 0)
         self.params: list[kp.Tensor] = []
         self.algo = None
@@ -76,17 +79,18 @@ void main()
         if self.algo is None or self.tensor_shape != tensor_shape or self.params != params:
             self.tensor_shape = tensor_shape
             self.params = params
+            workgroup = (tensor_shape[0] // self.tile_size, tensor_shape[1] // self.tile_size, 1)
             self.algo = self.mgr.algorithm(
                 params,  # params
-                self.shader,  # spirv
-                (tensor_shape[0] // self.tile_size, tensor_shape[1] // self.tile_size, 1),  # workgroup
+                self.compiled_shader,  # spirv
+                workgroup,  # workgroup
                 [float(tensor_shape[0])],  # spec_consts
                 [])  # push_consts
 
         (self.mgr.sequence()
          .record(kp.OpTensorSyncDevice(self.params))
          .record(kp.OpAlgoDispatch(self.algo))
-         .record(kp.OpTensorSyncLocal(self.params))
+         .record(kp.OpTensorSyncLocal([tensor_out]))
          .eval())
 
 

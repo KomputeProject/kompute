@@ -30,11 +30,12 @@ class MatMulOp:
         self.tile_size = tile_size
         self.thread_work_ratio = thread_work_ratio
 
-        local_size_y = tile_size // thread_work_ratio
-        self.shader = kp.Shader.compile_source(f'''
+        self.local_size_x = tile_size
+        self.local_size_y = tile_size // thread_work_ratio
+        self.shader = f'''
 #version 450
 
-layout (local_size_x = {tile_size}, local_size_y = {local_size_y}) in;
+layout (local_size_x = {tile_size}, local_size_y = {self.local_size_y}) in;
 
 layout (set = 0, binding = 0) readonly buffer buf_in_tensor_1 {{ float in_tensor_1[]; }};
 layout (set = 0, binding = 1) readonly buffer buf_in_tensor_2 {{ float in_tensor_2[]; }};
@@ -47,8 +48,8 @@ shared float sub_tensor_2[{tile_size}][{tile_size}];
 
 void main()
 {{
-    uint row = gl_GlobalInvocationID.x;
-    uint col = gl_GlobalInvocationID.y;
+    uint row = gl_LocalInvocationID.x;
+    uint col = gl_LocalInvocationID.y;
     uint globalRow = {tile_size} * gl_WorkGroupID.x + row;
     uint globalCol = {tile_size} * gl_WorkGroupID.y + row;
 
@@ -62,23 +63,24 @@ void main()
     {{
         uint tiledRow = {tile_size} * t + row;
         uint tiledCol = {tile_size} * t + col;
-        sub_tensor_1[col + t * {local_size_y}][row] = in_tensor_1[
-            (tiledCol + t * {local_size_y}) * tensor_size + globalRow];
-        sub_tensor_2[col + t * {local_size_y}][row] = in_tensor_2[
-            (globalCol + t * {local_size_y})* tensor_size + tiledRow];
+        sub_tensor_1[col + t * {self.local_size_y}][row] = in_tensor_1[
+            (tiledCol + t * {self.local_size_y}) * tensor_size + globalRow];
+        sub_tensor_2[col + t * {self.local_size_y}][row] = in_tensor_2[
+            (globalCol + t * {self.local_size_y})* tensor_size + tiledRow];
 
         memoryBarrierShared();
         barrier();
 
         for(uint k = 0u; k < {tile_size}; k++)
             for(uint l = 0u; l < {thread_work_ratio}; l++)
-                acc[l] += sub_tensor_1[k][row] * sub_tensor_2[col + l * {local_size_y}][k];
+                acc[l] += sub_tensor_1[k][row] * sub_tensor_2[col + l * {self.local_size_y}][k];
 
         barrier();
     }}
     for(uint l = 0u; l < {thread_work_ratio}; l++)
-        out_tensor[(globalCol + l * {local_size_y}) * tensor_size + globalRow] = acc[l];
-}}''')
+        out_tensor[(globalCol + l * {self.local_size_y}) * tensor_size + globalRow] = acc[l];
+}}'''
+        self.compiled_shader = kp.Shader.compile_source(self.shader)
         self.tensor_shape: tuple[int, int] = (0, 0)
         self.params: list[kp.Tensor] = []
         self.algo = None
@@ -90,17 +92,20 @@ void main()
         if self.algo is None or self.tensor_shape != tensor_shape or self.params != params:
             self.tensor_shape = tensor_shape
             self.params = params
+            print(
+                tensor_shape, self.local_size_x, self.local_size_y,
+                (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1))
             self.algo = self.mgr.algorithm(
                 params,  # params
-                self.shader,  # spirv
-                (tensor_shape[0] // self.tile_size, tensor_shape[1] // self.tile_size, 1),  # workgroup
+                self.compiled_shader,  # spirv
+                (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1),  # workgroup
                 [float(tensor_shape[0])],  # spec_consts
                 [])  # push_consts
 
         (self.mgr.sequence()
          .record(kp.OpTensorSyncDevice(self.params))
          .record(kp.OpAlgoDispatch(self.algo))
-         .record(kp.OpTensorSyncLocal(self.params))
+         .record(kp.OpTensorSyncLocal([tensor_out]))
          .eval())
 
 
