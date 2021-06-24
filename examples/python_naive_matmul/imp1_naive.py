@@ -76,6 +76,7 @@ void main()
             self.tensor_shape = tensor_shape
             self.params = params
             workgroup = (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1)
+            print(f'{workgroup=} {self.local_size_x=} {self.local_size_y=}')
             self.algo = self.mgr.algorithm(
                 params,  # params
                 self.compiled_shader,  # spirv
@@ -95,7 +96,7 @@ def main():
 
     matmul_op = MatMulOp(mgr)
 
-    tensor_size = 512
+    tensor_size = 4064
     tensor_shape = [tensor_size, tensor_size]
     tensor_in_1 = mgr.tensor(np.triu(np.ones(tensor_shape)))
     tensor_in_2 = mgr.tensor(np.triu(np.ones(tensor_shape)))
@@ -107,20 +108,20 @@ def main():
 
     matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
 
-    experiment_count = 1000
+    experiment_count = 8
     start_time = time.time()
     for _ in range(experiment_count):
         matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
     end_time = time.time()
     experiment_time = end_time - start_time
-    op_count = tensor_shape[0] * tensor_shape[1] * (tensor_shape[1] - 1)
+    op_count = tensor_shape[0] * tensor_shape[1] * ((tensor_shape[1] * 2) - 1)
 
     print(f'Output :\n{tensor_out.data().reshape(tensor_shape)}')
 
     print(f'{experiment_count} matmul time : '
           f'{experiment_time * 1000:0.2f}ms => '
           f'{experiment_count / experiment_time:0.2f}op/s or '
-          f'{experiment_count * op_count / (1e9 * experiment_time):0.2f}GFLOPS')
+          f'{experiment_count * op_count / (1e9 * experiment_time):0.2f} GFLOPS')
 
 
 if __name__ == '__main__':

@@ -43,8 +43,8 @@ void main()
     uint row = gl_LocalInvocationID.x; // 0 .. tile_size
     uint col = gl_LocalInvocationID.y; // 0 .. tile_size
     // gl_WorkGroupID : 0 .. tensor_size / tile_size
-    uint globalRow = ({tile_size} * gl_WorkGroupID.x) + row;
-    uint globalCol = ({tile_size} * gl_WorkGroupID.y) + col;
+    uint globalRow = {tile_size} * gl_WorkGroupID.x + row;
+    uint globalCol = {tile_size} * gl_WorkGroupID.y + col;
 
     uint tensor_size = uint(tensor_size_f);
     float acc = 0.0;
@@ -64,8 +64,7 @@ void main()
 
         barrier();
     }}
-    uint globalIndex = (tensor_size * globalCol) + globalRow;
-    out_tensor[globalIndex] = acc;
+    out_tensor[tensor_size * globalCol + globalRow] = acc;
 }}'''
         self.compiled_shader = kp.Shader.compile_source(self.shader)
         self.tensor_shape: tuple[int, int] = (0, 0)
@@ -99,7 +98,7 @@ def main():
 
     matmul_op = MatMulOp(mgr)
 
-    tensor_size = 512
+    tensor_size = 4096
     tensor_shape = [tensor_size, tensor_size]
     tensor_in_1 = mgr.tensor(np.triu(np.ones(tensor_shape)))
     tensor_in_2 = mgr.tensor(np.triu(np.ones(tensor_shape)))
@@ -111,20 +110,20 @@ def main():
 
     matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
 
-    experiment_count = 1000
+    experiment_count = 8
     start_time = time.time()
     for _ in range(experiment_count):
         matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
     end_time = time.time()
     experiment_time = end_time - start_time
-    op_count = tensor_shape[0] * tensor_shape[1] * (tensor_shape[1] - 1)
+    op_count = tensor_shape[0] * tensor_shape[1] * ((tensor_shape[1] * 2) - 1)
 
     print(f'Output :\n{tensor_out.data().reshape(tensor_shape)}')
 
     print(f'{experiment_count} matmul time : '
           f'{experiment_time * 1000:0.2f}ms => '
           f'{experiment_count / experiment_time:0.2f}op/s or '
-          f'{experiment_count * op_count / (1e9 * experiment_time):0.2f}GFLOPS')
+          f'{experiment_count * op_count / (1e9 * experiment_time):0.2f} GFLOPS')
 
 
 if __name__ == '__main__':

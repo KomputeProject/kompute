@@ -55,30 +55,37 @@ void main()
 
     uint tensor_size = uint(tensor_size_f);
     float acc[{thread_work_ratio}];
-    for (uint l = 0u; l < {thread_work_ratio}; l++)
-        acc[l] = 0.0;
+    for(uint w = 0u; w < {thread_work_ratio}; w++)
+        acc[w] = 0.0;
 
+    /*
     uint numTiles = tensor_size / {tile_size};
     for(uint t = 0u; t < numTiles; t++)
     {{
-        uint tiledRow = {tile_size} * t + row;
-        uint tiledCol = {tile_size} * t + col;
-        sub_tensor_1[col + t * {self.local_size_y}][row] = in_tensor_1[
-            (tiledCol + t * {self.local_size_y}) * tensor_size + globalRow];
-        sub_tensor_2[col + t * {self.local_size_y}][row] = in_tensor_2[
-            (globalCol + t * {self.local_size_y})* tensor_size + tiledRow];
+        for(uint w = 0u; w < {thread_work_ratio}; w++)
+        {{
+            uint tiledRow = {tile_size} * t + row;
+            uint tiledCol = {tile_size} * t + col;
+            sub_tensor_1[col + t * {self.local_size_y}][row] = in_tensor_1[
+                (tiledCol + w * {self.local_size_y}) * tensor_size + globalRow];
+            sub_tensor_2[col + t * {self.local_size_y}][row] = in_tensor_2[
+                (globalCol + w * {self.local_size_y})* tensor_size + tiledRow];
+        }}
 
         memoryBarrierShared();
         barrier();
 
         for(uint k = 0u; k < {tile_size}; k++)
-            for(uint l = 0u; l < {thread_work_ratio}; l++)
-                acc[l] += sub_tensor_1[k][row] * sub_tensor_2[col + l * {self.local_size_y}][k];
+            for(uint w = 0u; w < {thread_work_ratio}; w++)
+                acc[w] += sub_tensor_1[k][row] * sub_tensor_2[col + w * {self.local_size_y}][k];
 
         barrier();
+    }}*/
+    for(uint w = 0u; w < {thread_work_ratio}; w++)
+    {{
+        //out_tensor[(globalCol + w * {self.local_size_y}) * tensor_size + globalRow] = acc[w];
+        out_tensor[(globalCol + w * {self.local_size_y}) * tensor_size + globalRow] = w;
     }}
-    for(uint l = 0u; l < {thread_work_ratio}; l++)
-        out_tensor[(globalCol + l * {self.local_size_y}) * tensor_size + globalRow] = acc[l];
 }}'''
         self.compiled_shader = kp.Shader.compile_source(self.shader)
         self.tensor_shape: tuple[int, int] = (0, 0)
@@ -92,13 +99,13 @@ void main()
         if self.algo is None or self.tensor_shape != tensor_shape or self.params != params:
             self.tensor_shape = tensor_shape
             self.params = params
-            print(
-                tensor_shape, self.local_size_x, self.local_size_y,
-                (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1))
+            # workgroup = (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1)
+            workgroup = (2, 2, 1)
+            print(tensor_shape, self.local_size_x, self.local_size_y, workgroup)
             self.algo = self.mgr.algorithm(
                 params,  # params
                 self.compiled_shader,  # spirv
-                (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1),  # workgroup
+                workgroup,  # workgroup
                 [float(tensor_shape[0])],  # spec_consts
                 [])  # push_consts
 
@@ -114,7 +121,7 @@ def main():
 
     matmul_op = MatMulOp(mgr)
 
-    tensor_size = 512
+    tensor_size = 4096
     tensor_shape = [tensor_size, tensor_size]
     tensor_in_1 = mgr.tensor(np.triu(np.ones(tensor_shape)))
     tensor_in_2 = mgr.tensor(np.triu(np.ones(tensor_shape)))
@@ -126,20 +133,20 @@ def main():
 
     matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
 
-    experiment_count = 1000
+    experiment_count = 8
     start_time = time.time()
     for _ in range(experiment_count):
         matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
     end_time = time.time()
     experiment_time = end_time - start_time
-    op_count = tensor_shape[0] * tensor_shape[1] * (tensor_shape[1] - 1)
+    op_count = tensor_shape[0] * tensor_shape[1] * ((tensor_shape[1] * 2) - 1)
 
     print(f'Output :\n{tensor_out.data().reshape(tensor_shape)}')
 
     print(f'{experiment_count} matmul time : '
           f'{experiment_time * 1000:0.2f}ms => '
           f'{experiment_count / experiment_time:0.2f}op/s or '
-          f'{experiment_count * op_count / (1e9 * experiment_time):0.2f}GFLOPS')
+          f'{experiment_count * op_count / (1e9 * experiment_time):0.2f} GFLOPS')
 
 
 if __name__ == '__main__':

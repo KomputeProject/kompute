@@ -34,13 +34,13 @@ def main():
             matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
         end_time = time.time()
         experiment_time = end_time - start_time
-        op_count = tensor_shape[0] * tensor_shape[1] * (tensor_shape[1] - 1)
+        op_count = tensor_shape[0] * tensor_shape[1] * ((tensor_shape[1] * 2) - 1)
 
         if (tensor_out.data().reshape(tensor_shape) == mat_result).all():
             print(f'From {MatMulOp.__module__} : {experiment_count} matmul time : '
                   f'{experiment_time * 1000:0.2f}ms => '
                   f'{experiment_count / experiment_time:0.2f}op/s or '
-                  f'{experiment_count * op_count / (1e9 * experiment_time):0.2f}GFLOPS')
+                  f'{experiment_count * op_count / (1e9 * experiment_time):0.2f} GFLOPS')
         else:
             print(f'Test failed => output tensor is wrong :\n{tensor_out.data().reshape(tensor_shape)}')
 
