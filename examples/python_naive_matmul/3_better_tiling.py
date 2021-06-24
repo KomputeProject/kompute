@@ -5,7 +5,7 @@ import numpy as np
 
 
 class MatMulOp:
-    def __init__(self, manager: kp.Manager, tile_size: int = -1):
+    def __init__(self, manager: kp.Manager, tile_size: int = -1, thread_work_ratio: int = 8):
         self.mgr = manager
 
         props = self.mgr.get_device_properties()
@@ -13,21 +13,28 @@ class MatMulOp:
         max_workgroup_size = props['max_work_group_size']
         if tile_size < 0:
             tile_size = 1
-            while (4 * tile_size * tile_size <= max_workgroup_invocation
+            local_size_y = tile_size // thread_work_ratio
+            while (4 * tile_size * local_size_y <= max_workgroup_invocation
                    and 2 * tile_size <= max_workgroup_size[0]
-                   and 2 * tile_size <= max_workgroup_size[1]):
+                   and 2 * local_size_y <= max_workgroup_size[1]):
                 tile_size *= 2
+                local_size_y = tile_size // thread_work_ratio
+        else:
+            local_size_y = tile_size // thread_work_ratio
 
         assert tile_size > 0
-        assert tile_size * tile_size <= max_workgroup_invocation
+        assert thread_work_ratio > 0
+        assert tile_size * local_size_y <= max_workgroup_invocation
         assert tile_size <= max_workgroup_size[0]
-        assert tile_size <= max_workgroup_size[1]
+        assert local_size_y <= max_workgroup_size[1]
         self.tile_size = tile_size
+        self.thread_work_ratio = thread_work_ratio
 
+        local_size_y = tile_size // thread_work_ratio
         self.shader = kp.Shader.compile_source(f'''
 #version 450
 
-layout (local_size_x = {tile_size}, local_size_y = {tile_size}) in;
+layout (local_size_x = {tile_size}, local_size_y = {local_size_y}) in;
 
 layout (set = 0, binding = 0) readonly buffer buf_in_tensor_1 {{ float in_tensor_1[]; }};
 layout (set = 0, binding = 1) readonly buffer buf_in_tensor_2 {{ float in_tensor_2[]; }};
@@ -46,24 +53,31 @@ void main()
     uint globalCol = {tile_size} * gl_WorkGroupID.y + row;
 
     uint tensor_size = uint(tensor_size_f);
-    float acc = 0.0;
+    float acc[{thread_work_ratio}];
+    for (uint l = 0u; l < {thread_work_ratio}; l++)
+        acc[l] = 0.0;
+
     uint numTiles = tensor_size / {tile_size};
     for(uint t = 0u; t < numTiles; t++)
     {{
         uint tiledRow = {tile_size} * t + row;
         uint tiledCol = {tile_size} * t + col;
-        sub_tensor_1[col][row] = in_tensor_1[tiledCol * tensor_size + globalRow];
-        sub_tensor_2[col][row] = in_tensor_2[globalCol * tensor_size + tiledRow];
+        sub_tensor_1[col + t * {local_size_y}][row] = in_tensor_1[
+            (tiledCol + t * {local_size_y}) * tensor_size + globalRow];
+        sub_tensor_2[col + t * {local_size_y}][row] = in_tensor_2[
+            (globalCol + t * {local_size_y})* tensor_size + tiledRow];
 
         memoryBarrierShared();
         barrier();
 
         for(uint k = 0u; k < {tile_size}; k++)
-            acc += sub_tensor_1[k][row] * sub_tensor_2[col][k];
+            for(uint l = 0u; l < {thread_work_ratio}; l++)
+                acc[l] += sub_tensor_1[k][row] * sub_tensor_2[col + l * {local_size_y}][k];
 
         barrier();
     }}
-    out_tensor[(globalCol * tensor_size) + globalRow] = acc;
+    for(uint l = 0u; l < {thread_work_ratio}; l++)
+        out_tensor[(globalCol + l * {local_size_y}) * tensor_size + globalRow] = acc[l];
 }}''')
         self.tensor_shape: tuple[int, int] = (0, 0)
         self.params: list[kp.Tensor] = []
