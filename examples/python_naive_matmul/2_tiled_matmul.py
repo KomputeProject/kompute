@@ -5,46 +5,29 @@ import numpy as np
 
 
 class MatMulOp:
-    def __init__(self, manager: kp.Manager, local_size_x: int = -1, local_size_y: int = -1):
+    def __init__(self, manager: kp.Manager, tile_size: int = -1):
         self.mgr = manager
 
         props = self.mgr.get_device_properties()
         max_workgroup_invocation = props['max_work_group_invocations']
         max_workgroup_size = props['max_work_group_size']
-        if local_size_x < 1:
-            if local_size_y > 0:
-                local_size_x = 1
-                while (2 * local_size_x * local_size_y <= max_workgroup_invocation
-                       and 2 * local_size_x <= max_workgroup_size[0]):
-                    local_size_x *= 2
-            else:
-                local_size_x = 1
-                local_size_y = 1
-                while 2 * local_size_x * local_size_y <= max_workgroup_invocation:
-                    if 2 * local_size_x <= max_workgroup_size[0]:
-                        local_size_x *= 2
-                    if 2 * local_size_y <= max_workgroup_size[1]:
-                        local_size_y *= 2
-                    elif 2 * local_size_x > max_workgroup_size[0]:  # stop if neither x nor y can be double
-                        break
-        elif local_size_y < 0:
-            local_size_y = 1
-            while (2 * local_size_x * local_size_y <= max_workgroup_invocation
-                   and 2 * local_size_x <= max_workgroup_size[0]):
-                local_size_y *= 2
+        if tile_size < 0:
+            tile_size = 1
+            while (2 * tile_size * tile_size <= max_workgroup_invocation
+                   and 2 * tile_size <= max_workgroup_size[0]
+                   and 2 * tile_size <= max_workgroup_size[1]):
+                tile_size *= 2
 
-        assert local_size_x > 0
-        assert local_size_y > 0
-        assert local_size_x * local_size_y <= max_workgroup_invocation
-        assert local_size_x <= max_workgroup_size[0]
-        assert local_size_y <= max_workgroup_size[1]
-        self.local_size_x = local_size_x
-        self.local_size_y = local_size_y
+        assert tile_size > 0
+        assert tile_size * tile_size <= max_workgroup_invocation
+        assert tile_size <= max_workgroup_size[0]
+        assert tile_size <= max_workgroup_size[1]
+        self.tile_size = tile_size
 
         self.shader = kp.Shader.compile_source(f'''
 #version 450
 
-layout (local_size_x = {local_size_x}, local_size_y = {local_size_y}) in;
+layout (local_size_x = {tile_size}, local_size_y = {tile_size}) in;
 
 layout (set = 0, binding = 0) readonly buffer buf_in_tensor_1 {{ float in_tensor_1[]; }};
 layout (set = 0, binding = 1) readonly buffer buf_in_tensor_2 {{ float in_tensor_2[]; }};
@@ -52,15 +35,34 @@ layout (set = 0, binding = 2) writeonly buffer buf_out_tensor {{ float out_tenso
 
 layout (constant_id = 0) const float tensor_size_f = 0;
 
+shared float sub_tensor_1[{tile_size}][{tile_size}];
+shared float sub_tensor_2[{tile_size}][{tile_size}];
 
 void main()
 {{
-    uint globalRow = gl_GlobalInvocationID.x;
-    uint globalCol = gl_GlobalInvocationID.y;
+    uint row = gl_GlobalInvocationID.x;
+    uint col = gl_GlobalInvocationID.y;
+    uint globalRow = {tile_size} * gl_WorkGroupID.x + row;
+    uint globalCol = {tile_size} * gl_WorkGroupID.y + row;
+
     uint tensor_size = uint(tensor_size_f);
     float acc = 0.0;
-    for(uint k = 0u; k < tensor_size; k++)
-        acc += in_tensor_1[(k * tensor_size) + globalRow] * in_tensor_2[(globalCol * tensor_size) + k];
+    uint numTiles = tensor_size / {tile_size};
+    for(uint t = 0u; t < numTiles; t++)
+    {{
+        uint tiledRow = {tile_size} * t + row;
+        uint tiledCol = {tile_size} * t + col;
+        sub_tensor_1[col][row] = in_tensor_1[tiledCol * tensor_size + globalRow];
+        sub_tensor_2[col][row] = in_tensor_2[globalCol * tensor_size + tiledRow];
+
+        memoryBarrierShared();
+        barrier();
+
+        for(uint k = 0u; k < {tile_size}; k++)
+            acc += sub_tensor_1[k][row] * sub_tensor_2[col][k];
+
+        barrier();
+    }}
     out_tensor[(globalCol * tensor_size) + globalRow] = acc;
 }}''')
         self.tensor_shape: tuple[int, int] = (0, 0)
@@ -77,7 +79,7 @@ void main()
             self.algo = self.mgr.algorithm(
                 params,  # params
                 self.shader,  # spirv
-                (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1),  # workgroup
+                (tensor_shape[0] // self.tile_size, tensor_shape[1] // self.tile_size, 1),  # workgroup
                 [float(tensor_shape[0])],  # spec_consts
                 [])  # push_consts
 
@@ -121,11 +123,5 @@ def main():
           f'{experiment_count * op_count / (1e9 * experiment_time):0.2f}GFLOPS')
 
 
-def test():
-    main()
-
-
 if __name__ == '__main__':
     main()
-else:
-    test()
