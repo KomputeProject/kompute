@@ -41,7 +41,7 @@ class MatMulOp:
         self.local_size_x = local_size_x
         self.local_size_y = local_size_y
 
-        self.shader = f'''
+        self.shader = '''
 #version 450
 
 layout (local_size_x = {local_size_x}, local_size_y = {local_size_y}) in;
@@ -63,7 +63,8 @@ void main()
         acc += in_tensor_1[(k * tensor_size) + globalRow] * in_tensor_2[(globalCol * tensor_size) + k];
     out_tensor[(globalCol * tensor_size) + globalRow] = acc;
 }}'''
-        self.compiled_shader = kp.Shader.compile_source(self.shader)
+        self.compiled_shader = kp.Shader.compile_source(self.shader.format(
+            local_size_x=self.local_size_x, local_size_y=self.local_size_y))
         self.tensor_shape: tuple[int, int] = (0, 0)
         self.params: list[kp.Tensor] = []
         self.algo = None
@@ -75,7 +76,11 @@ void main()
         if self.algo is None or self.tensor_shape != tensor_shape or self.params != params:
             self.tensor_shape = tensor_shape
             self.params = params
-            workgroup = (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1)
+            local_size_x = min(self.local_size_x, tensor_shape[0])
+            local_size_y = min(self.local_size_y, tensor_shape[1])
+            self.compiled_shader = kp.Shader.compile_source(self.shader.format(
+                local_size_x=local_size_x, local_size_y=local_size_y))
+            workgroup = (tensor_shape[0] // local_size_x, tensor_shape[1] // local_size_y, 1)
             print(f'{workgroup=} {self.local_size_x=} {self.local_size_y=}')
             self.algo = self.mgr.algorithm(
                 params,  # params
@@ -85,7 +90,7 @@ void main()
                 [])  # push_consts
 
         (self.mgr.sequence()
-         .record(kp.OpTensorSyncDevice(self.params))
+         .record(kp.OpTensorSyncDevice([tensor_in_1, tensor_in_2]))
          .record(kp.OpAlgoDispatch(self.algo))
          .record(kp.OpTensorSyncLocal([tensor_out]))
          .eval())
