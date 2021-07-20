@@ -1,6 +1,5 @@
 #pragma once
 
-#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
 #include <iostream>
 #include <vector>
 
@@ -13,9 +12,7 @@
 #include <glslang/Include/ResourceLimits.h>
 #include <glslang/Public/ShaderLang.h>
 
-#include "kompute/Core.hpp"
-
-namespace kp {
+namespace kp_test_utils {
 
 /**
     Shader utily class with functions to compile and process glsl files.
@@ -72,4 +69,3 @@ class Shader
 };
 
 }
-#endif // DKOMPUTE_DISABLE_SHADER_UTILS

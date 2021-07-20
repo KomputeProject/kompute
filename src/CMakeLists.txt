@@ -141,41 +141,6 @@ if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
         build_single_header)
 endif()
 
-#####################################################
-#################### GLSLANG #######################
-#####################################################
-
-if(NOT KOMPUTE_OPT_DISABLE_SHADER_UTILS)
-    if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang
-            ${CMAKE_CURRENT_BINARY_DIR}/kompute_glslang)
-
-        target_include_directories(
-            kompute PRIVATE
-            ${PROJECT_SOURCE_DIR}/external/glslang)
-
-        target_link_libraries(kompute
-            # Not including hlsl support
-            # HLSL
-            # glslang includes OGLCompiler, OSDependent, MachineIndependent
-            glslang
-            SPIRV)
-    else()
-        find_package(glslang CONFIG REQUIRED)
-
-        target_include_directories(
-            kompute PRIVATE
-            ${GLSLANG_GENERATED_INCLUDEDIR})
-
-        target_link_libraries(kompute
-            # Not including hlsl support
-            # glslang::HLSL
-            # Adding explicit dependencies to match above
-            glslang::glslang
-            glslang::SPIRV)
-    endif()
-endif()
-
 
 add_library(kompute::kompute ALIAS kompute)
 

@@ -2,7 +2,6 @@
 #include "kompute/shaders/shaderopmult.hpp"
 #include "kompute/shaders/shaderlogisticregression.hpp"
 #include "kompute/Core.hpp"
-#include "kompute/Shader.hpp"
 #include "kompute/Tensor.hpp"
 #include "kompute/Algorithm.hpp"
 #include "kompute/operations/OpBase.hpp"

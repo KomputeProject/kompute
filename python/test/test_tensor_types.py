@@ -1,4 +1,5 @@
 import pyshader as ps
+import pyshaderc
 import os
 import pytest
 import kp
@@ -22,7 +23,7 @@ def test_type_float():
         }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     arr_in_a = np.array([123., 153., 231.], dtype=np.float32)
     arr_in_b = np.array([9482, 1208, 1238], dtype=np.float32)
@@ -61,7 +62,7 @@ def test_type_float_double_incorrect():
         }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     arr_in_a = np.array([123., 153., 231.], dtype=np.float32)
     arr_in_b = np.array([9482, 1208, 1238], dtype=np.uint32)
@@ -103,7 +104,7 @@ def test_type_double():
         }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     arr_in_a = np.array([123., 153., 231.], dtype=np.float64)
     arr_in_b = np.array([9482, 1208, 1238], dtype=np.float64)
@@ -143,7 +144,7 @@ def test_type_int():
         }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     arr_in_a = np.array([123, 153, 231], dtype=np.int32)
     arr_in_b = np.array([9482, 1208, 1238], dtype=np.int32)
@@ -183,7 +184,7 @@ def test_type_unsigned_int():
         }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     arr_in_a = np.array([123, 153, 231], dtype=np.uint32)
     arr_in_b = np.array([9482, 1208, 1238], dtype=np.uint32)

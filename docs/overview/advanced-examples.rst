@@ -55,7 +55,7 @@ The example below shows how you can enable the "VK_EXT_shader_atomic_float" exte
                  atomicAdd(pa[2], pcs.z);
              })");
 
-       std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+       std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
 
        std::shared_ptr<kp::Sequence> sq = nullptr;
 
@@ -102,7 +102,7 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
                 throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
             }
 
-            std::vector<uint32_t> spirv = kp::Shader::compileSource(R"(
+            std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(R"(
                 #version 450
 
                 layout(set = 0, binding = 0) buffer tensorLhs {
@@ -215,7 +215,7 @@ In this case we create a shader that should take a couple of milliseconds to run
         }
     )");
 
-    auto algo = mgr.algorithm({tensor}, kp::Shader::compileSource(shader));
+    auto algo = mgr.algorithm({tensor}, kp_test_utils::Shader::compileSource(shader));
 
 Now we are able to run the await function on the default sequence. 
 
@@ -361,7 +361,7 @@ Similar to the asyncrhonous usecase above, we can still run synchronous commands
            }
        )");
 
-       std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+       std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
 
        std::shared_ptr<kp::Algorithm> algo = mgr.algorithm({tensorA, tenssorB}, spirv);
 

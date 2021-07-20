@@ -24,4 +24,5 @@
 -I./single_include/
 -I./vk_ndk_wrapper_include/
 -I./test/compiled_shaders_include/
+-I./test/utils/
 

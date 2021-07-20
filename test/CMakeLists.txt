@@ -12,6 +12,7 @@ endif()
 
 file(GLOB test_kompute_CPP
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/utils/kompute_test/*.cpp"
 )
 
 add_executable(test_kompute ${test_kompute_CPP})
@@ -20,6 +21,7 @@ target_include_directories(
     test_kompute PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compiled_shaders_include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/utils>
 )
 
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
@@ -27,16 +29,50 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
         test_kompute PRIVATE
         ${gtest_SOURCE_DIR}/include)
 
-    target_link_libraries(test_kompute PRIVATE
+    target_link_libraries(test_kompute
         gtest_main)
 else()
     target_link_libraries(test_kompute PRIVATE 
         GTest::gtest)
 endif()
 
-target_link_libraries(test_kompute PRIVATE kompute)
+target_link_libraries(test_kompute kompute)
 
 add_test(NAME test_kompute COMMAND test_kompute)
+
+#####################################################
+#################### GLSLANG #######################
+#####################################################
+
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/external/glslang
+        ${CMAKE_CURRENT_BINARY_DIR}/kompute_glslang)
+
+    target_include_directories(
+        test_kompute PRIVATE
+        ${PROJECT_SOURCE_DIR}/external/glslang)
+
+    target_link_libraries(test_kompute
+        # Not including hlsl support
+        # HLSL
+        # glslang includes OGLCompiler, OSDependent, MachineIndependent
+        glslang
+        SPIRV)
+else()
+    find_package(glslang CONFIG REQUIRED)
+
+    target_include_directories(
+        test_kompute PRIVATE
+        ${GLSLANG_GENERATED_INCLUDEDIR})
+
+    target_link_libraries(test_kompute
+        # Not including hlsl support
+        # glslang::HLSL
+        # Adding explicit dependencies to match above
+        glslang::glslang
+        glslang::SPIRV)
+endif()
+
 
 #####################################################
 #################### CODECOV  #######################

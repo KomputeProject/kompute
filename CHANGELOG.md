@@ -34,7 +34,7 @@
 **Closed issues:**
 
 - Update memory barriers to align with tensor staging/primary memory revamp [\#181](https://github.com/EthicalML/vulkan-kompute/issues/181)
-- Move shader defaultResource inside kp::Shader class [\#175](https://github.com/EthicalML/vulkan-kompute/issues/175)
+- Move shader defaultResource inside kp_test_utils::Shader class [\#175](https://github.com/EthicalML/vulkan-kompute/issues/175)
 - Reach at least 90% code coverage on tests [\#170](https://github.com/EthicalML/vulkan-kompute/issues/170)
 - Add functionality to re-record sequence as now it's possible to update the underlying algorithm [\#169](https://github.com/EthicalML/vulkan-kompute/issues/169)
 - Use numpy arrays as default return value [\#166](https://github.com/EthicalML/vulkan-kompute/issues/166)

@@ -2,6 +2,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "kompute_test/Shader.hpp"
+
 static const std::string shaderString = (R"(
     #version 450
 
@@ -28,7 +30,7 @@ void
 compileShaderWithGivenResources(const std::string shaderString,
                                 const TBuiltInResource resources)
 {
-    kp::Shader::compileSource(
+    kp_test_utils::Shader::compileSource(
       shaderString,
       std::string("main"),
       std::vector<std::pair<std::string, std::string>>({}),
@@ -37,7 +39,7 @@ compileShaderWithGivenResources(const std::string shaderString,
 
 TEST(TestShaderResources, TestNoMaxLight)
 {
-    TBuiltInResource noMaxLightResources = kp::Shader::defaultResource;
+    TBuiltInResource noMaxLightResources = kp_test_utils::Shader::defaultResource;
     noMaxLightResources.maxLights = 0;
 
     EXPECT_NO_THROW(
@@ -47,7 +49,7 @@ TEST(TestShaderResources, TestNoMaxLight)
 TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 {
     TBuiltInResource smallComputeWorkGroupSizeXResources =
-      kp::Shader::defaultResource;
+      kp_test_utils::Shader::defaultResource;
     smallComputeWorkGroupSizeXResources.maxComputeWorkGroupSizeX = 0;
 
     ASSERT_THROW(compileShaderWithGivenResources(
@@ -57,7 +59,7 @@ TEST(TestShaderResources, TestSmallComputeWorkGroupSizeX)
 
 TEST(TestShaderResources, TestNoWhileLoopLimit)
 {
-    TBuiltInResource noWhileLoopLimitResources = kp::Shader::defaultResource;
+    TBuiltInResource noWhileLoopLimitResources = kp_test_utils::Shader::defaultResource;
     noWhileLoopLimitResources.limits.whileLoops = 0;
 
     ASSERT_THROW(

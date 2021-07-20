@@ -54,7 +54,7 @@ void KomputeSummatorNode::_init() {
         std::shared_ptr<kp::Algorithm> algo =
           mgr.algorithm(
                 { this->mPrimaryTensor, this->mSecondaryTensor },
-                kp::Shader::compileSource(shader));
+                kp_test_utils::Shader::compileSource(shader));
 
 
         // First we ensure secondary tensor loads to GPU

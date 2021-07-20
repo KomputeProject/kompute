@@ -2,6 +2,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "kompute_test/Shader.hpp"
+
 TEST(TestSpecializationConstants, TestTwoConstants)
 {
     {
@@ -18,7 +20,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
               pb[index] = cTwo;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+        std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 

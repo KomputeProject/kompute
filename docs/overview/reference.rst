@@ -122,9 +122,9 @@ The :class:`kp::OpMemoryBarrier` is a tensor only operation which adds memory ba
 Shader
 --------
 
-The :class:`kp::Shader` class contains a set of utilities to compile and process shaders.
+The :class:`kp_test_utils::Shader` class contains a set of utilities to compile and process shaders.
 
-.. doxygenclass:: kp::Shader
+.. doxygenclass:: kp_test_utils::Shader
    :members:
 
 

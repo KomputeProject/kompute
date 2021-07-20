@@ -1,8 +1,9 @@
 
-#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
-#include "kompute/Shader.hpp"
+#include "kompute/Kompute.hpp"
 
-namespace kp {
+#include "kompute_test/Shader.hpp"
+
+namespace kp_test_utils {
 
 std::vector<uint32_t>
 Shader::compileSources(
@@ -215,4 +216,3 @@ const TBuiltInResource Shader::defaultResource = {
 };
 
 }
-#endif // DKOMPUTE_DISABLE_SHADER_UTILS

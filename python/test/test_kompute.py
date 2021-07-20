@@ -5,9 +5,12 @@ import numpy as np
 import logging
 import pyshader as ps
 
+import pyshaderc
+
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
 kp_log = logging.getLogger("kp")
+
 
 def test_end_to_end():
 
@@ -52,7 +55,7 @@ def test_end_to_end():
     push_consts_a = [2]
     push_consts_b = [3]
 
-    algo = mgr.algorithm(params, kp.Shader.compile_source(shader), workgroup, spec_consts, push_consts_a)
+    algo = mgr.algorithm(params, pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp"), workgroup, spec_consts, push_consts_a)
 
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice(params))
@@ -88,7 +91,7 @@ void main()
 }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     mgr = kp.Manager()
 
@@ -107,6 +110,7 @@ void main()
         .eval())
 
     assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
+
 
 def test_sequence():
     """
@@ -127,7 +131,7 @@ def test_sequence():
         }
     """
 
-    spirv = kp.Shader.compile_source(shader)
+    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
 
     mgr = kp.Manager(0)
 
@@ -164,9 +168,10 @@ def test_sequence():
     assert tensor_in_b.is_init() == False
     assert tensor_out.is_init() == False
 
+
 def test_pushconsts():
 
-    spirv = kp.Shader.compile_source("""
+    spirv = pyshaderc.compile_into_spirv("""
           #version 450
           layout(push_constant) uniform PushConstants {
             float x;
@@ -180,7 +185,7 @@ def test_pushconsts():
               pa[1] += pcs.y;
               pa[2] += pcs.z;
           }
-    """)
+    """.encode("utf-8"), "comp", "shader.comp")
 
     mgr = kp.Manager()
 
@@ -196,6 +201,7 @@ def test_pushconsts():
         .eval())
 
     assert np.all(tensor.data() == np.array([0.4, 0.4, 0.4], dtype=np.float32))
+
 
 def test_workgroup():
     mgr = kp.Manager(0)
@@ -226,6 +232,7 @@ def test_workgroup():
 
     assert np.all(tensor_a.data() == np.stack([np.arange(16)]*8, axis=1).ravel())
     assert np.all(tensor_b.data() == np.stack([np.arange(8)]*16, axis=0).ravel())
+
 
 def test_mgr_utils():
     mgr = kp.Manager()

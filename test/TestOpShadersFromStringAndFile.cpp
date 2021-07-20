@@ -5,6 +5,8 @@
 
 #include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
 
+#include "kompute_test/Shader.hpp"
+
 TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
 {
     kp::Manager mgr;
@@ -27,7 +29,7 @@ TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
 
