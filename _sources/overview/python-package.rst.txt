@@ -28,7 +28,7 @@ You can also install from master branch using:
 
 .. code-block:: python
 
-    pip install git+git://github.com/EthicalML/vulkan-kompute.git@master
+    pip install git+git://github.com/KomputeFoundation/kompute.git@master
 
 
 Core Python Components
