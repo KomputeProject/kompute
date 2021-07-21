@@ -37,7 +37,7 @@
 * Robust codebase with [90% unit test code coverage](https://kompute.cc/codecov/)
 * Advanced use-cases on [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
 
-![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/komputer-logos.gif)
+![](https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/komputer-logos.gif)
 
 ## Getting Started
 
@@ -316,7 +316,7 @@ Simplified Kompute Components
 <td width=30%>
 
 
-<img width="100%" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/kompute-vulkan-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute-vulkan-architecture.jpg">
 
 <br>
 <br>
@@ -324,11 +324,11 @@ Simplified Kompute Components
 <br>
 <br>
 
-<img width="100%" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/suspicious.jfif">
+<img width="100%" src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/suspicious.jfif">
 
 </td>
 <td>
-<img width="100%" src="https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/kompute-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute-architecture.jpg">
 </td>
 </tr>
 </table>
@@ -340,7 +340,7 @@ Kompute provides flexibility to run operations in an asynrchonous way through vk
 
 The image below provides an intuition on how Kompute Sequences can be allocated to different queues to enable parallel execution based on hardware. You can see the [hands on example](https://kompute.cc/overview/advanced-examples.html#parallel-operations), as well as the [detailed documentation page](https://kompute.cc/overview/async-parallel.html) describing how it would work using an NVIDIA 1650 as an example. 
 
-![](https://raw.githubusercontent.com/ethicalml/vulkan-kompute/master/docs/images/queue-allocation.jpg)
+![](https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/queue-allocation.jpg)
 
 ## Mobile Enabled
 

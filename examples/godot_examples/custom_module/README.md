@@ -25,7 +25,7 @@ git clone --branch v0.3.1 https://github.com/KomputeFoundation/kompute/
 You will be able to use cmake to generate the build files for your platform.
 
 ```
-cmake vulkan-kompute/. -Bvulkan-kompute/build
+cmake kompute/. -Bkompute/build
 ```
 
 You need to make sure that the build is configured with the same flags required for godot, for example, in windows you will need:
