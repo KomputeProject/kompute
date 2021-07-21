@@ -87,7 +87,7 @@ Your Custom Kompute Operation
 
 Build your own pre-compiled operations for domain specific workflows. Back to `examples list <#simple-examples>`_
 
-We also provide tools that allow you to `convert shaders into C++ headers <https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py#L40>`_.
+We also provide tools that allow you to `convert shaders into C++ headers <https://github.com/KomputeFoundation/kompute/blob/master/scripts/convert_shaders.py#L40>`_.
 
 .. code-block:: cpp
    :linenos:

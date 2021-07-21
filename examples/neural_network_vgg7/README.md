@@ -1,6 +1,6 @@
 # Waifu2x VGG7 implementation
 
-This demonstrates performing image upscaling using Python and vulkan-kompute.
+This demonstrates performing image upscaling using Python and kompute.
 
 To import the no-noise-compensation VGG7 model (into `model-kipper`):
 

@@ -96,7 +96,7 @@ vulkaninfo
 Clone Kompute for access to the latest Python tests.
 
 ```
-git clone https://github.com/EthicalML/vulkan-kompute.git
+git clone https://github.com/KomputeFoundation/kompute.git
 ```
 
 ## Install dependencies to run the tests 
@@ -104,12 +104,12 @@ git clone https://github.com/EthicalML/vulkan-kompute.git
 Navigate to the available tests and install required dependencies.
 
 ```
-cd vulkan-kompute/python/test
+cd kompute/python/test
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip wheel
 pip install -r requirements-dev.txt
-pip install git+git://github.com/EthicalML/vulkan-kompute.git
+pip install git+git://github.com/KomputeFoundation/kompute.git
 ```
 
 ## Run the available tests

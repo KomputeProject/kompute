@@ -5,7 +5,7 @@ This is the accompanying code for the Blog post ["Supercharging Game Development
 
 This section contains the implementation of the Kompute module as a statically compile module built with the Godot engine source code. This approach requires re-compiling the Godot engine source code.
 
-![](https://github.com/EthicalML/vulkan-kompute/raw/master/docs/images/komputer-godot-4.gif)
+![](https://github.com/KomputeFoundation/kompute/raw/master/docs/images/komputer-godot-4.gif)
 
 ## Set Up Dependencies
 
@@ -25,13 +25,13 @@ We will be using v0.3.1 of Kompute, and similar to above we will need the built 
 We can start by cloning the repository on the v0.3.1 branch:
 
 ```
-git clone --branch v0.3.1 https://github.com/EthicalML/vulkan-kompute/
+git clone --branch v0.3.1 https://github.com/KomputeFoundation/kompute/
 ```
 
 You will be able to use cmake to generate the build files for your platform.
 
 ```
-cmake vulkan-kompute/. -Bvulkan-kompute/build
+cmake kompute/. -Bkompute/build
 ```
 
 You need to make sure that the build is configured with the same flags required for godot, for example, in windows you will need:

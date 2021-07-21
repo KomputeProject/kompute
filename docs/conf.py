@@ -73,7 +73,7 @@ if html_theme == 'sphinx_material':
         'base_url': 'https://kompute.cc',
         'color_primary': 'red',
         'color_accent': 'light-blue',
-        'repo_url': 'https://github.com/EthicalML/vulkan-kompute/',
+        'repo_url': 'https://github.com/KomputeFoundation/kompute/',
         'repo_name': 'Kompute',
         'globaltoc_depth': 2,
         'globaltoc_collapse': False,
@@ -81,7 +81,7 @@ if html_theme == 'sphinx_material':
         "repo_type": "github",
         "nav_links": [
             {
-                "href": "https://github.com/EthicalML/vulkan-kompute/",
+                "href": "https://github.com/KomputeFoundation/kompute/",
                 "internal": False,
                 "title": "Kompute Repo",
             },

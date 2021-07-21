@@ -68,6 +68,7 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		$(MK_CMAKE_EXTRA_FLAGS) \
 		-G "Unix Makefiles"
 
@@ -199,7 +200,10 @@ win_build_xxd:
 format:
 	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp test/*cpp
 
+static_scan:
+	cppcheck --project=build/compile_commands.json -iexternal/
+
 build_changelog:
-	docker run --rm -it -v "$(PWD)":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN} ferrarimarco/github-changelog-generator:1.15.2 -u EthicalML -p vulkan-kompute
+	docker run --rm -it -v "$(PWD)":/usr/local/src/your-app -e CHANGELOG_GITHUB_TOKEN=${CHANGELOG_GITHUB_TOKEN} ferrarimarco/github-changelog-generator:1.15.2 -u KomputeFoundation -p kompute
 	chmod 664 CHANGELOG.md # (Read+Write, Read+Write, Read)
 	sed -i -e 's/\(HEAD\|Unreleased\)/v${VERSION}/g' CHANGELOG.md # Replacing unreleased version with latest tag

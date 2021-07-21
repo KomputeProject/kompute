@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
     find_library(android android)
