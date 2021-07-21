@@ -4,6 +4,18 @@
 
 #include "KomputeSummatorNode.h"
 
+static std::vector<uint32_t>
+compileSource(
+  const std::string& source)
+{
+    if (system(std::string("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END\n" + source + "\nEND").c_str()))
+        throw std::runtime_error("Error running glslangValidator command");
+    std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
+    std::vector<char> buffer;
+    buffer.insert(buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
+    return {(uint32_t*)buffer.data(), (uint32_t*)(buffer.data() + buffer.size())};
+}
+
 KomputeSummatorNode::KomputeSummatorNode() {
     this->_init();
 }
@@ -52,9 +64,9 @@ void KomputeSummatorNode::_init() {
         )");
 
         std::shared_ptr<kp::Algorithm> algo =
-          mgr.algorithm(
+          this->mManager.algorithm(
                 { this->mPrimaryTensor, this->mSecondaryTensor },
-                kp_test_utils::Shader::compileSource(shader));
+                compileSource(shader));
 
 
         // First we ensure secondary tensor loads to GPU
@@ -63,7 +75,7 @@ void KomputeSummatorNode::_init() {
                 { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
-        sq->record<kp::OpAlgoDispatch>(algo)
+        sq->record<kp::OpAlgoDispatch>(algo);
 
         // We map the result back to local 
         sq->record<kp::OpTensorSyncLocal>(

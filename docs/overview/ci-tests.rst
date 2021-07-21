@@ -38,10 +38,7 @@ Running on the CPU
 
 We use `Swiftshader <https://github.com/google/swiftshader>`_ to enable us to run the Kompute framework directly on the CPU for the CI tests.
 
-Even though Swiftshader is optimized to function as a high-performance CPU backend for the Vulkan SDK, there are several limitations, the most notable in context of Kompute are:
-
-* Loading files (spirv or text) leads to segfault
-* Loading raw text string shaders leads to segfault
+Even though Swiftshader is optimized to function as a high-performance CPU backend for the Vulkan SDK, there are several limitations, the most notable are limitations in extensions.
 
 This is one of the main reason why only a subset of the tests are run in the CI.
 

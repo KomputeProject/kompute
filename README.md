@@ -74,7 +74,8 @@ void kompute(const std::string& shader) {
     kp::Constants pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(params,
-                                   kp_test_utils::Shader::compileSource(shader),
+                                   // See documentation shader section for compileSource
+                                   compileSource(shader),
                                    workgroup,
                                    specConsts,
                                    pushConstsA);
@@ -165,6 +166,7 @@ def kompute(shader):
     push_consts_a = [2]
     push_consts_b = [3]
 
+    # See documentation shader section for compile_source
     spirv = kp.Shader.compile_source(shader)
 
     algo = mgr.algorithm(params, spirv, workgroup, spec_consts, push_consts_a)
@@ -372,7 +374,7 @@ You can also access the <a href="https://github.com/EthicalML/vulkan-kompute/tre
 
 ### Simple examples
 
-* [Pass shader as raw string](https://kompute.cc/overview/advanced-examples.html#simple-shader-example)
+* [Simple multiplication example](https://kompute.cc/overview/advanced-examples.html#simple-shader-example)
 * [Record batch commands with a Kompute Sequence](https://kompute.cc/overview/advanced-examples.html#record-batch-commands)
 * [Run Asynchronous Operations](https://kompute.cc/overview/advanced-examples.html#asynchronous-operations)
 * [Run Parallel Operations Across Multiple GPU Queues](https://kompute.cc/overview/advanced-examples.html#parallel-operations)

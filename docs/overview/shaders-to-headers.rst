@@ -3,6 +3,29 @@
 Processing Shaders with Kompute
 =====================
 
+Demo / testing function to compile shaders
+----------------------------------
+
+GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA's patents in the preprocessor.
+
+For users that are looking to quickly test the processors it is possible to use the function that is provided in the examples which provides a (non-thread-safe / non-robust) implementation that compiles a shader string into spirv bytes. It is not recommended to use in production but it does enable for faster iteration cycles during development.
+
+.. code-block:: cpp
+    :linenos:
+    static std::vector<uint32_t>
+    compileSource(
+      const std::string& source)
+    {
+        if (system(std::string("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END
+    " + source + "
+    END").c_str()))
+            throw std::runtime_error("Error running glslangValidator command");
+        std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
+        std::vector<char> buffer;
+        buffer.insert(buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
+        return {(uint32_t*)buffer.data(), (uint32_t*)(buffer.data() + buffer.size())};
+    }
+
 Converting Shaders into C / C++ Header Files
 ----------------------------------
 
