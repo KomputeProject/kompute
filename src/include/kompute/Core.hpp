@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Apache-2.0
 #pragma once
 
 #if VK_USE_PLATFORM_ANDROID_KHR
