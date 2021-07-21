@@ -499,7 +499,8 @@
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
     <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
 <span class="s">          #version 450</span>
 
@@ -521,7 +522,8 @@
 <span class="s">              atomicAdd(pa[2], pcs.z);</span>
 <span class="s">          }</span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp_test_utils</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+    <span class="c1">// See shader documentation section for compileSource</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
     <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
 
@@ -614,7 +616,8 @@
 <span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoDispatch</span>
+<span class="normal">63</span>
+<span class="normal">64</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoDispatch</span>
 <span class="p">{</span>
   <span class="k">public</span><span class="o">:</span>
     <span class="n">OpMyCustom</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">,</span>
@@ -625,7 +628,8 @@
              <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Kompute OpMult expected 3 tensors but got "</span> <span class="o">+</span> <span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
          <span class="p">}</span>
 
-         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp_test_utils</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+        <span class="c1">// See shader documentation section for compileSource</span>
+         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
 <span class="s">             #version 450</span>
 
 <span class="s">             layout(set = 0, binding = 0) buffer tensorLhs {</span>
@@ -730,7 +734,8 @@
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
 <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
 <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">shader</span><span class="p">(</span><span class="n">R</span><span class="s">"(</span>
     <span class="cp">#version 450</span>
@@ -756,7 +761,8 @@
     <span class="p">}</span>
 <span class="p">)</span><span class="s">");</span>
 
-<span class="k">auto</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensor</span><span class="p">},</span> <span class="n">kp_test_utils</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">));</span>
+<span class="c1">// See shader documentation section for compileSource</span>
+<span class="k">auto</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensor</span><span class="p">},</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">));</span>
 </pre></div>
 </td></tr></table></div>
 <p>Now we are able to run the await function on the default sequence.</p>
@@ -895,7 +901,8 @@
 <span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
    <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">shader</span><span class="p">(</span><span class="n">R</span><span class="s">"(</span>
        <span class="cp">#version 450</span>
@@ -921,7 +928,8 @@
        <span class="p">}</span>
    <span class="p">)</span><span class="s">");</span>
 
-   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp_test_utils</span><span class="o">::</span><span class="n">Shader</span><span class="o">::</span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+   <span class="c1">// See shader documentation section for compileSource</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensorA</span><span class="p">,</span> <span class="n">tenssorB</span><span class="p">},</span> <span class="n">spirv</span><span class="p">);</span>
 </pre></div>

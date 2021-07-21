@@ -265,6 +265,8 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#overview-shaders-to-headers--page-root" class="md-nav__link">Processing Shaders with Kompute</a><nav class="md-nav">
               <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#demo-testing-function-to-compile-shaders" class="md-nav__link">Demo / testing function to compile shaders</a>
+        </li>
         <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a>
         </li></ul>
             </nav>
@@ -380,6 +382,8 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#overview-shaders-to-headers--page-root" class="md-nav__link">Processing Shaders with Kompute</a><nav class="md-nav">
               <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#demo-testing-function-to-compile-shaders" class="md-nav__link">Demo / testing function to compile shaders</a>
+        </li>
         <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a>
         </li></ul>
             </nav>
@@ -400,6 +404,38 @@
             
   
 <h1 id="overview-shaders-to-headers--page-root">Processing Shaders with Kompute<a class="headerlink" href="#overview-shaders-to-headers--page-root" title="Permalink to this headline">¶</a></h1>
+
+<h2 id="demo-testing-function-to-compile-shaders">Demo / testing function to compile shaders<a class="headerlink" href="#demo-testing-function-to-compile-shaders" title="Permalink to this headline">¶</a></h2>
+<p>GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA’s patents in the preprocessor. This is covered in more detail here: <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/pull/235">https://github.com/EthicalML/vulkan-kompute/pull/235</a></p>
+<p>For users that are looking to quickly test the processors it is possible to use the function that is provided in the examples which provides a (non-thread-safe / non-robust) implementation that compiles a shader string into spirv bytes. It is not recommended to use in production but it does enable for faster iteration cycles during development.</p>
+<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span>
+<span class="n">compileSource</span><span class="p">(</span>
+  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">source</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">system</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv &lt;&lt; END</span>
+<span class="s">" + source + "</span>
+<span class="n">END</span><span class="s">").c_str()))</span>
+        <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Error running glslangValidator command"</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="nf">fileStream</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp.spv"</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">buffer</span><span class="p">;</span>
+    <span class="n">buffer</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">istreambuf_iterator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fileStream</span><span class="p">),</span> <span class="p">{});</span>
+    <span class="k">return</span> <span class="p">{(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span><span class="n">buffer</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="n">buffer</span><span class="p">.</span><span class="n">data</span><span class="p">()</span> <span class="o">+</span> <span class="n">buffer</span><span class="p">.</span><span class="n">size</span><span class="p">())};</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+
 
 <h2 id="converting-shaders-into-c-c-header-files">Converting Shaders into C / C++ Header Files<a class="headerlink" href="#converting-shaders-into-c-c-header-files" title="Permalink to this headline">¶</a></h2>
 <p>Kompute allows for shaders to be loaded directly through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpAlgoBase</span></code> as either raw strings (through shaderc) or compiled SPIRV bytes. For this latter, the traditional method of including the SPIRV bytes is by loading the SPIRV file directly and passing the contents.</p>
