@@ -1,8 +1,8 @@
 <map id="kp::OpBase" name="kp::OpBase">
-<area shape="rect" id="node2" href="$classkp_1_1OpAlgoDispatch.html" title="kp::OpAlgoDispatch" alt="" coords="165,5,316,32"/>
-<area shape="rect" id="node4" href="$classkp_1_1OpMemoryBarrier.html" title="kp::OpMemoryBarrier" alt="" coords="160,56,321,83"/>
-<area shape="rect" id="node5" href="$classkp_1_1OpTensorCopy.html" title="kp::OpTensorCopy" alt="" coords="171,107,310,133"/>
-<area shape="rect" id="node6" href="$classkp_1_1OpTensorSyncDevice.html" title="kp::OpTensorSyncDevice" alt="" coords="149,157,332,184"/>
-<area shape="rect" id="node7" href="$classkp_1_1OpTensorSyncLocal.html" title="kp::OpTensorSyncLocal" alt="" coords="155,208,326,235"/>
-<area shape="rect" id="node3" href="$classkp_1_1OpMult.html" title="kp::OpMult" alt="" coords="380,5,472,32"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoDispatch.html" title="kp::OpAlgoDispatch" alt="" coords="161,5,299,32"/>
+<area shape="rect" id="node4" href="$classkp_1_1OpMemoryBarrier.html" title="kp::OpMemoryBarrier" alt="" coords="157,56,303,83"/>
+<area shape="rect" id="node5" href="$classkp_1_1OpTensorCopy.html" title="kp::OpTensorCopy" alt="" coords="164,107,296,133"/>
+<area shape="rect" id="node6" href="$classkp_1_1OpTensorSyncDevice.html" title="kp::OpTensorSyncDevice" alt="" coords="144,157,316,184"/>
+<area shape="rect" id="node7" href="$classkp_1_1OpTensorSyncLocal.html" title="kp::OpTensorSyncLocal" alt="" coords="149,208,311,235"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpMult.html" title="kp::OpMult" alt="" coords="364,5,451,32"/>
 </map>

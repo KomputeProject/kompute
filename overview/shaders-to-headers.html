@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Processing Shaders with Kompute &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>Processing Shaders with Kompute &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Processing Shaders with Kompute </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
+       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
     </div>
@@ -265,8 +265,6 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#overview-shaders-to-headers--page-root" class="md-nav__link">Processing Shaders with Kompute</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#processing-shaders-online-via-kompute-shader-utils" class="md-nav__link">Processing Shaders Online via Kompute Shader Utils</a>
-        </li>
         <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a>
         </li></ul>
             </nav>
@@ -382,8 +380,6 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#overview-shaders-to-headers--page-root" class="md-nav__link">Processing Shaders with Kompute</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#processing-shaders-online-via-kompute-shader-utils" class="md-nav__link">Processing Shaders Online via Kompute Shader Utils</a>
-        </li>
         <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a>
         </li></ul>
             </nav>
@@ -404,47 +400,35 @@
             
   
 <h1 id="overview-shaders-to-headers--page-root">Processing Shaders with Kompute<a class="headerlink" href="#overview-shaders-to-headers--page-root" title="Permalink to this headline">¶</a></h1>
-<p>Kompute allows for two main ways of interacting with shaders - namely:</p>
-<ul class="simple">
-<li><p>Integration with [glslang](<a class="reference external" href="https://github.com/KhronosGroup/glslang">https://github.com/KhronosGroup/glslang</a>) for online/runtime shader compilation</p></li>
-<li><p>A CLI that coverts shaders into C++ header files</p></li>
-</ul>
-
-<h2 id="processing-shaders-online-via-kompute-shader-utils">Processing Shaders Online via Kompute Shader Utils<a class="headerlink" href="#processing-shaders-online-via-kompute-shader-utils" title="Permalink to this headline">¶</a></h2>
-<p>Kompute provides a set of helper functions that expose the C++ functionality of the glslang Khronos framework to process shader sources online during runtime.</p>
-<p>It’s worth emphasising that the suggested approach is to process shaders offline, so the section below is suggested to convert shaders to either their respective SPV format, or convert them into C++ sources that would be embedded as part of the resulting binary.</p>
-<p>The Shader utility function can be skipped on build time through compiler flags - for more information on this you should read the <a class="reference external" href="build-system.rst">build section</a>.</p>
-<p>More details on the shader utils can be found in the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Shader</span></code> section of the <a class="reference external" href="reference.rst">C++ reference page</a>.</p>
-
 
 <h2 id="converting-shaders-into-c-c-header-files">Converting Shaders into C / C++ Header Files<a class="headerlink" href="#converting-shaders-into-c-c-header-files" title="Permalink to this headline">¶</a></h2>
 <p>Kompute allows for shaders to be loaded directly through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpAlgoBase</span></code> as either raw strings (through shaderc) or compiled SPIRV bytes. For this latter, the traditional method of including the SPIRV bytes is by loading the SPIRV file directly and passing the contents.</p>
 <p>The Kompute codebase has a utility that allows you to convert shader files into C++ header files containing the SPIRV header data. This is useful as it enables developers to compile the SPIRV shaders into the final binary, which avoids the need for multiple files being required.</p>
 <p>The utility can be found under <a class="reference external" href="https://github.com/EthicalML/vulkan-kompute/blob/master/scripts/convert_shaders.py">scripts/convert_shaders.py</a> and consists primarily of a Python CLI that can be called to pass arguments.</p>
 <p>In order to use this Python utility, you will have to first install the dependencies outlined by the <cite>scripts/requirements.txt</cite> file. You will need to have python 3 and pip3 installed.</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>python3 -m pip install -r scripts/requirements.txt
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>python3 -m pip install -r scripts/requirements.txt
 </pre></div>
 </td></tr></table></div>
 <p>Once the dependencies can be installed, you can run the Python script directly through the file as <cite>python3 scripts/convert_shaders.py</cite>.</p>
 <p>You can run <cite>python3 scripts/convert_shaders.py –help</cite> to see all the options available - namely:</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18</pre></div></td><td class="code"><div class="highlight"><pre><span></span>&gt; python3 scripts/convert_shaders.py --help
+<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>&gt; python3 scripts/convert_shaders.py --help
 
 Usage: convert_shaders.py <span class="o">[</span>OPTIONS<span class="o">]</span>
 

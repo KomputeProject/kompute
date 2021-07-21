@@ -55,7 +55,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>Python Class Documentation &amp; Reference &#8212; Vulkan Kompute Documentation (Python &amp; C++)</title>
+    <title>Python Class Documentation &amp; Reference &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -91,7 +91,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)"
+        <a href="../index.html" title="Kompute Documentation (Python &amp; C++)"
            class="md-header-nav__button md-logo">
           
             &nbsp;
@@ -103,7 +103,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Vulkan Kompute Documentation (Python & C++)</span>
+          <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
           <span class="md-header-nav__topic"> Python Class Documentation &amp; Reference </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
           </div>
@@ -177,7 +177,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Vulkan Kompute Documentation (Python & C++)</a></li>
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
             <li class="md-tabs__item"><a href="https://github.com/EthicalML/vulkan-kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
@@ -191,13 +191,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Vulkan Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kompute Documentation (Python &amp; C++)" class="md-nav__button md-logo">
       
         <img src="../_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Vulkan Kompute Documentation (Python &amp; C++)">Vulkan Kompute Documentation (Python & C++)</a>
+       title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/EthicalML/vulkan-kompute/" title="Go to repository" class="md-source" data-md-source="github">
@@ -209,7 +209,7 @@
     </div>
   
   <div class="md-source__repository">
-    Vulkan Kompute
+    Kompute
   </div>
 </a>
     </div>
@@ -413,7 +413,7 @@
   
 <h1 id="overview-python-reference--page-root">Python Class Documentation &amp; Reference<a class="headerlink" href="#overview-python-reference--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section provides a breakdown of the Python classes and what each of their functions provide.
-Below is a diagram that provides insights on the relationship between Vulkan Kompute objects and Vulkan resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
+Below is a diagram that provides insights on the relationship between Kompute objects and Vulkan SDK resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
 
 <h2 id="manager">Manager<a class="headerlink" href="#manager" title="Permalink to this headline">¶</a></h2>
 <p>The Kompute Manager provides a high level interface to simplify interaction with underlying <a class="reference internal" href="#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> of Operations.</p>
@@ -478,7 +478,7 @@ initialised tensor</p>
 
 
 <h2 id="sequence">Sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
-<p>The Kompute Sequence consists of batches of Kompute Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective Vulkan Fence.</p>
+<p>The Kompute Sequence consists of batches of Kompute Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.</p>
 <dl class="py class">
 <dt id="kp.Sequence">
 <em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Sequence</code><a class="headerlink" href="#kp.Sequence" title="Permalink to this definition">¶</a></dt>
@@ -799,40 +799,6 @@ the operation will be done in sync with GPU commands. For
 TensorTypes::eHost it will only map the data into host memory which
 will happen during preEval before the recorded commands are
 dispatched.</p>
-</dd></dl>
-<dl class="py class">
-<dt id="kp.Shader">
-<em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Shader</code><a class="headerlink" href="#kp.Shader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shader class</p>
-<dl class="py method">
-<dt id="kp.Shader.compile_source">
-<em class="property">static </em><code class="sig-name descname">compile_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">entryPoint</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'main'</span></em>, <em class="sig-param"><span class="n">definitions</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → bytes<a class="headerlink" href="#kp.Shader.compile_source" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compile a single glslang source from string value. Currently this
-function uses the glslang C++ interface which is not thread safe so
-this funciton should not be called from multiple threads concurrently.
-If you have a online shader processing multithreading use-case that
-can’t use offline compilation please open an issue.</p>
-<p>@param source An individual raw glsl shader in string format @param
-entryPoint The function name to use as entry point @param definitions
-List of pairs containing key value definitions @param resourcesLimit A
-list that contains the resource limits for the GLSL compiler @return
-The compiled SPIR-V binary in unsigned int32 format</p>
-</dd></dl>
-<dl class="py method">
-<dt id="kp.Shader.compile_sources">
-<em class="property">static </em><code class="sig-name descname">compile_sources</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sources</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">files</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">entryPoint</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'main'</span></em>, <em class="sig-param"><span class="n">definitions</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Tuple<span class="p">[</span>str<span class="p">, </span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → bytes<a class="headerlink" href="#kp.Shader.compile_sources" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compile multiple sources with optional filenames. Currently this
-function uses the glslang C++ interface which is not thread safe so
-this funciton should not be called from multiple threads concurrently.
-If you have a online shader processing multithreading use-case that
-can’t use offline compilation please open an issue.</p>
-<p>@param sources A list of raw glsl shaders in string format @param
-files A list of file names respective to each of the sources @param
-entryPoint The function name to use as entry point @param definitions
-List of pairs containing key value definitions @param resourcesLimit A
-list that contains the resource limits for the GLSL compiler @return
-The compiled SPIR-V binary in unsigned int32 format</p>
-</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt id="id8">

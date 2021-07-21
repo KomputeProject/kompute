@@ -3,22 +3,6 @@
 Processing Shaders with Kompute
 =====================
 
-Kompute allows for two main ways of interacting with shaders - namely:
-
-* Integration with [glslang](https://github.com/KhronosGroup/glslang) for online/runtime shader compilation
-* A CLI that coverts shaders into C++ header files
-
-Processing Shaders Online via Kompute Shader Utils
----------------
-
-Kompute provides a set of helper functions that expose the C++ functionality of the glslang Khronos framework to process shader sources online during runtime.
-
-It's worth emphasising that the suggested approach is to process shaders offline, so the section below is suggested to convert shaders to either their respective SPV format, or convert them into C++ sources that would be embedded as part of the resulting binary.
-
-The Shader utility function can be skipped on build time through compiler flags - for more information on this you should read the `build section <build-system.rst>`_.
-
-More details on the shader utils can be found in the :class:`kp::Shader` section of the `C++ reference page <reference.rst>`_.
-
 Converting Shaders into C / C++ Header Files
 ----------------------------------
 
