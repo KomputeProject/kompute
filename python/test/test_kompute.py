@@ -5,7 +5,7 @@ import numpy as np
 import logging
 import pyshader as ps
 
-import pyshaderc
+from .utils import compile_source
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -55,7 +55,7 @@ def test_end_to_end():
     push_consts_a = [2]
     push_consts_b = [3]
 
-    algo = mgr.algorithm(params, pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp"), workgroup, spec_consts, push_consts_a)
+    algo = mgr.algorithm(params, compile_source(shader), workgroup, spec_consts, push_consts_a)
 
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice(params))
@@ -91,7 +91,7 @@ void main()
 }
     """
 
-    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
+    spirv = compile_source(shader)
 
     mgr = kp.Manager()
 
@@ -131,7 +131,7 @@ def test_sequence():
         }
     """
 
-    spirv = pyshaderc.compile_into_spirv(shader.encode("utf-8"), "comp", "shader.comp")
+    spirv = compile_source(shader)
 
     mgr = kp.Manager(0)
 
@@ -171,7 +171,7 @@ def test_sequence():
 
 def test_pushconsts():
 
-    spirv = pyshaderc.compile_into_spirv("""
+    spirv = compile_source("""
           #version 450
           layout(push_constant) uniform PushConstants {
             float x;
@@ -185,7 +185,7 @@ def test_pushconsts():
               pa[1] += pcs.y;
               pa[2] += pcs.z;
           }
-    """.encode("utf-8"), "comp", "shader.comp")
+    """)
 
     mgr = kp.Manager()
 

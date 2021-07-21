@@ -1,4 +1,3 @@
 pyshader==0.7.0
 numpy==1.19.5
 pytest==6.2.1
-pyshaderc==1.1.2
