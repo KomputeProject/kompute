@@ -587,6 +587,8 @@ static const unsigned int shaders_glsl_logisticregression_comp_spv_len = 4816;
 }
 #endif // define SHADEROP_SHADERLOGISTICREGRESSION_HPP
 
+// SPDX-License-Identifier: Apache-2.0
+
 #if VK_USE_PLATFORM_ANDROID_KHR
 #include <android/log.h>
 #include <kompute_vk_ndk_wrapper.hpp>
@@ -724,6 +726,8 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #endif // SPDLOG_ACTIVE_LEVEL > 4
 #endif // KOMPUTE_SPDLOG_ENABLED
 #endif // KOMPUTE_LOG_OVERRIDE
+
+// SPDX-License-Identifier: Apache-2.0
 
 namespace kp {
 
@@ -1062,6 +1066,8 @@ class TensorT : public Tensor
 
 } // End namespace kp
 
+// SPDX-License-Identifier: Apache-2.0
+
 namespace kp {
 
 /**
@@ -1241,6 +1247,8 @@ class Algorithm
 
 } // End namespace kp
 
+// SPDX-License-Identifier: Apache-2.0
+
 namespace kp {
 
 /**
@@ -1300,6 +1308,8 @@ class OpBase
 };
 
 } // End namespace kp
+
+// SPDX-License-Identifier: Apache-2.0
 
 namespace kp {
 
@@ -1372,6 +1382,8 @@ private:
 
 } // End namespace kp
 
+// SPDX-License-Identifier: Apache-2.0
+
 namespace kp {
 
 /**
@@ -1425,6 +1437,8 @@ class OpTensorCopy : public OpBase
 };
 
 } // End namespace kp
+
+// SPDX-License-Identifier: Apache-2.0
 
 namespace kp {
 
@@ -1480,6 +1494,8 @@ class OpTensorSyncDevice : public OpBase
 };
 
 } // End namespace kp
+
+// SPDX-License-Identifier: Apache-2.0
 
 namespace kp {
 
@@ -1537,6 +1553,8 @@ class OpTensorSyncLocal : public OpBase
 };
 
 } // End namespace kp
+
+// SPDX-License-Identifier: Apache-2.0
 
 namespace kp {
 
@@ -1600,6 +1618,8 @@ private:
 
 } // End namespace kp
 
+// SPDX-License-Identifier: Apache-2.0
+
 #include <fstream>
 
 namespace kp {
@@ -1648,6 +1668,8 @@ class OpMult : public OpAlgoDispatch
 };
 
 } // End namespace kp
+
+// SPDX-License-Identifier: Apache-2.0
 
 namespace kp {
 
@@ -1938,6 +1960,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 };
 
 } // End namespace kp
+
+// SPDX-License-Identifier: Apache-2.0
 
 #include <set>
 #include <unordered_map>
