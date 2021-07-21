@@ -6,12 +6,13 @@ Processing Shaders with Kompute
 Demo / testing function to compile shaders
 ----------------------------------
 
-GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA's patents in the preprocessor.
+GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA's patents in the preprocessor. This is covered in more detail here: https://github.com/EthicalML/vulkan-kompute/pull/235
 
 For users that are looking to quickly test the processors it is possible to use the function that is provided in the examples which provides a (non-thread-safe / non-robust) implementation that compiles a shader string into spirv bytes. It is not recommended to use in production but it does enable for faster iteration cycles during development.
 
 .. code-block:: cpp
     :linenos:
+
     static std::vector<uint32_t>
     compileSource(
       const std::string& source)
