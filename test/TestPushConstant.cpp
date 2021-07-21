@@ -2,6 +2,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "kompute_test/Shader.hpp"
+
 #include "fmt/ranges.h"
 
 TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
@@ -22,7 +24,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
               pa[2] += pcs.z;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+        std::vector<uint32_t> spirv = compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
@@ -67,7 +69,7 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
               pa[2] += pcs.z;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+        std::vector<uint32_t> spirv = compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 
@@ -112,7 +114,7 @@ TEST(TestPushConstants, TestConstantsWrongSize)
               pa[2] += pcs.z;
           })");
 
-        std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+        std::vector<uint32_t> spirv = compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 

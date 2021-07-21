@@ -20,6 +20,7 @@ target_include_directories(
     test_kompute PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compiled_shaders_include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/utils>
 )
 
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
@@ -27,16 +28,17 @@ if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
         test_kompute PRIVATE
         ${gtest_SOURCE_DIR}/include)
 
-    target_link_libraries(test_kompute PRIVATE
+    target_link_libraries(test_kompute
         gtest_main)
 else()
-    target_link_libraries(test_kompute PRIVATE 
+    target_link_libraries(test_kompute
         GTest::gtest)
 endif()
 
-target_link_libraries(test_kompute PRIVATE kompute)
+target_link_libraries(test_kompute kompute)
 
 add_test(NAME test_kompute COMMAND test_kompute)
+
 
 #####################################################
 #################### CODECOV  #######################

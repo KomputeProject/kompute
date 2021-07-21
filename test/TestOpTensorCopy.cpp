@@ -3,6 +3,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "kompute_test/Shader.hpp"
+
 TEST(TestOpTensorCopy, CopyDeviceToDeviceTensor)
 {
 

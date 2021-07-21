@@ -5,6 +5,8 @@
 
 #include "kompute/Kompute.hpp"
 
+#include "kompute_test/Shader.hpp"
+
 TEST(TestAsyncOperations, TestManagerParallelExecution)
 {
     // This test is built for NVIDIA 1650. It assumes:
@@ -37,7 +39,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::vector<float> data(size, 0.0);
     std::vector<float> resultSync(size, 100000000);
@@ -145,7 +147,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::vector<float> data(size, 0.0);
     std::vector<float> resultAsync(size, 100000000);

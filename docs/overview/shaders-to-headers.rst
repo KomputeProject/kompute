@@ -3,21 +3,29 @@
 Processing Shaders with Kompute
 =====================
 
-Kompute allows for two main ways of interacting with shaders - namely:
+Demo / testing function to compile shaders
+----------------------------------
 
-* Integration with [glslang](https://github.com/KhronosGroup/glslang) for online/runtime shader compilation
-* A CLI that coverts shaders into C++ header files
+GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA's patents in the preprocessor. This is covered in more detail here: https://github.com/EthicalML/vulkan-kompute/pull/235
 
-Processing Shaders Online via Kompute Shader Utils
----------------
+For users that are looking to quickly test the processors it is possible to use the function that is provided in the examples which provides a (non-thread-safe / non-robust) implementation that compiles a shader string into spirv bytes. It is not recommended to use in production but it does enable for faster iteration cycles during development.
 
-Kompute provides a set of helper functions that expose the C++ functionality of the glslang Khronos framework to process shader sources online during runtime.
+.. code-block:: cpp
+    :linenos:
 
-It's worth emphasising that the suggested approach is to process shaders offline, so the section below is suggested to convert shaders to either their respective SPV format, or convert them into C++ sources that would be embedded as part of the resulting binary.
-
-The Shader utility function can be skipped on build time through compiler flags - for more information on this you should read the `build section <build-system.rst>`_.
-
-More details on the shader utils can be found in the :class:`kp::Shader` section of the `C++ reference page <reference.rst>`_.
+    static std::vector<uint32_t>
+    compileSource(
+      const std::string& source)
+    {
+        if (system(std::string("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END
+    " + source + "
+    END").c_str()))
+            throw std::runtime_error("Error running glslangValidator command");
+        std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
+        std::vector<char> buffer;
+        buffer.insert(buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
+        return {(uint32_t*)buffer.data(), (uint32_t*)(buffer.data() + buffer.size())};
+    }
 
 Converting Shaders into C / C++ Header Files
 ----------------------------------

@@ -33,34 +33,6 @@ PYBIND11_MODULE(kp, m) {
         .value("storage", kp::Tensor::TensorTypes::eStorage, DOC(kp, Tensor, TensorTypes, eStorage))
         .export_values();
 
-#if !defined(KOMPUTE_DISABLE_SHADER_UTILS) || !KOMPUTE_DISABLE_SHADER_UTILS
-    py::class_<kp::Shader>(m, "Shader", "Shader class")
-        .def_static("compile_source", [](
-                                    const std::string& source,
-                                    const std::string& entryPoint,
-                                    const std::vector<std::pair<std::string,std::string>>& definitions) {
-                std::vector<uint32_t> spirv = kp::Shader::compileSource(source, entryPoint, definitions);
-                return py::bytes((const char*)spirv.data(), spirv.size() * sizeof(uint32_t));
-            },
-            DOC(kp, Shader, compileSource),
-            py::arg("source"),
-            py::arg("entryPoint") = "main",
-            py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() )
-        .def_static("compile_sources", [](
-                                    const std::vector<std::string>& source,
-                                    const std::vector<std::string>& files,
-                                    const std::string& entryPoint,
-                                    const std::vector<std::pair<std::string,std::string>>& definitions) {
-                std::vector<uint32_t> spirv = kp::Shader::compileSources(source, files, entryPoint, definitions);
-                return py::bytes((const char*)spirv.data(), spirv.size() * sizeof(uint32_t));
-            },
-            DOC(kp, Shader, compileSources),
-            py::arg("sources"),
-            py::arg("files") = std::vector<std::string>(),
-            py::arg("entryPoint") = "main",
-            py::arg("definitions") = std::vector<std::pair<std::string,std::string>>() );
-#endif // KOMPUTE_DISABLE_SHADER_UTILS
-
     py::class_<kp::OpBase, std::shared_ptr<kp::OpBase>>(m, "OpBase", DOC(kp, OpBase));
 
     py::class_<kp::OpTensorSyncDevice, std::shared_ptr<kp::OpTensorSyncDevice>>(

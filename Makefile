@@ -194,7 +194,7 @@ build_single_header:
 		"single_include/kompute/Kompute.hpp"
 
 win_build_xxd:
-	cd external/bin/ && gcc -o xxd.exe xxd.c -DCYGWIN
+	cd external/bin/ && gcc.exe -o xxd.exe xxd.c -DCYGWIN
 
 format:
 	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp test/*cpp

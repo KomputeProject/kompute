@@ -69,8 +69,6 @@ Compile Flags
      - Enable debug build including debug flags (enabled by cmake debug build)
    * - -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS
      - Disable the debug Vulkan SDK Layers, mainly used for android builds
-   * - -DKOMPUTE_DISABLE_SHADER_UTILS
-     - Disable the shader utils and skip adding glslang as dependency
 
 Other CMake Flags
 ~~~~~~~~~~~~~~~~~

@@ -1,8 +1,15 @@
+import os
+
 import kp
+
+def compile_source(source):
+    os.system("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END\n" + source + "\nEND")
+    return open("tmp_kp_shader.comp.spv", "rb").read()
+
 
 # This is the convolution & leakyrelu shader.
 global conv_shader
-conv_shader = kp.Shader.compile_source("""
+conv_shader = compile_source("""
 #version 450
 
 layout (local_size_x = 8, local_size_y = 2) in;

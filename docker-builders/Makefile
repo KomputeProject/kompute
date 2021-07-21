@@ -1,9 +1,9 @@
 
 build_kompute_builder:
-	docker build .. -f KomputeBuilder.Dockerfile -t axsauze/kompute-builder:0.2
+	docker build .. -f KomputeBuilder.Dockerfile -t axsauze/kompute-builder:0.3
 
 push_kompute_builder: build_kompute_builder
-	docker push axsauze/kompute-builder:0.2
+	docker push axsauze/kompute-builder:0.3
 
 build_swiftshader:
 	docker build .. -f Swiftshader.Dockerfile -t axsauze/swiftshader:0.1

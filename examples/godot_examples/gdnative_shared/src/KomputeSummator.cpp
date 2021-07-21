@@ -5,6 +5,18 @@
 
 #include "KomputeSummator.hpp"
 
+static std::vector<uint32_t>
+compileSource(
+  const std::string& source)
+{
+    if (system(std::string("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END\n" + source + "\nEND").c_str()))
+        throw std::runtime_error("Error running glslangValidator command");
+    std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
+    std::vector<char> buffer;
+    buffer.insert(buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
+    return {(uint32_t*)buffer.data(), (uint32_t*)(buffer.data() + buffer.size())};
+}
+
 namespace godot {
 
 KomputeSummator::KomputeSummator() {
@@ -58,7 +70,7 @@ void KomputeSummator::_init() {
         // Then we run the operation with both tensors
         this->mSequence->record<kp::OpAlgoCreate>(
             { this->mPrimaryTensor, this->mSecondaryTensor }, 
-            kp::Shader::compileSource(shader));
+            compileSource(shader));
 
         // We map the result back to local 
         this->mSequence->record<kp::OpTensorSyncLocal>(
