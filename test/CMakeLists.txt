@@ -12,7 +12,6 @@ endif()
 
 file(GLOB test_kompute_CPP
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/utils/kompute_test/*.cpp"
 )
 
 add_executable(test_kompute ${test_kompute_CPP})

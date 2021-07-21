@@ -68,7 +68,7 @@ TEST(TestSequence, RerecordSequence)
 
     sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(R"(
+    std::vector<uint32_t> spirv = compileSource(R"(
         #version 450
 
         layout (local_size_x = 1) in;
@@ -118,7 +118,7 @@ TEST(TestSequence, SequenceTimestamps)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     auto seq = mgr.sequence(0, 100); // 100 timestamps
     seq->record<kp::OpTensorSyncDevice>({ tensorA })

@@ -29,7 +29,7 @@ TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
 

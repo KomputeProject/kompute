@@ -20,7 +20,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
               pb[index] = cTwo;
           })");
 
-        std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+        std::vector<uint32_t> spirv = compileSource(shader);
 
         std::shared_ptr<kp::Sequence> sq = nullptr;
 

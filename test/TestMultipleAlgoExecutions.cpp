@@ -53,7 +53,7 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     kp::Constants pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(params,
-                                   kp_test_utils::Shader::compileSource(shader),
+                                   compileSource(shader),
                                    workgroup,
                                    specConsts,
                                    pushConstsA);
@@ -91,7 +91,7 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     {
         // A sharedMemoryBarrier is required as the shader is not thread-safe:w
@@ -132,7 +132,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::shared_ptr<kp::Algorithm> algorithm =
       mgr.algorithm({ tensorA }, spirv);
@@ -168,7 +168,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::shared_ptr<kp::Algorithm> algorithm =
       mgr.algorithm({ tensorA }, spirv);
@@ -203,7 +203,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
           pa[index] = pa[index] + 1;
       })");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::shared_ptr<kp::Algorithm> algorithm =
       mgr.algorithm({ tensorA }, spirv);

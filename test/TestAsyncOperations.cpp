@@ -39,7 +39,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::vector<float> data(size, 0.0);
     std::vector<float> resultSync(size, 100000000);
@@ -147,7 +147,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
         }
     )");
 
-    std::vector<uint32_t> spirv = kp_test_utils::Shader::compileSource(shader);
+    std::vector<uint32_t> spirv = compileSource(shader);
 
     std::vector<float> data(size, 0.0);
     std::vector<float> resultAsync(size, 100000000);
