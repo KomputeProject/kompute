@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-07-21 20:54:04</td>
+            <td class="headerValue">2021-07-22 10:13:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -60,56 +60,57 @@
       <td>
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
-<a name="1"><span class="lineNum">       1 </span>            : </a>
-<span class="lineNum">       2 </span>            : #include &quot;kompute/operations/OpTensorSyncDevice.hpp&quot;
-<span class="lineNum">       3 </span>            : 
-<a name="4"><span class="lineNum">       4 </span>            : namespace kp {</a>
-<span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span><span class="lineCov">         28 : OpTensorSyncDevice::OpTensorSyncDevice(</span>
-<span class="lineNum">       7 </span><span class="lineCov">         28 :   const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)</span>
-<span class="lineNum">       8 </span>            : {
-<span class="lineNum">       9 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice constructor with params&quot;);
-<span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span><span class="lineCov">         56 :     if (tensors.size() &lt; 1) {</span>
-<span class="lineNum">      12 </span>            :         throw std::runtime_error(
-<span class="lineNum">      13 </span><span class="lineNoCov">          0 :           &quot;Kompute OpTensorSyncDevice called with less than 1 tensor&quot;);</span>
-<span class="lineNum">      14 </span>            :     }
-<span class="lineNum">      15 </span>            : 
-<span class="lineNum">      16 </span><span class="lineCov">         28 :     this-&gt;mTensors = tensors;</span>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">         28 : }</span></a>
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span><span class="lineCov">         56 : OpTensorSyncDevice::~OpTensorSyncDevice()</span>
-<span class="lineNum">      20 </span>            : {
-<span class="lineNum">      21 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice destructor started&quot;);
-<span class="lineNum">      22 </span>            : 
-<span class="lineNum">      23 </span><span class="lineCov">         28 :     this-&gt;mTensors.clear();</span>
-<span class="lineNum">      24 </span><span class="lineCov">         28 : }</span>
-<span class="lineNum">      25 </span>            : 
-<span class="lineNum">      26 </span>            : void
-<span class="lineNum">      27 </span><span class="lineCov">         29 : OpTensorSyncDevice::record(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      28 </span>            : {
-<span class="lineNum">      29 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice record called&quot;);
-<span class="lineNum">      30 </span>            : 
-<span class="lineNum">      31 </span><span class="lineCov">        259 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
-<span class="lineNum">      32 </span><span class="lineCov">         67 :         if (this-&gt;mTensors[i]-&gt;tensorType() == Tensor::TensorTypes::eDevice) {</span>
-<span class="lineNum">      33 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordCopyFromStagingToDevice(commandBuffer);</span>
-<span class="lineNum">      34 </span>            :         }
-<span class="lineNum">      35 </span>            :     }
-<span class="lineNum">      36 </span><span class="lineCov">         29 : }</span>
-<a name="37"><span class="lineNum">      37 </span>            : </a>
-<span class="lineNum">      38 </span>            : void
-<span class="lineNum">      39 </span><span class="lineCov">        251 : OpTensorSyncDevice::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      40 </span>            : {
-<span class="lineNum">      41 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice preEval called&quot;);
-<span class="lineNum">      42 </span><span class="lineCov">        251 : }</span>
-<a name="43"><span class="lineNum">      43 </span>            : </a>
-<span class="lineNum">      44 </span>            : void
-<span class="lineNum">      45 </span><span class="lineCov">        251 : OpTensorSyncDevice::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
-<span class="lineNum">      46 </span>            : {
-<span class="lineNum">      47 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice postEval called&quot;);
-<span class="lineNum">      48 </span><span class="lineCov">        251 : }</span>
-<span class="lineNum">      49 </span>            : 
-<span class="lineNum">      50 </span>            : }
+<a name="1"><span class="lineNum">       1 </span>            : // SPDX-License-Identifier: Apache-2.0</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            : #include &quot;kompute/operations/OpTensorSyncDevice.hpp&quot;
+<span class="lineNum">       4 </span>            : 
+<a name="5"><span class="lineNum">       5 </span>            : namespace kp {</a>
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span><span class="lineCov">         28 : OpTensorSyncDevice::OpTensorSyncDevice(</span>
+<span class="lineNum">       8 </span><span class="lineCov">         28 :   const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors)</span>
+<span class="lineNum">       9 </span>            : {
+<span class="lineNum">      10 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice constructor with params&quot;);
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span><span class="lineCov">         56 :     if (tensors.size() &lt; 1) {</span>
+<span class="lineNum">      13 </span>            :         throw std::runtime_error(
+<span class="lineNum">      14 </span><span class="lineNoCov">          0 :           &quot;Kompute OpTensorSyncDevice called with less than 1 tensor&quot;);</span>
+<span class="lineNum">      15 </span>            :     }
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span><span class="lineCov">         28 :     this-&gt;mTensors = tensors;</span>
+<a name="18"><span class="lineNum">      18 </span><span class="lineCov">         28 : }</span></a>
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span><span class="lineCov">         56 : OpTensorSyncDevice::~OpTensorSyncDevice()</span>
+<span class="lineNum">      21 </span>            : {
+<span class="lineNum">      22 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice destructor started&quot;);
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span><span class="lineCov">         28 :     this-&gt;mTensors.clear();</span>
+<span class="lineNum">      25 </span><span class="lineCov">         28 : }</span>
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : void
+<span class="lineNum">      28 </span><span class="lineCov">         29 : OpTensorSyncDevice::record(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      29 </span>            : {
+<span class="lineNum">      30 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice record called&quot;);
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span><span class="lineCov">        259 :     for (size_t i = 0; i &lt; this-&gt;mTensors.size(); i++) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">         67 :         if (this-&gt;mTensors[i]-&gt;tensorType() == Tensor::TensorTypes::eDevice) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">        122 :             this-&gt;mTensors[i]-&gt;recordCopyFromStagingToDevice(commandBuffer);</span>
+<span class="lineNum">      35 </span>            :         }
+<span class="lineNum">      36 </span>            :     }
+<span class="lineNum">      37 </span><span class="lineCov">         29 : }</span>
+<a name="38"><span class="lineNum">      38 </span>            : </a>
+<span class="lineNum">      39 </span>            : void
+<span class="lineNum">      40 </span><span class="lineCov">        251 : OpTensorSyncDevice::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      41 </span>            : {
+<span class="lineNum">      42 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice preEval called&quot;);
+<span class="lineNum">      43 </span><span class="lineCov">        251 : }</span>
+<a name="44"><span class="lineNum">      44 </span>            : </a>
+<span class="lineNum">      45 </span>            : void
+<span class="lineNum">      46 </span><span class="lineCov">        251 : OpTensorSyncDevice::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
+<span class="lineNum">      47 </span>            : {
+<span class="lineNum">      48 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpTensorSyncDevice postEval called&quot;);
+<span class="lineNum">      49 </span><span class="lineCov">        251 : }</span>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            : }
 </pre>
       </td>
     </tr>

@@ -26,8 +26,8 @@ The simplest way to see how this works is by looking at the github actions comma
 
 These can be found through the following files:
 
-* `CPP Tests <https://github.com/KomputeFoundation/kompute/blob/master/.github/workflows/cpp_tests.yml>`_
-* `Python Tests <https://github.com/KomputeFoundation/kompute/blob/master/.github/workflows/python_tests.yml>`_
+* `CPP Tests <https://github.com/KomputeProject/kompute/blob/master/.github/workflows/cpp_tests.yml>`_
+* `Python Tests <https://github.com/KomputeProject/kompute/blob/master/.github/workflows/python_tests.yml>`_
 
 When submitting a PR or merging a PR into master, both of these will run - you can see the logs through the github interface.
 

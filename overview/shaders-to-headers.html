@@ -139,7 +139,7 @@
       
         <div class="md-flex__cell md-flex__cell--shrink">
           <div class="md-header-nav__source">
-            <a href="https://github.com/KomputeFoundation/kompute/" title="Go to repository" class="md-source" data-md-source="github">
+            <a href="https://github.com/KomputeProject/kompute/" title="Go to repository" class="md-source" data-md-source="github">
 
     <div class="md-source__icon">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
@@ -179,7 +179,7 @@
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">Kompute Documentation (Python & C++)</a></li>
             
-            <li class="md-tabs__item"><a href="https://github.com/KomputeFoundation/kompute/" class="md-tabs__link">Kompute Repo</a></li>
+            <li class="md-tabs__item"><a href="https://github.com/KomputeProject/kompute/" class="md-tabs__link">Kompute Repo</a></li>
       </ul>
     </div>
   </nav>
@@ -200,7 +200,7 @@
        title="Kompute Documentation (Python &amp; C++)">Kompute Documentation (Python & C++)</a>
   </label>
     <div class="md-nav__source">
-      <a href="https://github.com/KomputeFoundation/kompute/" title="Go to repository" class="md-source" data-md-source="github">
+      <a href="https://github.com/KomputeProject/kompute/" title="Go to repository" class="md-source" data-md-source="github">
 
     <div class="md-source__icon">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
@@ -406,7 +406,7 @@
 <h1 id="overview-shaders-to-headers--page-root">Processing Shaders with Kompute<a class="headerlink" href="#overview-shaders-to-headers--page-root" title="Permalink to this headline">¶</a></h1>
 
 <h2 id="demo-testing-function-to-compile-shaders">Demo / testing function to compile shaders<a class="headerlink" href="#demo-testing-function-to-compile-shaders" title="Permalink to this headline">¶</a></h2>
-<p>GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA’s patents in the preprocessor. This is covered in more detail here: <a class="reference external" href="https://github.com/KomputeFoundation/kompute/pull/235">https://github.com/KomputeFoundation/kompute/pull/235</a></p>
+<p>GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA’s patents in the preprocessor. This is covered in more detail here: <a class="reference external" href="https://github.com/KomputeProject/kompute/pull/235">https://github.com/KomputeProject/kompute/pull/235</a></p>
 <p>For users that are looking to quickly test the processors it is possible to use the function that is provided in the examples which provides a (non-thread-safe / non-robust) implementation that compiles a shader string into spirv bytes. It is not recommended to use in production but it does enable for faster iteration cycles during development.</p>
 <div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
@@ -436,7 +436,7 @@
 <h2 id="converting-shaders-into-c-c-header-files">Converting Shaders into C / C++ Header Files<a class="headerlink" href="#converting-shaders-into-c-c-header-files" title="Permalink to this headline">¶</a></h2>
 <p>Kompute allows for shaders to be loaded directly through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpAlgoBase</span></code> as either raw strings (through shaderc) or compiled SPIRV bytes. For this latter, the traditional method of including the SPIRV bytes is by loading the SPIRV file directly and passing the contents.</p>
 <p>The Kompute codebase has a utility that allows you to convert shader files into C++ header files containing the SPIRV header data. This is useful as it enables developers to compile the SPIRV shaders into the final binary, which avoids the need for multiple files being required.</p>
-<p>The utility can be found under <a class="reference external" href="https://github.com/KomputeFoundation/kompute/blob/master/scripts/convert_shaders.py">scripts/convert_shaders.py</a> and consists primarily of a Python CLI that can be called to pass arguments.</p>
+<p>The utility can be found under <a class="reference external" href="https://github.com/KomputeProject/kompute/blob/master/scripts/convert_shaders.py">scripts/convert_shaders.py</a> and consists primarily of a Python CLI that can be called to pass arguments.</p>
 <p>In order to use this Python utility, you will have to first install the dependencies outlined by the <cite>scripts/requirements.txt</cite> file. You will need to have python 3 and pip3 installed.</p>
 <div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>python3 -m pip install -r scripts/requirements.txt
 </pre></div>
@@ -480,7 +480,7 @@ Options:
   --help                    Show this message and exit.
 </pre></div>
 </td></tr></table></div>
-<p>You can see the command that converts the shaders <a class="reference external" href="https://github.com/KomputeFoundation/kompute/blob/45ddfe524b9ed63c5fe1fc33773c8f93a18e2fac/Makefile#L143">in the makefile</a> to get an idea of how you would be able to use this utility.</p>
+<p>You can see the command that converts the shaders <a class="reference external" href="https://github.com/KomputeProject/kompute/blob/45ddfe524b9ed63c5fe1fc33773c8f93a18e2fac/Makefile#L143">in the makefile</a> to get an idea of how you would be able to use this utility.</p>
 
 
 

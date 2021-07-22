@@ -79,11 +79,11 @@ Other CMake Flags
    * - Flag
      - Description
    * - -DPYTHON_INCLUDE_DIR
-     - Path to where Python.h is found, used for specifying installation of Python (see `this PR <https://github.com/KomputeFoundation/kompute/pull/222>`_)
+     - Path to where Python.h is found, used for specifying installation of Python (see `this PR <https://github.com/KomputeProject/kompute/pull/222>`_)
    * - -DPYTHON_LIBRARY
-     - Path to the Python library, used for specifying installation of Python (see `this PR <https://github.com/KomputeFoundation/kompute/pull/222>`_)
+     - Path to the Python library, used for specifying installation of Python (see `this PR <https://github.com/KomputeProject/kompute/pull/222>`_)
    * - -DCMAKE_OSX_ARCHITECTURES
-     - Specifies the target architecture for Apple platforms (see `this issue <https://github.com/KomputeFoundation/kompute/issues/223>`_)
+     - Specifies the target architecture for Apple platforms (see `this issue <https://github.com/KomputeProject/kompute/issues/223>`_)
 
 Dependencies
 ^^^^^^^^^^^^
