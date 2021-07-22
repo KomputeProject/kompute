@@ -1,6 +1,6 @@
 # Kompute Godot Example
 
-![](https://github.com/KomputeFoundation/kompute/raw/master/docs/images/komputer-godot-4.gif)
+![](https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif)
 
 ## Set Up Dependencies
 

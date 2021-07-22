@@ -169,7 +169,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     // AMD Drivers in Windows may see an error in this line due to timeout.
     // In order to fix this, it requires a change on Windows registries.
     // More details on this can be found here: https://docs.substance3d.com/spdoc/gpu-drivers-crash-with-long-computations-128745489.html
-    // Context on solution discussed in github: https://github.com/KomputeFoundation/kompute/issues/196#issuecomment-808866505
+    // Context on solution discussed in github: https://github.com/KomputeProject/kompute/issues/196#issuecomment-808866505
     sq1->evalAsync<kp::OpAlgoDispatch>(algo1);
     sq2->evalAsync<kp::OpAlgoDispatch>(algo2);
 

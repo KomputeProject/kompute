@@ -6,7 +6,7 @@ This is the accompanying code for the Blog post ["Supercharging Game Development
 This section contains the implementation of the Kompute module as a shared GdNative Library that can be loaded dynamically through the Godot engine. This approach does not require re-compiling the Godot engine source code.
 
 
-![](https://github.com/KomputeFoundation/kompute/raw/master/docs/images/komputer-godot-4.gif)
+![](https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif)
 
 ### Set Up Dependencies
 

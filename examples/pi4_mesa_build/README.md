@@ -96,7 +96,7 @@ vulkaninfo
 Clone Kompute for access to the latest Python tests.
 
 ```
-git clone https://github.com/KomputeFoundation/kompute.git
+git clone https://github.com/KomputeProject/kompute.git
 ```
 
 ## Install dependencies to run the tests 
@@ -109,7 +109,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip wheel
 pip install -r requirements-dev.txt
-pip install git+git://github.com/KomputeFoundation/kompute.git
+pip install git+git://github.com/KomputeProject/kompute.git
 ```
 
 ## Run the available tests

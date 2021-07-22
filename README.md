@@ -10,7 +10,7 @@
 <tr>
 
 <td width="20%">
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute.jpg">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/kompute.jpg">
 </td>
 
 <td>
@@ -38,13 +38,13 @@
 * Robust codebase with [90% unit test code coverage](https://kompute.cc/codecov/)
 * Advanced use-cases on [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
 
-![](https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/komputer-logos.gif)
+![](https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif)
 
 ## Getting Started
 
 Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.
 
-You can [join the Discord](https://discord.gg/ywjaBH6v24) for questions/discussion, open a [github issue](https://github.com/KomputeFoundation/kompute/issues/new), or read [the documentation](https://kompute.cc/).
+You can [join the Discord](https://discord.gg/ywjaBH6v24) for questions/discussion, open a [github issue](https://github.com/KomputeProject/kompute/issues/new), or read [the documentation](https://kompute.cc/).
 
 ### Your First Kompute (C++)
 
@@ -247,13 +247,13 @@ You are able to try out the interactive Colab Notebooks which allow you to use a
 
 <td width="50%">
 <a href="https://colab.research.google.com/drive/1l3hNSq2AcJ5j2E3YIw__jKy5n6M615GP?authuser=1#scrollTo=1BipBsO-fQRD">
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/binder-cpp.jpg">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/binder-cpp.jpg">
 </a>
 </td>
 
 <td>
 <a href="https://colab.research.google.com/drive/15uQ7qMZuOyk8JcXF-3SB2R5yNFW21I4P">
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/binder-python.jpg">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/binder-python.jpg">
 </a>
 </td>
 
@@ -281,13 +281,13 @@ Both videos have timestamps which will allow you to skip to the most relevant se
 
 <td width="50%">
 <a href="https://www.youtube.com/watch?v=Xz4fiQNmGSA">
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute-cpp-video.png">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/kompute-cpp-video.png">
 </a>
 </td>
 
 <td>
 <a href="https://www.youtube.com/watch?v=AJRyZ09IUdg">
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute-python-video.png">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/kompute-python-video.png">
 </a>
 </td>
 
@@ -317,7 +317,7 @@ Simplified Kompute Components
 <td width=30%>
 
 
-<img width="100%" src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute-vulkan-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/kompute-vulkan-architecture.jpg">
 
 <br>
 <br>
@@ -325,11 +325,11 @@ Simplified Kompute Components
 <br>
 <br>
 
-<img width="100%" src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/suspicious.jfif">
+<img width="100%" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/suspicious.jfif">
 
 </td>
 <td>
-<img width="100%" src="https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/kompute-architecture.jpg">
+<img width="100%" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/kompute-architecture.jpg">
 </td>
 </tr>
 </table>
@@ -341,11 +341,11 @@ Kompute provides flexibility to run operations in an asynrchonous way through vk
 
 The image below provides an intuition on how Kompute Sequences can be allocated to different queues to enable parallel execution based on hardware. You can see the [hands on example](https://kompute.cc/overview/advanced-examples.html#parallel-operations), as well as the [detailed documentation page](https://kompute.cc/overview/async-parallel.html) describing how it would work using an NVIDIA 1650 as an example. 
 
-![](https://raw.githubusercontent.com/KomputeFoundation/kompute/master/docs/images/queue-allocation.jpg)
+![](https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/queue-allocation.jpg)
 
 ## Mobile Enabled
 
-Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments, together with a working [Android NDK wrapper](https://github.com/KomputeFoundation/kompute/tree/master/vk_ndk_wrapper_include) for the CPP headers.
+Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments, together with a working [Android NDK wrapper](https://github.com/KomputeProject/kompute/tree/master/vk_ndk_wrapper_include) for the CPP headers.
 
 <table>
 <tr>
@@ -354,18 +354,18 @@ Kompute has been optimized to work in mobile environments. The [build system](#b
 <p>
 For a full deep dive you can read the blog post "<a href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Supercharging your Mobile Apps with On-Device GPU Accelerated Machine Learning</a>". 
 
-You can also access the <a href="https://github.com/KomputeFoundation/kompute/tree/v0.4.0/examples/android/android-simple">end-to-end example code</a> in the repository, which can be run using android studio.
+You can also access the <a href="https://github.com/KomputeProject/kompute/tree/v0.4.0/examples/android/android-simple">end-to-end example code</a> in the repository, which can be run using android studio.
 
 </p>
 
 
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/android-example/docs/images/android-editor.jpg">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/android-example/docs/images/android-editor.jpg">
 
 </td>
 
 
 <td width="30%">
-<img src="https://raw.githubusercontent.com/KomputeFoundation/kompute/android-example/docs/images/android-kompute.jpg">
+<img src="https://raw.githubusercontent.com/KomputeProject/kompute/android-example/docs/images/android-kompute.jpg">
 </td>
 
 </tr>
@@ -402,7 +402,7 @@ pip install kp
 You can also install from master branch using:
 
 ```
-pip install git+git://github.com/KomputeFoundation/kompute.git@master
+pip install git+git://github.com/KomputeProject/kompute.git@master
 ```
 
 For further details you can read the [Python Package documentation](https://kompute.cc/overview/python-package.html) or the [Python Class Reference documentation](https://kompute.cc/overview/python-reference.html).
@@ -417,7 +417,7 @@ The top level `Makefile` provides a set of optimized configurations for developm
    cmake -Bbuild
 ```
 
-You also are able to add Kompute in your repo with `add_subdirectory` - the [Android example CMakeLists.txt file](https://github.com/KomputeFoundation/kompute/blob/7c8c0eeba2cdc098349fcd999102bb2cca1bf711/examples/android/android-simple/app/src/main/cpp/CMakeLists.txt#L3) shows how this would be done.
+You also are able to add Kompute in your repo with `add_subdirectory` - the [Android example CMakeLists.txt file](https://github.com/KomputeProject/kompute/blob/7c8c0eeba2cdc098349fcd999102bb2cca1bf711/examples/android/android-simple/app/src/main/cpp/CMakeLists.txt#L3) shows how this would be done.
 
 For a more advanced overview of the build configuration check out the [Build System Deep Dive](https://kompute.cc/overview/build-system.html) documentation.
 
