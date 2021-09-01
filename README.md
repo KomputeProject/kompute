@@ -34,10 +34,14 @@
 <table>
 <tr>
 <td>
+<a href="https://www.linuxfoundation.org/projects/">
 <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Linux_Foundation_logo.png">
+</a>
 </td>
 <td>
+<a href="https://lfaidata.foundation/projects/">
 <img src="https://raw.githubusercontent.com/lfai/artwork/main/lfaidata-assets/lfaidata/horizontal/color/lfaidata-horizontal-color.png">
+</a>
 </td>
 </tr>
 </table>
