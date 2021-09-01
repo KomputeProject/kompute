@@ -78,3 +78,29 @@ TEST(TestManager, TestListDevices)
     EXPECT_GT(devices.size(), 0);
     EXPECT_GT(devices[0].getProperties().deviceName.size(), 0);
 }
+
+TEST(TestManager, TestClearDestroy)
+{
+    kp::Manager mgr;
+
+    // Running within scope to run clear
+    {
+        std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
+        std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
+        std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
+
+        std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+                                                            tensorRHS,
+                                                            tensorOutput };
+
+        mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+        mgr.sequence()->eval<kp::OpMult>(params, mgr.algorithm());
+        mgr.sequence()->eval<kp::OpTensorSyncLocal>(params);
+
+        EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
+    }
+
+    mgr.clear();
+
+    mgr.destroy();
+}
