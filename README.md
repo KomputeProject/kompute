@@ -23,9 +23,24 @@
 </tr>
 </table>
 
-<h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.</h4>
+<h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU acceleration usecases.</h4>
 
 💬 [Join the Discord for Questions / Chat](https://discord.gg/ywjaBH6v24) 🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
+
+<hr>
+
+##### Kompute is backed by the Linux Foundation as a <a href="https://lfaidata.foundation/blog/2021/08/26/kompute-joins-lf-ai-data-as-new-sandbox-project/">hosted project</a> by the LF AI & Data Foundation.
+
+<table>
+<tr>
+<td>
+<img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/Linux_Foundation_logo.png">
+</td>
+<td>
+<img src="https://raw.githubusercontent.com/lfai/artwork/main/lfaidata-assets/lfaidata/horizontal/color/lfaidata-horizontal-color.png">
+</td>
+</tr>
+</table>
 
 
 ## Principles & Features
