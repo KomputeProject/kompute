@@ -182,3 +182,75 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     EXPECT_EQ(tensorA->vector(), resultAsync);
     EXPECT_EQ(tensorB->vector(), resultAsync);
 }
+
+TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
+{
+    uint32_t size = 10;
+
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer b { float pb[]; };
+
+        shared uint sharedTotal[1];
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+
+            sharedTotal[0] = 0;
+
+            for (int i = 0; i < 100000000; i++)
+            {
+                atomicAdd(sharedTotal[0], 1);
+            }
+
+            pb[index] = sharedTotal[0];
+        }
+    )");
+
+    std::vector<uint32_t> spirv = compileSource(shader);
+
+    std::vector<float> data(size, 0.0);
+    std::vector<float> resultAsync(size, 100000000);
+
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(data);
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor(data);
+
+    std::shared_ptr<kp::Sequence> sq1 = mgr.sequence();
+    std::shared_ptr<kp::Sequence> sq2 = mgr.sequence();
+
+    sq1->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+
+    std::shared_ptr<kp::Algorithm> algo1 = mgr.algorithm({ tensorA }, spirv);
+    std::shared_ptr<kp::Algorithm> algo2 = mgr.algorithm({ tensorB }, spirv);
+
+    auto startSync = std::chrono::high_resolution_clock::now();
+
+    // AMD Drivers in Windows may see an error in this line due to timeout.
+    // In order to fix this, it requires a change on Windows registries.
+    // More details on this can be found here: https://docs.substance3d.com/spdoc/gpu-drivers-crash-with-long-computations-128745489.html
+    // Context on solution discussed in github: https://github.com/KomputeProject/kompute/issues/196#issuecomment-808866505
+    sq1->evalAsync<kp::OpAlgoDispatch>(algo1);
+    sq2->evalAsync<kp::OpAlgoDispatch>(algo2);
+
+    sq1->evalAwait(1);
+    sq2->evalAwait(1);
+
+    auto endSync = std::chrono::high_resolution_clock::now();
+    auto duration =
+      std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync)
+        .count();
+
+    // The time should several orders of magnitude smaller (in this 10k instead of 1m ns)
+    EXPECT_LT(duration, 10000);
+
+    sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    sq1->evalAwait();
+
+    EXPECT_EQ(tensorA->vector(), resultAsync);
+    EXPECT_EQ(tensorB->vector(), resultAsync);
+}
