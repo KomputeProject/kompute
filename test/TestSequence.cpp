@@ -185,3 +185,60 @@ TEST(TestSequence, UtilsClearRecordingRunning)
 
     EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 }
+
+TEST(TestSequence, CorrectSequenceRunningError)
+{
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 1, 2, 3 });
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 2, 2, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({ 0, 0, 0 });
+
+    sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
+
+    std::vector<uint32_t> spirv = compileSource(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer bina { float tina[]; };
+        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
+        layout(set = 0, binding = 2) buffer bout { float tout[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            tout[index] = tina[index] * tinb[index];
+        }
+    )");
+
+    std::shared_ptr<kp::Algorithm> algo =
+      mgr.algorithm({ tensorA, tensorB, tensorOut }, spirv);
+
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpTensorSyncLocal>(
+      { tensorA, tensorB, tensorOut });
+
+    EXPECT_TRUE(sq->isRecording());
+
+    sq->evalAsync();
+
+    EXPECT_TRUE(sq->isRunning());
+
+    // Sequence should throw when running
+    EXPECT_ANY_THROW(sq->begin());
+    EXPECT_ANY_THROW(sq->end());
+    EXPECT_ANY_THROW(sq->evalAsync());
+
+    // Errors should still not get into inconsystent state
+    sq->evalAwait();
+
+    // Sequence should not throw when finished
+    EXPECT_NO_THROW(sq->evalAwait());
+    EXPECT_NO_THROW(sq->evalAwait(10));
+
+    EXPECT_FALSE(sq->isRunning());
+
+    EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
+}
