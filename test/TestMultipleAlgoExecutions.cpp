@@ -220,7 +220,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
-TEST(TestAlgoUtils, TestAlgorithmUtilFunctions)
+TEST(TestMultipleAlgoExecutions, TestAlgorithmUtilFunctions)
 {
 
     kp::Manager mgr;
@@ -273,6 +273,6 @@ TEST(TestAlgoUtils, TestAlgorithmUtilFunctions)
                                    pushConsts);
 
     EXPECT_EQ(algorithm->getWorkgroup(), workgroup);
-    EXPECT_EQ(algorithm->getPush(), pushConsts);
-    EXPECT_EQ(algorithm->getSpecializationConstants(), specConsts);
+    EXPECT_EQ(algorithm->getPushConstants<float>(), pushConsts);
+    EXPECT_EQ(algorithm->getSpecializationConstants<float>(), specConsts);
 }
