@@ -13,7 +13,7 @@ VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsyst
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 # These are the tests that don't work with swiftshader but can be run directly with vulkan
-FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps:TestPushConstants:TestConstantsDouble"
+FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps:TestPushConstants.TestConstantsDouble"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
