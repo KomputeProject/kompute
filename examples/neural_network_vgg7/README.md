@@ -30,11 +30,11 @@ We implement the kompute logic under run_vgg7 that loads the model weights and c
 
 Similarly, we created a compute shader that performs an inference iteration on an image provided to perfrom upscaling.
 
-## run model against image to perfrom upscale
+## Run model against image to perfrom upscale
 
 We now execute model against an image created by us to show how upscaling works. The image used will be the one below:
 
-![](w2wbinit.png)
+![](https://raw.githubusercontent.com/KomputeProject/kompute/master/examples/neural_network_vgg7/w2wbinit.png)
 
 To execute that model no tiling is performed, so be careful about image sizes.
 
@@ -44,5 +44,6 @@ We can now run the command below to perform inference against the image blow.
 
 This would successfully upscale the resolution using the machine learning model, and the result is below:
 
-![](out.png)
+![](https://raw.githubusercontent.com/KomputeProject/kompute/master/examples/neural_network_vgg7/out.png)
+
 
