@@ -24,12 +24,12 @@ class Algorithm
      *  @param spirv (optional) The spirv code to use to create the algorithm
      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-     *  @param specializationConstants (optional) The kp::Constants to use to
+     *  @param specializationConstants (optional) The templatable param is to be used to
      * initialize the specialization constants which cannot be changed once set.
-     *  @param pushConstants (optional) The kp::Constants to use when
+     *  @param pushConstants (optional) This templatable param is to be used when
      * initializing the pipeline, which set the size of the push constants -
-     * these can be modified but all new values must have the same vector size
-     * as this initial value.
+     * these can be modified but all new values must have the same data type and length
+     * as otherwise it will result in errors.
      */
     template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
@@ -176,7 +176,7 @@ class Algorithm
      * Sets the push constants to the new value provided to use in the next
      * bindPush()
      *
-     * @param The kp::Constant to use to set the push constants to use in the
+     * @param pushConstants The templatable vector is to be used to set the push constants to use in the
      * next bindPush(...) calls. The constants provided must be of the same size
      * as the ones created during initialization.
      */
@@ -189,6 +189,14 @@ class Algorithm
         this->setPushConstants(pushConstants.data(), size, memorySize);
     }
 
+    /**
+     * Sets the push constants to the new value provided to use in the next
+     * bindPush() with the raw memory block location and memory size to be used.
+     *
+     * @param data The raw data point to copy the data from, without modifying the pointer.
+     * @param size The number of data elements provided in the data
+     * @param memorySize The memory size of each of the data elements in bytes.
+     */
     void setPushConstants(void* data, uint32_t size, uint32_t memorySize) {
 
         uint32_t totalSize = memorySize * size;

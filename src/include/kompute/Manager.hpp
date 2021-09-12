@@ -123,6 +123,20 @@ class Manager
         return tensor;
     }
 
+    /**
+     * Default non-template function that can be used to create algorithm objects
+     * which provides default types to the push and spec constants as floats.
+     *
+     * @param tensors (optional) The tensors to initialise the algorithm with
+     * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
+     * @param workgroup (optional) kp::Workgroup for algorithm to use, and
+     * defaults to (tensor[0].size(), 1, 1)
+     * @param specializationConstants (optional) float vector to use for
+     * specialization constants, and defaults to an empty constant
+     * @param pushConstants (optional) float vector to use for push constants,
+     * and defaults to an empty constant
+     * @returns Shared pointer with initialised algorithm
+     */
     std::shared_ptr<Algorithm> algorithm(
       const std::vector<std::shared_ptr<Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
@@ -141,9 +155,9 @@ class Manager
      * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
      * @param workgroup (optional) kp::Workgroup for algorithm to use, and
      * defaults to (tensor[0].size(), 1, 1)
-     * @param specializationConstants (optional) kp::Constant to use for
+     * @param specializationConstants (optional) templatable vector parameter to use for
      * specialization constants, and defaults to an empty constant
-     * @param pushConstants (optional) kp::Constant to use for push constants,
+     * @param pushConstants (optional) templatable vector parameter to use for push constants,
      * and defaults to an empty constant
      * @returns Shared pointer with initialised algorithm
      */
