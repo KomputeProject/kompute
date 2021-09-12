@@ -185,6 +185,12 @@ class Algorithm
     {
         uint32_t memorySize = sizeof(decltype(pushConstants.back()));
         uint32_t size = pushConstants.size();
+
+        this->setPushConstants(pushConstants.data(), size, memorySize);
+    }
+
+    void setPushConstants(void* data, uint32_t size, uint32_t memorySize) {
+
         uint32_t totalSize = memorySize * size;
         uint32_t previousTotalSize = this->mPushConstantsDataTypeMemorySize * this->mPushConstantsSize;
 
@@ -199,11 +205,6 @@ class Algorithm
             free(this->mPushConstantsData);
         }
 
-        this->setPushConstants(pushConstants.data(), size, memorySize);
-    }
-
-    void setPushConstants(void* data, uint32_t size, uint32_t memorySize) {
-        uint32_t totalSize = size * memorySize;
         this->mPushConstantsData = malloc(totalSize);
         memcpy(this->mPushConstantsData, data, totalSize);
         this->mPushConstantsDataTypeMemorySize = memorySize;
