@@ -124,16 +124,16 @@ class Manager
     }
 
     /**
-     * Create a managed algorithm that will be destroyed by this manager
-     * if it hasn't been destroyed by its reference count going to zero.
+     * Default non-template function that can be used to create algorithm objects
+     * which provides default types to the push and spec constants as floats.
      *
      * @param tensors (optional) The tensors to initialise the algorithm with
      * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
      * @param workgroup (optional) kp::Workgroup for algorithm to use, and
      * defaults to (tensor[0].size(), 1, 1)
-     * @param specializationConstants (optional) kp::Constant to use for
+     * @param specializationConstants (optional) float vector to use for
      * specialization constants, and defaults to an empty constant
-     * @param pushConstants (optional) kp::Constant to use for push constants,
+     * @param pushConstants (optional) float vector to use for push constants,
      * and defaults to an empty constant
      * @returns Shared pointer with initialised algorithm
      */
@@ -141,8 +141,51 @@ class Manager
       const std::vector<std::shared_ptr<Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
-      const Constants& specializationConstants = {},
-      const Constants& pushConstants = {});
+      const std::vector<float>& specializationConstants = {},
+      const std::vector<float>& pushConstants = {})
+    {
+        return this->algorithm<>(tensors, spirv, workgroup, specializationConstants, pushConstants);
+    }
+
+    /**
+     * Create a managed algorithm that will be destroyed by this manager
+     * if it hasn't been destroyed by its reference count going to zero.
+     *
+     * @param tensors (optional) The tensors to initialise the algorithm with
+     * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
+     * @param workgroup (optional) kp::Workgroup for algorithm to use, and
+     * defaults to (tensor[0].size(), 1, 1)
+     * @param specializationConstants (optional) templatable vector parameter to use for
+     * specialization constants, and defaults to an empty constant
+     * @param pushConstants (optional) templatable vector parameter to use for push constants,
+     * and defaults to an empty constant
+     * @returns Shared pointer with initialised algorithm
+     */
+    template<typename S = float, typename P = float>
+    std::shared_ptr<Algorithm> algorithm(
+      const std::vector<std::shared_ptr<Tensor>>& tensors,
+      const std::vector<uint32_t>& spirv,
+      const Workgroup& workgroup,
+      const std::vector<S>& specializationConstants,
+      const std::vector<P>& pushConstants)
+    {
+
+        KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
+
+        std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
+          this->mDevice,
+          tensors,
+          spirv,
+          workgroup,
+          specializationConstants,
+          pushConstants) };
+
+        if (this->mManageResources) {
+            this->mManagedAlgorithms.push_back(algorithm);
+        }
+
+        return algorithm;
+    }
 
     /**
      * Destroy the GPU resources and all managed resources by manager.

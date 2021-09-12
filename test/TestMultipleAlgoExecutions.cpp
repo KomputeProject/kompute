@@ -49,9 +49,9 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     };
 
     kp::Workgroup workgroup({ 3, 1, 1 });
-    kp::Constants specConsts({ 2 });
-    kp::Constants pushConstsA({ 2.0 });
-    kp::Constants pushConstsB({ 3.0 });
+    std::vector<float> specConsts({ 2 });
+    std::vector<float> pushConstsA({ 2.0 });
+    std::vector<float> pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(params,
                                    compileSource(shader),
@@ -220,7 +220,7 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
 
-TEST(TestAlgoUtils, TestAlgorithmUtilFunctions)
+TEST(TestMultipleAlgoExecutions, TestAlgorithmUtilFunctions)
 {
 
     kp::Manager mgr;
@@ -263,8 +263,8 @@ TEST(TestAlgoUtils, TestAlgorithmUtilFunctions)
     };
 
     kp::Workgroup workgroup({ 3, 1, 1 });
-    kp::Constants specConsts({ 2 });
-    kp::Constants pushConsts({ 2.0 });
+    std::vector<float> specConsts({ 2 });
+    std::vector<float> pushConsts({ 2.0 });
 
     auto algorithm = mgr.algorithm(params,
                                    compileSource(shader),
@@ -273,6 +273,6 @@ TEST(TestAlgoUtils, TestAlgorithmUtilFunctions)
                                    pushConsts);
 
     EXPECT_EQ(algorithm->getWorkgroup(), workgroup);
-    EXPECT_EQ(algorithm->getPush(), pushConsts);
-    EXPECT_EQ(algorithm->getSpecializationConstants(), specConsts);
+    EXPECT_EQ(algorithm->getPushConstants<float>(), pushConsts);
+    EXPECT_EQ(algorithm->getSpecializationConstants<float>(), specConsts);
 }

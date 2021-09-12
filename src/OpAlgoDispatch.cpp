@@ -5,18 +5,14 @@
 
 namespace kp {
 
-OpAlgoDispatch::OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
-                               const kp::Constants& pushConstants)
-{
-    KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
-
-    this->mAlgorithm = algorithm;
-    this->mPushConstants = pushConstants;
-}
-
 OpAlgoDispatch::~OpAlgoDispatch()
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch destructor started");
+
+    if (this->mPushConstantsData) {
+        KP_LOG_DEBUG("Kompute freeing push constants data");
+        free(this->mPushConstantsData);
+    }
 }
 
 void
@@ -35,8 +31,11 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
           vk::PipelineStageFlagBits::eComputeShader);
     }
 
-    if (this->mPushConstants.size()) {
-        this->mAlgorithm->setPush(this->mPushConstants);
+    if (this->mPushConstantsSize) {
+        this->mAlgorithm->setPushConstants(
+                this->mPushConstantsData,
+                this->mPushConstantsSize,
+                this->mPushConstantsDataTypeMemorySize);
     }
 
     this->mAlgorithm->recordBindCore(commandBuffer);

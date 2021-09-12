@@ -36,9 +36,9 @@ tensors (optional) The tensors to use to create the descriptor
 resources @param spirv (optional) The spirv code to use to create the
 algorithm @param workgroup (optional) The kp::Workgroup to use for the
 dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if
-not set. @param specializationConstants (optional) The kp::Constants
+not set. @param specializationConstants (optional) The std::vector<float>
 to use to initialize the specialization constants which cannot be
-changed once set. @param pushConstants (optional) The kp::Constants to
+changed once set. @param pushConstants (optional) The std::vector<float> to
 use when initializing the pipeline, which set the size of the push
 constants - these can be modified but all new values must have the
 same vector size as this initial value.)doc";
@@ -54,12 +54,12 @@ static const char *__doc_kp_Algorithm_destroy = R"doc()doc";
 static const char *__doc_kp_Algorithm_getPush =
 R"doc(Gets the specialization constants of the current algorithm.
 
-@returns The kp::Constants currently set for push constants)doc";
+@returns The std::vector<float> currently set for push constants)doc";
 
 static const char *__doc_kp_Algorithm_getSpecializationConstants =
 R"doc(Gets the specialization constants of the current algorithm.
 
-@returns The kp::Constants currently set for specialization constants)doc";
+@returns The std::vector<float> currently set for specialization constants)doc";
 
 static const char *__doc_kp_Algorithm_getTensors =
 R"doc(Gets the current tensors that are used in the algorithm.
@@ -127,9 +127,9 @@ parameters to create the underlying resources.
 @param spirv The spirv code to use to create the algorithm @param
 workgroup (optional) The kp::Workgroup to use for the dispatch which
 defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. @param
-specializationConstants (optional) The kp::Constants to use to
+specializationConstants (optional) The std::vector<float> to use to
 initialize the specialization constants which cannot be changed once
-set. @param pushConstants (optional) The kp::Constants to use when
+set. @param pushConstants (optional) The std::vector<float> to use when
 initializing the pipeline, which set the size of the push constants -
 these can be modified but all new values must have the same vector
 size as this initial value.)doc";

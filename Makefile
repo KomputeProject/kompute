@@ -12,8 +12,8 @@ VERSION := $(shell cat ./VERSION)
 VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
-# Regext to pass to catch2 to filter tests
-FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps"
+# These are the tests that don't work with swiftshader but can be run directly with vulkan
+FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps:TestPushConstants.TestConstantsDouble"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
@@ -105,7 +105,7 @@ mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_o
 VS_BUILD_TYPE ?= "Debug"
 # Run with multiprocessin / parallel build by default
 VS_CMAKE_EXTRA_FLAGS ?= ""
-VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MP" # /MP is for faster multiprocessing builds. You should add "/MT" for submodule builds for compatibility with gtest
+VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MT" # /MP is for faster multiprocessing builds. You should add "/MT" for submodule builds for compatibility with gtest
 VS_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 vs_cmake:
@@ -116,7 +116,7 @@ vs_cmake:
 		-DKOMPUTE_EXTRA_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_INSTALL_PREFIX=$(VS_INSTALL_PATH) \
 		-DKOMPUTE_OPT_INSTALL=1 \
-		-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=0 \
+		-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1 \
 		-DKOMPUTE_OPT_BUILD_TESTS=1 \
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
 		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \

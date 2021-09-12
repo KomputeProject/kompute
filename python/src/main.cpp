@@ -14,6 +14,31 @@ namespace py = pybind11;
 //used in Core.hpp
 py::object kp_debug, kp_info, kp_warning, kp_error;
 
+std::unique_ptr<kp::OpAlgoDispatch> opAlgoDispatchPyInit(
+                        std::shared_ptr<kp::Algorithm>& algorithm,
+                        const py::array& push_consts) {
+    const py::buffer_info info        = push_consts.request();
+    KP_LOG_DEBUG("Kompute Python Manager creating tensor_T with push_consts size {} dtype {}",
+            push_consts.size(), std::string(py::str(push_consts.dtype())));
+
+
+    if (push_consts.dtype() == py::dtype::of<std::float_t>()) {
+        std::vector<float> dataVec((float*)info.ptr, ((float*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else if (push_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+        std::vector<uint32_t> dataVec((uint32_t*)info.ptr, ((uint32_t*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else if (push_consts.dtype() == py::dtype::of<std::int32_t>()) {
+        std::vector<int32_t> dataVec((int32_t*)info.ptr, ((int32_t*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else if (push_consts.dtype() == py::dtype::of<std::double_t>()) {
+        std::vector<double> dataVec((double*)info.ptr, ((double*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else {
+        throw std::runtime_error("Kompute Python no valid dtype supported");
+    }
+}
+
 PYBIND11_MODULE(kp, m) {
 
     // The logging modules are used in the Kompute.hpp file
@@ -49,9 +74,12 @@ PYBIND11_MODULE(kp, m) {
 
     py::class_<kp::OpAlgoDispatch, std::shared_ptr<kp::OpAlgoDispatch>>(
             m, "OpAlgoDispatch", py::base<kp::OpBase>(), DOC(kp, OpAlgoDispatch))
-        .def(py::init<const std::shared_ptr<kp::Algorithm>&,const kp::Constants&>(),
+        .def(py::init<const std::shared_ptr<kp::Algorithm>&,const std::vector<float>&>(),
                 DOC(kp, OpAlgoDispatch, OpAlgoDispatch),
-                py::arg("algorithm"), py::arg("push_consts") = kp::Constants());
+                py::arg("algorithm"), py::arg("push_consts") = std::vector<float>())
+        .def(py::init(&opAlgoDispatchPyInit),
+                DOC(kp, OpAlgoDispatch, OpAlgoDispatch),
+                py::arg("algorithm"), py::arg("push_consts"));
 
     py::class_<kp::OpMult, std::shared_ptr<kp::OpMult>>(
             m, "OpMult", py::base<kp::OpBase>(), DOC(kp, OpMult))
@@ -61,7 +89,6 @@ PYBIND11_MODULE(kp, m) {
     py::class_<kp::Algorithm, std::shared_ptr<kp::Algorithm>>(m, "Algorithm", DOC(kp, Algorithm, Algorithm))
         .def("get_tensors", &kp::Algorithm::getTensors, DOC(kp, Algorithm, getTensors))
         .def("destroy", &kp::Algorithm::destroy, DOC(kp, Algorithm, destroy))
-        .def("get_spec_consts", &kp::Algorithm::getSpecializationConstants, DOC(kp, Algorithm, getSpecializationConstants))
         .def("is_init", &kp::Algorithm::isInit, DOC(kp, Algorithm, isInit));
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
@@ -179,8 +206,8 @@ PYBIND11_MODULE(kp, m) {
                              const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
                              const py::bytes& spirv,
                              const kp::Workgroup& workgroup,
-                             const kp::Constants& spec_consts,
-                             const kp::Constants& push_consts) {
+                             const std::vector<float>& spec_consts,
+                             const std::vector<float>& push_consts) {
                     py::buffer_info info(py::buffer(spirv).request());
                     const char *data = reinterpret_cast<const char *>(info.ptr);
                     size_t length = static_cast<size_t>(info.size);
@@ -191,8 +218,100 @@ PYBIND11_MODULE(kp, m) {
             py::arg("tensors"),
             py::arg("spirv"),
             py::arg("workgroup") = kp::Workgroup(),
-            py::arg("spec_consts") = kp::Constants(),
-            py::arg("push_consts") = kp::Constants())
+            py::arg("spec_consts") = std::vector<float>(),
+            py::arg("push_consts") = std::vector<float>())
+        .def("algorithm", [np](kp::Manager& self,
+                             const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
+                             const py::bytes& spirv,
+                             const kp::Workgroup& workgroup,
+                             const py::array& spec_consts,
+                             const py::array& push_consts) {
+
+                py::buffer_info info(py::buffer(spirv).request());
+                const char *data = reinterpret_cast<const char *>(info.ptr);
+                size_t length = static_cast<size_t>(info.size);
+                std::vector<uint32_t> spirvVec((uint32_t*)data, (uint32_t*)(data + length));
+
+                const py::buffer_info pushInfo        = push_consts.request();
+                const py::buffer_info specInfo        = spec_consts.request();
+
+                KP_LOG_DEBUG("Kompute Python Manager creating Algorithm_T with "
+                        "push consts data size {} dtype {} and spec const data size {} dtype {}",
+                        push_consts.size(), std::string(py::str(push_consts.dtype())),
+                        spec_consts.size(), std::string(py::str(spec_consts.dtype())));
+
+                // We have to iterate across a combination of parameters due to the lack of support for templating
+                if (spec_consts.dtype() == py::dtype::of<std::float_t>()) {
+                    std::vector<float> specConstsVec((float*)specInfo.ptr, ((float*)specInfo.ptr) + specInfo.size);
+                    if (spec_consts.dtype() == py::dtype::of<std::float_t>()) {
+                        std::vector<float> pushConstsVec((float*)pushInfo.ptr, ((float*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specConstsVec, pushConstsVec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::int32_t>()) {
+                        std::vector<int32_t> pushConstsVec((int32_t*)pushInfo.ptr, ((int32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specConstsVec, pushConstsVec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+                        std::vector<uint32_t> pushConstsVec((uint32_t*)pushInfo.ptr, ((uint32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specConstsVec, pushConstsVec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::double_t>()) {
+                        std::vector<double> pushConstsVec((double*)pushInfo.ptr, ((double*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specConstsVec, pushConstsVec);
+                    }
+                } else if (spec_consts.dtype() == py::dtype::of<std::int32_t>()) {
+                    std::vector<int32_t> specconstsvec((int32_t*)specInfo.ptr, ((int32_t*)specInfo.ptr) + specInfo.size);
+                    if (spec_consts.dtype() == py::dtype::of<std::float_t>()) {
+                        std::vector<float> pushconstsvec((float*)pushInfo.ptr, ((float*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::int32_t>()) {
+                        std::vector<int32_t> pushconstsvec((int32_t*)pushInfo.ptr, ((int32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+                        std::vector<uint32_t> pushconstsvec((uint32_t*)pushInfo.ptr, ((uint32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::double_t>()) {
+                        std::vector<double> pushconstsvec((double*)pushInfo.ptr, ((double*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    }
+                } else if (spec_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+                    std::vector<uint32_t> specconstsvec((uint32_t*)specInfo.ptr, ((uint32_t*)specInfo.ptr) + specInfo.size);
+                    if (spec_consts.dtype() == py::dtype::of<std::float_t>()) {
+                        std::vector<float> pushconstsvec((float*)pushInfo.ptr, ((float*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::int32_t>()) {
+                        std::vector<int32_t> pushconstsvec((int32_t*)pushInfo.ptr, ((int32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+                        std::vector<uint32_t> pushconstsvec((uint32_t*)pushInfo.ptr, ((uint32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::double_t>()) {
+                        std::vector<double> pushconstsvec((double*)pushInfo.ptr, ((double*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    }
+                } else if (spec_consts.dtype() == py::dtype::of<std::double_t>()) {
+                    std::vector<double> specconstsvec((double*)specInfo.ptr, ((double*)specInfo.ptr) + specInfo.size);
+                    if (spec_consts.dtype() == py::dtype::of<std::float_t>()) {
+                        std::vector<float> pushconstsvec((float*)pushInfo.ptr, ((float*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::int32_t>()) {
+                        std::vector<float> pushconstsvec((int32_t*)pushInfo.ptr, ((int32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+                        std::vector<float> pushconstsvec((uint32_t*)pushInfo.ptr, ((uint32_t*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    } else if (spec_consts.dtype() == py::dtype::of<std::double_t>()) {
+                        std::vector<float> pushconstsvec((double*)pushInfo.ptr, ((double*)pushInfo.ptr) + pushInfo.size);
+                        return self.algorithm(tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
+                    }
+                } else {
+                    // If reach then no valid dtype supported
+                    throw std::runtime_error("Kompute Python no valid dtype supported");
+                }
+            },
+            DOC(kp, Manager, algorithm),
+            py::arg("tensors"),
+            py::arg("spirv"),
+            py::arg("workgroup") = kp::Workgroup(),
+            py::arg("spec_consts") = std::vector<float>(),
+            py::arg("push_consts") = std::vector<float>())
         .def("list_devices", [](kp::Manager& self){
             const std::vector<vk::PhysicalDevice> devices = self.listDevices();
             py::list list;
