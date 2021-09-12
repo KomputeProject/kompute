@@ -197,7 +197,11 @@ TEST(TestPushConstants, TestConstantsMixedTypes)
               pa[2] += pcs.z;
           })");
 
-        struct TestConsts{float x; uint32_t y; int32_t z;};
+        struct TestConsts{
+            float x;
+            uint32_t y;
+            int32_t z;
+        };
 
         std::vector<uint32_t> spirv = compileSource(shader);
 
