@@ -23,13 +23,13 @@ Algorithm::isInit()
 void
 Algorithm::destroy()
 {
-    if (this->mPushConstantsData) {
-        free(this->mPushConstantsData);
-    }
-
-    if (this->mSpecializationConstantsData) {
-        free(this->mSpecializationConstantsData);
-    }
+    // We don't have to free memory on destroy as it's freed by the commandBuffer destructor
+    // if (this->mPushConstantsData) {
+    //     free(this->mPushConstantsData);
+    // }
+    // if (this->mSpecializationConstantsData) {
+    //     free(this->mSpecializationConstantsData);
+    // }
 
     if (!this->mDevice) {
         KP_LOG_WARN("Kompute Algorithm destroy function reached with null "
