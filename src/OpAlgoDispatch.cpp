@@ -10,6 +10,7 @@ OpAlgoDispatch::~OpAlgoDispatch()
     KP_LOG_DEBUG("Kompute OpAlgoDispatch destructor started");
 
     if (this->mPushConstantsData) {
+        KP_LOG_DEBUG("Kompute freeing push constants data");
         free(this->mPushConstantsData);
     }
 }
