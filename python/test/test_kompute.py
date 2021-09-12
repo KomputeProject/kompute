@@ -229,7 +229,7 @@ def test_pushconsts_int():
     spec_consts = np.array([], dtype=np.int32)
     push_consts = np.array([-1, -1, -1], dtype=np.int32)
 
-    algo = mgr.algorithm_t([tensor], spirv, (1, 1, 1), spec_consts, push_consts)
+    algo = mgr.algorithm([tensor], spirv, (1, 1, 1), spec_consts, push_consts)
 
     (mgr.sequence()
         .record(kp.OpTensorSyncDevice([tensor]))

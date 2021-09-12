@@ -220,7 +220,7 @@ PYBIND11_MODULE(kp, m) {
             py::arg("workgroup") = kp::Workgroup(),
             py::arg("spec_consts") = std::vector<float>(),
             py::arg("push_consts") = std::vector<float>())
-        .def("algorithm_t", [np](kp::Manager& self,
+        .def("algorithm", [np](kp::Manager& self,
                              const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
                              const py::bytes& spirv,
                              const kp::Workgroup& workgroup,
