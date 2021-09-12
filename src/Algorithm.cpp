@@ -340,19 +340,12 @@ Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
     if (this->mPushConstantsSize) {
         KP_LOG_DEBUG("Kompute Algorithm binding push constants size: {}",
                      this->mPushConstantsSize);
-        KP_LOG_DEBUG("{} {}",
-                     this->mPushConstantsDataTypeMemorySize,
-                     this->mPushConstantsData == nullptr);
-        KP_LOG_DEBUG("{}",
-                     ((float*)this->mPushConstantsData)[0]);
 
         commandBuffer.pushConstants(*this->mPipelineLayout,
                                     vk::ShaderStageFlagBits::eCompute,
                                     0,
                                     this->mPushConstantsSize * this->mPushConstantsDataTypeMemorySize,
                                     this->mPushConstantsData);
-        KP_LOG_DEBUG("Constants bound: {}",
-                     this->mPushConstantsSize);
     }
 }
 
