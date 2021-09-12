@@ -61,7 +61,6 @@ PYBIND11_MODULE(kp, m) {
     py::class_<kp::Algorithm, std::shared_ptr<kp::Algorithm>>(m, "Algorithm", DOC(kp, Algorithm, Algorithm))
         .def("get_tensors", &kp::Algorithm::getTensors, DOC(kp, Algorithm, getTensors))
         .def("destroy", &kp::Algorithm::destroy, DOC(kp, Algorithm, destroy))
-        .def("get_spec_consts", &kp::Algorithm::getSpecializationConstants, DOC(kp, Algorithm, getSpecializationConstants))
         .def("is_init", &kp::Algorithm::isInit, DOC(kp, Algorithm, isInit));
 
     py::class_<kp::Tensor, std::shared_ptr<kp::Tensor>>(m, "Tensor", DOC(kp, Tensor))
