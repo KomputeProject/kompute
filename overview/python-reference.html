@@ -66,8 +66,8 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="CI, Docker Images, Docs &amp; Tests" href="ci-tests.html" />
-    <link rel="prev" title="Python Examples" href="python-examples.html" />
+    <link rel="next" title="Python Examples" href="python-examples.html" />
+    <link rel="prev" title="Python Package Overview" href="python-package.html" />
   
    
 
@@ -294,13 +294,6 @@
     <li class="md-nav__item">
     
     
-      <a href="python-examples.html" class="md-nav__link">Python Examples</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     <label class="md-nav__link md-nav__link--active" for="__toc"> Python Class Documentation & Reference </label>
     
@@ -332,6 +325,53 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">Examples:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="python-examples.html" class="md-nav__link">Python Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="advanced-examples.html" class="md-nav__link">C++ Examples</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="mobile-android.html" class="md-nav__link">Android Mobile App Integration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="game-engine-godot.html" class="md-nav__link">Game Engine Godot Integration</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="matmul-benchmark.html" class="md-nav__link">Example Benchmark with Matrix Multiplication</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="convolutional-net.html" class="md-nav__link">Convolutional Neural Network (CNN) Simple Upscale</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
       <span class="md-nav__link caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></span>
     
     </li>
@@ -353,20 +393,6 @@
     
     
       <a href="async-parallel.html" class="md-nav__link">Asynchronous & Parallel Operations</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="mobile-android.html" class="md-nav__link">Mobile App Integration (Android)</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="game-engine-godot.html" class="md-nav__link">Game Engine Integration (Godot Engine)</a>
       
     
     </li>
@@ -431,8 +457,12 @@ Below is a diagram that provides insights on the relationship between Kompute ob
 components</p>
 <dl class="py method">
 <dt id="kp.Manager.algorithm">
-<code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">spirv</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="n">workgroup</span><span class="p">:</span> <span class="n">List[int[3]]</span> <span class="o">=</span> <span class="default_value">[0, 0, 0]</span></em>, <em class="sig-param"><span class="n">spec_consts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">push_consts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Algorithm" title="kp.Algorithm">kp.Algorithm</a><a class="headerlink" href="#kp.Manager.algorithm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a managed algorithm that will be destroyed by this manager if
+<code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kp.Manager.algorithm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>algorithm(self: kp.Manager, tensors: List[kp.Tensor], spirv: bytes, workgroup: List[int[3]] = [0, 0, 0], spec_consts: List[float] = [], push_consts: List[float] = []) -&gt; kp.Algorithm</p></li>
+</ol>
+<p>Create a managed algorithm that will be destroyed by this manager if
 it hasn’t been destroyed by its reference count going to zero.</p>
 <p>@param tensors (optional) The tensors to initialise the algorithm with
 @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
@@ -442,11 +472,10 @@ defaults to (tensor[0].size(), 1, 1) @param specializationConstants
 defaults to an empty constant @param pushConstants (optional)
 kp::Constant to use for push constants, and defaults to an empty
 constant @returns Shared pointer with initialised algorithm</p>
-</dd></dl>
-<dl class="py method">
-<dt id="kp.Manager.algorithm_t">
-<code class="sig-name descname">algorithm_t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">spirv</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="n">workgroup</span><span class="p">:</span> <span class="n">List[int[3]]</span> <span class="o">=</span> <span class="default_value">[0, 0, 0]</span></em>, <em class="sig-param"><span class="n">spec_consts</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">push_consts</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Algorithm" title="kp.Algorithm">kp.Algorithm</a><a class="headerlink" href="#kp.Manager.algorithm_t" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a managed algorithm that will be destroyed by this manager if
+<ol class="arabic simple" start="2">
+<li><p>algorithm(self: kp.Manager, tensors: List[kp.Tensor], spirv: bytes, workgroup: List[int[3]] = [0, 0, 0], spec_consts: numpy.ndarray = [], push_consts: numpy.ndarray = []) -&gt; kp.Algorithm</p></li>
+</ol>
+<p>Create a managed algorithm that will be destroyed by this manager if
 it hasn’t been destroyed by its reference count going to zero.</p>
 <p>@param tensors (optional) The tensors to initialise the algorithm with
 @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
@@ -484,11 +513,11 @@ with initialised sequence</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.tensor">
-<code class="sig-name descname">tensor</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager, data: numpy.ndarray[numpy.float32], tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#kp.Manager.tensor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tensor</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager, data: numpy.ndarray[numpy.float32], tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#kp.Manager.tensor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt id="kp.Manager.tensor_t">
-<code class="sig-name descname">tensor_t</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager</em>, <em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#kp.Manager.tensor_t" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tensor_t</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager</em>, <em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#kp.Manager.tensor_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a managed tensor that will be destroyed by this manager if it
 hasn’t been destroyed by its reference count going to zero.</p>
 <p>@param data The data to initialize the tensor with @param tensorType
@@ -632,37 +661,37 @@ buffer, which would be used to store their respective data. The
 tensors can be used for GPU data storage or transfer.</p>
 <dl class="py method">
 <dt id="kp.Tensor.data">
-<code class="sig-name descname">data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → numpy.ndarray<a class="headerlink" href="#kp.Tensor.data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → numpy.ndarray<a class="headerlink" href="#kp.Tensor.data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
 <dt id="kp.Tensor.data_type">
-<code class="sig-name descname">data_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → kp::Tensor::TensorDataTypes<a class="headerlink" href="#kp.Tensor.data_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → kp::Tensor::TensorDataTypes<a class="headerlink" href="#kp.Tensor.data_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the underlying data type of the Tensor</p>
 <p>@return Data type of tensor of type kp::Tensor::TensorDataTypes</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Tensor.destroy">
-<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Tensor.destroy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#kp.Tensor.destroy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Destroys and frees the GPU resources which include the buffer and
 memory.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Tensor.is_init">
-<code class="sig-name descname">is_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Tensor.is_init" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">is_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#kp.Tensor.is_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether tensor is initialized based on the created gpu
 resources.</p>
 <p>@returns Boolean stating whether tensor is initialized</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Tensor.size">
-<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → int<a class="headerlink" href="#kp.Tensor.size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → int<a class="headerlink" href="#kp.Tensor.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the size/magnitude of the Tensor, which will be the total
 number of elements across all dimensions</p>
 <p>@return Unsigned integer representing the total number of elements</p>
 </dd></dl>
 <dl class="py method">
 <dt id="kp.Tensor.tensor_type">
-<code class="sig-name descname">tensor_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.TensorTypes" title="kp.TensorTypes">kp.TensorTypes</a><a class="headerlink" href="#kp.Tensor.tensor_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">tensor_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.TensorTypes" title="kp.TensorTypes">kp.TensorTypes</a><a class="headerlink" href="#kp.Tensor.tensor_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the tensor type of the Tensor</p>
 <p>@return Tensor type of tensor</p>
 </dd></dl>
@@ -680,9 +709,9 @@ tensors (optional) The tensors to use to create the descriptor
 resources @param spirv (optional) The spirv code to use to create the
 algorithm @param workgroup (optional) The kp::Workgroup to use for the
 dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if
-not set. @param specializationConstants (optional) The kp::Constants
+not set. @param specializationConstants (optional) The std::vector&lt;float&gt;
 to use to initialize the specialization constants which cannot be
-changed once set. @param pushConstants (optional) The kp::Constants to
+changed once set. @param pushConstants (optional) The std::vector&lt;float&gt; to
 use when initializing the pipeline, which set the size of the push
 constants - these can be modified but all new values must have the
 same vector size as this initial value.</p>
@@ -711,8 +740,25 @@ these have been created and returns true if all are valid.</p>
 components</p>
 <dl class="py method">
 <dt id="id1">
-<code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">spirv</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="n">workgroup</span><span class="p">:</span> <span class="n">List[int[3]]</span> <span class="o">=</span> <span class="default_value">[0, 0, 0]</span></em>, <em class="sig-param"><span class="n">spec_consts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">push_consts</span><span class="p">:</span> <span class="n">List<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Algorithm" title="kp.Algorithm">kp.Algorithm</a><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a managed algorithm that will be destroyed by this manager if
+<code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>algorithm(self: kp.Manager, tensors: List[kp.Tensor], spirv: bytes, workgroup: List[int[3]] = [0, 0, 0], spec_consts: List[float] = [], push_consts: List[float] = []) -&gt; kp.Algorithm</p></li>
+</ol>
+<p>Create a managed algorithm that will be destroyed by this manager if
+it hasn’t been destroyed by its reference count going to zero.</p>
+<p>@param tensors (optional) The tensors to initialise the algorithm with
+@param spirv (optional) The SPIRV bytes for the algorithm to dispatch
+@param workgroup (optional) kp::Workgroup for algorithm to use, and
+defaults to (tensor[0].size(), 1, 1) @param specializationConstants
+(optional) kp::Constant to use for specialization constants, and
+defaults to an empty constant @param pushConstants (optional)
+kp::Constant to use for push constants, and defaults to an empty
+constant @returns Shared pointer with initialised algorithm</p>
+<ol class="arabic simple" start="2">
+<li><p>algorithm(self: kp.Manager, tensors: List[kp.Tensor], spirv: bytes, workgroup: List[int[3]] = [0, 0, 0], spec_consts: numpy.ndarray = [], push_consts: numpy.ndarray = []) -&gt; kp.Algorithm</p></li>
+</ol>
+<p>Create a managed algorithm that will be destroyed by this manager if
 it hasn’t been destroyed by its reference count going to zero.</p>
 <p>@param tensors (optional) The tensors to initialise the algorithm with
 @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
@@ -725,36 +771,22 @@ constant @returns Shared pointer with initialised algorithm</p>
 </dd></dl>
 <dl class="py method">
 <dt id="id2">
-<code class="sig-name descname">algorithm_t</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">tensors</span><span class="p">:</span> <span class="n">List<span class="p">[</span><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">spirv</span><span class="p">:</span> <span class="n">bytes</span></em>, <em class="sig-param"><span class="n">workgroup</span><span class="p">:</span> <span class="n">List[int[3]]</span> <span class="o">=</span> <span class="default_value">[0, 0, 0]</span></em>, <em class="sig-param"><span class="n">spec_consts</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">push_consts</span><span class="p">:</span> <span class="n">numpy.ndarray</span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Algorithm" title="kp.Algorithm">kp.Algorithm</a><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a managed algorithm that will be destroyed by this manager if
-it hasn’t been destroyed by its reference count going to zero.</p>
-<p>@param tensors (optional) The tensors to initialise the algorithm with
-@param spirv (optional) The SPIRV bytes for the algorithm to dispatch
-@param workgroup (optional) kp::Workgroup for algorithm to use, and
-defaults to (tensor[0].size(), 1, 1) @param specializationConstants
-(optional) kp::Constant to use for specialization constants, and
-defaults to an empty constant @param pushConstants (optional)
-kp::Constant to use for push constants, and defaults to an empty
-constant @returns Shared pointer with initialised algorithm</p>
-</dd></dl>
-<dl class="py method">
-<dt id="id3">
-<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Destroy the GPU resources and all managed resources by manager.</p>
 </dd></dl>
 <dl class="py method">
+<dt id="id3">
+<code class="sig-name descname">get_device_properties</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em><span class="sig-paren">)</span> → dict<a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dict containing information about the device</p>
+</dd></dl>
+<dl class="py method">
 <dt id="id4">
-<code class="sig-name descname">get_device_properties</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em><span class="sig-paren">)</span> → dict<a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">list_devices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em><span class="sig-paren">)</span> → list<a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dict containing information about the device</p>
 </dd></dl>
 <dl class="py method">
 <dt id="id5">
-<code class="sig-name descname">list_devices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em><span class="sig-paren">)</span> → list<a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dict containing information about the device</p>
-</dd></dl>
-<dl class="py method">
-<dt id="id6">
-<code class="sig-name descname">sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">queue_index</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">total_timestamps</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id0" title="kp.Manager">kp.Manager</a></span></em>, <em class="sig-param"><span class="n">queue_index</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">total_timestamps</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.Sequence" title="kp.Sequence">kp.Sequence</a><a class="headerlink" href="#id5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a managed sequence that will be destroyed by this manager if it
 hasn’t been destroyed by its reference count going to zero.</p>
 <p>@param queueIndex The queue to use from the available queues @param
@@ -763,12 +795,12 @@ nrOfTimestamps The maximum number of timestamps to allocate. If zero
 with initialised sequence</p>
 </dd></dl>
 <dl class="py method">
-<dt id="id7">
-<code class="sig-name descname">tensor</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager, data: numpy.ndarray[numpy.float32], tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
+<dt id="id6">
+<code class="sig-name descname">tensor</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager, data: numpy.ndarray[numpy.float32], tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#id6" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt id="id8">
-<code class="sig-name descname">tensor_t</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager</em>, <em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
+<dt id="id7">
+<code class="sig-name descname">tensor_t</code><span class="sig-paren">(</span><em class="sig-param">self: kp.Manager</em>, <em class="sig-param">data: numpy.ndarray</em>, <em class="sig-param">tensor_type: kp.TensorTypes = &lt;TensorTypes.device: 0&gt;</em><span class="sig-paren">)</span> → <a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a><a class="headerlink" href="#id7" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a managed tensor that will be destroyed by this manager if it
 hasn’t been destroyed by its reference count going to zero.</p>
 <p>@param data The data to initialize the tensor with @param tensorType
@@ -830,46 +862,46 @@ will happen during preEval before the recorded commands are
 dispatched.</p>
 </dd></dl>
 <dl class="py class">
-<dt id="id9">
-<em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
+<dt id="id8">
+<em class="property">class </em><code class="sig-prename descclassname">kp.</code><code class="sig-name descname">Tensor</code><a class="headerlink" href="#id8" title="Permalink to this definition">¶</a></dt>
 <dd><p>Structured data used in GPU operations.</p>
 <p>Tensors are the base building block in Kompute to perform operations
 across GPUs. Each tensor would have a respective Vulkan memory and
 buffer, which would be used to store their respective data. The
 tensors can be used for GPU data storage or transfer.</p>
 <dl class="py method">
-<dt id="id10">
-<code class="sig-name descname">data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → numpy.ndarray<a class="headerlink" href="#id10" title="Permalink to this definition">¶</a></dt>
+<dt id="id9">
+<code class="sig-name descname">data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → numpy.ndarray<a class="headerlink" href="#id9" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt id="id11">
-<code class="sig-name descname">data_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → kp::Tensor::TensorDataTypes<a class="headerlink" href="#id11" title="Permalink to this definition">¶</a></dt>
+<dt id="id10">
+<code class="sig-name descname">data_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → kp::Tensor::TensorDataTypes<a class="headerlink" href="#id10" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the underlying data type of the Tensor</p>
 <p>@return Data type of tensor of type kp::Tensor::TensorDataTypes</p>
 </dd></dl>
 <dl class="py method">
-<dt id="id12">
-<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#id12" title="Permalink to this definition">¶</a></dt>
+<dt id="id11">
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → None<a class="headerlink" href="#id11" title="Permalink to this definition">¶</a></dt>
 <dd><p>Destroys and frees the GPU resources which include the buffer and
 memory.</p>
 </dd></dl>
 <dl class="py method">
-<dt id="id13">
-<code class="sig-name descname">is_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#id13" title="Permalink to this definition">¶</a></dt>
+<dt id="id12">
+<code class="sig-name descname">is_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → bool<a class="headerlink" href="#id12" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether tensor is initialized based on the created gpu
 resources.</p>
 <p>@returns Boolean stating whether tensor is initialized</p>
 </dd></dl>
 <dl class="py method">
-<dt id="id14">
-<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → int<a class="headerlink" href="#id14" title="Permalink to this definition">¶</a></dt>
+<dt id="id13">
+<code class="sig-name descname">size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → int<a class="headerlink" href="#id13" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the size/magnitude of the Tensor, which will be the total
 number of elements across all dimensions</p>
 <p>@return Unsigned integer representing the total number of elements</p>
 </dd></dl>
 <dl class="py method">
-<dt id="id15">
-<code class="sig-name descname">tensor_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id9" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.TensorTypes" title="kp.TensorTypes">kp.TensorTypes</a><a class="headerlink" href="#id15" title="Permalink to this definition">¶</a></dt>
+<dt id="id14">
+<code class="sig-name descname">tensor_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#id8" title="kp.Tensor">kp.Tensor</a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="#kp.TensorTypes" title="kp.TensorTypes">kp.TensorTypes</a><a class="headerlink" href="#id14" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve the tensor type of the Tensor</p>
 <p>@return Tensor type of tensor</p>
 </dd></dl>
@@ -899,7 +931,7 @@ number of elements across all dimensions</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="python-examples.html" title="Python Examples"
+            <a href="python-package.html" title="Python Package Overview"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -908,17 +940,17 @@ number of elements across all dimensions</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Python Examples </span>
+                      class="md-footer-nav__direction"> Previous </span> Python Package Overview </span>
               </div>
             </a>
           
           
-            <a href="ci-tests.html" title="CI, Docker Images, Docs &amp; Tests"
+            <a href="python-examples.html" title="Python Examples"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> CI, Docker Images, Docs &amp; Tests </span>
+                class="md-footer-nav__direction"> Next </span> Python Examples </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
