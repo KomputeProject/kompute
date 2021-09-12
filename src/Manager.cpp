@@ -422,32 +422,6 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     KP_LOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
-// TODO: Update to template
-std::shared_ptr<Algorithm>
-Manager::algorithm(const std::vector<std::shared_ptr<Tensor>>& tensors,
-                   const std::vector<uint32_t>& spirv,
-                   const Workgroup& workgroup,
-                   const Constants& specializationConstants,
-                   const Constants& pushConstants)
-{
-
-    KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
-
-    std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
-      this->mDevice,
-      tensors,
-      spirv,
-      workgroup,
-      specializationConstants,
-      pushConstants) };
-
-    if (this->mManageResources) {
-        this->mManagedAlgorithms.push_back(algorithm);
-    }
-
-    return algorithm;
-}
-
 std::shared_ptr<Sequence>
 Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
