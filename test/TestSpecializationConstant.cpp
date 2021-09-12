@@ -37,7 +37,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
                                                                 tensorB };
 
-            kp::Constants spec = kp::Constants({ 5.0, 0.3 });
+            std::vector<float> spec = std::vector<float>({ 5.0, 0.3 });
 
             std::shared_ptr<kp::Algorithm> algo =
               mgr.algorithm(params, spirv, {}, spec);

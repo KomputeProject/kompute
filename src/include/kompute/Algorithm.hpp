@@ -64,9 +64,9 @@ class Algorithm
      *  @param spirv The spirv code to use to create the algorithm
      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-     *  @param specializationConstants (optional) The kp::Constants to use to
+     *  @param specializationConstants (optional) The std::vector<float> to use to
      * initialize the specialization constants which cannot be changed once set.
-     *  @param pushConstants (optional) The kp::Constants to use when
+     *  @param pushConstants (optional) The std::vector<float> to use when
      * initializing the pipeline, which set the size of the push constants -
      * these can be modified but all new values must have the same vector size
      * as this initial value.
@@ -230,7 +230,7 @@ class Algorithm
     /**
      * Gets the specialization constants of the current algorithm.
      *
-     * @returns The kp::Constants currently set for specialization constants
+     * @returns The std::vector<float> currently set for specialization constants
      */
     template<typename T>
     const std::vector<T> getSpecializationConstants()
@@ -241,7 +241,7 @@ class Algorithm
     /**
      * Gets the specialization constants of the current algorithm.
      *
-     * @returns The kp::Constants currently set for push constants
+     * @returns The std::vector<float> currently set for push constants
      */
     template<typename T>
     const std::vector<T> getPushConstants()

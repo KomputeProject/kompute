@@ -48,7 +48,7 @@ TEST(TestLogisticRegression, TestMainLogisticRegression)
                         test_shaders_glsl_test_logistic_regression_comp_spv_len));
 
         std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm(
-          params, spirv, kp::Workgroup({ 5 }), kp::Constants({ 5.0 }));
+          params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
 
         std::shared_ptr<kp::Sequence> sq =
           mgr.sequence()
@@ -127,7 +127,7 @@ TEST(TestLogisticRegression, TestMainLogisticRegressionManualCopy)
                         shaders_glsl_logisticregression_comp_spv_len));
 
         std::shared_ptr<kp::Algorithm> algorithm =
-          mgr.algorithm(params, spirv, kp::Workgroup(), kp::Constants({ 5.0 }));
+          mgr.algorithm(params, spirv, kp::Workgroup(), std::vector<float>({ 5.0 }));
 
         std::shared_ptr<kp::Sequence> sq =
           mgr.sequence()

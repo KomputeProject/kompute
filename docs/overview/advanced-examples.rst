@@ -71,13 +71,13 @@ The example below shows how you can enable the "VK_EXT_shader_atomic_float" exte
            sq = mgr.sequence()
                   ->record<kp::OpTensorSyncDevice>({ tensor })
                   ->record<kp::OpAlgoDispatch>(algo,
-                                               kp::Constants{ 0.1, 0.2, 0.3 })
+                                               std::vector<float>{ 0.1, 0.2, 0.3 })
                   ->record<kp::OpAlgoDispatch>(algo,
-                                               kp::Constants{ 0.3, 0.2, 0.1 })
+                                               std::vector<float>{ 0.3, 0.2, 0.1 })
                   ->record<kp::OpTensorSyncLocal>({ tensor })
                   ->eval();
 
-           EXPECT_EQ(tensor->data(), kp::Constants({ 0.4, 0.4, 0.4 }));
+           EXPECT_EQ(tensor->data(), std::vector<float>({ 0.4, 0.4, 0.4 }));
        }
    }
 

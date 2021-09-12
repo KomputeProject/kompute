@@ -41,7 +41,7 @@ int main()
                     + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 
     std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(
-            params, spirv, kp::Workgroup({ 5 }), kp::Constants({ 5.0 }));
+            params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
 
     mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 

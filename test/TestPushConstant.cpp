@@ -44,11 +44,11 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
             // We need to run this in sequence to avoid race condition
             // We can't use atomicAdd as swiftshader doesn't support it for
             // float
-            sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.1, 0.2, 0.3 });
-            sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.3, 0.2, 0.1 });
+            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<float>{ 0.1, 0.2, 0.3 });
+            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<float>{ 0.3, 0.2, 0.1 });
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
 
-            EXPECT_EQ(tensor->vector(), kp::Constants({ 0.4, 0.4, 0.4 }));
+            EXPECT_EQ(tensor->vector(), std::vector<float>({ 0.4, 0.4, 0.4 }));
         }
     }
 }
@@ -90,10 +90,10 @@ TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
             // We can't use atomicAdd as swiftshader doesn't support it for
             // float
             sq->eval<kp::OpAlgoDispatch>(algo);
-            sq->eval<kp::OpAlgoDispatch>(algo, kp::Constants{ 0.3, 0.2, 0.1 });
+            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<float>{ 0.3, 0.2, 0.1 });
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
 
-            EXPECT_EQ(tensor->vector(), kp::Constants({ 0.4, 0.4, 0.4 }));
+            EXPECT_EQ(tensor->vector(), std::vector<float>({ 0.4, 0.4, 0.4 }));
         }
     }
 }
@@ -132,7 +132,7 @@ TEST(TestPushConstants, TestConstantsWrongSize)
             sq = mgr.sequence()->record<kp::OpTensorSyncDevice>({ tensor });
 
             EXPECT_THROW(sq->record<kp::OpAlgoDispatch>(
-                           algo, kp::Constants{ 0.1, 0.2, 0.3 }),
+                           algo, std::vector<float>{ 0.1, 0.2, 0.3 }),
                          std::runtime_error);
         }
     }

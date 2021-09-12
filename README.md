@@ -89,9 +89,9 @@ void kompute(const std::string& shader) {
 
     // 3. Create algorithm based on shader (supports buffers & push/spec constants)
     kp::Workgroup workgroup({3, 1, 1});
-    kp::Constants specConsts({ 2 });
-    kp::Constants pushConstsA({ 2.0 });
-    kp::Constants pushConstsB({ 3.0 });
+    std::vector<float> specConsts({ 2 });
+    std::vector<float> pushConstsA({ 2.0 });
+    std::vector<float> pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(params,
                                    // See documentation shader section for compileSource

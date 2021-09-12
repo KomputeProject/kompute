@@ -74,9 +74,9 @@ PYBIND11_MODULE(kp, m) {
 
     py::class_<kp::OpAlgoDispatch, std::shared_ptr<kp::OpAlgoDispatch>>(
             m, "OpAlgoDispatch", py::base<kp::OpBase>(), DOC(kp, OpAlgoDispatch))
-        .def(py::init<const std::shared_ptr<kp::Algorithm>&,const kp::Constants&>(),
+        .def(py::init<const std::shared_ptr<kp::Algorithm>&,const std::vector<float>&>(),
                 DOC(kp, OpAlgoDispatch, OpAlgoDispatch),
-                py::arg("algorithm"), py::arg("push_consts") = kp::Constants())
+                py::arg("algorithm"), py::arg("push_consts") = std::vector<float>())
         .def(py::init(&opAlgoDispatchPyInit),
                 DOC(kp, OpAlgoDispatch, OpAlgoDispatch),
                 py::arg("algorithm"), py::arg("push_consts"));

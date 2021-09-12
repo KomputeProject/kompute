@@ -49,9 +49,9 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     };
 
     kp::Workgroup workgroup({ 3, 1, 1 });
-    kp::Constants specConsts({ 2 });
-    kp::Constants pushConstsA({ 2.0 });
-    kp::Constants pushConstsB({ 3.0 });
+    std::vector<float> specConsts({ 2 });
+    std::vector<float> pushConstsA({ 2.0 });
+    std::vector<float> pushConstsB({ 3.0 });
 
     auto algorithm = mgr.algorithm(params,
                                    compileSource(shader),
@@ -263,8 +263,8 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmUtilFunctions)
     };
 
     kp::Workgroup workgroup({ 3, 1, 1 });
-    kp::Constants specConsts({ 2 });
-    kp::Constants pushConsts({ 2.0 });
+    std::vector<float> specConsts({ 2 });
+    std::vector<float> pushConsts({ 2.0 });
 
     auto algorithm = mgr.algorithm(params,
                                    compileSource(shader),
