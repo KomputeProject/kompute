@@ -1094,12 +1094,30 @@ class Algorithm
      * these can be modified but all new values must have the same vector size
      * as this initial value.
      */
+    template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
               const std::vector<std::shared_ptr<Tensor>>& tensors = {},
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
-              const Constants& specializationConstants = {},
-              const Constants& pushConstants = {});
+              const std::vector<S>& specializationConstants = {},
+              const std::vector<P>& pushConstants = {})
+    {
+        KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
+
+        this->mDevice = device;
+
+        if (tensors.size() && spirv.size()) {
+            KP_LOG_INFO("Kompute Algorithm initialising with tensor size: {} and "
+                        "spirv size: {}",
+                        tensors.size(),
+                        spirv.size());
+            this->rebuild(
+              tensors, spirv, workgroup, specializationConstants, pushConstants);
+        } else {
+            KP_LOG_INFO("Kompute Algorithm constructor with empty tensors and or "
+                        "spirv so not rebuilding vulkan components");
+        }
+    }
 
     /**
      *  Rebuild function to reconstruct algorithm with configuration parameters
@@ -1116,11 +1134,57 @@ class Algorithm
      * these can be modified but all new values must have the same vector size
      * as this initial value.
      */
+    template<typename S = float, typename P = float>
     void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
                  const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
-                 const Constants& specializationConstants = {},
-                 const Constants& pushConstants = {});
+                 const std::vector<S>& specializationConstants = {},
+                 const std::vector<P>& pushConstants = {})
+    {
+        KP_LOG_DEBUG("Kompute Algorithm rebuild started");
+
+        this->mTensors = tensors;
+        this->mSpirv = spirv;
+
+        if (specializationConstants.size()) {
+            if (this->mSpecializationConstantsData) {
+                free(this->mSpecializationConstantsData);
+            }
+            uint32_t memorySize = sizeof(decltype(specializationConstants.back()));
+            uint32_t size = specializationConstants.size();
+            uint32_t totalSize = size * memorySize;
+            this->mSpecializationConstantsData = malloc(totalSize);
+            memcpy(this->mSpecializationConstantsData, specializationConstants.data(), totalSize);
+            this->mSpecializationConstantsDataTypeMemorySize = memorySize;
+            this->mSpecializationConstantsSize = size;
+        }
+
+        if (pushConstants.size()) {
+            if (this->mPushConstantsData) {
+                free(this->mPushConstantsData);
+            }
+            uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+            uint32_t size = pushConstants.size();
+            uint32_t totalSize = size * memorySize;
+            this->mPushConstantsData = malloc(totalSize);
+            memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+            this->mPushConstantsDataTypeMemorySize = memorySize;
+            this->mPushConstantsSize = size;
+        }
+
+        this->setWorkgroup(workgroup,
+                           this->mTensors.size() ? this->mTensors[0]->size() : 1);
+
+        // Descriptor pool is created first so if available then destroy all before
+        // rebuild
+        if (this->isInit()) {
+            this->destroy();
+        }
+
+        this->createParameters();
+        this->createShaderModule();
+        this->createPipeline();
+    }
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying
@@ -1179,7 +1243,29 @@ class Algorithm
      * next bindPush(...) calls. The constants provided must be of the same size
      * as the ones created during initialization.
      */
-    void setPush(const Constants& pushConstants);
+    template<typename T>
+    void setPushConstants(const std::vector<T>& pushConstants)
+    {
+
+        if (pushConstants.size() != this->mPushConstantsSize) {
+            throw std::runtime_error(
+              fmt::format("Kompute Algorithm push "
+                          "constant provided is size {} but expected size {}",
+                          pushConstants.size(),
+                          this->mPushConstantsSize));
+        }
+        if (this->mPushConstantsData) {
+            free(this->mPushConstantsData);
+        }
+
+        uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+        uint32_t size = pushConstants.size();
+        uint32_t totalSize = size * memorySize;
+        this->mPushConstantsData = malloc(totalSize);
+        memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+        this->mPushConstantsDataTypeMemorySize = memorySize;
+        this->mPushConstantsSize = size;
+    }
 
     /**
      * Gets the current workgroup from the algorithm.
@@ -1194,13 +1280,23 @@ class Algorithm
      *
      * @returns The kp::Constants currently set for specialization constants
      */
-    const Constants& getSpecializationConstants();
+    template<typename T>
+    const std::vector<T> getSpecializationConstants()
+    {
+        return { (T*)this->mSpecializationConstantsData,
+            ((T*)this->mSpecializationConstantsData) + this->mSpecializationConstantsSize };
+    }
     /**
      * Gets the specialization constants of the current algorithm.
      *
      * @returns The kp::Constants currently set for push constants
      */
-    const Constants& getPush();
+    template<typename T>
+    const std::vector<T> getPushConstants()
+    {
+        return { (T*)this->mPushConstantsData,
+            ((T*)this->mPushConstantsData) + this->mPushConstantsSize };
+    }
     /**
      * Gets the current tensors that are used in the algorithm.
      *
@@ -1233,8 +1329,12 @@ class Algorithm
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mSpirv;
-    Constants mSpecializationConstants;
-    Constants mPushConstants;
+    void* mSpecializationConstantsData = nullptr;
+    uint32_t mSpecializationConstantsDataTypeMemorySize = 0;
+    uint32_t mSpecializationConstantsSize = 0;
+    void* mPushConstantsData = nullptr;
+    uint32_t mPushConstantsDataTypeMemorySize = 0;
+    uint32_t mPushConstantsSize = 0;
     Workgroup mWorkgroup;
 
     // Create util functions
@@ -1655,7 +1755,7 @@ class OpMult : public OpAlgoDispatch
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
             kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
-        algorithm->rebuild(tensors, spirv);
+        algorithm->rebuild<>(tensors, spirv);
     }
 
     /**

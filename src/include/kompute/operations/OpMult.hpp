@@ -45,7 +45,7 @@ class OpMult : public OpAlgoDispatch
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
             kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
-        algorithm->rebuild(tensors, spirv);
+        algorithm->rebuild<>(tensors, spirv);
     }
 
     /**

@@ -422,6 +422,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     KP_LOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
+// TODO: Update to template
 std::shared_ptr<Algorithm>
 Manager::algorithm(const std::vector<std::shared_ptr<Tensor>>& tensors,
                    const std::vector<uint32_t>& spirv,
