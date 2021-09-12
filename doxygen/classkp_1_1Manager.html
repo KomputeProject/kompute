@@ -93,8 +93,11 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1TensorT.html">TensorT</a>&lt;
 <tr class="memitem:a8e6ca20845baf932efeb30f9fdbbe251"><td class="memItemLeft" align="right" valign="top"><a id="a8e6ca20845baf932efeb30f9fdbbe251"></a>
 std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tensor</b> (void *data, uint32_t elementTotalCount, uint32_t elementMemorySize, const Tensor::TensorDataTypes &amp;dataType, <a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4">Tensor::TensorTypes</a> tensorType=<a class="el" href="classkp_1_1Tensor.html#a1b2af1c0e8dc0f154e11780e7103beb4a4380df4c549f2a42e0f127869f41bd4f">Tensor::TensorTypes::eDevice</a>)</td></tr>
 <tr class="separator:a8e6ca20845baf932efeb30f9fdbbe251"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5d97ff9e1f6055356cd71ec91dc40b1"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#ad5d97ff9e1f6055356cd71ec91dc40b1">algorithm</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={}, const Constants &amp;pushConstants={})</td></tr>
-<tr class="separator:ad5d97ff9e1f6055356cd71ec91dc40b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a995c89ff0d4a57acd69fe25ecd301518"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a995c89ff0d4a57acd69fe25ecd301518">algorithm</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const std::vector&lt; float &gt; &amp;specializationConstants={}, const std::vector&lt; float &gt; &amp;pushConstants={})</td></tr>
+<tr class="separator:a995c89ff0d4a57acd69fe25ecd301518"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008f47f9f64cc9bf11f90cdab735b831"><td class="memTemplParams" colspan="2">template&lt;typename S  = float, typename P  = float&gt; </td></tr>
+<tr class="memitem:a008f47f9f64cc9bf11f90cdab735b831"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classkp_1_1Algorithm.html">Algorithm</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a008f47f9f64cc9bf11f90cdab735b831">algorithm</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, const std::vector&lt; uint32_t &gt; &amp;spirv, const Workgroup &amp;workgroup, const std::vector&lt; S &gt; &amp;specializationConstants, const std::vector&lt; P &gt; &amp;pushConstants)</td></tr>
+<tr class="separator:a008f47f9f64cc9bf11f90cdab735b831"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69ab19202bee0c3e0c4f96f9abd6dcc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a69ab19202bee0c3e0c4f96f9abd6dcc8">destroy</a> ()</td></tr>
 <tr class="separator:a69ab19202bee0c3e0c4f96f9abd6dcc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88bae28eafe571f204a29803f712a0f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Manager.html#a88bae28eafe571f204a29803f712a0f1">clear</a> ()</td></tr>
@@ -231,11 +234,14 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad5d97ff9e1f6055356cd71ec91dc40b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5d97ff9e1f6055356cd71ec91dc40b1">&#9670;&nbsp;</a></span>algorithm()</h2>
+<a id="a995c89ff0d4a57acd69fe25ecd301518"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a995c89ff0d4a57acd69fe25ecd301518">&#9670;&nbsp;</a></span>algorithm() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1Algorithm.html">Algorithm</a>&gt; kp::Manager::algorithm </td>
@@ -258,13 +264,13 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
           <td class="paramname"><em>specializationConstants</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; float &gt; &amp;&#160;</td>
           <td class="paramname"><em>pushConstants</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -273,6 +279,79 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Default non-template function that can be used to create algorithm objects which provides default types to the push and spec constants as floats.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tensors</td><td>(optional) The tensors to initialise the algorithm with </td></tr>
+    <tr><td class="paramname">spirv</td><td>(optional) The SPIRV bytes for the algorithm to dispatch </td></tr>
+    <tr><td class="paramname">workgroup</td><td>(optional) kp::Workgroup for algorithm to use, and defaults to (tensor[0].size(), 1, 1) </td></tr>
+    <tr><td class="paramname">specializationConstants</td><td>(optional) float vector to use for specialization constants, and defaults to an empty constant </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) float vector to use for push constants, and defaults to an empty constant </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Shared pointer with initialised algorithm </dd></dl>
+
+</div>
+</div>
+<a id="a008f47f9f64cc9bf11f90cdab735b831"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a008f47f9f64cc9bf11f90cdab735b831">&#9670;&nbsp;</a></span>algorithm() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename S  = float, typename P  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classkp_1_1Algorithm.html">Algorithm</a>&gt; kp::Manager::algorithm </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>tensors</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; uint32_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spirv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Workgroup &amp;&#160;</td>
+          <td class="paramname"><em>workgroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; S &gt; &amp;&#160;</td>
+          <td class="paramname"><em>specializationConstants</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; P &gt; &amp;&#160;</td>
+          <td class="paramname"><em>pushConstants</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Create a managed algorithm that will be destroyed by this manager if it hasn't been destroyed by its reference count going to zero.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -280,8 +359,8 @@ std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&
     <tr><td class="paramname">tensors</td><td>(optional) The tensors to initialise the algorithm with </td></tr>
     <tr><td class="paramname">spirv</td><td>(optional) The SPIRV bytes for the algorithm to dispatch </td></tr>
     <tr><td class="paramname">workgroup</td><td>(optional) kp::Workgroup for algorithm to use, and defaults to (tensor[0].size(), 1, 1) </td></tr>
-    <tr><td class="paramname">specializationConstants</td><td>(optional) kp::Constant to use for specialization constants, and defaults to an empty constant </td></tr>
-    <tr><td class="paramname">pushConstants</td><td>(optional) kp::Constant to use for push constants, and defaults to an empty constant </td></tr>
+    <tr><td class="paramname">specializationConstants</td><td>(optional) templatable vector parameter to use for specialization constants, and defaults to an empty constant </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) templatable vector parameter to use for push constants, and defaults to an empty constant </td></tr>
   </table>
   </dd>
 </dl>

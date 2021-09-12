@@ -334,13 +334,20 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
       <a href="ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="variable-types.html" class="md-nav__link">Variable Types for Tensors, and Push/Spec Constants</a>
       
     
     </li>
@@ -442,7 +449,7 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> - Manages all high level GPU and Kompute resources created</p></li>
 <li><p><a class="reference internal" href="python-reference.html#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> - Contains a set of recorded operations that can be reused</p></li>
-<li><p><a class="reference internal" href="python-reference.html#id8" title="kp.Tensor"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Tensor</span></code></a> - Core data component to manage GPU and host data used in operations</p></li>
+<li><p><a class="reference internal" href="python-reference.html#id9" title="kp.Tensor"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Tensor</span></code></a> - Core data component to manage GPU and host data used in operations</p></li>
 </ul>
 <p>One thing that you will notice is that the class <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpBase</span></code> and all its relevant operator subclasses are not exposed in Python.</p>
 <p>This is primarily because the way to interact with the operations are through the respective <a class="reference internal" href="python-reference.html#id0" title="kp.Manager"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Manager</span></code></a> and <a class="reference internal" href="python-reference.html#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> functions.</p>

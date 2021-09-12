@@ -74,10 +74,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad0a5dae5e1fb15ba66b8832474ad9922"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ad0a5dae5e1fb15ba66b8832474ad9922">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={}, const Constants &amp;pushConstants={})</td></tr>
-<tr class="separator:ad0a5dae5e1fb15ba66b8832474ad9922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ef7e58948901f590e2c598802f7e5ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a8ef7e58948901f590e2c598802f7e5ef">rebuild</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, const std::vector&lt; uint32_t &gt; &amp;spirv, const Workgroup &amp;workgroup={}, const Constants &amp;specializationConstants={}, const Constants &amp;pushConstants={})</td></tr>
-<tr class="separator:a8ef7e58948901f590e2c598802f7e5ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68f76649c667ff73ac6aac8775440b62"><td class="memTemplParams" colspan="2">template&lt;typename S  = float, typename P  = float&gt; </td></tr>
+<tr class="memitem:a68f76649c667ff73ac6aac8775440b62"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a68f76649c667ff73ac6aac8775440b62">Algorithm</a> (std::shared_ptr&lt; vk::Device &gt; device, const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors={}, const std::vector&lt; uint32_t &gt; &amp;spirv={}, const Workgroup &amp;workgroup={}, const std::vector&lt; S &gt; &amp;specializationConstants={}, const std::vector&lt; P &gt; &amp;pushConstants={})</td></tr>
+<tr class="separator:a68f76649c667ff73ac6aac8775440b62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a266172db410310734fcc57dc5068b62c"><td class="memTemplParams" colspan="2">template&lt;typename S  = float, typename P  = float&gt; </td></tr>
+<tr class="memitem:a266172db410310734fcc57dc5068b62c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a266172db410310734fcc57dc5068b62c">rebuild</a> (const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt;&gt; &amp;tensors, const std::vector&lt; uint32_t &gt; &amp;spirv, const Workgroup &amp;workgroup={}, const std::vector&lt; S &gt; &amp;specializationConstants={}, const std::vector&lt; P &gt; &amp;pushConstants={})</td></tr>
+<tr class="separator:a266172db410310734fcc57dc5068b62c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a8bb732b02135afeec7e80e7a2c5d3ce7">~Algorithm</a> ()</td></tr>
 <tr class="separator:a8bb732b02135afeec7e80e7a2c5d3ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8ee096b6a4f8ae46f62273220c35423"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#aa8ee096b6a4f8ae46f62273220c35423">recordDispatch</a> (const vk::CommandBuffer &amp;commandBuffer)</td></tr>
@@ -90,14 +92,19 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a974ac8dd9f100fd4ed3ef71312314bda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f195f84f2e30d5913776a6610c52c19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a3f195f84f2e30d5913776a6610c52c19">setWorkgroup</a> (const Workgroup &amp;workgroup, uint32_t minSize=1)</td></tr>
 <tr class="separator:a3f195f84f2e30d5913776a6610c52c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a082021e3343bce5bed1f842885c67c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a2a082021e3343bce5bed1f842885c67c">setPush</a> (const Constants &amp;pushConstants)</td></tr>
-<tr class="separator:a2a082021e3343bce5bed1f842885c67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45c9565ad7fd9ec76ef2b4ca39385dae"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a45c9565ad7fd9ec76ef2b4ca39385dae"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a45c9565ad7fd9ec76ef2b4ca39385dae">setPushConstants</a> (const std::vector&lt; T &gt; &amp;pushConstants)</td></tr>
+<tr class="separator:a45c9565ad7fd9ec76ef2b4ca39385dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3e21c65a28772e01c8ef45794a1943"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#aac3e21c65a28772e01c8ef45794a1943">setPushConstants</a> (void *data, uint32_t size, uint32_t memorySize)</td></tr>
+<tr class="separator:aac3e21c65a28772e01c8ef45794a1943"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81ce1c093ff2e837f998e9962b2c09e3"><td class="memItemLeft" align="right" valign="top">const Workgroup &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a81ce1c093ff2e837f998e9962b2c09e3">getWorkgroup</a> ()</td></tr>
 <tr class="separator:a81ce1c093ff2e837f998e9962b2c09e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad854fce0359f1d880adef5e523ac8ba0"><td class="memItemLeft" align="right" valign="top">const Constants &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ad854fce0359f1d880adef5e523ac8ba0">getSpecializationConstants</a> ()</td></tr>
-<tr class="separator:ad854fce0359f1d880adef5e523ac8ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3b5b33da0d3d956b235c5fbfe12e3bc"><td class="memItemLeft" align="right" valign="top">const Constants &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ac3b5b33da0d3d956b235c5fbfe12e3bc">getPush</a> ()</td></tr>
-<tr class="separator:ac3b5b33da0d3d956b235c5fbfe12e3bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada43d0bb76b065d7bda857a17a627807"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ada43d0bb76b065d7bda857a17a627807"><td class="memTemplItemLeft" align="right" valign="top">const std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ada43d0bb76b065d7bda857a17a627807">getSpecializationConstants</a> ()</td></tr>
+<tr class="separator:ada43d0bb76b065d7bda857a17a627807"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7fb6842494aec686e32f597df1925f2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ad7fb6842494aec686e32f597df1925f2"><td class="memTemplItemLeft" align="right" valign="top">const std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#ad7fb6842494aec686e32f597df1925f2">getPushConstants</a> ()</td></tr>
+<tr class="separator:ad7fb6842494aec686e32f597df1925f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a899e4fa43bf02bc556920fc3b4b22900"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::shared_ptr&lt; <a class="el" href="classkp_1_1Tensor.html">Tensor</a> &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classkp_1_1Algorithm.html#a899e4fa43bf02bc556920fc3b4b22900">getTensors</a> ()</td></tr>
 <tr class="separator:a899e4fa43bf02bc556920fc3b4b22900"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af38b14c24a26bd2eef13d8cb8e97214a"><td class="memItemLeft" align="right" valign="top"><a id="af38b14c24a26bd2eef13d8cb8e97214a"></a>
@@ -107,11 +114,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstraction for compute shaders that are run on top of tensors grouped via ParameterGroups (which group descriptorsets) </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad0a5dae5e1fb15ba66b8832474ad9922"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0a5dae5e1fb15ba66b8832474ad9922">&#9670;&nbsp;</a></span>Algorithm()</h2>
+<a id="a68f76649c667ff73ac6aac8775440b62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68f76649c667ff73ac6aac8775440b62">&#9670;&nbsp;</a></span>Algorithm()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename S  = float, typename P  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">kp::Algorithm::Algorithm </td>
@@ -140,13 +152,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; S &gt; &amp;&#160;</td>
           <td class="paramname"><em>specializationConstants</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; P &gt; &amp;&#160;</td>
           <td class="paramname"><em>pushConstants</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -155,6 +167,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Main constructor for algorithm with configuration parameters to create the underlying resources.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -163,8 +180,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
     <tr><td class="paramname">tensors</td><td>(optional) The tensors to use to create the descriptor resources </td></tr>
     <tr><td class="paramname">spirv</td><td>(optional) The spirv code to use to create the algorithm </td></tr>
     <tr><td class="paramname">workgroup</td><td>(optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </td></tr>
-    <tr><td class="paramname">specializationConstants</td><td>(optional) The kp::Constants to use to initialize the specialization constants which cannot be changed once set. </td></tr>
-    <tr><td class="paramname">pushConstants</td><td>(optional) The kp::Constants to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </td></tr>
+    <tr><td class="paramname">specializationConstants</td><td>(optional) The templatable param is to be used to initialize the specialization constants which cannot be changed once set. </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) This templatable param is to be used when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same data type and length as otherwise it will result in errors. </td></tr>
   </table>
   </dd>
 </dl>
@@ -190,41 +207,61 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ac3b5b33da0d3d956b235c5fbfe12e3bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac3b5b33da0d3d956b235c5fbfe12e3bc">&#9670;&nbsp;</a></span>getPush()</h2>
+<a id="ad7fb6842494aec686e32f597df1925f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7fb6842494aec686e32f597df1925f2">&#9670;&nbsp;</a></span>getPushConstants()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const Constants&amp; kp::Algorithm::getPush </td>
+          <td class="memname">const std::vector&lt;T&gt; kp::Algorithm::getPushConstants </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Gets the specialization constants of the current algorithm.</p>
-<dl class="section return"><dt>Returns</dt><dd>The kp::Constants currently set for push constants </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The std::vector&lt;float&gt; currently set for push constants </dd></dl>
 
 </div>
 </div>
-<a id="ad854fce0359f1d880adef5e523ac8ba0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad854fce0359f1d880adef5e523ac8ba0">&#9670;&nbsp;</a></span>getSpecializationConstants()</h2>
+<a id="ada43d0bb76b065d7bda857a17a627807"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada43d0bb76b065d7bda857a17a627807">&#9670;&nbsp;</a></span>getSpecializationConstants()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const Constants&amp; kp::Algorithm::getSpecializationConstants </td>
+          <td class="memname">const std::vector&lt;T&gt; kp::Algorithm::getSpecializationConstants </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Gets the specialization constants of the current algorithm.</p>
-<dl class="section return"><dt>Returns</dt><dd>The kp::Constants currently set for specialization constants </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The std::vector&lt;float&gt; currently set for specialization constants </dd></dl>
 
 </div>
 </div>
@@ -290,11 +327,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
 
 </div>
 </div>
-<a id="a8ef7e58948901f590e2c598802f7e5ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ef7e58948901f590e2c598802f7e5ef">&#9670;&nbsp;</a></span>rebuild()</h2>
+<a id="a266172db410310734fcc57dc5068b62c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a266172db410310734fcc57dc5068b62c">&#9670;&nbsp;</a></span>rebuild()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename S  = float, typename P  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void kp::Algorithm::rebuild </td>
@@ -317,13 +359,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; S &gt; &amp;&#160;</td>
           <td class="paramname"><em>specializationConstants</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; P &gt; &amp;&#160;</td>
           <td class="paramname"><em>pushConstants</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -332,6 +374,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Rebuild function to reconstruct algorithm with configuration parameters to create the underlying resources.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -339,8 +386,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
     <tr><td class="paramname">tensors</td><td>The tensors to use to create the descriptor resources </td></tr>
     <tr><td class="paramname">spirv</td><td>The spirv code to use to create the algorithm </td></tr>
     <tr><td class="paramname">workgroup</td><td>(optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </td></tr>
-    <tr><td class="paramname">specializationConstants</td><td>(optional) The kp::Constants to use to initialize the specialization constants which cannot be changed once set. </td></tr>
-    <tr><td class="paramname">pushConstants</td><td>(optional) The kp::Constants to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </td></tr>
+    <tr><td class="paramname">specializationConstants</td><td>(optional) The std::vector&lt;float&gt; to use to initialize the specialization constants which cannot be changed once set. </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) The std::vector&lt;float&gt; to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </td></tr>
   </table>
   </dd>
 </dl>
@@ -424,25 +471,86 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></
 
 </div>
 </div>
-<a id="a2a082021e3343bce5bed1f842885c67c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a082021e3343bce5bed1f842885c67c">&#9670;&nbsp;</a></span>setPush()</h2>
+<a id="a45c9565ad7fd9ec76ef2b4ca39385dae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45c9565ad7fd9ec76ef2b4ca39385dae">&#9670;&nbsp;</a></span>setPushConstants() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void kp::Algorithm::setPush </td>
+          <td class="memname">void kp::Algorithm::setPushConstants </td>
           <td>(</td>
-          <td class="paramtype">const Constants &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>pushConstants</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Sets the push constants to the new value provided to use in the next bindPush()</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">The</td><td>kp::Constant to use to set the push constants to use in the next bindPush(...) calls. The constants provided must be of the same size as the ones created during initialization. </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>The templatable vector is to be used to set the push constants to use in the next bindPush(...) calls. The constants provided must be of the same size as the ones created during initialization. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aac3e21c65a28772e01c8ef45794a1943"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac3e21c65a28772e01c8ef45794a1943">&#9670;&nbsp;</a></span>setPushConstants() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void kp::Algorithm::setPushConstants </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>memorySize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the push constants to the new value provided to use in the next bindPush() with the raw memory block location and memory size to be used.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>The raw data point to copy the data from, without modifying the pointer. </td></tr>
+    <tr><td class="paramname">size</td><td>The number of data elements provided in the data </td></tr>
+    <tr><td class="paramname">memorySize</td><td>The memory size of each of the data elements in bytes. </td></tr>
   </table>
   </dd>
 </dl>

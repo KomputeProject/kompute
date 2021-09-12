@@ -38,9 +38,10 @@ Documentation Index (as per sidebar)
 
 .. toctree::
     :titlesonly:
-    :caption: Concepts & Deep Dives:
+    :caption: Advanced Concepts & Deep Dives:
 
-    CI, Docker Images Docs & Tests <overview/ci-tests.rst>
+    CI, Docker Images Docs & Tests <overview/ci-tests>
+    Variable Types for Tensors, and Push/Spec Constants <overview/variable-types>
     Asynchronous & Parallel Operations <overview/async-parallel>
     Mobile App Integration (Android) <overview/mobile-android>
     Game Engine Integration (Godot Engine) <overview/game-engine-godot>

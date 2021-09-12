@@ -305,13 +305,20 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
       <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/variable-types.html" class="md-nav__link">Variable Types for Tensors, and Push/Spec Constants</a>
       
     
     </li>
@@ -409,6 +416,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="overview/python-reference.html#id1">algorithm() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.algorithm">[1]</a>
 </li>
+      <li><a href="overview/python-reference.html#id2">algorithm_t() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.algorithm_t">[1]</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -423,18 +432,18 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id9">data() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.data">[1]</a>
+      <li><a href="overview/python-reference.html#id10">data() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.data">[1]</a>
 </li>
-      <li><a href="overview/python-reference.html#id10">data_type() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.data_type">[1]</a>
+      <li><a href="overview/python-reference.html#id11">data_type() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.data_type">[1]</a>
 </li>
       <li><a href="overview/python-reference.html#kp.Algorithm.destroy">destroy() (kp.Algorithm method)</a>
 
       <ul>
-        <li><a href="overview/python-reference.html#id2">(kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.destroy">[1]</a>
+        <li><a href="overview/python-reference.html#id3">(kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.destroy">[1]</a>
 </li>
         <li><a href="overview/python-reference.html#kp.Sequence.destroy">(kp.Sequence method)</a>
 </li>
-        <li><a href="overview/python-reference.html#id11">(kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.destroy">[1]</a>
+        <li><a href="overview/python-reference.html#id12">(kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.destroy">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -457,9 +466,7 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id3">get_device_properties() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.get_device_properties">[1]</a>
-</li>
-      <li><a href="overview/python-reference.html#kp.Algorithm.get_spec_consts">get_spec_consts() (kp.Algorithm method)</a>
+      <li><a href="overview/python-reference.html#id4">get_device_properties() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.get_device_properties">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -478,7 +485,7 @@
       <ul>
         <li><a href="overview/python-reference.html#kp.Sequence.is_init">(kp.Sequence method)</a>
 </li>
-        <li><a href="overview/python-reference.html#id12">(kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.is_init">[1]</a>
+        <li><a href="overview/python-reference.html#id13">(kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.is_init">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -502,11 +509,11 @@
       </ul></li>
       <li><a href="overview/reference.html#_CPPv4N2kp9AlgorithmE">kp::Algorithm (C++ class)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants">kp::Algorithm::Algorithm (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE">kp::Algorithm::Algorithm (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm7getPushEv">kp::Algorithm::getPush (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I0EN2kp9Algorithm16getPushConstantsEKNSt6vectorI1TEEv">kp::Algorithm::getPushConstants (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm26getSpecializationConstantsEv">kp::Algorithm::getSpecializationConstants (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I0EN2kp9Algorithm26getSpecializationConstantsEKNSt6vectorI1TEEv">kp::Algorithm::getSpecializationConstants (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm10getTensorsEv">kp::Algorithm::getTensors (C++ function)</a>
 </li>
@@ -514,7 +521,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm6isInitEv">kp::Algorithm::isInit (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants">kp::Algorithm::rebuild (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I00EN2kp9Algorithm7rebuildEvRKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE">kp::Algorithm::rebuild (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm14recordBindCoreERKN2vk13CommandBufferE">kp::Algorithm::recordBindCore (C++ function)</a>
 </li>
@@ -522,7 +529,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm14recordDispatchERKN2vk13CommandBufferE">kp::Algorithm::recordDispatch (C++ function)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm7setPushERK9Constants">kp::Algorithm::setPush (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I0EN2kp9Algorithm16setPushConstantsEvRKNSt6vectorI1TEE">kp::Algorithm::setPushConstants (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp9Algorithm16setPushConstantsEPv8uint32_t8uint32_t">[1]</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp9Algorithm12setWorkgroupERK9Workgroup8uint32_t">kp::Algorithm::setWorkgroup (C++ function)</a>
 </li>
@@ -530,7 +537,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp7ManagerE">kp::Manager (C++ class)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants">kp::Manager::algorithm (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I00EN2kp7Manager9algorithmENSt10shared_ptrI9AlgorithmEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE">kp::Manager::algorithm (C++ function)</a>, <a href="overview/reference.html#_CPPv4N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorIfEERKNSt6vectorIfEE">[1]</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp7Manager5clearEv">kp::Manager::clear (C++ function)</a>
 </li>
@@ -550,7 +557,7 @@
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp14OpAlgoDispatchE">kp::OpAlgoDispatch (C++ class)</a>
 </li>
-      <li><a href="overview/reference.html#_CPPv4N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE">kp::OpAlgoDispatch::OpAlgoDispatch (C++ function)</a>
+      <li><a href="overview/reference.html#_CPPv4I0EN2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKNSt6vectorI1TEE">kp::OpAlgoDispatch::OpAlgoDispatch (C++ function)</a>
 </li>
       <li><a href="overview/reference.html#_CPPv4N2kp14OpAlgoDispatch8postEvalERKN2vk13CommandBufferE">kp::OpAlgoDispatch::postEval (C++ function)</a>
 </li>
@@ -702,7 +709,7 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id4">list_devices() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.list_devices">[1]</a>
+      <li><a href="overview/python-reference.html#id5">list_devices() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.list_devices">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -771,9 +778,9 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id5">sequence() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.sequence">[1]</a>
+      <li><a href="overview/python-reference.html#id6">sequence() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.sequence">[1]</a>
 </li>
-      <li><a href="overview/python-reference.html#id13">size() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.size">[1]</a>
+      <li><a href="overview/python-reference.html#id14">size() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.size">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -781,15 +788,15 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id8">Tensor (class in kp)</a>, <a href="overview/python-reference.html#kp.Tensor">[1]</a>
+      <li><a href="overview/python-reference.html#id9">Tensor (class in kp)</a>, <a href="overview/python-reference.html#kp.Tensor">[1]</a>
 </li>
-      <li><a href="overview/python-reference.html#id6">tensor() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.tensor">[1]</a>
+      <li><a href="overview/python-reference.html#id7">tensor() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.tensor">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="overview/python-reference.html#id7">tensor_t() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.tensor_t">[1]</a>
+      <li><a href="overview/python-reference.html#id8">tensor_t() (kp.Manager method)</a>, <a href="overview/python-reference.html#kp.Manager.tensor_t">[1]</a>
 </li>
-      <li><a href="overview/python-reference.html#id14">tensor_type() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.tensor_type">[1]</a>
+      <li><a href="overview/python-reference.html#id15">tensor_type() (kp.Tensor method)</a>, <a href="overview/python-reference.html#kp.Tensor.tensor_type">[1]</a>
 </li>
       <li><a href="overview/python-reference.html#kp.TensorTypes">TensorTypes (class in kp)</a>
 </li>

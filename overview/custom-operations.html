@@ -332,13 +332,20 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
       <a href="ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="variable-types.html" class="md-nav__link">Variable Types for Tensors, and Push/Spec Constants</a>
       
     
     </li>
@@ -503,7 +510,7 @@
           <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv</span> <span class="o">+</span>
             <span class="n">kp</span><span class="o">::</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv_len</span><span class="p">));</span>
 
-        <span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">spirv</span><span class="p">);</span>
+        <span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">spirv</span><span class="p">);</span>
     <span class="p">}</span>
 
     <span class="cm">/**</span>

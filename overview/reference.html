@@ -346,13 +346,20 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
       <a href="ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="variable-types.html" class="md-nav__link">Variable Types for Tensors, and Push/Spec Constants</a>
       
     
     </li>
@@ -523,8 +530,26 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants">
-<span id="_CPPv3N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants"></span><span id="_CPPv2N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants"></span><span id="kp::Manager::algorithm__std::vector:std::shared_ptr:Tensor::CR.std::vector:uint32_t:CR.WorkgroupCR.ConstantsCR.ConstantsCR"></span><span class="target" id="classkp_1_1Manager_1ad5d97ff9e1f6055356cd71ec91dc40b1"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp9AlgorithmE" title="kp::Algorithm">Algorithm</a>&gt; <code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em> = {}, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em> = {}, <em class="property">const</em> Workgroup &amp;<em>workgroup</em> = {}, <em class="property">const</em> Constants &amp;<em>specializationConstants</em> = {}, <em class="property">const</em> Constants &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorIfEERKNSt6vectorIfEE">
+<span id="_CPPv3N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorIfEERKNSt6vectorIfEE"></span><span id="_CPPv2N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorIfEERKNSt6vectorIfEE"></span><span id="kp::Manager::algorithm__std::vector:std::shared_ptr:Tensor::CR.std::vector:uint32_t:CR.WorkgroupCR.std::vector:float:CR.std::vector:float:CR"></span><span class="target" id="classkp_1_1Manager_1a995c89ff0d4a57acd69fe25ecd301518"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp9AlgorithmE" title="kp::Algorithm">Algorithm</a>&gt; <code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em> = {}, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em> = {}, <em class="property">const</em> Workgroup &amp;<em>workgroup</em> = {}, <em class="property">const</em> std::vector&lt;float&gt; &amp;<em>specializationConstants</em> = {}, <em class="property">const</em> std::vector&lt;float&gt; &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorIfEERKNSt6vectorIfEE" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Default non-template function that can be used to create algorithm objects which provides default types to the push and spec constants as floats.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Shared pointer with initialised algorithm </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: (optional) The tensors to initialise the algorithm with </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spirv</span></code>: (optional) The SPIRV bytes for the algorithm to dispatch </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">workgroup</span></code>: (optional) kp::Workgroup for algorithm to use, and defaults to (tensor[0].size(), 1, 1) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) float vector to use for specialization constants, and defaults to an empty constant </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) float vector to use for push constants, and defaults to an empty constant </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4I00EN2kp7Manager9algorithmENSt10shared_ptrI9AlgorithmEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE">
+<span id="_CPPv3I00EN2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE"></span><span id="_CPPv2I00EN2kp7Manager9algorithmERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE"></span>template&lt;typename <code class="sig-name descname">S</code> = float, typename <code class="sig-name descname">P</code> = float&gt;<br/><span class="target" id="classkp_1_1Manager_1a008f47f9f64cc9bf11f90cdab735b831"></span>std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp9AlgorithmE" title="kp::Algorithm">Algorithm</a>&gt; <code class="sig-name descname">algorithm</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em>, <em class="property">const</em> Workgroup &amp;<em>workgroup</em>, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I00EN2kp7Manager9algorithmENSt10shared_ptrI9AlgorithmEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="kp::Manager::algorithm::S">S</a>&gt; &amp;<em>specializationConstants</em>, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I00EN2kp7Manager9algorithmENSt10shared_ptrI9AlgorithmEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="kp::Manager::algorithm::P">P</a>&gt; &amp;<em>pushConstants</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN2kp7Manager9algorithmENSt10shared_ptrI9AlgorithmEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Create a managed algorithm that will be destroyed by this manager if it hasn’t been destroyed by its reference count going to zero.</p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Shared pointer with initialised algorithm </p>
@@ -533,8 +558,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: (optional) The tensors to initialise the algorithm with </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">spirv</span></code>: (optional) The SPIRV bytes for the algorithm to dispatch </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workgroup</span></code>: (optional) kp::Workgroup for algorithm to use, and defaults to (tensor[0].size(), 1, 1) </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) kp::Constant to use for specialization constants, and defaults to an empty constant </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) kp::Constant to use for push constants, and defaults to an empty constant </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) templatable vector parameter to use for specialization constants, and defaults to an empty constant </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) templatable vector parameter to use for push constants, and defaults to an empty constant </p></li>
 </ul>
 </dd>
 </dl>
@@ -1097,8 +1122,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants">
-<span id="_CPPv3N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants"></span><span id="_CPPv2N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants"></span><span id="kp::Algorithm::Algorithm__std::shared_ptr:vk::Device:.std::vector:std::shared_ptr:Tensor::CR.std::vector:uint32_t:CR.WorkgroupCR.ConstantsCR.ConstantsCR"></span><span class="target" id="classkp_1_1Algorithm_1ad0a5dae5e1fb15ba66b8832474ad9922"></span><code class="sig-name descname">Algorithm</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::Device&gt; <em>device</em>, <em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em> = {}, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em> = {}, <em class="property">const</em> Workgroup &amp;<em>workgroup</em> = {}, <em class="property">const</em> Constants &amp;<em>specializationConstants</em> = {}, <em class="property">const</em> Constants &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE">
+<span id="_CPPv3I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE"></span><span id="_CPPv2I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE"></span>template&lt;typename <code class="sig-name descname">S</code> = float, typename <code class="sig-name descname">P</code> = float&gt;<br/><span class="target" id="classkp_1_1Algorithm_1a68f76649c667ff73ac6aac8775440b62"></span><code class="sig-name descname">Algorithm</code><span class="sig-paren">(</span>std::shared_ptr&lt;vk::Device&gt; <em>device</em>, <em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em> = {}, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em> = {}, <em class="property">const</em> Workgroup &amp;<em>workgroup</em> = {}, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="kp::Algorithm::Algorithm::S">S</a>&gt; &amp;<em>specializationConstants</em> = {}, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="kp::Algorithm::Algorithm::P">P</a>&gt; &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN2kp9Algorithm9AlgorithmENSt10shared_ptrIN2vk6DeviceEEERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Main constructor for algorithm with configuration parameters to create the underlying resources.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -1106,24 +1131,24 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: (optional) The tensors to use to create the descriptor resources </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">spirv</span></code>: (optional) The spirv code to use to create the algorithm </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workgroup</span></code>: (optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) The kp::Constants to use to initialize the specialization constants which cannot be changed once set. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) The kp::Constants to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) The templatable param is to be used to initialize the specialization constants which cannot be changed once set. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) This templatable param is to be used when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same data type and length as otherwise it will result in errors. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants">
-<span id="_CPPv3N2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants"></span><span id="_CPPv2N2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants"></span><span id="kp::Algorithm::rebuild__std::vector:std::shared_ptr:Tensor::CR.std::vector:uint32_t:CR.WorkgroupCR.ConstantsCR.ConstantsCR"></span><span class="target" id="classkp_1_1Algorithm_1a8ef7e58948901f590e2c598802f7e5ef"></span>void <code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em>, <em class="property">const</em> Workgroup &amp;<em>workgroup</em> = {}, <em class="property">const</em> Constants &amp;<em>specializationConstants</em> = {}, <em class="property">const</em> Constants &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRK9ConstantsRK9Constants" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I00EN2kp9Algorithm7rebuildEvRKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE">
+<span id="_CPPv3I00EN2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE"></span><span id="_CPPv2I00EN2kp9Algorithm7rebuildERKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE"></span>template&lt;typename <code class="sig-name descname">S</code> = float, typename <code class="sig-name descname">P</code> = float&gt;<br/><span class="target" id="classkp_1_1Algorithm_1a266172db410310734fcc57dc5068b62c"></span>void <code class="sig-name descname">rebuild</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;std::shared_ptr&lt;<a class="reference internal" href="#_CPPv4N2kp6TensorE" title="kp::Tensor">Tensor</a>&gt;&gt; &amp;<em>tensors</em>, <em class="property">const</em> std::vector&lt;uint32_t&gt; &amp;<em>spirv</em>, <em class="property">const</em> Workgroup &amp;<em>workgroup</em> = {}, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I00EN2kp9Algorithm7rebuildEvRKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="kp::Algorithm::rebuild::S">S</a>&gt; &amp;<em>specializationConstants</em> = {}, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I00EN2kp9Algorithm7rebuildEvRKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="kp::Algorithm::rebuild::P">P</a>&gt; &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I00EN2kp9Algorithm7rebuildEvRKNSt6vectorINSt10shared_ptrI6TensorEEEERKNSt6vectorI8uint32_tEERK9WorkgroupRKNSt6vectorI1SEERKNSt6vectorI1PEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Rebuild function to reconstruct algorithm with configuration parameters to create the underlying resources.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">tensors</span></code>: The tensors to use to create the descriptor resources </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">spirv</span></code>: The spirv code to use to create the algorithm </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workgroup</span></code>: (optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) The kp::Constants to use to initialize the specialization constants which cannot be changed once set. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) The kp::Constants to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">specializationConstants</span></code>: (optional) The std::vector&lt;float&gt; to use to initialize the specialization constants which cannot be changed once set. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: (optional) The std::vector&lt;float&gt; to use when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same vector size as this initial value. </p></li>
 </ul>
 </dd>
 </dl>
@@ -1196,12 +1221,26 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp9Algorithm7setPushERK9Constants">
-<span id="_CPPv3N2kp9Algorithm7setPushERK9Constants"></span><span id="_CPPv2N2kp9Algorithm7setPushERK9Constants"></span><span id="kp::Algorithm::setPush__ConstantsCR"></span><span class="target" id="classkp_1_1Algorithm_1a2a082021e3343bce5bed1f842885c67c"></span>void <code class="sig-name descname">setPush</code><span class="sig-paren">(</span><em class="property">const</em> Constants &amp;<em>pushConstants</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm7setPushERK9Constants" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I0EN2kp9Algorithm16setPushConstantsEvRKNSt6vectorI1TEE">
+<span id="_CPPv3I0EN2kp9Algorithm16setPushConstantsERKNSt6vectorI1TEE"></span><span id="_CPPv2I0EN2kp9Algorithm16setPushConstantsERKNSt6vectorI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br/><span class="target" id="classkp_1_1Algorithm_1a45c9565ad7fd9ec76ef2b4ca39385dae"></span>void <code class="sig-name descname">setPushConstants</code><span class="sig-paren">(</span><em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN2kp9Algorithm16setPushConstantsEvRKNSt6vectorI1TEE" title="kp::Algorithm::setPushConstants::T">T</a>&gt; &amp;<em>pushConstants</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp9Algorithm16setPushConstantsEvRKNSt6vectorI1TEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Sets the push constants to the new value provided to use in the next bindPush()</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">The</span></code>: kp::Constant to use to set the push constants to use in the next bindPush(…) calls. The constants provided must be of the same size as the ones created during initialization. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pushConstants</span></code>: The templatable vector is to be used to set the push constants to use in the next bindPush(…) calls. The constants provided must be of the same size as the ones created during initialization. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+<dl class="cpp function">
+<dt id="_CPPv4N2kp9Algorithm16setPushConstantsEPv8uint32_t8uint32_t">
+<span id="_CPPv3N2kp9Algorithm16setPushConstantsEPv8uint32_t8uint32_t"></span><span id="_CPPv2N2kp9Algorithm16setPushConstantsEPv8uint32_t8uint32_t"></span><span id="kp::Algorithm::setPushConstants__voidP.uint32_t.uint32_t"></span><span class="target" id="classkp_1_1Algorithm_1aac3e21c65a28772e01c8ef45794a1943"></span>void <code class="sig-name descname">setPushConstants</code><span class="sig-paren">(</span>void *<em>data</em>, uint32_t <em>size</em>, uint32_t <em>memorySize</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm16setPushConstantsEPv8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br/></dt>
+<dd><p>Sets the push constants to the new value provided to use in the next bindPush() with the raw memory block location and memory size to be used.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: The raw data point to copy the data from, without modifying the pointer. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: The number of data elements provided in the data </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memorySize</span></code>: The memory size of each of the data elements in bytes. </p></li>
 </ul>
 </dd>
 </dl>
@@ -1220,21 +1259,21 @@
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp9Algorithm26getSpecializationConstantsEv">
-<span id="_CPPv3N2kp9Algorithm26getSpecializationConstantsEv"></span><span id="_CPPv2N2kp9Algorithm26getSpecializationConstantsEv"></span><span id="kp::Algorithm::getSpecializationConstants"></span><span class="target" id="classkp_1_1Algorithm_1ad854fce0359f1d880adef5e523ac8ba0"></span><em class="property">const</em> Constants &amp;<code class="sig-name descname">getSpecializationConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm26getSpecializationConstantsEv" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I0EN2kp9Algorithm26getSpecializationConstantsEKNSt6vectorI1TEEv">
+<span id="_CPPv3I0EN2kp9Algorithm26getSpecializationConstantsEv"></span><span id="_CPPv2I0EN2kp9Algorithm26getSpecializationConstantsEv"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br/><span class="target" id="classkp_1_1Algorithm_1ada43d0bb76b065d7bda857a17a627807"></span><em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN2kp9Algorithm26getSpecializationConstantsEKNSt6vectorI1TEEv" title="kp::Algorithm::getSpecializationConstants::T">T</a>&gt; <code class="sig-name descname">getSpecializationConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp9Algorithm26getSpecializationConstantsEKNSt6vectorI1TEEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Gets the specialization constants of the current algorithm.</p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The kp::Constants currently set for specialization constants </p>
+<dt><strong>Return</strong></dt><dd><p>The std::vector&lt;float&gt; currently set for specialization constants </p>
 </dd>
 </dl>
 </p>
 </dd></dl>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp9Algorithm7getPushEv">
-<span id="_CPPv3N2kp9Algorithm7getPushEv"></span><span id="_CPPv2N2kp9Algorithm7getPushEv"></span><span id="kp::Algorithm::getPush"></span><span class="target" id="classkp_1_1Algorithm_1ac3b5b33da0d3d956b235c5fbfe12e3bc"></span><em class="property">const</em> Constants &amp;<code class="sig-name descname">getPush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp9Algorithm7getPushEv" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I0EN2kp9Algorithm16getPushConstantsEKNSt6vectorI1TEEv">
+<span id="_CPPv3I0EN2kp9Algorithm16getPushConstantsEv"></span><span id="_CPPv2I0EN2kp9Algorithm16getPushConstantsEv"></span>template&lt;typename <code class="sig-name descname">T</code>&gt;<br/><span class="target" id="classkp_1_1Algorithm_1ad7fb6842494aec686e32f597df1925f2"></span><em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN2kp9Algorithm16getPushConstantsEKNSt6vectorI1TEEv" title="kp::Algorithm::getPushConstants::T">T</a>&gt; <code class="sig-name descname">getPushConstants</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp9Algorithm16getPushConstantsEKNSt6vectorI1TEEv" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Gets the specialization constants of the current algorithm.</p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The kp::Constants currently set for push constants </p>
+<dt><strong>Return</strong></dt><dd><p>The std::vector&lt;float&gt; currently set for push constants </p>
 </dd>
 </dl>
 </p>
@@ -1320,8 +1359,8 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE">
-<span id="_CPPv3N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE"></span><span id="_CPPv2N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE"></span><span id="kp::OpAlgoDispatch::OpAlgoDispatch__std::shared_ptr:kp::Algorithm:CR.kp::ConstantsCR"></span><span class="target" id="classkp_1_1OpAlgoDispatch_1a2d93f88c0805970a28228b916ea7fc98"></span><code class="sig-name descname">OpAlgoDispatch</code><span class="sig-paren">(</span><em class="property">const</em> std::shared_ptr&lt;kp::<a class="reference internal" href="#_CPPv4N2kp9AlgorithmE" title="kp::Algorithm">Algorithm</a>&gt; &amp;<em>algorithm</em>, <em class="property">const</em> kp::Constants &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKN2kp9ConstantsE" title="Permalink to this definition">¶</a><br/></dt>
+<dt id="_CPPv4I0EN2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKNSt6vectorI1TEE">
+<span id="_CPPv3I0EN2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKNSt6vectorI1TEE"></span><span id="_CPPv2I0EN2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKNSt6vectorI1TEE"></span>template&lt;typename <code class="sig-name descname">T</code> = float&gt;<br/><span class="target" id="classkp_1_1OpAlgoDispatch_1ae435647441f630f5860eed6b414cc003"></span><code class="sig-name descname">OpAlgoDispatch</code><span class="sig-paren">(</span><em class="property">const</em> std::shared_ptr&lt;kp::<a class="reference internal" href="#_CPPv4N2kp9AlgorithmE" title="kp::Algorithm">Algorithm</a>&gt; &amp;<em>algorithm</em>, <em class="property">const</em> std::vector&lt;<a class="reference internal" href="#_CPPv4I0EN2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKNSt6vectorI1TEE" title="kp::OpAlgoDispatch::OpAlgoDispatch::T">T</a>&gt; &amp;<em>pushConstants</em> = {}<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN2kp14OpAlgoDispatch14OpAlgoDispatchERKNSt10shared_ptrIN2kp9AlgorithmEEERKNSt6vectorI1TEE" title="Permalink to this definition">¶</a><br/></dt>
 <dd><p>Constructor that stores the algorithm to use as well as the relevant push constants to override when recording.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">

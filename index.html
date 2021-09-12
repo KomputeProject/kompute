@@ -306,13 +306,20 @@
     </li>
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
       <a href="overview/ci-tests.html" class="md-nav__link">CI, Docker Images Docs & Tests</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/variable-types.html" class="md-nav__link">Variable Types for Tensors, and Push/Spec Constants</a>
       
     
     </li>
@@ -484,9 +491,9 @@
 
     <span class="c1">// 3. Create algorithm based on shader (supports buffers &amp; push/spec constants)</span>
     <span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span> <span class="n">workgroup</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">});</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span> <span class="n">specConsts</span><span class="p">({</span> <span class="mi">2</span> <span class="p">});</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span> <span class="n">pushConstsA</span><span class="p">({</span> <span class="mf">2.0</span> <span class="p">});</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Constants</span> <span class="n">pushConstsB</span><span class="p">({</span> <span class="mf">3.0</span> <span class="p">});</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">specConsts</span><span class="p">({</span> <span class="mi">2</span> <span class="p">});</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">pushConstsA</span><span class="p">({</span> <span class="mf">2.0</span> <span class="p">});</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">pushConstsB</span><span class="p">({</span> <span class="mf">3.0</span> <span class="p">});</span>
 
     <span class="k">auto</span> <span class="n">algorithm</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span>
                                    <span class="c1">// See documentation shader section for compileSource</span>
@@ -872,9 +879,10 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Concepts &amp; Deep Dives:</span></p>
+<p class="caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images Docs &amp; Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/variable-types.html">Variable Types for Tensors, and Push/Spec Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/async-parallel.html">Asynchronous &amp; Parallel Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/mobile-android.html">Mobile App Integration (Android)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/game-engine-godot.html">Game Engine Integration (Godot Engine)</a></li>

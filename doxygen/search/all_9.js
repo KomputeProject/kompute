@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['opalgodispatch',['OpAlgoDispatch',['../classkp_1_1OpAlgoDispatch.html',1,'kp::OpAlgoDispatch'],['../classkp_1_1OpAlgoDispatch.html#a2d93f88c0805970a28228b916ea7fc98',1,'kp::OpAlgoDispatch::OpAlgoDispatch()']]],
+  ['opalgodispatch',['OpAlgoDispatch',['../classkp_1_1OpAlgoDispatch.html',1,'kp::OpAlgoDispatch'],['../classkp_1_1OpAlgoDispatch.html#ae435647441f630f5860eed6b414cc003',1,'kp::OpAlgoDispatch::OpAlgoDispatch()']]],
   ['opbase',['OpBase',['../classkp_1_1OpBase.html',1,'kp']]],
   ['opmemorybarrier',['OpMemoryBarrier',['../classkp_1_1OpMemoryBarrier.html',1,'kp::OpMemoryBarrier'],['../classkp_1_1OpMemoryBarrier.html#a7ebead7bcbc8d87716a388a094acf05a',1,'kp::OpMemoryBarrier::OpMemoryBarrier()']]],
   ['opmult',['OpMult',['../classkp_1_1OpMult.html',1,'kp::OpMult'],['../classkp_1_1OpMult.html#a61e02be5bc3184f900a1f2a411a18e25',1,'kp::OpMult::OpMult()']]],
