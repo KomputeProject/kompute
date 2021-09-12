@@ -197,7 +197,7 @@ TEST(TestPushConstants, TestConstantsMixedTypes)
               pa[2] += pcs.z;
           })");
 
-        struct Params{float x; uint32_t y; int32_t z;};
+        struct TestConsts{float x; uint32_t y; int32_t z;};
 
         std::vector<uint32_t> spirv = compileSource(shader);
 
@@ -209,7 +209,7 @@ TEST(TestPushConstants, TestConstantsMixedTypes)
             std::shared_ptr<kp::TensorT<float>> tensor =
               mgr.tensorT<float>({ 0, 0, 0 });
 
-            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm<float, Params>(
+            std::shared_ptr<kp::Algorithm> algo = mgr.algorithm<float, TestConsts>(
               { tensor }, spirv, kp::Workgroup({ 1 }), {}, {{ 0, 0, 0 }});
 
             sq = mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensor });
@@ -217,8 +217,8 @@ TEST(TestPushConstants, TestConstantsMixedTypes)
             // We need to run this in sequence to avoid race condition
             // We can't use atomicAdd as swiftshader doesn't support it for
             // float
-            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<Params>{{ 15.32, 2147483650, 10 }});
-            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<Params>{{ 30.32, 2147483650, -3 }});
+            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<TestConsts>{{ 15.32, 2147483650, 10 }});
+            sq->eval<kp::OpAlgoDispatch>(algo, std::vector<TestConsts>{{ 30.32, 2147483650, -3 }});
             sq->eval<kp::OpTensorSyncLocal>({ tensor });
 
             EXPECT_EQ(tensor->vector(), std::vector<float>({ 45.64, 1300, 7 }));
