@@ -338,8 +338,8 @@ void
 Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
 {
     if (this->mPushConstantsSize) {
-        KP_LOG_DEBUG("Kompute Algorithm binding push constants size: {}",
-                     this->mPushConstantsSize);
+        KP_LOG_DEBUG("Kompute Algorithm binding push constants memory size: {}",
+                     this->mPushConstantsSize * this->mPushConstantsDataTypeMemorySize);
 
         commandBuffer.pushConstants(*this->mPipelineLayout,
                                     vk::ShaderStageFlagBits::eCompute,

@@ -183,23 +183,29 @@ class Algorithm
     template<typename T>
     void setPushConstants(const std::vector<T>& pushConstants)
     {
+        uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+        uint32_t size = pushConstants.size();
+        uint32_t totalSize = memorySize * size;
+        uint32_t previousTotalSize = this->mPushConstantsDataTypeMemorySize * this->mPushConstantsSize;
 
-        if (pushConstants.size() != this->mPushConstantsSize) {
+        if (totalSize != previousTotalSize) {
             throw std::runtime_error(
               fmt::format("Kompute Algorithm push "
-                          "constant provided is size {} but expected size {}",
-                          pushConstants.size(),
-                          this->mPushConstantsSize));
+                          "constant total memory size provided is {} but expected {} bytes",
+                          totalSize,
+                          previousTotalSize));
         }
         if (this->mPushConstantsData) {
             free(this->mPushConstantsData);
         }
 
-        uint32_t memorySize = sizeof(decltype(pushConstants.back()));
-        uint32_t size = pushConstants.size();
+        this->setPushConstants(pushConstants.data(), size, memorySize);
+    }
+
+    void setPushConstants(void* data, uint32_t size, uint32_t memorySize) {
         uint32_t totalSize = size * memorySize;
         this->mPushConstantsData = malloc(totalSize);
-        memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+        memcpy(this->mPushConstantsData, data, totalSize);
         this->mPushConstantsDataTypeMemorySize = memorySize;
         this->mPushConstantsSize = size;
     }
