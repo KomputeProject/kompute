@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">23</td>
-            <td class="headerCovTableEntry">29</td>
-            <td class="headerCovTableEntryMed">79.3 %</td>
+            <td class="headerCovTableEntry">28</td>
+            <td class="headerCovTableEntry">34</td>
+            <td class="headerCovTableEntryMed">82.4 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-07-22 10:13:27</td>
+            <td class="headerValue">2021-09-12 06:43:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">5</td>
             <td class="headerCovTableEntry">6</td>
-            <td class="headerCovTableEntryMed">83.3 %</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -81,23 +81,23 @@
 <span class="lineNum">      19 </span><span class="lineCov">          1 :   , mDstStageMask(dstStageMask)</span>
 <span class="lineNum">      20 </span><span class="lineCov">          5 :   , mBarrierOnPrimary(barrierOnPrimary)</span>
 <span class="lineNum">      21 </span>            : {
-<span class="lineNum">      22 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier constructor&quot;);
+<span class="lineNum">      22 </span><span class="lineCov">          1 :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier constructor&quot;);</span>
 <a name="23"><span class="lineNum">      23 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span><span class="lineCov">          1 : OpMemoryBarrier::~OpMemoryBarrier()</span>
+<span class="lineNum">      25 </span><span class="lineCov">          3 : OpMemoryBarrier::~OpMemoryBarrier()</span>
 <span class="lineNum">      26 </span>            : {
-<span class="lineNum">      27 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier destructor started&quot;);
-<span class="lineNum">      28 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">      27 </span><span class="lineCov">          1 :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier destructor started&quot;);</span>
+<span class="lineNum">      28 </span><span class="lineCov">          2 : }</span>
 <a name="29"><span class="lineNum">      29 </span>            : </a>
 <span class="lineNum">      30 </span>            : void
 <span class="lineNum">      31 </span><span class="lineCov">          2 : OpMemoryBarrier::record(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      32 </span>            : {
-<span class="lineNum">      33 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier record called&quot;);
+<span class="lineNum">      33 </span><span class="lineCov">          2 :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier record called&quot;);</span>
 <span class="lineNum">      34 </span>            : 
 <span class="lineNum">      35 </span>            :     // Barrier to ensure the data is finished writing to buffer memory
 <span class="lineNum">      36 </span><span class="lineCov">          2 :     if (this-&gt;mBarrierOnPrimary) {</span>
-<span class="lineNum">      37 </span><span class="lineCov">          2 :         for (const std::shared_ptr&lt;Tensor&gt;&amp; tensor : this-&gt;mTensors) {</span>
-<span class="lineNum">      38 </span><span class="lineCov">          2 :             tensor-&gt;recordPrimaryBufferMemoryBarrier(commandBuffer,</span>
+<span class="lineNum">      37 </span><span class="lineCov">          4 :         for (const std::shared_ptr&lt;Tensor&gt;&amp; tensor : this-&gt;mTensors) {</span>
+<span class="lineNum">      38 </span><span class="lineCov">          4 :             tensor-&gt;recordPrimaryBufferMemoryBarrier(commandBuffer,</span>
 <span class="lineNum">      39 </span><span class="lineCov">          2 :                                                      this-&gt;mSrcAccessMask,</span>
 <span class="lineNum">      40 </span><span class="lineCov">          2 :                                                      this-&gt;mDstAccessMask,</span>
 <span class="lineNum">      41 </span><span class="lineCov">          2 :                                                      this-&gt;mSrcStageMask,</span>
@@ -117,13 +117,13 @@
 <span class="lineNum">      55 </span>            : void
 <span class="lineNum">      56 </span><span class="lineCov">          2 : OpMemoryBarrier::preEval(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      57 </span>            : {
-<span class="lineNum">      58 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier preEval called&quot;);
+<span class="lineNum">      58 </span><span class="lineCov">          2 :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier preEval called&quot;);</span>
 <span class="lineNum">      59 </span><span class="lineCov">          2 : }</span>
 <a name="60"><span class="lineNum">      60 </span>            : </a>
 <span class="lineNum">      61 </span>            : void
 <span class="lineNum">      62 </span><span class="lineCov">          2 : OpMemoryBarrier::postEval(const vk::CommandBuffer&amp; commandBuffer)</span>
 <span class="lineNum">      63 </span>            : {
-<span class="lineNum">      64 </span>            :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier postSubmit called&quot;);
+<span class="lineNum">      64 </span><span class="lineCov">          2 :     KP_LOG_DEBUG(&quot;Kompute OpMemoryBarrier postSubmit called&quot;);</span>
 <span class="lineNum">      65 </span><span class="lineCov">          2 : }</span>
 <span class="lineNum">      66 </span>            : 
 <span class="lineNum">      67 </span>            : }
