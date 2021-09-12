@@ -197,10 +197,49 @@ def test_pushconsts():
         .record(kp.OpTensorSyncDevice([tensor]))
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
+        .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
         .record(kp.OpTensorSyncLocal([tensor]))
         .eval())
 
-    assert np.all(tensor.data() == np.array([0.4, 0.4, 0.4], dtype=np.float32))
+    assert np.allclose(tensor.data(), np.array([0.7, 0.6, 0.5], dtype=np.float32))
+
+
+def test_pushconsts_int():
+
+    spirv = compile_source("""
+          #version 450
+          layout(push_constant) uniform PushConstants {
+            int x;
+            int  y;
+            int  z;
+          } pcs;
+          layout (local_size_x = 1) in;
+          layout(set = 0, binding = 0) buffer a { int  pa[]; };
+          void main() {
+              pa[0] += pcs.x;
+              pa[1] += pcs.y;
+              pa[2] += pcs.z;
+          }
+    """)
+
+    mgr = kp.Manager()
+
+    tensor = mgr.tensor_t(np.array([0, 0, 0], dtype=np.int32))
+
+    spec_consts = np.array([], dtype=np.int32)
+    push_consts = np.array([-1, -1, -1], dtype=np.int32)
+
+    algo = mgr.algorithm_t([tensor], spirv, (1, 1, 1), spec_consts, push_consts)
+
+    (mgr.sequence()
+        .record(kp.OpTensorSyncDevice([tensor]))
+        .record(kp.OpAlgoDispatch(algo))
+        .record(kp.OpAlgoDispatch(algo, np.array([-1, -1, -1], dtype=np.int32)))
+        .record(kp.OpAlgoDispatch(algo, np.array([-1, -1, -1], dtype=np.int32)))
+        .record(kp.OpTensorSyncLocal([tensor]))
+        .eval())
+
+    assert np.all(tensor.data() == np.array([-3, -3, -3], dtype=np.int32))
 
 
 def test_workgroup():

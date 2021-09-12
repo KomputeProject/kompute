@@ -14,6 +14,31 @@ namespace py = pybind11;
 //used in Core.hpp
 py::object kp_debug, kp_info, kp_warning, kp_error;
 
+std::unique_ptr<kp::OpAlgoDispatch> opAlgoDispatchPyInit(
+                        std::shared_ptr<kp::Algorithm>& algorithm,
+                        const py::array& push_consts) {
+    const py::buffer_info info        = push_consts.request();
+    KP_LOG_DEBUG("Kompute Python Manager creating tensor_T with push_consts size {} dtype {}",
+            push_consts.size(), std::string(py::str(push_consts.dtype())));
+
+
+    if (push_consts.dtype() == py::dtype::of<std::float_t>()) {
+        std::vector<float> dataVec((float*)info.ptr, ((float*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else if (push_consts.dtype() == py::dtype::of<std::uint32_t>()) {
+        std::vector<uint32_t> dataVec((uint32_t*)info.ptr, ((uint32_t*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else if (push_consts.dtype() == py::dtype::of<std::int32_t>()) {
+        std::vector<int32_t> dataVec((int32_t*)info.ptr, ((int32_t*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else if (push_consts.dtype() == py::dtype::of<std::double_t>()) {
+        std::vector<double> dataVec((double*)info.ptr, ((double*)info.ptr) + info.size);
+        return std::unique_ptr<kp::OpAlgoDispatch>{new kp::OpAlgoDispatch(algorithm, dataVec)};
+    } else {
+        throw std::runtime_error("Kompute Python no valid dtype supported");
+    }
+}
+
 PYBIND11_MODULE(kp, m) {
 
     // The logging modules are used in the Kompute.hpp file
@@ -51,7 +76,10 @@ PYBIND11_MODULE(kp, m) {
             m, "OpAlgoDispatch", py::base<kp::OpBase>(), DOC(kp, OpAlgoDispatch))
         .def(py::init<const std::shared_ptr<kp::Algorithm>&,const kp::Constants&>(),
                 DOC(kp, OpAlgoDispatch, OpAlgoDispatch),
-                py::arg("algorithm"), py::arg("push_consts") = kp::Constants());
+                py::arg("algorithm"), py::arg("push_consts") = kp::Constants())
+        .def(py::init(&opAlgoDispatchPyInit),
+                DOC(kp, OpAlgoDispatch, OpAlgoDispatch),
+                py::arg("algorithm"), py::arg("push_consts"));
 
     py::class_<kp::OpMult, std::shared_ptr<kp::OpMult>>(
             m, "OpMult", py::base<kp::OpBase>(), DOC(kp, OpMult))
