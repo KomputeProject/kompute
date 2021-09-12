@@ -245,8 +245,8 @@ TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
       std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync)
         .count();
 
-    // The time should several orders of magnitude smaller (in this 10k instead of 1m ns)
-    EXPECT_LT(duration, 10000);
+    // The time should several orders of magnitude smaller (in this 100k instead of 1m ns)
+    EXPECT_LT(duration, 100000);
 
     sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });
     sq1->evalAwait();
