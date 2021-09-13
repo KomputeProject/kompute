@@ -42,6 +42,7 @@ Documentation Index (as per sidebar)
     Python Examples <overview/python-examples>
     C++ Examples <overview/advanced-examples>
     Android Mobile App Integration <overview/mobile-android>
+    Edge Device Raspberry Pi Mesa Drivers <overview/raspberry-pi>
     Game Engine Godot Integration <overview/game-engine-godot>
     Example Benchmark with Matrix Multiplication <overview/matmul-benchmark>
     Convolutional Neural Network (CNN) Simple Upscale <overview/convolutional-net>
