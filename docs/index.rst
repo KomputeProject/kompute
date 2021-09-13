@@ -33,8 +33,18 @@ Documentation Index (as per sidebar)
     :caption: Python Documentation:
 
     Python Package Overview <overview/python-package>
-    Python Examples <overview/python-examples>
     Python Class Documentation & Reference <overview/python-reference>
+
+.. toctree::
+    :titlesonly:
+    :caption: Examples:
+
+    Python Examples <overview/python-examples>
+    C++ Examples <overview/advanced-examples>
+    Android Mobile App Integration <overview/mobile-android>
+    Game Engine Godot Integration <overview/game-engine-godot>
+    Example Benchmark with Matrix Multiplication <overview/matmul-benchmark>
+    Convolutional Neural Network (CNN) Simple Upscale <overview/convolutional-net>
 
 .. toctree::
     :titlesonly:
@@ -43,7 +53,5 @@ Documentation Index (as per sidebar)
     CI, Docker Images Docs & Tests <overview/ci-tests>
     Variable Types for Tensors, and Push/Spec Constants <overview/variable-types>
     Asynchronous & Parallel Operations <overview/async-parallel>
-    Mobile App Integration (Android) <overview/mobile-android>
-    Game Engine Integration (Godot Engine) <overview/game-engine-godot>
     Code Index <genindex>
 

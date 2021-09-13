@@ -1,6 +1,62 @@
 # Changelog
 
-## [v0.7.0](https://github.com/KomputeProject/kompute/tree/v0.7.0)
+## [v0.8.0](https://github.com/KomputeProject/kompute/tree/v0.8.0)
+
+[Full Changelog](https://github.com/KomputeProject/kompute/compare/v0.7.0...v0.8.0)
+
+**Closed issues:**
+
+- Extend utils shader helpers in test for windows [\#240](https://github.com/KomputeProject/kompute/issues/240)
+- Python segfaults after import kp [\#230](https://github.com/KomputeProject/kompute/issues/230)
+- Simple and extended python examples do not work \(v 0.7.0\) [\#228](https://github.com/KomputeProject/kompute/issues/228)
+- Python macOS issue \(ImportError: dlopen\(...\): no suitable image found. Did find: ...: mach-o, but wrong architecture\)  [\#223](https://github.com/KomputeProject/kompute/issues/223)
+- Python macOS issue \(Symbol not found: \_\_PyThreadState\_Current ... Expected in: flat namespace\) [\#221](https://github.com/KomputeProject/kompute/issues/221)
+- Finalise Migration of Kompute into Linux Foundation [\#216](https://github.com/KomputeProject/kompute/issues/216)
+- CMake Error: Imported target "kompute::kompute" includes non-existent path "/usr/local/single\_include" [\#212](https://github.com/KomputeProject/kompute/issues/212)
+- Incompatibality inroduced with \#168 on Vulkan 1.1.x  [\#209](https://github.com/KomputeProject/kompute/issues/209)
+- external  libraries [\#201](https://github.com/KomputeProject/kompute/issues/201)
+- Starting slack group or discord for alternative / faster version of asking questions [\#198](https://github.com/KomputeProject/kompute/issues/198)
+- Test SingleSequenceRecord is not thread safe and fails in AMD card [\#196](https://github.com/KomputeProject/kompute/issues/196)
+- Update Kompute headers to reference the glslang headers for install vs build interfaces [\#193](https://github.com/KomputeProject/kompute/issues/193)
+- Integrate with GLSLang find\_package file when issue is resolved in the glslang repo [\#191](https://github.com/KomputeProject/kompute/issues/191)
+- Release 0.7.0 [\#187](https://github.com/KomputeProject/kompute/issues/187)
+- Get number of available devices [\#185](https://github.com/KomputeProject/kompute/issues/185)
+- Deep Learning Convolutional Neural Network \(CNN\) example implementation [\#162](https://github.com/KomputeProject/kompute/issues/162)
+- Create example compiling and running in raspberry pi with Mesa Vulkan drivers [\#131](https://github.com/KomputeProject/kompute/issues/131)
+- Add support for VK\_EXT\_debug\_utils labels [\#110](https://github.com/KomputeProject/kompute/issues/110)
+
+**Merged pull requests:**
+
+- Adding support for different types for spec and push consts [\#242](https://github.com/KomputeProject/kompute/pull/242) ([axsaucedo](https://github.com/axsaucedo))
+- Extend shader helper functions in tests to support windows  [\#241](https://github.com/KomputeProject/kompute/pull/241) ([axsaucedo](https://github.com/axsaucedo))
+- Increase test cov across codebase [\#239](https://github.com/KomputeProject/kompute/pull/239) ([axsaucedo](https://github.com/axsaucedo))
+- Updated collab link for C++ notebook [\#237](https://github.com/KomputeProject/kompute/pull/237) ([axsaucedo](https://github.com/axsaucedo))
+- Updating repo licenses and links [\#236](https://github.com/KomputeProject/kompute/pull/236) ([axsaucedo](https://github.com/axsaucedo))
+- Removing GLSLang as core dependency [\#235](https://github.com/KomputeProject/kompute/pull/235) ([axsaucedo](https://github.com/axsaucedo))
+- Naive matrice multiplication example [\#233](https://github.com/KomputeProject/kompute/pull/233) ([Corentin-pro](https://github.com/Corentin-pro))
+- Fixed typo in CMakeLists.txt \(ANDOID =\> ANDROID\) [\#232](https://github.com/KomputeProject/kompute/pull/232) ([Corentin-pro](https://github.com/Corentin-pro))
+- Set kp\_debug, kp\_info, kp\_warning and kp\_error to py::none\(\) when the program terminates. [\#231](https://github.com/KomputeProject/kompute/pull/231) ([thinking-tower](https://github.com/thinking-tower))
+- VGG7 Python example [\#227](https://github.com/KomputeProject/kompute/pull/227) ([20kdc](https://github.com/20kdc))
+- Add documentation for CMake flags [\#224](https://github.com/KomputeProject/kompute/pull/224) ([thinking-tower](https://github.com/thinking-tower))
+- Set PYTHON\_INCLUDE\_DIR and PYTHON\_LIBRARY during installation [\#222](https://github.com/KomputeProject/kompute/pull/222) ([thinking-tower](https://github.com/thinking-tower))
+- Removing xxd.exe binary and add instructions to build [\#220](https://github.com/KomputeProject/kompute/pull/220) ([axsaucedo](https://github.com/axsaucedo))
+- \[PYTHON\] Ensure numpy array increments refcount of tensor to keep valid  [\#219](https://github.com/KomputeProject/kompute/pull/219) ([axsaucedo](https://github.com/axsaucedo))
+- Added destroy for manager [\#218](https://github.com/KomputeProject/kompute/pull/218) ([axsaucedo](https://github.com/axsaucedo))
+- Revert "Fixed the issue that caused CMake to look for non-existent path after being installed" [\#217](https://github.com/KomputeProject/kompute/pull/217) ([axsaucedo](https://github.com/axsaucedo))
+- Fixed the issue that caused CMake to look for non-existent path after being installed [\#213](https://github.com/KomputeProject/kompute/pull/213) ([unexploredtest](https://github.com/unexploredtest))
+- omitted .data\(\) because it is incompatible with vulkan 1.1.x [\#211](https://github.com/KomputeProject/kompute/pull/211) ([unexploredtest](https://github.com/unexploredtest))
+- vkEnumeratePhysicalDevices\(\*\(this-\>mInstance\) ... doesn't work on Linux i386 [\#208](https://github.com/KomputeProject/kompute/pull/208) ([unexploredtest](https://github.com/unexploredtest))
+- Raises an error when having no/exceeding vulkan device's limit [\#207](https://github.com/KomputeProject/kompute/pull/207) ([unexploredtest](https://github.com/unexploredtest))
+- Updated README and fixed a syntax error on C++'s example [\#206](https://github.com/KomputeProject/kompute/pull/206) ([unexploredtest](https://github.com/unexploredtest))
+- removed the extra comma after KOMPUTE\_OPT\_REPO\_SUBMODULE\_BUILD [\#205](https://github.com/KomputeProject/kompute/pull/205) ([unexploredtest](https://github.com/unexploredtest))
+- Extending list\_devices test for multiple devices [\#204](https://github.com/KomputeProject/kompute/pull/204) ([axsaucedo](https://github.com/axsaucedo))
+- Fix \#include \<SPIRV/GlslangToSpv.h\> [\#200](https://github.com/KomputeProject/kompute/pull/200) ([unexploredtest](https://github.com/unexploredtest))
+- Added memory barrier on test [\#199](https://github.com/KomputeProject/kompute/pull/199) ([axsaucedo](https://github.com/axsaucedo))
+- Add function to list physical devices [\#195](https://github.com/KomputeProject/kompute/pull/195) ([axsaucedo](https://github.com/axsaucedo))
+- v0.7.0 release [\#189](https://github.com/KomputeProject/kompute/pull/189) ([axsaucedo](https://github.com/axsaucedo))
+- Add instructions for running on Pi4 [\#180](https://github.com/KomputeProject/kompute/pull/180) ([hpgmiskin](https://github.com/hpgmiskin))
+
+## [v0.7.0](https://github.com/KomputeProject/kompute/tree/v0.7.0) (2021-03-14)
 
 [Full Changelog](https://github.com/KomputeProject/kompute/compare/v0.6.0...v0.7.0)
 
@@ -33,8 +89,9 @@
 
 **Closed issues:**
 
+- Add ability to specify whether to build shared or static dependencies as well as option for Kompute lib [\#190](https://github.com/KomputeProject/kompute/issues/190)
 - Update memory barriers to align with tensor staging/primary memory revamp [\#181](https://github.com/KomputeProject/kompute/issues/181)
-- Move shader defaultResource inside kp_test_utils::Shader class [\#175](https://github.com/KomputeProject/kompute/issues/175)
+- Move shader defaultResource inside kp::Shader class [\#175](https://github.com/KomputeProject/kompute/issues/175)
 - Reach at least 90% code coverage on tests [\#170](https://github.com/KomputeProject/kompute/issues/170)
 - Add functionality to re-record sequence as now it's possible to update the underlying algorithm [\#169](https://github.com/KomputeProject/kompute/issues/169)
 - Use numpy arrays as default return value [\#166](https://github.com/KomputeProject/kompute/issues/166)
@@ -60,9 +117,9 @@
 - Too many warnings [\#183](https://github.com/KomputeProject/kompute/pull/183) ([alexander-g](https://github.com/alexander-g))
 - Add support for bool, double, int32, uint32 and float32 on Tensors via TensorT [\#177](https://github.com/KomputeProject/kompute/pull/177) ([axsaucedo](https://github.com/axsaucedo))
 - Support for Timestamping [\#176](https://github.com/KomputeProject/kompute/pull/176) ([alexander-g](https://github.com/alexander-g))
-- Test for ShaderResources [\#165](https://github.com/KomputeProject/kompute/pull/165) ([aliPMPAINT](https://github.com/aliPMPAINT))
+- Test for ShaderResources [\#165](https://github.com/KomputeProject/kompute/pull/165) ([unexploredtest](https://github.com/unexploredtest))
 - Amend memory hierarchy to enable for push constants and functional interface for more flexible operations [\#164](https://github.com/KomputeProject/kompute/pull/164) ([axsaucedo](https://github.com/axsaucedo))
-- made changes for include paths for complete installation [\#163](https://github.com/KomputeProject/kompute/pull/163) ([aliPMPAINT](https://github.com/aliPMPAINT))
+- made changes for include paths for complete installation [\#163](https://github.com/KomputeProject/kompute/pull/163) ([unexploredtest](https://github.com/unexploredtest))
 - Added dark mode on docs [\#157](https://github.com/KomputeProject/kompute/pull/157) ([axsaucedo](https://github.com/axsaucedo))
 - Glslang implementation for online shader compilation [\#154](https://github.com/KomputeProject/kompute/pull/154) ([axsaucedo](https://github.com/axsaucedo))
 - Adding test code coverage using gcov and lcov [\#149](https://github.com/KomputeProject/kompute/pull/149) ([axsaucedo](https://github.com/axsaucedo))
@@ -107,8 +164,8 @@
 
 - 122 remove spdlog references in python [\#123](https://github.com/KomputeProject/kompute/pull/123) ([axsaucedo](https://github.com/axsaucedo))
 - Native logging for Python [\#118](https://github.com/KomputeProject/kompute/pull/118) ([alexander-g](https://github.com/alexander-g))
-- Fixes for the c++ Simple and Extended examples in readme [\#108](https://github.com/KomputeProject/kompute/pull/108) ([aliPMPAINT](https://github.com/aliPMPAINT))
-- Fix building shaders on native linux [\#102](https://github.com/KomputeProject/kompute/pull/102) ([aliPMPAINT](https://github.com/aliPMPAINT))
+- Fixes for the c++ Simple and Extended examples in readme [\#108](https://github.com/KomputeProject/kompute/pull/108) ([unexploredtest](https://github.com/unexploredtest))
+- Fix building shaders on native linux [\#102](https://github.com/KomputeProject/kompute/pull/102) ([unexploredtest](https://github.com/unexploredtest))
 
 ## [v0.5.1](https://github.com/KomputeProject/kompute/tree/v0.5.1) (2020-11-12)
 
@@ -119,6 +176,7 @@
 - Remove the template params from OpAlgoBase for dispatch layout [\#57](https://github.com/KomputeProject/kompute/issues/57)
 - Enable layout to be configured dynamically within shaders [\#26](https://github.com/KomputeProject/kompute/issues/26)
 - replaced "static unsigned const" to "static const unsigned" to avoid SWIG parsing error. [\#95](https://github.com/KomputeProject/kompute/pull/95) ([0x0f0f0f](https://github.com/0x0f0f0f))
+- codespell spelling fixes [\#80](https://github.com/KomputeProject/kompute/pull/80) ([pH5](https://github.com/pH5))
 
 **Closed issues:**
 
@@ -154,7 +212,6 @@
 - Upgrade build to support VulkanHPP 1.2.154 \< 1.2.158 [\#82](https://github.com/KomputeProject/kompute/issues/82)
 - Add Android example for Kompute [\#23](https://github.com/KomputeProject/kompute/issues/23)
 - Fix compatibility for Vulkan HPP 1.2.155 and above [\#83](https://github.com/KomputeProject/kompute/pull/83) ([axsaucedo](https://github.com/axsaucedo))
-- codespell spelling fixes [\#80](https://github.com/KomputeProject/kompute/pull/80) ([pH5](https://github.com/pH5))
 
 **Closed issues:**
 
