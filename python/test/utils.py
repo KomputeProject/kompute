@@ -2,6 +2,7 @@ import os
 
 
 def compile_source(source):
-    os.system("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END\n" + source + "\nEND")
+    open("tmp_kp_shader.comp", "w").write(source)
+    os.system("glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv")
     return open("tmp_kp_shader.comp.spv", "rb").read()
 
