@@ -179,9 +179,9 @@ Manager::createInstance()
     };
     std::vector<std::string> envLayerNames;
     const char* envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
-    KP_LOG_DEBUG("Kompute Manager adding environment layers: {}",
-                 envLayerNamesVal);
     if (envLayerNamesVal != NULL && *envLayerNamesVal != '\0') {
+        KP_LOG_DEBUG("Kompute Manager adding environment layers: {}",
+                     envLayerNamesVal);
         std::istringstream iss(envLayerNamesVal);
         std::istream_iterator<std::string> beg(iss), end;
         envLayerNames = std::vector<std::string>(beg, end);
