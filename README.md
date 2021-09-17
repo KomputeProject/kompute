@@ -49,7 +49,7 @@
 
 ## Principles & Features
 
-* Low level extensible [C++ SDK](#your-first-kompute-c) with high level optimized [Python module](#your-first-kompute-python)
+* [Flexible Python module](#your-first-kompute-python) with [C++ SDK](#your-first-kompute-c) for optimizations
 * [Asynchronous & parallel processing](#asynchronous-and-parallel-operations) support through GPU family queues
 * [Mobile enabled](#mobile-enabled) with examples via Android NDK across several architectures
 * BYOV: [Bring-your-own-Vulkan design](#motivations) to play nice with existing Vulkan applications
