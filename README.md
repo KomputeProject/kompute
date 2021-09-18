@@ -165,6 +165,8 @@ The [Python package](https://kompute.cc/overview/python-package.html) provides a
 
 ```python
 
+from .utils import compile_source # using util function from test
+
 def kompute(shader):
     # 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
     mgr = kp.Manager()
@@ -187,7 +189,7 @@ def kompute(shader):
     push_consts_b = [3]
 
     # See documentation shader section for compile_source
-    spirv = kp.Shader.compile_source(shader)
+    spirv = compile_source(shader)
 
     algo = mgr.algorithm(params, spirv, workgroup, spec_consts, push_consts_a)
 
