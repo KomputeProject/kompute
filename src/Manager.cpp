@@ -384,7 +384,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     KP_LOG_DEBUG("Kompute Manager available extensions {}",
                  uniqueExtensionNames);
     std::vector<const char*> validExtensions;
-    for (std::string ext : desiredExtensions) {
+    for (const std::string& ext : desiredExtensions) {
         if (uniqueExtensionNames.count(ext) != 0) {
             validExtensions.push_back(ext.c_str());
         }
