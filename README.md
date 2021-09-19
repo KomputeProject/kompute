@@ -165,7 +165,7 @@ The [Python package](https://kompute.cc/overview/python-package.html) provides a
 
 ```python
 
-from .utils import compile_source # using util function from test
+from .utils import compile_source # using util function from python/test/utils
 
 def kompute(shader):
     # 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)
