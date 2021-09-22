@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">194</td>
+            <td class="headerCovTableEntry">193</td>
             <td class="headerCovTableEntry">218</td>
-            <td class="headerCovTableEntryMed">89.0 %</td>
+            <td class="headerCovTableEntryMed">88.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-09-13 23:15:02</td>
+            <td class="headerValue">2021-09-22 04:24:56</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">14</td>
@@ -241,9 +241,9 @@
 <span class="lineNum">     179 </span><span class="lineCov">         98 :     };</span>
 <span class="lineNum">     180 </span><span class="lineCov">         98 :     std::vector&lt;std::string&gt; envLayerNames;</span>
 <span class="lineNum">     181 </span><span class="lineCov">         49 :     const char* envLayerNamesVal = std::getenv(&quot;KOMPUTE_ENV_DEBUG_LAYERS&quot;);</span>
-<span class="lineNum">     182 </span><span class="lineCov">         49 :     KP_LOG_DEBUG(&quot;Kompute Manager adding environment layers: {}&quot;,</span>
-<span class="lineNum">     183 </span>            :                  envLayerNamesVal);
-<span class="lineNum">     184 </span><span class="lineCov">         49 :     if (envLayerNamesVal != NULL &amp;&amp; *envLayerNamesVal != '\0') {</span>
+<span class="lineNum">     182 </span><span class="lineCov">         49 :     if (envLayerNamesVal != NULL &amp;&amp; *envLayerNamesVal != '\0') {</span>
+<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Kompute Manager adding environment layers: {}&quot;,</span>
+<span class="lineNum">     184 </span>            :                      envLayerNamesVal);
 <span class="lineNum">     185 </span><span class="lineNoCov">          0 :         std::istringstream iss(envLayerNamesVal);</span>
 <span class="lineNum">     186 </span><span class="lineNoCov">          0 :         std::istream_iterator&lt;std::string&gt; beg(iss), end;</span>
 <span class="lineNum">     187 </span><span class="lineNoCov">          0 :         envLayerNames = std::vector&lt;std::string&gt;(beg, end);</span>
@@ -446,7 +446,7 @@
 <span class="lineNum">     384 </span><span class="lineCov">         49 :     KP_LOG_DEBUG(&quot;Kompute Manager available extensions {}&quot;,</span>
 <span class="lineNum">     385 </span>            :                  uniqueExtensionNames);
 <span class="lineNum">     386 </span><span class="lineCov">         98 :     std::vector&lt;const char*&gt; validExtensions;</span>
-<span class="lineNum">     387 </span><span class="lineCov">         49 :     for (std::string ext : desiredExtensions) {</span>
+<span class="lineNum">     387 </span><span class="lineCov">         49 :     for (const std::string&amp; ext : desiredExtensions) {</span>
 <span class="lineNum">     388 </span><span class="lineNoCov">          0 :         if (uniqueExtensionNames.count(ext) != 0) {</span>
 <span class="lineNum">     389 </span><span class="lineNoCov">          0 :             validExtensions.push_back(ext.c_str());</span>
 <span class="lineNum">     390 </span>            :         }

@@ -66,7 +66,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="C++ Examples" href="overview/advanced-examples.html" />
+    <link rel="next" title="Community Meetings, Channels &amp; Resources" href="overview/community.html" />
   
    
 
@@ -219,8 +219,20 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">C++ Documentation:</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="https://kompute.cc/" class="md-nav__link">Documentation Home</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="overview/community.html" class="md-nav__link">Community Meetings, Discord & Links</a>
       
     
     </li>
@@ -470,7 +482,7 @@
 <h3>The general purpose GPU compute framework for cross vendor graphics cards (AMD, Qualcomm, NVIDIA &amp; friends).</h3>
 </td>
 </tr>
-</table><h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU acceleration usecases.</h4><p>💬 <a class="reference external" href="https://discord.gg/ywjaBH6v24">Join the Discord for Questions / Chat</a> 🔋 <a class="reference external" href="https://kompute.cc">Documentation</a> 💻 <a class="reference external" href="https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a> ⌨ <a class="reference external" href="#more-examples">Examples</a> 💾</p>
+</table><h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU acceleration usecases.</h4><p>💬 <a class="reference external" href="https://kompute.cc/overview/community.html">Join the Discord &amp; Community Calls</a> 🔋 <a class="reference external" href="https://kompute.cc">Documentation</a> 💻 <a class="reference external" href="https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a> ⌨ <a class="reference external" href="#more-examples">Examples</a> 💾</p>
 <hr/>
 <h3 id="kompute-is-backed-by-the-linux-foundation-as-a-a-href-https-lfaidata-foundation-blog-2021-08-26-kompute-joins-lf-ai-data-as-new-sandbox-project-hosted-project-a-by-the-lf-ai-data-foundation">Kompute is backed by the Linux Foundation as a <span class="raw-html-m2r"><a href="https://lfaidata.foundation/blog/2021/08/26/kompute-joins-lf-ai-data-as-new-sandbox-project/">hosted project</a></span> by the LF AI &amp; Data Foundation.<a class="headerlink" href="#kompute-is-backed-by-the-linux-foundation-as-a-a-href-https-lfaidata-foundation-blog-2021-08-26-kompute-joins-lf-ai-data-as-new-sandbox-project-hosted-project-a-by-the-lf-ai-data-foundation" title="Permalink to this headline">¶</a></h3>
 <table>
@@ -491,13 +503,14 @@
 
 <h2 id="principles-features">Principles &amp; Features<a class="headerlink" href="#principles-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Low level extensible <a class="reference external" href="#your-first-kompute-c">C++ SDK</a> with high level optimized <a class="reference external" href="#your-first-kompute-python">Python module</a></p></li>
+<li><p><a class="reference external" href="#your-first-kompute-python">Flexible Python module</a> with <a class="reference external" href="#your-first-kompute-c">C++ SDK</a> for optimizations</p></li>
 <li><p><a class="reference external" href="#asynchronous-and-parallel-operations">Asynchronous &amp; parallel processing</a> support through GPU family queues</p></li>
 <li><p><a class="reference external" href="#mobile-enabled">Mobile enabled</a> with examples via Android NDK across several architectures</p></li>
 <li><p>BYOV: <a class="reference external" href="#motivations">Bring-your-own-Vulkan design</a> to play nice with existing Vulkan applications</p></li>
 <li><p>Explicit relationships for GPU and host <a class="reference external" href="https://kompute.cc/overview/memory-management.html">memory ownership and memory management</a></p></li>
 <li><p>Robust codebase with <a class="reference external" href="https://kompute.cc/codecov/">90% unit test code coverage</a></p></li>
 <li><p>Advanced use-cases on <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">machine learning 🤖</a>, <a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">mobile development 📱</a> and <a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">game development 🎮</a>.</p></li>
+<li><p>Active community with <a class="reference external" href="https://kompute.cc/overview/community.html">monthly calls, discord chat and more</a></p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif"><img alt="" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif"/></a>
 
@@ -594,7 +607,9 @@
 </pre></div>
 </div>
 <p>The <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python package</a> provides a <a class="reference external" href="https://kompute.cc/overview/python-reference.html">high level interactive interface</a> that enables for experimentation whilst ensuring high performance and fast development workflows.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">kompute</span><span class="p">(</span><span class="n">shader</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">compile_source</span> <span class="c1"># using util function from python/test/utils</span>
+
+<span class="k">def</span> <span class="nf">kompute</span><span class="p">(</span><span class="n">shader</span><span class="p">):</span>
     <span class="c1"># 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)</span>
     <span class="n">mgr</span> <span class="o">=</span> <span class="n">kp</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span>
 
@@ -616,7 +631,7 @@
     <span class="n">push_consts_b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
 
     <span class="c1"># See documentation shader section for compile_source</span>
-    <span class="n">spirv</span> <span class="o">=</span> <span class="n">kp</span><span class="o">.</span><span class="n">Shader</span><span class="o">.</span><span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
+    <span class="n">spirv</span> <span class="o">=</span> <span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
 
     <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">spirv</span><span class="p">,</span> <span class="n">workgroup</span><span class="p">,</span> <span class="n">spec_consts</span><span class="p">,</span> <span class="n">push_consts_a</span><span class="p">)</span>
 
@@ -887,8 +902,10 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 
 <h2 id="documentation-index-as-per-sidebar">Documentation Index (as per sidebar)<a class="headerlink" href="#documentation-index-as-per-sidebar" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">C++ Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://kompute.cc/">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/community.html">Community Meetings, Discord &amp; Links</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -945,12 +962,12 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="overview/advanced-examples.html" title="C++ Examples"
+            <a href="overview/community.html" title="Community Meetings, Channels &amp; Resources"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> C++ Examples </span>
+                class="md-footer-nav__direction"> Next </span> Community Meetings, Channels &amp; Resources </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
