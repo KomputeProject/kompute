@@ -4,24 +4,16 @@ Community Meetings, Channels & Resources
 
 This page has information and links to resources to join the Kompute community to ask questions as well as help further the cross-vendor GPU compute ecosystem.
 
-Discord Chat
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Join the Discord Channel
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you have any questions or would like to share thoughts you can `join the Discord via this link <https://discord.gg/ywjaBH6v24)>`_.
 
 
-Monthly GPU Acceleration Kompute Calls
+Join the Monthly GPU Acceleration Kompute Calls
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The Kompute Project team organises a monthly call for community members. During this call we cover updates on the project, as well as trends and key topics related to GPU acceleration.
-
-If you have any questions or ideas related to the Kompute project this is a fantastic forum to discuss them further so please feel free to join us - the information to join is below.
-
-
-Joining the call
-^^^^^^^^^^^^^^^^^^^^^
-
-We use Zoom for the conference calls. Details can found:
 
 * Date: Last Thursday of every month
 * Time: 9:00 EST / 13:00 UTC / 20:00 CST

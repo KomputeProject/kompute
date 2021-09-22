@@ -25,7 +25,7 @@
 
 <h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU acceleration usecases.</h4>
 
-💬 [Join the Discord for Questions / Chat](https://discord.gg/ywjaBH6v24) 🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
+💬 [Join the Discord & Community Calls](https://kompute.cc/overview/community.html) 🔋 [Documentation](https://kompute.cc) 💻 [Blog Post](https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a) ⌨ [Examples](#more-examples) 💾
 
 <hr>
 
@@ -56,6 +56,7 @@
 * Explicit relationships for GPU and host [memory ownership and memory management](https://kompute.cc/overview/memory-management.html)
 * Robust codebase with [90% unit test code coverage](https://kompute.cc/codecov/)
 * Advanced use-cases on [machine learning 🤖](https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a), [mobile development 📱](https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617) and [game development 🎮](https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0).
+* Active community with [monthly calls, discord chat and more](https://kompute.cc/overview/community.html)
 
 ![](https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif)
 
