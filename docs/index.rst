@@ -12,9 +12,11 @@ Documentation Index (as per sidebar)
 --------
 
 .. toctree::
-    :maxdepth: 0
+    :titlesonly:
+    :caption: C++ Documentation:
 
     Documentation Home <https://kompute.cc/>
+    Community Meetings, Discord & Links <overview/community>
 
 .. toctree::
     :titlesonly:
