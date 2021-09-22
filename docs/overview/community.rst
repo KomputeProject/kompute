@@ -1,6 +1,6 @@
 
-Kompute Community Resources
-======================================
+Kompute Community Meetings, Channels & Resources
+========================================================
 
 This page has information and links to resources to join the Kompute community to ask questions as well as help further the cross-vendor GPU compute ecosystem.
 
