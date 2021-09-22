@@ -15,6 +15,7 @@ Documentation Index (as per sidebar)
     :maxdepth: 0
 
     Documentation Home <https://kompute.cc/>
+    Community Meetings, Discord & Links <overview/community>
 
 .. toctree::
     :titlesonly:
