@@ -15,7 +15,7 @@ Join the Monthly GPU Acceleration Kompute Calls
 
 The Kompute Project team organises a monthly call for community members. During this call we cover updates on the project, as well as trends and key topics related to GPU acceleration.
 
-* Date: Last Thursday of every month
+* Date: Last Tuesday of every month
 * Time: 9:00 EST / 13:00 UTC / 20:00 CST
 * Meeting Agenda Document: `Link to Document <https://docs.google.com/document/d/1YTSuKw5L4Fo9kSIA0bn3DlqYIYkTNaVY6aC8YTHRbBE/edit>`_
 * Video Conference (Zoom): `Link in Main Document <https://docs.google.com/document/d/1YTSuKw5L4Fo9kSIA0bn3DlqYIYkTNaVY6aC8YTHRbBE/edit#heading=h.ujw7nzpghee8>`_
