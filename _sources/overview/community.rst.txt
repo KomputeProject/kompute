@@ -7,7 +7,7 @@ This page has information and links to resources to join the Kompute community t
 Join the Discord Channel
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you have any questions or would like to share thoughts you can `join the Discord via this link <https://discord.gg/ywjaBH6v24)>`_.
+If you have any questions or would like to share thoughts you can `join the Discord via this link <https://discord.gg/ywjaBH6v24>`_.
 
 
 Join the Monthly GPU Acceleration Kompute Calls
