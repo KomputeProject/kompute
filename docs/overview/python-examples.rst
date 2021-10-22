@@ -26,7 +26,7 @@ Then you can interact with it from your interpreter. Below is the same sample as
 
    sq = mgr.sequence()
 
-   sq.eval(OpTensorSyncLocal([tensor_in_a, tensor_in_b, tensor_out]))
+   sq.eval(OpTensorSyncDevice([tensor_in_a, tensor_in_b, tensor_out]))
 
    # Define the function via PyShader or directly as glsl string or spirv bytes
    @python2shader
@@ -37,11 +37,11 @@ Then you can interact with it from your interpreter. Below is the same sample as
        i = index.x
        data3[i] = data1[i] * data2[i]
 
-    algo = mgr.algorithm([tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
+   algo = mgr.algorithm([tensor_in_a, tensor_in_b, tensor_out], compute_shader_multiply.to_spirv())
 
    # Run shader operation synchronously
    sq.eval(OpAlgoDispatch(algo))
-   sq.eval(OpAlgoSyncLocal([tensor_out]))
+   sq.eval(OpTensorSyncLocal([tensor_out]))
 
    assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
 
