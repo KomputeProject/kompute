@@ -23,8 +23,8 @@ Algorithm::isInit()
 void
 Algorithm::destroy()
 {
-    // We don't have to free memory on destroy as it's freed by the commandBuffer destructor
-    // if (this->mPushConstantsData) {
+    // We don't have to free memory on destroy as it's freed by the
+    // commandBuffer destructor if (this->mPushConstantsData) {
     //     free(this->mPushConstantsData);
     // }
     // if (this->mSpecializationConstantsData) {
@@ -238,7 +238,8 @@ Algorithm::createPipeline()
     if (this->mPushConstantsSize) {
         pushConstantRange.setStageFlags(vk::ShaderStageFlagBits::eCompute);
         pushConstantRange.setOffset(0);
-        pushConstantRange.setSize(this->mPushConstantsDataTypeMemorySize * this->mPushConstantsSize);
+        pushConstantRange.setSize(this->mPushConstantsDataTypeMemorySize *
+                                  this->mPushConstantsSize);
 
         pipelineLayoutInfo.setPushConstantRangeCount(1);
         pipelineLayoutInfo.setPPushConstantRanges(&pushConstantRange);
@@ -254,7 +255,8 @@ Algorithm::createPipeline()
     for (uint32_t i = 0; i < this->mSpecializationConstantsSize; i++) {
         vk::SpecializationMapEntry specializationEntry(
           static_cast<uint32_t>(i),
-          static_cast<uint32_t>(this->mSpecializationConstantsDataTypeMemorySize * i),
+          static_cast<uint32_t>(
+            this->mSpecializationConstantsDataTypeMemorySize * i),
           this->mSpecializationConstantsDataTypeMemorySize);
 
         specializationEntries.push_back(specializationEntry);
@@ -265,7 +267,8 @@ Algorithm::createPipeline()
     vk::SpecializationInfo specializationInfo(
       static_cast<uint32_t>(specializationEntries.size()),
       specializationEntries.data(),
-      this->mSpecializationConstantsDataTypeMemorySize * this->mSpecializationConstantsSize,
+      this->mSpecializationConstantsDataTypeMemorySize *
+        this->mSpecializationConstantsSize,
       this->mSpecializationConstantsData);
 
     vk::PipelineShaderStageCreateInfo shaderStage(
@@ -339,12 +342,14 @@ Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
 {
     if (this->mPushConstantsSize) {
         KP_LOG_DEBUG("Kompute Algorithm binding push constants memory size: {}",
-                     this->mPushConstantsSize * this->mPushConstantsDataTypeMemorySize);
+                     this->mPushConstantsSize *
+                       this->mPushConstantsDataTypeMemorySize);
 
         commandBuffer.pushConstants(*this->mPipelineLayout,
                                     vk::ShaderStageFlagBits::eCompute,
                                     0,
-                                    this->mPushConstantsSize * this->mPushConstantsDataTypeMemorySize,
+                                    this->mPushConstantsSize *
+                                      this->mPushConstantsDataTypeMemorySize,
                                     this->mPushConstantsData);
     }
 }

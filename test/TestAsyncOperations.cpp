@@ -168,8 +168,10 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
 
     // AMD Drivers in Windows may see an error in this line due to timeout.
     // In order to fix this, it requires a change on Windows registries.
-    // More details on this can be found here: https://docs.substance3d.com/spdoc/gpu-drivers-crash-with-long-computations-128745489.html
-    // Context on solution discussed in github: https://github.com/KomputeProject/kompute/issues/196#issuecomment-808866505
+    // More details on this can be found here:
+    // https://docs.substance3d.com/spdoc/gpu-drivers-crash-with-long-computations-128745489.html
+    // Context on solution discussed in github:
+    // https://github.com/KomputeProject/kompute/issues/196#issuecomment-808866505
     sq1->evalAsync<kp::OpAlgoDispatch>(algo1);
     sq2->evalAsync<kp::OpAlgoDispatch>(algo2);
 
@@ -232,8 +234,10 @@ TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
 
     // AMD Drivers in Windows may see an error in this line due to timeout.
     // In order to fix this, it requires a change on Windows registries.
-    // More details on this can be found here: https://docs.substance3d.com/spdoc/gpu-drivers-crash-with-long-computations-128745489.html
-    // Context on solution discussed in github: https://github.com/KomputeProject/kompute/issues/196#issuecomment-808866505
+    // More details on this can be found here:
+    // https://docs.substance3d.com/spdoc/gpu-drivers-crash-with-long-computations-128745489.html
+    // Context on solution discussed in github:
+    // https://github.com/KomputeProject/kompute/issues/196#issuecomment-808866505
     sq1->evalAsync<kp::OpAlgoDispatch>(algo1);
     sq2->evalAsync<kp::OpAlgoDispatch>(algo2);
 
@@ -245,7 +249,8 @@ TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
       std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync)
         .count();
 
-    // The time should several orders of magnitude smaller (in this 100k instead of 1m ns)
+    // The time should several orders of magnitude smaller (in this 100k instead
+    // of 1m ns)
     EXPECT_LT(duration, 100000);
 
     sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });

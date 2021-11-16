@@ -24,12 +24,13 @@ class Algorithm
      *  @param spirv (optional) The spirv code to use to create the algorithm
      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-     *  @param specializationConstants (optional) The templatable param is to be used to
-     * initialize the specialization constants which cannot be changed once set.
-     *  @param pushConstants (optional) This templatable param is to be used when
-     * initializing the pipeline, which set the size of the push constants -
-     * these can be modified but all new values must have the same data type and length
-     * as otherwise it will result in errors.
+     *  @param specializationConstants (optional) The templatable param is to be
+     * used to initialize the specialization constants which cannot be changed
+     * once set.
+     *  @param pushConstants (optional) This templatable param is to be used
+     * when initializing the pipeline, which set the size of the push constants
+     * - these can be modified but all new values must have the same data type
+     * and length as otherwise it will result in errors.
      */
     template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
@@ -44,15 +45,20 @@ class Algorithm
         this->mDevice = device;
 
         if (tensors.size() && spirv.size()) {
-            KP_LOG_INFO("Kompute Algorithm initialising with tensor size: {} and "
-                        "spirv size: {}",
-                        tensors.size(),
-                        spirv.size());
-            this->rebuild(
-              tensors, spirv, workgroup, specializationConstants, pushConstants);
+            KP_LOG_INFO(
+              "Kompute Algorithm initialising with tensor size: {} and "
+              "spirv size: {}",
+              tensors.size(),
+              spirv.size());
+            this->rebuild(tensors,
+                          spirv,
+                          workgroup,
+                          specializationConstants,
+                          pushConstants);
         } else {
-            KP_LOG_INFO("Kompute Algorithm constructor with empty tensors and or "
-                        "spirv so not rebuilding vulkan components");
+            KP_LOG_INFO(
+              "Kompute Algorithm constructor with empty tensors and or "
+              "spirv so not rebuilding vulkan components");
         }
     }
 
@@ -64,8 +70,9 @@ class Algorithm
      *  @param spirv The spirv code to use to create the algorithm
      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-     *  @param specializationConstants (optional) The std::vector<float> to use to
-     * initialize the specialization constants which cannot be changed once set.
+     *  @param specializationConstants (optional) The std::vector<float> to use
+     * to initialize the specialization constants which cannot be changed once
+     * set.
      *  @param pushConstants (optional) The std::vector<float> to use when
      * initializing the pipeline, which set the size of the push constants -
      * these can be modified but all new values must have the same vector size
@@ -87,11 +94,14 @@ class Algorithm
             if (this->mSpecializationConstantsData) {
                 free(this->mSpecializationConstantsData);
             }
-            uint32_t memorySize = sizeof(decltype(specializationConstants.back()));
+            uint32_t memorySize =
+              sizeof(decltype(specializationConstants.back()));
             uint32_t size = specializationConstants.size();
             uint32_t totalSize = size * memorySize;
             this->mSpecializationConstantsData = malloc(totalSize);
-            memcpy(this->mSpecializationConstantsData, specializationConstants.data(), totalSize);
+            memcpy(this->mSpecializationConstantsData,
+                   specializationConstants.data(),
+                   totalSize);
             this->mSpecializationConstantsDataTypeMemorySize = memorySize;
             this->mSpecializationConstantsSize = size;
         }
@@ -109,11 +119,11 @@ class Algorithm
             this->mPushConstantsSize = size;
         }
 
-        this->setWorkgroup(workgroup,
-                           this->mTensors.size() ? this->mTensors[0]->size() : 1);
+        this->setWorkgroup(
+          workgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
 
-        // Descriptor pool is created first so if available then destroy all before
-        // rebuild
+        // Descriptor pool is created first so if available then destroy all
+        // before rebuild
         if (this->isInit()) {
             this->destroy();
         }
@@ -176,9 +186,9 @@ class Algorithm
      * Sets the push constants to the new value provided to use in the next
      * bindPush()
      *
-     * @param pushConstants The templatable vector is to be used to set the push constants to use in the
-     * next bindPush(...) calls. The constants provided must be of the same size
-     * as the ones created during initialization.
+     * @param pushConstants The templatable vector is to be used to set the push
+     * constants to use in the next bindPush(...) calls. The constants provided
+     * must be of the same size as the ones created during initialization.
      */
     template<typename T>
     void setPushConstants(const std::vector<T>& pushConstants)
@@ -193,21 +203,24 @@ class Algorithm
      * Sets the push constants to the new value provided to use in the next
      * bindPush() with the raw memory block location and memory size to be used.
      *
-     * @param data The raw data point to copy the data from, without modifying the pointer.
+     * @param data The raw data point to copy the data from, without modifying
+     * the pointer.
      * @param size The number of data elements provided in the data
      * @param memorySize The memory size of each of the data elements in bytes.
      */
-    void setPushConstants(void* data, uint32_t size, uint32_t memorySize) {
+    void setPushConstants(void* data, uint32_t size, uint32_t memorySize)
+    {
 
         uint32_t totalSize = memorySize * size;
-        uint32_t previousTotalSize = this->mPushConstantsDataTypeMemorySize * this->mPushConstantsSize;
+        uint32_t previousTotalSize =
+          this->mPushConstantsDataTypeMemorySize * this->mPushConstantsSize;
 
         if (totalSize != previousTotalSize) {
-            throw std::runtime_error(
-              fmt::format("Kompute Algorithm push "
-                          "constant total memory size provided is {} but expected {} bytes",
-                          totalSize,
-                          previousTotalSize));
+            throw std::runtime_error(fmt::format(
+              "Kompute Algorithm push "
+              "constant total memory size provided is {} but expected {} bytes",
+              totalSize,
+              previousTotalSize));
         }
         if (this->mPushConstantsData) {
             free(this->mPushConstantsData);
@@ -230,13 +243,15 @@ class Algorithm
     /**
      * Gets the specialization constants of the current algorithm.
      *
-     * @returns The std::vector<float> currently set for specialization constants
+     * @returns The std::vector<float> currently set for specialization
+     * constants
      */
     template<typename T>
     const std::vector<T> getSpecializationConstants()
     {
         return { (T*)this->mSpecializationConstantsData,
-            ((T*)this->mSpecializationConstantsData) + this->mSpecializationConstantsSize };
+                 ((T*)this->mSpecializationConstantsData) +
+                   this->mSpecializationConstantsSize };
     }
     /**
      * Gets the specialization constants of the current algorithm.
@@ -247,7 +262,7 @@ class Algorithm
     const std::vector<T> getPushConstants()
     {
         return { (T*)this->mPushConstantsData,
-            ((T*)this->mPushConstantsData) + this->mPushConstantsSize };
+                 ((T*)this->mPushConstantsData) + this->mPushConstantsSize };
     }
     /**
      * Gets the current tensors that are used in the algorithm.
