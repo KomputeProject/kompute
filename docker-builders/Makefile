@@ -16,4 +16,3 @@ build_vulkan_sdk:
 
 push_vulkan_sdk: build_vulkan_sdk
 	docker push axsauze/vulkan-sdk:0.1
-
