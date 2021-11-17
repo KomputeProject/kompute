@@ -53,11 +53,8 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
     std::vector<float> pushConstsA({ 2.0 });
     std::vector<float> pushConstsB({ 3.0 });
 
-    auto algorithm = mgr.algorithm(params,
-                                   compileSource(shader),
-                                   workgroup,
-                                   specConsts,
-                                   pushConstsA);
+    auto algorithm = mgr.algorithm(
+      params, compileSource(shader), workgroup, specConsts, pushConstsA);
 
     // 3. Run operation with string shader synchronously
     mgr.sequence()
@@ -97,11 +94,11 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
     {
         // A sharedMemoryBarrier is required as the shader is not thread-safe:w
         std::shared_ptr<kp::OpMemoryBarrier> shaderBarrier{
-                  new kp::OpMemoryBarrier({ tensorA },
-                  vk::AccessFlagBits::eTransferRead,
-                  vk::AccessFlagBits::eShaderWrite,
-                  vk::PipelineStageFlagBits::eComputeShader,
-                  vk::PipelineStageFlagBits::eComputeShader)
+            new kp::OpMemoryBarrier({ tensorA },
+                                    vk::AccessFlagBits::eTransferRead,
+                                    vk::AccessFlagBits::eShaderWrite,
+                                    vk::PipelineStageFlagBits::eComputeShader,
+                                    vk::PipelineStageFlagBits::eComputeShader)
         };
 
         mgr.sequence()
@@ -266,11 +263,8 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmUtilFunctions)
     std::vector<float> specConsts({ 2 });
     std::vector<float> pushConsts({ 2.0 });
 
-    auto algorithm = mgr.algorithm(params,
-                                   compileSource(shader),
-                                   workgroup,
-                                   specConsts,
-                                   pushConsts);
+    auto algorithm = mgr.algorithm(
+      params, compileSource(shader), workgroup, specConsts, pushConsts);
 
     EXPECT_EQ(algorithm->getWorkgroup(), workgroup);
     EXPECT_EQ(algorithm->getPushConstants<float>(), pushConsts);

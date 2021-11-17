@@ -31,4 +31,3 @@ jobs:
       run: |
         export VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
         make mk_run_tests
-

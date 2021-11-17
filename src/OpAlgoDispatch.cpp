@@ -33,9 +33,9 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 
     if (this->mPushConstantsSize) {
         this->mAlgorithm->setPushConstants(
-                this->mPushConstantsData,
-                this->mPushConstantsSize,
-                this->mPushConstantsDataTypeMemorySize);
+          this->mPushConstantsData,
+          this->mPushConstantsSize,
+          this->mPushConstantsDataTypeMemorySize);
     }
 
     this->mAlgorithm->recordBindCore(commandBuffer);

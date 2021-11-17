@@ -57,4 +57,3 @@ Documentation Index (as per sidebar)
     Variable Types for Tensors, and Push/Spec Constants <overview/variable-types>
     Asynchronous & Parallel Operations <overview/async-parallel>
     Code Index <genindex>
-

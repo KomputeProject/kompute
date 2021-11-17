@@ -124,8 +124,9 @@ class Manager
     }
 
     /**
-     * Default non-template function that can be used to create algorithm objects
-     * which provides default types to the push and spec constants as floats.
+     * Default non-template function that can be used to create algorithm
+     * objects which provides default types to the push and spec constants as
+     * floats.
      *
      * @param tensors (optional) The tensors to initialise the algorithm with
      * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
@@ -144,7 +145,8 @@ class Manager
       const std::vector<float>& specializationConstants = {},
       const std::vector<float>& pushConstants = {})
     {
-        return this->algorithm<>(tensors, spirv, workgroup, specializationConstants, pushConstants);
+        return this->algorithm<>(
+          tensors, spirv, workgroup, specializationConstants, pushConstants);
     }
 
     /**
@@ -155,10 +157,10 @@ class Manager
      * @param spirv (optional) The SPIRV bytes for the algorithm to dispatch
      * @param workgroup (optional) kp::Workgroup for algorithm to use, and
      * defaults to (tensor[0].size(), 1, 1)
-     * @param specializationConstants (optional) templatable vector parameter to use for
-     * specialization constants, and defaults to an empty constant
-     * @param pushConstants (optional) templatable vector parameter to use for push constants,
-     * and defaults to an empty constant
+     * @param specializationConstants (optional) templatable vector parameter to
+     * use for specialization constants, and defaults to an empty constant
+     * @param pushConstants (optional) templatable vector parameter to use for
+     * push constants, and defaults to an empty constant
      * @returns Shared pointer with initialised algorithm
      */
     template<typename S = float, typename P = float>
@@ -200,7 +202,8 @@ class Manager
     /**
      * Information about the current device.
      *
-     * @return vk::PhysicalDeviceProperties containing information about the device
+     * @return vk::PhysicalDeviceProperties containing information about the
+     *device
      **/
     vk::PhysicalDeviceProperties getDeviceProperties() const;
 
@@ -210,7 +213,6 @@ class Manager
      * @return vector of physical devices containing their respective properties
      **/
     std::vector<vk::PhysicalDevice> listDevices() const;
-
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES

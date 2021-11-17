@@ -87,7 +87,8 @@ TEST(TestManager, TestClearDestroy)
     {
         std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
         std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
-        std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
+        std::shared_ptr<kp::TensorT<float>> tensorOutput =
+          mgr.tensor({ 0, 0, 0 });
 
         std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
                                                             tensorRHS,

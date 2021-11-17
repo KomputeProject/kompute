@@ -33,7 +33,8 @@ TEST(TestTensor, DataTypes)
     {
         std::vector<uint32_t> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<uint32_t>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(), kp::Tensor::TensorDataTypes::eUnsignedInt);
+        EXPECT_EQ(tensor->dataType(),
+                  kp::Tensor::TensorDataTypes::eUnsignedInt);
     }
 
     {
