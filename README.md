@@ -16,7 +16,7 @@
 <td>
 
 <h1>Kompute</h1>
-<h3>The general purpose GPU compute framework for cross vendor graphics cards (AMD, Qualcomm, NVIDIA & friends).</h3>
+<h3>The general purpose GPU compute framework for cross vendor graphics cards (AMD, Qualcomm, NVIDIA & friends)</h3>
 
 </td>
 
