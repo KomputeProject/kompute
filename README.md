@@ -2,7 +2,7 @@
 ![GitHub](https://img.shields.io/badge/Version-0.7.0-green.svg)
 ![GitHub](https://img.shields.io/badge/C++-14—20-purple.svg)
 ![GitHub](https://img.shields.io/badge/Build-cmake-red.svg)
-![GitHub](https://img.shields.io/badge/Python-3.5—3.9-blue.svg)
+![GitHub](https://img.shields.io/badge/Python-3.7—3.9-blue.svg)
 ![GitHub](https://img.shields.io/badge/License-Apache-black.svg)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4834/badge)](https://bestpractices.coreinfrastructure.org/projects/4834)
 
