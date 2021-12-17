@@ -64,7 +64,7 @@
 
 Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.
 
-You can [join the Discord](https://discord.gg/ywjaBH6v24) for questions/discussion, open a [github issue](https://github.com/KomputeProject/kompute/issues/new), or read [the documentation](https://kompute.cc/).
+You can [join the Discord](https://discord.gg/ywjaBH6v24) for questions / discussion, open a [github issue](https://github.com/KomputeProject/kompute/issues/new), or read [the documentation](https://kompute.cc/).
 
 ### Your First Kompute (C++)
 
