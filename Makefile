@@ -1,4 +1,3 @@
-
 # This makefile is optimized to be run from WSL and to interact with the 
 # Windows host as there are limitations when building GPU programs. This
 # makefile contains the commands for interacting with the visual studio

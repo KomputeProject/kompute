@@ -9,4 +9,3 @@ WORKDIR /workspace
 COPY . /workspace
 
 RUN make build_linux
-
