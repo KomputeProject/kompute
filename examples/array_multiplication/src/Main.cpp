@@ -51,7 +51,7 @@ int main()
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA, tensorInB, tensorOut };
 
-    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, kp_test_utils::compileSource(shader));
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, compileSource(shader));
 
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
