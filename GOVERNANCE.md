@@ -4,14 +4,14 @@ Kompute is an Open Source project within the [LF AI & Data Foundation](https://l
 
 ### Technical Steering Committee
 
-Horovod development is governed by the Kompute Technical Steering Committee (TSC). The TSC consists of voting and
+Kompute development is governed by the Kompute Technical Steering Committee (TSC). The TSC consists of voting and
 non-voting members, in addition to a chairman responsible for running TSC meetings, setting the meeting agenda, and
 calling votes on proposals.
 
-Current chairman of the Horovod TSC:
+Current chairperson of the Kompute TSC:
 * [Alejandro Saucedo](https://github.com/axsaucedo/) - The Institute for Ethical AI & Machine Learning
 
-Current voting members of the Horovod TSC:
+Current voting members of the Kompute TSC:
 * [Alejandro Saucedo](https://github.com/axsaucedo/) - The Institute for Ethical AI & Machine Learning
 * [Donald Whyte](https://github.com/DonaldWhyte) - Donsoft Limited
 
