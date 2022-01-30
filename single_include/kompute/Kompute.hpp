@@ -1795,7 +1795,7 @@ class OpMult : public OpAlgoDispatch
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
         if (tensors.size() != 3) {
-            throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + std::to_string(tensors.size()));
+            throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
         }
 
         std::vector<uint32_t> spirv(
