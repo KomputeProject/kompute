@@ -5,11 +5,15 @@
 
 #include "kompute/Kompute.hpp"
 
-static std::vector<uint32_t>
+static
+std::vector<uint32_t>
 compileSource(
   const std::string& source)
 {
-    if (system(std::string("glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv << END\n" + source + "\nEND").c_str()))
+    std::ofstream fileOut("tmp_kp_shader.comp");
+	fileOut << source;
+	fileOut.close();
+    if (system(std::string("glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv").c_str()))
         throw std::runtime_error("Error running glslangValidator command");
     std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
     std::vector<char> buffer;
@@ -51,7 +55,7 @@ int main()
 
     std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA, tensorInB, tensorOut };
 
-    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, kp_test_utils::compileSource(shader));
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, compileSource(shader));
 
     mgr.sequence()
         ->record<kp::OpTensorSyncDevice>(params)
