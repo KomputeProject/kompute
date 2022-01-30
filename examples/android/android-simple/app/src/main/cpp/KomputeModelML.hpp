@@ -21,8 +21,8 @@ public:
     std::vector<float> get_params();
 
 private:
-    std::shared_ptr<kp::Tensor> mWeights;
-    std::shared_ptr<kp::Tensor> mBias;
+    std::vector<float> mWeights;
+    std::vector<float> mBias;
 
 };
 
