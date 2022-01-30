@@ -23,37 +23,38 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
     {
         kp::Manager mgr;
 
-        std::shared_ptr<kp::Tensor> xI = mgr.tensor(xIData);
-        std::shared_ptr<kp::Tensor> xJ = mgr.tensor(xJData);
+        std::shared_ptr<kp::TensorT<float>> xI = mgr.tensor(xIData);
+        std::shared_ptr<kp::TensorT<float>> xJ = mgr.tensor(xJData);
 
-        std::shared_ptr<kp::Tensor> y = mgr.tensor(yData);
+        std::shared_ptr<kp::TensorT<float>> y = mgr.tensor(yData);
 
-        std::shared_ptr<kp::Tensor> wIn = mgr.tensor({ 0.001, 0.001 });
-        std::shared_ptr<kp::Tensor> wOutI = mgr.tensor(zerosData);
-        std::shared_ptr<kp::Tensor> wOutJ = mgr.tensor(zerosData);
+        std::shared_ptr<kp::TensorT<float>> wIn = mgr.tensor({ 0.001, 0.001 });
+        std::shared_ptr<kp::TensorT<float>> wOutI = mgr.tensor(zerosData);
+        std::shared_ptr<kp::TensorT<float>> wOutJ = mgr.tensor(zerosData);
 
-        std::shared_ptr<kp::Tensor> bIn = mgr.tensor({ 0 });
-        std::shared_ptr<kp::Tensor> bOut = mgr.tensor(zerosData);
+        std::shared_ptr<kp::TensorT<float>> bIn = mgr.tensor({ 0 });
+        std::shared_ptr<kp::TensorT<float>> bOut = mgr.tensor(zerosData);
 
-        std::shared_ptr<kp::Tensor> lOut = mgr.tensor(zerosData);
+        std::shared_ptr<kp::TensorT<float>> lOut = mgr.tensor(zerosData);
 
         std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
                                                             wIn, wOutI, wOutJ,
                                                             bIn, bOut,  lOut };
 
-        std::vector<uint32_t> spirv(
-                    (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-                    (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
-                        + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
+        std::vector<uint32_t> spirv = std::vector<uint32_t>(
+                (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+                (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv +
+                        kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
 
-        std::shared_ptr<kp::Algorithm> algo =
-                mgr.algorithm(params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
+
+        std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm(
+                params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
 
         mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
         std::shared_ptr<kp::Sequence> sq = mgr.sequence()
             ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
-            ->record<kp::OpAlgoDispatch>(algo)
+            ->record<kp::OpAlgoDispatch>(algorithm)
             ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
         // Iterate across all expected iterations
@@ -73,12 +74,15 @@ void KomputeModelML::train(std::vector<float> yData, std::vector<float> xIData, 
         KP_LOG_INFO("{}", wIn->data()[1]);
         KP_LOG_INFO("{}", bIn->data()[0]);
 
-        this->mWeights = wIn;
-        this->mBias = bIn;
+        this->mWeights = wIn->vector();
+        this->mBias = bIn->vector();
     }
 }
 
 std::vector<float> KomputeModelML::predict(std::vector<float> xI, std::vector<float> xJ) {
+
+    KP_LOG_INFO("Running prediction inference");
+
     assert(xI.size() == xJ.size());
 
     std::vector<float> retVector;
@@ -89,28 +93,33 @@ std::vector<float> KomputeModelML::predict(std::vector<float> xI, std::vector<fl
     for (size_t i = 0; i < xI.size(); i++) {
         float xIVal = xI[i];
         float xJVal = xJ[i];
-        float result = (xIVal * this->mWeights->data()[0]
-                        + xJVal * this->mWeights->data()[1]
-                        + this->mBias->data()[0]);
+        float result = (xIVal * this->mWeights[0]
+                        + xJVal * this->mWeights[1]
+                        + this->mBias[0]);
 
         // Instead of using sigmoid we'll just return full numbers
         float var = result > 0 ? 1 : 0;
         retVector.push_back(var);
     }
 
+    KP_LOG_INFO("Inference finalised");
+
     return retVector;
 }
 
 std::vector<float> KomputeModelML::get_params() {
+
+    KP_LOG_INFO("Displaying results");
+
     std::vector<float> retVector;
 
-    if(this->mWeights->size() + this->mBias->size() == 0) {
+    if(this->mWeights.size() + this->mBias.size() == 0) {
         return retVector;
     }
 
-    retVector.push_back(this->mWeights->data()[0]);
-    retVector.push_back(this->mWeights->data()[1]);
-    retVector.push_back(this->mBias->data()[0]);
+    retVector.push_back(this->mWeights[0]);
+    retVector.push_back(this->mWeights[1]);
+    retVector.push_back(this->mBias[0]);
     retVector.push_back(99.0);
 
     return retVector;

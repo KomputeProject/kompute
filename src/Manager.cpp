@@ -290,8 +290,9 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     this->mFreeDevice = true;
 
     // Getting an integer that says how many vuklan devices we have
-    uint32_t deviceCount = 0;
-    this->mInstance->enumeratePhysicalDevices(&deviceCount, nullptr);
+    std::vector<vk::PhysicalDevice> physicalDevices =
+            this->mInstance->enumeratePhysicalDevices();
+    uint32_t deviceCount = physicalDevices.size();
 
     // This means there are no devices at all
     if (deviceCount == 0) {
@@ -307,9 +308,6 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
         throw std::runtime_error("There is no such physical index or device, "
                                  "please use your existing device");
     }
-
-    std::vector<vk::PhysicalDevice> physicalDevices =
-      this->mInstance->enumeratePhysicalDevices();
 
     vk::PhysicalDevice physicalDevice = physicalDevices[physicalDeviceIndex];
 
