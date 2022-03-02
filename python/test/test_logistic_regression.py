@@ -100,4 +100,3 @@ def test_logistic_regression():
     assert tensor_w_in.data()[0] > 0.0
     assert tensor_w_in.data()[1] > 1.5
     assert tensor_b_in.data()[0] < 0.7
-

@@ -284,4 +284,3 @@ def test_mgr_utils():
 
     assert len(devices) > 0
     assert "device_name" in devices[0]
-

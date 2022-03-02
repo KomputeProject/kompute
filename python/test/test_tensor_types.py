@@ -230,4 +230,3 @@ def test_tensor_numpy_ownership():
     m.destroy()
 
     assert td.base.is_init() == False
-
