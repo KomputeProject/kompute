@@ -200,7 +200,7 @@ Algorithm::createParameters()
                                             nullptr);
     }
 
-    KP_LOG_DEBUG("Kompue Algorithm successfully run init");
+    KP_LOG_DEBUG("Kompute Algorithm successfully run init");
 }
 
 void
