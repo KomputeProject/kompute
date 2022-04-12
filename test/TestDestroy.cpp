@@ -36,8 +36,7 @@ TEST(TestDestroy, TestDestroyTensorSingle)
 
             // Sync values to and from device
             mgr.sequence()
-            ->eval<kp::OpTensorSyncDevice>(algo->getTensors())
-            ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
+            ->eval<kp::OpTensorSyncDevice>(algo->getTensors());
 
             EXPECT_EQ(tensorA->vector(), initialValues);
 
