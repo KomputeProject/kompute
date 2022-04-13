@@ -1,11 +1,48 @@
 # Changelog
 
-## [v0.8.0](https://github.com/KomputeProject/kompute/tree/v0.8.0)
+## [v0.8.1](https://github.com/KomputeProject/kompute/tree/v0.8.1)
+
+[Full Changelog](https://github.com/KomputeProject/kompute/compare/v0.8.0...v0.8.1)
+
+**Closed issues:**
+
+- Discord link in README and docs is broken [\#276](https://github.com/KomputeProject/kompute/issues/276)
+- Website examples typo's and 6500 XT unknown GPU [\#275](https://github.com/KomputeProject/kompute/issues/275)
+- \[Question\] How to disable all log ? [\#274](https://github.com/KomputeProject/kompute/issues/274)
+- full diagram 404 [\#271](https://github.com/KomputeProject/kompute/issues/271)
+- Error when enabling `KOMPUTE\_ENABLE\_SPDLOG` [\#268](https://github.com/KomputeProject/kompute/issues/268)
+- Add KOMPUTE\_LOG\_ACTIVE\_LEVEL instead of current SPDLOG\_ACTIVE\_LEVEL [\#267](https://github.com/KomputeProject/kompute/issues/267)
+- Update/Fix Android project [\#264](https://github.com/KomputeProject/kompute/issues/264)
+- Update compileSource function in examples/docs to correct one [\#261](https://github.com/KomputeProject/kompute/issues/261)
+- Technically can Kompute be modified to support data visualization? [\#260](https://github.com/KomputeProject/kompute/issues/260)
+- Data-transfer for Integrated GPU [\#258](https://github.com/KomputeProject/kompute/issues/258)
+- Python "getting started" example fails [\#252](https://github.com/KomputeProject/kompute/issues/252)
+- Python example in README doesn't work [\#248](https://github.com/KomputeProject/kompute/issues/248)
+- Running Android app [\#234](https://github.com/KomputeProject/kompute/issues/234)
+
+**Merged pull requests:**
+
+- Added active log level definitions for kompute [\#280](https://github.com/KomputeProject/kompute/pull/280) ([axsaucedo](https://github.com/axsaucedo))
+- Fix TestDestroy.TestDestroyTensorSingle [\#279](https://github.com/KomputeProject/kompute/pull/279) ([ScheissSchiesser](https://github.com/ScheissSchiesser))
+- Updated discord link [\#277](https://github.com/KomputeProject/kompute/pull/277) ([axsaucedo](https://github.com/axsaucedo))
+- style\(src/Algorithm\): fix typo [\#273](https://github.com/KomputeProject/kompute/pull/273) ([tpoisonooo](https://github.com/tpoisonooo))
+- Fix Android Example confirmed with blog post steps [\#266](https://github.com/KomputeProject/kompute/pull/266) ([axsaucedo](https://github.com/axsaucedo))
+- Adding Governance with TSC charter [\#263](https://github.com/KomputeProject/kompute/pull/263) ([axsaucedo](https://github.com/axsaucedo))
+- Updating array\_mutiplication example to work correctly [\#262](https://github.com/KomputeProject/kompute/pull/262) ([axsaucedo](https://github.com/axsaucedo))
+- Updated formatting [\#257](https://github.com/KomputeProject/kompute/pull/257) ([axsaucedo](https://github.com/axsaucedo))
+- Fix first two python examples in the docs [\#256](https://github.com/KomputeProject/kompute/pull/256) ([lopuhin](https://github.com/lopuhin))
+- Remove nonexisting "single\_include" from INSTALL\_INTERFACE [\#254](https://github.com/KomputeProject/kompute/pull/254) ([ItsBasi](https://github.com/ItsBasi))
+- Added community page [\#253](https://github.com/KomputeProject/kompute/pull/253) ([axsaucedo](https://github.com/axsaucedo))
+- Updated readme to reflect shader utils [\#249](https://github.com/KomputeProject/kompute/pull/249) ([axsaucedo](https://github.com/axsaucedo))
+- Avoid using pointers to temporary copies of desired extensions. [\#247](https://github.com/KomputeProject/kompute/pull/247) ([ItsBasi](https://github.com/ItsBasi))
+
+## [v0.8.0](https://github.com/KomputeProject/kompute/tree/v0.8.0) (2021-09-16)
 
 [Full Changelog](https://github.com/KomputeProject/kompute/compare/v0.7.0...v0.8.0)
 
 **Closed issues:**
 
+- An unset KOMPUTE\_ENV\_DEBUG\_LAYERS leads KP\_LOG\_DEBUG to pass envLayerNamesVal==nullptr along to fmt, which rejects that due to "string pointer is null". [\#245](https://github.com/KomputeProject/kompute/issues/245)
 - Extend utils shader helpers in test for windows [\#240](https://github.com/KomputeProject/kompute/issues/240)
 - Python segfaults after import kp [\#230](https://github.com/KomputeProject/kompute/issues/230)
 - Simple and extended python examples do not work \(v 0.7.0\) [\#228](https://github.com/KomputeProject/kompute/issues/228)
@@ -27,13 +64,15 @@
 
 **Merged pull requests:**
 
+- Fix for null debug log causing exception in fmt lib [\#246](https://github.com/KomputeProject/kompute/pull/246) ([axsaucedo](https://github.com/axsaucedo))
+- 0.8.0 Release  [\#244](https://github.com/KomputeProject/kompute/pull/244) ([axsaucedo](https://github.com/axsaucedo))
 - Adding support for different types for spec and push consts [\#242](https://github.com/KomputeProject/kompute/pull/242) ([axsaucedo](https://github.com/axsaucedo))
 - Extend shader helper functions in tests to support windows  [\#241](https://github.com/KomputeProject/kompute/pull/241) ([axsaucedo](https://github.com/axsaucedo))
 - Increase test cov across codebase [\#239](https://github.com/KomputeProject/kompute/pull/239) ([axsaucedo](https://github.com/axsaucedo))
 - Updated collab link for C++ notebook [\#237](https://github.com/KomputeProject/kompute/pull/237) ([axsaucedo](https://github.com/axsaucedo))
 - Updating repo licenses and links [\#236](https://github.com/KomputeProject/kompute/pull/236) ([axsaucedo](https://github.com/axsaucedo))
 - Removing GLSLang as core dependency [\#235](https://github.com/KomputeProject/kompute/pull/235) ([axsaucedo](https://github.com/axsaucedo))
-- Naive matrice multiplication example [\#233](https://github.com/KomputeProject/kompute/pull/233) ([Corentin-pro](https://github.com/Corentin-pro))
+- Matrix multiplication example showcasing iterative improvements in performance [\#233](https://github.com/KomputeProject/kompute/pull/233) ([Corentin-pro](https://github.com/Corentin-pro))
 - Fixed typo in CMakeLists.txt \(ANDOID =\> ANDROID\) [\#232](https://github.com/KomputeProject/kompute/pull/232) ([Corentin-pro](https://github.com/Corentin-pro))
 - Set kp\_debug, kp\_info, kp\_warning and kp\_error to py::none\(\) when the program terminates. [\#231](https://github.com/KomputeProject/kompute/pull/231) ([thinking-tower](https://github.com/thinking-tower))
 - VGG7 Python example [\#227](https://github.com/KomputeProject/kompute/pull/227) ([20kdc](https://github.com/20kdc))
@@ -176,7 +215,6 @@
 - Remove the template params from OpAlgoBase for dispatch layout [\#57](https://github.com/KomputeProject/kompute/issues/57)
 - Enable layout to be configured dynamically within shaders [\#26](https://github.com/KomputeProject/kompute/issues/26)
 - replaced "static unsigned const" to "static const unsigned" to avoid SWIG parsing error. [\#95](https://github.com/KomputeProject/kompute/pull/95) ([0x0f0f0f](https://github.com/0x0f0f0f))
-- codespell spelling fixes [\#80](https://github.com/KomputeProject/kompute/pull/80) ([pH5](https://github.com/pH5))
 
 **Closed issues:**
 
@@ -195,7 +233,6 @@
 
 - Adding Python package for Kompute [\#87](https://github.com/KomputeProject/kompute/issues/87)
 - Python shader extension [\#91](https://github.com/KomputeProject/kompute/pull/91) ([axsaucedo](https://github.com/axsaucedo))
-- Enhanced python build [\#89](https://github.com/KomputeProject/kompute/pull/89) ([axsaucedo](https://github.com/axsaucedo))
 - Added python bindings with kp as python module  [\#88](https://github.com/KomputeProject/kompute/pull/88) ([axsaucedo](https://github.com/axsaucedo))
 
 **Closed issues:**
@@ -211,7 +248,9 @@
 
 - Upgrade build to support VulkanHPP 1.2.154 \< 1.2.158 [\#82](https://github.com/KomputeProject/kompute/issues/82)
 - Add Android example for Kompute [\#23](https://github.com/KomputeProject/kompute/issues/23)
+- Enhanced python build [\#89](https://github.com/KomputeProject/kompute/pull/89) ([axsaucedo](https://github.com/axsaucedo))
 - Fix compatibility for Vulkan HPP 1.2.155 and above [\#83](https://github.com/KomputeProject/kompute/pull/83) ([axsaucedo](https://github.com/axsaucedo))
+- codespell spelling fixes [\#80](https://github.com/KomputeProject/kompute/pull/80) ([pH5](https://github.com/pH5))
 
 **Closed issues:**
 
