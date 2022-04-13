@@ -23,20 +23,34 @@ This by default configures without any of the extra build tasks (such as buildin
      - This is the path for your package manager if you use it such as vcpkg
    * - -DKOMPUTE_OPT_BUILD_TESTS=1
      - Enable if you wish to build and run the tests (must have deps installed.
+   * - -DKOMPUTE_OPT_CODE_COVERAGE=1
+     - Enable if you wish to build and run code coverage (must have deps installed which are limited to Windows platform)
    * - -DKOMPUTE_OPT_BUILD_DOCS=1
      - Enable if you wish to build the docs (must have docs deps installed)
+   * - -DKOMPUTE_OPT_BUILD_SHADERS=1
+     - Enable if you wish to build the shaders into header files (must have docs deps installed)
    * - -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1
      - Option to build the single header file using "quom" utility
-   * - -DKOMPUTE_EXTRA_CXX_FLAGS="..."
-     - Allows you to pass extra config flags to compiler
    * - -DKOMPUTE_OPT_INSTALL=0
      - Disables the install step in the cmake file (useful for android build)
+   * - -DKOMPUTE_OPT_BUILD_PYTHON=1
+     - Enable to build python bindings (used internally for python package)
+   * - -DKOMPUTE_OPT_ENABLE_SPDLOG=1
+     - Enable to compile with spdlog as the internal logging framework
+   * - -DKOMPUTE_OPT_LOG_LEVEL=1
+     - Provides configuration option for log level 0-7 (debug, info, warn, etc)
+   * - -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1
+     - Use the submodule repos instead of external packages / manager
    * - -DKOMPUTE_OPT_ANDROID_BUILD=1
      - Enables android build which includes and excludes relevant libraries
+   * - -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=1
+     - Explicitly disables debug layers even when on debug mode
    * - -DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=1
      - Ensures dependencies are referenced as shared libraries for kompute install
    * - -DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=1
      - Whether to build Kompute as shared lib instead of static
+   * - -DKOMPUTE_EXTRA_CXX_FLAGS="..."
+     - Allows you to pass extra config flags to compiler
 
 
 Compile Flags
@@ -57,10 +71,10 @@ Compile Flags
      - Minor version to use for the Vulkan SDK
    * - -DKOMPUTE_ENABLE_SPDLOG=1
      - Enables the build with SPDLOG and FMT dependencies (must be installed)
-   * - -DKOMPUTE_LOG_VERRIDE=1
+   * - -DKOMPUTE_LOG_OVERRIDE=1
      - Does not define the SPDLOG_\ :raw-html-m2r:`<LEVEL>` macros if these are to be overridden
-   * - -DSPDLOG_ACTIVE_LEVEL
-     - The level for the log level on compile level (whether spdlog is enabled)
+   * - -DKOMPUTE_LOG_LEVEL
+     - The level for the log level on compile level (also sets spdlog level if enabled)
    * - -DVVK_USE_PLATFORM_ANDROID_KHR
      - Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)
    * - -DRELEASE=1

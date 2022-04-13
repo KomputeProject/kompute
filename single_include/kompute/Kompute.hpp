@@ -620,13 +620,28 @@ typedef std::vector<float> Constants;
       KOMPUTE_VK_API_MAJOR_VERSION, KOMPUTE_VK_API_MINOR_VERSION, 0)
 #endif // KOMPUTE_VK_API_VERSION
 
-// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
-#ifndef SPDLOG_ACTIVE_LEVEL
+// Defining kompute log levels analogous to spdlog log levels
+#define KOMPUTE_LOG_LEVEL_TRACE 0
+#define KOMPUTE_LOG_LEVEL_DEBUG 1
+#define KOMPUTE_LOG_LEVEL_INFO 2
+#define KOMPUTE_LOG_LEVEL_WARN 3
+#define KOMPUTE_LOG_LEVEL_ERROR 4
+#define KOMPUTE_LOG_LEVEL_CRITICAL 5
+#define KOMPUTE_LOG_LEVEL_OFF 6
+
+#ifndef KOMPUTE_LOG_LEVEL
 #if DEBUG
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#define KOMPUTE_LOG_LEVEL KOMPUTE_LOG_LEVEL_DEBUG
 #else
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_INFO
+#define KOMPUTE_LOG_LEVEL KOMPUTE_LOG_LEVEL_INFO
 #endif
+#endif // KOMPUTE_LOG_LEVEL
+
+// SPDLOG_ACTIVE_LEVEL must be defined before spdlog.h import
+// It is recommended that it's set via KOMPUTE_LOG_LEVEL
+// but if required it can be set directly as override
+#ifndef SPDLOG_ACTIVE_LEVEL
+#define SPDLOG_ACTIVE_LEVEL KOMPUTE_LOG_LEVEL
 #endif
 
 #if defined(KOMPUTE_BUILD_PYTHON)
@@ -645,7 +660,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
 #define KP_LOG_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
 #else
 #include <iostream>
-#if SPDLOG_ACTIVE_LEVEL > 1
+#if KOMPUTE_LOG_LEVEL > 1
 #define KP_LOG_DEBUG(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -663,9 +678,9 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 1
+#endif // KOMPUTE_LOG_LEVEL > 1
 
-#if SPDLOG_ACTIVE_LEVEL > 2
+#if KOMPUTE_LOG_LEVEL > 2
 #define KP_LOG_INFO(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -683,9 +698,9 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 2
+#endif // KOMPUTE_LOG_LEVEL > 2
 
-#if SPDLOG_ACTIVE_LEVEL > 3
+#if KOMPUTE_LOG_LEVEL > 3
 #define KP_LOG_WARN(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -703,9 +718,9 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 3
+#endif // KOMPUTE_LOG_LEVEL > 3
 
-#if SPDLOG_ACTIVE_LEVEL > 4
+#if KOMPUTE_LOG_LEVEL > 4
 #define KP_LOG_ERROR(...)
 #else
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
@@ -723,7 +738,7 @@ extern py::object kp_debug, kp_info, kp_warning, kp_error;
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
 #endif // VK_USE_PLATFORM_ANDROID_KHR
-#endif // SPDLOG_ACTIVE_LEVEL > 4
+#endif // KOMPUTE_LOG_LEVEL > 4
 #endif // KOMPUTE_SPDLOG_ENABLED
 #endif // KOMPUTE_LOG_OVERRIDE
 
