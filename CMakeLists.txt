@@ -18,7 +18,6 @@ option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
 # Build options
 option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" 0)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Enable to compile with spdlog as the internal logging framework" 0)
-option(KOMPUTE_OPT_LOG_LEVEL "Provides configuration option for log level 0-7 (debug, info, warn, etc)" -1)
 option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD "Use the submodule repos instead of external package manager" 0)
 option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" 0)
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
@@ -26,11 +25,6 @@ option(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS "Whether to use shared libraries for
 option(KOMPUTE_OPT_BUILD_AS_SHARED_LIB "Whether to build kompute as shared library" 0)
 # Build flags
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
-
-# If kompute log level greater or equal to 0 then set flag
-if(NOT (KOMPUTE_OPT_LOG_LEVEL LESS 0))
-    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_LOG_LEVEL=${KOMPUTE_OPT_LOG_LEVEL}")
-endif()
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_ENABLE_SPDLOG=1")

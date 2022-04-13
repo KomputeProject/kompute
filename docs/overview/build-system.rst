@@ -37,8 +37,6 @@ This by default configures without any of the extra build tasks (such as buildin
      - Enable to build python bindings (used internally for python package)
    * - -DKOMPUTE_OPT_ENABLE_SPDLOG=1
      - Enable to compile with spdlog as the internal logging framework
-   * - -DKOMPUTE_OPT_LOG_LEVEL=1
-     - Provides configuration option for log level 0-7 (debug, info, warn, etc)
    * - -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1
      - Use the submodule repos instead of external packages / manager
    * - -DKOMPUTE_OPT_ANDROID_BUILD=1
