@@ -1,49 +1,59 @@
 /* summator.cpp */
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include "KomputeSummator.hpp"
 
-static
-std::vector<uint32_t>
-compileSource(
-  const std::string& source)
+static std::vector<uint32_t>
+compileSource(const std::string& source)
 {
     std::ofstream fileOut("tmp_kp_shader.comp");
-	fileOut << source;
-	fileOut.close();
-    if (system(std::string("glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv").c_str()))
+    fileOut << source;
+    fileOut.close();
+    if (system(
+          std::string(
+            "glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv")
+            .c_str()))
         throw std::runtime_error("Error running glslangValidator command");
     std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
     std::vector<char> buffer;
-    buffer.insert(buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
-    return {(uint32_t*)buffer.data(), (uint32_t*)(buffer.data() + buffer.size())};
+    buffer.insert(
+      buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
+    return { (uint32_t*)buffer.data(),
+             (uint32_t*)(buffer.data() + buffer.size()) };
 }
-
 
 namespace godot {
 
-KomputeSummator::KomputeSummator() {
+KomputeSummator::KomputeSummator()
+{
     std::cout << "CALLING CONSTRUCTOR" << std::endl;
     this->_init();
 }
 
-void KomputeSummator::add(float value) {
+void
+KomputeSummator::add(float value)
+{
     // Set the new data in the local device
-    this->mSecondaryTensor->setData({value});
+    this->mSecondaryTensor->setData({ value });
     // Execute recorded sequence
     this->mSequence->eval();
 }
 
-void KomputeSummator::reset() {
-}
+void
+KomputeSummator::reset()
+{}
 
-float KomputeSummator::get_total() const {
+float
+KomputeSummator::get_total() const
+{
     return this->mPrimaryTensor->data()[0];
 }
 
-void KomputeSummator::_init() {
+void
+KomputeSummator::_init()
+{
     std::cout << "CALLING INIT" << std::endl;
     this->mPrimaryTensor = this->mManager.tensor({ 0.0 });
     this->mSecondaryTensor = this->mManager.tensor({ 0.0 });
@@ -70,33 +80,34 @@ void KomputeSummator::_init() {
         // First we ensure secondary tensor loads to GPU
         // No need to sync the primary tensor as it should not be changed
         this->mSequence->record<kp::OpTensorSyncDevice>(
-                { this->mSecondaryTensor });
+          { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
         this->mSequence->record<kp::OpAlgoCreate>(
-            { this->mPrimaryTensor, this->mSecondaryTensor }, 
-            compileSource(shader));
+          { this->mPrimaryTensor, this->mSecondaryTensor },
+          compileSource(shader));
 
-        // We map the result back to local 
+        // We map the result back to local
         this->mSequence->record<kp::OpTensorSyncLocal>(
-                { this->mPrimaryTensor });
+          { this->mPrimaryTensor });
 
         this->mSequence->end();
     }
 }
 
-void KomputeSummator::_process(float delta) {
+void
+KomputeSummator::_process(float delta)
+{}
 
+void
+KomputeSummator::_register_methods()
+{
+    register_method((char*)"_process", &KomputeSummator::_process);
+    register_method((char*)"_init", &KomputeSummator::_init);
+
+    register_method((char*)"add", &KomputeSummator::add);
+    register_method((char*)"reset", &KomputeSummator::reset);
+    register_method((char*)"get_total", &KomputeSummator::get_total);
 }
 
-void KomputeSummator::_register_methods() {
-    register_method((char *)"_process", &KomputeSummator::_process);
-    register_method((char *)"_init", &KomputeSummator::_init);
-
-    register_method((char *)"add", &KomputeSummator::add);
-    register_method((char *)"reset", &KomputeSummator::reset);
-    register_method((char *)"get_total", &KomputeSummator::get_total);
 }
-
-}
-

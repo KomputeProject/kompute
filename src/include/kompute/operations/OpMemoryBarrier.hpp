@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include "kompute/Core.hpp"
 #include "kompute/Algorithm.hpp"
+#include "kompute/Core.hpp"
 #include "kompute/Tensor.hpp"
 #include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 
 /**
- * Operation that provides a general abstraction that simplifies the use of 
+ * Operation that provides a general abstraction that simplifies the use of
  * algorithm and parameter components which can be used with shaders.
  * It exposes the pipeline barrier functionality specifically for memory
  * barriers that can be configured through the respective source and destination
@@ -18,29 +18,32 @@ namespace kp {
 class OpMemoryBarrier : public OpBase
 {
   public:
-
     /**
-     * Constructor that stores tensors as well as memory barrier parameters to be
-     * used to create a pipeline barrier on the respective primary or staging tensor.
+     * Constructor that stores tensors as well as memory barrier parameters to
+     * be used to create a pipeline barrier on the respective primary or staging
+     * tensor.
      *
      * @param tensors The tensors to apply the memory barriers on
      * @param srcAccessMask The kp::AccessFlagBits for the source access mask
-     * @param dstAccessMask The kp::AccessFlagBits for the destination access mask
-     * @param srcStageMask The kp::PipelineStageFlagBits for the source stage mask
-     * @param dstStageMask The kp::PipelineStageFlagBits for the destination stage mask
-     * @param barrierOnPrimary Boolean to select primary or secondary buffers on tensors
+     * @param dstAccessMask The kp::AccessFlagBits for the destination access
+     * mask
+     * @param srcStageMask The kp::PipelineStageFlagBits for the source stage
+     * mask
+     * @param dstStageMask The kp::PipelineStageFlagBits for the destination
+     * stage mask
+     * @param barrierOnPrimary Boolean to select primary or secondary buffers on
+     * tensors
      */
-    OpMemoryBarrier(
-            const std::vector<std::shared_ptr<Tensor>>& tensors,
-            const vk::AccessFlagBits& srcAccessMask,
-            const vk::AccessFlagBits& dstAccessMask,
-            const vk::PipelineStageFlagBits& srcStageMask,
-            const vk::PipelineStageFlagBits& dstStageMask,
-            bool barrierOnPrimary = true);
+    OpMemoryBarrier(const std::vector<std::shared_ptr<Tensor>>& tensors,
+                    const vk::AccessFlagBits& srcAccessMask,
+                    const vk::AccessFlagBits& dstAccessMask,
+                    const vk::PipelineStageFlagBits& srcStageMask,
+                    const vk::PipelineStageFlagBits& dstStageMask,
+                    bool barrierOnPrimary = true);
 
     /**
-     * Default destructor, which is in charge of destroying the reference to the tensors
-     * and all the relevant access / stage masks created
+     * Default destructor, which is in charge of destroying the reference to the
+     * tensors and all the relevant access / stage masks created
      */
     virtual ~OpMemoryBarrier() override;
 
@@ -66,7 +69,7 @@ class OpMemoryBarrier : public OpBase
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
-private:
+  private:
     const vk::AccessFlagBits mSrcAccessMask;
     const vk::AccessFlagBits mDstAccessMask;
     const vk::PipelineStageFlagBits mSrcStageMask;
@@ -76,4 +79,3 @@ private:
 };
 
 } // End namespace kp
-

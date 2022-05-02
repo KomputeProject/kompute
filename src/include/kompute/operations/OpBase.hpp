@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include "kompute/Algorithm.hpp"
 #include "kompute/Core.hpp"
 #include "kompute/Tensor.hpp"
-#include "kompute/Algorithm.hpp"
 
 namespace kp {
 
@@ -18,16 +18,12 @@ namespace kp {
 class OpBase
 {
   public:
-
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
      * always be called to destroy and free owned resources unless it is
      * intended to destroy the resources in the parent class.
      */
-    virtual ~OpBase()
-    {
-        KP_LOG_DEBUG("Kompute OpBase destructor started");
-    }
+    virtual ~OpBase() { KP_LOG_DEBUG("Kompute OpBase destructor started"); }
 
     /**
      * The record function is intended to only send a record command or run
@@ -39,24 +35,24 @@ class OpBase
     virtual void record(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
-     * Pre eval is called before the Sequence has called eval and submitted the commands to
-     * the GPU for processing, and can be used to perform any per-eval setup steps
-     * required as the computation iteration begins. It's worth noting that 
-     * there are situations where eval can be called multiple times, so the 
-     * resources that are created should be idempotent in case it's called multiple
-     * times in a row.
+     * Pre eval is called before the Sequence has called eval and submitted the
+     * commands to the GPU for processing, and can be used to perform any
+     * per-eval setup steps required as the computation iteration begins. It's
+     * worth noting that there are situations where eval can be called multiple
+     * times, so the resources that are created should be idempotent in case
+     * it's called multiple times in a row.
      *
      * @param commandBuffer The command buffer to record the command into.
      */
     virtual void preEval(const vk::CommandBuffer& commandBuffer) = 0;
 
     /**
-     * Post eval is called after the Sequence has called eval and submitted the commands to
-     * the GPU for processing, and can be used to perform any tear-down steps
-     * required as the computation iteration finishes. It's worth noting that 
-     * there are situations where eval can be called multiple times, so the 
-     * resources that are destroyed should not require a re-init unless explicitly
-     * provided by the user.
+     * Post eval is called after the Sequence has called eval and submitted the
+     * commands to the GPU for processing, and can be used to perform any
+     * tear-down steps required as the computation iteration finishes. It's
+     * worth noting that there are situations where eval can be called multiple
+     * times, so the resources that are destroyed should not require a re-init
+     * unless explicitly provided by the user.
      *
      * @param commandBuffer The command buffer to record the command into.
      */

@@ -2,28 +2,30 @@
 #ifndef KOMPUTEMODELML_HPP
 #define KOMPUTEMODELML_HPP
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "kompute/Kompute.hpp"
 
-class KomputeModelML {
+class KomputeModelML
+{
 
-public:
+  public:
     KomputeModelML();
     virtual ~KomputeModelML();
 
-    void train(std::vector<float> yData, std::vector<float> xIData, std::vector<float> xJData);
+    void train(std::vector<float> yData,
+               std::vector<float> xIData,
+               std::vector<float> xJData);
 
     std::vector<float> predict(std::vector<float> xI, std::vector<float> xJ);
 
     std::vector<float> get_params();
 
-private:
+  private:
     std::vector<float> mWeights;
     std::vector<float> mBias;
-
 };
 
 static std::string LR_SHADER = R"(
@@ -83,4 +85,4 @@ void main() {
 }
 )";
 
-#endif //ANDROID_SIMPLE_KOMPUTEMODELML_HPP
+#endif // ANDROID_SIMPLE_KOMPUTEMODELML_HPP

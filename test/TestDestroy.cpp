@@ -27,16 +27,15 @@ TEST(TestDestroy, TestDestroyTensorSingle)
         {
             kp::Manager mgr;
 
-            const std::vector<float> initialValues = {0.0f, 0.0f, 0.0f};
+            const std::vector<float> initialValues = { 0.0f, 0.0f, 0.0f };
 
             tensorA = mgr.tensor(initialValues);
 
             std::shared_ptr<kp::Algorithm> algo =
-              mgr.algorithm({tensorA}, spirv);
+              mgr.algorithm({ tensorA }, spirv);
 
             // Sync values to and from device
-            mgr.sequence()
-            ->eval<kp::OpTensorSyncDevice>(algo->getTensors());
+            mgr.sequence()->eval<kp::OpTensorSyncDevice>(algo->getTensors());
 
             EXPECT_EQ(tensorA->vector(), initialValues);
 
@@ -45,7 +44,7 @@ TEST(TestDestroy, TestDestroyTensorSingle)
               ->eval()
               ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
 
-            const std::vector<float> expectedFinalValues = {1.0f, 1.0f, 1.0f};
+            const std::vector<float> expectedFinalValues = { 1.0f, 1.0f, 1.0f };
             EXPECT_EQ(tensorA->vector(), expectedFinalValues);
 
             tensorA->destroy();

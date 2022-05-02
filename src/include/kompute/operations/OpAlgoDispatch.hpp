@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include "kompute/Core.hpp"
 #include "kompute/Algorithm.hpp"
+#include "kompute/Core.hpp"
 #include "kompute/Tensor.hpp"
 #include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 
 /**
- * Operation that provides a general abstraction that simplifies the use of 
+ * Operation that provides a general abstraction that simplifies the use of
  * algorithm and parameter components which can be used with shaders.
  * By default it enables the user to provide a dynamic number of tensors
  * which are then passed as inputs.
@@ -17,7 +17,6 @@ namespace kp {
 class OpAlgoDispatch : public OpBase
 {
   public:
-
     /**
      * Constructor that stores the algorithm to use as well as the relevant
      * push constants to override when recording.
@@ -27,7 +26,7 @@ class OpAlgoDispatch : public OpBase
      */
     template<typename T = float>
     OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
-            const std::vector<T>& pushConstants = {})
+                   const std::vector<T>& pushConstants = {})
     {
         KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
@@ -76,7 +75,7 @@ class OpAlgoDispatch : public OpBase
      */
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
-private:
+  private:
     // -------------- ALWAYS OWNED RESOURCES
     std::shared_ptr<Algorithm> mAlgorithm;
     void* mPushConstantsData = nullptr;
@@ -85,4 +84,3 @@ private:
 };
 
 } // End namespace kp
-

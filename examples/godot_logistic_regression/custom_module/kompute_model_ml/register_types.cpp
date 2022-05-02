@@ -2,13 +2,17 @@
 
 #include "register_types.h"
 
-#include "core/class_db.h"
 #include "KomputeModelMLNode.h"
+#include "core/class_db.h"
 
-void register_kompute_model_ml_types() {
+void
+register_kompute_model_ml_types()
+{
     ClassDB::register_class<KomputeModelMLNode>();
 }
 
-void unregister_kompute_model_ml_types() {
-   // Nothing to do here in this example.
+void
+unregister_kompute_model_ml_types()
+{
+    // Nothing to do here in this example.
 }

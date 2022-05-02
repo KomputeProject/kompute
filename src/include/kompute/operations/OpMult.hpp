@@ -21,7 +21,6 @@ namespace kp {
 class OpMult : public OpAlgoDispatch
 {
   public:
-
     /**
      * Default constructor with parameters that provides the bare minimum
      * requirements for the operations to be able to create and manage their
@@ -31,19 +30,21 @@ class OpMult : public OpAlgoDispatch
      * @param algorithm An algorithm that will be overridden with the OpMult
      * shader data and the tensors provided which are expected to be 3
      */
-    OpMult(std::vector<std::shared_ptr<Tensor>> tensors, std::shared_ptr<Algorithm> algorithm)
-        : OpAlgoDispatch(algorithm)
+    OpMult(std::vector<std::shared_ptr<Tensor>> tensors,
+           std::shared_ptr<Algorithm> algorithm)
+      : OpAlgoDispatch(algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
         if (tensors.size() != 3) {
-            throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
+            throw std::runtime_error(
+              "Kompute OpMult expected 3 tensors but got " + tensors.size());
         }
 
         std::vector<uint32_t> spirv(
           (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
           (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
-            kp::shader_data::shaders_glsl_opmult_comp_spv_len));
+                      kp::shader_data::shaders_glsl_opmult_comp_spv_len));
 
         algorithm->rebuild<>(tensors, spirv);
     }
@@ -52,7 +53,8 @@ class OpMult : public OpAlgoDispatch
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    virtual ~OpMult() override {
+    virtual ~OpMult() override
+    {
         KP_LOG_DEBUG("Kompute OpMult destructor started");
     }
 };

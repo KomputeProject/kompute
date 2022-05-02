@@ -198,7 +198,7 @@ win_build_xxd:
 	cd external/bin/ && gcc.exe -o xxd.exe xxd.c -DCYGWIN
 
 format:
-	$(CLANG_FORMAT_BIN) -i -style="{BasedOnStyle: mozilla, IndentWidth: 4}" src/*.cpp src/include/kompute/*.hpp test/*cpp
+	$(CLANG_FORMAT_BIN) -i -style=file src/*.cpp src/include/kompute/*.hpp test/*cpp
 
 static_scan:
 	cppcheck --project=build/compile_commands.json -iexternal/
