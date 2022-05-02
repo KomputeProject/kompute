@@ -305,7 +305,7 @@ Algorithm::createPipeline()
     this->mFreePipeline = true;
 #else
     vk::Pipeline pipeline =
-      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
+      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo).value;
     this->mPipeline = std::make_shared<vk::Pipeline>(pipeline);
     this->mFreePipeline = true;
 #endif
