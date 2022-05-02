@@ -2,6 +2,8 @@
 #pragma once
 
 #include "kompute/Core.hpp"
+#include <fmt/format.h>
+#include <string>
 
 namespace kp {
 
@@ -339,3 +341,37 @@ class TensorT : public Tensor
 };
 
 } // End namespace kp
+
+/**
+ * fmt fromater for kp::Tensor::TensorDataTypes.
+ */
+template <> struct fmt::formatter<kp::Tensor::TensorDataTypes>: formatter<std::string> {
+  template <typename FormatContext>
+  auto format(kp::Tensor::TensorDataTypes dt, FormatContext& ctx) {
+    std::string name = "unknown";
+    switch (dt) {
+      case kp::Tensor::TensorDataTypes::eBool: name = "eBool"; break;
+      case kp::Tensor::TensorDataTypes::eDouble: name = "eDouble"; break;
+      case kp::Tensor::TensorDataTypes::eFloat: name = "eFloat"; break;
+      case kp::Tensor::TensorDataTypes::eInt: name = "eInt"; break;
+      case kp::Tensor::TensorDataTypes::eUnsignedInt: name = "eUnsignedInt"; break;
+    }
+    return formatter<std::string>::format(name, ctx);
+  }
+};
+
+/**
+ * fmt fromater for kp::Tensor::TensorTypes.
+ */
+template <> struct fmt::formatter<kp::Tensor::TensorTypes>: formatter<std::string> {
+  template <typename FormatContext>
+  auto format(kp::Tensor::TensorTypes dt, FormatContext& ctx) {
+    std::string name = "unknown";
+    switch (dt) {
+      case kp::Tensor::TensorTypes::eDevice: name = "eDevice"; break;
+      case kp::Tensor::TensorTypes::eHost: name = "eHost"; break;
+      case kp::Tensor::TensorTypes::eStorage: name = "eStorage"; break;
+    }
+    return formatter<std::string>::format(name, ctx);
+  }
+};
