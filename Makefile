@@ -198,7 +198,9 @@ win_build_xxd:
 	cd external/bin/ && gcc.exe -o xxd.exe xxd.c -DCYGWIN
 
 format:
-	$(CLANG_FORMAT_BIN) -i -style=file src/*.cpp src/include/kompute/*.hpp test/*cpp
+	for val in "examples single_include src test" ; do \
+    	find $$val -depth -iname *.h -or -iname *.c -or -iname *.hpp -or -iname *.cpp | grep -v "shaders" | xargs $(CLANG_FORMAT_BIN) -style=file -i; \
+	done
 
 static_scan:
 	cppcheck --project=build/compile_commands.json -iexternal/
