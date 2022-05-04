@@ -6,10 +6,11 @@
 
 #include "scene/main/node.h"
 
-class KomputeModelMLNode : public Node {
+class KomputeModelMLNode : public Node
+{
     GDCLASS(KomputeModelMLNode, Node);
 
-public:
+  public:
     KomputeModelMLNode();
 
     void train(Array y, Array xI, Array xJ);
@@ -21,10 +22,10 @@ public:
     void _process(float delta);
     void _init();
 
-protected:
+  protected:
     static void _bind_methods();
 
-private:
+  private:
     kp::Tensor mWeights;
     kp::Tensor mBias;
 };
@@ -85,4 +86,3 @@ void main() {
     lout[idx] = calculateLoss(yHat, yCurr);
 }
 )";
-

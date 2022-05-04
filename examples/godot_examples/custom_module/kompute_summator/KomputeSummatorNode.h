@@ -6,10 +6,11 @@
 
 #include "scene/main/node.h"
 
-class KomputeSummatorNode : public Node {
+class KomputeSummatorNode : public Node
+{
     GDCLASS(KomputeSummatorNode, Node);
 
-public:
+  public:
     KomputeSummatorNode();
 
     void add(float value);
@@ -19,13 +20,12 @@ public:
     void _process(float delta);
     void _init();
 
-protected:
+  protected:
     static void _bind_methods();
 
-private:
+  private:
     kp::Manager mManager;
     std::shared_ptr<kp::Sequence> mSequence;
     std::shared_ptr<kp::Tensor> mPrimaryTensor;
     std::shared_ptr<kp::Tensor> mSecondaryTensor;
 };
-

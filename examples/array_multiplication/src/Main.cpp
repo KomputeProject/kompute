@@ -5,23 +5,27 @@
 
 #include "kompute/Kompute.hpp"
 
-static
-std::vector<uint32_t>
-compileSource(
-  const std::string& source)
+static std::vector<uint32_t>
+compileSource(const std::string& source)
 {
     std::ofstream fileOut("tmp_kp_shader.comp");
-	fileOut << source;
-	fileOut.close();
-    if (system(std::string("glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv").c_str()))
+    fileOut << source;
+    fileOut.close();
+    if (system(
+          std::string(
+            "glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv")
+            .c_str()))
         throw std::runtime_error("Error running glslangValidator command");
     std::ifstream fileStream("tmp_kp_shader.comp.spv", std::ios::binary);
     std::vector<char> buffer;
-    buffer.insert(buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
-    return {(uint32_t*)buffer.data(), (uint32_t*)(buffer.data() + buffer.size())};
+    buffer.insert(
+      buffer.begin(), std::istreambuf_iterator<char>(fileStream), {});
+    return { (uint32_t*)buffer.data(),
+             (uint32_t*)(buffer.data() + buffer.size()) };
 }
 
-int main()
+int
+main()
 {
 #if KOMPUTE_ENABLE_SPDLOG
     spdlog::set_level(
@@ -53,21 +57,23 @@ int main()
         }
       )");
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA, tensorInB, tensorOut };
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA,
+                                                        tensorInB,
+                                                        tensorOut };
 
-    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, compileSource(shader));
+    std::shared_ptr<kp::Algorithm> algo =
+      mgr.algorithm(params, compileSource(shader));
 
     mgr.sequence()
-        ->record<kp::OpTensorSyncDevice>(params)
-        ->record<kp::OpAlgoDispatch>(algo)
-        ->record<kp::OpTensorSyncLocal>(params)
-        ->eval();
+      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpAlgoDispatch>(algo)
+      ->record<kp::OpTensorSyncLocal>(params)
+      ->eval();
 
     // prints "Output {  0  4  12  }"
-    std::cout<< "Output: {  ";
+    std::cout << "Output: {  ";
     for (const float& elem : tensorOut->vector()) {
-      std::cout << elem << "  ";
+        std::cout << elem << "  ";
     }
     std::cout << "}" << std::endl;
 }
-

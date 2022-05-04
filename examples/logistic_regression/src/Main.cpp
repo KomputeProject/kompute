@@ -5,7 +5,8 @@
 
 #include "kompute/Kompute.hpp"
 
-int main()
+int
+main()
 {
 #if KOMPUTE_ENABLE_SPDLOG
     spdlog::set_level(
@@ -36,16 +37,18 @@ int main()
                                                         bIn, bOut,  lOut };
 
     std::vector<uint32_t> spirv(
-                (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-                (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
-                    + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
+      (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+      (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv +
+                  kp::shader_data::
+                    shaders_glsl_logisticregression_comp_spv_len));
 
     std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(
-            params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
+      params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
 
     mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
-    std::shared_ptr<kp::Sequence> sq = mgr.sequence()
+    std::shared_ptr<kp::Sequence> sq =
+      mgr.sequence()
         ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
         ->record<kp::OpAlgoDispatch>(algo)
         ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
@@ -67,4 +70,3 @@ int main()
     std::cout << "w2: " << wIn->data()[1] << std::endl;
     std::cout << "b: " << bIn->data()[0] << std::endl;
 }
-

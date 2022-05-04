@@ -8,11 +8,12 @@
 #include "kompute/Kompute.hpp"
 
 namespace godot {
-class KomputeSummator : public Node2D {
-private:
+class KomputeSummator : public Node2D
+{
+  private:
     GODOT_CLASS(KomputeSummator, Node2D);
 
-public:
+  public:
     KomputeSummator();
 
     void add(float value);
@@ -24,7 +25,7 @@ public:
 
     static void _register_methods();
 
-private:
+  private:
     kp::Manager mManager;
     std::shared_ptr<kp::Sequence> mSequence;
     std::shared_ptr<kp::Tensor> mPrimaryTensor;

@@ -4,12 +4,15 @@
 
 #include "KomputeModelMLNode.h"
 
-KomputeModelMLNode::KomputeModelMLNode() {
+KomputeModelMLNode::KomputeModelMLNode()
+{
     std::cout << "CALLING CONSTRUCTOR" << std::endl;
     this->_init();
 }
 
-void KomputeModelMLNode::train(Array yArr, Array xIArr, Array xJArr) {
+void
+KomputeModelMLNode::train(Array yArr, Array xIArr, Array xJArr)
+{
 
     assert(yArr.size() == xIArr.size());
     assert(xIArr.size() == xJArr.size());
@@ -52,15 +55,19 @@ void KomputeModelMLNode::train(Array yArr, Array xIArr, Array xJArr) {
 
         {
             std::vector<uint32_t> spirv(
-                        (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-                        (uint32_t*)(kp::shader_data::shaders_glsl_logisticregression_comp_spv
-                            + kp::shader_data::shaders_glsl_logisticregression_comp_spv_len));
+              (uint32_t*)
+                kp::shader_data::shaders_glsl_logisticregression_comp_spv,
+              (uint32_t*)(kp::shader_data::
+                            shaders_glsl_logisticregression_comp_spv +
+                          kp::shader_data::
+                            shaders_glsl_logisticregression_comp_spv_len));
 
             std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, spirv);
 
             mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
-            std::shared_ptr<kp::Sequence> sq = mgr.sequence()
+            std::shared_ptr<kp::Sequence> sq =
+              mgr.sequence()
                 ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
                 ->record<kp::OpAlgoDispatch>(algo)
                 ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
@@ -88,20 +95,22 @@ void KomputeModelMLNode::train(Array yArr, Array xIArr, Array xJArr) {
     }
 }
 
-Array KomputeModelMLNode::predict(Array xI, Array xJ) {
+Array
+KomputeModelMLNode::predict(Array xI, Array xJ)
+{
     assert(xI.size() == xJ.size());
 
     Array retArray;
 
     // We run the inference in the CPU for simplicity
-    // BUt you can also implement the inference on GPU 
+    // BUt you can also implement the inference on GPU
     // GPU implementation would speed up minibatching
     for (size_t i = 0; i < xI.size(); i++) {
         float xIVal = xI[i];
         float xJVal = xJ[i];
-        float result = (xIVal * this->mWeights.data()[0]
-                + xJVal * this->mWeights.data()[1]
-                + this->mBias.data()[0]);
+        float result =
+          (xIVal * this->mWeights.data()[0] + xJVal * this->mWeights.data()[1] +
+           this->mBias.data()[0]);
 
         // Instead of using sigmoid we'll just return full numbers
         Variant var = result > 0 ? 1 : 0;
@@ -111,12 +120,14 @@ Array KomputeModelMLNode::predict(Array xI, Array xJ) {
     return retArray;
 }
 
-Array KomputeModelMLNode::get_params() {
+Array
+KomputeModelMLNode::get_params()
+{
     Array retArray;
 
     KP_LOG_INFO(this->mWeights.size() + this->mBias.size());
 
-    if(this->mWeights.size() + this->mBias.size() == 0) {
+    if (this->mWeights.size() + this->mBias.size() == 0) {
         return retArray;
     }
 
@@ -128,20 +139,27 @@ Array KomputeModelMLNode::get_params() {
     return retArray;
 }
 
-void KomputeModelMLNode::_init() {
+void
+KomputeModelMLNode::_init()
+{
     std::cout << "CALLING INIT" << std::endl;
 }
 
-void KomputeModelMLNode::_process(float delta) {
+void
+KomputeModelMLNode::_process(float delta)
+{}
 
-}
-
-void KomputeModelMLNode::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("_process", "delta"), &KomputeModelMLNode::_process);
+void
+KomputeModelMLNode::_bind_methods()
+{
+    ClassDB::bind_method(D_METHOD("_process", "delta"),
+                         &KomputeModelMLNode::_process);
     ClassDB::bind_method(D_METHOD("_init"), &KomputeModelMLNode::_init);
 
-    ClassDB::bind_method(D_METHOD("train", "yArr", "xIArr", "xJArr"), &KomputeModelMLNode::train);
-    ClassDB::bind_method(D_METHOD("predict", "xI", "xJ"), &KomputeModelMLNode::predict);
-    ClassDB::bind_method(D_METHOD("get_params"), &KomputeModelMLNode::get_params);
+    ClassDB::bind_method(D_METHOD("train", "yArr", "xIArr", "xJArr"),
+                         &KomputeModelMLNode::train);
+    ClassDB::bind_method(D_METHOD("predict", "xI", "xJ"),
+                         &KomputeModelMLNode::predict);
+    ClassDB::bind_method(D_METHOD("get_params"),
+                         &KomputeModelMLNode::get_params);
 }
-

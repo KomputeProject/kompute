@@ -1,19 +1,20 @@
 #pragma once
 
+#include <Array.hpp>
 #include <Godot.hpp>
 #include <Node2D.hpp>
-#include <Array.hpp>
 
 #include <memory>
 
 #include "kompute/Kompute.hpp"
 
 namespace godot {
-class KomputeModelML : public Node2D {
-private:
+class KomputeModelML : public Node2D
+{
+  private:
     GODOT_CLASS(KomputeModelML, Node2D);
 
-public:
+  public:
     KomputeModelML();
 
     void train(Array y, Array xI, Array xJ);
@@ -27,7 +28,7 @@ public:
 
     static void _register_methods();
 
-private:
+  private:
     std::shared_ptr<kp::Tensor> mWeights;
     std::shared_ptr<kp::Tensor> mBias;
 };
