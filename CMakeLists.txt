@@ -46,7 +46,7 @@ endif()
 
 # Vulkan Header
 FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
-                                   GIT_TAG  v1.3.213) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
+                                   GIT_TAG v1.2.203) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
 FetchContent_MakeAvailable(vulkan_header)
 
 # Spdlog
