@@ -169,10 +169,9 @@ Content/StarterContent/*
 # VSCode Files
 /.vscode/*
 BuildingEscape.code-workspace
-
 compile_commands.json
-
 .clangd/
+.cache/
 
 # Project files
 bin/
