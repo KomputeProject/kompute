@@ -54,6 +54,7 @@ if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(
         kompute
         Vulkan::Vulkan
+        Vulkan-Headers
         fmt::fmt
     )
 else()

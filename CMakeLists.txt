@@ -44,6 +44,11 @@ if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     find_package(Vulkan REQUIRED)
 endif()
 
+# Vulkan Header
+FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
+                                   GIT_TAG  v1.3.213) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
+FetchContent_MakeAvailable(vulkan_header)
+
 # Spdlog
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
     if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
