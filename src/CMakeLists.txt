@@ -50,18 +50,18 @@ target_include_directories(
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
 )
 
-if(NOT KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(
-        kompute
-        Vulkan::Vulkan
-        Vulkan-Headers
-        fmt::fmt
-    )
+if(KOMPUTE_OPT_ANDROID_BUILD)
+    target_link_libraries(kompute
+                          fmt::fmt)
 else()
-    target_link_libraries(
-        kompute
-        fmt::fmt
-    )
+    target_link_libraries(kompute
+                          Vulkan::Vulkan
+                          fmt::fmt)
+endif()
+
+if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
+    target_link_libraries(kompute
+                          Vulkan-Headers)
 endif()
 
 #####################################################
@@ -69,10 +69,7 @@ endif()
 #####################################################
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    target_link_libraries(
-        kompute
-        spdlog::spdlog
-    )
+    target_link_libraries(kompute spdlog::spdlog)
 endif()
 
 #####################################################
@@ -80,12 +77,10 @@ endif()
 #####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(
-        kompute
-        kompute_vk_ndk_wrapper
-        log
-        android
-    )
+    target_link_libraries(kompute
+                          kompute_vk_ndk_wrapper
+                          log
+                          android)
 endif()
 
 #####################################################

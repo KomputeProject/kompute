@@ -15,39 +15,60 @@ option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" OFF)
 option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" OFF)
 option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" OFF)
 option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" OFF)
+
 # Build options
 option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" OFF)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Enable to compile with spdlog as the internal logging framework" OFF)
+option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
+option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
+option(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS "Whether to use shared libraries for dependencies for install" OFF)
+option(KOMPUTE_OPT_BUILD_AS_SHARED_LIB "Whether to build kompute as shared library" OFF)
+option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan-Header version you are linking against." OFF)
 
 # External komponents
 option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" ON)
+option(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER "Use the build in version of Vulkan-Headers. This could be helpful in case your system Vulkan-Headers are to new for your driver. If you set this to false, please make sure your system Vulkan-Header are supported by your driver." ON)
 
-option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
-option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
-option(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS "Whether to use shared libraries for dependencies for install" OFF)
-option(KOMPUTE_OPT_BUILD_AS_SHARED_LIB "Whether to build kompute as shared library" OFF)
 # Build flags
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
+
+#####################################################
+#################### Deprecated Options #############
+#####################################################
+if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
+    message(FATAL_ERROR "'KOMPUTE_OPT_REPO_SUBMODULE_BUILD' got replaced by 'KOMPUTE_OPT_USE_BUILD_IN_SPDLOG', 'KOMPUTE_OPT_USE_BUILD_IN_FMT', 'KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST', 'KOMPUTE_OPT_USE_BUILD_IN_PYBIND11' and 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER'. Please use them instead.")
+endif()
 
 #####################################################
 #################### Dependencies ###################
 #####################################################
 include(FetchContent)
+include(cmake/check_vulkan_version.cmake)
 
-# Vulkan
+# Vulkan Header
 # We don't import Vulkan library if Android build as its build dynamically
 # Otherwise it is expected that the Vulkan SDK and dependencies are installed
 if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     find_package(Vulkan REQUIRED)
 endif()
-
-# Vulkan Header
-FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
-                                   GIT_TAG v1.2.203) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
-FetchContent_MakeAvailable(vulkan_header)
+if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
+    FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
+                                       GIT_TAG v1.2.203) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
+    FetchContent_MakeAvailable(vulkan_header)
+    
+    if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
+        # Ensure the driver supports this Vulkan version
+        check_vulkan_version(INCLUDE_DIR "${vulkan_header_SOURCE_DIR}/include")
+    endif()
+else()
+    if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
+        # Ensure the driver supports this Vulkan version
+        check_vulkan_version(INCLUDE_DIR ${Vulkan_INCLUDE_DIR})
+    endif()
+endif()
 
 # Spdlog
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
