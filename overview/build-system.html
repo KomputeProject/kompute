@@ -498,26 +498,44 @@
 <tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=1</p></td>
 <td><p>Enable if you wish to build and run the tests (must have deps installed.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_CODE_COVERAGE=1</p></td>
+<td><p>Enable if you wish to build and run code coverage (must have deps installed which are limited to Windows platform)</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
 <td><p>Enable if you wish to build the docs (must have docs deps installed)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_SHADERS=1</p></td>
+<td><p>Enable if you wish to build the shaders into header files (must have docs deps installed)</p></td>
 </tr>
 <tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1</p></td>
 <td><p>Option to build the single header file using “quom” utility</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
-<td><p>Allows you to pass extra config flags to compiler</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_INSTALL=0</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_INSTALL=0</p></td>
 <td><p>Disables the install step in the cmake file (useful for android build)</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_PYTHON=1</p></td>
+<td><p>Enable to build python bindings (used internally for python package)</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_ENABLE_SPDLOG=1</p></td>
+<td><p>Enable to compile with spdlog as the internal logging framework</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1</p></td>
+<td><p>Use the submodule repos instead of external packages / manager</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DKOMPUTE_OPT_ANDROID_BUILD=1</p></td>
 <td><p>Enables android build which includes and excludes relevant libraries</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=1</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=1</p></td>
+<td><p>Explicitly disables debug layers even when on debug mode</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=1</p></td>
 <td><p>Ensures dependencies are referenced as shared libraries for kompute install</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=1</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=1</p></td>
 <td><p>Whether to build Kompute as shared lib instead of static</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
+<td><p>Allows you to pass extra config flags to compiler</p></td>
 </tr>
 </tbody>
 </table>
@@ -549,11 +567,11 @@
 <tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
 <td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_LOG_VERRIDE=1</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_LOG_OVERRIDE=1</p></td>
 <td><p>Does not define the <a href="#id2"><span class="problematic" id="id3">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overridden</p></td>
 </tr>
-<tr class="row-even"><td><p>-DSPDLOG_ACTIVE_LEVEL</p></td>
-<td><p>The level for the log level on compile level (whether spdlog is enabled)</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_LOG_LEVEL</p></td>
+<td><p>The level for the log level on compile level (also sets spdlog level if enabled)</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DVVK_USE_PLATFORM_ANDROID_KHR</p></td>
 <td><p>Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)</p></td>

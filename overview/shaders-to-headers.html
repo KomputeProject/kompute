@@ -470,11 +470,19 @@
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">static</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span>
 <span class="n">compileSource</span><span class="p">(</span>
   <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">source</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">system</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"glslangValidator --stdin -S comp -V -o tmp_kp_shader.comp.spv &lt;&lt; END</span><span class="se">\n</span><span class="s">"</span> <span class="o">+</span> <span class="n">source</span> <span class="o">+</span> <span class="s">"</span><span class="se">\n</span><span class="s">END"</span><span class="p">).</span><span class="n">c_str</span><span class="p">()))</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">ofstream</span> <span class="nf">fileOut</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp"</span><span class="p">);</span>
+    <span class="n">fileOut</span> <span class="o">&lt;&lt;</span> <span class="n">source</span><span class="p">;</span>
+    <span class="n">fileOut</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">system</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv"</span><span class="p">).</span><span class="n">c_str</span><span class="p">()))</span>
         <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Error running glslangValidator command"</span><span class="p">);</span>
     <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="nf">fileStream</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp.spv"</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
     <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">buffer</span><span class="p">;</span>

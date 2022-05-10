@@ -181,7 +181,10 @@ template&lt;typename S  = float, typename P  = float&gt; </div>
     <tr><td class="paramname">spirv</td><td>(optional) The spirv code to use to create the algorithm </td></tr>
     <tr><td class="paramname">workgroup</td><td>(optional) The kp::Workgroup to use for the dispatch which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set. </td></tr>
     <tr><td class="paramname">specializationConstants</td><td>(optional) The templatable param is to be used to initialize the specialization constants which cannot be changed once set. </td></tr>
-    <tr><td class="paramname">pushConstants</td><td>(optional) This templatable param is to be used when initializing the pipeline, which set the size of the push constants - these can be modified but all new values must have the same data type and length as otherwise it will result in errors. </td></tr>
+    <tr><td class="paramname">pushConstants</td><td>(optional) This templatable param is to be used when initializing the pipeline, which set the size of the push constants<ul>
+<li>these can be modified but all new values must have the same data type and length as otherwise it will result in errors. </li>
+</ul>
+</td></tr>
   </table>
   </dd>
 </dl>

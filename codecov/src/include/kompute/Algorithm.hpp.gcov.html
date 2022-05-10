@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">13</td>
-            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">14</td>
+            <td class="headerCovTableEntry">14</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-09-28 08:57:30</td>
+            <td class="headerValue">2022-05-10 20:43:15</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -86,280 +86,295 @@
 <span class="lineNum">      24 </span>            :      *  @param spirv (optional) The spirv code to use to create the algorithm
 <span class="lineNum">      25 </span>            :      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
 <span class="lineNum">      26 </span>            :      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-<span class="lineNum">      27 </span>            :      *  @param specializationConstants (optional) The templatable param is to be used to
-<span class="lineNum">      28 </span>            :      * initialize the specialization constants which cannot be changed once set.
-<span class="lineNum">      29 </span>            :      *  @param pushConstants (optional) This templatable param is to be used when
-<span class="lineNum">      30 </span>            :      * initializing the pipeline, which set the size of the push constants -
-<span class="lineNum">      31 </span>            :      * these can be modified but all new values must have the same data type and length
-<span class="lineNum">      32 </span>            :      * as otherwise it will result in errors.
-<span class="lineNum">      33 </span>            :      */
-<span class="lineNum">      34 </span>            :     template&lt;typename S = float, typename P = float&gt;
-<span class="lineNum">      35 </span>            :     Algorithm(std::shared_ptr&lt;vk::Device&gt; device,
-<span class="lineNum">      36 </span>            :               const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors = {},
-<span class="lineNum">      37 </span>            :               const std::vector&lt;uint32_t&gt;&amp; spirv = {},
-<span class="lineNum">      38 </span>            :               const Workgroup&amp; workgroup = {},
-<span class="lineNum">      39 </span>            :               const std::vector&lt;S&gt;&amp; specializationConstants = {},
-<span class="lineNum">      40 </span>            :               const std::vector&lt;P&gt;&amp; pushConstants = {})
-<span class="lineNum">      41 </span>            :     {
-<span class="lineNum">      42 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Constructor with device&quot;);
-<span class="lineNum">      43 </span>            : 
-<span class="lineNum">      44 </span>            :         this-&gt;mDevice = device;
-<span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span>            :         if (tensors.size() &amp;&amp; spirv.size()) {
-<span class="lineNum">      47 </span>            :             KP_LOG_INFO(&quot;Kompute Algorithm initialising with tensor size: {} and &quot;
-<span class="lineNum">      48 </span>            :                         &quot;spirv size: {}&quot;,
-<span class="lineNum">      49 </span>            :                         tensors.size(),
-<span class="lineNum">      50 </span>            :                         spirv.size());
-<span class="lineNum">      51 </span>            :             this-&gt;rebuild(
-<span class="lineNum">      52 </span>            :               tensors, spirv, workgroup, specializationConstants, pushConstants);
-<span class="lineNum">      53 </span>            :         } else {
-<span class="lineNum">      54 </span>            :             KP_LOG_INFO(&quot;Kompute Algorithm constructor with empty tensors and or &quot;
-<span class="lineNum">      55 </span>            :                         &quot;spirv so not rebuilding vulkan components&quot;);
-<span class="lineNum">      56 </span>            :         }
-<span class="lineNum">      57 </span>            :     }
-<span class="lineNum">      58 </span>            : 
-<span class="lineNum">      59 </span>            :     /**
-<span class="lineNum">      60 </span>            :      *  Rebuild function to reconstruct algorithm with configuration parameters
-<span class="lineNum">      61 </span>            :      * to create the underlying resources.
-<span class="lineNum">      62 </span>            :      *
-<span class="lineNum">      63 </span>            :      *  @param tensors The tensors to use to create the descriptor resources
-<span class="lineNum">      64 </span>            :      *  @param spirv The spirv code to use to create the algorithm
-<span class="lineNum">      65 </span>            :      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
-<span class="lineNum">      66 </span>            :      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
-<span class="lineNum">      67 </span>            :      *  @param specializationConstants (optional) The std::vector&lt;float&gt; to use to
-<span class="lineNum">      68 </span>            :      * initialize the specialization constants which cannot be changed once set.
-<span class="lineNum">      69 </span>            :      *  @param pushConstants (optional) The std::vector&lt;float&gt; to use when
-<span class="lineNum">      70 </span>            :      * initializing the pipeline, which set the size of the push constants -
-<span class="lineNum">      71 </span>            :      * these can be modified but all new values must have the same vector size
-<span class="lineNum">      72 </span>            :      * as this initial value.
-<span class="lineNum">      73 </span>            :      */
-<span class="lineNum">      74 </span>            :     template&lt;typename S = float, typename P = float&gt;
-<span class="lineNum">      75 </span>            :     void rebuild(const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,
-<span class="lineNum">      76 </span>            :                  const std::vector&lt;uint32_t&gt;&amp; spirv,
-<span class="lineNum">      77 </span>            :                  const Workgroup&amp; workgroup = {},
-<span class="lineNum">      78 </span>            :                  const std::vector&lt;S&gt;&amp; specializationConstants = {},
-<span class="lineNum">      79 </span>            :                  const std::vector&lt;P&gt;&amp; pushConstants = {})
-<span class="lineNum">      80 </span>            :     {
-<span class="lineNum">      81 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm rebuild started&quot;);
-<span class="lineNum">      82 </span>            : 
-<span class="lineNum">      83 </span>            :         this-&gt;mTensors = tensors;
-<span class="lineNum">      84 </span>            :         this-&gt;mSpirv = spirv;
-<span class="lineNum">      85 </span>            : 
-<span class="lineNum">      86 </span>            :         if (specializationConstants.size()) {
-<span class="lineNum">      87 </span>            :             if (this-&gt;mSpecializationConstantsData) {
-<span class="lineNum">      88 </span>            :                 free(this-&gt;mSpecializationConstantsData);
-<span class="lineNum">      89 </span>            :             }
-<span class="lineNum">      90 </span>            :             uint32_t memorySize = sizeof(decltype(specializationConstants.back()));
-<span class="lineNum">      91 </span>            :             uint32_t size = specializationConstants.size();
-<span class="lineNum">      92 </span>            :             uint32_t totalSize = size * memorySize;
-<span class="lineNum">      93 </span>            :             this-&gt;mSpecializationConstantsData = malloc(totalSize);
-<span class="lineNum">      94 </span>            :             memcpy(this-&gt;mSpecializationConstantsData, specializationConstants.data(), totalSize);
-<span class="lineNum">      95 </span>            :             this-&gt;mSpecializationConstantsDataTypeMemorySize = memorySize;
-<span class="lineNum">      96 </span>            :             this-&gt;mSpecializationConstantsSize = size;
-<span class="lineNum">      97 </span>            :         }
-<span class="lineNum">      98 </span>            : 
-<span class="lineNum">      99 </span>            :         if (pushConstants.size()) {
-<span class="lineNum">     100 </span>            :             if (this-&gt;mPushConstantsData) {
-<span class="lineNum">     101 </span>            :                 free(this-&gt;mPushConstantsData);
-<span class="lineNum">     102 </span>            :             }
-<span class="lineNum">     103 </span>            :             uint32_t memorySize = sizeof(decltype(pushConstants.back()));
-<span class="lineNum">     104 </span>            :             uint32_t size = pushConstants.size();
-<span class="lineNum">     105 </span>            :             uint32_t totalSize = size * memorySize;
-<span class="lineNum">     106 </span>            :             this-&gt;mPushConstantsData = malloc(totalSize);
-<span class="lineNum">     107 </span>            :             memcpy(this-&gt;mPushConstantsData, pushConstants.data(), totalSize);
-<span class="lineNum">     108 </span>            :             this-&gt;mPushConstantsDataTypeMemorySize = memorySize;
-<span class="lineNum">     109 </span>            :             this-&gt;mPushConstantsSize = size;
-<span class="lineNum">     110 </span>            :         }
-<span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span>            :         this-&gt;setWorkgroup(workgroup,
-<span class="lineNum">     113 </span>            :                            this-&gt;mTensors.size() ? this-&gt;mTensors[0]-&gt;size() : 1);
-<span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span>            :         // Descriptor pool is created first so if available then destroy all before
-<span class="lineNum">     116 </span>            :         // rebuild
-<span class="lineNum">     117 </span>            :         if (this-&gt;isInit()) {
-<span class="lineNum">     118 </span>            :             this-&gt;destroy();
-<span class="lineNum">     119 </span>            :         }
-<span class="lineNum">     120 </span>            : 
-<span class="lineNum">     121 </span>            :         this-&gt;createParameters();
-<span class="lineNum">     122 </span>            :         this-&gt;createShaderModule();
-<span class="lineNum">     123 </span>            :         this-&gt;createPipeline();
-<span class="lineNum">     124 </span>            :     }
-<span class="lineNum">     125 </span>            : 
-<span class="lineNum">     126 </span>            :     /**
-<span class="lineNum">     127 </span>            :      * Destructor for Algorithm which is responsible for freeing and desroying
-<span class="lineNum">     128 </span>            :      * respective pipelines and owned parameter groups.
-<span class="lineNum">     129 </span>            :      */
-<span class="lineNum">     130 </span>            :     ~Algorithm();
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span>            :     /**
-<span class="lineNum">     133 </span>            :      * Records the dispatch function with the provided template parameters or
-<span class="lineNum">     134 </span>            :      * alternatively using the size of the tensor by default.
-<span class="lineNum">     135 </span>            :      *
-<span class="lineNum">     136 </span>            :      * @param commandBuffer Command buffer to record the algorithm resources to
-<span class="lineNum">     137 </span>            :      */
-<span class="lineNum">     138 </span>            :     void recordDispatch(const vk::CommandBuffer&amp; commandBuffer);
-<span class="lineNum">     139 </span>            : 
-<span class="lineNum">     140 </span>            :     /**
-<span class="lineNum">     141 </span>            :      * Records command that binds the &quot;core&quot; algorithm components which consist
-<span class="lineNum">     142 </span>            :      * of binding the pipeline and binding the descriptorsets.
-<span class="lineNum">     143 </span>            :      *
-<span class="lineNum">     144 </span>            :      * @param commandBuffer Command buffer to record the algorithm resources to
-<span class="lineNum">     145 </span>            :      */
-<span class="lineNum">     146 </span>            :     void recordBindCore(const vk::CommandBuffer&amp; commandBuffer);
-<span class="lineNum">     147 </span>            : 
-<span class="lineNum">     148 </span>            :     /**
-<span class="lineNum">     149 </span>            :      * Records command that binds the push constants to the command buffer
-<span class="lineNum">     150 </span>            :      * provided
-<span class="lineNum">     151 </span>            :      * - it is required that the pushConstants provided are of the same size as
-<span class="lineNum">     152 </span>            :      * the ones provided during initialization.
+<span class="lineNum">      27 </span>            :      *  @param specializationConstants (optional) The templatable param is to be
+<span class="lineNum">      28 </span>            :      * used to initialize the specialization constants which cannot be changed
+<span class="lineNum">      29 </span>            :      * once set.
+<span class="lineNum">      30 </span>            :      *  @param pushConstants (optional) This templatable param is to be used
+<span class="lineNum">      31 </span>            :      * when initializing the pipeline, which set the size of the push constants
+<span class="lineNum">      32 </span>            :      * - these can be modified but all new values must have the same data type
+<span class="lineNum">      33 </span>            :      * and length as otherwise it will result in errors.
+<span class="lineNum">      34 </span>            :      */
+<span class="lineNum">      35 </span>            :     template&lt;typename S = float, typename P = float&gt;
+<span class="lineNum">      36 </span>            :     Algorithm(std::shared_ptr&lt;vk::Device&gt; device,
+<span class="lineNum">      37 </span>            :               const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors = {},
+<span class="lineNum">      38 </span>            :               const std::vector&lt;uint32_t&gt;&amp; spirv = {},
+<span class="lineNum">      39 </span>            :               const Workgroup&amp; workgroup = {},
+<span class="lineNum">      40 </span>            :               const std::vector&lt;S&gt;&amp; specializationConstants = {},
+<span class="lineNum">      41 </span>            :               const std::vector&lt;P&gt;&amp; pushConstants = {})
+<span class="lineNum">      42 </span>            :     {
+<span class="lineNum">      43 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm Constructor with device&quot;);
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            :         this-&gt;mDevice = device;
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            :         if (tensors.size() &amp;&amp; spirv.size()) {
+<span class="lineNum">      48 </span>            :             KP_LOG_INFO(
+<span class="lineNum">      49 </span>            :               &quot;Kompute Algorithm initialising with tensor size: {} and &quot;
+<span class="lineNum">      50 </span>            :               &quot;spirv size: {}&quot;,
+<span class="lineNum">      51 </span>            :               tensors.size(),
+<span class="lineNum">      52 </span>            :               spirv.size());
+<span class="lineNum">      53 </span>            :             this-&gt;rebuild(tensors,
+<span class="lineNum">      54 </span>            :                           spirv,
+<span class="lineNum">      55 </span>            :                           workgroup,
+<span class="lineNum">      56 </span>            :                           specializationConstants,
+<span class="lineNum">      57 </span>            :                           pushConstants);
+<span class="lineNum">      58 </span>            :         } else {
+<span class="lineNum">      59 </span>            :             KP_LOG_INFO(
+<span class="lineNum">      60 </span>            :               &quot;Kompute Algorithm constructor with empty tensors and or &quot;
+<span class="lineNum">      61 </span>            :               &quot;spirv so not rebuilding vulkan components&quot;);
+<span class="lineNum">      62 </span>            :         }
+<span class="lineNum">      63 </span>            :     }
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            :     /**
+<span class="lineNum">      66 </span>            :      *  Rebuild function to reconstruct algorithm with configuration parameters
+<span class="lineNum">      67 </span>            :      * to create the underlying resources.
+<span class="lineNum">      68 </span>            :      *
+<span class="lineNum">      69 </span>            :      *  @param tensors The tensors to use to create the descriptor resources
+<span class="lineNum">      70 </span>            :      *  @param spirv The spirv code to use to create the algorithm
+<span class="lineNum">      71 </span>            :      *  @param workgroup (optional) The kp::Workgroup to use for the dispatch
+<span class="lineNum">      72 </span>            :      * which defaults to kp::Workgroup(tensor[0].size(), 1, 1) if not set.
+<span class="lineNum">      73 </span>            :      *  @param specializationConstants (optional) The std::vector&lt;float&gt; to use
+<span class="lineNum">      74 </span>            :      * to initialize the specialization constants which cannot be changed once
+<span class="lineNum">      75 </span>            :      * set.
+<span class="lineNum">      76 </span>            :      *  @param pushConstants (optional) The std::vector&lt;float&gt; to use when
+<span class="lineNum">      77 </span>            :      * initializing the pipeline, which set the size of the push constants -
+<span class="lineNum">      78 </span>            :      * these can be modified but all new values must have the same vector size
+<span class="lineNum">      79 </span>            :      * as this initial value.
+<span class="lineNum">      80 </span>            :      */
+<span class="lineNum">      81 </span>            :     template&lt;typename S = float, typename P = float&gt;
+<span class="lineNum">      82 </span>            :     void rebuild(const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; tensors,
+<span class="lineNum">      83 </span>            :                  const std::vector&lt;uint32_t&gt;&amp; spirv,
+<span class="lineNum">      84 </span>            :                  const Workgroup&amp; workgroup = {},
+<span class="lineNum">      85 </span>            :                  const std::vector&lt;S&gt;&amp; specializationConstants = {},
+<span class="lineNum">      86 </span>            :                  const std::vector&lt;P&gt;&amp; pushConstants = {})
+<span class="lineNum">      87 </span>            :     {
+<span class="lineNum">      88 </span>            :         KP_LOG_DEBUG(&quot;Kompute Algorithm rebuild started&quot;);
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span>            :         this-&gt;mTensors = tensors;
+<span class="lineNum">      91 </span>            :         this-&gt;mSpirv = spirv;
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            :         if (specializationConstants.size()) {
+<span class="lineNum">      94 </span>            :             if (this-&gt;mSpecializationConstantsData) {
+<span class="lineNum">      95 </span>            :                 free(this-&gt;mSpecializationConstantsData);
+<span class="lineNum">      96 </span>            :             }
+<span class="lineNum">      97 </span>            :             uint32_t memorySize =
+<span class="lineNum">      98 </span>            :               sizeof(decltype(specializationConstants.back()));
+<span class="lineNum">      99 </span>            :             uint32_t size = specializationConstants.size();
+<span class="lineNum">     100 </span>            :             uint32_t totalSize = size * memorySize;
+<span class="lineNum">     101 </span>            :             this-&gt;mSpecializationConstantsData = malloc(totalSize);
+<span class="lineNum">     102 </span>            :             memcpy(this-&gt;mSpecializationConstantsData,
+<span class="lineNum">     103 </span>            :                    specializationConstants.data(),
+<span class="lineNum">     104 </span>            :                    totalSize);
+<span class="lineNum">     105 </span>            :             this-&gt;mSpecializationConstantsDataTypeMemorySize = memorySize;
+<span class="lineNum">     106 </span>            :             this-&gt;mSpecializationConstantsSize = size;
+<span class="lineNum">     107 </span>            :         }
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            :         if (pushConstants.size()) {
+<span class="lineNum">     110 </span>            :             if (this-&gt;mPushConstantsData) {
+<span class="lineNum">     111 </span>            :                 free(this-&gt;mPushConstantsData);
+<span class="lineNum">     112 </span>            :             }
+<span class="lineNum">     113 </span>            :             uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+<span class="lineNum">     114 </span>            :             uint32_t size = pushConstants.size();
+<span class="lineNum">     115 </span>            :             uint32_t totalSize = size * memorySize;
+<span class="lineNum">     116 </span>            :             this-&gt;mPushConstantsData = malloc(totalSize);
+<span class="lineNum">     117 </span>            :             memcpy(this-&gt;mPushConstantsData, pushConstants.data(), totalSize);
+<span class="lineNum">     118 </span>            :             this-&gt;mPushConstantsDataTypeMemorySize = memorySize;
+<span class="lineNum">     119 </span>            :             this-&gt;mPushConstantsSize = size;
+<span class="lineNum">     120 </span>            :         }
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span>            :         this-&gt;setWorkgroup(
+<span class="lineNum">     123 </span>            :           workgroup, this-&gt;mTensors.size() ? this-&gt;mTensors[0]-&gt;size() : 1);
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :         // Descriptor pool is created first so if available then destroy all
+<span class="lineNum">     126 </span>            :         // before rebuild
+<span class="lineNum">     127 </span>            :         if (this-&gt;isInit()) {
+<span class="lineNum">     128 </span>            :             this-&gt;destroy();
+<span class="lineNum">     129 </span>            :         }
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :         this-&gt;createParameters();
+<span class="lineNum">     132 </span>            :         this-&gt;createShaderModule();
+<span class="lineNum">     133 </span>            :         this-&gt;createPipeline();
+<span class="lineNum">     134 </span>            :     }
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            :     /**
+<span class="lineNum">     137 </span>            :      * Destructor for Algorithm which is responsible for freeing and desroying
+<span class="lineNum">     138 </span>            :      * respective pipelines and owned parameter groups.
+<span class="lineNum">     139 </span>            :      */
+<span class="lineNum">     140 </span>            :     ~Algorithm();
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            :     /**
+<span class="lineNum">     143 </span>            :      * Records the dispatch function with the provided template parameters or
+<span class="lineNum">     144 </span>            :      * alternatively using the size of the tensor by default.
+<span class="lineNum">     145 </span>            :      *
+<span class="lineNum">     146 </span>            :      * @param commandBuffer Command buffer to record the algorithm resources to
+<span class="lineNum">     147 </span>            :      */
+<span class="lineNum">     148 </span>            :     void recordDispatch(const vk::CommandBuffer&amp; commandBuffer);
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span>            :     /**
+<span class="lineNum">     151 </span>            :      * Records command that binds the &quot;core&quot; algorithm components which consist
+<span class="lineNum">     152 </span>            :      * of binding the pipeline and binding the descriptorsets.
 <span class="lineNum">     153 </span>            :      *
 <span class="lineNum">     154 </span>            :      * @param commandBuffer Command buffer to record the algorithm resources to
 <span class="lineNum">     155 </span>            :      */
-<span class="lineNum">     156 </span>            :     void recordBindPush(const vk::CommandBuffer&amp; commandBuffer);
+<span class="lineNum">     156 </span>            :     void recordBindCore(const vk::CommandBuffer&amp; commandBuffer);
 <span class="lineNum">     157 </span>            : 
 <span class="lineNum">     158 </span>            :     /**
-<span class="lineNum">     159 </span>            :      * function that checks all the gpu resource components to verify if these
-<span class="lineNum">     160 </span>            :      * have been created and returns true if all are valid.
-<span class="lineNum">     161 </span>            :      *
-<span class="lineNum">     162 </span>            :      * @returns returns true if the algorithm is currently initialized.
-<span class="lineNum">     163 </span>            :      */
-<span class="lineNum">     164 </span>            :     bool isInit();
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span>            :     /**
-<span class="lineNum">     167 </span>            :      * Sets the work group to use in the recordDispatch
-<span class="lineNum">     168 </span>            :      *
-<span class="lineNum">     169 </span>            :      * @param workgroup The kp::Workgroup value to use to update the algorithm.
-<span class="lineNum">     170 </span>            :      * It must have a value greater than 1 on the x value (index 1) otherwise it
-<span class="lineNum">     171 </span>            :      * will be initialized on the size of the first tensor (ie.
-<span class="lineNum">     172 </span>            :      * this-&gt;mTensor[0]-&gt;size())
+<span class="lineNum">     159 </span>            :      * Records command that binds the push constants to the command buffer
+<span class="lineNum">     160 </span>            :      * provided
+<span class="lineNum">     161 </span>            :      * - it is required that the pushConstants provided are of the same size as
+<span class="lineNum">     162 </span>            :      * the ones provided during initialization.
+<span class="lineNum">     163 </span>            :      *
+<span class="lineNum">     164 </span>            :      * @param commandBuffer Command buffer to record the algorithm resources to
+<span class="lineNum">     165 </span>            :      */
+<span class="lineNum">     166 </span>            :     void recordBindPush(const vk::CommandBuffer&amp; commandBuffer);
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :     /**
+<span class="lineNum">     169 </span>            :      * function that checks all the gpu resource components to verify if these
+<span class="lineNum">     170 </span>            :      * have been created and returns true if all are valid.
+<span class="lineNum">     171 </span>            :      *
+<span class="lineNum">     172 </span>            :      * @returns returns true if the algorithm is currently initialized.
 <span class="lineNum">     173 </span>            :      */
-<span class="lineNum">     174 </span>            :     void setWorkgroup(const Workgroup&amp; workgroup, uint32_t minSize = 1);
-<span class="lineNum">     175 </span>            :     /**
-<span class="lineNum">     176 </span>            :      * Sets the push constants to the new value provided to use in the next
-<span class="lineNum">     177 </span>            :      * bindPush()
+<span class="lineNum">     174 </span>            :     bool isInit();
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            :     /**
+<span class="lineNum">     177 </span>            :      * Sets the work group to use in the recordDispatch
 <span class="lineNum">     178 </span>            :      *
-<span class="lineNum">     179 </span>            :      * @param pushConstants The templatable vector is to be used to set the push constants to use in the
-<span class="lineNum">     180 </span>            :      * next bindPush(...) calls. The constants provided must be of the same size
-<span class="lineNum">     181 </span>            :      * as the ones created during initialization.
-<span class="lineNum">     182 </span>            :      */
-<span class="lineNum">     183 </span>            :     template&lt;typename T&gt;
-<span class="lineNum">     184 </span>            :     void setPushConstants(const std::vector&lt;T&gt;&amp; pushConstants)
-<span class="lineNum">     185 </span>            :     {
-<span class="lineNum">     186 </span>            :         uint32_t memorySize = sizeof(decltype(pushConstants.back()));
-<span class="lineNum">     187 </span>            :         uint32_t size = pushConstants.size();
-<span class="lineNum">     188 </span>            : 
-<span class="lineNum">     189 </span>            :         this-&gt;setPushConstants(pushConstants.data(), size, memorySize);
-<span class="lineNum">     190 </span>            :     }
-<span class="lineNum">     191 </span>            : 
-<span class="lineNum">     192 </span>            :     /**
-<span class="lineNum">     193 </span>            :      * Sets the push constants to the new value provided to use in the next
-<span class="lineNum">     194 </span>            :      * bindPush() with the raw memory block location and memory size to be used.
-<span class="lineNum">     195 </span>            :      *
-<span class="lineNum">     196 </span>            :      * @param data The raw data point to copy the data from, without modifying the pointer.
-<span class="lineNum">     197 </span>            :      * @param size The number of data elements provided in the data
-<a name="198"><span class="lineNum">     198 </span>            :      * @param memorySize The memory size of each of the data elements in bytes.</a>
-<span class="lineNum">     199 </span>            :      */
-<span class="lineNum">     200 </span><span class="lineCov">         11 :     void setPushConstants(void* data, uint32_t size, uint32_t memorySize) {</span>
+<span class="lineNum">     179 </span>            :      * @param workgroup The kp::Workgroup value to use to update the algorithm.
+<span class="lineNum">     180 </span>            :      * It must have a value greater than 1 on the x value (index 1) otherwise it
+<span class="lineNum">     181 </span>            :      * will be initialized on the size of the first tensor (ie.
+<span class="lineNum">     182 </span>            :      * this-&gt;mTensor[0]-&gt;size())
+<span class="lineNum">     183 </span>            :      */
+<span class="lineNum">     184 </span>            :     void setWorkgroup(const Workgroup&amp; workgroup, uint32_t minSize = 1);
+<span class="lineNum">     185 </span>            :     /**
+<span class="lineNum">     186 </span>            :      * Sets the push constants to the new value provided to use in the next
+<span class="lineNum">     187 </span>            :      * bindPush()
+<span class="lineNum">     188 </span>            :      *
+<span class="lineNum">     189 </span>            :      * @param pushConstants The templatable vector is to be used to set the push
+<span class="lineNum">     190 </span>            :      * constants to use in the next bindPush(...) calls. The constants provided
+<span class="lineNum">     191 </span>            :      * must be of the same size as the ones created during initialization.
+<span class="lineNum">     192 </span>            :      */
+<span class="lineNum">     193 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     194 </span>            :     void setPushConstants(const std::vector&lt;T&gt;&amp; pushConstants)
+<span class="lineNum">     195 </span>            :     {
+<span class="lineNum">     196 </span>            :         uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+<span class="lineNum">     197 </span>            :         uint32_t size = pushConstants.size();
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span>            :         this-&gt;setPushConstants(pushConstants.data(), size, memorySize);
+<span class="lineNum">     200 </span>            :     }
 <span class="lineNum">     201 </span>            : 
-<span class="lineNum">     202 </span><span class="lineCov">         11 :         uint32_t totalSize = memorySize * size;</span>
-<span class="lineNum">     203 </span><span class="lineCov">         11 :         uint32_t previousTotalSize = this-&gt;mPushConstantsDataTypeMemorySize * this-&gt;mPushConstantsSize;</span>
-<span class="lineNum">     204 </span>            : 
-<span class="lineNum">     205 </span><span class="lineCov">         11 :         if (totalSize != previousTotalSize) {</span>
-<span class="lineNum">     206 </span>            :             throw std::runtime_error(
-<span class="lineNum">     207 </span><span class="lineCov">          1 :               fmt::format(&quot;Kompute Algorithm push &quot;</span>
-<span class="lineNum">     208 </span>            :                           &quot;constant total memory size provided is {} but expected {} bytes&quot;,
-<span class="lineNum">     209 </span>            :                           totalSize,
-<span class="lineNum">     210 </span><span class="lineCov">          3 :                           previousTotalSize));</span>
-<span class="lineNum">     211 </span>            :         }
-<span class="lineNum">     212 </span><span class="lineCov">         10 :         if (this-&gt;mPushConstantsData) {</span>
-<span class="lineNum">     213 </span><span class="lineCov">         10 :             free(this-&gt;mPushConstantsData);</span>
-<span class="lineNum">     214 </span>            :         }
-<span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span><span class="lineCov">         10 :         this-&gt;mPushConstantsData = malloc(totalSize);</span>
-<span class="lineNum">     217 </span><span class="lineCov">         10 :         memcpy(this-&gt;mPushConstantsData, data, totalSize);</span>
-<span class="lineNum">     218 </span><span class="lineCov">         10 :         this-&gt;mPushConstantsDataTypeMemorySize = memorySize;</span>
-<span class="lineNum">     219 </span><span class="lineCov">         10 :         this-&gt;mPushConstantsSize = size;</span>
-<span class="lineNum">     220 </span><span class="lineCov">         10 :     }</span>
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span>            :     /**
-<span class="lineNum">     223 </span>            :      * Gets the current workgroup from the algorithm.
-<span class="lineNum">     224 </span>            :      *
-<span class="lineNum">     225 </span>            :      * @param The kp::Constant to use to set the push constants to use in the
-<span class="lineNum">     226 </span>            :      * next bindPush(...) calls. The constants provided must be of the same size
-<span class="lineNum">     227 </span>            :      * as the ones created during initialization.
-<span class="lineNum">     228 </span>            :      */
-<span class="lineNum">     229 </span>            :     const Workgroup&amp; getWorkgroup();
-<span class="lineNum">     230 </span>            :     /**
-<span class="lineNum">     231 </span>            :      * Gets the specialization constants of the current algorithm.
-<span class="lineNum">     232 </span>            :      *
-<span class="lineNum">     233 </span>            :      * @returns The std::vector&lt;float&gt; currently set for specialization constants
-<span class="lineNum">     234 </span>            :      */
-<span class="lineNum">     235 </span>            :     template&lt;typename T&gt;
-<span class="lineNum">     236 </span>            :     const std::vector&lt;T&gt; getSpecializationConstants()
-<span class="lineNum">     237 </span>            :     {
-<span class="lineNum">     238 </span>            :         return { (T*)this-&gt;mSpecializationConstantsData,
-<span class="lineNum">     239 </span>            :             ((T*)this-&gt;mSpecializationConstantsData) + this-&gt;mSpecializationConstantsSize };
-<span class="lineNum">     240 </span>            :     }
-<span class="lineNum">     241 </span>            :     /**
-<span class="lineNum">     242 </span>            :      * Gets the specialization constants of the current algorithm.
-<span class="lineNum">     243 </span>            :      *
-<span class="lineNum">     244 </span>            :      * @returns The std::vector&lt;float&gt; currently set for push constants
-<span class="lineNum">     245 </span>            :      */
-<span class="lineNum">     246 </span>            :     template&lt;typename T&gt;
-<span class="lineNum">     247 </span>            :     const std::vector&lt;T&gt; getPushConstants()
-<span class="lineNum">     248 </span>            :     {
-<span class="lineNum">     249 </span>            :         return { (T*)this-&gt;mPushConstantsData,
-<span class="lineNum">     250 </span>            :             ((T*)this-&gt;mPushConstantsData) + this-&gt;mPushConstantsSize };
-<span class="lineNum">     251 </span>            :     }
-<span class="lineNum">     252 </span>            :     /**
-<span class="lineNum">     253 </span>            :      * Gets the current tensors that are used in the algorithm.
-<span class="lineNum">     254 </span>            :      *
-<span class="lineNum">     255 </span>            :      * @returns The list of tensors used in the algorithm.
-<span class="lineNum">     256 </span>            :      */
-<span class="lineNum">     257 </span>            :     const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; getTensors();
-<span class="lineNum">     258 </span>            : 
-<span class="lineNum">     259 </span>            :     void destroy();
-<span class="lineNum">     260 </span>            : 
-<span class="lineNum">     261 </span>            :   private:
-<span class="lineNum">     262 </span>            :     // -------------- NEVER OWNED RESOURCES
-<span class="lineNum">     263 </span>            :     std::shared_ptr&lt;vk::Device&gt; mDevice;
-<span class="lineNum">     264 </span>            :     std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; mTensors;
-<span class="lineNum">     265 </span>            : 
-<span class="lineNum">     266 </span>            :     // -------------- OPTIONALLY OWNED RESOURCES
-<span class="lineNum">     267 </span>            :     std::shared_ptr&lt;vk::DescriptorSetLayout&gt; mDescriptorSetLayout;
-<span class="lineNum">     268 </span>            :     bool mFreeDescriptorSetLayout = false;
-<span class="lineNum">     269 </span>            :     std::shared_ptr&lt;vk::DescriptorPool&gt; mDescriptorPool;
-<span class="lineNum">     270 </span>            :     bool mFreeDescriptorPool = false;
-<span class="lineNum">     271 </span>            :     std::shared_ptr&lt;vk::DescriptorSet&gt; mDescriptorSet;
-<span class="lineNum">     272 </span>            :     bool mFreeDescriptorSet = false;
-<span class="lineNum">     273 </span>            :     std::shared_ptr&lt;vk::ShaderModule&gt; mShaderModule;
-<span class="lineNum">     274 </span>            :     bool mFreeShaderModule = false;
-<span class="lineNum">     275 </span>            :     std::shared_ptr&lt;vk::PipelineLayout&gt; mPipelineLayout;
-<span class="lineNum">     276 </span>            :     bool mFreePipelineLayout = false;
-<span class="lineNum">     277 </span>            :     std::shared_ptr&lt;vk::PipelineCache&gt; mPipelineCache;
-<span class="lineNum">     278 </span>            :     bool mFreePipelineCache = false;
-<span class="lineNum">     279 </span>            :     std::shared_ptr&lt;vk::Pipeline&gt; mPipeline;
-<span class="lineNum">     280 </span>            :     bool mFreePipeline = false;
-<span class="lineNum">     281 </span>            : 
-<span class="lineNum">     282 </span>            :     // -------------- ALWAYS OWNED RESOURCES
-<span class="lineNum">     283 </span>            :     std::vector&lt;uint32_t&gt; mSpirv;
-<span class="lineNum">     284 </span>            :     void* mSpecializationConstantsData = nullptr;
-<span class="lineNum">     285 </span>            :     uint32_t mSpecializationConstantsDataTypeMemorySize = 0;
-<span class="lineNum">     286 </span>            :     uint32_t mSpecializationConstantsSize = 0;
-<span class="lineNum">     287 </span>            :     void* mPushConstantsData = nullptr;
-<span class="lineNum">     288 </span>            :     uint32_t mPushConstantsDataTypeMemorySize = 0;
-<span class="lineNum">     289 </span>            :     uint32_t mPushConstantsSize = 0;
-<span class="lineNum">     290 </span>            :     Workgroup mWorkgroup;
-<span class="lineNum">     291 </span>            : 
-<span class="lineNum">     292 </span>            :     // Create util functions
-<span class="lineNum">     293 </span>            :     void createShaderModule();
-<span class="lineNum">     294 </span>            :     void createPipeline();
-<span class="lineNum">     295 </span>            : 
-<span class="lineNum">     296 </span>            :     // Parameters
-<span class="lineNum">     297 </span>            :     void createParameters();
-<span class="lineNum">     298 </span>            : };
-<span class="lineNum">     299 </span>            : 
-<span class="lineNum">     300 </span>            : } // End namespace kp
+<span class="lineNum">     202 </span>            :     /**
+<span class="lineNum">     203 </span>            :      * Sets the push constants to the new value provided to use in the next
+<span class="lineNum">     204 </span>            :      * bindPush() with the raw memory block location and memory size to be used.
+<span class="lineNum">     205 </span>            :      *
+<span class="lineNum">     206 </span>            :      * @param data The raw data point to copy the data from, without modifying
+<span class="lineNum">     207 </span>            :      * the pointer.
+<span class="lineNum">     208 </span>            :      * @param size The number of data elements provided in the data
+<a name="209"><span class="lineNum">     209 </span>            :      * @param memorySize The memory size of each of the data elements in bytes.</a>
+<span class="lineNum">     210 </span>            :      */
+<span class="lineNum">     211 </span><span class="lineCov">         22 :     void setPushConstants(void* data, uint32_t size, uint32_t memorySize)</span>
+<span class="lineNum">     212 </span>            :     {
+<span class="lineNum">     213 </span>            : 
+<span class="lineNum">     214 </span><span class="lineCov">         22 :         uint32_t totalSize = memorySize * size;</span>
+<span class="lineNum">     215 </span><span class="lineCov">         22 :         uint32_t previousTotalSize =</span>
+<span class="lineNum">     216 </span><span class="lineCov">         22 :           this-&gt;mPushConstantsDataTypeMemorySize * this-&gt;mPushConstantsSize;</span>
+<span class="lineNum">     217 </span>            : 
+<span class="lineNum">     218 </span><span class="lineCov">         22 :         if (totalSize != previousTotalSize) {</span>
+<span class="lineNum">     219 </span><span class="lineCov">          2 :             throw std::runtime_error(fmt::format(</span>
+<span class="lineNum">     220 </span>            :               &quot;Kompute Algorithm push &quot;
+<span class="lineNum">     221 </span>            :               &quot;constant total memory size provided is {} but expected {} bytes&quot;,
+<span class="lineNum">     222 </span>            :               totalSize,
+<span class="lineNum">     223 </span><span class="lineCov">          6 :               previousTotalSize));</span>
+<span class="lineNum">     224 </span>            :         }
+<span class="lineNum">     225 </span><span class="lineCov">         20 :         if (this-&gt;mPushConstantsData) {</span>
+<span class="lineNum">     226 </span><span class="lineCov">         20 :             free(this-&gt;mPushConstantsData);</span>
+<span class="lineNum">     227 </span>            :         }
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span><span class="lineCov">         20 :         this-&gt;mPushConstantsData = malloc(totalSize);</span>
+<span class="lineNum">     230 </span><span class="lineCov">         20 :         memcpy(this-&gt;mPushConstantsData, data, totalSize);</span>
+<span class="lineNum">     231 </span><span class="lineCov">         20 :         this-&gt;mPushConstantsDataTypeMemorySize = memorySize;</span>
+<span class="lineNum">     232 </span><span class="lineCov">         20 :         this-&gt;mPushConstantsSize = size;</span>
+<span class="lineNum">     233 </span><span class="lineCov">         20 :     }</span>
+<span class="lineNum">     234 </span>            : 
+<span class="lineNum">     235 </span>            :     /**
+<span class="lineNum">     236 </span>            :      * Gets the current workgroup from the algorithm.
+<span class="lineNum">     237 </span>            :      *
+<span class="lineNum">     238 </span>            :      * @param The kp::Constant to use to set the push constants to use in the
+<span class="lineNum">     239 </span>            :      * next bindPush(...) calls. The constants provided must be of the same size
+<span class="lineNum">     240 </span>            :      * as the ones created during initialization.
+<span class="lineNum">     241 </span>            :      */
+<span class="lineNum">     242 </span>            :     const Workgroup&amp; getWorkgroup();
+<span class="lineNum">     243 </span>            :     /**
+<span class="lineNum">     244 </span>            :      * Gets the specialization constants of the current algorithm.
+<span class="lineNum">     245 </span>            :      *
+<span class="lineNum">     246 </span>            :      * @returns The std::vector&lt;float&gt; currently set for specialization
+<span class="lineNum">     247 </span>            :      * constants
+<span class="lineNum">     248 </span>            :      */
+<span class="lineNum">     249 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     250 </span>            :     const std::vector&lt;T&gt; getSpecializationConstants()
+<span class="lineNum">     251 </span>            :     {
+<span class="lineNum">     252 </span>            :         return { (T*)this-&gt;mSpecializationConstantsData,
+<span class="lineNum">     253 </span>            :                  ((T*)this-&gt;mSpecializationConstantsData) +
+<span class="lineNum">     254 </span>            :                    this-&gt;mSpecializationConstantsSize };
+<span class="lineNum">     255 </span>            :     }
+<span class="lineNum">     256 </span>            :     /**
+<span class="lineNum">     257 </span>            :      * Gets the specialization constants of the current algorithm.
+<span class="lineNum">     258 </span>            :      *
+<span class="lineNum">     259 </span>            :      * @returns The std::vector&lt;float&gt; currently set for push constants
+<span class="lineNum">     260 </span>            :      */
+<span class="lineNum">     261 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     262 </span>            :     const std::vector&lt;T&gt; getPushConstants()
+<span class="lineNum">     263 </span>            :     {
+<span class="lineNum">     264 </span>            :         return { (T*)this-&gt;mPushConstantsData,
+<span class="lineNum">     265 </span>            :                  ((T*)this-&gt;mPushConstantsData) + this-&gt;mPushConstantsSize };
+<span class="lineNum">     266 </span>            :     }
+<span class="lineNum">     267 </span>            :     /**
+<span class="lineNum">     268 </span>            :      * Gets the current tensors that are used in the algorithm.
+<span class="lineNum">     269 </span>            :      *
+<span class="lineNum">     270 </span>            :      * @returns The list of tensors used in the algorithm.
+<span class="lineNum">     271 </span>            :      */
+<span class="lineNum">     272 </span>            :     const std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt;&amp; getTensors();
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span>            :     void destroy();
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span>            :   private:
+<span class="lineNum">     277 </span>            :     // -------------- NEVER OWNED RESOURCES
+<span class="lineNum">     278 </span>            :     std::shared_ptr&lt;vk::Device&gt; mDevice;
+<span class="lineNum">     279 </span>            :     std::vector&lt;std::shared_ptr&lt;Tensor&gt;&gt; mTensors;
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span>            :     // -------------- OPTIONALLY OWNED RESOURCES
+<span class="lineNum">     282 </span>            :     std::shared_ptr&lt;vk::DescriptorSetLayout&gt; mDescriptorSetLayout;
+<span class="lineNum">     283 </span>            :     bool mFreeDescriptorSetLayout = false;
+<span class="lineNum">     284 </span>            :     std::shared_ptr&lt;vk::DescriptorPool&gt; mDescriptorPool;
+<span class="lineNum">     285 </span>            :     bool mFreeDescriptorPool = false;
+<span class="lineNum">     286 </span>            :     std::shared_ptr&lt;vk::DescriptorSet&gt; mDescriptorSet;
+<span class="lineNum">     287 </span>            :     bool mFreeDescriptorSet = false;
+<span class="lineNum">     288 </span>            :     std::shared_ptr&lt;vk::ShaderModule&gt; mShaderModule;
+<span class="lineNum">     289 </span>            :     bool mFreeShaderModule = false;
+<span class="lineNum">     290 </span>            :     std::shared_ptr&lt;vk::PipelineLayout&gt; mPipelineLayout;
+<span class="lineNum">     291 </span>            :     bool mFreePipelineLayout = false;
+<span class="lineNum">     292 </span>            :     std::shared_ptr&lt;vk::PipelineCache&gt; mPipelineCache;
+<span class="lineNum">     293 </span>            :     bool mFreePipelineCache = false;
+<span class="lineNum">     294 </span>            :     std::shared_ptr&lt;vk::Pipeline&gt; mPipeline;
+<span class="lineNum">     295 </span>            :     bool mFreePipeline = false;
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span>            :     // -------------- ALWAYS OWNED RESOURCES
+<span class="lineNum">     298 </span>            :     std::vector&lt;uint32_t&gt; mSpirv;
+<span class="lineNum">     299 </span>            :     void* mSpecializationConstantsData = nullptr;
+<span class="lineNum">     300 </span>            :     uint32_t mSpecializationConstantsDataTypeMemorySize = 0;
+<span class="lineNum">     301 </span>            :     uint32_t mSpecializationConstantsSize = 0;
+<span class="lineNum">     302 </span>            :     void* mPushConstantsData = nullptr;
+<span class="lineNum">     303 </span>            :     uint32_t mPushConstantsDataTypeMemorySize = 0;
+<span class="lineNum">     304 </span>            :     uint32_t mPushConstantsSize = 0;
+<span class="lineNum">     305 </span>            :     Workgroup mWorkgroup;
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span>            :     // Create util functions
+<span class="lineNum">     308 </span>            :     void createShaderModule();
+<span class="lineNum">     309 </span>            :     void createPipeline();
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span>            :     // Parameters
+<span class="lineNum">     312 </span>            :     void createParameters();
+<span class="lineNum">     313 </span>            : };
+<span class="lineNum">     314 </span>            : 
+<span class="lineNum">     315 </span>            : } // End namespace kp
 </pre>
       </td>
     </tr>

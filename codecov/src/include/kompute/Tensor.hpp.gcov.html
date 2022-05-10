@@ -1,0 +1,453 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - lcov.info - src/include/kompute/Tensor.hpp</title>
+  <link rel="stylesheet" type="text/css" href="../../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../../index.html">top level</a> - <a href="index.html">src/include/kompute</a> - Tensor.hpp<span style="font-size: 80%;"> (source / <a href="Tensor.hpp.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">lcov.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntryLo">37.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-05-10 20:43:15</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">50.0 %</td>
+          </tr>
+          <tr><td><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : // SPDX-License-Identifier: Apache-2.0</a>
+<span class="lineNum">       2 </span>            : #pragma once
+<span class="lineNum">       3 </span>            : 
+<span class="lineNum">       4 </span>            : #include &quot;kompute/Core.hpp&quot;
+<span class="lineNum">       5 </span>            : #include &lt;fmt/format.h&gt;
+<span class="lineNum">       6 </span>            : #include &lt;string&gt;
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            : namespace kp {
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            : /**
+<span class="lineNum">      11 </span>            :  * Structured data used in GPU operations.
+<span class="lineNum">      12 </span>            :  *
+<span class="lineNum">      13 </span>            :  * Tensors are the base building block in Kompute to perform operations across
+<span class="lineNum">      14 </span>            :  * GPUs. Each tensor would have a respective Vulkan memory and buffer, which
+<span class="lineNum">      15 </span>            :  * would be used to store their respective data. The tensors can be used for GPU
+<span class="lineNum">      16 </span>            :  * data storage or transfer.
+<span class="lineNum">      17 </span>            :  */
+<span class="lineNum">      18 </span>            : class Tensor
+<span class="lineNum">      19 </span>            : {
+<span class="lineNum">      20 </span>            :   public:
+<span class="lineNum">      21 </span>            :     /**
+<span class="lineNum">      22 </span>            :      * Type for tensors created: Device allows memory to be transferred from
+<span class="lineNum">      23 </span>            :      * staging buffers. Staging are host memory visible. Storage are device
+<span class="lineNum">      24 </span>            :      * visible but are not set up to transfer or receive data (only for shader
+<span class="lineNum">      25 </span>            :      * storage).
+<span class="lineNum">      26 </span>            :      */
+<span class="lineNum">      27 </span>            :     enum class TensorTypes
+<span class="lineNum">      28 </span>            :     {
+<span class="lineNum">      29 </span>            :         eDevice = 0,  ///&lt; Type is device memory, source and destination
+<span class="lineNum">      30 </span>            :         eHost = 1,    ///&lt; Type is host memory, source and destination
+<span class="lineNum">      31 </span>            :         eStorage = 2, ///&lt; Type is Device memory (only)
+<span class="lineNum">      32 </span>            :     };
+<span class="lineNum">      33 </span>            :     enum class TensorDataTypes
+<span class="lineNum">      34 </span>            :     {
+<span class="lineNum">      35 </span>            :         eBool = 0,
+<span class="lineNum">      36 </span>            :         eInt = 1,
+<span class="lineNum">      37 </span>            :         eUnsignedInt = 2,
+<span class="lineNum">      38 </span>            :         eFloat = 3,
+<span class="lineNum">      39 </span>            :         eDouble = 4,
+<span class="lineNum">      40 </span>            :     };
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :     /**
+<span class="lineNum">      43 </span>            :      *  Constructor with data provided which would be used to create the
+<span class="lineNum">      44 </span>            :      * respective vulkan buffer and memory.
+<span class="lineNum">      45 </span>            :      *
+<span class="lineNum">      46 </span>            :      *  @param physicalDevice The physical device to use to fetch properties
+<span class="lineNum">      47 </span>            :      *  @param device The device to use to create the buffer and memory from
+<span class="lineNum">      48 </span>            :      *  @param data Non-zero-sized vector of data that will be used by the
+<span class="lineNum">      49 </span>            :      * tensor
+<span class="lineNum">      50 </span>            :      *  @param tensorTypes Type for the tensor which is of type TensorTypes
+<span class="lineNum">      51 </span>            :      */
+<span class="lineNum">      52 </span>            :     Tensor(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,
+<span class="lineNum">      53 </span>            :            std::shared_ptr&lt;vk::Device&gt; device,
+<span class="lineNum">      54 </span>            :            void* data,
+<span class="lineNum">      55 </span>            :            uint32_t elementTotalCount,
+<span class="lineNum">      56 </span>            :            uint32_t elementMemorySize,
+<span class="lineNum">      57 </span>            :            const TensorDataTypes&amp; dataType,
+<span class="lineNum">      58 </span>            :            const TensorTypes&amp; tensorType = TensorTypes::eDevice);
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            :     /**
+<span class="lineNum">      61 </span>            :      * Destructor which is in charge of freeing vulkan resources unless they
+<span class="lineNum">      62 </span>            :      * have been provided externally.
+<span class="lineNum">      63 </span>            :      */
+<span class="lineNum">      64 </span>            :     virtual ~Tensor();
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            :     /**
+<span class="lineNum">      67 </span>            :      * Function to trigger reinitialisation of the tensor buffer and memory with
+<span class="lineNum">      68 </span>            :      * new data as well as new potential device type.
+<span class="lineNum">      69 </span>            :      *
+<span class="lineNum">      70 </span>            :      * @param data Vector of data to use to initialise vector from
+<span class="lineNum">      71 </span>            :      * @param tensorType The type to use for the tensor
+<span class="lineNum">      72 </span>            :      */
+<span class="lineNum">      73 </span>            :     void rebuild(void* data,
+<span class="lineNum">      74 </span>            :                  uint32_t elementTotalCount,
+<span class="lineNum">      75 </span>            :                  uint32_t elementMemorySize);
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            :     /**
+<span class="lineNum">      78 </span>            :      * Destroys and frees the GPU resources which include the buffer and memory.
+<span class="lineNum">      79 </span>            :      */
+<span class="lineNum">      80 </span>            :     void destroy();
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span>            :     /**
+<span class="lineNum">      83 </span>            :      * Check whether tensor is initialized based on the created gpu resources.
+<span class="lineNum">      84 </span>            :      *
+<span class="lineNum">      85 </span>            :      * @returns Boolean stating whether tensor is initialized
+<span class="lineNum">      86 </span>            :      */
+<span class="lineNum">      87 </span>            :     bool isInit();
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            :     /**
+<span class="lineNum">      90 </span>            :      * Retrieve the tensor type of the Tensor
+<span class="lineNum">      91 </span>            :      *
+<span class="lineNum">      92 </span>            :      * @return Tensor type of tensor
+<span class="lineNum">      93 </span>            :      */
+<span class="lineNum">      94 </span>            :     TensorTypes tensorType();
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :     /**
+<span class="lineNum">      97 </span>            :      * Records a copy from the memory of the tensor provided to the current
+<span class="lineNum">      98 </span>            :      * thensor. This is intended to pass memory into a processing, to perform
+<span class="lineNum">      99 </span>            :      * a staging buffer transfer, or to gather output (between others).
+<span class="lineNum">     100 </span>            :      *
+<span class="lineNum">     101 </span>            :      * @param commandBuffer Vulkan Command Buffer to record the commands into
+<span class="lineNum">     102 </span>            :      * @param copyFromTensor Tensor to copy the data from
+<span class="lineNum">     103 </span>            :      */
+<span class="lineNum">     104 </span>            :     void recordCopyFrom(const vk::CommandBuffer&amp; commandBuffer,
+<span class="lineNum">     105 </span>            :                         std::shared_ptr&lt;Tensor&gt; copyFromTensor);
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            :     /**
+<span class="lineNum">     108 </span>            :      * Records a copy from the internal staging memory to the device memory
+<span class="lineNum">     109 </span>            :      * using an optional barrier to wait for the operation. This function would
+<span class="lineNum">     110 </span>            :      * only be relevant for kp::Tensors of type eDevice.
+<span class="lineNum">     111 </span>            :      *
+<span class="lineNum">     112 </span>            :      * @param commandBuffer Vulkan Command Buffer to record the commands into
+<span class="lineNum">     113 </span>            :      */
+<span class="lineNum">     114 </span>            :     void recordCopyFromStagingToDevice(const vk::CommandBuffer&amp; commandBuffer);
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span>            :     /**
+<span class="lineNum">     117 </span>            :      * Records a copy from the internal device memory to the staging memory
+<span class="lineNum">     118 </span>            :      * using an optional barrier to wait for the operation. This function would
+<span class="lineNum">     119 </span>            :      * only be relevant for kp::Tensors of type eDevice.
+<span class="lineNum">     120 </span>            :      *
+<span class="lineNum">     121 </span>            :      * @param commandBuffer Vulkan Command Buffer to record the commands into
+<span class="lineNum">     122 </span>            :      */
+<span class="lineNum">     123 </span>            :     void recordCopyFromDeviceToStaging(const vk::CommandBuffer&amp; commandBuffer);
+<span class="lineNum">     124 </span>            : 
+<span class="lineNum">     125 </span>            :     /**
+<span class="lineNum">     126 </span>            :      * Records the buffer memory barrier into the primary buffer and command
+<span class="lineNum">     127 </span>            :      * buffer which ensures that relevant data transfers are carried out
+<span class="lineNum">     128 </span>            :      * correctly.
+<span class="lineNum">     129 </span>            :      *
+<span class="lineNum">     130 </span>            :      * @param commandBuffer Vulkan Command Buffer to record the commands into
+<span class="lineNum">     131 </span>            :      * @param srcAccessMask Access flags for source access mask
+<span class="lineNum">     132 </span>            :      * @param dstAccessMask Access flags for destination access mask
+<span class="lineNum">     133 </span>            :      * @param scrStageMask Pipeline stage flags for source stage mask
+<span class="lineNum">     134 </span>            :      * @param dstStageMask Pipeline stage flags for destination stage mask
+<span class="lineNum">     135 </span>            :      */
+<span class="lineNum">     136 </span>            :     void recordPrimaryBufferMemoryBarrier(
+<span class="lineNum">     137 </span>            :       const vk::CommandBuffer&amp; commandBuffer,
+<span class="lineNum">     138 </span>            :       vk::AccessFlagBits srcAccessMask,
+<span class="lineNum">     139 </span>            :       vk::AccessFlagBits dstAccessMask,
+<span class="lineNum">     140 </span>            :       vk::PipelineStageFlagBits srcStageMask,
+<span class="lineNum">     141 </span>            :       vk::PipelineStageFlagBits dstStageMask);
+<span class="lineNum">     142 </span>            :     /**
+<span class="lineNum">     143 </span>            :      * Records the buffer memory barrier into the staging buffer and command
+<span class="lineNum">     144 </span>            :      * buffer which ensures that relevant data transfers are carried out
+<span class="lineNum">     145 </span>            :      * correctly.
+<span class="lineNum">     146 </span>            :      *
+<span class="lineNum">     147 </span>            :      * @param commandBuffer Vulkan Command Buffer to record the commands into
+<span class="lineNum">     148 </span>            :      * @param srcAccessMask Access flags for source access mask
+<span class="lineNum">     149 </span>            :      * @param dstAccessMask Access flags for destination access mask
+<span class="lineNum">     150 </span>            :      * @param scrStageMask Pipeline stage flags for source stage mask
+<span class="lineNum">     151 </span>            :      * @param dstStageMask Pipeline stage flags for destination stage mask
+<span class="lineNum">     152 </span>            :      */
+<span class="lineNum">     153 </span>            :     void recordStagingBufferMemoryBarrier(
+<span class="lineNum">     154 </span>            :       const vk::CommandBuffer&amp; commandBuffer,
+<span class="lineNum">     155 </span>            :       vk::AccessFlagBits srcAccessMask,
+<span class="lineNum">     156 </span>            :       vk::AccessFlagBits dstAccessMask,
+<span class="lineNum">     157 </span>            :       vk::PipelineStageFlagBits srcStageMask,
+<span class="lineNum">     158 </span>            :       vk::PipelineStageFlagBits dstStageMask);
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span>            :     /**
+<span class="lineNum">     161 </span>            :      * Constructs a vulkan descriptor buffer info which can be used to specify
+<span class="lineNum">     162 </span>            :      * and reference the underlying buffer component of the tensor without
+<span class="lineNum">     163 </span>            :      * exposing it.
+<span class="lineNum">     164 </span>            :      *
+<span class="lineNum">     165 </span>            :      * @return Descriptor buffer info with own buffer
+<span class="lineNum">     166 </span>            :      */
+<span class="lineNum">     167 </span>            :     vk::DescriptorBufferInfo constructDescriptorBufferInfo();
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            :     /**
+<span class="lineNum">     170 </span>            :      * Returns the size/magnitude of the Tensor, which will be the total number
+<span class="lineNum">     171 </span>            :      * of elements across all dimensions
+<span class="lineNum">     172 </span>            :      *
+<span class="lineNum">     173 </span>            :      * @return Unsigned integer representing the total number of elements
+<span class="lineNum">     174 </span>            :      */
+<span class="lineNum">     175 </span>            :     uint32_t size();
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span>            :     /**
+<span class="lineNum">     178 </span>            :      * Returns the total size of a single element of the respective data type
+<span class="lineNum">     179 </span>            :      * that this tensor holds.
+<span class="lineNum">     180 </span>            :      *
+<span class="lineNum">     181 </span>            :      * @return Unsigned integer representing the memory of a single element of
+<span class="lineNum">     182 </span>            :      * the respective data type.
+<span class="lineNum">     183 </span>            :      */
+<span class="lineNum">     184 </span>            :     uint32_t dataTypeMemorySize();
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :     /**
+<span class="lineNum">     187 </span>            :      * Returns the total memory size of the data contained by the Tensor object
+<span class="lineNum">     188 </span>            :      * which would equate to (this-&gt;size() * this-&gt;dataTypeMemorySize())
+<span class="lineNum">     189 </span>            :      *
+<span class="lineNum">     190 </span>            :      * @return Unsigned integer representing the memory of a single element of
+<span class="lineNum">     191 </span>            :      * the respective data type.
+<span class="lineNum">     192 </span>            :      */
+<span class="lineNum">     193 </span>            :     uint32_t memorySize();
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            :     /**
+<span class="lineNum">     196 </span>            :      * Retrieve the data type of the tensor (host, device, storage)
+<span class="lineNum">     197 </span>            :      *
+<span class="lineNum">     198 </span>            :      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
+<span class="lineNum">     199 </span>            :      */
+<span class="lineNum">     200 </span>            :     TensorDataTypes dataType();
+<span class="lineNum">     201 </span>            : 
+<span class="lineNum">     202 </span>            :     /**
+<span class="lineNum">     203 </span>            :      * Retrieve the raw data via the pointer to the memory that contains the raw
+<span class="lineNum">     204 </span>            :      * memory of this current tensor. This tensor gets changed to a nullptr when
+<span class="lineNum">     205 </span>            :      * the Tensor is removed.
+<span class="lineNum">     206 </span>            :      *
+<span class="lineNum">     207 </span>            :      * @return Pointer to raw memory containing raw bytes data of Tensor.
+<span class="lineNum">     208 </span>            :      */
+<span class="lineNum">     209 </span>            :     void* rawData();
+<span class="lineNum">     210 </span>            : 
+<span class="lineNum">     211 </span>            :     /**
+<span class="lineNum">     212 </span>            :      * Sets / resets the data of the tensor which is directly done on the GPU
+<span class="lineNum">     213 </span>            :      * host visible memory available by the tensor.
+<span class="lineNum">     214 </span>            :      */
+<span class="lineNum">     215 </span>            :     void setRawData(const void* data);
+<span class="lineNum">     216 </span>            : 
+<span class="lineNum">     217 </span>            :     /**
+<span class="lineNum">     218 </span>            :      * Template to return the pointer data converted by specific type, which
+<span class="lineNum">     219 </span>            :      * would be any of the supported types including float, double, int32,
+<span class="lineNum">     220 </span>            :      * uint32 and bool.
+<span class="lineNum">     221 </span>            :      *
+<span class="lineNum">     222 </span>            :      * @return Pointer to raw memory containing raw bytes data of Tensor.
+<span class="lineNum">     223 </span>            :      */
+<span class="lineNum">     224 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     225 </span>            :     T* data()
+<span class="lineNum">     226 </span>            :     {
+<span class="lineNum">     227 </span>            :         return (T*)this-&gt;mRawData;
+<span class="lineNum">     228 </span>            :     }
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :     /**
+<span class="lineNum">     231 </span>            :      * Template to get the data of the current tensor as a vector of specific
+<span class="lineNum">     232 </span>            :      * type, which would be any of the supported types including float, double,
+<span class="lineNum">     233 </span>            :      * int32, uint32 and bool.
+<span class="lineNum">     234 </span>            :      *
+<span class="lineNum">     235 </span>            :      * @return Vector of type provided by template.
+<span class="lineNum">     236 </span>            :      */
+<span class="lineNum">     237 </span>            :     template&lt;typename T&gt;
+<span class="lineNum">     238 </span>            :     std::vector&lt;T&gt; vector()
+<span class="lineNum">     239 </span>            :     {
+<span class="lineNum">     240 </span>            :         return { (T*)this-&gt;mRawData, ((T*)this-&gt;mRawData) + this-&gt;size() };
+<span class="lineNum">     241 </span>            :     }
+<span class="lineNum">     242 </span>            : 
+<span class="lineNum">     243 </span>            :   protected:
+<span class="lineNum">     244 </span>            :     // -------------- ALWAYS OWNED RESOURCES
+<span class="lineNum">     245 </span>            :     TensorTypes mTensorType;
+<span class="lineNum">     246 </span>            :     TensorDataTypes mDataType;
+<span class="lineNum">     247 </span>            :     uint32_t mSize;
+<span class="lineNum">     248 </span>            :     uint32_t mDataTypeMemorySize;
+<span class="lineNum">     249 </span>            :     void* mRawData;
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span>            :   private:
+<span class="lineNum">     252 </span>            :     // -------------- NEVER OWNED RESOURCES
+<span class="lineNum">     253 </span>            :     std::shared_ptr&lt;vk::PhysicalDevice&gt; mPhysicalDevice;
+<span class="lineNum">     254 </span>            :     std::shared_ptr&lt;vk::Device&gt; mDevice;
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span>            :     // -------------- OPTIONALLY OWNED RESOURCES
+<span class="lineNum">     257 </span>            :     std::shared_ptr&lt;vk::Buffer&gt; mPrimaryBuffer;
+<span class="lineNum">     258 </span>            :     bool mFreePrimaryBuffer = false;
+<span class="lineNum">     259 </span>            :     std::shared_ptr&lt;vk::Buffer&gt; mStagingBuffer;
+<span class="lineNum">     260 </span>            :     bool mFreeStagingBuffer = false;
+<span class="lineNum">     261 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; mPrimaryMemory;
+<span class="lineNum">     262 </span>            :     bool mFreePrimaryMemory = false;
+<span class="lineNum">     263 </span>            :     std::shared_ptr&lt;vk::DeviceMemory&gt; mStagingMemory;
+<span class="lineNum">     264 </span>            :     bool mFreeStagingMemory = false;
+<span class="lineNum">     265 </span>            : 
+<span class="lineNum">     266 </span>            :     void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+<span class="lineNum">     267 </span>            :     void createBuffer(std::shared_ptr&lt;vk::Buffer&gt; buffer,
+<span class="lineNum">     268 </span>            :                       vk::BufferUsageFlags bufferUsageFlags);
+<span class="lineNum">     269 </span>            :     void allocateBindMemory(std::shared_ptr&lt;vk::Buffer&gt; buffer,
+<span class="lineNum">     270 </span>            :                             std::shared_ptr&lt;vk::DeviceMemory&gt; memory,
+<span class="lineNum">     271 </span>            :                             vk::MemoryPropertyFlags memoryPropertyFlags);
+<span class="lineNum">     272 </span>            :     void recordCopyBuffer(const vk::CommandBuffer&amp; commandBuffer,
+<span class="lineNum">     273 </span>            :                           std::shared_ptr&lt;vk::Buffer&gt; bufferFrom,
+<span class="lineNum">     274 </span>            :                           std::shared_ptr&lt;vk::Buffer&gt; bufferTo,
+<span class="lineNum">     275 </span>            :                           vk::DeviceSize bufferSize,
+<span class="lineNum">     276 </span>            :                           vk::BufferCopy copyRegion);
+<span class="lineNum">     277 </span>            :     void recordBufferMemoryBarrier(const vk::CommandBuffer&amp; commandBuffer,
+<span class="lineNum">     278 </span>            :                                    const vk::Buffer&amp; buffer,
+<span class="lineNum">     279 </span>            :                                    vk::AccessFlagBits srcAccessMask,
+<span class="lineNum">     280 </span>            :                                    vk::AccessFlagBits dstAccessMask,
+<span class="lineNum">     281 </span>            :                                    vk::PipelineStageFlagBits srcStageMask,
+<span class="lineNum">     282 </span>            :                                    vk::PipelineStageFlagBits dstStageMask);
+<span class="lineNum">     283 </span>            : 
+<span class="lineNum">     284 </span>            :     // Private util functions
+<span class="lineNum">     285 </span>            :     vk::BufferUsageFlags getPrimaryBufferUsageFlags();
+<span class="lineNum">     286 </span>            :     vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
+<span class="lineNum">     287 </span>            :     vk::BufferUsageFlags getStagingBufferUsageFlags();
+<span class="lineNum">     288 </span>            :     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span>            :     void mapRawData();
+<span class="lineNum">     291 </span>            :     void unmapRawData();
+<span class="lineNum">     292 </span>            : };
+<span class="lineNum">     293 </span>            : 
+<span class="lineNum">     294 </span>            : template&lt;typename T&gt;
+<span class="lineNum">     295 </span>            : class TensorT : public Tensor
+<span class="lineNum">     296 </span>            : {
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span>            :   public:
+<span class="lineNum">     299 </span>            :     TensorT(std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,
+<span class="lineNum">     300 </span>            :             std::shared_ptr&lt;vk::Device&gt; device,
+<span class="lineNum">     301 </span>            :             const std::vector&lt;T&gt;&amp; data,
+<span class="lineNum">     302 </span>            :             const TensorTypes&amp; tensorType = TensorTypes::eDevice)
+<span class="lineNum">     303 </span>            :       : Tensor(physicalDevice,
+<span class="lineNum">     304 </span>            :                device,
+<span class="lineNum">     305 </span>            :                (void*)data.data(),
+<span class="lineNum">     306 </span>            :                data.size(),
+<span class="lineNum">     307 </span>            :                sizeof(T),
+<span class="lineNum">     308 </span>            :                this-&gt;dataType(),
+<span class="lineNum">     309 </span>            :                tensorType)
+<span class="lineNum">     310 </span>            :     {
+<span class="lineNum">     311 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT constructor with data size {}&quot;,
+<span class="lineNum">     312 </span>            :                      data.size());
+<span class="lineNum">     313 </span>            :     }
+<span class="lineNum">     314 </span>            : 
+<span class="lineNum">     315 </span>            :     ~TensorT() { KP_LOG_DEBUG(&quot;Kompute TensorT destructor&quot;); }
+<span class="lineNum">     316 </span>            : 
+<span class="lineNum">     317 </span>            :     T* data() { return (T*)this-&gt;mRawData; }
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span>            :     std::vector&lt;T&gt; vector()
+<span class="lineNum">     320 </span>            :     {
+<span class="lineNum">     321 </span>            :         return { (T*)this-&gt;mRawData, ((T*)this-&gt;mRawData) + this-&gt;size() };
+<span class="lineNum">     322 </span>            :     }
+<span class="lineNum">     323 </span>            : 
+<span class="lineNum">     324 </span>            :     T&amp; operator[](int index) { return *(((T*)this-&gt;mRawData) + index); }
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span>            :     void setData(const std::vector&lt;T&gt;&amp; data)
+<span class="lineNum">     327 </span>            :     {
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span>            :         KP_LOG_DEBUG(&quot;Kompute TensorT setting data with data size {}&quot;,
+<span class="lineNum">     330 </span>            :                      data.size());
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :         if (data.size() != this-&gt;mSize) {
+<span class="lineNum">     333 </span>            :             throw std::runtime_error(
+<span class="lineNum">     334 </span>            :               &quot;Kompute TensorT Cannot set data of different sizes&quot;);
+<span class="lineNum">     335 </span>            :         }
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span>            :         Tensor::setRawData(data.data());
+<span class="lineNum">     338 </span>            :     }
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            :     TensorDataTypes dataType();
+<span class="lineNum">     341 </span>            : };
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span>            : } // End namespace kp
+<span class="lineNum">     344 </span>            : 
+<span class="lineNum">     345 </span>            : /**
+<span class="lineNum">     346 </span>            :  * fmt fromater for kp::Tensor::TensorDataTypes.
+<span class="lineNum">     347 </span>            :  */
+<a name="348"><span class="lineNum">     348 </span>            : template &lt;&gt; struct fmt::formatter&lt;kp::Tensor::TensorDataTypes&gt;: formatter&lt;std::string&gt; {</a>
+<span class="lineNum">     349 </span>            :   template &lt;typename FormatContext&gt;
+<span class="lineNum">     350 </span><span class="lineNoCov">          0 :   auto format(kp::Tensor::TensorDataTypes dt, FormatContext&amp; ctx) {</span>
+<span class="lineNum">     351 </span><span class="lineNoCov">          0 :     std::string name = &quot;unknown&quot;;</span>
+<span class="lineNum">     352 </span><span class="lineNoCov">          0 :     switch (dt) {</span>
+<span class="lineNum">     353 </span><span class="lineNoCov">          0 :       case kp::Tensor::TensorDataTypes::eBool: name = &quot;eBool&quot;; break;</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :       case kp::Tensor::TensorDataTypes::eDouble: name = &quot;eDouble&quot;; break;</span>
+<span class="lineNum">     355 </span><span class="lineNoCov">          0 :       case kp::Tensor::TensorDataTypes::eFloat: name = &quot;eFloat&quot;; break;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :       case kp::Tensor::TensorDataTypes::eInt: name = &quot;eInt&quot;; break;</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :       case kp::Tensor::TensorDataTypes::eUnsignedInt: name = &quot;eUnsignedInt&quot;; break;</span>
+<span class="lineNum">     358 </span>            :     }
+<span class="lineNum">     359 </span><span class="lineNoCov">          0 :     return formatter&lt;std::string&gt;::format(name, ctx);</span>
+<span class="lineNum">     360 </span>            :   }
+<span class="lineNum">     361 </span>            : };
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span>            : /**
+<span class="lineNum">     364 </span>            :  * fmt fromater for kp::Tensor::TensorTypes.
+<span class="lineNum">     365 </span>            :  */
+<a name="366"><span class="lineNum">     366 </span>            : template &lt;&gt; struct fmt::formatter&lt;kp::Tensor::TensorTypes&gt;: formatter&lt;std::string&gt; {</a>
+<span class="lineNum">     367 </span>            :   template &lt;typename FormatContext&gt;
+<span class="lineNum">     368 </span><span class="lineCov">        398 :   auto format(kp::Tensor::TensorTypes dt, FormatContext&amp; ctx) {</span>
+<span class="lineNum">     369 </span><span class="lineCov">        796 :     std::string name = &quot;unknown&quot;;</span>
+<span class="lineNum">     370 </span><span class="lineCov">        398 :     switch (dt) {</span>
+<span class="lineNum">     371 </span><span class="lineCov">        370 :       case kp::Tensor::TensorTypes::eDevice: name = &quot;eDevice&quot;; break;</span>
+<span class="lineNum">     372 </span><span class="lineCov">         28 :       case kp::Tensor::TensorTypes::eHost: name = &quot;eHost&quot;; break;</span>
+<span class="lineNum">     373 </span><span class="lineNoCov">          0 :       case kp::Tensor::TensorTypes::eStorage: name = &quot;eStorage&quot;; break;</span>
+<span class="lineNum">     374 </span>            :     }
+<span class="lineNum">     375 </span><span class="lineCov">        796 :     return formatter&lt;std::string&gt;::format(name, ctx);</span>
+<span class="lineNum">     376 </span>            :   }
+<span class="lineNum">     377 </span>            : };
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

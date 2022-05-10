@@ -1,8 +1,15 @@
 var searchData=
 [
-  ['sequence',['Sequence',['../classkp_1_1Sequence.html',1,'kp::Sequence'],['../classkp_1_1Manager.html#a5fac648ac65d2e1314120ebf6f91de91',1,'kp::Manager::sequence()'],['../classkp_1_1Sequence.html#afb1974c612652d9c58b6e0bcfb83db4a',1,'kp::Sequence::Sequence()']]],
-  ['setpushconstants',['setPushConstants',['../classkp_1_1Algorithm.html#a45c9565ad7fd9ec76ef2b4ca39385dae',1,'kp::Algorithm::setPushConstants(const std::vector&lt; T &gt; &amp;pushConstants)'],['../classkp_1_1Algorithm.html#aac3e21c65a28772e01c8ef45794a1943',1,'kp::Algorithm::setPushConstants(void *data, uint32_t size, uint32_t memorySize)']]],
-  ['setrawdata',['setRawData',['../classkp_1_1Tensor.html#a70b8a0e812aa2746726052c4bfa7307e',1,'kp::Tensor']]],
-  ['setworkgroup',['setWorkgroup',['../classkp_1_1Algorithm.html#a3f195f84f2e30d5913776a6610c52c19',1,'kp::Algorithm']]],
-  ['size',['size',['../classkp_1_1Tensor.html#a1fb937df6cc482c1f37c74d8fab0f9a9',1,'kp::Tensor']]]
+  ['rawdata',['rawData',['../classkp_1_1Tensor.html#a3f554cac913805efb542243fcc94d252',1,'kp::Tensor']]],
+  ['rebuild',['rebuild',['../classkp_1_1Algorithm.html#a266172db410310734fcc57dc5068b62c',1,'kp::Algorithm::rebuild()'],['../classkp_1_1Tensor.html#aece585e97c20ed7133fdfe9fabed9bd6',1,'kp::Tensor::rebuild()']]],
+  ['record',['record',['../classkp_1_1Sequence.html#a8fb61022e531b4536210e8da262c297b',1,'kp::Sequence::record(std::shared_ptr&lt; OpBase &gt; op)'],['../classkp_1_1Sequence.html#a3876a3d62a5fa473f54b5402e714dfba',1,'kp::Sequence::record(std::vector&lt; std::shared_ptr&lt; Tensor &gt;&gt; tensors, TArgs &amp;&amp;... params)'],['../classkp_1_1Sequence.html#a329ef5d6884b9e4990a605c7c09148cd',1,'kp::Sequence::record(std::shared_ptr&lt; Algorithm &gt; algorithm, TArgs &amp;&amp;... params)'],['../classkp_1_1OpAlgoDispatch.html#ae1b8e6a0f402859acab6ace0590a9fb9',1,'kp::OpAlgoDispatch::record()'],['../classkp_1_1OpBase.html#a49b26daf78e1c4720d950514383019f8',1,'kp::OpBase::record()'],['../classkp_1_1OpMemoryBarrier.html#a7f57df78566dc5186a7aeb513330c180',1,'kp::OpMemoryBarrier::record()'],['../classkp_1_1OpTensorCopy.html#a5e24af34f32cd3f9511113b47f95877d',1,'kp::OpTensorCopy::record()'],['../classkp_1_1OpTensorSyncDevice.html#a93f73c1d9a154ae1518dec924519cdb4',1,'kp::OpTensorSyncDevice::record()'],['../classkp_1_1OpTensorSyncLocal.html#ab29b7d2328f1288991b28c2ca6f9ec3b',1,'kp::OpTensorSyncLocal::record()']]],
+  ['recordbindcore',['recordBindCore',['../classkp_1_1Algorithm.html#a02656689952580a83d5f8d2c769a041e',1,'kp::Algorithm']]],
+  ['recordbindpush',['recordBindPush',['../classkp_1_1Algorithm.html#a4e3277dff114031c091475a12fb3cd23',1,'kp::Algorithm']]],
+  ['recordcopyfrom',['recordCopyFrom',['../classkp_1_1Tensor.html#afe8b7b81913863523c7a3e580cf91d8e',1,'kp::Tensor']]],
+  ['recordcopyfromdevicetostaging',['recordCopyFromDeviceToStaging',['../classkp_1_1Tensor.html#ab4be54f0063ffc1687006d6f0b417fcb',1,'kp::Tensor']]],
+  ['recordcopyfromstagingtodevice',['recordCopyFromStagingToDevice',['../classkp_1_1Tensor.html#ac565adf645121120c0b9ec31c04c743b',1,'kp::Tensor']]],
+  ['recorddispatch',['recordDispatch',['../classkp_1_1Algorithm.html#aa8ee096b6a4f8ae46f62273220c35423',1,'kp::Algorithm']]],
+  ['recordprimarybuffermemorybarrier',['recordPrimaryBufferMemoryBarrier',['../classkp_1_1Tensor.html#a1bacad91d866079585f18feb3ec6d8f7',1,'kp::Tensor']]],
+  ['recordstagingbuffermemorybarrier',['recordStagingBufferMemoryBarrier',['../classkp_1_1Tensor.html#ae1c2ef6acb0b74dcba7d92c870b2daa1',1,'kp::Tensor']]],
+  ['rerecord',['rerecord',['../classkp_1_1Sequence.html#a74fc63da146ea698e69f9177c5a0b456',1,'kp::Sequence']]]
 ];
