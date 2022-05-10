@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 # Enable or disable targets
-option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 1)
+option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 0)
 option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" 0)
 option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 0)
 option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" 0)
@@ -19,12 +19,11 @@ option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
 option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" 0)
 option(KOMPUTE_OPT_ENABLE_SPDLOG "Enable to compile with spdlog as the internal logging framework" 0)
 
-# option(KOMPUTE_OPT_REPO_SUBMODULE_BUILD "Use the submodule repos instead of external package manager" 0)
+# External komponents
 option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" 1)
 option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" 1)
 option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" 1)
 option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" 1)
-
 
 option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" 0)
 option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
