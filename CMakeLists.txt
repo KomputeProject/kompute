@@ -9,33 +9,32 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 # Enable or disable targets
-option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" 0)
-option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" 0)
-option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" 0)
-option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" 0)
-option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" 0)
-option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" 0)
+option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" OFF)
+option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" OFF)
+option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" OFF)
+option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" OFF)
+option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" OFF)
+option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" OFF)
 # Build options
-option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" 0)
-option(KOMPUTE_OPT_ENABLE_SPDLOG "Enable to compile with spdlog as the internal logging framework" 0)
+option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" OFF)
+option(KOMPUTE_OPT_ENABLE_SPDLOG "Enable to compile with spdlog as the internal logging framework" OFF)
 
 # External komponents
-option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" 1)
-option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" 1)
-option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" 1)
-option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" 1)
+option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" ON)
+option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" ON)
+option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" ON)
+option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" ON)
 
-option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" 0)
-option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" 0)
-option(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS "Whether to use shared libraries for dependencies for install" 0)
-option(KOMPUTE_OPT_BUILD_AS_SHARED_LIB "Whether to build kompute as shared library" 0)
+option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
+option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
+option(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS "Whether to use shared libraries for dependencies for install" OFF)
+option(KOMPUTE_OPT_BUILD_AS_SHARED_LIB "Whether to build kompute as shared library" OFF)
 # Build flags
 set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
 
-
-###########################################################################################
-# Dependencies
-###########################################################################################
+#####################################################
+#################### Dependencies ###################
+#####################################################
 include(FetchContent)
 
 # Vulkan
@@ -104,6 +103,10 @@ if(KOMPUTE_OPT_BUILD_PYTHON)
     endif()
     find_package(PythonLibs REQUIRED)
 endif()
+
+#####################################################
+#################### Other Options ##################
+#####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
     set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DVK_USE_PLATFORM_ANDROID_KHR")
