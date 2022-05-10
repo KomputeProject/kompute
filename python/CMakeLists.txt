@@ -1,5 +1,4 @@
 
-add_subdirectory(pybind11)
 pybind11_add_module(kp src/main.cpp)
 
 include_directories(

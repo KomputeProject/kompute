@@ -4,12 +4,6 @@ if(KOMPUTE_OPT_ANDROID_BUILD)
     find_library(android android)
 endif()
 
-# We don't import Vulkan library if Android build as its build dynamically
-# Otherwise it is expected that the Vulkan SDK and dependencies are installed
-if(NOT KOMPUTE_OPT_ANDROID_BUILD)
-    find_package(Vulkan REQUIRED)
-endif()
-
 if(KOMPUTE_OPT_BUILD_SHADERS)
 # all shaders are compiled into cpp files
     kompute_make(build_shaders
@@ -60,49 +54,20 @@ if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(
         kompute
         Vulkan::Vulkan
+        fmt::fmt
     )
 else()
     target_link_libraries(
         kompute
+        fmt::fmt
     )
 endif()
 
-if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-# Override the default Vulkan::Vulkan headers
-# In this case we only use the build interface due to https://github.com/KhronosGroup/Vulkan-Headers/issues/157
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/Vulkan-Headers ${CMAKE_CURRENT_BINARY_DIR}/kompute_vulkan_headers)
-    get_target_property(VULKAN_HEADERS_INCLUDES Vulkan-Headers INTERFACE_INCLUDE_DIRECTORIES)
-    target_include_directories(
-        kompute PUBLIC
-        $<BUILD_INTERFACE:${VULKAN_HEADERS_INCLUDES}>)
-endif()
-
 #####################################################
-#################### fmt #######################
-#####################################################
-
-if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/fmt ${CMAKE_CURRENT_BINARY_DIR}/kompute_fmt)
-else()
-    find_package(fmt REQUIRED)
-endif()
-
-target_link_libraries(
-    kompute
-    fmt::fmt
-)
-
-#####################################################
-#################### SPDLOG #######################
+#################### SPDLOG #########################
 #####################################################
 
 if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        add_subdirectory(${PROJECT_SOURCE_DIR}/external/spdlog ${CMAKE_CURRENT_BINARY_DIR}/kompute_spdlog)
-    else()
-        find_package(spdlog REQUIRED)
-    endif()
-
     target_link_libraries(
         kompute
         spdlog::spdlog
@@ -110,7 +75,7 @@ if(KOMPUTE_OPT_ENABLE_SPDLOG)
 endif()
 
 #####################################################
-#################### Android #######################
+#################### Android ########################
 #####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
@@ -132,7 +97,7 @@ if(KOMPUTE_OPT_BUILD_SHADERS)
 endif()
 
 #####################################################
-#################### Single Header #######################
+#################### Single Header ##################
 #####################################################
 
 if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
@@ -160,10 +125,4 @@ if(KOMPUTE_OPT_INSTALL)
         FILE komputeConfig.cmake
         NAMESPACE kompute::
         DESTINATION lib/cmake/kompute)
-endif()
-
-if(KOMPUTE_OPT_BUILD_PYTHON)
-    include_directories(${PROJECT_SOURCE_DIR}/python/pybind11/include)
-    find_package(PythonLibs REQUIRED)
-    include_directories(${PYTHON_INCLUDE_DIRS})
 endif()
