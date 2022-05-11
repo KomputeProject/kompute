@@ -1,3 +1,4 @@
+# Current issue: Only checks the result of GPU0
 function(check_vulkan_version)
     cmake_parse_arguments(VULKAN_CHECK_VERSION "" "INCLUDE_DIR" "" ${ARGN})
     message(STATUS "Ensuring the currently installed driver supports the Vulkan version requested by the Vulkan Header.")
@@ -49,14 +50,14 @@ function(check_vulkan_version)
         return()
     endif()
 
-    execute_process(COMMAND "vulkaninfo"
+    execute_process(COMMAND "vulkaninfo" "--summary"
                     OUTPUT_VARIABLE VULKAN_INFO_OUTPUT
                     RESULT_VARIABLE VULKAN_INFO_RETURN)
     if(NOT ${VULKAN_INFO_RETURN} EQUAL 0)
         message(FATAL_ERROR "Running vulkaninfo failed with return code ${VULKAN_INFO_RETURN}. Make sure you have 'vulkan-tools' installed. Result:\n${VULKAN_INFO_OUTPUT}?")
         return()
     endif()
-    if(${VULKAN_INFO_OUTPUT} MATCHES ".*Vulkan version ([0-9]+.[0-9]+.[0-9]+).*")
+    if(${VULKAN_INFO_OUTPUT} MATCHES "apiVersion[ ]+=[ ]+[0-9]+[ ]+[(]([0-9]+[.][0-9]+[.][0-9]+)[)]")
         set(VULKAN_DRIVER_VERSION ${CMAKE_MATCH_1})
         message(STATUS "vulkaninfo reported supported version ${VULKAN_DRIVER_VERSION}")
     else()
@@ -67,12 +68,12 @@ function(check_vulkan_version)
     # Compare driver and header version
     if(${VULKAN_DRIVER_VERSION} VERSION_LESS ${VULKAN_HEADER_VERSION})
         # Version missmatch. Let us check if the minor version is the same.
-        if(${VULKAN_DRIVER_VERSION} MATCHES "[0-9]+.([0-9]+).[0-9]+")
+        if(${VULKAN_DRIVER_VERSION} MATCHES "[0-9]+[.]([0-9]+)[.][0-9]+")
             set(VULKAN_DRIVER_MINOR_VERSION ${CMAKE_MATCH_1})
         else()
             message(FATAL_ERROR "Invalid Vulkan driver version '${VULKAN_DRIVER_VERSION}' found. Expected version in the following format: '[0-9]+.[0-9]+.[0-9]+'")
         endif()
-        if(${VULKAN_HEADER_VERSION} MATCHES "[0-9]+.([0-9]+).[0-9]+")
+        if(${VULKAN_HEADER_VERSION} MATCHES "[0-9]+[.]([0-9]+)[.][0-9]+")
             set(VULKAN_HEADER_MINOR_VERSION ${CMAKE_MATCH_1})
         else()
             message(FATAL_ERROR "Invalid Vulkan Header version '${VULKAN_HEADER_VERSION}' found. Expected version in the following format: '[0-9]+.[0-9]+.[0-9]+'")
