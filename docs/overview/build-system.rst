@@ -21,35 +21,46 @@ This by default configures without any of the extra build tasks (such as buildin
      - Enables local installation (which won't require admin privileges)
    * - -DCMAKE_TOOLCHAIN_FILE="..."
      - This is the path for your package manager if you use it such as vcpkg
-   * - -DKOMPUTE_OPT_BUILD_TESTS=1
+   * - -DKOMPUTE_OPT_BUILD_TESTS=ON
      - Enable if you wish to build and run the tests (must have deps installed.
-   * - -DKOMPUTE_OPT_CODE_COVERAGE=1
+   * - -DKOMPUTE_OPT_CODE_COVERAGE=ON
      - Enable if you wish to build and run code coverage (must have deps installed which are limited to Windows platform)
-   * - -DKOMPUTE_OPT_BUILD_DOCS=1
+   * - -DKOMPUTE_OPT_BUILD_DOCS=ON
      - Enable if you wish to build the docs (must have docs deps installed)
-   * - -DKOMPUTE_OPT_BUILD_SHADERS=1
+   * - -DKOMPUTE_OPT_BUILD_SHADERS=ON
      - Enable if you wish to build the shaders into header files (must have docs deps installed)
-   * - -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1
+   * - -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=ON
      - Option to build the single header file using "quom" utility
-   * - -DKOMPUTE_OPT_INSTALL=0
+   * - -DKOMPUTE_OPT_INSTALL=OFF
      - Disables the install step in the cmake file (useful for android build)
-   * - -DKOMPUTE_OPT_BUILD_PYTHON=1
+   * - -DKOMPUTE_OPT_BUILD_PYTHON=ON
      - Enable to build python bindings (used internally for python package)
-   * - -DKOMPUTE_OPT_ENABLE_SPDLOG=1
+   * - -DKOMPUTE_OPT_ENABLE_SPDLOG=ON
      - Enable to compile with spdlog as the internal logging framework
-   * - -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1
-     - Use the submodule repos instead of external packages / manager
-   * - -DKOMPUTE_OPT_ANDROID_BUILD=1
+   * - -DKOMPUTE_OPT_USE_BUILD_IN_SPDLOG=ON
+     - Use the build in version of Spdlog
+   * - -KOMPUTE_OPT_USE_BUILD_IN_FMT=ON
+     - Use the build in version of fmt
+   * - -KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST=ON
+     - Use the build in version of GoogleTest
+   * - -KOMPUTE_OPT_USE_BUILD_IN_PYBIND11=ON
+     - Use the build in version of pybind11
+   * - -KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER=ON
+     - Use the build in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver.
+   * - -KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG="v1.2.203"
+     - The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags
+   * - -KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=OFF
+     - Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later.
+   * - -DKOMPUTE_OPT_ANDROID_BUILD=ON
      - Enables android build which includes and excludes relevant libraries
-   * - -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=1
+   * - -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON
      - Explicitly disables debug layers even when on debug mode
-   * - -DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=1
+   * - -DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=ON
      - Ensures dependencies are referenced as shared libraries for kompute install
-   * - -DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=1
+   * - -DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=ON
      - Whether to build Kompute as shared lib instead of static
    * - -DKOMPUTE_EXTRA_CXX_FLAGS="..."
      - Allows you to pass extra config flags to compiler
-
 
 Compile Flags
 ~~~~~~~~~~~~~
@@ -63,21 +74,21 @@ Compile Flags
      - Ensure the return value of createPipeline is processed as ResultValue instead of Result
    * - -DKOMPUTE_VK_API_VERSION="..."
      - Sets the default api version to use for kompute api
-   * - -DKOMPUTE_VK_API_MAJOR_VERSION=1
+   * - -DKOMPUTE_VK_API_MAJOR_VERSION=ON
      - Major version to use for the Vulkan SDK
-   * - -DKOMPUTE_VK_API_MINOR_VERSION=1
+   * - -DKOMPUTE_VK_API_MINOR_VERSION=ON
      - Minor version to use for the Vulkan SDK
-   * - -DKOMPUTE_ENABLE_SPDLOG=1
+   * - -DKOMPUTE_ENABLE_SPDLOG=ON
      - Enables the build with SPDLOG and FMT dependencies (must be installed)
-   * - -DKOMPUTE_LOG_OVERRIDE=1
+   * - -DKOMPUTE_LOG_OVERRIDE=ON
      - Does not define the SPDLOG_\ :raw-html-m2r:`<LEVEL>` macros if these are to be overridden
    * - -DKOMPUTE_LOG_LEVEL
      - The level for the log level on compile level (also sets spdlog level if enabled)
    * - -DVVK_USE_PLATFORM_ANDROID_KHR
      - Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)
-   * - -DRELEASE=1
+   * - -DRELEASE=ON
      - Enable release build (enabled by cmake release build)
-   * - -DDEBUG=1
+   * - -DDEBUG=ON
      - Enable debug build including debug flags (enabled by cmake debug build)
    * - -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS
      - Disable the debug Vulkan SDK Layers, mainly used for android builds

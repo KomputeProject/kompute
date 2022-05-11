@@ -18,7 +18,6 @@ To build you just need to run the cmake command in this folder as follows:
 cmake -Bbuild/ \
           -DCMAKE_BUILD_TYPE=Debug                   \
           -DKOMPUTE_OPT_INSTALL=0                    \
-          -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
           -DKOMPUTE_OPT_ENABLE_SPDLOG=1
 ```
 
