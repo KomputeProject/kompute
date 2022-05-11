@@ -43,7 +43,6 @@ class CMakeBuild(build_ext):
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DKOMPUTE_OPT_BUILD_PYTHON=1',
                       '-DKOMPUTE_OPT_ENABLE_SPDLOG=0',
-                      '-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1',
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
                       '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_path('include'),
                       '-DPYTHON_LIBRARY=' + sysconfig.get_path('stdlib'),

@@ -18,7 +18,6 @@ android {
                 arguments '-DANDROID_TOOLCHAIN=clang',
                         '-DANDROID_STL=c++_static',
                         '-DKOMPUTE_OPT_ANDROID_BUILD=1',
-                        '-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1',
                         '-DKOMPUTE_OPT_INSTALL=0',
                         '-DKOMPUTE_OPT_ENABLE_SPDLOG=0',
                         '-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=0',
