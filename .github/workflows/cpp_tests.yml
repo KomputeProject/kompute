@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
     steps:
+    - name: Print vulkaninfo
+      run: vulkaninfo
     - name: Checkout
       uses: actions/checkout@v3
       with:
