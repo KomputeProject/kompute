@@ -7,27 +7,90 @@ on:
     branches: [ master ]
 
 jobs:
-  cpp-tests:
-
-    runs-on: ubuntu-18.04
+  cpp-tests-debug-with-debug-layers:
+    runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
-
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        submodules: recursive
-    - name: configure-cpp
-      run: |
-        cmake -Bbuild/ \
-                  -DCMAKE_BUILD_TYPE=Debug                   \
-                  -DKOMPUTE_OPT_INSTALL=0                    \
-                  -DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1       \
-                  -DKOMPUTE_OPT_BUILD_TESTS=1                \
-                  -DKOMPUTE_OPT_ENABLE_SPDLOG=1
-    - name: build-cpp
-      run: |
-        make mk_build_tests
-    - name: test-cpp
-      run: |
-        export VK_ICD_FILENAMES=/swiftshader/vk_swiftshader_icd.json
-        make mk_run_tests
+        submodules: false
+    - name: "[Release g++] Build & Test"
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
+      uses: ashutoshvarma/action-cmake-build@master
+      with:
+        build-dir: ${{github.workspace}}/build
+        source-dir: ${{github.workspace}}
+        cc: gcc
+        cxx: g++
+        build-type: Debug
+        run-test: true
+        ctest-options: -V
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_ENABLE_SPDLOG=1
+  
+  cpp-tests-release-with-debug-layers:
+    runs-on: ubuntu-latest
+    container: axsauze/kompute-builder:0.3
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: "[Release g++] Build & Test"
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
+      uses: ashutoshvarma/action-cmake-build@master
+      with:
+        build-dir: ${{github.workspace}}/build
+        source-dir: ${{github.workspace}}
+        cc: gcc
+        cxx: g++
+        build-type: Release
+        run-test: true
+        ctest-options: -V
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_ENABLE_SPDLOG=1
+
+    cpp-tests-debug-without-debug-layers:
+    runs-on: ubuntu-latest
+    container: axsauze/kompute-builder:0.3
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: "[Release g++] Build & Test"
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
+      uses: ashutoshvarma/action-cmake-build@master
+      with:
+        build-dir: ${{github.workspace}}/build
+        source-dir: ${{github.workspace}}
+        cc: gcc
+        cxx: g++
+        build-type: Debug
+        run-test: true
+        ctest-options: -V
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_ENABLE_SPDLOG=1
+  
+  cpp-tests-release-without-debug-layers:
+    runs-on: ubuntu-latest
+    container: axsauze/kompute-builder:0.3
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: false
+    - name: "[Release g++] Build & Test"
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
+      uses: ashutoshvarma/action-cmake-build@master
+      with:
+        build-dir: ${{github.workspace}}/build
+        source-dir: ${{github.workspace}}
+        cc: gcc
+        cxx: g++
+        build-type: Release
+        run-test: true
+        ctest-options: -V
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_ENABLE_SPDLOG=1
