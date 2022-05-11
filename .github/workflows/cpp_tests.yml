@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
     steps:
-    - name: Print vulkaninfo
-      run: vulkaninfo
+    - name: Install vulkaninfo
+      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
@@ -35,6 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
     steps:
+    - name: Install vulkaninfo
+      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
@@ -57,6 +59,8 @@ jobs:
     runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
     steps:
+    - name: Install vulkaninfo
+      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
@@ -79,6 +83,8 @@ jobs:
     runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
     steps:
+    - name: Install vulkaninfo
+      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
