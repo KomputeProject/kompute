@@ -51,7 +51,7 @@ jobs:
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_ENABLE_SPDLOG=1
 
-    cpp-tests-debug-without-debug-layers:
+  cpp-tests-debug-without-debug-layers:
     runs-on: ubuntu-latest
     container: axsauze/kompute-builder:0.3
     steps:
