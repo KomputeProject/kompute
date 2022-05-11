@@ -50,7 +50,12 @@ function(check_vulkan_version)
     endif()
 
     execute_process(COMMAND "vulkaninfo"
-                    OUTPUT_VARIABLE VULKAN_INFO_OUTPUT)
+                    OUTPUT_VARIABLE VULKAN_INFO_OUTPUT
+                    RESULT_VARIABLE VULKAN_INFO_RETURN)
+    if(NOT ${VULKAN_INFO_RETURN} EQUAL 0)
+        message(FATAL_ERROR "Running vulkaninfo failed with return code ${VULKAN_INFO_RETURN}. Make sure you have 'vulkan-tools' installed. Result:\n${VULKAN_INFO_OUTPUT}?")
+        return()
+    endif()
     if(${VULKAN_INFO_OUTPUT} MATCHES ".*Vulkan version ([0-9]+.[0-9]+.[0-9]+).*")
         set(VULKAN_DRIVER_VERSION ${CMAKE_MATCH_1})
         message(STATUS "vulkaninfo reported supported version ${VULKAN_DRIVER_VERSION}")
