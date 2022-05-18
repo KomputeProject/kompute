@@ -1,81 +1,42 @@
 # SPDX-License-Identifier: Apache-2.0
+#######################
+cmake_minimum_required(VERSION 3.15)
 
 #####################################################
-#################### GOOGLETEST #####################
+# Shaders
 #####################################################
-enable_testing()
-
-file(GLOB test_kompute_CPP
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-)
-
-add_executable(test_kompute ${test_kompute_CPP})
-
-target_include_directories(
-    test_kompute PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compiled_shaders_include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/utils>
-)
-target_link_libraries(test_kompute kompute GTest::GTest)
-
-add_test(NAME test_kompute COMMAND test_kompute)
-
+add_subdirectory(shaders)
 
 #####################################################
-#################### CODECOV  #######################
+# Tests
 #####################################################
 
-if (KOMPUTE_OPT_CODE_COVERAGE)
-    if(NOT UNIX)
-        message(
-            FATAL_ERROR
-            "KOMPUTE_OPT_CODE_COVERAGE can only be enabled in unix based systems due to limitation on gcov")
+macro(add_kompute_test _TEST_NAME)
+    add_executable("${_TEST_NAME}_tests" "Test${_TEST_NAME}.cpp"
+                                         ${ARGN})
+    target_link_libraries("${_TEST_NAME}_tests" PRIVATE GTest::GTest
+                                                      kompute::kompute
+                                                      test_shaders
+                                                      test_shaders_glsl)
+    add_test(NAME "kompute_${_TEST_NAME}_tests" COMMAND "${_TEST_NAME}_tests")
+    # Group under the "tests" project folder in IDEs such as Visual Studio.
+    set_property(TARGET ${_TEST_NAME}_tests PROPERTY FOLDER "tests")
+    if(WIN32 AND BUILD_SHARED_LIBS)
+        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libcurl> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
+        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kompute> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
     endif()
+endmacro()
 
-    add_custom_target(codecov_run_tests
-        COMMAND make -C ${PROJECT_SOURCE_DIR} mk_run_tests
-        DEPENDS test_kompute)
-
-    add_custom_target(codecov_copy_files
-        COMMAND ${CMAKE_COMMAND}
-            -E copy_directory
-            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/test_kompute.dir/
-            ${CODECOV_DIR}
-        COMMAND ${CMAKE_COMMAND}
-            -E copy_directory
-            ${CMAKE_CURRENT_BINARY_DIR}/../src/CMakeFiles/kompute.dir/
-            ${CODECOV_DIR}
-        DEPENDS test_kompute codecov_run_tests)
-
-    add_custom_target(codecov_gcov
-        COMMAND gcov
-            -b -c "*.gcno"
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_copy_files)
-
-    add_custom_target(codecov_lcov_capture
-        COMMAND lcov
-            --capture
-            -o ${CODECOV_FILENAME_LCOV_INFO_FULL}
-            -d .
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_gcov)
-    add_custom_target(codecov_lcov_extract
-        COMMAND lcov
-            --extract
-            ${CODECOV_FILENAME_LCOV_INFO_FULL}
-            -o ${CODECOV_FILENAME_LCOV_INFO}
-            -d .
-            "*/src/*"
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_lcov_capture)
-
-    add_custom_target(codecov_genhtml
-        COMMAND genhtml
-            ${CODECOV_FILENAME_LCOV_INFO}
-            --output-directory ${CODECOV_DIR_HTML}
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_lcov_extract)
-endif()
-
+add_kompute_test(AsyncOperations)
+add_kompute_test(Destroy)
+add_kompute_test(LogisticRegression)
+add_kompute_test(Main)
+add_kompute_test(Manager)
+add_kompute_test(MultipleAlgoExecutions)
+add_kompute_test(OpShadersFromStringAndFile)
+add_kompute_test(OpTensorCopy)
+add_kompute_test(OpTensorCreate)
+add_kompute_test(PushConstant)
+add_kompute_test(Sequence)
+add_kompute_test(SpecializationConstant)
+add_kompute_test(Workgroup)

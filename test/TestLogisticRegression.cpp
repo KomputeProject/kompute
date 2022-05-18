@@ -4,7 +4,7 @@
 
 #include "kompute/Kompute.hpp"
 
-#include "kompute_test/shaders/shadertest_logistic_regression.hpp"
+#include "test_logistic_regression.hpp"
 
 TEST(TestLogisticRegression, TestMainLogisticRegression)
 {
@@ -40,12 +40,11 @@ TEST(TestLogisticRegression, TestMainLogisticRegression)
         mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
         std::vector<uint32_t> spirv = std::vector<uint32_t>(
-          (uint32_t*)kp::shader_data::
-            test_shaders_glsl_test_logistic_regression_comp_spv,
-          (uint32_t*)(kp::shader_data::
-                        test_shaders_glsl_test_logistic_regression_comp_spv +
-                      kp::shader_data::
-                        test_shaders_glsl_test_logistic_regression_comp_spv_len));
+          (const uint32_t*)kp::TEST_LOGISTIC_REGRESSION_COMP_SPV.data(),
+          (const uint32_t*)(kp::shader_data::
+                              test_shaders_glsl_test_logistic_regression_comp_spv +
+                            kp::shader_data::
+                              test_shaders_glsl_test_logistic_regression_comp_spv_len));
 
         std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm(
           params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
