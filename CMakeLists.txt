@@ -1,51 +1,103 @@
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.4.1)
-project(kompute VERSION 0.8.1)
+cmake_minimum_required(VERSION 3.15)
+project(kompute VERSION 1.8.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_VERBOSE_MAKEFILE on)
+# Only change the folder behaviour if kompute is not a subproject
+if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
+    set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+    set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+endif()
 
+# Avoid the dll boilerplate code for windows
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+
+set(KOMPUTE_LIBRARIES kompute CACHE INTERNAL "")
+
+#####################################################
+# Options
+#####################################################
+
+macro(kompute_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
+    option(${OPTION_NAME} ${OPTION_TEXT} ${OPTION_DEFAULT})
+    if(DEFINED ENV{${OPTION_NAME}})
+        # Allow overriding the option through an environment variable
+        set(${OPTION_NAME} $ENV{${OPTION_NAME}})
+    endif()
+    if(${OPTION_NAME})
+        add_definitions(-D${OPTION_NAME})
+    endif()
+    message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
+endmacro()
+
+macro(kompute_log_level OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
+    set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
+    set_property(CACHE ${OPTION_NAME} PROPERTY STRINGS "Trace" "Debug" "Info" "Warn" "Error" "Critical")
+    if(DEFINED ENV{${OPTION_NAME}})
+        # Allow setting the option through an environment variable
+        set(${OPTION_NAME} $ENV{${OPTION_NAME}})
+    endif()
+    if(${OPTION_NAME})
+        add_definitions(-D${OPTION_NAME})
+    endif()
+    message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
+endmacro()
+
+macro(kompute_option_string OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
+    set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
+    if(DEFINED ENV{${OPTION_NAME}})
+        # Allow setting the option through an environment variable
+        set(${OPTION_NAME} $ENV{${OPTION_NAME}})
+    endif()
+    if(${OPTION_NAME})
+        add_definitions(-D${OPTION_NAME})
+    endif()
+    message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
+endmacro()
+
+option(BUILD_SHARED_LIBS "Build libraries as shared libraries" ON)
+message(STATUS "General purpose GPU compute framework built on Vulkan")
+message(STATUS "=======================================================")
 # Enable or disable targets
-option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" OFF)
-option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" OFF)
-option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" OFF)
-option(KOMPUTE_OPT_BUILD_SHADERS "Enable if you want to re-build all shader files" OFF)
-option(KOMPUTE_OPT_BUILD_SINGLE_HEADER "Enable if you want to build the single header file" OFF)
-option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" OFF)
+kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" ON)
+kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" OFF)
+kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" OFF)
+kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" OFF)
 
 # Build options
-option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" OFF)
-option(KOMPUTE_OPT_ENABLE_SPDLOG "Enable to compile with spdlog as the internal logging framework" OFF)
-option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
-option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
-option(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS "Whether to use shared libraries for dependencies for install" OFF)
-option(KOMPUTE_OPT_BUILD_AS_SHARED_LIB "Whether to build kompute as shared library" OFF)
-option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
+kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" OFF)
+kompute_option(KOMPUTE_OPT_ENABLE_LOGGING "Internally we use spdlog for logging. The log output can be either enabled or disabled." OFF)
+kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here." "Debug")
+kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
+kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
+kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
 
-# External komponents
+# External components
 option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" ON)
 option(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER "Use the build in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver." ON)
-set(KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG "v1.2.203" CACHE STRING "The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags")
-
-# Build flags
-set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
+kompute_option_string(KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG  "The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.2.203")
+message(STATUS "=======================================================")
 
 #####################################################
-#################### Deprecated Options #############
+# Deprecated Options
 #####################################################
-if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-    message(FATAL_ERROR "'KOMPUTE_OPT_REPO_SUBMODULE_BUILD' got replaced by 'KOMPUTE_OPT_USE_BUILD_IN_SPDLOG', 'KOMPUTE_OPT_USE_BUILD_IN_FMT', 'KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST', 'KOMPUTE_OPT_USE_BUILD_IN_PYBIND11' and 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER'. Please use them instead.")
-endif()
+include(cmake/deprecation_warnings.cmake)
 
 #####################################################
-#################### Dependencies ###################
+# Dependencies
 #####################################################
+include(cmake/vulkan_shader_compiler.cmake)
 include(FetchContent)
 include(cmake/check_vulkan_version.cmake)
 
@@ -72,16 +124,18 @@ else()
 endif()
 
 # Spdlog
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
-        set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
-        set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
+if(KOMPUTE_OPT_ENABLE_LOGGING)
+    if(KOMPUTE_OPT_ENABLE_SPDLOG)
+        if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
+            set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
+            set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
 
-        FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-                                    GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
-        FetchContent_MakeAvailable(spdlog)
-    else()
-        find_package(spdlog REQUIRED)
+            FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                                        GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
+            FetchContent_MakeAvailable(spdlog)
+        else()
+            find_package(spdlog REQUIRED)
+        endif()
     endif()
 endif()
 
@@ -132,48 +186,43 @@ if(KOMPUTE_OPT_BUILD_PYTHON)
 endif()
 
 #####################################################
-#################### Other Options ##################
+# Preprocessor Macros
 #####################################################
-
 if(KOMPUTE_OPT_ANDROID_BUILD)
-    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DVK_USE_PLATFORM_ANDROID_KHR")
+    add_compile_definitions(VK_USE_PLATFORM_ANDROID_KHR=1)
 endif()
 
 if(KOMPUTE_OPT_BUILD_PYTHON)
-    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_BUILD_PYTHON")
+    add_compile_definitions(KOMPUTE_BUILD_PYTHON=1)
 endif()
 
 if(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS)
-    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
+    add_compile_definitions(KOMPUTE_DISABLE_VK_DEBUG_LAYERS=1)
 endif()
 
+if(KOMPUTE_OPT_ENABLE_LOGGING)
+    add_compile_definitions(KOMPUTE_OPT_ENABLE_LOGGING=1)
+endif()
+
+#####################################################
+# Misc Options
+#####################################################
 if(KOMPUTE_OPT_INSTALL)
     # Enable install parameters for glslang (overrides parameters passed)
     # When install is enabled the glslang libraries become shared
     set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
-
-    # By default we enable shared library based installation
-    if(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS)
-        set(BUILD_SHARED_LIBS ON CACHE BOOL "Enables build of shared libraries" FORCE)
-    endif()
 endif()
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 ${KOMPUTE_EXTRA_CXX_FLAGS} -DUSE_DEBUG_EXTENTIONS")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EXTRA_CXX_FLAGS}")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror")
+endif()
 
 if(KOMPUTE_OPT_CODE_COVERAGE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage --coverage")
-
-    set(CODECOV_DIR
-        ${CMAKE_CURRENT_BINARY_DIR}/codecov/)
-    set(CODECOV_DIR_LCOV
-        ${CODECOV_DIR}lcov/)
-    set(CODECOV_FILENAME_LCOV_INFO
-        lcov.info)
-    set(CODECOV_FILENAME_LCOV_INFO_FULL
-        lcov_full.info)
-    set(CODECOV_DIR_HTML
-        ${CODECOV_DIR}html/)
+    if(NOT UNIX)
+        message(FATAL_ERROR "KOMPUTE_OPT_CODE_COVERAGE can only be enabled in unix based systems due to limitation on gcov.")
+    endif()
+    include(cmake/code_coverage.cmake)
 endif()
 
 # If glslang is cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h

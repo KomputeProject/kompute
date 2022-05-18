@@ -1,124 +1,103 @@
 # SPDX-License-Identifier: Apache-2.0
 
+cmake_minimum_required(VERSION 3.15)
+
 if(KOMPUTE_OPT_ANDROID_BUILD)
     find_library(android android)
 endif()
 
-if(KOMPUTE_OPT_BUILD_SHADERS)
-# all shaders are compiled into cpp files
-    kompute_make(build_shaders
-        OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/include)
+cmake_minimum_required(VERSION 3.15)
+
+add_library(kompute Algorithm.cpp
+                    Manager.cpp
+                    OpAlgoDispatch.cpp
+                    OpMemoryBarrier.cpp
+                    OpTensorCopy.cpp
+                    OpTensorSyncDevice.cpp
+                    OpTensorSyncLocal.cpp
+                    Sequence.cpp
+                    Tensor.cpp)
+
+add_library(kompute::kompute ALIAS kompute)
+
+# Set version for shared libraries.
+set_target_properties(kompute
+     PROPERTIES
+     VERSION ${${PROJECT_NAME}_VERSION}
+     SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+
+# Import GNU common install directory variables
+include(GNUInstallDirs)
+
+if(CPR_FORCE_USE_SYSTEM_CURL)
+    install(TARGETS kompute
+            EXPORT komputeTargets
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+    # Include CMake helpers for package config files
+    # Follow this installation guideline: https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html
+    include(CMakePackageConfigHelpers)
+
+    configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/komputeConfig.cmake.in
+                                  "${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake"
+                                  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+
+    install(EXPORT komputeTargets
+            FILE komputeTargets.cmake
+            NAMESPACE kompute::
+	    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+
+    install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
+            ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+     
+else()
+    install(TARGETS kompute
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
-# all headers are compiled into a single header
-    kompute_make(build_single_header
-        OUTPUT ${PROJECT_SOURCE_DIR}/single_include)
-endif()
-
-file(GLOB kompute_CPP
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-)
+#####################################################
+# Android
+#####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
     set(VK_ANDROID_COMMON_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/common)
     set(VK_ANDROID_PATCH_DIR ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/)
     set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
 
-    include_directories(
-        ${VK_ANDROID_COMMON_DIR}
-        ${VK_ANDROID_PATCH_DIR}
-        ${VK_ANDROID_INCLUDE_DIR})
+    include_directories(${VK_ANDROID_COMMON_DIR}
+                        ${VK_ANDROID_PATCH_DIR}
+                        ${VK_ANDROID_INCLUDE_DIR})
 
-    add_library(kompute_vk_ndk_wrapper STATIC
-        ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
+    add_library(kompute_vk_ndk_wrapper STATIC ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
 endif()
 
-if(NOT KOMPUTE_OPT_BUILD_AS_SHARED_LIB)
-    add_library(
-        kompute STATIC
-        ${kompute_CPP})
-else()
-    add_library(
-        kompute SHARED
-        ${kompute_CPP})
-endif()
-
-target_include_directories(
-    kompute PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
-)
+#####################################################
+# Linking
+#####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(kompute
-                          fmt::fmt)
+    target_link_libraries(kompute PRIVATE fmt::fmt
+                                          kompute_vk_ndk_wrapper
+                                          log
+                                          android)
 else()
-    target_link_libraries(kompute
-                          Vulkan::Vulkan
-                          fmt::fmt)
+    target_link_libraries(kompute PRIVATE Vulkan::Vulkan
+                                          fmt::fmt)
 endif()
 
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
-    target_link_libraries(kompute
-                          Vulkan-Headers)
+    target_link_libraries(kompute PUBLIC Vulkan-Headers)
+endif()
+
+if(KOMPUTE_OPT_ENABLE_LOGGING)
+    target_link_libraries(kompute PRIVATE spdlog::spdlog)
 endif()
 
 #####################################################
-#################### SPDLOG #########################
+# Misc
 #####################################################
-
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    target_link_libraries(kompute spdlog::spdlog)
-endif()
-
-#####################################################
-#################### Android ########################
-#####################################################
-
-if(KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(kompute
-                          kompute_vk_ndk_wrapper
-                          log
-                          android)
-endif()
-
-#####################################################
-########## Built C++ Header SHADERS #################
-#####################################################
-
-if(KOMPUTE_OPT_BUILD_SHADERS)
-    add_dependencies(kompute
-        build_shaders)
-endif()
-
-#####################################################
-#################### Single Header ##################
-#####################################################
-
-if(KOMPUTE_OPT_BUILD_SINGLE_HEADER)
-    add_dependencies(kompute
-        build_single_header)
-endif()
-
-
-add_library(kompute::kompute ALIAS kompute)
-
-if(KOMPUTE_OPT_INSTALL)
-    install(TARGETS kompute EXPORT KomputeTargets
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        INCLUDES DESTINATION include)
-
-    target_include_directories(kompute PUBLIC $<INSTALL_INTERFACE:include>)
-
-    install(DIRECTORY include/ DESTINATION include)
-
-    install(DIRECTORY ${PROJECT_SOURCE_DIR}/single_include/
-        DESTINATION include)
-
-    install(EXPORT KomputeTargets
-        FILE komputeConfig.cmake
-        NAMESPACE kompute::
-        DESTINATION lib/cmake/kompute)
-endif()
+add_subdirectory(include)

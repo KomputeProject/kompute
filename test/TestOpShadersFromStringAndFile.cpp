@@ -6,7 +6,7 @@
 
 #include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
 
-#include "kompute_test/Shader.hpp"
+#include "shaders/Utils.hpp"
 
 TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
 {

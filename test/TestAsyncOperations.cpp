@@ -6,8 +6,6 @@
 
 #include "kompute/Kompute.hpp"
 
-#include "kompute_test/Shader.hpp"
-
 TEST(TestAsyncOperations, TestManagerParallelExecution)
 {
     // This test is built for NVIDIA 1650. It assumes:

@@ -4,7 +4,7 @@
 
 #include "kompute/Kompute.hpp"
 
-#include "kompute_test/Shader.hpp"
+#include "shaders/Utils.hpp"
 
 TEST(TestDestroy, TestDestroyTensorSingle)
 {

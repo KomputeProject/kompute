@@ -63,7 +63,6 @@ mk_cmake:
 		-DKOMPUTE_OPT_BUILD_TESTS=1 \
 		-DKOMPUTE_OPT_BUILD_DOCS=1 \
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
-		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
@@ -116,7 +115,6 @@ vs_cmake:
 		-DKOMPUTE_OPT_INSTALL=1 \
 		-DKOMPUTE_OPT_BUILD_TESTS=1 \
 		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
-		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
 		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
 		-DKOMPUTE_OPT_CODE_COVERAGE=0 \
 		-DKOMPUTE_OPT_BUILD_DOCS=0 \
@@ -161,7 +159,7 @@ run_ci:
 generate_python_docstrings:
 	python -m pybind11_mkdoc \
 		-o python/src/docstrings.hpp \
-		single_include/kompute/Kompute.hpp \
+		kompute/Kompute.hpp \
 		-Iexternal/fmt/include/ \
 		-Iexternal/spdlog/include/ \
 		-Iexternal/glslang/ \

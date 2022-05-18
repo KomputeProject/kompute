@@ -28,8 +28,6 @@ This by default configures without any of the extra build tasks (such as buildin
    * - -DKOMPUTE_OPT_BUILD_DOCS=ON
      - Enable if you wish to build the docs (must have docs deps installed)
    * - -DKOMPUTE_OPT_BUILD_SHADERS=ON
-     - Enable if you wish to build the shaders into header files (must have docs deps installed)
-   * - -DKOMPUTE_OPT_BUILD_SINGLE_HEADER=ON
      - Option to build the single header file using "quom" utility
    * - -DKOMPUTE_OPT_INSTALL=OFF
      - Disables the install step in the cmake file (useful for android build)
