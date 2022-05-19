@@ -4,9 +4,8 @@
 
 #include "kompute/Kompute.hpp"
 
-#include "kompute_test/shaders/shadertest_op_custom_shader.hpp"
-
 #include "shaders/Utils.hpp"
+#include "test_op_custom_shader.hpp"
 
 TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
 {
@@ -50,14 +49,8 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
     std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 3, 4, 5 });
     std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
 
-    std::vector<uint32_t> spirv = std::vector<uint32_t>(
-      (uint32_t*)
-        kp::shader_data::test_shaders_glsl_test_op_custom_shader_comp_spv,
-      (uint32_t*)(kp::shader_data::
-                    test_shaders_glsl_test_op_custom_shader_comp_spv +
-                  kp::shader_data::
-                    test_shaders_glsl_test_op_custom_shader_comp_spv_len));
-
+    std::vector<uint32_t> spirv(kp::TEST_OP_CUSTOM_SHADER_COMP_SPV.begin(),
+                                kp::TEST_OP_CUSTOM_SHADER_COMP_SPV.end());
     std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
 
     mgr.sequence()
@@ -87,3 +80,16 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 //    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
 //    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 //}
+
+int
+main(int argc, char* argv[])
+{
+    testing::InitGoogleTest(&argc, argv);
+
+#if KOMPUTE_ENABLE_SPDLOG
+    spdlog::set_level(
+      static_cast<spdlog::level::level_enum>(KOMPUTE_LOG_LEVEL));
+#endif
+
+    return RUN_ALL_TESTS();
+}
