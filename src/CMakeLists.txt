@@ -80,13 +80,13 @@ endif()
 #####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(kompute PRIVATE fmt::fmt
-                                          kompute_vk_ndk_wrapper
-                                          log
-                                          android)
+    target_link_libraries(kompute PUBLIC fmt::fmt
+                                         kompute_vk_ndk_wrapper
+                                         log
+                                         android)
 else()
-    target_link_libraries(kompute PRIVATE Vulkan::Vulkan
-                                          fmt::fmt)
+    target_link_libraries(kompute PUBLIC Vulkan::Vulkan
+                                         fmt::fmt)
 endif()
 
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
@@ -94,7 +94,7 @@ if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
 endif()
 
 if(KOMPUTE_OPT_ENABLE_LOGGING)
-    target_link_libraries(kompute PRIVATE spdlog::spdlog)
+    target_link_libraries(kompute PUBLIC spdlog::spdlog)
 endif()
 
 #####################################################

@@ -17,7 +17,7 @@ function(vulkan_compile_shader)
                             "-o"
                             "${SHADER_COMPILE_SPV_FILE_FULL}"
                             "--target-env"
-                            "vulkan1.2"
+                            "vulkan1.1"
                             "${SHADER_COMPILE_INFILE_FULL}"
                        COMMENT "Compile vulkan compute shader from file '${SHADER_COMPILE_INFILE_FULL}' to '${SHADER_COMPILE_SPV_FILE_FULL}'."
                        MAIN_DEPENDENCY "${SHADER_COMPILE_INFILE_FULL}")

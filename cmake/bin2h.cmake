@@ -72,10 +72,10 @@ function(BIN2H)
 
     # wraps the hex string into multiple lines at column 32(i.e. 16 bytes per line)
     wrap_string(VARIABLE hexString AT_COLUMN 32)
-    math(EXPR arraySize "${hexStringLength} / 2")
+    math(EXPR arraySize "${hexStringLength} / 8")
 
     # adds '0x' prefix and comma suffix before and after every byte respectively
-    string(REGEX REPLACE "([0-9a-f][0-9a-f])" "0x\\1, " arrayValues ${hexString})
+    string(REGEX REPLACE "([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])" "0x\\1, " arrayValues ${hexString})
     # removes trailing comma
     string(REGEX REPLACE ", $" "" arrayValues ${arrayValues})
 
@@ -85,9 +85,9 @@ function(BIN2H)
 
     # declares byte array and the length variables
     set(namespaceStart "namespace ${HEADER_NAMESPACE} {")
-    set(namespaceEnd "} // ${HEADER_NAMESPACE}")
+    set(namespaceEnd "} // namespace ${HEADER_NAMESPACE}")
     set(arrayIncludes "#pragma once\n#include <array>\n#include <cstdint>")
-    set(arrayDefinition "const std::array<uint8_t, ${arraySize}> ${BIN2H_VARIABLE_NAME} = { ${arrayValues} };")
+    set(arrayDefinition "const std::array<uint32_t, ${arraySize}> ${BIN2H_VARIABLE_NAME} = { ${arrayValues} };")
 
     set(declarations "${arrayIncludes}\n\n${namespaceStart}\n${arrayDefinition}\n${namespaceEnd}\n\n")
     if(BIN2H_APPEND)
