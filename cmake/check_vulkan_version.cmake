@@ -50,7 +50,7 @@ function(check_vulkan_version)
         return()
     endif()
 
-    execute_process(COMMAND "vulkaninfo" "--summary"
+    execute_process(COMMAND "vulkaninfo"
                     OUTPUT_VARIABLE VULKAN_INFO_OUTPUT
                     RESULT_VARIABLE VULKAN_INFO_RETURN)
     if(NOT ${VULKAN_INFO_RETURN} EQUAL 0)
