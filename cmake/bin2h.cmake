@@ -54,6 +54,8 @@ endfunction()
 #                      as string. But the size variable holds size of the byte array without this
 #                      null byte.
 #   HEADER_NAMESPACE - The namespace, where the array should be located in.
+#   IS_BIG_ENDIAN    - If set to true, will not revers the byte order for the uint32_t to match the
+#                      big endian system architecture
 # Usage:
 #   bin2h(SOURCE_FILE "Logo.png" HEADER_FILE "Logo.h" VARIABLE_NAME "LOGO_PNG")
 function(BIN2H)
@@ -75,7 +77,13 @@ function(BIN2H)
     math(EXPR arraySize "${hexStringLength} / 8")
 
     # adds '0x' prefix and comma suffix before and after every byte respectively
-    string(REGEX REPLACE "([0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f])" "0x\\1, " arrayValues ${hexString})
+    if(IS_BIG_ENDIAN)
+        message(STATUS "Interpreting shader in big endian...")
+        string(REGEX REPLACE "([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])" "0x\\1\\2\\3\\4, " arrayValues ${hexString})
+    else()
+        message(STATUS "Interpreting shader in little endian...")
+        string(REGEX REPLACE "([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])([0-9a-f][0-9a-f])" "0x\\4\\3\\2\\1, " arrayValues ${hexString})
+    endif()
     # removes trailing comma
     string(REGEX REPLACE ", $" "" arrayValues ${arrayValues})
 
