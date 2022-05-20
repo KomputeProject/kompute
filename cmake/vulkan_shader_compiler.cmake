@@ -32,8 +32,8 @@ function(vulkan_compile_shader)
                              "-DHEADER_NAMESPACE=${SHADER_COMPILE_NAMESPACE}"
                              "-DIS_BIG_ENDIAN=${IS_BIG_ENDIAN}"
                              "-P"
-                             "${CMAKE_SOURCE_DIR}/cmake/bin_file_to_header.cmake"
-                        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/cmake"
+                             "${PROJECT_SOURCE_DIR}/cmake/bin_file_to_header.cmake"
+                        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/cmake"
                         COMMENT "Converting compiled shader '${SHADER_COMPILE_SPV_FILE_FULL}' to header file '${SHADER_COMPILE_HEADER_FILE_FULL}'."
                         MAIN_DEPENDENCY "${SHADER_COMPILE_SPV_FILE_FULL}")
 endfunction()
