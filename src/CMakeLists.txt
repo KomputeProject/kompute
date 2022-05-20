@@ -82,12 +82,12 @@ endif()
 if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(kompute PUBLIC kompute_vk_ndk_wrapper
                                          android
-                                  PRIVATE logger
+                                  PRIVATE kp_logger
                                           fmt::fmt)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
                                   PRIVATE fmt::fmt
-                                          logger)
+                                          kp_logger)
 endif()
 
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)

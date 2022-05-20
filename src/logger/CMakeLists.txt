@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 set(LOGGER_SOURCES Logger.cpp)
 
-add_library(logger ${LOGGER_SOURCES})
-target_link_libraries(logger PUBLIC spdlog::spdlog)
+add_library(kp_logger ${LOGGER_SOURCES})
+target_link_libraries(kp_logger PUBLIC spdlog::spdlog)
 
 if(${KOMPUTE_OPT_LOG_LEVEL} STREQUAL "Trace")
     set (KOMPUTE_OPT_LOG_LEVEL TRACE)
@@ -34,4 +34,4 @@ else()
     message(STATUS "Setting KOMPUTE_OPT_LOG_LEVEL to according to build type")
 endif()
 
-target_compile_definitions(logger INTERFACE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_${KOMPUTE_OPT_LOG_LEVEL})
+target_compile_definitions(kp_logger INTERFACE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_${KOMPUTE_OPT_LOG_LEVEL})
