@@ -74,8 +74,7 @@ kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" O
 
 # Build options
 kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" OFF)
-kompute_option(KOMPUTE_OPT_ENABLE_LOGGING "Internally we use spdlog for logging. The log output can be either enabled or disabled." OFF)
-kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here." "Debug")
+kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here." "Off")
 kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
@@ -124,26 +123,21 @@ else()
 endif()
 
 # Spdlog
-if(KOMPUTE_OPT_ENABLE_LOGGING)
-    if(KOMPUTE_OPT_ENABLE_SPDLOG)
-        if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
-            set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
-            set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
+if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
+    set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
+    set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
 
-            FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-                                        GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
-            FetchContent_MakeAvailable(spdlog)
-        else()
-            find_package(spdlog REQUIRED)
-        endif()
-    endif()
+    FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                                GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
+    FetchContent_MakeAvailable(spdlog)
+else()
+    find_package(spdlog REQUIRED)
 endif()
 
 # fmt
 if(KOMPUTE_OPT_USE_BUILD_IN_FMT)
     set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
     set(BUILD_SHARED_LIBS_BKP ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
-    set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
                              GIT_TAG 8.1.1) # Source: https://github.com/fmtlib/fmt/releases
     FetchContent_MakeAvailable(fmt)
@@ -198,10 +192,6 @@ endif()
 
 if(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS)
     add_compile_definitions(KOMPUTE_DISABLE_VK_DEBUG_LAYERS=1)
-endif()
-
-if(KOMPUTE_OPT_ENABLE_LOGGING)
-    add_compile_definitions(KOMPUTE_OPT_ENABLE_LOGGING=1)
 endif()
 
 #####################################################

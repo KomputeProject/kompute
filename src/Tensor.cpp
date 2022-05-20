@@ -4,6 +4,40 @@
 
 namespace kp {
 
+std::string
+Tensor::toString(Tensor::TensorDataTypes dt)
+{
+    switch (dt) {
+        case TensorDataTypes::eBool:
+            return "eBool";
+        case TensorDataTypes::eInt:
+            return "eInt";
+        case TensorDataTypes::eUnsignedInt:
+            return "eUnsignedInt";
+        case TensorDataTypes::eFloat:
+            return "eFloat";
+        case TensorDataTypes::eDouble:
+            return "eDouble";
+        default:
+            return "unknown";
+    }
+}
+
+std::string
+Tensor::toString(Tensor::TensorTypes dt)
+{
+    switch (dt) {
+        case TensorTypes::eDevice:
+            return "eDevice";
+        case TensorTypes::eHost:
+            return "eHost";
+        case TensorTypes::eStorage:
+            return "eStorage";
+        default:
+            return "unknown";
+    }
+}
+
 Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                std::shared_ptr<vk::Device> device,
                void* data,
@@ -14,7 +48,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
                  elementTotalCount,
-                 tensorType);
+                 Tensor::toString(tensorType));
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
@@ -27,7 +61,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 Tensor::~Tensor()
 {
     KP_LOG_DEBUG("Kompute Tensor destructor started. Type: {}",
-                 this->tensorType());
+                 Tensor::toString(this->tensorType()));
 
     if (this->mDevice) {
         this->destroy();
