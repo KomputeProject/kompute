@@ -50,13 +50,13 @@ OpTensorCopy::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpTensorCopy::preEval(const vk::CommandBuffer& commandBuffer)
+OpTensorCopy::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy preEval called");
 }
 
 void
-OpTensorCopy::postEval(const vk::CommandBuffer& commandBuffer)
+OpTensorCopy::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 

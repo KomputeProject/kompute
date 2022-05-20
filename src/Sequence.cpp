@@ -174,19 +174,19 @@ Sequence::evalAwait(uint64_t waitFor)
 }
 
 bool
-Sequence::isRunning()
+Sequence::isRunning() const
 {
     return this->mIsRunning;
 }
 
 bool
-Sequence::isRecording()
+Sequence::isRecording() const
 {
     return this->mRecording;
 }
 
 bool
-Sequence::isInit()
+Sequence::isInit() const
 {
     return this->mDevice && this->mCommandPool && this->mCommandBuffer &&
            this->mComputeQueue;
@@ -303,9 +303,6 @@ Sequence::createCommandPool()
 
     if (!this->mDevice) {
         throw std::runtime_error("Kompute Sequence device is null");
-    }
-    if (this->mQueueIndex < 0) {
-        throw std::runtime_error("Kompute Sequence queue index not provided");
     }
 
     this->mFreeCommandPool = true;
