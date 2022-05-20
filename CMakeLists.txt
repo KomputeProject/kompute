@@ -67,7 +67,7 @@ option(BUILD_SHARED_LIBS "Build libraries as shared libraries" ON)
 message(STATUS "General purpose GPU compute framework built on Vulkan")
 message(STATUS "=======================================================")
 # Enable or disable targets
-kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" ON)
+kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" OFF)
 kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" OFF)
 kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" OFF)
 kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" OFF)
