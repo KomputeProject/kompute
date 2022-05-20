@@ -47,7 +47,7 @@ if(CPR_FORCE_USE_SYSTEM_CURL)
     install(EXPORT komputeTargets
             FILE komputeTargets.cmake
             NAMESPACE kompute::
-	    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+	        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
     install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
             ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
@@ -81,14 +81,13 @@ endif()
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(kompute PUBLIC kompute_vk_ndk_wrapper
-                                         fmt::fmt
-                                         log
                                          android
-                                         logger)
+                                  PRIVATE logger
+                                          fmt::fmt)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
-                                         fmt::fmt
-                                         logger)
+                                  PRIVATE fmt::fmt
+                                          logger)
 endif()
 
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
