@@ -6,8 +6,6 @@
 
 #include "shaders/Utils.hpp"
 
-#include "fmt/ranges.h"
-
 TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
 {
     {

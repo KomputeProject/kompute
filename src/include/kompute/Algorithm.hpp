@@ -4,6 +4,7 @@
 #include "kompute/Core.hpp"
 
 #include "kompute/Tensor.hpp"
+#include "logger/Logger.hpp"
 
 namespace kp {
 

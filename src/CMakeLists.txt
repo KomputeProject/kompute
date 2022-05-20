@@ -80,24 +80,23 @@ endif()
 #####################################################
 
 if(KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(kompute PUBLIC fmt::fmt
-                                         kompute_vk_ndk_wrapper
+    target_link_libraries(kompute PUBLIC kompute_vk_ndk_wrapper
+                                         fmt::fmt
                                          log
-                                         android)
+                                         android
+                                         logger)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
-                                         fmt::fmt)
+                                         fmt::fmt
+                                         logger)
 endif()
 
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
     target_link_libraries(kompute PUBLIC Vulkan-Headers)
 endif()
 
-if(KOMPUTE_OPT_ENABLE_LOGGING)
-    target_link_libraries(kompute PUBLIC spdlog::spdlog)
-endif()
-
 #####################################################
 # Misc
 #####################################################
+add_subdirectory(logger)
 add_subdirectory(include)
