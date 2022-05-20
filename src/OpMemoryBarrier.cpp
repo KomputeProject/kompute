@@ -11,12 +11,12 @@ OpMemoryBarrier::OpMemoryBarrier(
   const vk::PipelineStageFlagBits& srcStageMask,
   const vk::PipelineStageFlagBits& dstStageMask,
   bool barrierOnPrimary)
-  : mTensors(tensors)
-  , mSrcAccessMask(srcAccessMask)
+  : mSrcAccessMask(srcAccessMask)
   , mDstAccessMask(dstAccessMask)
   , mSrcStageMask(srcStageMask)
   , mDstStageMask(dstStageMask)
   , mBarrierOnPrimary(barrierOnPrimary)
+  , mTensors(tensors)
 {
     KP_LOG_DEBUG("Kompute OpMemoryBarrier constructor");
 }
@@ -52,13 +52,13 @@ OpMemoryBarrier::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpMemoryBarrier::preEval(const vk::CommandBuffer& commandBuffer)
+OpMemoryBarrier::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpMemoryBarrier preEval called");
 }
 
 void
-OpMemoryBarrier::postEval(const vk::CommandBuffer& commandBuffer)
+OpMemoryBarrier::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpMemoryBarrier postSubmit called");
 }

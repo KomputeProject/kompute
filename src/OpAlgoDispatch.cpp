@@ -43,13 +43,13 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpAlgoDispatch::preEval(const vk::CommandBuffer& commandBuffer)
+OpAlgoDispatch::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch preEval called");
 }
 
 void
-OpAlgoDispatch::postEval(const vk::CommandBuffer& commandBuffer)
+OpAlgoDispatch::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch postSubmit called");
 }

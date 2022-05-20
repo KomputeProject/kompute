@@ -210,7 +210,7 @@ void
 Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
                          std::shared_ptr<vk::Buffer> bufferFrom,
                          std::shared_ptr<vk::Buffer> bufferTo,
-                         vk::DeviceSize bufferSize,
+                         vk::DeviceSize /*bufferSize*/,
                          vk::BufferCopy copyRegion)
 {
 
@@ -439,16 +439,18 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
       this->mDevice->getBufferMemoryRequirements(*buffer);
 
     uint32_t memoryTypeIndex = -1;
+    bool memoryTypeIndexFound = false;
     for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
         if (memoryRequirements.memoryTypeBits & (1 << i)) {
             if (((memoryProperties.memoryTypes[i]).propertyFlags &
                  memoryPropertyFlags) == memoryPropertyFlags) {
                 memoryTypeIndex = i;
+                memoryTypeIndexFound = true;
                 break;
             }
         }
     }
-    if (memoryTypeIndex < 0) {
+    if (!memoryTypeIndexFound) {
         throw std::runtime_error(
           "Memory type index for buffer creation not found");
     }

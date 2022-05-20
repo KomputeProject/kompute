@@ -31,7 +31,8 @@ debugMessageCallback(VkDebugReportFlagsEXT flags,
 
 Manager::Manager()
   : Manager(0)
-{}
+{
+}
 
 Manager::Manager(uint32_t physicalDeviceIndex,
                  const std::vector<uint32_t>& familyQueueIndices,
@@ -282,10 +283,6 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     if (this->mInstance == nullptr) {
         throw std::runtime_error("Kompute Manager instance is null");
     }
-    if (physicalDeviceIndex < 0) {
-        throw std::runtime_error(
-          "Kompute Manager physical device index not provided");
-    }
 
     this->mFreeDevice = true;
 
@@ -321,12 +318,13 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
                 physicalDeviceIndex,
                 physicalDeviceProperties.deviceName);
 
-    if (!familyQueueIndices.size()) {
+    if (familyQueueIndices.empty()) {
         // Find compute queue
         std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
           physicalDevice.getQueueFamilyProperties();
 
-        uint32_t computeQueueFamilyIndex = -1;
+        uint32_t computeQueueFamilyIndex = 0;
+        bool computeQueueSupported = false;
         for (uint32_t i = 0; i < allQueueFamilyProperties.size(); i++) {
             vk::QueueFamilyProperties queueFamilyProperties =
               allQueueFamilyProperties[i];
@@ -334,11 +332,12 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
             if (queueFamilyProperties.queueFlags &
                 vk::QueueFlagBits::eCompute) {
                 computeQueueFamilyIndex = i;
+                computeQueueSupported = true;
                 break;
             }
         }
 
-        if (computeQueueFamilyIndex < 0) {
+        if (!computeQueueSupported) {
             throw std::runtime_error("Compute queue is not supported");
         }
 

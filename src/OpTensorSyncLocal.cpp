@@ -52,13 +52,13 @@ OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpTensorSyncLocal::preEval(const vk::CommandBuffer& commandBuffer)
+OpTensorSyncLocal::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal preEval called");
 }
 
 void
-OpTensorSyncLocal::postEval(const vk::CommandBuffer& commandBuffer)
+OpTensorSyncLocal::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal postEval called");
 
