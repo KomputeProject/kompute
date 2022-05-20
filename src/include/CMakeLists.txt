@@ -36,10 +36,10 @@ install(DIRECTORY kompute DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # Logger
 #####################################################
 
-target_include_directories(logger PUBLIC $<INSTALL_INTERFACE:include>
+target_include_directories(kp_logger PUBLIC $<INSTALL_INTERFACE:include>
                                          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-target_sources(logger PRIVATE
+target_sources(kp_logger PRIVATE
      # Header files (useful in IDEs)    
     kompute/logger/Logger.hpp
 )
