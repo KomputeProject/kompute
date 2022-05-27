@@ -31,7 +31,7 @@ if(KOMPUTE_OPT_ENABLE_SPDLOG)
     set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "Enables external fmt as its current dep" FORCE)
     if(KOMPUTE_OPT_INSTALL)
         # Enable install parameters for spdlog (overrides parameters passed)
-        set(SPDLOG_INSTALL ON CACHE BOOL "Enables install of spdlot" FORCE)
+        set(SPDLOG_INSTALL ON CACHE BOOL "Enables install of spdlog" FORCE)
 
         if(KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS)
             set(SPDLOG_BUILD_SHARED ON CACHE BOOL "Enables build of shared libraries" FORCE)
