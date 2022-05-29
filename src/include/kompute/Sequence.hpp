@@ -235,7 +235,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @return Boolean stating if recording ongoing.
      */
-    [[nodiscard]] bool isRecording() const;
+    bool isRecording() const;
 
     /**
      * Returns true if the sequence has been initialised, and it's based on the
@@ -243,7 +243,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @return Boolean stating if is initialized
      */
-    [[nodiscard]] bool isInit() const;
+    bool isInit() const;
 
     /**
      * Clears command buffer and triggers re-record of all the current
@@ -258,7 +258,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @return Boolean stating if currently running.
      */
-    [[nodiscard]] bool isRunning() const;
+    bool isRunning() const;
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory
