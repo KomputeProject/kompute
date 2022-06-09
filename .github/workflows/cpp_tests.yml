@@ -29,7 +29,7 @@ jobs:
         build-type: Debug
         run-test: true
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
   
   cpp-tests-release-with-debug-layers:
     runs-on: ubuntu-latest
