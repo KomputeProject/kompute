@@ -80,11 +80,11 @@ kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug lay
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
 
 # External components
-option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" ON)
-option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" ON)
-option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" ON)
-option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" ON)
-option(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER "Use the build in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver." ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER "Use the build in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver." ON)
 kompute_option_string(KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG  "The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.2.203")
 message(STATUS "=======================================================")
 
