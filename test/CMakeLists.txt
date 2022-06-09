@@ -16,6 +16,7 @@ macro(add_kompute_test _TEST_NAME)
                                          ${ARGN})
     target_link_libraries("${_TEST_NAME}_tests" PRIVATE GTest::GTest
                                                         kompute::kompute
+                                                        kp_logger
                                                         test_shaders
                                                         test_shaders_glsl)
     add_test(NAME "kompute_${_TEST_NAME}_tests" COMMAND "${_TEST_NAME}_tests")
