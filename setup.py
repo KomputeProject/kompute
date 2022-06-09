@@ -43,6 +43,7 @@ class CMakeBuild(build_ext):
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DKOMPUTE_OPT_BUILD_PYTHON=ON',
                       '-DKOMPUTE_OPT_LOG_LEVEL=Off',
+                      '-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON'
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
                       '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_path('include'),
                       '-DPYTHON_LIBRARY=' + sysconfig.get_path('stdlib'),
