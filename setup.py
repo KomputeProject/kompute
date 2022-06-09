@@ -28,8 +28,8 @@ class CMakeBuild(build_ext):
                                ", ".join(e.name for e in self.extensions))
 
         cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
-        if cmake_version < '3.4.1':
-            raise RuntimeError("CMake >= 3.4.1 is required")
+        if cmake_version < '3.15':
+            raise RuntimeError("CMake >= 3.15 is required")
 
         for ext in self.extensions:
             self.build_extension(ext)
@@ -41,8 +41,8 @@ class CMakeBuild(build_ext):
             extdir += os.path.sep
 
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DKOMPUTE_OPT_BUILD_PYTHON=1',
-                      '-DKOMPUTE_OPT_ENABLE_SPDLOG=0',
+                      '-DKOMPUTE_OPT_BUILD_PYTHON=ON',
+                      '-DKOMPUTE_OPT_LOG_LEVEL=Off',
                       '-DPYTHON_EXECUTABLE=' + sys.executable,
                       '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_path('include'),
                       '-DPYTHON_LIBRARY=' + sysconfig.get_path('stdlib'),
@@ -51,20 +51,20 @@ class CMakeBuild(build_ext):
         cfg = 'Debug' if self.debug else 'Release'
         build_args = ['--config', cfg]
 
+        env = os.environ.copy()
+        oldCxxFlags = env.get('CXXFLAGS', '')
+        env['CXXFLAGS'] = f'{oldCxxFlags} -DVERSION_INFO=\\"{self.distribution.get_version()}\\"'
+
         if platform.system() == "Windows":
-            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS=""']
-            cmake_args += ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(cfg.upper(), extdir)]
+            cmake_args += [f'-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{cfg.upper()}={extdir}']
             if sys.maxsize > 2**32:
                 cmake_args += ['-A', 'x64']
             build_args += ['--', '/m']
         else:
-            cmake_args += ['-DKOMPUTE_EXTRA_CXX_FLAGS="-fPIC"']
+            env['CXXFLAGS'] += ' -fPIC'
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j']
 
-        env = os.environ.copy()
-        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
-                                                              self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
 
