@@ -82,12 +82,18 @@ endif()
 if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(kompute PUBLIC kompute_vk_ndk_wrapper
                                          android
-                                  PRIVATE kp_logger
-                                          fmt::fmt)
+                                         kp_logger
+                                  PRIVATE fmt::fmt)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
-                                  PRIVATE fmt::fmt
-                                          kp_logger)
+                                         kp_logger
+                                  PRIVATE fmt::fmt)
+endif()
+
+if(KOMPUTE_OPT_BUILD_PYTHON)
+    include_directories(${PYTHON_INCLUDE_DIRS})
+
+    target_link_libraries(kompute PRIVATE pybind11::headers ${PYTHON_LIBRARIES})
 endif()
 
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
