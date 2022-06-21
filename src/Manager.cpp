@@ -461,7 +461,7 @@ Manager::listDevices() const
 std::shared_ptr<vk::Instance>
 Manager::getVkInstance() const
 {
-    return mInstance;
+    return this->mInstance;
 }
 
 }
