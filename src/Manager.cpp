@@ -450,4 +450,10 @@ Manager::listDevices() const
     return this->mInstance->enumeratePhysicalDevices();
 }
 
+std::shared_ptr<vk::Instance>
+Manager::getVkInstance() const
+{
+    return this->mInstance;
+}
+
 }

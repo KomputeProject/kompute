@@ -214,6 +214,14 @@ class Manager
      **/
     std::vector<vk::PhysicalDevice> listDevices() const;
 
+    /**
+     * The current Vulkan instance.
+     *
+     * @return a shared pointer to the current Vulkan instance held by this
+     *object
+     **/
+    std::shared_ptr<vk::Instance> getVkInstance() const;
+
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::Instance> mInstance = nullptr;
