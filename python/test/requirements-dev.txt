@@ -1,4 +1,4 @@
 pyshader==0.7.0
-numpy==1.19.5
+numpy==1.22.0
 pytest==6.2.1
 
