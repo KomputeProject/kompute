@@ -18,10 +18,9 @@ vulkan_compile_shader(INFILE test_shader.comp
                       OUTFILE test_shader.hpp
                       NAMESPACE "kp")
 
-add_library(test_shaders_glsl "${CMAKE_CURRENT_BINARY_DIR}/test_logistic_regression_shader.hpp"
-                              "${CMAKE_CURRENT_BINARY_DIR}/test_op_custom_shader.hpp"
-                              "${CMAKE_CURRENT_BINARY_DIR}/test_workgroup_shader.hpp"
-                              "${CMAKE_CURRENT_BINARY_DIR}/test_shader.hpp")
+add_library(test_shaders_glsl INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/test_logistic_regression_shader.hpp"
+                                        "${CMAKE_CURRENT_BINARY_DIR}/test_op_custom_shader.hpp"
+                                        "${CMAKE_CURRENT_BINARY_DIR}/test_workgroup_shader.hpp"
+                                        "${CMAKE_CURRENT_BINARY_DIR}/test_shader.hpp")
 
-set_target_properties(test_shaders_glsl PROPERTIES LINKER_LANGUAGE CXX)
-target_include_directories(test_shaders_glsl PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+target_include_directories(test_shaders_glsl INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
