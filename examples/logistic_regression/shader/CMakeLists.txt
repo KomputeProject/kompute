@@ -12,9 +12,8 @@ vulkan_compile_shader(INFILE my_shader.comp
 #                       RELATIVE_PATH "${kompute_SOURCE_DIR}/cmake")
 
 # Then add it to the library, so you can access it later in your code
-add_library(shader "${CMAKE_CURRENT_BINARY_DIR}/my_shader.hpp"
-#                  "${CMAKE_CURRENT_BINARY_DIR}/my_shader2.hpp"
+add_library(shader INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/my_shader.hpp"
+#                            "${CMAKE_CURRENT_BINARY_DIR}/my_shader2.hpp"
 )
 
-set_target_properties(shader PROPERTIES LINKER_LANGUAGE CXX)
-target_include_directories(shader PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+target_include_directories(shader INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
