@@ -52,5 +52,3 @@ void main() {
 
     lout[idx] = calculateLoss(yHat, yCurr);
 }
-
-
