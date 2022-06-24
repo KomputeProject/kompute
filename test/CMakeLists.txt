@@ -23,7 +23,6 @@ macro(add_kompute_test _TEST_NAME)
     # Group under the "tests" project folder in IDEs such as Visual Studio.
     set_property(TARGET ${_TEST_NAME}_tests PROPERTY FOLDER "tests")
     if(WIN32 AND BUILD_SHARED_LIBS)
-        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:libcurl> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
         add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kompute> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
     endif()
 endmacro()
