@@ -3,6 +3,7 @@
 #include <cassert>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <mutex>
 #include <spdlog/async.h>
 #include <spdlog/common.h>
@@ -16,6 +17,7 @@
 
 #ifdef _WIN32
 #include <iso646.h>
+#include <direct.h>
 #endif // _WIN32
 
 namespace logger {
@@ -50,11 +52,11 @@ exists(const std::string& path)
 void
 createDir(const std::string& path)
 {
-    mode_t nMode = 0733; // UNIX style permissions
     int nError = 0;
 #if defined(_WIN32)
-    nError = _mkdir(sPath.c_str()); // can be used on Windows
+    nError = _mkdir(path.c_str()); // can be used on Windows
 #else
+    mode_t nMode = 0733; // UNIX style permissions
     nError = mkdir(path.c_str(), nMode); // can be used on non-Windows
 #endif
     if (nError != 0) {
@@ -86,7 +88,7 @@ setupLogger()
       std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_pattern("[%H:%M:%S %z] [%=8l] [thread %t] [%@]\t%v");
 #ifdef _WIN32
-    std::string s = (logger::log_folder / "kompute.log").string();
+    std::string s = logger::logFolder + "\\kompute.log";
     spdlog::sink_ptr file_sink =
       std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
         s, FILE_ROTATION_TIME, 3);
