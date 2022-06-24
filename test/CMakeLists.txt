@@ -22,8 +22,12 @@ macro(add_kompute_test _TEST_NAME)
     add_test(NAME "kompute_${_TEST_NAME}_tests" COMMAND "${_TEST_NAME}_tests")
     # Group under the "tests" project folder in IDEs such as Visual Studio.
     set_property(TARGET ${_TEST_NAME}_tests PROPERTY FOLDER "tests")
-    if(WIN32 AND BUILD_SHARED_LIBS)
-        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kompute> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
+    if(WIN32 AND BUILD_SHARED_LIBS AND NOT FILES_COPYED)  # Install dlls in the same directory as the executable on Windows so one can simply double click them
+        set(FILES_COPYED "DONE")
+        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:test_shaders> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
+        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kompute::kompute> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
+        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
+        add_custom_command(TARGET ${_TEST_NAME}_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kp_logger> $<TARGET_FILE_DIR:${_TEST_NAME}_tests>)
     endif()
 endmacro()
 
