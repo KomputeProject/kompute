@@ -5,10 +5,14 @@ function(vulkan_compile_shader)
           return()
      endif()
 
-     cmake_parse_arguments(SHADER_COMPILE "" "INFILE;OUTFILE;NAMESPACE" "" ${ARGN})
+     cmake_parse_arguments(SHADER_COMPILE "" "INFILE;OUTFILE;NAMESPACE;RELATIVE_PATH" "" ${ARGN})
      set(SHADER_COMPILE_INFILE_FULL "${CMAKE_CURRENT_SOURCE_DIR}/${SHADER_COMPILE_INFILE}")
      set(SHADER_COMPILE_SPV_FILE_FULL "${CMAKE_CURRENT_BINARY_DIR}/${SHADER_COMPILE_INFILE}.spv")
      set(SHADER_COMPILE_HEADER_FILE_FULL "${CMAKE_CURRENT_BINARY_DIR}/${SHADER_COMPILE_OUTFILE}")
+
+     if(NOT SHADER_COMPILE_RELATIVE_PATH)
+          set(SHADER_COMPILE_RELATIVE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+     endif()
     
      # .comp -> .spv
      add_custom_command(OUTPUT "${SHADER_COMPILE_SPV_FILE_FULL}"
@@ -32,8 +36,8 @@ function(vulkan_compile_shader)
                              "-DHEADER_NAMESPACE=${SHADER_COMPILE_NAMESPACE}"
                              "-DIS_BIG_ENDIAN=${IS_BIG_ENDIAN}"
                              "-P"
-                             "${PROJECT_SOURCE_DIR}/cmake/bin_file_to_header.cmake"
-                        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/cmake"
+                             "${SHADER_COMPILE_RELATIVE_PATH}/bin_file_to_header.cmake"
+                        WORKING_DIRECTORY "${SHADER_COMPILE_RELATIVE_PATH}"
                         COMMENT "Converting compiled shader '${SHADER_COMPILE_SPV_FILE_FULL}' to header file '${SHADER_COMPILE_HEADER_FILE_FULL}'."
                         MAIN_DEPENDENCY "${SHADER_COMPILE_SPV_FILE_FULL}")
 endfunction()
