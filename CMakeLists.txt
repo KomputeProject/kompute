@@ -67,25 +67,25 @@ option(BUILD_SHARED_LIBS "Build libraries as shared libraries" ON)
 message(STATUS "General purpose GPU compute framework built on Vulkan")
 message(STATUS "=======================================================")
 # Enable or disable targets
-kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests" OFF)
-kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage" OFF)
-kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation" OFF)
-kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation" OFF)
+kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests." OFF)
+kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage." OFF)
+kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation." OFF)
+kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." OFF)
 
 # Build options
-kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings" OFF)
-kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here." "Off")
-kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required" OFF)
-kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug" OFF)
+kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings." OFF)
+kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here." "Default")
+kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required." OFF)
+kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
 
 # External components
-kompute_option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog" ON)
-kompute_option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt" ON)
-kompute_option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest" ON)
-kompute_option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11" ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the build in version of Spdlog." ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_FMT "Use the build in version of fmt." ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST "Use the build in version of GoogleTest." ON)
+kompute_option(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11 "Use the build in version of pybind11." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER "Use the build in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver." ON)
-kompute_option_string(KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG  "The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.2.203")
+kompute_option_string(KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG "The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.2.203")
 message(STATUS "=======================================================")
 
 #####################################################
