@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.14)
 project(kompute_array_mult)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -26,7 +26,7 @@ endif()
 
 include(FetchContent)
 FetchContent_Declare(kompute GIT_REPOSITORY https://github.com/COM8/kompute.git
-                             GIT_TAG f4d72e2aa7b23ffe05d5ea3191bf72ad00def0ec) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
+    GIT_TAG f4d72e2aa7b23ffe05d5ea3191bf72ad00def0ec) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
 FetchContent_MakeAvailable(kompute)
 include_directories(${kompute_SOURCE_DIR}/src/include)
 
