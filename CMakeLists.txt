@@ -63,7 +63,6 @@ macro(kompute_option_string OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
-option(BUILD_SHARED_LIBS "Build libraries as shared libraries" ON)
 message(STATUS "General purpose GPU compute framework built on Vulkan")
 message(STATUS "=======================================================")
 # Enable or disable targets
