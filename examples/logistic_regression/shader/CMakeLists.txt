@@ -6,11 +6,6 @@ vulkan_compile_shader(INFILE my_shader.comp
     NAMESPACE "shader"
     RELATIVE_PATH "${kompute_SOURCE_DIR}/cmake")
 
-# vulkan_compile_shader(INFILE my_shader2.comp
-# OUTFILE my_shader2.hpp
-# NAMESPACE "shader"
-# RELATIVE_PATH "${kompute_SOURCE_DIR}/cmake")
-
 # Then add it to the library, so you can access it later in your code
 add_library(shader INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/my_shader.hpp"
 
