@@ -2,7 +2,7 @@
 C++ Build System Deep Dive
 ======================
 
-The recommended approach to build the project is as out-of-source build in the ``build`` folder. This project uses CMake as build system.
+The recommended approach to build the project is as out-of-source built-in the ``build`` folder. This project uses CMake as build system.
 
 For a base build you just have to run:
 
@@ -45,17 +45,17 @@ This by default configures without any of the extra build tasks (such as buildin
    * - -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
      - Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_SPDLOG=ON
-     - Use the build in version of Spdlog.
+     - Use the built-in version of Spdlog.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_FMT=ON
-     - Use the build in version of fmt.
+     - Use the built-in version of fmt.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST=ON
-     - Use the build in version of GoogleTest.
+     - Use the built-in version of GoogleTest.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_PYBIND11=ON
-     - Use the build in version of pybind11.
+     - Use the built-in version of pybind11.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER=ON
-     - Use the build in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver.
+     - Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver.
    * - -DKOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG="v1.2.203"
-     - The git tag used for the build in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags
+     - The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags
 
 Compile Flags
 ~~~~~~~~~~~~~
