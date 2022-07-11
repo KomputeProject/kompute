@@ -1,14 +1,14 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.14)
 
-#####################################################
+# ####################################################
 # Kompute
-#####################################################
-
+# ####################################################
 target_include_directories(kompute PUBLIC $<INSTALL_INTERFACE:include>
-                                          $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 target_sources(kompute PRIVATE
-     # Header files (useful in IDEs)    
+
+    # Header files (useful in IDEs)
     kompute/Algorithm.hpp
     kompute/Core.hpp
     kompute/Kompute.hpp
@@ -32,15 +32,15 @@ target_sources(kompute PRIVATE
 
 install(DIRECTORY kompute DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-#####################################################
+# ####################################################
 # Logger
-#####################################################
-
+# ####################################################
 target_include_directories(kp_logger PUBLIC $<INSTALL_INTERFACE:include>
-                                         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
 target_sources(kp_logger PRIVATE
-     # Header files (useful in IDEs)    
+
+    # Header files (useful in IDEs)
     kompute/logger/Logger.hpp
 )
 

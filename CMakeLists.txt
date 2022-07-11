@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.15)
-project(kompute VERSION 1.8.1 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.14)
+project(kompute VERSION 0.8.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -22,49 +22,58 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(KOMPUTE_LIBRARIES kompute CACHE INTERNAL "")
 
-#####################################################
+# ####################################################
 # Options
-#####################################################
-
+# ####################################################
 macro(kompute_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     option(${OPTION_NAME} ${OPTION_TEXT} ${OPTION_DEFAULT})
+
     if(DEFINED ENV{${OPTION_NAME}})
         # Allow overriding the option through an environment variable
         set(${OPTION_NAME} $ENV{${OPTION_NAME}})
     endif()
+
     if(${OPTION_NAME})
         add_definitions(-D${OPTION_NAME})
     endif()
+
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
 macro(kompute_log_level OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
     set_property(CACHE ${OPTION_NAME} PROPERTY STRINGS "Trace" "Debug" "Info" "Warn" "Error" "Critical")
+
     if(DEFINED ENV{${OPTION_NAME}})
         # Allow setting the option through an environment variable
         set(${OPTION_NAME} $ENV{${OPTION_NAME}})
     endif()
+
     if(${OPTION_NAME})
         add_definitions(-D${OPTION_NAME})
     endif()
+
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
 macro(kompute_option_string OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
+
     if(DEFINED ENV{${OPTION_NAME}})
         # Allow setting the option through an environment variable
         set(${OPTION_NAME} $ENV{${OPTION_NAME}})
     endif()
+
     if(${OPTION_NAME})
         add_definitions(-D${OPTION_NAME})
     endif()
+
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
 message(STATUS "General purpose GPU compute framework built on Vulkan")
 message(STATUS "=======================================================")
+
 # Enable or disable targets
 kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests." OFF)
 kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage." OFF)
@@ -87,14 +96,14 @@ kompute_option(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER "Use the built-in version 
 kompute_option_string(KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG "The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.2.203")
 message(STATUS "=======================================================")
 
-#####################################################
+# ####################################################
 # Deprecated Options
-#####################################################
+# ####################################################
 include(cmake/deprecation_warnings.cmake)
 
-#####################################################
+# ####################################################
 # Dependencies
-#####################################################
+# ####################################################
 include(cmake/vulkan_shader_compiler.cmake)
 include(FetchContent)
 include(cmake/check_vulkan_version.cmake)
@@ -105,11 +114,12 @@ include(cmake/check_vulkan_version.cmake)
 if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     find_package(Vulkan REQUIRED)
 endif()
+
 if(KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER)
     FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
-                                       GIT_TAG ${KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG}) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
+        GIT_TAG ${KOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG}) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
     FetchContent_MakeAvailable(vulkan_header)
-    
+
     if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
         # Ensure the driver supports this Vulkan version
         check_vulkan_version(INCLUDE_DIR "${vulkan_header_SOURCE_DIR}/include")
@@ -127,7 +137,7 @@ if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
     set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
 
     FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-                                GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
+        GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
     FetchContent_MakeAvailable(spdlog)
 else()
     find_package(spdlog REQUIRED)
@@ -138,7 +148,7 @@ if(KOMPUTE_OPT_USE_BUILD_IN_FMT)
     set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
     set(BUILD_SHARED_LIBS_BKP ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-                             GIT_TAG 8.1.1) # Source: https://github.com/fmtlib/fmt/releases
+        GIT_TAG 8.1.1) # Source: https://github.com/fmtlib/fmt/releases
     FetchContent_MakeAvailable(fmt)
     set(BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_BKP})
 else()
@@ -149,7 +159,7 @@ endif()
 if(KOMPUTE_OPT_BUILD_TESTS)
     if(KOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST)
         FetchContent_Declare(googletest GIT_REPOSITORY https://github.com/google/googletest.git
-                                        GIT_TAG release-1.11.0) # Source: https://github.com/google/googletest/releases
+            GIT_TAG release-1.11.0) # Source: https://github.com/google/googletest/releases
         FetchContent_MakeAvailable(googletest)
 
         add_library(gtest_int INTERFACE)
@@ -157,7 +167,7 @@ if(KOMPUTE_OPT_BUILD_TESTS)
         target_include_directories(gtest_int INTERFACE ${googletest_SOURCE_DIR}/include)
 
         add_library(GTest::GTest ALIAS gtest_int)
-       
+
         # Group under the "tests/gtest" project folder in IDEs such as Visual Studio.
         set_property(TARGET gtest PROPERTY FOLDER "tests/gtest")
         set_property(TARGET gtest_main PROPERTY FOLDER "tests/gtest")
@@ -170,17 +180,18 @@ endif()
 if(KOMPUTE_OPT_BUILD_PYTHON)
     if(KOMPUTE_OPT_USE_BUILD_IN_PYBIND11)
         FetchContent_Declare(pybind GIT_REPOSITORY https://github.com/pybind/pybind11.git
-                                    GIT_TAG v2.9.2) # Source: https://github.com/pybind/pybind11/releases
+            GIT_TAG v2.9.2) # Source: https://github.com/pybind/pybind11/releases
         FetchContent_MakeAvailable(pybind)
     else()
         find_package(pybind11 REQUIRED)
     endif()
+
     find_package(PythonLibs REQUIRED)
 endif()
 
-#####################################################
+# ####################################################
 # Preprocessor Macros
-#####################################################
+# ####################################################
 if(KOMPUTE_OPT_ANDROID_BUILD)
     add_compile_definitions(VK_USE_PLATFORM_ANDROID_KHR=1)
 endif()
@@ -193,16 +204,16 @@ if(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS)
     add_compile_definitions(KOMPUTE_DISABLE_VK_DEBUG_LAYERS=1)
 endif()
 
-#####################################################
+# ####################################################
 # Misc Options
-#####################################################
+# ####################################################
 if(KOMPUTE_OPT_INSTALL)
     # Enable install parameters for glslang (overrides parameters passed)
     # When install is enabled the glslang libraries become shared
     set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
 endif()
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror")
 endif()
@@ -211,13 +222,14 @@ if(KOMPUTE_OPT_CODE_COVERAGE)
     if(NOT UNIX)
         message(FATAL_ERROR "KOMPUTE_OPT_CODE_COVERAGE can only be enabled in unix based systems due to limitation on gcov.")
     endif()
+
     include(cmake/code_coverage.cmake)
 endif()
 
 # If glslang is cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
 # As after installation, SPIRV/ header files will be found in glslang/SPIRV/ , more info in #193
 if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-        add_definitions(-DUSE_EXTERNAL_GLSLANG)
+    add_definitions(-DUSE_EXTERNAL_GLSLANG)
 endif()
 
 # Allow scripts to call main kompute Makefile
