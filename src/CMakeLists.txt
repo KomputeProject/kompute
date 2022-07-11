@@ -29,35 +29,21 @@ set_target_properties(kompute
 # Import GNU common install directory variables
 include(GNUInstallDirs)
 
-if(CPR_FORCE_USE_SYSTEM_CURL)
-    install(TARGETS kompute
-        EXPORT komputeTargets
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS kompute
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-    # Include CMake helpers for package config files
-    # Follow this installation guideline: https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html
-    include(CMakePackageConfigHelpers)
+# Include CMake helpers for package config files
+# Follow this installation guideline: https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html
+include(CMakePackageConfigHelpers)
 
-    configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/komputeConfig.cmake.in
-        "${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake"
-        INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/komputeConfig.cmake.in
+    "${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake"
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
-    install(EXPORT komputeTargets
-        FILE komputeTargets.cmake
-        NAMESPACE kompute::
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
-
-    install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
-        ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
-
-else()
-    install(TARGETS kompute
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-endif()
+install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
+    ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
 # ####################################################
 # Android
