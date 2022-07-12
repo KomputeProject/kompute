@@ -82,7 +82,7 @@ kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." 
 
 # Build options
 kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings." OFF)
-kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here." "Default")
+kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' spdlog will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else." "Default")
 kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)

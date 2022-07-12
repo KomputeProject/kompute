@@ -37,7 +37,7 @@ This by default configures without any of the extra build tasks (such as buildin
    * - -DKOMPUTE_OPT_BUILD_PYTHON=ON
      - Enable if you want to build python bindings.
    * - -DKOMPUTE_OPT_LOG_LEVEL="Trace"
-     - Internally we use spdlog for logging. The log level used can be changed here.
+     - Internally we use spdlog for logging. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' spdlog will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else.
    * - -DKOMPUTE_OPT_ANDROID_BUILD=ON
      - Enable android compilation flags required.
    * - -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON
