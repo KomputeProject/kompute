@@ -1,9 +1,10 @@
 #include "kompute/logger/Logger.hpp"
 
+#if KOMPUTE_OPT_LOG_LEVEL_DISABLED
+#else
 #include <cassert>
 #include <iostream>
 #include <memory>
-#include <string>
 #include <mutex>
 #include <spdlog/async.h>
 #include <spdlog/common.h>
@@ -11,13 +12,14 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
+#include <string>
 
 #include <sys/stat.h>
 #include <sys/types.h>
 
 #ifdef _WIN32
-#include <iso646.h>
 #include <direct.h>
+#include <iso646.h>
 #endif // _WIN32
 
 namespace logger {
@@ -56,7 +58,7 @@ createDir(const std::string& path)
 #if defined(_WIN32)
     nError = _mkdir(path.c_str()); // can be used on Windows
 #else
-    mode_t nMode = 0733; // UNIX style permissions
+    mode_t nMode = 0733;                 // UNIX style permissions
     nError = mkdir(path.c_str(), nMode); // can be used on non-Windows
 #endif
     if (nError != 0) {
@@ -192,3 +194,4 @@ vecToString(const std::vector<std::string>& vec)
     return result.substr(0, result.size() - 2); // Remove the tailing ", "
 }
 } // namespace logger
+#endif

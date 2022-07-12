@@ -3,6 +3,7 @@
 
 #include "kompute/Core.hpp"
 
+#include "fmt/format.h"
 #include "kompute/Tensor.hpp"
 #include "logger/Logger.hpp"
 
