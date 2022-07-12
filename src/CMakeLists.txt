@@ -67,10 +67,12 @@ if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(kompute PUBLIC kompute_vk_ndk_wrapper
         android
         kp_logger
+        kp_shader
         PRIVATE fmt::fmt)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
         kp_logger
+        kp_shader
         PRIVATE fmt::fmt)
 endif()
 
@@ -88,4 +90,5 @@ endif()
 # Misc
 # ####################################################
 add_subdirectory(logger)
+add_subdirectory(shaders)
 add_subdirectory(include)
