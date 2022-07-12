@@ -58,7 +58,7 @@ function(check_vulkan_version)
         return()
     endif()
 
-    string(REGEX MATCHALL "(GPU[0-9]+)" GPU_IDS ${VULKAN_INFO_OUTPUT})
+    string(REGEX MATCHALL "(GPU[0-9]+)" GPU_IDS "${VULKAN_INFO_OUTPUT}")
     if(NOT GPU_IDS)
         message(FATAL_ERROR "No GPU supporting Vulkan found in vulkaninfo. Does your GPU (driver) support Vulkan?")
     endif()
