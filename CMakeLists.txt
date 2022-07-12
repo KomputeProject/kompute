@@ -92,6 +92,7 @@ kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. T
 kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
+kompute_option(KOMPUTE_OPT_BUILD_SHADERS "Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system." OFF)
 
 # External components
 kompute_option(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG "Use the built-in version of Spdlog." ON)

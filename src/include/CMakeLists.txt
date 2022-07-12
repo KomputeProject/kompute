@@ -24,9 +24,6 @@ target_sources(kompute PRIVATE
     kompute/operations/OpTensorSyncDevice.hpp
     kompute/operations/OpTensorSyncLocal.hpp
 
-    kompute/shaders/shaderlogisticregression.hpp
-    kompute/shaders/shaderopmult.hpp
-
     kompute/logger/Logger.hpp
 )
 

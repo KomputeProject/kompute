@@ -14,5 +14,5 @@
 #include "operations/OpTensorSyncDevice.hpp"
 #include "operations/OpTensorSyncLocal.hpp"
 
-#include "shaders/shaderlogisticregression.hpp"
-#include "shaders/shaderopmult.hpp"
+#include "ShaderLogisticRegression.hpp"
+#include "ShaderOpMult.hpp"
