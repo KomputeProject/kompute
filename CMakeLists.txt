@@ -141,7 +141,7 @@ endif()
 if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
     if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
         set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
-        set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
+        set(SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS})
 
         FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
             GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
@@ -154,11 +154,9 @@ endif()
 # fmt
 if(KOMPUTE_OPT_USE_BUILD_IN_FMT)
     set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
-    set(BUILD_SHARED_LIBS_BKP ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
         GIT_TAG 8.1.1) # Source: https://github.com/fmtlib/fmt/releases
     FetchContent_MakeAvailable(fmt)
-    set(BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS_BKP})
 else()
     find_package(fmt REQUIRED)
 endif()
