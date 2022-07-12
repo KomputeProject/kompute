@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <string>
-
 #include "kompute/Core.hpp"
-
 #include "logger/Logger.hpp"
+#include <string>
 
 namespace kp {
 
