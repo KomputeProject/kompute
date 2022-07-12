@@ -44,6 +44,8 @@ This by default configures without any of the extra build tasks (such as buildin
      - Explicitly disable debug layers even on debug.
    * - -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
      - Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later.
+   * - -DKOMPUTE_OPT_BUILD_SHADERS=OFF
+     - Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_SPDLOG=ON
      - Use the built-in version of Spdlog.
    * - -DKOMPUTE_OPT_USE_BUILD_IN_FMT=ON
