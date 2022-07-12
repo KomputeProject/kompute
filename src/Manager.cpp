@@ -40,8 +40,10 @@ Manager::Manager(uint32_t physicalDeviceIndex,
 {
     this->mManageResources = true;
 
-    // Make sure the logger is setup
+// Make sure the logger is setup
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
     logger::setupLogger();
+#endif
 
     this->createInstance();
     this->createDevice(
@@ -58,8 +60,10 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
 
-    // Make sure the logger is setup
+// Make sure the logger is setup
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
     logger::setupLogger();
+#endif
 }
 
 Manager::~Manager()

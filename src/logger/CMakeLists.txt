@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.14)
 set(LOGGER_SOURCES Logger.cpp)
 
 add_library(kp_logger ${LOGGER_SOURCES})
-target_link_libraries(kp_logger PUBLIC spdlog::spdlog)
+
+if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
+    target_link_libraries(kp_logger PUBLIC spdlog::spdlog)
+endif()
 
 if(${KOMPUTE_OPT_LOG_LEVEL} STREQUAL "Trace")
     set(KOMPUTE_OPT_LOG_LEVEL TRACE)

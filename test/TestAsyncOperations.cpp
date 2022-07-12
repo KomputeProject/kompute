@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "kompute/Kompute.hpp"
+#include "kompute/logger/Logger.hpp"
 #include "shaders/Utils.hpp"
 
 TEST(TestAsyncOperations, TestManagerParallelExecution)
@@ -264,9 +265,8 @@ main(int argc, char* argv[])
 {
     testing::InitGoogleTest(&argc, argv);
 
-#if KOMPUTE_ENABLE_SPDLOG
-    spdlog::set_level(
-      static_cast<spdlog::level::level_enum>(KOMPUTE_LOG_LEVEL));
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
+    logger::setupLogger();
 #endif
 
     return RUN_ALL_TESTS();

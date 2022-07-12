@@ -42,7 +42,7 @@ endmacro()
 
 macro(kompute_log_level OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     set(${OPTION_NAME} ${OPTION_DEFAULT} CACHE STRING ${OPTION_TEXT})
-    set_property(CACHE ${OPTION_NAME} PROPERTY STRINGS "Trace" "Debug" "Info" "Warn" "Error" "Critical")
+    set_property(CACHE ${OPTION_NAME} PROPERTY STRINGS "Trace" "Debug" "Info" "Warn" "Error" "Critical" "Default" "Off")
 
     if(DEFINED ENV{${OPTION_NAME}})
         # Allow setting the option through an environment variable
@@ -51,6 +51,12 @@ macro(kompute_log_level OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
 
     if(${OPTION_NAME})
         add_definitions(-D${OPTION_NAME})
+    endif()
+
+    # Allow disabling logging completely and prevent linking against it:
+    if(${KOMPUTE_OPT_LOG_LEVEL} STREQUAL "Off")
+        set(${OPTION_NAME}_DISABLED ON)
+        add_compile_definitions(${OPTION_NAME}_DISABLED=1)
     endif()
 
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
@@ -132,15 +138,17 @@ else()
 endif()
 
 # Spdlog
-if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
-    set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
-    set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
+if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
+    if(KOMPUTE_OPT_USE_BUILD_IN_SPDLOG)
+        set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
+        set(SPDLOG_BUILD_SHARED ${KOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS})
 
-    FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
-    FetchContent_MakeAvailable(spdlog)
-else()
-    find_package(spdlog REQUIRED)
+        FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
+            GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
+        FetchContent_MakeAvailable(spdlog)
+    else()
+        find_package(spdlog REQUIRED)
+    endif()
 endif()
 
 # fmt

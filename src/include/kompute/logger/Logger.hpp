@@ -1,5 +1,13 @@
 #pragma once
 
+#if KOMPUTE_OPT_LOG_LEVEL_DISABLED
+#define KP_LOG_TRACE(...)
+#define KP_LOG_DEBUG(...)
+#define KP_LOG_INFO(...)
+#define KP_LOG_WARN(...)
+#define KP_LOG_ERROR(...)
+#else
+
 #include <set>
 #include <spdlog/spdlog.h>
 #include <string>
@@ -34,3 +42,5 @@ vecToString(const std::vector<const char*>& vec);
 std::string
 vecToString(const std::vector<std::string>& vec);
 } // namespace logger
+
+#endif
