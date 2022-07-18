@@ -46,7 +46,7 @@ function(check_vulkan_version)
     # Get Vulkan version supported by driver
     find_program(VULKAN_INFO_PATH NAMES vulkaninfo)
     if(VULKAN_INFO_PATH STREQUAL "VULKAN_INFO_PATH-NOTFOUND")
-        message(FATAL_ERROR "vulkaninfo not found. The Vulkan SDK might not be installed properly. If you know what you are doing, you can disable the Vulkan version check by setting 'KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK' to 'ON'. (-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON)")
+        message(FATAL_ERROR "vulkaninfo not found. The Vulkan SDK might not be installed properly. If you know what you are doing, you can disable the Vulkan version check by setting 'KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK' to 'ON' (-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON).")
         return()
     endif()
 
@@ -56,6 +56,14 @@ function(check_vulkan_version)
     if(NOT ${VULKAN_INFO_RETURN} EQUAL 0)
         message(FATAL_ERROR "Running vulkaninfo failed with return code ${VULKAN_INFO_RETURN}. Make sure you have 'vulkan-tools' installed. Result:\n${VULKAN_INFO_OUTPUT}?")
         return()
+    else()
+        message(STATUS "Running vulkaninfo was successful. Parsing the output...")
+    endif()
+
+    # Check if running vulkaninfo was successfully
+    string(FIND "${VULKAN_INFO_OUTPUT}" "Vulkan Instance Version" VULKAN_INFO_SUCCESSFUL)
+    if(VULKAN_INFO_SUCCESSFUL LESS 0)
+        message(FATAL_ERROR "Running vulkaninfo failed. Make sure you have 'vulkan-tools' installed and DISPLAY is configured. If you know what you are doing, you can disable the Vulkan version check by setting 'KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK' to 'ON' (-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON). Result:\n${VULKAN_INFO_OUTPUT}?")
     endif()
 
     string(REGEX MATCHALL "(GPU[0-9]+)" GPU_IDS "${VULKAN_INFO_OUTPUT}")
