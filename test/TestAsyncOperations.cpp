@@ -259,15 +259,3 @@ TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
     EXPECT_EQ(tensorA->vector(), resultAsync);
     EXPECT_EQ(tensorB->vector(), resultAsync);
 }
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
-
-    return RUN_ALL_TESTS();
-}

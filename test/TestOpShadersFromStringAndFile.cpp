@@ -108,15 +108,3 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 //    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
 //    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 //}
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
-
-    return RUN_ALL_TESTS();
-}
