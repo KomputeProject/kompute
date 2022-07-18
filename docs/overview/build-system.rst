@@ -46,18 +46,18 @@ This by default configures without any of the extra build tasks (such as buildin
      - Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later.
    * - -DKOMPUTE_OPT_BUILD_SHADERS=OFF
      - Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system.
-   * - -DKOMPUTE_OPT_USE_BUILD_IN_SPDLOG=ON
+   * - -DKOMPUTE_OPT_USE_BUILT_IN_SPDLOG=ON
      - Use the built-in version of Spdlog.
-   * - -DKOMPUTE_OPT_USE_BUILD_IN_FMT=ON
+   * - -DKOMPUTE_OPT_USE_BUILT_IN_FMT=ON
      - Use the built-in version of fmt.
-   * - -DKOMPUTE_OPT_USE_BUILD_IN_GOOGLE_TEST=ON
+   * - -DKOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST=ON
      - Use the built-in version of GoogleTest.
-   * - -DKOMPUTE_OPT_USE_BUILD_IN_PYBIND11=ON
+   * - -DKOMPUTE_OPT_USE_BUILT_IN_PYBIND11=ON
      - Use the built-in version of pybind11.
-   * - -DKOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER=ON
+   * - -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON
      - Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver.
-   * - -DKOMPUTE_OPT_BUILD_IN_VULKAN_HEADER_TAG="v1.2.203"
-     - The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILD_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags
+   * - -DKOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG="v1.2.203"
+     - The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags
 
 Compile Flags
 ~~~~~~~~~~~~~
