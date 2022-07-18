@@ -131,7 +131,7 @@ function(check_vulkan_version)
     endforeach()
 
     if("${VALID_GPU}" STREQUAL "")
-        message(FATAL_ERROR "None of your GPUs supports Vulkan Header ${VULKAN_HEADER_VERSION}. Please try updating your driver, or downgrade your Vulkan headers.")
+        message(FATAL_ERROR "None of your GPUs supports Vulkan Header ${VULKAN_HEADER_VERSION}. Please try updating your driver, or downgrade your Vulkan headers. If you know what you are doing, you can disable the Vulkan version check by setting 'KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK' to 'ON' (-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON).")
     else()
         message("Valid GPU (${VALID_GPU}) for Vulkan header version ${VULKAN_HEADER_VERSION} found. ${VALID_GPU} supports up to Vulkan ${VALID_VULKAN_VERSION}.")
     endif()
