@@ -243,15 +243,3 @@ TEST(TestSequence, CorrectSequenceRunningError)
 
     EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 }
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
-
-    return RUN_ALL_TESTS();
-}

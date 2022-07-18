@@ -271,15 +271,3 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmUtilFunctions)
     EXPECT_EQ(algorithm->getPushConstants<float>(), pushConsts);
     EXPECT_EQ(algorithm->getSpecializationConstants<float>(), specConsts);
 }
-
-int
-main(int argc, char* argv[])
-{
-    testing::InitGoogleTest(&argc, argv);
-
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
-
-    return RUN_ALL_TESTS();
-}

@@ -13,7 +13,7 @@ add_subdirectory(shaders)
 macro(add_kompute_test _TEST_NAME)
     add_executable("${_TEST_NAME}_tests" "Test${_TEST_NAME}.cpp"
         ${ARGN})
-    target_link_libraries("${_TEST_NAME}_tests" PRIVATE GTest::GTest
+    target_link_libraries("${_TEST_NAME}_tests" PRIVATE GTest::gtest_main
         kompute::kompute
         kp_logger
         test_shaders
