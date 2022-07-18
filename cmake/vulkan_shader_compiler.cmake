@@ -1,6 +1,6 @@
 function(vulkan_compile_shader)
      find_program(GLS_LANG_VALIDATOR_PATH NAMES glslangValidator)
-     if(${GLS_LANG_VALIDATOR_PATH})
+     if(GLS_LANG_VALIDATOR_PATH STREQUAL "GLS_LANG_VALIDATOR_PATH-NOTFOUND")
           message(FATAL_ERROR "glslangValidator not found.")
           return()
      endif()

@@ -41,12 +41,12 @@ function(check_vulkan_version)
         message(FATAL_ERROR "Invalid Vulkan include directory given. Try calling 'find_package(Vulkan REQUIRED)' before you call this function or set 'Vulkan_INCLUDE_DIR' manually!")
         return()
     endif()
-    message(STATUS "Found Vulkan Header version ${VULKAN_HEADER_VERSION}.")
+    message(STATUS "Found Vulkan Header version: ${VULKAN_HEADER_VERSION}")
 
     # Get Vulkan version supported by driver
     find_program(VULKAN_INFO_PATH NAMES vulkaninfo)
-    if(${VULKAN_INFO_PATH})
-        message(FATAL_ERROR "vulkaninfo not found. The Vulkan SDK might not be installed properly.")
+    if(VULKAN_INFO_PATH STREQUAL "VULKAN_INFO_PATH-NOTFOUND")
+        message(FATAL_ERROR "vulkaninfo not found. The Vulkan SDK might not be installed properly. If you know what you are doing, you can disable the Vulkan version check by setting 'KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK' to 'ON'. (-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON)")
         return()
     endif()
 
