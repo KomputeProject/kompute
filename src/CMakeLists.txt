@@ -68,12 +68,12 @@ if(KOMPUTE_OPT_ANDROID_BUILD)
         android
         kp_logger
         kp_shader
-        PRIVATE fmt::fmt)
+        fmt::fmt)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
         kp_logger
         kp_shader
-        PRIVATE fmt::fmt)
+        fmt::fmt)
 endif()
 
 if(KOMPUTE_OPT_BUILD_PYTHON)
