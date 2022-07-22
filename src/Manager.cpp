@@ -320,7 +320,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     this->mPhysicalDevice =
       std::make_shared<vk::PhysicalDevice>(physicalDevice);
 
-#if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_INFO
+#if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_INFO && SPDLOG_ACTIVE_LEVEL != SPDLOG_LEVEL_OFF
     vk::PhysicalDeviceProperties physicalDeviceProperties =
       physicalDevice.getProperties();
 #endif
