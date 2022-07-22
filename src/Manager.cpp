@@ -7,7 +7,6 @@
 
 #include "kompute/Manager.hpp"
 #include "kompute/logger/Logger.hpp"
-#include "spdlog/common.h"
 
 namespace kp {
 
