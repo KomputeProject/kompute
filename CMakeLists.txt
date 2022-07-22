@@ -248,6 +248,7 @@ endfunction()
 add_subdirectory(src)
 
 if(KOMPUTE_OPT_BUILD_TESTS)
+    enable_testing()
     add_subdirectory(test)
 endif()
 
