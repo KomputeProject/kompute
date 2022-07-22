@@ -12,7 +12,7 @@ VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsyst
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 # These are the tests that don't work with swiftshader but can be run directly with vulkan
-FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps:TestPushConstants.TestConstantsDouble"
+FILTER_TESTS_REGEX ?= "(kompute_AsyncOperations_tests)|(kompute_PushConstant_tests)"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
@@ -56,15 +56,14 @@ MK_KOMPUTE_EXTRA_CXX_FLAGS ?= ""
 mk_cmake:
 	cmake \
 		-Bbuild \
-		-DKOMPUTE_EXTRA_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
+		-DCMAKE_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_BUILD_TYPE=$(MK_BUILD_TYPE) \
 		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
-		-DKOMPUTE_OPT_INSTALL=1 \
-		-DKOMPUTE_OPT_BUILD_TESTS=1 \
-		-DKOMPUTE_OPT_BUILD_DOCS=1 \
-		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
-		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
-		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
+		-DKOMPUTE_OPT_INSTALL=ON \
+		-DKOMPUTE_OPT_BUILD_TESTS=ON \
+		-DKOMPUTE_OPT_BUILD_DOCS=ON \
+		-DKOMPUTE_OPT_BUILD_SHADERS=ON \
+		-DKOMPUTE_OPT_CODE_COVERAGE=ON \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		$(MK_CMAKE_EXTRA_FLAGS) \
 		-G "Unix Makefiles"
@@ -79,13 +78,25 @@ mk_build_kompute:
 	cmake --build build/. --target kompute --parallel
 
 mk_build_tests:
-	cmake --build build/ --target test_kompute --parallel
+	cmake --build build/. --target AsyncOperations_tests \
+								   Destroy_tests \
+								   LogisticRegression_tests \
+								   Manager_tests \
+								   MultipleAlgoExecutions_tests \
+								   OpShadersFromStringAndFile_tests \
+								   OpTensorCopy_tests \
+								   OpTensorCreate_tests \
+								   PushConstant_tests \
+								   Sequence_tests \
+								   SpecializationConstant_tests \
+								   Workgroup_tests \
+								   --parallel
 
 mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 mk_run_tests: mk_build_tests
-	./build/test/test_kompute --gtest_filter=$(FILTER_TESTS)
+	ctest -vv --exclude-regex $(FILTER_TESTS_REGEX) --test-dir build/.
 
 mk_build_swiftshader_library:
 	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
@@ -112,12 +123,11 @@ vs_cmake:
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_WIN_PATH) \
 		-DKOMPUTE_EXTRA_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_INSTALL_PREFIX=$(VS_INSTALL_PATH) \
-		-DKOMPUTE_OPT_INSTALL=1 \
-		-DKOMPUTE_OPT_BUILD_TESTS=1 \
-		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
-		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
-		-DKOMPUTE_OPT_CODE_COVERAGE=0 \
-		-DKOMPUTE_OPT_BUILD_DOCS=0 \
+		-DKOMPUTE_OPT_INSTALL=ON \
+		-DKOMPUTE_OPT_BUILD_TESTS=ON \
+		-DKOMPUTE_OPT_BUILD_SHADERS=ON \
+		-DKOMPUTE_OPT_CODE_COVERAGE=OFF \
+		-DKOMPUTE_OPT_BUILD_DOCS=OFF \
 		-G "Visual Studio 16 2019"
 
 vs_build_all:
@@ -139,7 +149,7 @@ vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 vs_run_tests: vs_build_tests
-	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe --gtest_filter=$(FILTER_TESTS)
+	ctest -vv --exclude-regex $(FILTER_TESTS_REGEX) --test-dir build/.
 
 
 #### PYTHONG ####
