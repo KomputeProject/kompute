@@ -28,7 +28,7 @@ set(SPHINX_BUILD
 set(CODECOV_DOCS_DIR
     ${SPHINX_BUILD}/codecov/)
 set(CODECOV_DOCS_INDEX_FILE
-    ${CODECOV_DOCS_DIR}/index.html})
+    ${CODECOV_DOCS_DIR}/index.html)
 
 # Perform replacement with cmake vars inside Doxifine.in
 configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
