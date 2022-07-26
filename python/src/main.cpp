@@ -10,7 +10,7 @@
 namespace py = pybind11;
 
 // used in Core.hpp
-py::object kp_debug, kp_info, kp_warning, kp_error;
+py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
 
 std::unique_ptr<kp::OpAlgoDispatch>
 opAlgoDispatchPyInit(std::shared_ptr<kp::Algorithm>& algorithm,
@@ -53,6 +53,7 @@ PYBIND11_MODULE(kp, m)
     // The logging modules are used in the Kompute.hpp file
     py::module_ logging = py::module_::import("logging");
     py::object kp_logger = logging.attr("getLogger")("kp");
+    kp_trace = kp_logger.attr("trace");
     kp_debug = kp_logger.attr("debug");
     kp_info = kp_logger.attr("info");
     kp_warning = kp_logger.attr("warning");
@@ -548,6 +549,7 @@ PYBIND11_MODULE(kp, m)
 
     auto atexit = py::module_::import("atexit");
     atexit.attr("register")(py::cpp_function([]() {
+        kp_trace = py::none();
         kp_debug = py::none();
         kp_info = py::none();
         kp_warning = py::none();

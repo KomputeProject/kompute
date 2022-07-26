@@ -18,7 +18,22 @@
 #else
 
 #if !KOMPUTE_OPT_USE_SPDLOG
+#if VK_USE_PLATFORM_ANDROID_KHR
+#include <android/log.h>
+#include <kompute_vk_ndk_wrapper.hpp>
+// VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp
+#undef VK_NO_PROTOTYPES
+static const char* KOMPUTE_LOG_TAG = "KomputeLog";
+#else
+#if KOMPUTE_BUILD_PYTHON
+#include <pybind11/pybind11.h>
+namespace py = pybind11;
+// from python/src/main.cpp
+extern py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
+#else
 #include <fmt/core.h>
+#endif // KOMPUTE_BUILD_PYTHON
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
 #include <spdlog/spdlog.h>
 #endif // !KOMPUTE_OPT_USE_SPDLOG
@@ -37,6 +52,14 @@ setupLogger();
 
 #ifndef KP_LOG_TRACE
 #if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_TRACE
+#if VK_USE_PLATFORM_ANDROID_KHR
+#define KP_LOG_TRACE(...)                                                      \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_VERBOSE, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
+#else
+#if KOMPUTE_BUILD_PYTHON
+#define KP_LOG_DEBUG(...) kp_trace(fmt::format(__VA_ARGS__))
+#else
 #define KP_LOG_TRACE(...)                                                      \
     fmt::print("[{} {}] [trace] [{}:{}] {}\n",                                 \
                __DATE__,                                                       \
@@ -44,6 +67,8 @@ setupLogger();
                __FILE__,                                                       \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
+#endif // KOMPUTE_BUILD_PYTHON
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
 #define KP_LOG_TRACE(...)
 #endif
@@ -51,6 +76,14 @@ setupLogger();
 
 #ifndef KP_LOG_DEBUG
 #if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_DEBUG
+#if VK_USE_PLATFORM_ANDROID_KHR
+#define KP_LOG_DEBUG(...)                                                      \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_DEBUG, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
+#else
+#if KOMPUTE_BUILD_PYTHON
+#define KP_LOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
+#else
 #define KP_LOG_DEBUG(...)                                                      \
     fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
                __DATE__,                                                       \
@@ -58,6 +91,8 @@ setupLogger();
                __FILE__,                                                       \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
+#endif // KOMPUTE_BUILD_PYTHON
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
 #define KP_LOG_DEBUG(...)
 #endif
@@ -65,6 +100,14 @@ setupLogger();
 
 #ifndef KP_LOG_INFO
 #if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_INFO
+#if VK_USE_PLATFORM_ANDROID_KHR
+#define KP_LOG_INFO(...)                                                       \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
+#else
+#if KOMPUTE_BUILD_PYTHON
+#define KP_LOG_DEBUG(...) kp_info(fmt::format(__VA_ARGS__))
+#else
 #define KP_LOG_INFO(...)                                                       \
     fmt::print("[{} {}] [info] [{}:{}] {}\n",                                  \
                __DATE__,                                                       \
@@ -72,6 +115,8 @@ setupLogger();
                __FILE__,                                                       \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
+#endif // KOMPUTE_BUILD_PYTHON
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
 #define KP_LOG_INFO(...)
 #endif
@@ -79,6 +124,14 @@ setupLogger();
 
 #ifndef KP_LOG_WARN
 #if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_WARN
+#if VK_USE_PLATFORM_ANDROID_KHR
+#define KP_LOG_WARN(...)                                                       \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
+#else
+#if KOMPUTE_BUILD_PYTHON
+#define KP_LOG_DEBUG(...) kp_warning(fmt::format(__VA_ARGS__))
+#else
 #define KP_LOG_WARN(...)                                                       \
     fmt::print("[{} {}] [warn] [{}:{}] {}\n",                                  \
                __DATE__,                                                       \
@@ -86,6 +139,8 @@ setupLogger();
                __FILE__,                                                       \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
+#endif // KOMPUTE_BUILD_PYTHON
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
 #define KP_LOG_WARN(...)
 #endif
@@ -93,6 +148,14 @@ setupLogger();
 
 #ifndef KP_LOG_ERROR
 #if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_ERROR
+#if VK_USE_PLATFORM_ANDROID_KHR
+#define KP_LOG_ERROR(...)                                                      \
+    ((void)__android_log_write(                                                \
+      ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
+#else
+#if KOMPUTE_BUILD_PYTHON
+#define KP_LOG_DEBUG(...) kp_error(fmt::format(__VA_ARGS__))
+#else
 #define KP_LOG_ERROR(...)                                                      \
     fmt::print("[{} {}] [error] [{}:{}] {}\n",                                 \
                __DATE__,                                                       \
@@ -100,6 +163,8 @@ setupLogger();
                __FILE__,                                                       \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
+#endif // KOMPUTE_BUILD_PYTHON
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
 #define KP_LOG_ERROR(...)
 #endif

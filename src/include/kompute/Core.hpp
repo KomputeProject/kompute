@@ -32,5 +32,5 @@ typedef std::vector<float> Constants;
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 // from python/src/main.cpp
-extern py::object kp_debug, kp_info, kp_warning, kp_error;
+extern py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
 #endif
