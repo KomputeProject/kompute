@@ -184,15 +184,6 @@ spdlog::level::level_enum
 getLogLevel();
 
 #endif // !KOMPUTE_OPT_USE_SPDLOG
-
-std::string
-setToString(const std::set<std::string>& set);
-
-std::string
-vecToString(const std::vector<const char*>& vec);
-
-std::string
-vecToString(const std::vector<std::string>& vec);
 } // namespace logger
 
 #endif // KOMPUTE_OPT_LOG_LEVEL_DISABLED

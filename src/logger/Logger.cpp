@@ -93,45 +93,6 @@ setLogLevel(const spdlog::level::level_enum level)
     spdlog::default_logger()->set_level(level);
 }
 #endif // !KOMPUTE_OPT_USE_SPDLOG
-
-std::string
-setToString(const std::set<std::string>& set)
-{
-    std::string result;
-    for (const std::string& entry : set) {
-        result += entry + ", ";
-    }
-    if (result.empty()) {
-        return result;
-    }
-    return result.substr(0, result.size() - 2); // Remove the tailing ", "
-}
-
-std::string
-vecToString(const std::vector<const char*>& vec)
-{
-    std::string result;
-    for (const char* entry : vec) {
-        result += std::string(entry) + ", ";
-    }
-    if (result.empty()) {
-        return result;
-    }
-    return result.substr(0, result.size() - 2); // Remove the tailing ", "
-}
-
-std::string
-vecToString(const std::vector<std::string>& vec)
-{
-    std::string result;
-    for (const std::string& entry : vec) {
-        result += entry + ", ";
-    }
-    if (result.empty()) {
-        return result;
-    }
-    return result.substr(0, result.size() - 2); // Remove the tailing ", "
-}
 } // namespace logger
 
 #endif
