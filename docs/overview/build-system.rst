@@ -36,8 +36,10 @@ This by default configures without any of the extra build tasks (such as buildin
      - Enable if you want to enable installation.
    * - -DKOMPUTE_OPT_BUILD_PYTHON=ON
      - Enable if you want to build python bindings.
-   * - -DKOMPUTE_OPT_LOG_LEVEL="Trace"
-     - Internally we use spdlog for logging. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' spdlog will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else.
+   * - -DKOMPUTE_OPT_LOG_LEVEL="Default"
+     - Internally we use Spdlog or fmt for logging, depending on the value of 'KOMPUTE_OPT_USE_SPDLOG'. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' logging will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else.
+   * - -DKOMPUTE_OPT_USE_SPDLOG=OFF
+     - If enabled, logging via KP_LOG_<DEBUG, INFO, etc...> will happen through Spdlog instead of plan fmt.
    * - -DKOMPUTE_OPT_ANDROID_BUILD=ON
      - Enable android compilation flags required.
    * - -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON
@@ -47,7 +49,7 @@ This by default configures without any of the extra build tasks (such as buildin
    * - -DKOMPUTE_OPT_BUILD_SHADERS=OFF
      - Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_SPDLOG=ON
-     - Use the built-in version of Spdlog.
+     - Use the built-in version of Spdlog. Requires 'KOMPUTE_OPT_USE_SPDLOG' to be set to ON in order to have any effect.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_FMT=ON
      - Use the built-in version of fmt.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST=ON
