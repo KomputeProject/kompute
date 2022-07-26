@@ -14,5 +14,6 @@
 #include "operations/OpTensorSyncDevice.hpp"
 #include "operations/OpTensorSyncLocal.hpp"
 
+// Will be build by CMake and placed inside the build directory
 #include "ShaderLogisticRegression.hpp"
 #include "ShaderOpMult.hpp"

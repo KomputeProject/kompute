@@ -2,6 +2,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <memory>
+
 #include <kompute/Kompute.hpp>
 
 #include "docstrings.hpp"
@@ -53,7 +55,8 @@ PYBIND11_MODULE(kp, m)
     // The logging modules are used in the Kompute.hpp file
     py::module_ logging = py::module_::import("logging");
     py::object kp_logger = logging.attr("getLogger")("kp");
-    kp_trace = kp_logger.attr("trace");
+    kp_trace = kp_logger.attr(
+      "debug"); // Same as for debug since python has no trace logging level
     kp_debug = kp_logger.attr("debug");
     kp_info = kp_logger.attr("info");
     kp_warning = kp_logger.attr("warning");

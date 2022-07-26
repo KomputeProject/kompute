@@ -51,7 +51,7 @@ setupLogger();
 #if !KOMPUTE_OPT_USE_SPDLOG
 
 #ifndef KP_LOG_TRACE
-#if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_TRACE
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_TRACE
 #if VK_USE_PLATFORM_ANDROID_KHR
 #define KP_LOG_TRACE(...)                                                      \
     ((void)__android_log_write(                                                \
@@ -75,7 +75,7 @@ setupLogger();
 #endif // !KP_LOG_TRACE
 
 #ifndef KP_LOG_DEBUG
-#if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_DEBUG
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_DEBUG
 #if VK_USE_PLATFORM_ANDROID_KHR
 #define KP_LOG_DEBUG(...)                                                      \
     ((void)__android_log_write(                                                \
@@ -99,7 +99,7 @@ setupLogger();
 #endif // !KP_LOG_DEBUG
 
 #ifndef KP_LOG_INFO
-#if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_INFO
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_INFO
 #if VK_USE_PLATFORM_ANDROID_KHR
 #define KP_LOG_INFO(...)                                                       \
     ((void)__android_log_write(                                                \
@@ -123,7 +123,7 @@ setupLogger();
 #endif // !KP_LOG_INFO
 
 #ifndef KP_LOG_WARN
-#if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_WARN
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_WARN
 #if VK_USE_PLATFORM_ANDROID_KHR
 #define KP_LOG_WARN(...)                                                       \
     ((void)__android_log_write(                                                \
@@ -147,7 +147,7 @@ setupLogger();
 #endif // !KP_LOG_WARN
 
 #ifndef KP_LOG_ERROR
-#if KOMPUTE_OPT_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_ERROR
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_ERROR
 #if VK_USE_PLATFORM_ANDROID_KHR
 #define KP_LOG_ERROR(...)                                                      \
     ((void)__android_log_write(                                                \
