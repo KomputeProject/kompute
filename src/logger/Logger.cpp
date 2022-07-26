@@ -1,6 +1,7 @@
 #include "kompute/logger/Logger.hpp"
 
-#if KOMPUTE_OPT_LOG_LEVEL_DISABLED
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
+#if !KOMPUTE_OPT_USE_SPDLOG
 #else
 #include <cassert>
 #include <iostream>
@@ -9,64 +10,21 @@
 #include <spdlog/async.h>
 #include <spdlog/common.h>
 #include <spdlog/logger.h>
-#include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
 #include <string>
-
-#include <sys/stat.h>
-#include <sys/types.h>
-
-#ifdef _WIN32
-#include <direct.h>
-#include <iso646.h>
-#endif // _WIN32
+#endif // !KOMPUTE_OPT_USE_SPDLOG
 
 namespace logger {
-constexpr int THREAD_QUEUE_LENGTH = 8192;
-constexpr int FILE_ROTATION_TIME = 1048576 * 5;
+#if !KOMPUTE_OPT_USE_SPDLOG
 
-/**
- * Should be replaced with:
- * std::filesystem::exists(path)
- * when switching to cpp17
- **/
-bool
-exists(const std::string& path)
-{
-    struct stat info
-    {};
-    if (stat(path.c_str(), &info) != 0) {
-        // std::cerr << "Failed to check if '" << path
-        //           << "' exists. Cannot access!\n";
-        // assert(false);
-        return false;
-    }
-    return info.st_mode & S_IFDIR;
-}
-
-/**
- * Based on: https://stackoverflow.com/a/35109823
- * Should be replaced with:
- * std::filesystem::create_directory(path);
- * when switching to cpp17
- **/
 void
-createDir(const std::string& path)
+setupLogger()
 {
-    int nError = 0;
-#if defined(_WIN32)
-    nError = _mkdir(path.c_str()); // can be used on Windows
-#else
-    mode_t nMode = 0733;                 // UNIX style permissions
-    nError = mkdir(path.c_str(), nMode); // can be used on non-Windows
-#endif
-    if (nError != 0) {
-        std::cerr << "Failed to create '" << path << "' with: " << nError
-                  << '\n';
-        assert(false);
-    }
 }
+
+#else
+constexpr int THREAD_QUEUE_LENGTH = 8192;
 
 void
 setupLogger()
@@ -82,25 +40,11 @@ setupLogger()
     setup = true;
     setupMutex.unlock();
 
-    if (!exists(logger::logFolder)) {
-        createDir(logger::logFolder);
-    }
     spdlog::init_thread_pool(THREAD_QUEUE_LENGTH, 1);
     spdlog::sink_ptr console_sink =
       std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_pattern("[%H:%M:%S %z] [%=8l] [thread %t] [%@]\t%v");
-#ifdef _WIN32
-    std::string s = logger::logFolder + "\\kompute.log";
-    spdlog::sink_ptr file_sink =
-      std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-        s, FILE_ROTATION_TIME, 3);
-#else // _WIN32
-    spdlog::sink_ptr file_sink =
-      std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-        logger::logFolder + "/kompute.log", FILE_ROTATION_TIME, 3);
-#endif
-    file_sink->set_pattern("[%H:%M:%S %z] [%=8l] [thread %t] [%@]\t%v");
-    std::vector<spdlog::sink_ptr> sinks{ file_sink, console_sink };
+    std::vector<spdlog::sink_ptr> sinks{ console_sink };
     std::shared_ptr<spdlog::logger> logger =
       std::make_shared<spdlog::async_logger>(
         "",
@@ -148,12 +92,7 @@ setLogLevel(const spdlog::level::level_enum level)
 {
     spdlog::default_logger()->set_level(level);
 }
-
-void
-deactivateLogger()
-{
-    logger::setLogLevel(spdlog::level::off);
-}
+#endif // !KOMPUTE_OPT_USE_SPDLOG
 
 std::string
 setToString(const std::set<std::string>& set)
@@ -194,4 +133,5 @@ vecToString(const std::vector<std::string>& vec)
     return result.substr(0, result.size() - 2); // Remove the tailing ", "
 }
 } // namespace logger
+
 #endif
