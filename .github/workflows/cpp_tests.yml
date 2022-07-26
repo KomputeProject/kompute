@@ -30,6 +30,8 @@ jobs:
         run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+    - name: Run tests
+      run: make mk_run_tests
   
   cpp-tests-release-with-debug-layers:
     runs-on: ubuntu-latest
@@ -54,6 +56,8 @@ jobs:
         run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+    - name: Run tests
+      run: make mk_run_tests
 
   cpp-tests-debug-without-debug-layers:
     runs-on: ubuntu-latest
@@ -78,6 +82,8 @@ jobs:
         run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+    - name: Run tests
+      run: make mk_run_tests
   
   cpp-tests-release-without-debug-layers:
     runs-on: ubuntu-latest
@@ -102,3 +108,5 @@ jobs:
         run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+    - name: Run tests
+      run: make mk_run_tests
