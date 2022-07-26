@@ -18,8 +18,6 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      env:
-        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       uses: ashutoshvarma/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
@@ -31,6 +29,8 @@ jobs:
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
     - name: Run tests
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       run: make mk_run_tests
   
   cpp-tests-release-with-debug-layers:
@@ -44,8 +44,6 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      env:
-        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       uses: ashutoshvarma/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
@@ -57,6 +55,8 @@ jobs:
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
     - name: Run tests
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       run: make mk_run_tests
 
   cpp-tests-debug-without-debug-layers:
@@ -70,8 +70,6 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      env:
-        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       uses: ashutoshvarma/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
@@ -83,6 +81,8 @@ jobs:
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
     - name: Run tests
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       run: make mk_run_tests
   
   cpp-tests-release-without-debug-layers:
@@ -96,8 +96,6 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      env:
-        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       uses: ashutoshvarma/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
@@ -109,4 +107,6 @@ jobs:
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
     - name: Run tests
+      env:
+        VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
       run: make mk_run_tests
