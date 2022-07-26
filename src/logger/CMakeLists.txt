@@ -13,6 +13,14 @@ add_compile_definitions(KOMPUTE_LOG_LEVEL_ERROR=4)
 add_compile_definitions(KOMPUTE_LOG_LEVEL_CRITICAL=5)
 add_compile_definitions(KOMPUTE_LOG_LEVEL_OFF=6)
 
+if(KOMPUTE_OPT_BUILD_PYTHON AND KOMPUTE_OPT_USE_SPDLOG)
+    message(FATAL_ERROR "'KOMPUTE_OPT_BUILD_PYTHON' is incompatible with 'KOMPUTE_OPT_USE_SPDLOG'. To continue set either one option to 'OFF'.")
+endif()
+
+if(KOMPUTE_OPT_ANDROID_BUILD AND KOMPUTE_OPT_USE_SPDLOG)
+    message(FATAL_ERROR "'KOMPUTE_OPT_ANDROID_BUILD' is incompatible with 'KOMPUTE_OPT_USE_SPDLOG'. To continue set either one option to 'OFF'.")
+endif()
+
 if(${KOMPUTE_OPT_LOG_LEVEL} STREQUAL "Trace")
     set(KOMPUTE_OPT_LOG_LEVEL TRACE)
     message(STATUS "Using log level Trace")
