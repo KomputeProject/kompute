@@ -117,7 +117,7 @@ include(FetchContent)
 include(cmake/check_vulkan_version.cmake)
 
 # Vulkan Header
-# We don't import Vulkan library if Android build as its build dynamically
+# We don't import Vulkan library if Android build as its built dynamically
 # Otherwise it is expected that the Vulkan SDK and dependencies are installed
 if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     find_package(Vulkan REQUIRED)
