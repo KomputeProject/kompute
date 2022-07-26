@@ -5,7 +5,7 @@ project(kompute VERSION 0.8.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
-# Only change the folder behaviour if kompute is not a subproject
+# Only change the folder behavior if kompute is not a subproject
 if(${CMAKE_PROJECT_NAME} STREQUAL ${PROJECT_NAME})
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
     set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
@@ -88,14 +88,15 @@ kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." 
 
 # Build options
 kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings." OFF)
-kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use spdlog for logging. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' spdlog will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else." "Default")
+kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use Spdlog or fmt for logging, depending on the value of 'KOMPUTE_OPT_USE_SPDLOG'. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' logging will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else." "Default")
+kompute_option(KOMPUTE_OPT_USE_SPDLOG "If enabled, logging via KP_LOG_<DEBUG, INFO, etc...> will happen through Spdlog instead of plan fmt." OFF)
 kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
 kompute_option(KOMPUTE_OPT_BUILD_SHADERS "Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system." OFF)
 
 # External components
-kompute_option(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG "Use the built-in version of Spdlog." ON)
+kompute_option(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG "Use the built-in version of Spdlog. Requires 'KOMPUTE_OPT_USE_SPDLOG' to be set to ON in order to have any effect." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_FMT "Use the built-in version of fmt." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST "Use the built-in version of GoogleTest." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11 "Use the built-in version of pybind11." ON)
@@ -139,16 +140,20 @@ else()
 endif()
 
 # Spdlog
-if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
-    if(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG)
-        set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
-        set(SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS})
+if(KOMPUTE_OPT_USE_SPDLOG)
+    add_compile_definitions(KOMPUTE_OPT_USE_SPDLOG=1)
 
-        FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-            GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
-        FetchContent_MakeAvailable(spdlog)
-    else()
-        find_package(spdlog REQUIRED)
+    if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
+        if(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG)
+            set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
+            set(SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS})
+
+            FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
+                GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
+            FetchContent_MakeAvailable(spdlog)
+        else()
+            find_package(spdlog REQUIRED)
+        endif()
     endif()
 endif()
 
