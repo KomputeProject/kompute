@@ -27,7 +27,7 @@ jobs:
         cc: gcc
         cxx: g++
         build-type: Debug
-        run-test: true
+        run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
   
@@ -51,7 +51,7 @@ jobs:
         cc: gcc
         cxx: g++
         build-type: Release
-        run-test: true
+        run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
 
@@ -75,7 +75,7 @@ jobs:
         cc: gcc
         cxx: g++
         build-type: Debug
-        run-test: true
+        run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
   
@@ -99,6 +99,6 @@ jobs:
         cc: gcc
         cxx: g++
         build-type: Release
-        run-test: true
+        run-test: false
         ctest-options: -V
         configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON

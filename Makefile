@@ -12,7 +12,7 @@ VCPKG_WIN_PATH ?= "C:\\Users\\axsau\\Programming\\lib\\vcpkg\\scripts\\buildsyst
 VCPKG_UNIX_PATH ?= "/c/Users/axsau/Programming/lib/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
 # These are the tests that don't work with swiftshader but can be run directly with vulkan
-FILTER_TESTS_REGEX ?= "(kompute_AsyncOperations_tests)|(kompute_PushConstant_tests)"
+FILTER_TESTS ?= "-TestAsyncOperations.TestManagerParallelExecution:TestSequence.SequenceTimestamps:TestPushConstants.TestConstantsDouble"
 
 ifeq ($(OS),Windows_NT)     # is Windows_NT on XP, 2000, 7, Vista, 10...
 	CMAKE_BIN ?= "C:\Program Files\CMake\bin\cmake.exe"
@@ -78,25 +78,17 @@ mk_build_kompute:
 	cmake --build build/. --target kompute --parallel
 
 mk_build_tests:
-	cmake --build build/. --target AsyncOperations_tests \
-								   Destroy_tests \
-								   LogisticRegression_tests \
-								   Manager_tests \
-								   MultipleAlgoExecutions_tests \
-								   OpShadersFromStringAndFile_tests \
-								   OpTensorCopy_tests \
-								   OpTensorCreate_tests \
-								   PushConstant_tests \
-								   Sequence_tests \
-								   SpecializationConstant_tests \
-								   Workgroup_tests \
+	cmake --build build/. --target kompute_tests \
 								   --parallel
 
 mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
+# An alternative would be: ctest -vv --test-dir build/.
+# But this is not possible since we need to filter specific tests, not complete executables, which is not possible with ctest.
+# https://gitlab.kitware.com/cmake/cmake/-/issues/13168 
 mk_run_tests: mk_build_tests
-	ctest -vv --exclude-regex $(FILTER_TESTS_REGEX) --test-dir build/.
+	./build/bin/kompute_tests --gtest_filter=$(FILTER_TESTS)
 
 mk_build_swiftshader_library:
 	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
@@ -149,7 +141,7 @@ vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 vs_run_tests: vs_build_tests
-	ctest -vv --exclude-regex $(FILTER_TESTS_REGEX) --test-dir build/.
+	./build/test/$(VS_BUILD_TYPE)/bin/kompute_tests.exe --gtest_filter=$(FILTER_TESTS)
 
 
 #### PYTHONG ####
