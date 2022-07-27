@@ -66,6 +66,9 @@ class CMakeBuild(build_ext):
             env['CXXFLAGS'] += ' -fPIC'
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             build_args += ['--', '-j']
+            # Optional environment variable to limit the number of parallel jobs for GitHub actions to reduce RAM usage
+            if 'KOMPUTE_PYTHON_NUM_PARALLEL_THREADS' in env:
+                build_args += env['KOMPUTE_PYTHON_NUM_PARALLEL_THREADS']
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
