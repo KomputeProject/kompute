@@ -51,8 +51,7 @@ class CMakeBuild(build_ext):
         ]
 
         cfg = 'Debug' if self.debug else 'Release'
-        build_args = ['--config', cfg,
-                      '--parallel', '1']
+        build_args = ['--config', cfg]
 
         env = os.environ.copy()
         oldCxxFlags = env.get('CXXFLAGS', '')
