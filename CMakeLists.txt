@@ -116,13 +116,6 @@ include(cmake/vulkan_shader_compiler.cmake)
 include(FetchContent)
 include(cmake/check_vulkan_version.cmake)
 
-# Vulkan Header
-# We don't import Vulkan library if Android build as it is built dynamically
-# Otherwise it is expected that the Vulkan SDK and dependencies are installed
-if(NOT KOMPUTE_OPT_ANDROID_BUILD)
-    find_package(Vulkan REQUIRED)
-endif()
-
 if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
     FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
         GIT_TAG ${KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG}) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
@@ -137,6 +130,14 @@ else()
         # Ensure the driver supports this Vulkan version
         check_vulkan_version(INCLUDE_DIR ${Vulkan_INCLUDE_DIR})
     endif()
+endif()
+
+# Vulkan Header
+# We don't import Vulkan library if Android build as it is built dynamically
+# Otherwise it is expected that the Vulkan SDK and dependencies are installed
+# Has to happen AFTER using the build in vulkan headers to prevent multiple targets with the name Vulkan::Headers
+if(NOT KOMPUTE_OPT_ANDROID_BUILD)
+    find_package(Vulkan REQUIRED)
 endif()
 
 # Spdlog
