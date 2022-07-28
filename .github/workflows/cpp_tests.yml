@@ -27,7 +27,7 @@ jobs:
         build-type: Debug
         run-test: false
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON
     - name: Run tests
       env:
         VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
@@ -53,7 +53,7 @@ jobs:
         build-type: Release
         run-test: false
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON
     - name: Run tests
       env:
         VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
@@ -79,7 +79,7 @@ jobs:
         build-type: Debug
         run-test: false
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON
     - name: Run tests
       env:
         VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
@@ -105,7 +105,7 @@ jobs:
         build-type: Release
         run-test: false
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON
+        configure-options: -DKOMPUTE_OPT_BUILD_TESTS=ON -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON -DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON
     - name: Run tests
       env:
         VK_ICD_FILENAMES: "/swiftshader/vk_swiftshader_icd.json"
