@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
 # To add more shaders simply copy the vulkan_compile_shader command and replace it with your new shader
 vulkan_compile_shader(INFILE my_shader.comp

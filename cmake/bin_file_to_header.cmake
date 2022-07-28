@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
 if(${INPUT_SHADER_FILE} STREQUAL "")
     message(FATAL_ERROR "No input file path provided via 'INPUT_SHADER_FILE'.")
