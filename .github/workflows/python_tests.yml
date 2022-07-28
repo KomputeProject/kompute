@@ -22,6 +22,7 @@ jobs:
     - name: Python Build
       env:
         KOMPUTE_PYTHON_NUM_PARALLEL_THREADS: 2
+        KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER: ON
       run: pip3 install --user . -v
     - name: Python run Tests
       run: |
