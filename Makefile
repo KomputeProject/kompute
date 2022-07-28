@@ -105,7 +105,7 @@ mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_o
 VS_BUILD_TYPE ?= "Debug"
 # Run with multiprocessin / parallel build by default
 VS_CMAKE_EXTRA_FLAGS ?= ""
-VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MT" # /MP is for faster multiprocessing builds. You should add "/MT" for submodule builds for compatibility with gtest
+VS_KOMPUTE_EXTRA_CXX_FLAGS ?= ""
 VS_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 vs_cmake:
@@ -113,7 +113,7 @@ vs_cmake:
 		-Bbuild \
 		$(VS_CMAKE_EXTRA_FLAGS) \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_WIN_PATH) \
-		-DKOMPUTE_EXTRA_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
+		-DCMAKE_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_INSTALL_PREFIX=$(VS_INSTALL_PATH) \
 		-DKOMPUTE_OPT_INSTALL=ON \
 		-DKOMPUTE_OPT_BUILD_TESTS=ON \
