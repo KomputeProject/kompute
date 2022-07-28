@@ -78,8 +78,7 @@ mk_build_kompute:
 	cmake --build build/. --target kompute --parallel
 
 mk_build_tests:
-	cmake --build build/. --target kompute_tests \
-								   --parallel
+	cmake --build build/. --target kompute_tests --parallel
 
 mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
@@ -120,22 +119,23 @@ vs_cmake:
 		-DKOMPUTE_OPT_BUILD_SHADERS=ON \
 		-DKOMPUTE_OPT_CODE_COVERAGE=OFF \
 		-DKOMPUTE_OPT_BUILD_DOCS=OFF \
-		-G "Visual Studio 16 2019"
+		-G "Visual Studio 16 2019" \
+		-DCMAKE_BUILD_TYPE=$(VS_BUILD_TYPE)
 
 vs_build_all:
-	$(MSBUILD_BIN) build/kompute.sln -p:Configuration$(VS_BUILD_TYPE)
+	cmake --build build/. --parallel
 
 vs_build_docs:
-	$(MSBUILD_BIN) build/docs/gendocsall.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target gendocsall --parallel
 
 vs_install_kompute:
-	$(MSBUILD_BIN) build/src/INSTALL.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target install --parallel
 
 vs_build_kompute:
-	$(MSBUILD_BIN) build/src/kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target kompute --parallel
 
 vs_build_tests:
-	$(MSBUILD_BIN) build/test/test_kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target kompute_tests --parallel
 
 vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
