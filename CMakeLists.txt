@@ -100,7 +100,7 @@ kompute_option(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG "Use the built-in version of Spdl
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_FMT "Use the built-in version of fmt." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST "Use the built-in version of GoogleTest." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11 "Use the built-in version of pybind11." ON)
-kompute_option(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER "Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver." ON)
+kompute_option(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER "Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver." OFF)
 kompute_option_string(KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG "The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.2.203")
 message(STATUS "=======================================================")
 
@@ -125,19 +125,25 @@ if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
         # Ensure the driver supports this Vulkan version
         check_vulkan_version(INCLUDE_DIR "${vulkan_header_SOURCE_DIR}/include")
     endif()
-else()
-    if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
-        # Ensure the driver supports this Vulkan version
-        check_vulkan_version(INCLUDE_DIR ${Vulkan_INCLUDE_DIR})
-    endif()
 endif()
 
 # Vulkan Header
 # We don't import Vulkan library if Android build as it is built dynamically
 # Otherwise it is expected that the Vulkan SDK and dependencies are installed
-# Has to happen AFTER using the build in vulkan headers to prevent multiple targets with the name Vulkan::Headers
+# Has to happen AFTER using the build-in Vulkan headers to prevent multiple targets with the name Vulkan::Headers
 if(NOT KOMPUTE_OPT_ANDROID_BUILD)
     find_package(Vulkan REQUIRED)
+
+    if(Vulkan_FOUND AND NOT TARGET Vulkan::Headers)
+        add_library(Vulkan::Headers INTERFACE IMPORTED)
+        set_target_properties(Vulkan::Headers PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${Vulkan_INCLUDE_DIRS}")
+    endif()
+
+    if(NOT KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER AND NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
+        # Ensure the driver supports this Vulkan version
+        check_vulkan_version(INCLUDE_DIR ${Vulkan_INCLUDE_DIR})
+    endif()
 endif()
 
 # Spdlog
@@ -173,7 +179,7 @@ if(KOMPUTE_OPT_BUILD_TESTS)
     if(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST)
         FetchContent_Declare(googletest GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG release-1.11.0) # Source: https://github.com/google/googletest/releases
-        
+
         # Use a shared C runtime in case we build shared
         set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
         FetchContent_MakeAvailable(googletest)

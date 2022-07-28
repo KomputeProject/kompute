@@ -56,8 +56,8 @@ This by default configures without any of the extra build tasks (such as buildin
      - Use the built-in version of GoogleTest.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_PYBIND11=ON
      - Use the built-in version of pybind11.
-   * - -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON
-     - Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are to new for your driver. If you set this to false, please make sure your system Vulkan Header are supported by your driver.
+   * - -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=OFF
+     - Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver.
    * - -DKOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG="v1.2.203"
      - The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags
 
