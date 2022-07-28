@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # ######################
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
 # Check if build shaders from source is enabled
 if(KOMPUTE_OPT_BUILD_SHADERS)

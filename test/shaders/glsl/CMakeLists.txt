@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # ######################
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.20)
 
 vulkan_compile_shader(INFILE test_logistic_regression_shader.comp
     OUTFILE test_logistic_regression_shader.hpp
