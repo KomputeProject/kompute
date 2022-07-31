@@ -1,31 +1,30 @@
 // SPDX-License-Identifier: Apache-2.0
 
+#include "kompute/Manager.hpp"
+#include "fmt/format.h"
+#include "kompute/logger/Logger.hpp"
+#include <fmt/core.h>
 #include <iterator>
 #include <set>
 #include <sstream>
 #include <string>
 
-#include "kompute/Manager.hpp"
-#include "kompute/logger/Logger.hpp"
-
 namespace kp {
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
 static VKAPI_ATTR VkBool32 VKAPI_CALL
-debugMessageCallback(VkDebugReportFlagsEXT flags,
-                     VkDebugReportObjectTypeEXT objectType,
-                     uint64_t object,
-                     size_t location,
-                     int32_t messageCode,
+debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
+                     VkDebugReportObjectTypeEXT /*objectType*/,
+                     uint64_t /*object*/,
+                     size_t /*location*/,
+                     int32_t /*messageCode*/,
                      const char* pLayerPrefix,
                      const char* pMessage,
-                     void* pUserData)
+                     void* /*pUserData*/)
 {
     KP_LOG_DEBUG("[VALIDATION]: {} - {}", pLayerPrefix, pMessage);
     return VK_FALSE;
 }
-#endif
 #endif
 
 Manager::Manager()
@@ -129,14 +128,12 @@ Manager::destroy()
         return;
     }
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     if (this->mDebugReportCallback) {
         this->mInstance->destroyDebugReportCallbackEXT(
           this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
         KP_LOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
     }
-#endif
 #endif
 
     if (this->mFreeInstance) {
@@ -164,7 +161,7 @@ Manager::createInstance()
 
     std::vector<const char*> applicationExtensions;
 
-#if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 #endif
 
@@ -177,7 +174,6 @@ Manager::createInstance()
           applicationExtensions.data();
     }
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     KP_LOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
@@ -189,16 +185,17 @@ Manager::createInstance()
     };
     std::vector<std::string> envLayerNames;
     const char* envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
-    if (envLayerNamesVal != NULL && *envLayerNamesVal != '\0') {
+    if (envLayerNamesVal != nullptr && *envLayerNamesVal != '\0') {
         KP_LOG_DEBUG("Kompute Manager adding environment layers: {}",
                      envLayerNamesVal);
         std::istringstream iss(envLayerNamesVal);
-        std::istream_iterator<std::string> beg(iss), end;
+        std::istream_iterator<std::string> beg(iss);
+        std::istream_iterator<std::string> end;
         envLayerNames = std::vector<std::string>(beg, end);
         for (const std::string& layerName : envLayerNames) {
             desiredLayerNames.push_back(layerName.c_str());
         }
-        KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
+        KP_LOG_DEBUG("Desired layers: {}", fmt::join(desiredLayerNames, ", "));
     }
 
     // Identify the valid layer names based on the desiredLayerNames
@@ -210,7 +207,7 @@ Manager::createInstance()
             std::string layerName(layerProperties.layerName.data());
             uniqueLayerNames.insert(layerName);
         }
-        KP_LOG_DEBUG("Available layers: {}", uniqueLayerNames);
+        KP_LOG_DEBUG("Available layers: {}", fmt::join(uniqueLayerNames, ", "));
         for (const char* desiredLayerName : desiredLayerNames) {
             if (uniqueLayerNames.count(desiredLayerName) != 0) {
                 validLayerNames.push_back(desiredLayerName);
@@ -218,18 +215,17 @@ Manager::createInstance()
         }
     }
 
-    if (validLayerNames.size() > 0) {
+    if (!validLayerNames.empty()) {
         KP_LOG_DEBUG(
           "Kompute Manager Initializing instance with valid layers: {}",
-          validLayerNames);
+          fmt::join(validLayerNames, ", "));
         computeInstanceCreateInfo.enabledLayerCount =
-          (uint32_t)validLayerNames.size();
+          static_cast<uint32_t>(validLayerNames.size());
         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
     } else {
         KP_LOG_WARN("Kompute Manager no valid layer names found from desired "
                     "layer names");
     }
-#endif
 #endif
 
     this->mInstance = std::make_shared<vk::Instance>();
@@ -237,7 +233,6 @@ Manager::createInstance()
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
     KP_LOG_DEBUG("Kompute Manager Instance Created");
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     KP_LOG_DEBUG("Kompute Manager adding debug callbacks");
     if (validLayerNames.size() > 0) {
@@ -254,7 +249,6 @@ Manager::createInstance()
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
     }
-#endif
 #endif
 }
 
