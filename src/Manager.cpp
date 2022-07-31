@@ -18,8 +18,13 @@ debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
                      uint64_t /*object*/,
                      size_t /*location*/,
                      int32_t /*messageCode*/,
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_DEBUG
                      const char* pLayerPrefix,
                      const char* pMessage,
+#else
+                     const char* /*pLayerPrefix*/,
+                     const char* /*pMessage*/,
+#endif
                      void* /*pUserData*/)
 {
     KP_LOG_DEBUG("[VALIDATION]: {} - {}", pLayerPrefix, pMessage);
