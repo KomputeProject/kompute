@@ -241,11 +241,9 @@ class Manager
 
     bool mManageResources = false;
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     vk::DebugReportCallbackEXT mDebugReportCallback;
     vk::DispatchLoaderDynamic mDebugDispatcher;
-#endif
 #endif
 
     // Create functions
