@@ -132,7 +132,6 @@ Tensor::mapRawData()
     this->mRawData = this->mDevice->mapMemory(
       *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
 
-    vk::MappedMemoryRange mappedMemoryRange(*hostVisibleMemory, 0, bufferSize);
 }
 
 void
@@ -241,7 +240,7 @@ Tensor::recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
                                          vk::PipelineStageFlagBits srcStageMask,
                                          vk::PipelineStageFlagBits dstStageMask)
 {
-    KP_LOG_DEBUG("Kompute Tensor recording PRIMARY buffer memory barrier");
+    KP_LOG_DEBUG("Kompute Tensor recording STAGING buffer memory barrier");
 
     this->recordBufferMemoryBarrier(commandBuffer,
                                     *this->mStagingBuffer,
