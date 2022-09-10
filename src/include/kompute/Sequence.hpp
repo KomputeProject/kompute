@@ -217,16 +217,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Begins recording commands for commands to be submitted into the command
      * buffer.
-     *
-     * @return Boolean stating whether execution was successful.
      */
     void begin();
 
     /**
      * Ends the recording and stops recording commands when the record command
      * is sent.
-     *
-     * @return Boolean stating whether execution was successful.
      */
     void end();
 
