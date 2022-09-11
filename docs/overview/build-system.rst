@@ -65,7 +65,7 @@ Compile Flags
      - Sets the default api version to use for kompute api
    * - -DKOMPUTE_VK_API_MAJOR_VERSION=1
      - Major version to use for the Vulkan SDK
-   * - -DKOMPUTE_VK_API_MINOR_VERSION=1
+   * - -DKOMPUTE_VK_API_MINOR_VERSION=3
      - Minor version to use for the Vulkan SDK
    * - -DKOMPUTE_ENABLE_SPDLOG=1
      - Enables the build with SPDLOG and FMT dependencies (must be installed)

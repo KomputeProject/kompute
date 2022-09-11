@@ -1,4 +1,4 @@
-FROM nvidia/vulkan:1.1.121
+FROM nvidia/vulkan:1.3-470
 
 RUN apt update -y
 RUN apt install g++ -y

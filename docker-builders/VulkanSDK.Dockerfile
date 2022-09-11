@@ -1,6 +1,6 @@
 FROM amd64/ubuntu:20.04
 
-ARG VULKAN_SDK_VERSION=1.2.154.0
+ARG VULKAN_SDK_VERSION=1.3.227
 
 # First install vulkan 
 RUN apt-get update

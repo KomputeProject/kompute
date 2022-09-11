@@ -25,7 +25,7 @@ typedef std::vector<float> Constants;
 #define KOMPUTE_VK_API_MAJOR_VERSION 1
 #endif // KOMPUTE_VK_API_MAJOR_VERSION
 #ifndef KOMPUTE_VK_API_MINOR_VERSION
-#define KOMPUTE_VK_API_MINOR_VERSION 1
+#define KOMPUTE_VK_API_MINOR_VERSION 3
 #endif // KOMPUTE_VK_API_MINOR_VERSION
 #define KOMPUTE_VK_API_VERSION                                                 \
     VK_MAKE_VERSION(                                                           \
