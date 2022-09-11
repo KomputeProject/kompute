@@ -56,7 +56,7 @@ SHADER_GENERATED_NOTICE = """/*
     "--shader-options",
     "-o",
     envvar="KOMPUTE_SHADER_OPTIONS",
-    default="",
+    default=None,
     required=False,
     help="Options to pass to the shader compiler",
 )
@@ -114,7 +114,10 @@ def run_cli(
     for file in shader_files:
         logger.debug(f"Converting to spirv: {file}")
         spirv_file = f"{file}.spv"
-        run_cmd(shader_binary, "-V", file, "-o", spirv_file, shader_options)
+        if shader_options == None:
+            run_cmd(shader_binary, "-V", file, "-o", spirv_file)
+        else:
+            run_cmd(shader_binary, "-V", file, "-o", spirv_file, *shader_options.split(' '))
         spirv_files.append(spirv_file)
 
     # Create cpp files if header_path provided
