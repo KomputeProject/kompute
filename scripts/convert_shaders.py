@@ -53,6 +53,14 @@ SHADER_GENERATED_NOTICE = """/*
     help="The path for the directory to build and convert shaders",
 )
 @click.option(
+    "--shader-options",
+    "-o",
+    envvar="KOMPUTE_SHADER_OPTIONS",
+    default="",
+    required=False,
+    help="Options to pass to the shader compiler",
+)
+@click.option(
     "--header-path",
     "-c",
     envvar="KOMPUTE_HEADER_PATH",
@@ -71,6 +79,7 @@ SHADER_GENERATED_NOTICE = """/*
 def run_cli(
     shader_path: str = None,
     shader_binary: str = None,
+    shader_options: str = None,
     header_path: bool = None,
     verbose: bool = None,
 ):
@@ -105,7 +114,7 @@ def run_cli(
     for file in shader_files:
         logger.debug(f"Converting to spirv: {file}")
         spirv_file = f"{file}.spv"
-        run_cmd(shader_binary, "-V", file, "-o", spirv_file)
+        run_cmd(shader_binary, "-V", file, "-o", spirv_file, shader_options)
         spirv_files.append(spirv_file)
 
     # Create cpp files if header_path provided
