@@ -12,16 +12,15 @@ git clone --branch 3.2 https://github.com/godotengine/godot-cpp
 cd godot-cpp
 ```
 
-Then we can get all the subomdules
+Then we can get all the submodules
 
 ```
 git submodule sync
 ```
 
-and we build the bindings
+And we build the bindings
 
 ```
 scons -j16 platform=linuxbsd target=debug
 
 ```
-
