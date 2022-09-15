@@ -53,15 +53,23 @@ Tensor::rebuild(void* data,
     }
 
     this->allocateMemoryCreateGPUResources();
-    this->mapRawData();
 
-    memcpy(this->mRawData, data, this->memorySize());
+    if (!this->isDeviceOnlyTensor()) {
+        this->mapRawData();
+        memcpy(this->mRawData, data, this->memorySize());
+    }
 }
 
 Tensor::TensorTypes
 Tensor::tensorType()
 {
     return this->mTensorType;
+}
+
+bool
+Tensor::isDeviceOnlyTensor()
+{
+    return this->mTensorType == TensorTypes::eStorage;
 }
 
 bool
@@ -131,7 +139,6 @@ Tensor::mapRawData()
     // flush
     this->mRawData = this->mDevice->mapMemory(
       *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-
 }
 
 void

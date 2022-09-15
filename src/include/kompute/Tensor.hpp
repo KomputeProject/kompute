@@ -240,6 +240,14 @@ class Tensor
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
+    /**
+     * Tells if data of tensor is only located at device. Used for
+     * determing if mapping and copying of raw data is needed in rebuild.
+     * For example eStorage tensors are device only.
+     * 
+     */
+    bool isDeviceOnlyTensor();
+
   protected:
     // -------------- ALWAYS OWNED RESOURCES
     TensorTypes mTensorType;
