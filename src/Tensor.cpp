@@ -129,7 +129,7 @@ Tensor::mapRawData()
         hostVisibleMemory = this->mStagingMemory;
     } else {
         KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
+          "Kompute Tensor mapping data not supported on {} tensor", this->mTensorType);
         return;
     }
 
@@ -155,7 +155,7 @@ Tensor::unmapRawData()
         hostVisibleMemory = this->mStagingMemory;
     } else {
         KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
+          "Kompute Tensor mapping data not supported on {} tensor", this->mTensorType);
         return;
     }
 
