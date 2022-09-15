@@ -493,7 +493,10 @@ Tensor::destroy()
     }
 
     // Unmap the current memory data
-    this->unmapRawData();
+    if (!this->isDeviceOnlyTensor()) {
+        this->unmapRawData();
+
+    }
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
