@@ -765,6 +765,8 @@ static const char *__doc_kp_Tensor_getStagingBufferUsageFlags = R"doc()doc";
 
 static const char *__doc_kp_Tensor_getStagingMemoryPropertyFlags = R"doc()doc";
 
+static const char *__doc_kp_Tensor_isDeviceOnlyTensor= R"doc()doc";
+
 static const char *__doc_kp_Tensor_isInit =
 R"doc(Check whether tensor is initialized based on the created gpu
 resources.
