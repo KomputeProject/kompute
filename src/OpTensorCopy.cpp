@@ -60,11 +60,16 @@ OpTensorCopy::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 
-    void* data = this->mTensors[0]->rawData();
+    if (!this->mTensors[0]->isDeviceOnlyTensor()) {
+        KP_LOG_DEBUG("Copying raw data on host memory to another tensors");
+        void* data = this->mTensors[0]->rawData();
 
-    // Copy the data from the first tensor into all the tensors
-    for (size_t i = 1; i < this->mTensors.size(); i++) {
-        this->mTensors[i]->setRawData(data);
+        // Copy the data from the first tensor into all the tensors
+        for (auto tensor : this->mTensors) {
+            if (!tensor->isDeviceOnlyTensor()) {
+                tensor->setRawData(data);
+            }
+        }
     }
 }
 
