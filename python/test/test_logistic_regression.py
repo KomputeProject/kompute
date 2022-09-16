@@ -72,14 +72,6 @@ def test_logistic_regression():
     # Create a managed sequence
     sq = mgr.sequence()
 
-    # Record operation to sync memory from local to GPU memory
-    sq.record(kp.OpTensorSyncDevice([tensor_w_in, tensor_b_in]))
-
-    # Record operation to execute GPU shader against all our parameters
-    sq.record(kp.OpAlgoDispatch(mgr.algorithm(params, compute_shader.to_spirv())))
-
-    # Record operation to sync memory from GPU to local memory
-    sq.record(kp.OpTensorSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
 
     ITERATIONS = 100
     learning_rate = 0.1
@@ -87,8 +79,23 @@ def test_logistic_regression():
     # Perform machine learning training and inference across all input X and Y
     for i_iter in range(ITERATIONS):
 
-        # Execute an iteration of the algorithm
+        # We have to call eval after each record becasue recorded commands
+        # are not guaranteed to run in order
+
+        # Also now eval clears recorded operations so we have to record them again
+
+        # Record operation to sync memory from local to GPU memory
+        sq.record(kp.OpTensorSyncDevice([tensor_w_in, tensor_b_in]))
         sq.eval()
+
+        # Record operation to execute GPU shader against all our parameters
+        sq.record(kp.OpAlgoDispatch(mgr.algorithm(params, compute_shader.to_spirv())))
+        sq.eval()
+
+        # Record operation to sync memory from GPU to local memory
+        sq.record(kp.OpTensorSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
+        sq.eval()
+
 
         # Calculate the parameters based on the respective derivatives calculated
         for j_iter in range(tensor_b_out.size()):
