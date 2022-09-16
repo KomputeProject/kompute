@@ -97,8 +97,10 @@ TEST(TestSequence, RerecordSequence)
 
     algo->rebuild({ tensorOut, tensorA, tensorB }, spirv);
 
-    // Refresh and trigger a rerecord
-    sq->rerecord();
+    // Rerecord (Cannot call rerecord because operations from sequence gets cleared in eval())
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpTensorSyncLocal>(
+      { tensorA, tensorB, tensorOut });
+
     sq->eval();
 
     EXPECT_EQ(tensorB->vector(), std::vector<float>({ 2, 8, 18 }));
