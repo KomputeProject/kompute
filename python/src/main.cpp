@@ -114,6 +114,7 @@ PYBIND11_MODULE(kp, m) {
         .def("tensor_type", &kp::Tensor::tensorType, DOC(kp, Tensor, tensorType))
         .def("data_type", &kp::Tensor::dataType, DOC(kp, Tensor, dataType))
         .def("is_init", &kp::Tensor::isInit, DOC(kp, Tensor, isInit))
+        .def("is_device_only_tensor", &kp::Tensor::isDeviceOnlyTensor, DOC(kp, Tensor, isDeviceOnlyTensor))
         .def("destroy", &kp::Tensor::destroy, DOC(kp, Tensor, destroy));
 
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
@@ -340,4 +341,3 @@ PYBIND11_MODULE(kp, m) {
     m.attr("__version__") = "dev";
 #endif
 }
-
