@@ -174,7 +174,10 @@ TEST(TestOpTensorCopy, eStorageTensorCopy)
     auto tensor_out = mgr.tensor(vec_out_with_wrong_values, kp::Tensor::TensorTypes::eDevice);
 
     EXPECT_TRUE(tensor_in->isInit());
-    EXPECT_TRUE(tensor_temp->isInit());
+
+    // For eStorage tensors isInit() will return false if provided nullptr as data pointer 
+    EXPECT_TRUE(!tensor_temp->isInit());
+    
     EXPECT_TRUE(tensor_out->isInit());
 
     mgr.sequence()
