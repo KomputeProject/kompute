@@ -56,7 +56,7 @@ Tensor::rebuild(void* data,
 
     if (!this->isDeviceOnlyTensor()) {
         this->mapRawData();
-        memcpy(this->mRawData, data, this->memorySize());
+        this->setRawData(data);
     }
 }
 
