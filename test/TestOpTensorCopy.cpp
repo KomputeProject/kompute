@@ -156,3 +156,33 @@ TEST(TestOpTensorCopy, SingleTensorShouldFail)
     EXPECT_THROW(mgr.sequence()->eval<kp::OpTensorCopy>({ tensorA }),
                  std::runtime_error);
 }
+
+TEST(TestOpTensorCopy, eStorageTensorCopy)
+{
+    kp::Manager mgr;
+
+    const auto vec_in = std::vector<float>{ 0.0, 1.2, 3.2 };
+    const auto vec_out_with_wrong_values =
+      std::vector<float>(vec_in.size(), 0.0);
+
+    auto tensor_in = mgr.tensor(vec_in, kp::Tensor::TensorTypes::eDevice);
+    auto tensor_temp = mgr.tensor(nullptr,
+                                  vec_in.size(),
+                                  sizeof(decltype(vec_in.back())),
+                                  kp::Tensor::TensorDataTypes::eFloat,
+                                  kp::Tensor::TensorTypes::eStorage);
+    auto tensor_out = mgr.tensor(vec_out_with_wrong_values, kp::Tensor::TensorTypes::eDevice);
+
+    EXPECT_TRUE(tensor_in->isInit());
+    EXPECT_TRUE(tensor_temp->isInit());
+    EXPECT_TRUE(tensor_out->isInit());
+
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>({tensor_in})
+      ->eval<kp::OpTensorCopy>({tensor_in, tensor_temp})
+      ->eval<kp::OpTensorCopy>({tensor_temp, tensor_out})
+      ->eval<kp::OpTensorSyncLocal>({tensor_out});
+
+    EXPECT_EQ(tensor_in->vector(), tensor_out->vector());
+    
+}
