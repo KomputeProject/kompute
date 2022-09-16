@@ -90,6 +90,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job synchronously (with a barrier).
+     * 
+     * It also clears operations recorded to sequence.
      *
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
@@ -99,6 +101,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * Resets all the recorded and stored operations, records the operation
      * provided and submits into the gpu as a submit job synchronously (with a
      * barrier).
+     * 
+     * It also clears operations recorded to sequence.
      *
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
@@ -107,6 +111,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
+     * 
+     * It also clears operations recorded to sequence.
      *
      * @param tensors Vector of tensors to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
@@ -123,6 +129,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
+     * 
+     * It also clears operations recorded to sequence.
      *
      * @param algorithm Algorithm to use for the record often used for OpAlgo
      * operations
@@ -196,6 +204,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Eval Await waits for the fence to finish processing and then once it
      * finishes, it runs the postEval of all operations.
+     * 
+     * It also clears operations recorded to sequence.
      *
      * @param waitFor Number of milliseconds to wait before timing out.
      * @return shared_ptr<Sequence> of the Sequence class itself

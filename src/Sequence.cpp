@@ -49,7 +49,16 @@ Sequence::begin()
     }
 
     KP_LOG_INFO("Kompute Sequence command now started recording");
-    this->mCommandBuffer->begin(vk::CommandBufferBeginInfo());
+    const auto commandBufferBeginInfo = vk::CommandBufferBeginInfo
+    {
+        // This has to be set because otherwise chaining multiple evals in row will
+        // submit same work multiple times. For example:
+        // mgr.sequence()
+        //    ->eval<kp::OpTensorSyncDevice>({tensor_a}) 
+        //    ->eval<kp::OpTensorCopy>({tensor_a, tensor_b})
+        vk::CommandBufferUsageFlagBits::eOneTimeSubmit
+    };
+    this->mCommandBuffer->begin(commandBufferBeginInfo);
     this->mRecording = true;
 
     // latch the first timestamp before any commands are submitted
@@ -169,6 +178,8 @@ Sequence::evalAwait(uint64_t waitFor)
     for (size_t i = 0; i < this->mOperations.size(); i++) {
         this->mOperations[i]->postEval(*this->mCommandBuffer);
     }
+
+    this->mOperations.clear();
 
     return shared_from_this();
 }
