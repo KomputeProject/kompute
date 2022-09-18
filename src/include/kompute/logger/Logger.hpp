@@ -20,9 +20,7 @@
 #if !KOMPUTE_OPT_USE_SPDLOG
 #if VK_USE_PLATFORM_ANDROID_KHR
 #include <android/log.h>
-#include <kompute_vk_ndk_wrapper.hpp>
-// VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp
-#undef VK_NO_PROTOTYPES
+#include <fmt/core.h>
 static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #else
 #if KOMPUTE_BUILD_PYTHON

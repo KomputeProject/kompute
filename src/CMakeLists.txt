@@ -16,7 +16,8 @@ add_library(kompute Algorithm.cpp
     OpTensorSyncDevice.cpp
     OpTensorSyncLocal.cpp
     Sequence.cpp
-    Tensor.cpp)
+    Tensor.cpp
+    Core.cpp)
 
 add_library(kompute::kompute ALIAS kompute)
 
@@ -46,25 +47,10 @@ install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
     ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
 # ####################################################
-# Android
-# ####################################################
-if(KOMPUTE_OPT_ANDROID_BUILD)
-    set(VK_ANDROID_COMMON_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/common)
-    set(VK_ANDROID_PATCH_DIR ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/)
-    set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
-
-    include_directories(${VK_ANDROID_COMMON_DIR}
-        ${VK_ANDROID_PATCH_DIR}
-        ${VK_ANDROID_INCLUDE_DIR})
-
-    add_library(kompute_vk_ndk_wrapper STATIC ${PROJECT_SOURCE_DIR}/vk_ndk_wrapper_include/kompute_vk_ndk_wrapper.cpp)
-endif()
-
-# ####################################################
 # Linking
 # ####################################################
 if(KOMPUTE_OPT_ANDROID_BUILD)
-    target_link_libraries(kompute PUBLIC kompute_vk_ndk_wrapper
+    target_link_libraries(kompute PUBLIC vulkanAndroid
         android
         kp_logger
         kp_shader

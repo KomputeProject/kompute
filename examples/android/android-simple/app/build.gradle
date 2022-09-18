@@ -3,27 +3,25 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 29
-    ndkVersion '21.2.6472646'
+    compileSdkVersion 33
+    ndkVersion '25.1.8937393'
 
     defaultConfig {
         applicationId "com.ethicalml.kompute"
-        minSdkVersion 23
-        targetSdkVersion 29
+        minSdkVersion 26
+        targetSdkVersion 33
         versionCode = 1
         versionName = "0.0.1"
         externalNativeBuild {
             cmake {
-                abiFilters "armeabi-v7a", 'arm64-v8a', 'x86', 'x86_64'
                 arguments '-DANDROID_TOOLCHAIN=clang',
-                        '-DANDROID_STL=c++_static',
-                        '-DKOMPUTE_OPT_ANDROID_BUILD=ON',
-                        '-DKOMPUTE_OPT_INSTALL=OFF',
-                        '-DKOMPUTE_OPT_USE_SPDLOG=OFF',
-                        '-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON',
-                        '-DCMAKE_CXX_FLAGS=-DKOMPUTE_VK_API_MINOR_VERSION=0'
+                          '-DANDROID_STL=c++_static'
             }
         }
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        }
+
     }
 
     buildFeatures {
@@ -39,6 +37,7 @@ android {
     externalNativeBuild {
         cmake {
             path 'src/main/cpp/CMakeLists.txt'
+            version '3.22.2'
         }
     }
 
@@ -62,6 +61,7 @@ android {
             //   armeabi-v7a, arm64-v8a, x86, x86_64
         }
     }
+    namespace 'com.ethicalml.kompute'
 }
 
 dependencies {
