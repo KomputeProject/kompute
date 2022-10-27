@@ -50,28 +50,6 @@ vectorToJFloatArray(JNIEnv* env, const std::vector<float>& fromVector)
 
 extern "C"
 {
-
-    JNIEXPORT jboolean JNICALL
-    Java_com_ethicalml_kompute_KomputeJni_initVulkan(JNIEnv* env, jobject thiz)
-    {
-
-        KP_LOG_INFO("Initialising vulkan");
-
-        uint32_t totalRetries = 0;
-
-        /*while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
-            KP_LOG_INFO("VULKAN LOAD TRY NUMBER: %u", totalRetries);
-            if (InitVulkan()) {
-                break;
-            }
-            sleep(1);
-            totalRetries++;
-        }*/
-
-        // return totalRetries < KOMPUTE_VK_INIT_RETRIES;
-        return true;
-    }
-
     JNIEXPORT jfloatArray JNICALL
     Java_com_ethicalml_kompute_KomputeJni_kompute(JNIEnv* env,
                                                   jobject thiz,
