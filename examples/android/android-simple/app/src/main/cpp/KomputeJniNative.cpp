@@ -24,10 +24,7 @@
 // Allows us to use the C++ sleep function to wait when loading the
 // Vulkan library in android
 #include <unistd.h>
-
-#ifndef KOMPUTE_VK_INIT_RETRIES
-#define KOMPUTE_VK_INIT_RETRIES 5
-#endif
+#include <kompute/logger/Logger.hpp>
 
 static std::vector<float>
 jfloatArrayToVector(JNIEnv* env, const jfloatArray& fromArray)
@@ -62,16 +59,17 @@ extern "C"
 
         uint32_t totalRetries = 0;
 
-        while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
+        /*while (totalRetries < KOMPUTE_VK_INIT_RETRIES) {
             KP_LOG_INFO("VULKAN LOAD TRY NUMBER: %u", totalRetries);
             if (InitVulkan()) {
                 break;
             }
             sleep(1);
             totalRetries++;
-        }
+        }*/
 
-        return totalRetries < KOMPUTE_VK_INIT_RETRIES;
+        // return totalRetries < KOMPUTE_VK_INIT_RETRIES;
+        return true;
     }
 
     JNIEXPORT jfloatArray JNICALL
