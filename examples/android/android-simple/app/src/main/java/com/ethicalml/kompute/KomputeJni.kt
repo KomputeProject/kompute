@@ -22,16 +22,7 @@ class KomputeJni : AppCompatActivity() {
 
         binding.komputeGifView.getSettings().setUseWideViewPort(true)
         binding.komputeGifView.getSettings().setLoadWithOverviewMode(true)
-
-        val successVulkanInit = initVulkan()
-        if (successVulkanInit) {
-            Toast.makeText(applicationContext, "Vulkan Loaded SUCCESS", Toast.LENGTH_SHORT).show()
-        } else {
-            binding.KomputeButton.isEnabled = false
-            Toast.makeText(applicationContext, "Vulkan Load FAILED", Toast.LENGTH_SHORT).show()
-        }
-        Log.i("KomputeJni", "Vulkan Result: " + successVulkanInit)
-
+        
         binding.predictionTextView.text = "N/A"
     }
 
