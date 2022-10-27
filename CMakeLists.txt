@@ -113,25 +113,33 @@ include(cmake/deprecation_warnings.cmake)
 # Dependencies
 # ####################################################
 include(cmake/vulkan_shader_compiler.cmake)
-include(FetchContent)
 include(cmake/check_vulkan_version.cmake)
-
-if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
-    FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
-        GIT_TAG ${KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG}) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
-    FetchContent_MakeAvailable(vulkan_header)
-
-    if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
-        # Ensure the driver supports this Vulkan version
-        check_vulkan_version(INCLUDE_DIR "${vulkan_header_SOURCE_DIR}/include")
-    endif()
-endif()
+include(FetchContent)
 
 # Vulkan Header
 # We don't import Vulkan library if Android build as it is built dynamically
 # Otherwise it is expected that the Vulkan SDK and dependencies are installed
 # Has to happen AFTER using the build-in Vulkan headers to prevent multiple targets with the name Vulkan::Headers
-if(NOT KOMPUTE_OPT_ANDROID_BUILD)
+if(KOMPUTE_OPT_ANDROID_BUILD)
+    add_library(vulkanAndroid INTERFACE)
+    set(VULKAN_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
+    target_sources(vulkanAndroid INTERFACE ${VULKAN_INCLUDE_DIR}/vulkan/vulkan.hpp)
+    target_include_directories(vulkanAndroid INTERFACE ${VULKAN_INCLUDE_DIR})
+
+    target_compile_definitions(vulkanAndroid INTERFACE VK_NO_PROTOTYPES=1)
+    target_compile_definitions(vulkanAndroid INTERFACE VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
+else()
+    if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
+        FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
+            GIT_TAG ${KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG}) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
+        FetchContent_MakeAvailable(vulkan_header)
+
+        if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
+            # Ensure the driver supports this Vulkan version
+            check_vulkan_version(INCLUDE_DIR "${vulkan_header_SOURCE_DIR}/include")
+        endif()
+    endif()
+
     find_package(Vulkan REQUIRED)
 
     if(Vulkan_FOUND AND NOT TARGET Vulkan::Headers)

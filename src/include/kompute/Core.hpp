@@ -1,12 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#if VK_USE_PLATFORM_ANDROID_KHR
-#include <kompute_vk_ndk_wrapper.hpp>
-// VK_NO_PROTOTYPES required before vulkan import but after wrapper.hpp
-#undef VK_NO_PROTOTYPES
-#endif
-
 #include <vulkan/vulkan.hpp>
 
 // Typedefs to simplify interaction with core types
