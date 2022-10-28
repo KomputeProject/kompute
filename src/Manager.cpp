@@ -233,9 +233,21 @@ Manager::createInstance()
     }
 #endif
 
+#if VK_USE_PLATFORM_ANDROID_KHR
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+      dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif // VK_USE_PLATFORM_ANDROID_KHR
+
     this->mInstance = std::make_shared<vk::Instance>();
     vk::createInstance(
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
+
+#if VK_USE_PLATFORM_ANDROID_KHR
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(*this->mInstance);
+#endif // VK_USE_PLATFORM_ANDROID_KHR
+
     KP_LOG_DEBUG("Kompute Manager Instance Created");
 
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
