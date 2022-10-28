@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 include(FetchContent)
 FetchContent_Declare(kompute GIT_REPOSITORY https://github.com/COM8/kompute.git
-                             GIT_TAG b28d4ae0bec1d39003b97574623a52b0b5f7494d) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
+                             GIT_TAG 675f6dc771cea044ead99a5467a9b817c2d8feb6) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
 set(KOMPUTE_OPT_ANDROID_BUILD ON)
 set(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS ON)
 FetchContent_MakeAvailable(kompute)
