@@ -5,8 +5,8 @@
 #include <chrono>
 
 #include "kompute/Kompute.hpp"
-
-#include "kompute_test/Shader.hpp"
+#include "kompute/logger/Logger.hpp"
+#include "shaders/Utils.hpp"
 
 TEST(TestAsyncOperations, TestManagerParallelExecution)
 {

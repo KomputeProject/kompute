@@ -1,32 +1,35 @@
 // SPDX-License-Identifier: Apache-2.0
 
+#include "kompute/Manager.hpp"
+#include "fmt/format.h"
+#include "kompute/logger/Logger.hpp"
+#include <fmt/core.h>
 #include <iterator>
 #include <set>
 #include <sstream>
 #include <string>
 
-#include "kompute/Manager.hpp"
-
-#include "fmt/ranges.h"
-
 namespace kp {
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
 static VKAPI_ATTR VkBool32 VKAPI_CALL
-debugMessageCallback(VkDebugReportFlagsEXT flags,
-                     VkDebugReportObjectTypeEXT objectType,
-                     uint64_t object,
-                     size_t location,
-                     int32_t messageCode,
+debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
+                     VkDebugReportObjectTypeEXT /*objectType*/,
+                     uint64_t /*object*/,
+                     size_t /*location*/,
+                     int32_t /*messageCode*/,
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_DEBUG
                      const char* pLayerPrefix,
                      const char* pMessage,
-                     void* pUserData)
+#else
+                     const char* /*pLayerPrefix*/,
+                     const char* /*pMessage*/,
+#endif
+                     void* /*pUserData*/)
 {
     KP_LOG_DEBUG("[VALIDATION]: {} - {}", pLayerPrefix, pMessage);
     return VK_FALSE;
 }
-#endif
 #endif
 
 Manager::Manager()
@@ -39,6 +42,11 @@ Manager::Manager(uint32_t physicalDeviceIndex,
                  const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
+
+// Make sure the logger is setup
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
+    logger::setupLogger();
+#endif
 
     this->createInstance();
     this->createDevice(
@@ -54,6 +62,11 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
     this->mInstance = instance;
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
+
+// Make sure the logger is setup
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
+    logger::setupLogger();
+#endif
 }
 
 Manager::~Manager()
@@ -120,14 +133,12 @@ Manager::destroy()
         return;
     }
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     if (this->mDebugReportCallback) {
         this->mInstance->destroyDebugReportCallbackEXT(
           this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
         KP_LOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
     }
-#endif
 #endif
 
     if (this->mFreeInstance) {
@@ -155,7 +166,7 @@ Manager::createInstance()
 
     std::vector<const char*> applicationExtensions;
 
-#if DEBUG
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
 #endif
 
@@ -168,7 +179,6 @@ Manager::createInstance()
           applicationExtensions.data();
     }
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     KP_LOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
@@ -180,16 +190,17 @@ Manager::createInstance()
     };
     std::vector<std::string> envLayerNames;
     const char* envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
-    if (envLayerNamesVal != NULL && *envLayerNamesVal != '\0') {
+    if (envLayerNamesVal != nullptr && *envLayerNamesVal != '\0') {
         KP_LOG_DEBUG("Kompute Manager adding environment layers: {}",
                      envLayerNamesVal);
         std::istringstream iss(envLayerNamesVal);
-        std::istream_iterator<std::string> beg(iss), end;
+        std::istream_iterator<std::string> beg(iss);
+        std::istream_iterator<std::string> end;
         envLayerNames = std::vector<std::string>(beg, end);
         for (const std::string& layerName : envLayerNames) {
             desiredLayerNames.push_back(layerName.c_str());
         }
-        KP_LOG_DEBUG("Desired layers: {}", desiredLayerNames);
+        KP_LOG_DEBUG("Desired layers: {}", fmt::join(desiredLayerNames, ", "));
     }
 
     // Identify the valid layer names based on the desiredLayerNames
@@ -201,7 +212,7 @@ Manager::createInstance()
             std::string layerName(layerProperties.layerName.data());
             uniqueLayerNames.insert(layerName);
         }
-        KP_LOG_DEBUG("Available layers: {}", uniqueLayerNames);
+        KP_LOG_DEBUG("Available layers: {}", fmt::join(uniqueLayerNames, ", "));
         for (const char* desiredLayerName : desiredLayerNames) {
             if (uniqueLayerNames.count(desiredLayerName) != 0) {
                 validLayerNames.push_back(desiredLayerName);
@@ -209,26 +220,36 @@ Manager::createInstance()
         }
     }
 
-    if (validLayerNames.size() > 0) {
+    if (!validLayerNames.empty()) {
         KP_LOG_DEBUG(
           "Kompute Manager Initializing instance with valid layers: {}",
-          validLayerNames);
+          fmt::join(validLayerNames, ", "));
         computeInstanceCreateInfo.enabledLayerCount =
-          (uint32_t)validLayerNames.size();
+          static_cast<uint32_t>(validLayerNames.size());
         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
     } else {
         KP_LOG_WARN("Kompute Manager no valid layer names found from desired "
                     "layer names");
     }
 #endif
-#endif
+
+#if VK_USE_PLATFORM_ANDROID_KHR
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+      dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif // VK_USE_PLATFORM_ANDROID_KHR
 
     this->mInstance = std::make_shared<vk::Instance>();
     vk::createInstance(
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
+
+#if VK_USE_PLATFORM_ANDROID_KHR
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(*this->mInstance);
+#endif // VK_USE_PLATFORM_ANDROID_KHR
+
     KP_LOG_DEBUG("Kompute Manager Instance Created");
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     KP_LOG_DEBUG("Kompute Manager adding debug callbacks");
     if (validLayerNames.size() > 0) {
@@ -245,7 +266,6 @@ Manager::createInstance()
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
     }
-#endif
 #endif
 }
 
@@ -311,8 +331,10 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     this->mPhysicalDevice =
       std::make_shared<vk::PhysicalDevice>(physicalDevice);
 
+#if KOMPUTE_OPT_ACTIVE_LOG_LEVEL <= KOMPUTE_LOG_LEVEL_INFO
     vk::PhysicalDeviceProperties physicalDeviceProperties =
       physicalDevice.getProperties();
+#endif
 
     KP_LOG_INFO("Using physical device index {} found {}",
                 physicalDeviceIndex,
@@ -369,7 +391,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     }
 
     KP_LOG_DEBUG("Kompute Manager desired extension layers {}",
-                 desiredExtensions);
+                 fmt::join(desiredExtensions, ", "));
 
     std::vector<vk::ExtensionProperties> deviceExtensions =
       this->mPhysicalDevice->enumerateDeviceExtensionProperties();
@@ -379,7 +401,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
         uniqueExtensionNames.insert(ext.extensionName);
     }
     KP_LOG_DEBUG("Kompute Manager available extensions {}",
-                 uniqueExtensionNames);
+                 fmt::join(uniqueExtensionNames, ", "));
     std::vector<const char*> validExtensions;
     for (const std::string& ext : desiredExtensions) {
         if (uniqueExtensionNames.count(ext) != 0) {
@@ -388,7 +410,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     }
     if (desiredExtensions.size() != validExtensions.size()) {
         KP_LOG_ERROR("Kompute Manager not all extensions were added: {}",
-                     validExtensions);
+                     fmt::join(validExtensions, ", "));
     }
 
     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),

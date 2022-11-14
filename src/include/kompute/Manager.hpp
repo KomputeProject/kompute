@@ -7,6 +7,7 @@
 #include "kompute/Core.hpp"
 
 #include "kompute/Sequence.hpp"
+#include "logger/Logger.hpp"
 
 #define KP_DEFAULT_SESSION "DEFAULT"
 
@@ -240,11 +241,9 @@ class Manager
 
     bool mManageResources = false;
 
-#if DEBUG
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     vk::DebugReportCallbackEXT mDebugReportCallback;
     vk::DispatchLoaderDynamic mDebugDispatcher;
-#endif
 #endif
 
     // Create functions

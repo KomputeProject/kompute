@@ -3,6 +3,7 @@
 #include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
+#include "kompute/logger/Logger.hpp"
 
 TEST(TestManager, EndToEndOpMultEvalFlow)
 {

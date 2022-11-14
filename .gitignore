@@ -169,10 +169,9 @@ Content/StarterContent/*
 # VSCode Files
 /.vscode/*
 BuildingEscape.code-workspace
-
 compile_commands.json
-
 .clangd/
+.cache/
 
 # Project files
 bin/
@@ -189,4 +188,7 @@ swiftshader/
 vk_swiftshader_icd.json
 tmp_kp_shader.comp.spv
 tmp_kp_shader.comp
+
+# Docs
+_build/
 

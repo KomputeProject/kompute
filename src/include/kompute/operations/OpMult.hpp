@@ -5,7 +5,7 @@
 
 #include "kompute/Core.hpp"
 
-#include "kompute/shaders/shaderopmult.hpp"
+#include "ShaderOpMult.hpp"
 
 #include "kompute/Algorithm.hpp"
 #include "kompute/Tensor.hpp"
@@ -38,13 +38,12 @@ class OpMult : public OpAlgoDispatch
 
         if (tensors.size() != 3) {
             throw std::runtime_error(
-              "Kompute OpMult expected 3 tensors but got " + tensors.size());
+              "Kompute OpMult expected 3 tensors but got " +
+              std::to_string(tensors.size()));
         }
 
-        std::vector<uint32_t> spirv(
-          (uint32_t*)shader_data::shaders_glsl_opmult_comp_spv,
-          (uint32_t*)(shader_data::shaders_glsl_opmult_comp_spv +
-                      kp::shader_data::shaders_glsl_opmult_comp_spv_len));
+        const std::vector<uint32_t> spirv = std::vector<uint32_t>(
+          SHADEROPMULT_COMP_SPV.begin(), SHADEROPMULT_COMP_SPV.end());
 
         algorithm->rebuild<>(tensors, spirv);
     }
@@ -53,10 +52,7 @@ class OpMult : public OpAlgoDispatch
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    virtual ~OpMult() override
-    {
-        KP_LOG_DEBUG("Kompute OpMult destructor started");
-    }
+    ~OpMult() override { KP_LOG_DEBUG("Kompute OpMult destructor started"); }
 };
 
 } // End namespace kp

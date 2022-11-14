@@ -1,27 +1,22 @@
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.20)
 
-add_subdirectory(../../../../../../../ ${CMAKE_CURRENT_BINARY_DIR}/kompute_build)
+set(CMAKE_CXX_STANDARD 17)
 
-set(VK_ANDROID_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
+include(FetchContent)
+FetchContent_Declare(kompute GIT_REPOSITORY https://github.com/COM8/kompute.git
+                             GIT_TAG 675f6dc771cea044ead99a5467a9b817c2d8feb6) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
+set(KOMPUTE_OPT_ANDROID_BUILD ON)
+set(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS ON)
+FetchContent_MakeAvailable(kompute)
+include_directories(${kompute_SOURCE_DIR}/src/include)
 
-add_library(kompute-jni SHARED
-        KomputeJniNative.cpp
-        KomputeModelML.cpp)
+# Add to the list, so CMake can later find the code to compile shaders to header files
+list(APPEND CMAKE_PREFIX_PATH "${kompute_SOURCE_DIR}/cmake")
+add_subdirectory(shader)
 
-include_directories(
-        ${VK_ANDROID_COMMON_DIR}
-        ${VK_ANDROID_INCLUDE_DIR}
-        ../../../../../../../single_include/
-        ../../../../../../../vk_ndk_wrapper_include/)
+add_library(kompute-jni SHARED KomputeJniNative.cpp
+                               KomputeModelML.cpp
+                               KomputeModelML.hpp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 \
-                     -DVK_USE_PLATFORM_ANDROID_KHR=1 \
-                     -DKOMPUTE_DISABLE_VK_DEBUG_LAYERS=1")
+target_link_libraries(kompute-jni PRIVATE kompute::kompute shader log android)
 
-target_link_libraries(kompute-jni
-        # Libraries from kompute build
-        kompute
-        kompute_vk_ndk_wrapper
-        # Libraries from android build
-        log
-        android)

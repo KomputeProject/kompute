@@ -12,9 +12,9 @@ This is the accompanying code for the Blog post ["Supercharging your Mobile Apps
 <p>
 This example provides an end to end example that can be run using android studio.
 
-The example uses the Kompute build in the relative folder to build the respective binaries for android.
+The example uses the Kompute built-in the relative folder to build the respective binaries for android.
 
-The build structure provides a range of options to build in different Android hardware. This example was tested in various emulators including Pixel 2, and a physical Samsung S7 phone.
+The build structure provides a range of options to built-in different Android hardware. This example was tested in various emulators including Pixel 2, and a physical Samsung S7 phone.
 </p>
 
 <br>

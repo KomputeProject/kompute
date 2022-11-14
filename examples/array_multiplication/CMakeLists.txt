@@ -1,40 +1,37 @@
-cmake_minimum_required(VERSION 3.4.1)
-project(kompute_array_mult VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.20)
+project(kompute_array_mult)
 
 set(CMAKE_CXX_STANDARD 14)
 
-option(KOMPUTE_ARR_OPT_INSTALLED_KOMPUTE "Enable if you prefer to use your installed Kompute library" 0)
-option(KOMPUTE_OPT_ENABLE_SPDLOG "Extra compile flags for Kompute, see docs for full list" 0)
-set(KOMPUTE_EXTRA_CXX_FLAGS "" CACHE STRING "Extra compile flags for Kompute, see docs for full list")
+# Set a default build type if none was specified
+# Based on: https://github.com/openchemistry/tomviz/blob/master/cmake/BuildType.cmake
+set(DEFAULT_BUILD_TYPE "Release")
 
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    set(KOMPUTE_EXTRA_CXX_FLAGS "${KOMPUTE_EXTRA_CXX_FLAGS} -DKOMPUTE_ENABLE_SPDLOG=1")
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+    set(DEFAULT_BUILD_TYPE "Debug")
 endif()
 
-# It is necessary to pass the DEBUG or RELEASE flag accordingly to Kompute
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 ${KOMPUTE_EXTRA_CXX_FLAGS}")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DRELEASE=1 ${KOMPUTE_EXTRA_CXX_FLAGS}")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
+    set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}" CACHE STRING "Choose the type of build." FORCE)
 
-if(KOMPUTE_ARR_OPT_INSTALLED_KOMPUTE)
-    find_package(kompute REQUIRED)
-else()
-    add_subdirectory(../../ ${CMAKE_CURRENT_BINARY_DIR}/kompute_build)
+    # Set the possible values of build type for cmake-gui
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-find_package(Vulkan REQUIRED)
-
-add_executable(kompute_array_mult
-    src/Main.cpp)
-
-target_link_libraries(kompute_array_mult
-    kompute::kompute
-    Vulkan::Vulkan)
-
-include_directories(
-        ../../single_include/)
-
-if(KOMPUTE_OPT_ENABLE_SPDLOG)
-    target_link_libraries(kompute_array_mult
-        spdlog::spdlog)
+if(WIN32) # Install dlls in the same directory as the executable on Windows
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
+include(FetchContent)
+FetchContent_Declare(kompute GIT_REPOSITORY https://github.com/COM8/kompute.git
+    GIT_TAG f4d72e2aa7b23ffe05d5ea3191bf72ad00def0ec) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
+FetchContent_MakeAvailable(kompute)
+include_directories(${kompute_SOURCE_DIR}/src/include)
+
+# Add to the list, so CMake can later find the code to compile shaders to header files
+list(APPEND CMAKE_PREFIX_PATH "${kompute_SOURCE_DIR}/cmake")
+
+add_subdirectory(shader)
+add_subdirectory(src)

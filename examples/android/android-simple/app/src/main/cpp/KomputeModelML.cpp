@@ -1,5 +1,8 @@
 
 #include "KomputeModelML.hpp"
+#include "my_shader.hpp"
+#include <kompute/Kompute.hpp>
+
 
 KomputeModelML::KomputeModelML() {}
 
@@ -10,7 +13,6 @@ KomputeModelML::train(std::vector<float> yData,
                       std::vector<float> xIData,
                       std::vector<float> xJData)
 {
-
     std::vector<float> zerosData;
 
     for (size_t i = 0; i < yData.size(); i++) {
@@ -41,15 +43,11 @@ KomputeModelML::train(std::vector<float> yData,
                                                             wIn, wOutI, wOutJ,
                                                             bIn, bOut,  lOut };
 
-        std::vector<uint32_t> spirv = std::vector<uint32_t>(
-          (uint32_t*)kp::shader_data::shaders_glsl_logisticregression_comp_spv,
-          (uint32_t*)(kp::shader_data::
-                        shaders_glsl_logisticregression_comp_spv +
-                      kp::shader_data::
-                        shaders_glsl_logisticregression_comp_spv_len));
+        const std::vector<uint32_t> shader = std::vector<uint32_t>(
+          shader::MY_SHADER_COMP_SPV.begin(), shader::MY_SHADER_COMP_SPV.end());
 
         std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm(
-          params, spirv, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
+          params, shader, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
 
         mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
 
@@ -84,7 +82,6 @@ KomputeModelML::train(std::vector<float> yData,
 std::vector<float>
 KomputeModelML::predict(std::vector<float> xI, std::vector<float> xJ)
 {
-
     KP_LOG_INFO("Running prediction inference");
 
     assert(xI.size() == xJ.size());
@@ -113,7 +110,6 @@ KomputeModelML::predict(std::vector<float> xI, std::vector<float> xJ)
 std::vector<float>
 KomputeModelML::get_params()
 {
-
     KP_LOG_INFO("Displaying results");
 
     std::vector<float> retVector;

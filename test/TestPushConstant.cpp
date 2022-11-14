@@ -3,10 +3,9 @@
 #include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
+#include "kompute/logger/Logger.hpp"
 
-#include "kompute_test/Shader.hpp"
-
-#include "fmt/ranges.h"
+#include "shaders/Utils.hpp"
 
 TEST(TestPushConstants, TestConstantsAlgoDispatchOverride)
 {

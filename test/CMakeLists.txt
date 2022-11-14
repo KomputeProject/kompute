@@ -1,100 +1,41 @@
 # SPDX-License-Identifier: Apache-2.0
+# ######################
+cmake_minimum_required(VERSION 3.20)
 
-#####################################################
-#################### GETEST #######################
-#####################################################
-enable_testing()
-if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/external/googletest EXCLUDE_FROM_ALL
-        ${CMAKE_CURRENT_BINARY_DIR}/kompute_googletest)
-else()
-    find_package(GTest CONFIG REQUIRED)
+# ####################################################
+# Shaders
+# ####################################################
+add_subdirectory(shaders)
+
+# ####################################################
+# Tests
+# ####################################################
+add_executable(kompute_tests TestAsyncOperations.cpp
+    TestDestroy.cpp
+    TestLogisticRegression.cpp
+    TestManager.cpp
+    TestMultipleAlgoExecutions.cpp
+    TestOpShadersFromStringAndFile.cpp
+    TestOpTensorCopy.cpp
+    TestOpTensorCreate.cpp
+    TestPushConstant.cpp
+    TestSequence.cpp
+    TestSpecializationConstant.cpp
+    TestWorkgroup.cpp)
+
+target_link_libraries(kompute_tests PRIVATE GTest::gtest_main
+    kompute::kompute
+    kp_logger
+    test_shaders
+    test_shaders_glsl)
+add_test(NAME kompute_tests COMMAND kompute_tests)
+
+# Group under the "tests" project folder in IDEs such as Visual Studio.
+set_property(TARGET kompute_tests PROPERTY FOLDER "tests")
+
+if(WIN32 AND BUILD_SHARED_LIBS) # Install dlls in the same directory as the executable on Windows so one can simply double click them
+    add_custom_command(TARGET kompute_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:test_shaders> $<TARGET_FILE_DIR:kompute_tests>)
+    add_custom_command(TARGET kompute_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kompute::kompute> $<TARGET_FILE_DIR:kompute_tests>)
+    add_custom_command(TARGET kompute_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:kompute_tests>)
+    add_custom_command(TARGET kompute_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kp_logger> $<TARGET_FILE_DIR:kompute_tests>)
 endif()
-
-file(GLOB test_kompute_CPP
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-)
-
-add_executable(test_kompute ${test_kompute_CPP})
-
-target_include_directories(
-    test_kompute PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/single_include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compiled_shaders_include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/utils>
-)
-
-if(KOMPUTE_OPT_REPO_SUBMODULE_BUILD)
-    target_include_directories(
-        test_kompute PRIVATE
-        ${gtest_SOURCE_DIR}/include)
-
-    target_link_libraries(test_kompute
-        gtest_main)
-else()
-    target_link_libraries(test_kompute
-        GTest::gtest)
-endif()
-
-target_link_libraries(test_kompute kompute)
-
-add_test(NAME test_kompute COMMAND test_kompute)
-
-
-#####################################################
-#################### CODECOV  #######################
-#####################################################
-
-if (KOMPUTE_OPT_CODE_COVERAGE)
-    if(NOT UNIX)
-        message(
-            FATAL_ERROR
-            "KOMPUTE_OPT_CODE_COVERAGE can only be enabled in unix based systems due to limitation on gcov")
-    endif()
-
-    add_custom_target(codecov_run_tests
-        COMMAND make -C ${PROJECT_SOURCE_DIR} mk_run_tests
-        DEPENDS test_kompute)
-
-    add_custom_target(codecov_copy_files
-        COMMAND ${CMAKE_COMMAND}
-            -E copy_directory
-            ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/test_kompute.dir/
-            ${CODECOV_DIR}
-        COMMAND ${CMAKE_COMMAND}
-            -E copy_directory
-            ${CMAKE_CURRENT_BINARY_DIR}/../src/CMakeFiles/kompute.dir/
-            ${CODECOV_DIR}
-        DEPENDS test_kompute codecov_run_tests)
-
-    add_custom_target(codecov_gcov
-        COMMAND gcov
-            -b -c "*.gcno"
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_copy_files)
-
-    add_custom_target(codecov_lcov_capture
-        COMMAND lcov
-            --capture
-            -o ${CODECOV_FILENAME_LCOV_INFO_FULL}
-            -d .
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_gcov)
-    add_custom_target(codecov_lcov_extract
-        COMMAND lcov
-            --extract
-            ${CODECOV_FILENAME_LCOV_INFO_FULL}
-            -o ${CODECOV_FILENAME_LCOV_INFO}
-            -d .
-            "*/src/*"
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_lcov_capture)
-
-    add_custom_target(codecov_genhtml
-        COMMAND genhtml
-            ${CODECOV_FILENAME_LCOV_INFO}
-            --output-directory ${CODECOV_DIR_HTML}
-        WORKING_DIRECTORY ${CODECOV_DIR}
-        DEPENDS codecov_lcov_extract)
-endif()
-

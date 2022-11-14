@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "kompute/operations/OpTensorCopy.hpp"
+#include "kompute/Tensor.hpp"
 
 namespace kp {
 
@@ -21,8 +22,8 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
         if (tensor->dataType() != dataType) {
             throw std::runtime_error(fmt::format(
               "Attempting to copy tensors of different types from {} to {}",
-              dataType,
-              tensor->dataType()));
+              Tensor::toString(dataType),
+              Tensor::toString(tensor->dataType())));
         }
         if (tensor->size() != size) {
             throw std::runtime_error(fmt::format(

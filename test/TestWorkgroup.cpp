@@ -3,8 +3,9 @@
 #include "gtest/gtest.h"
 
 #include "kompute/Kompute.hpp"
+#include "kompute/logger/Logger.hpp"
 
-#include "kompute_test/shaders/shadertest_workgroup.hpp"
+#include "test_workgroup_shader.hpp"
 
 TEST(TestWorkgroup, TestSimpleWorkgroup)
 {
@@ -21,14 +22,9 @@ TEST(TestWorkgroup, TestSimpleWorkgroup)
 
             std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
                                                                 tensorB };
-
             std::vector<uint32_t> spirv(
-              (uint32_t*)
-                kp::shader_data::test_shaders_glsl_test_workgroup_comp_spv,
-              (uint32_t*)(kp::shader_data::
-                            test_shaders_glsl_test_workgroup_comp_spv +
-                          kp::shader_data::
-                            test_shaders_glsl_test_workgroup_comp_spv_len));
+              kp::TEST_WORKGROUP_SHADER_COMP_SPV.begin(),
+              kp::TEST_WORKGROUP_SHADER_COMP_SPV.end());
 
             kp::Workgroup workgroup = { 16, 8, 1 };
 

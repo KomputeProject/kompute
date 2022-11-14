@@ -56,17 +56,14 @@ MK_KOMPUTE_EXTRA_CXX_FLAGS ?= ""
 mk_cmake:
 	cmake \
 		-Bbuild \
-		-DKOMPUTE_EXTRA_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
+		-DCMAKE_CXX_FLAGS=$(MK_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_BUILD_TYPE=$(MK_BUILD_TYPE) \
 		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
-		-DKOMPUTE_OPT_INSTALL=1 \
-		-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1 \
-		-DKOMPUTE_OPT_BUILD_TESTS=1 \
-		-DKOMPUTE_OPT_BUILD_DOCS=1 \
-		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
-		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
-		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
-		-DKOMPUTE_OPT_CODE_COVERAGE=1 \
+		-DKOMPUTE_OPT_INSTALL=ON \
+		-DKOMPUTE_OPT_BUILD_TESTS=ON \
+		-DKOMPUTE_OPT_BUILD_DOCS=ON \
+		-DKOMPUTE_OPT_BUILD_SHADERS=ON \
+		-DKOMPUTE_OPT_CODE_COVERAGE=ON \
 		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		$(MK_CMAKE_EXTRA_FLAGS) \
 		-G "Unix Makefiles"
@@ -81,13 +78,16 @@ mk_build_kompute:
 	cmake --build build/. --target kompute --parallel
 
 mk_build_tests:
-	cmake --build build/ --target test_kompute --parallel
+	cmake --build build/. --target kompute_tests --parallel
 
 mk_run_docs: mk_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
+# An alternative would be: ctest -vv --test-dir build/.
+# But this is not possible since we need to filter specific tests, not complete executables, which is not possible with ctest.
+# https://gitlab.kitware.com/cmake/cmake/-/issues/13168 
 mk_run_tests: mk_build_tests
-	./build/test/test_kompute --gtest_filter=$(FILTER_TESTS)
+	./build/bin/kompute_tests --gtest_filter=$(FILTER_TESTS)
 
 mk_build_swiftshader_library:
 	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
@@ -104,7 +104,7 @@ mk_run_tests_cpu: mk_build_swiftshader_library mk_build_tests mk_run_tests_cpu_o
 VS_BUILD_TYPE ?= "Debug"
 # Run with multiprocessin / parallel build by default
 VS_CMAKE_EXTRA_FLAGS ?= ""
-VS_KOMPUTE_EXTRA_CXX_FLAGS ?= "/MT" # /MP is for faster multiprocessing builds. You should add "/MT" for submodule builds for compatibility with gtest
+VS_KOMPUTE_EXTRA_CXX_FLAGS ?= ""
 VS_INSTALL_PATH ?= "build/src/CMakeFiles/Export/" # Set to "" if prefer default
 
 vs_cmake:
@@ -112,38 +112,36 @@ vs_cmake:
 		-Bbuild \
 		$(VS_CMAKE_EXTRA_FLAGS) \
 		-DCMAKE_TOOLCHAIN_FILE=$(VCPKG_WIN_PATH) \
-		-DKOMPUTE_EXTRA_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
+		-DCMAKE_CXX_FLAGS=$(VS_KOMPUTE_EXTRA_CXX_FLAGS) \
 		-DCMAKE_INSTALL_PREFIX=$(VS_INSTALL_PATH) \
-		-DKOMPUTE_OPT_INSTALL=1 \
-		-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1 \
-		-DKOMPUTE_OPT_BUILD_TESTS=1 \
-		-DKOMPUTE_OPT_BUILD_SHADERS=1 \
-		-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1 \
-		-DKOMPUTE_OPT_ENABLE_SPDLOG=1 \
-		-DKOMPUTE_OPT_CODE_COVERAGE=0 \
-		-DKOMPUTE_OPT_BUILD_DOCS=0 \
-		-G "Visual Studio 16 2019"
+		-DKOMPUTE_OPT_INSTALL=ON \
+		-DKOMPUTE_OPT_BUILD_TESTS=ON \
+		-DKOMPUTE_OPT_BUILD_SHADERS=ON \
+		-DKOMPUTE_OPT_CODE_COVERAGE=OFF \
+		-DKOMPUTE_OPT_BUILD_DOCS=OFF \
+		-G "Visual Studio 16 2019" \
+		-DCMAKE_BUILD_TYPE=$(VS_BUILD_TYPE)
 
 vs_build_all:
-	$(MSBUILD_BIN) build/kompute.sln -p:Configuration$(VS_BUILD_TYPE)
+	cmake --build build/. --parallel
 
 vs_build_docs:
-	$(MSBUILD_BIN) build/docs/gendocsall.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target gendocsall --parallel
 
 vs_install_kompute:
-	$(MSBUILD_BIN) build/src/INSTALL.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target install --parallel
 
 vs_build_kompute:
-	$(MSBUILD_BIN) build/src/kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target kompute --parallel
 
 vs_build_tests:
-	$(MSBUILD_BIN) build/test/test_kompute.vcxproj -p:Configuration=$(VS_BUILD_TYPE)
+	cmake --build build/. --target kompute_tests --parallel
 
 vs_run_docs: vs_build_docs
 	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
 
 vs_run_tests: vs_build_tests
-	./build/test/$(VS_BUILD_TYPE)/test_kompute.exe --gtest_filter=$(FILTER_TESTS)
+	./build/test/$(VS_BUILD_TYPE)/bin/kompute_tests.exe --gtest_filter=$(FILTER_TESTS)
 
 
 #### PYTHONG ####
@@ -163,7 +161,7 @@ run_ci:
 generate_python_docstrings:
 	python -m pybind11_mkdoc \
 		-o python/src/docstrings.hpp \
-		single_include/kompute/Kompute.hpp \
+		kompute/Kompute.hpp \
 		-Iexternal/fmt/include/ \
 		-Iexternal/spdlog/include/ \
 		-Iexternal/glslang/ \
