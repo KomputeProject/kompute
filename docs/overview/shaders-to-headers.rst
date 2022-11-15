@@ -84,7 +84,7 @@ If you are using CMake as build system you can use CMake to directly convert you
     # Consume Kompute via CMake fetch_content
     include(FetchContent)
     FetchContent_Declare(kompute GIT_REPOSITORY https://github.com/KomputeProject/kompute.git
-                                 GIT_TAG f4d72e2aa7b23ffe05d5ea3191bf72ad00def0ec) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
+                                 GIT_TAG 1344ece4ac278f9b3be3b4555ffaace7a032b91f) # The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases
     FetchContent_MakeAvailable(kompute)
     include_directories(${kompute_SOURCE_DIR}/src/include)
 
