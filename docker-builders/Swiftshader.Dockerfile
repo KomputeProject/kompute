@@ -5,7 +5,7 @@ ARG VULKAN_SDK_VERSION
 FROM axsauze/vulkan-sdk:$VULKAN_SDK_VERSION as vulkansdk-image
 
 # Ubuntu as actual image base
-FROM ubuntu:22.04
+FROM ubuntu:22.04 as swiftshader-builder
 
 # Repeating ARG for context in this image
 ARG VULKAN_SDK_VERSION
@@ -40,4 +40,10 @@ RUN git clone https://github.com/google/swiftshader swiftshader-build
 RUN cmake swiftshader-build/. -Bswiftshader-build/build/
 RUN cmake --build swiftshader-build/build/. --parallel 8
 RUN cp -r swiftshader-build/build/Linux/ swiftshader/
+
+
+# Store build in slim down image
+FROM ubuntu:22.04
+
+COPY --from=swiftshader-builder /swiftshader/ /swiftshader/
 
