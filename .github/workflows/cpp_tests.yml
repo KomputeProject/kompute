@@ -18,7 +18,7 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
@@ -43,7 +43,7 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
@@ -68,7 +68,7 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
@@ -93,7 +93,7 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
