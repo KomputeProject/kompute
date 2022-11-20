@@ -9,14 +9,12 @@ on:
 jobs:
   python-tests:
     runs-on: ubuntu-latest
-    container: axsauze/kompute-builder:0.3
+    container: axsauze/kompute-builder:0.4
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: false
-    - name: Install vulkaninfo
-      run: apt update -y && apt install -y vulkan-tools
     - name: Install Python Requirements
       run: pip3 install --user -r python/test/requirements-dev.txt
     - name: Python Build
