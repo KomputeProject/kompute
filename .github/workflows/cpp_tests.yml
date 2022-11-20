@@ -9,7 +9,7 @@ on:
 jobs:
   cpp-tests-debug-with-debug-layers:
     runs-on: ubuntu-latest
-    container: axsauze/kompute-builder:0.3
+    container: axsauze/kompute-builder:0.4
     steps:
     - name: Install vulkaninfo
       run: apt update -y && apt install -y vulkan-tools
@@ -18,7 +18,7 @@ jobs:
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
@@ -35,16 +35,14 @@ jobs:
   
   cpp-tests-release-with-debug-layers:
     runs-on: ubuntu-latest
-    container: axsauze/kompute-builder:0.3
+    container: axsauze/kompute-builder:0.4
     steps:
-    - name: Install vulkaninfo
-      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
@@ -61,16 +59,14 @@ jobs:
 
   cpp-tests-debug-without-debug-layers:
     runs-on: ubuntu-latest
-    container: axsauze/kompute-builder:0.3
+    container: axsauze/kompute-builder:0.4
     steps:
-    - name: Install vulkaninfo
-      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
@@ -87,16 +83,14 @@ jobs:
   
   cpp-tests-release-without-debug-layers:
     runs-on: ubuntu-latest
-    container: axsauze/kompute-builder:0.3
+    container: axsauze/kompute-builder:0.4
     steps:
-    - name: Install vulkaninfo
-      run: apt update -y && apt install -y vulkan-tools
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: false
     - name: "[Release g++] Build & Test"
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: KomputeProject/action-cmake-build@master
       with:
         build-dir: ${{github.workspace}}/build
         source-dir: ${{github.workspace}}
