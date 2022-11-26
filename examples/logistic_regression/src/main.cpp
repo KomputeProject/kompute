@@ -63,4 +63,10 @@ main()
     std::cout << "w1: " << wIn->data()[0] << std::endl;
     std::cout << "w2: " << wIn->data()[1] << std::endl;
     std::cout << "b: " << bIn->data()[0] << std::endl;
+
+    if (wIn->data()[0] > 0.0 ||
+            wIn->data()[1] < 1.0 ||
+            bIn->data()[0] > 0.0) {
+        throw std::runtime_error("Result does not match");
+    }
 }
