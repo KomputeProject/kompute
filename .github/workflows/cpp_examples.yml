@@ -32,5 +32,6 @@ jobs:
     - name: Run tests
       run: |
         # Check that the expected output is printed
-        ./examples/array_multiplication/build/src/kompute_array_mult
+        ./examples/array_multiplication/build/src/kompute_array_mult | \
+          tee $(tty) | grep -q "Output: {  0  4  12  }"
 
