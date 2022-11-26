@@ -20,8 +20,8 @@ jobs:
     - name: "[Release g++] Build & Test"
       uses: KomputeProject/action-cmake-build@master
       with:
-        build-dir: ${{github.workspace}}/examples/array_multiplication/build
-        source-dir: ${{github.workspace}}/examples/array_multiplication
+        build-dir: examples/array_multiplication/build
+        source-dir: examples/array_multiplication
         cc: gcc
         cxx: g++
         build-type: Debug
@@ -32,5 +32,5 @@ jobs:
     - name: Run tests
       run: |
         # Check that the expected output is printed
-        ${{github.workspace}}/examples/array_multiplication/build/src/kompute_array_mult
+        ./examples/array_multiplication/build/src/kompute_array_mult
 
