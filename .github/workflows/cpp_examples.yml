@@ -30,14 +30,4 @@ jobs:
         configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON KOMPUTE_OPT_FROM_SOURCE=ON
         build-options: --parallel # Given we don't build too many resources we can leverage parallel
     - name: Run tests
-      run: |
-        # Check that the expected output is printed
-        TEST_STDOUT=$(./examples/array_multiplication/build/src/kompute_array_mult)
-        echo "$TEST_STDOUT"
-        TEST_CODE=$?
-        echo "Exit value for test run: $TEST_CODE"
-        echo $TEST_STDOUT | grep -q "Output: {  0  4  12  }"
-        TEST_MATCH=$?
-        echo "Exit value for text match: $TEST_MATCH"
-        exit $(($TEST_CODE + $TEST_MATCH))
-
+      run: ./examples/array_multiplication/build/src/kompute_array_mult

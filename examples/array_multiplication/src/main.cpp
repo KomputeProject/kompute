@@ -38,4 +38,8 @@ main()
         std::cout << elem << "  ";
     }
     std::cout << "}" << std::endl;
+
+    if (tensorOut->vector() != std::vector<float>{ 0, 4, 12 }) {
+        throw std::runtime_error("Result does not match");
+    }
 }
