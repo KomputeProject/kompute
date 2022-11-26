@@ -32,8 +32,11 @@ jobs:
     - name: Run tests
       run: |
         # Check that the expected output is printed
-        TEST_STDOUT=./examples/array_multiplication/build/src/kompute_array_mult
+        TEST_STDOUT=$(./examples/array_multiplication/build/src/kompute_array_mult)
+        echo "$TEST_STDOUT"
         TEST_CODE=$?
+        echo "$TEST_CODE"
         TEST_MATCH= echo $TEST_STDOUT | grep -q "Output: {  0  4  12  }"
+        echo "$TEST_MATCH"
         exit $(($TEST_CODE + $TEST_MATCH))
 
