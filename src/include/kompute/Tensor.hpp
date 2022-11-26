@@ -3,6 +3,7 @@
 
 #include "kompute/Core.hpp"
 #include "logger/Logger.hpp"
+#include <memory>
 #include <string>
 
 namespace kp {
