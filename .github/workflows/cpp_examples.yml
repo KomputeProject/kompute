@@ -32,6 +32,8 @@ jobs:
     - name: Run tests
       run: |
         # Check that the expected output is printed
-        ./examples/array_multiplication/build/src/kompute_array_mult | \
-          tee $(tty) | grep -q "Output: {  0  4  12  }"
+        TEST_STDOUT=./examples/array_multiplication/build/src/kompute_array_mult
+        TEST_CODE=$?
+        TEST_MATCH= echo $TEST_STDOUT | grep -q "Output: {  0  4  12  }"
+        exit $(($TEST_CODE + $TEST_MATCH))
 
