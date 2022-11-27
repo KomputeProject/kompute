@@ -15,11 +15,13 @@
 
 -I/usr/include/python3.6/
 -I./python/pybind11/include/
--I./external/Vulkan-Headers/include/
--I./external/googletest/googletest/include/
--I./external/glslang/
--I./external/spdlog/include/
--I./external/fmt/include/
+
+-I./build/_deps/vulkan_header-src/include/
+-I./build/_deps/spdlog-src/include/
+-I./build/_deps/googletest-src/googletest/include/
+-I./build/_deps/fmt-src/include/
+
 -I./src/include/
--I./test/compiled_shaders_include/
+-I./build/src/shaders/glsl/
+-I./build/test/shaders/glsl/
 -I./test/utils/
