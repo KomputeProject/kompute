@@ -43,7 +43,11 @@ setupLogger()
     spdlog::init_thread_pool(THREAD_QUEUE_LENGTH, 1);
     spdlog::sink_ptr console_sink =
       std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_pattern("[%H:%M:%S %z] [%=8l] [thread %t] [%@]\t%v");
+#if SPDLOG_ACTIVE_LEVEL < SPDLOG_LEVEL_INFO
+    console_sink->set_pattern("[%H:%M:%S %z] [%^%=9l%$] [%=21s] %v");
+#else
+    console_sink->set_pattern("[%H:%M:%S %z] [%^%=9l%$] [%=15s] %v");
+#endif
     std::vector<spdlog::sink_ptr> sinks{ console_sink };
     std::shared_ptr<spdlog::logger> logger =
       std::make_shared<spdlog::async_logger>(
@@ -54,6 +58,7 @@ setupLogger()
         spdlog::async_overflow_policy::block);
 
     logger->set_level(getLogLevel());
+
     spdlog::set_default_logger(logger);
 }
 
@@ -62,29 +67,19 @@ getLogLevel()
 {
 #if SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_TRACE
     return spdlog::level::trace;
-#endif
-
-#if SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_DEBUG
+#elif SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_DEBUG
     return spdlog::level::debug;
-#endif
-
-#if SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_INFO
+#elif SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_INFO
     return spdlog::level::info;
-#endif
-
-#if SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_WARN
+#elif SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_WARN
     return spdlog::level::warn;
-#endif
-
-#if SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_ERROR
+#elif SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_ERROR
     return spdlog::level::error;
-#endif
-
-#if SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_CRITICAL
+#elif SPDLOG_ACTIVE_LEVEL == SPDLOG_LEVEL_CRITICAL
     return spdlog::level::critical;
-#endif
-
+#else
     return spdlog::level::off;
+#endif
 }
 
 void

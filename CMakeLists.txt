@@ -100,7 +100,7 @@ kompute_option(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG "Use the built-in version of Spdl
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_FMT "Use the built-in version of fmt." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST "Use the built-in version of GoogleTest." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11 "Use the built-in version of pybind11." ON)
-kompute_option(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER "Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver." OFF)
+kompute_option(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER "Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver." ON)
 kompute_option_string(KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG "The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.3.231")
 message(STATUS "=======================================================")
 
