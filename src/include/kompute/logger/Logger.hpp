@@ -82,6 +82,15 @@ setupLogger();
 #if KOMPUTE_BUILD_PYTHON
 #define KP_LOG_DEBUG(...) kp_debug(fmt::format(__VA_ARGS__))
 #else
+#ifdef __FILE_NAME__ // gcc 12 provides only file name without path
+#define KP_LOG_DEBUG(...)                                                      \
+    fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
+               __DATE__,                                                       \
+               __TIME__,                                                       \
+               __FILE_NAME__,                                                       \
+               __LINE__,                                                       \
+               fmt::format(__VA_ARGS__))
+#else
 #define KP_LOG_DEBUG(...)                                                      \
     fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
                __DATE__,                                                       \
