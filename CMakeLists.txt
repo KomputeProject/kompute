@@ -89,7 +89,7 @@ kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." 
 # Build options
 kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings." OFF)
 kompute_log_level(KOMPUTE_OPT_LOG_LEVEL "Internally we use Spdlog or fmt for logging, depending on the value of 'KOMPUTE_OPT_USE_SPDLOG'. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' logging will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else." "Default")
-kompute_option(KOMPUTE_OPT_USE_SPDLOG "If enabled, logging via KP_LOG_<DEBUG, INFO, etc...> will happen through Spdlog instead of plan fmt." OFF)
+kompute_option(KOMPUTE_OPT_USE_SPDLOG "If enabled, logging via KP_LOG_<DEBUG, INFO, etc...> will happen through Spdlog instead of plan fmt." ON)
 kompute_option(KOMPUTE_OPT_ANDROID_BUILD "Enable android compilation flags required." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS "Explicitly disable debug layers even on debug." OFF)
 kompute_option(KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK "Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later." OFF)
@@ -100,7 +100,7 @@ kompute_option(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG "Use the built-in version of Spdl
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_FMT "Use the built-in version of fmt." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST "Use the built-in version of GoogleTest." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11 "Use the built-in version of pybind11." ON)
-kompute_option(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER "Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver." OFF)
+kompute_option(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER "Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver." ON)
 kompute_option_string(KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG "The git tag used for the built-in Vulkan Headers when 'KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER' is enabled. A list of tags can be found here: https://github.com/KhronosGroup/Vulkan-Headers/tags" "v1.3.231")
 message(STATUS "=======================================================")
 
