@@ -98,6 +98,7 @@ setupLogger();
                __FILE__,                                                       \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
+#endif // __FILE__NAME__
 #endif // KOMPUTE_BUILD_PYTHON
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
