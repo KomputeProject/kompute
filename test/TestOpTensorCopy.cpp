@@ -157,3 +157,92 @@ TEST(TestOpTensorCopy, SingleTensorShouldFail)
     EXPECT_THROW(mgr.sequence()->eval<kp::OpTensorCopy>({ tensorA }),
                  std::runtime_error);
 }
+
+TEST(TestOpTensorCopy, CopyThroughStorageTensor)
+{
+    kp::Manager mgr;
+
+    std::vector<float> testVecIn{ 9, 1, 3 };
+    std::vector<float> testVecOut{ 0, 0, 0 };
+
+    std::shared_ptr<kp::TensorT<float>> tensorIn = mgr.tensor(testVecIn);
+    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor(testVecOut);
+    // Tensor storage requires a vector to be passed only to reflect size
+    std::shared_ptr<kp::TensorT<float>> tensorStorage =
+        mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStorage);
+
+    mgr.sequence()
+        ->eval<kp::OpTensorSyncDevice>({ tensorIn, tensorOut })
+        ->eval<kp::OpTensorCopy>({ tensorIn, tensorStorage })
+        ->eval<kp::OpTensorCopy>({ tensorStorage, tensorOut })
+        ->eval<kp::OpTensorSyncLocal>({ tensorIn, tensorOut });
+
+    // Making sure the GPU holds the same vector
+    EXPECT_EQ(tensorIn->vector(), tensorOut->vector());
+}
+
+TEST(TestOpTensorCopy, CopyTensorThroughStorageViaAlgorithms)
+{
+    kp::Manager mgr;
+
+    std::vector<float> testVecIn{ 9, 1, 3 };
+    std::vector<float> testVecOut{ 0, 0, 0 };
+
+    std::shared_ptr<kp::TensorT<float>> tensorIn = mgr.tensor(testVecIn);
+    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor(testVecOut);
+    // Tensor storage requires a vector to be passed only to reflect size
+    std::shared_ptr<kp::TensorT<float>> tensorStorage =
+        mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStorage);
+
+    EXPECT_TRUE(tensorIn->isInit());
+    EXPECT_TRUE(tensorOut->isInit());
+
+    // Copy to storage tensor through algorithm
+    std::string shaderA = (R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer buf_in { float t_in[]; };
+        layout(set = 0, binding = 1) buffer buf_st { float t_st[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            t_st[index] = t_in[index];
+        }
+    )");
+
+    auto algoA = mgr.algorithm(
+            { tensorIn, tensorStorage },
+            compileSource(shaderA));
+
+    // Copy from storage tensor to output tensor
+    std::string shaderB = (R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        // The input tensors bind index is relative to index in parameter passed
+        layout(set = 0, binding = 0) buffer buf_st { float t_st[]; };
+        layout(set = 0, binding = 1) buffer buf_out { float t_out[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            t_out[index] = t_st[index];
+        }
+    )");
+
+    auto algoB = mgr.algorithm(
+            { tensorStorage, tensorOut },
+            compileSource(shaderB));
+
+    mgr.sequence()
+        ->eval<kp::OpTensorSyncDevice>({ tensorIn })
+        ->eval<kp::OpAlgoDispatch>(algoA)
+        ->eval<kp::OpAlgoDispatch>(algoB)
+        ->eval<kp::OpTensorSyncLocal>({ tensorOut });
+
+    // Making sure the GPU holds the same vector
+    EXPECT_EQ(tensorIn->vector(), tensorOut->vector());
+}
