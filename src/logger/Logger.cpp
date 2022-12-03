@@ -49,13 +49,21 @@ setupLogger()
     console_sink->set_pattern("[%H:%M:%S %z] [%^%=9l%$] [%=15s] %v");
 #endif
     std::vector<spdlog::sink_ptr> sinks{ console_sink };
+    // TODO: Add flag in compile flags
     std::shared_ptr<spdlog::logger> logger =
-      std::make_shared<spdlog::async_logger>(
-        "",
-        sinks.begin(),
-        sinks.end(),
-        spdlog::thread_pool(),
-        spdlog::async_overflow_policy::block);
+#if KOMPUTE_SPDLOG_ASYNC_LOGGING
+          std::make_shared<spdlog::async_logger>(
+            "",
+            sinks.begin(),
+            sinks.end(),
+            spdlog::thread_pool(),
+            spdlog::async_overflow_policy::block);
+#else
+          std::make_shared<spdlog::logger>(
+            "",
+            sinks.begin(),
+            sinks.end());
+#endif
 
     logger->set_level(getLogLevel());
 
