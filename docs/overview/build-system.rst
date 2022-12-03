@@ -36,10 +36,6 @@ This by default configures without any of the extra build tasks (such as buildin
      - Enable if you want to enable installation.
    * - -DKOMPUTE_OPT_BUILD_PYTHON=ON
      - Enable if you want to build python bindings.
-   * - -DKOMPUTE_OPT_LOG_LEVEL="Default"
-     - Internally we use Spdlog or fmt for logging, depending on the value of 'KOMPUTE_OPT_USE_SPDLOG'. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' logging will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else.
-   * - -DKOMPUTE_OPT_USE_SPDLOG=OFF
-     - If enabled, logging via KP_LOG_<DEBUG, INFO, etc...> will happen through Spdlog instead of plan fmt.
    * - -DKOMPUTE_OPT_ANDROID_BUILD=ON
      - Enable android compilation flags required.
    * - -DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON
@@ -48,8 +44,14 @@ This by default configures without any of the extra build tasks (such as buildin
      - Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later.
    * - -DKOMPUTE_OPT_BUILD_SHADERS=OFF
      - Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system.
+   * - -DKOMPUTE_OPT_LOG_LEVEL="Default"
+     - Internally we use Spdlog or fmt for logging, depending on the value of 'KOMPUTE_OPT_USE_SPDLOG'. The log level used can be changed here. Possible values: 'Trace', 'Debug', 'Info', 'Warn', 'Error', 'Critical', 'Off', 'Default'. If set to 'Off' logging will be deactivated completely. If set to 'Default', the log level will be set to 'Info' for release builds and 'Debug' else.
+   * - -DKOMPUTE_OPT_USE_SPDLOG=ON
+     - If enabled, logging via KP_LOG_<DEBUG, INFO, etc...> will happen through Spdlog instead of plan fmt.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_SPDLOG=ON
      - Use the built-in version of Spdlog. Requires 'KOMPUTE_OPT_USE_SPDLOG' to be set to ON in order to have any effect.
+   * - -DKOMPUTE_OPT_SPDLOG_ASYNC_MODE=OFF
+     - If enabled we use the async thread mode of spdlog, but by default using sync for consistent messages.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_FMT=ON
      - Use the built-in version of fmt.
    * - -DKOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST=ON

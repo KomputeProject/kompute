@@ -97,6 +97,7 @@ kompute_option(KOMPUTE_OPT_BUILD_SHADERS "Rebuilds all compute shaders during co
 
 # External components
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG "Use the built-in version of Spdlog. Requires 'KOMPUTE_OPT_USE_SPDLOG' to be set to ON in order to have any effect." ON)
+kompute_option(KOMPUTE_OPT_SPDLOG_ASYNC_MODE "If spdlog is enabled this allows for selecting whether the default logger setup creates sync or async logger" OFF)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_FMT "Use the built-in version of fmt." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST "Use the built-in version of GoogleTest." ON)
 kompute_option(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11 "Use the built-in version of pybind11." ON)

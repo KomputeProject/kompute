@@ -87,9 +87,11 @@ Tensor::rebuild(void* data,
     }
 
     this->allocateMemoryCreateGPUResources();
-    this->mapRawData();
 
-    memcpy(this->mRawData, data, this->memorySize());
+    if (this->tensorType() != Tensor::TensorTypes::eStorage) {
+        this->mapRawData();
+        memcpy(this->mRawData, data, this->memorySize());
+    }
 }
 
 Tensor::TensorTypes
@@ -155,7 +157,7 @@ Tensor::mapRawData()
         hostVisibleMemory = this->mStagingMemory;
     } else {
         KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
+          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
         return;
     }
 
@@ -182,7 +184,7 @@ Tensor::unmapRawData()
         hostVisibleMemory = this->mStagingMemory;
     } else {
         KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on storage tensor");
+          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
         return;
     }
 
@@ -520,7 +522,9 @@ Tensor::destroy()
     }
 
     // Unmap the current memory data
-    this->unmapRawData();
+    if (this->tensorType() != Tensor::TensorTypes::eStorage) {
+        this->unmapRawData();
+    }
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
