@@ -275,7 +275,7 @@ Algorithm::createPipeline()
       vk::PipelineShaderStageCreateFlags(),
       vk::ShaderStageFlagBits::eCompute,
       *this->mShaderModule,
-      "main",
+      this->mKernelFunctionName.c_str(),
       &specializationInfo);
 
     vk::ComputePipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),

@@ -40,11 +40,13 @@ class Algorithm
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
               const std::vector<S>& specializationConstants = {},
-              const std::vector<P>& pushConstants = {})
+              const std::vector<P>& pushConstants = {},
+              const std::string& kernelFunctionName = "main")
     {
         KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
         this->mDevice = device;
+        this->mKernelFunctionName = kernelFunctionName;
 
         if (tensors.size() && spirv.size()) {
             KP_LOG_INFO(
@@ -305,6 +307,7 @@ class Algorithm
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;
     Workgroup mWorkgroup;
+    std::string mKernelFunctionName = "main";
 
     // Create util functions
     void createShaderModule();

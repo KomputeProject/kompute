@@ -144,10 +144,11 @@ class Manager
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
       const std::vector<float>& specializationConstants = {},
-      const std::vector<float>& pushConstants = {})
+      const std::vector<float>& pushConstants = {},
+      const std::string& kernelFunctionName = "main")
     {
         return this->algorithm<>(
-          tensors, spirv, workgroup, specializationConstants, pushConstants);
+          tensors, spirv, workgroup, specializationConstants, pushConstants, kernelFunctionName);
     }
 
     /**
@@ -170,7 +171,8 @@ class Manager
       const std::vector<uint32_t>& spirv,
       const Workgroup& workgroup,
       const std::vector<S>& specializationConstants,
-      const std::vector<P>& pushConstants)
+      const std::vector<P>& pushConstants,
+      const std::string& kernelFunctionName = "main")
     {
 
         KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
@@ -181,7 +183,8 @@ class Manager
           spirv,
           workgroup,
           specializationConstants,
-          pushConstants) };
+          pushConstants,
+          kernelFunctionName) };
 
         if (this->mManageResources) {
             this->mManagedAlgorithms.push_back(algorithm);
