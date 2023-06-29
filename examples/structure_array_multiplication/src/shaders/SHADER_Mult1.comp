@@ -1,0 +1,45 @@
+#version 450
+#extension GL_GOOGLE_include_directive : require
+#include "structs/ExampleStructure2.hpp"
+
+layout (local_size_x = 1) in;
+
+layout (std430, binding = 0) buffer bufA {
+    ExampleStructure2 A[];
+};
+
+layout (std430, binding = 1) buffer bufB {
+    ExampleStructure2 B[];
+};
+
+layout (std430, binding = 2) buffer bufOut {
+    ExampleStructure2 Out[];
+};
+
+void main() {
+    uint id = gl_GlobalInvocationID.x;
+
+    //example structure2
+    Out[id].a = A[id].a * B[id].a;
+    Out[id].b = A[id].b * B[id].b;
+    Out[id].c = A[id].c * B[id].c;
+    Out[id].d = A[id].d * B[id].d;
+    Out[id].e = A[id].e * B[id].e;
+    Out[id].f = A[id].f * B[id].f;
+    Out[id].g = A[id].g * B[id].g;
+    Out[id].h = A[id].h * B[id].h;
+    Out[id].i = A[id].i * B[id].i;
+    Out[id].j = A[id].j * B[id].j;
+
+    //example structure1(nested struct)
+    Out[id].k.a = A[id].k.a * B[id].k.a;
+    Out[id].k.b = A[id].k.b * B[id].k.b;
+    Out[id].k.c = A[id].k.c * B[id].k.c;
+    Out[id].k.d = A[id].k.d * B[id].k.d;
+    Out[id].k.e = A[id].k.e * B[id].k.e;
+    Out[id].k.f = A[id].k.f * B[id].k.f;
+    Out[id].k.g = A[id].k.g * B[id].k.g;
+    Out[id].k.h = A[id].k.h * B[id].k.h;
+    Out[id].k.i = A[id].k.i * B[id].k.i;
+    Out[id].k.j = A[id].k.j * B[id].k.j;
+}
