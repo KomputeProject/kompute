@@ -2,6 +2,7 @@
 
 #include "kompute/operations/OpTensorCopy.hpp"
 #include "kompute/Tensor.hpp"
+#include <typeinfo>
 
 namespace kp {
 
@@ -16,7 +17,7 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
           "Kompute OpTensorCopy called with less than 2 tensor");
     }
 
-    kp::Tensor::TensorDataTypes dataType = this->mTensors[0]->dataType();
+    const std::type_info& dataType = this->mTensors[0]->dataType();
     uint32_t size = this->mTensors[0]->size();
     for (const std::shared_ptr<Tensor>& tensor : tensors) {
         if (tensor->dataType() != dataType) {

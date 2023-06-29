@@ -3,6 +3,7 @@
 
 #include <set>
 #include <unordered_map>
+#include <typeinfo>
 
 #include "kompute/Core.hpp"
 
@@ -102,11 +103,24 @@ class Manager
         return this->tensorT<float>(data, tensorType);
     }
 
+    template<typename T>
+    std::shared_ptr<Tensor> tensor(
+      void* data,
+      uint32_t elementTotalCount,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        return tensor(data,
+                      elementTotalCount,
+                      sizeof(T),
+                      typeid(T),
+                      tensorType);
+    }
+
     std::shared_ptr<Tensor> tensor(
       void* data,
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
-      const Tensor::TensorDataTypes& dataType,
+      const std::type_info& dataType,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
