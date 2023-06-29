@@ -22,25 +22,24 @@ TEST(TestTensor, DataTypes)
     {
         std::vector<float> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor(vec);
-        EXPECT_EQ(tensor->dataType(), kp::Tensor::TensorDataTypes::eFloat);
+        EXPECT_EQ(tensor->dataType(), typeid(float));
     }
 
     {
         std::vector<int32_t> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<int32_t>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(), kp::Tensor::TensorDataTypes::eInt);
+        EXPECT_EQ(tensor->dataType(), typeid(int32_t));
     }
 
     {
         std::vector<uint32_t> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<uint32_t>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(),
-                  kp::Tensor::TensorDataTypes::eUnsignedInt);
+        EXPECT_EQ(tensor->dataType(), typeid(uint32_t));
     }
 
     {
         std::vector<double> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<double>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(), kp::Tensor::TensorDataTypes::eDouble);
+        EXPECT_EQ(tensor->dataType(), typeid(double));
     }
 }
