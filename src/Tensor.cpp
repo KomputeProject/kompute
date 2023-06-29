@@ -1,26 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "kompute/Tensor.hpp"
+#include <typeinfo>
 
 namespace kp {
 
 std::string
-Tensor::toString(Tensor::TensorDataTypes dt)
+Tensor::toString(const std::type_info& dt)
 {
-    switch (dt) {
-        case TensorDataTypes::eBool:
-            return "eBool";
-        case TensorDataTypes::eInt:
-            return "eInt";
-        case TensorDataTypes::eUnsignedInt:
-            return "eUnsignedInt";
-        case TensorDataTypes::eFloat:
-            return "eFloat";
-        case TensorDataTypes::eDouble:
-            return "eDouble";
-        default:
-            return "unknown";
-    }
+    return dt.name();
 }
 
 std::string
@@ -43,8 +31,9 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                void* data,
                uint32_t elementTotalCount,
                uint32_t elementMemorySize,
-               const TensorDataTypes& dataType,
+               const std::type_info& dataType,
                const TensorTypes& tensorType)
+  : mDataType(dataType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
                  elementTotalCount,
@@ -52,7 +41,6 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
-    this->mDataType = dataType;
     this->mTensorType = tensorType;
 
     this->rebuild(data, elementTotalCount, elementMemorySize);
@@ -125,7 +113,7 @@ Tensor::memorySize()
     return this->mSize * this->mDataTypeMemorySize;
 }
 
-kp::Tensor::TensorDataTypes
+const std::type_info&
 Tensor::dataType()
 {
     return this->mDataType;
@@ -588,40 +576,4 @@ Tensor::destroy()
 
     KP_LOG_DEBUG("Kompute Tensor successful destroy()");
 }
-
-template<>
-Tensor::TensorDataTypes
-TensorT<bool>::dataType()
-{
-    return Tensor::TensorDataTypes::eBool;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<int32_t>::dataType()
-{
-    return Tensor::TensorDataTypes::eInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<uint32_t>::dataType()
-{
-    return Tensor::TensorDataTypes::eUnsignedInt;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<float>::dataType()
-{
-    return Tensor::TensorDataTypes::eFloat;
-}
-
-template<>
-Tensor::TensorDataTypes
-TensorT<double>::dataType()
-{
-    return Tensor::TensorDataTypes::eDouble;
-}
-
 }

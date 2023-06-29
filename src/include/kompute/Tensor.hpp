@@ -5,6 +5,7 @@
 #include "logger/Logger.hpp"
 #include <memory>
 #include <string>
+#include <typeinfo>
 
 namespace kp {
 
@@ -31,16 +32,8 @@ class Tensor
         eHost = 1,    ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
     };
-    enum class TensorDataTypes
-    {
-        eBool = 0,
-        eInt = 1,
-        eUnsignedInt = 2,
-        eFloat = 3,
-        eDouble = 4,
-    };
 
-    static std::string toString(TensorDataTypes dt);
+    static std::string toString(const std::type_info& dt);
     static std::string toString(TensorTypes dt);
 
     /**
@@ -58,7 +51,7 @@ class Tensor
            void* data,
            uint32_t elementTotalCount,
            uint32_t elementMemorySize,
-           const TensorDataTypes& dataType,
+           const std::type_info& dataType,
            const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
@@ -201,7 +194,7 @@ class Tensor
      *
      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
      */
-    TensorDataTypes dataType();
+    const std::type_info& dataType();
 
     /**
      * Retrieve the raw data via the pointer to the memory that contains the raw
@@ -247,7 +240,7 @@ class Tensor
   protected:
     // -------------- ALWAYS OWNED RESOURCES
     TensorTypes mTensorType;
-    TensorDataTypes mDataType;
+    const std::type_info& mDataType;
     uint32_t mSize;
     uint32_t mDataTypeMemorySize;
     void* mRawData;
@@ -341,7 +334,10 @@ class TensorT : public Tensor
         Tensor::setRawData(data.data());
     }
 
-    TensorDataTypes dataType();
+    const std::type_info& dataType() 
+    { 
+        return typeid(T);
+    }
 };
 
 } // End namespace kp

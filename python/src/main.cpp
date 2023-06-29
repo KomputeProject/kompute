@@ -258,34 +258,25 @@ PYBIND11_MODULE(kp, m)
                          flatdata.size(),
                          std::string(py::str(flatdata.dtype())));
             if (flatdata.dtype().is(py::dtype::of<std::float_t>())) {
-                return self.tensor(info.ptr,
+                return self.tensor<float>(info.ptr,
                                    flatdata.size(),
-                                   sizeof(float),
-                                   kp::Tensor::TensorDataTypes::eFloat,
                                    tensor_type);
             } else if (flatdata.dtype().is(py::dtype::of<std::uint32_t>())) {
-                return self.tensor(info.ptr,
+                return self.tensor<uint32_t>(
+                                   info.ptr,
                                    flatdata.size(),
-                                   sizeof(uint32_t),
-                                   kp::Tensor::TensorDataTypes::eUnsignedInt,
                                    tensor_type);
             } else if (flatdata.dtype().is(py::dtype::of<std::int32_t>())) {
-                return self.tensor(info.ptr,
+                return self.tensor<int32_t>(info.ptr,
                                    flatdata.size(),
-                                   sizeof(int32_t),
-                                   kp::Tensor::TensorDataTypes::eInt,
                                    tensor_type);
             } else if (flatdata.dtype().is(py::dtype::of<std::double_t>())) {
-                return self.tensor(info.ptr,
+                return self.tensor<double>(info.ptr,
                                    flatdata.size(),
-                                   sizeof(double),
-                                   kp::Tensor::TensorDataTypes::eDouble,
                                    tensor_type);
             } else if (flatdata.dtype().is(py::dtype::of<bool>())) {
-                return self.tensor(info.ptr,
+                return self.tensor<bool>(info.ptr,
                                    flatdata.size(),
-                                   sizeof(bool),
-                                   kp::Tensor::TensorDataTypes::eBool,
                                    tensor_type);
             } else {
                 throw std::runtime_error(
