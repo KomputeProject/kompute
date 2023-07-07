@@ -4,6 +4,7 @@
 
 #include "kompute/Kompute.hpp"
 #include "kompute/logger/Logger.hpp"
+#include "kompute/TypeContainer.hpp"
 
 TEST(TestTensor, ConstructorData)
 {
@@ -22,24 +23,24 @@ TEST(TestTensor, DataTypes)
     {
         std::vector<float> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor(vec);
-        EXPECT_EQ(tensor->dataType(), typeid(float));
+        EXPECT_TRUE(TypeContainer<float>().compare(*tensor->dataType()));
     }
 
     {
         std::vector<int32_t> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<int32_t>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(), typeid(int32_t));
+        EXPECT_TRUE(TypeContainer<int32_t>().compare(*tensor->dataType()));
     }
 
     {
         std::vector<uint32_t> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<uint32_t>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(), typeid(uint32_t));
+        EXPECT_TRUE(TypeContainer<uint32_t>().compare(*tensor->dataType()));
     }
 
     {
         std::vector<double> vec{ 0, 1, 2 };
         std::shared_ptr<kp::TensorT<double>> tensor = mgr.tensorT(vec);
-        EXPECT_EQ(tensor->dataType(), typeid(double));
+        EXPECT_TRUE(TypeContainer<double>().compare(*tensor->dataType()));
     }
 }
