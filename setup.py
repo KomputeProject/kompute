@@ -5,7 +5,7 @@ import sys
 import sysconfig
 import subprocess
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
 
@@ -83,7 +83,11 @@ setup(
     description='Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    ext_modules=[CMakeExtension('kp')],
+    ext_modules=[CMakeExtension('kp/kp')],
+    packages = find_packages(where="python/src"),
+    package_dir={
+        'kp': 'python/src/kp'
+    },
     install_requires=[
         "numpy<2.0.0"
     ],
