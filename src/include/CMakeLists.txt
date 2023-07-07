@@ -15,6 +15,8 @@ target_sources(kompute PRIVATE
     kompute/Manager.hpp
     kompute/Sequence.hpp
     kompute/Tensor.hpp
+    kompute/TypeContainer.hpp
+    kompute/ABCTypeContainer.hpp
 
     kompute/operations/OpAlgoDispatch.hpp
     kompute/operations/OpBase.hpp

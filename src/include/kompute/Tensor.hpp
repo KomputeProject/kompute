@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <typeinfo>
+#include "TypeContainer.hpp"
 
 namespace kp {
 
@@ -33,7 +34,7 @@ class Tensor
         eStorage = 2, ///< Type is Device memory (only)
     };
 
-    static std::string toString(const std::type_info& dt);
+    static std::string toString(std::shared_ptr<ABCTypeContainer> dt);
     static std::string toString(TensorTypes dt);
 
     /**
@@ -51,7 +52,7 @@ class Tensor
            void* data,
            uint32_t elementTotalCount,
            uint32_t elementMemorySize,
-           const std::type_info& dataType,
+           std::shared_ptr<ABCTypeContainer> dataType,
            const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
@@ -194,7 +195,7 @@ class Tensor
      *
      * @return Data type of tensor of type kp::Tensor::TensorDataTypes
      */
-    const std::type_info& dataType();
+    std::shared_ptr<ABCTypeContainer> dataType();
 
     /**
      * Retrieve the raw data via the pointer to the memory that contains the raw
@@ -240,7 +241,7 @@ class Tensor
   protected:
     // -------------- ALWAYS OWNED RESOURCES
     TensorTypes mTensorType;
-    const std::type_info& mDataType;
+    std::shared_ptr<ABCTypeContainer> mDataType;
     uint32_t mSize;
     uint32_t mDataTypeMemorySize;
     void* mRawData;
@@ -334,9 +335,9 @@ class TensorT : public Tensor
         Tensor::setRawData(data.data());
     }
 
-    const std::type_info& dataType() 
+    std::shared_ptr<ABCTypeContainer> dataType() 
     { 
-        return typeid(T);
+        return std::make_shared<TypeContainer<T>>();
     }
 };
 

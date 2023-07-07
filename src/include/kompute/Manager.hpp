@@ -9,6 +9,7 @@
 
 #include "kompute/Sequence.hpp"
 #include "logger/Logger.hpp"
+#include <kompute/ABCTypeContainer.hpp>
 
 #define KP_DEFAULT_SESSION "DEFAULT"
 
@@ -107,12 +108,15 @@ class Manager
     std::shared_ptr<Tensor> tensor(
       void* data,
       uint32_t elementTotalCount,
+      uint32_t elementMemorySize = sizeof(T),
+      std::shared_ptr<ABCTypeContainer> dataType = 
+        std::make_shared<TypeContainer<T>>(),
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        return tensor(data,
-                      elementTotalCount,
-                      sizeof(T),
-                      typeid(T),
+        return this->tensor(data,
+                      elementTotalCount, 
+                      elementMemorySize,
+                      dataType,
                       tensorType);
     }
 
@@ -120,16 +124,17 @@ class Manager
       void* data,
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
-      const std::type_info& dataType,
+      std::shared_ptr<ABCTypeContainer> dataType,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
-                                                       this->mDevice,
-                                                       data,
-                                                       elementTotalCount,
-                                                       elementMemorySize,
-                                                       dataType,
-                                                       tensorType) };
+        std::shared_ptr<Tensor> tensor =
+          std::make_shared<kp::Tensor>(this->mPhysicalDevice,
+                                       this->mDevice,
+                                       data,
+                                       elementTotalCount,
+                                       elementMemorySize,
+                                       dataType,
+                                       tensorType);
 
         if (this->mManageResources) {
             this->mManagedTensors.push_back(tensor);
