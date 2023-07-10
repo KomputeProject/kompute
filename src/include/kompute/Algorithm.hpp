@@ -6,6 +6,7 @@
 #include "fmt/format.h"
 #include "kompute/Tensor.hpp"
 #include "logger/Logger.hpp"
+#include "kompute/Buffer.hpp"
 
 namespace kp {
 
@@ -42,6 +43,37 @@ class Algorithm
               const std::vector<S>& specializationConstants = {},
               const std::vector<P>& pushConstants = {})
     {
+        this->initAlgorithm(device,
+                            tensors,
+                            spirv,
+                            workgroup,
+                            Buffer::from_vector(specializationConstants),
+                            Buffer::from_vector(pushConstants));
+    }
+
+    Algorithm(std::shared_ptr<vk::Device> device,
+              const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+              const std::vector<uint32_t>& spirv = {},
+              const Workgroup& workgroup = {},
+              const Buffer& specializationConstants = { 0, 0, 0 },
+              const Buffer& pushConstants = { 0, 0, 0 })
+    {
+        this->initAlgorithm(device,
+                            tensors,
+                            spirv,
+                            workgroup,
+                            specializationConstants,
+                            pushConstants);
+    }
+
+    private:
+    void initAlgorithm(std::shared_ptr<vk::Device> device,
+              const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+              const std::vector<uint32_t>& spirv = {},
+              const Workgroup& workgroup = {},
+              const Buffer& specializationConstants = {0,0,0},
+              const Buffer& pushConstants = {0,0,0})
+    {
         KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
         this->mDevice = device;
@@ -63,6 +95,8 @@ class Algorithm
               "spirv so not rebuilding vulkan components");
         }
     }
+
+    public:
 
     /**
      *  Rebuild function to reconstruct algorithm with configuration parameters
@@ -87,6 +121,20 @@ class Algorithm
                  const std::vector<S>& specializationConstants = {},
                  const std::vector<P>& pushConstants = {})
     {
+        this->rebuild(tensors,
+                      spirv,
+                      workgroup,
+                      Buffer::from_vector(specializationConstants), 
+                      Buffer::from_vector(pushConstants));
+    }
+
+    private:
+    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
+                 const std::vector<uint32_t>& spirv,
+                 const Workgroup& workgroup = {},
+                 const Buffer& specializationConstants = {0,0,0},
+                 const Buffer& pushConstants = {0,0,0})
+    {
         KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
         this->mTensors = tensors;
@@ -96,13 +144,12 @@ class Algorithm
             if (this->mSpecializationConstantsData) {
                 free(this->mSpecializationConstantsData);
             }
-            uint32_t memorySize =
-              sizeof(decltype(specializationConstants.back()));
+            uint32_t memorySize = specializationConstants.element_size();
             uint32_t size = specializationConstants.size();
             uint32_t totalSize = size * memorySize;
             this->mSpecializationConstantsData = malloc(totalSize);
             memcpy(this->mSpecializationConstantsData,
-                   specializationConstants.data(),
+                   specializationConstants.begin(),
                    totalSize);
             this->mSpecializationConstantsDataTypeMemorySize = memorySize;
             this->mSpecializationConstantsSize = size;
@@ -112,11 +159,11 @@ class Algorithm
             if (this->mPushConstantsData) {
                 free(this->mPushConstantsData);
             }
-            uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+            uint32_t memorySize = pushConstants.element_size();
             uint32_t size = pushConstants.size();
             uint32_t totalSize = size * memorySize;
             this->mPushConstantsData = malloc(totalSize);
-            memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+            memcpy(this->mPushConstantsData, pushConstants.begin(), totalSize);
             this->mPushConstantsDataTypeMemorySize = memorySize;
             this->mPushConstantsSize = size;
         }
@@ -134,6 +181,8 @@ class Algorithm
         this->createShaderModule();
         this->createPipeline();
     }
+
+    public:
 
     /**
      * Destructor for Algorithm which is responsible for freeing and desroying

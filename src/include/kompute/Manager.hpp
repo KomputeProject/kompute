@@ -10,6 +10,7 @@
 #include "kompute/Sequence.hpp"
 #include "logger/Logger.hpp"
 #include <kompute/ABCTypeContainer.hpp>
+#include "kompute/Buffer.hpp"
 
 #define KP_DEFAULT_SESSION "DEFAULT"
 
@@ -108,23 +109,18 @@ class Manager
     std::shared_ptr<Tensor> tensor(
       void* data,
       uint32_t elementTotalCount,
-      uint32_t elementMemorySize = sizeof(T),
-      std::shared_ptr<ABCTypeContainer> dataType = 
-        std::make_shared<TypeContainer<T>>(),
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        return this->tensor(data,
-                      elementTotalCount, 
-                      elementMemorySize,
-                      dataType,
-                      tensorType);
+        this->internal_tensor(data,
+                              elementTotalCount,
+                              sizeof(T),
+                              new TypeContainer<T>(), tensorType);
     }
 
-    std::shared_ptr<Tensor> tensor(
+    std::shared_ptr<Tensor> internal_tensor(
       void* data,
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
-      std::shared_ptr<ABCTypeContainer> dataType,
       ABCTypeContainer* dataType,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
@@ -166,8 +162,11 @@ class Manager
       const std::vector<float>& specializationConstants = {},
       const std::vector<float>& pushConstants = {})
     {
-        return this->algorithm<>(
-          tensors, spirv, workgroup, specializationConstants, pushConstants);
+        return this->algorithm(tensors,
+                                 spirv,
+                                 workgroup,
+                                 Buffer::from_vector(specializationConstants),
+                                 Buffer::from_vector(pushConstants));
     }
 
     /**
@@ -192,7 +191,20 @@ class Manager
       const std::vector<S>& specializationConstants,
       const std::vector<P>& pushConstants)
     {
+        return this->algorithm(tensors,
+                               spirv,
+                               workgroup,
+                               Buffer::from_vector(specializationConstants),
+                               Buffer::from_vector(pushConstants));
+    }
 
+    std::shared_ptr<Algorithm> algorithm(
+      const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+      const std::vector<uint32_t>& spirv = {},
+      const Workgroup& workgroup = {},
+      const Buffer& specializationConstants = { 0, 0, 0 },
+      const Buffer& pushConstants = { 0, 0, 0 })
+    {
         KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
         std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(

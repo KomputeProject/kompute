@@ -5,6 +5,7 @@
 #include "kompute/Core.hpp"
 #include "kompute/Tensor.hpp"
 #include "kompute/operations/OpBase.hpp"
+#include "kompute/Buffer.hpp"
 
 namespace kp {
 
@@ -30,18 +31,35 @@ class OpAlgoDispatch : public OpBase
     {
         KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
+        this->initOpAlgoDispatch(algorithm, Buffer::from_vector(pushConstants));
+    }
+
+    OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
+                       const Buffer& pushConstants = { 0, 0, 0 })
+    {
+        this->initOpAlgoDispatch(algorithm, pushConstants);
+    }
+
+    private:
+    void initOpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
+                   const Buffer& pushConstants = { 0, 0, 0 })
+    {
+        KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
+
         this->mAlgorithm = algorithm;
 
         if (pushConstants.size()) {
-            uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+            uint32_t memorySize = pushConstants.element_size();
             uint32_t size = pushConstants.size();
             uint32_t totalSize = size * memorySize;
             this->mPushConstantsData = malloc(totalSize);
-            memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+            memcpy(this->mPushConstantsData, pushConstants.begin(), totalSize);
             this->mPushConstantsDataTypeMemorySize = memorySize;
             this->mPushConstantsSize = size;
         }
     }
+
+    public:
 
     /**
      * Default destructor, which is in charge of destroying the algorithm

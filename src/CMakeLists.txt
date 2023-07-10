@@ -18,7 +18,8 @@ add_library(kompute Algorithm.cpp
     Sequence.cpp
     Tensor.cpp
     Core.cpp 
-    TypeContainer.cpp)
+    TypeContainer.cpp
+    Buffer.cpp)
 
 add_library(kompute::kompute ALIAS kompute)
 
