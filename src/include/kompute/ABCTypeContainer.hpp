@@ -6,6 +6,11 @@ class ABCTypeContainer
 {
   public:
     // Pure Virtual Function
-    virtual bool compare(ABCTypeContainer& obj) = 0;
+    virtual bool operator==(const ABCTypeContainer& other) const = 0;
     virtual std::string name() = 0;
+
+    bool operator!=(const ABCTypeContainer& other) const
+    {
+        return !(*this == other);
+    }
 };

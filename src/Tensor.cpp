@@ -6,9 +6,9 @@
 namespace kp {
 
 std::string
-Tensor::toString(std::shared_ptr<ABCTypeContainer> dt)
+Tensor::toString(ABCTypeContainer& dt)
 {
-    return (*dt).name();
+    return dt.name();
 }
 
 std::string
@@ -31,7 +31,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                void* data,
                uint32_t elementTotalCount,
                uint32_t elementMemorySize,
-               std::shared_ptr<ABCTypeContainer> dataType,
+               ABCTypeContainer* dataType,
                const TensorTypes& tensorType)
   : mDataType(dataType)
 {
@@ -113,7 +113,7 @@ Tensor::memorySize()
     return this->mSize * this->mDataTypeMemorySize;
 }
 
-std::shared_ptr<ABCTypeContainer>
+ABCTypeContainer*
 Tensor::dataType()
 {
     return this->mDataType;
@@ -502,6 +502,7 @@ Tensor::destroy()
     this->mRawData = nullptr;
     this->mSize = 0;
     this->mDataTypeMemorySize = 0;
+    free(this->mDataType);
 
     if (!this->mDevice) {
         KP_LOG_WARN(
