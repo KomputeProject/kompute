@@ -125,6 +125,7 @@ class Manager
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
       std::shared_ptr<ABCTypeContainer> dataType,
+      ABCTypeContainer* dataType,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         std::shared_ptr<Tensor> tensor =
