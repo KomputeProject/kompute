@@ -4,29 +4,16 @@
 #include "ABCTypeContainer.hpp"
 #include <typeinfo>
 
-
-struct IdCounter
-{
-    static size_t counter;
-};
-
 template<typename T>
-class TypeContainer : public ABCTypeContainer, IdCounter
+class TypeContainer : public ABCTypeContainer
 {
-  private:
-    size_t classId()
-    {
-        static size_t id = counter++;
-        return id;
-    }
-
   public:
     TypeContainer() : dt(typeid(T)) {}
 
-    bool compare(ABCTypeContainer& other) override
+    bool operator==(const ABCTypeContainer& other) const override
     {
-        TypeContainer& obj = static_cast<TypeContainer&>(other);
-        return this->classId() == obj.classId();
+        const TypeContainer* obj = dynamic_cast<const TypeContainer*>(&other);
+        return obj && this->dt == obj->dt; //we might be able to simplfy to just checking if the cast succeeded 
     }
 
     std::string name() override { return this->dt.name(); }
