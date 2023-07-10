@@ -28,7 +28,7 @@ opAlgoDispatchPyInit(std::shared_ptr<kp::Algorithm>& algorithm,
 
     Buffer dataVec{ info.ptr,
                     static_cast<size_t>(info.size),
-                    static_cast<size_t>(push_consts.dtype().itemsize()) };
+                    static_cast<size_t>(info.itemsize) };
     return std::unique_ptr<kp::OpAlgoDispatch>{ new kp::OpAlgoDispatch(
       algorithm, dataVec) };
 }
@@ -333,12 +333,11 @@ PYBIND11_MODULE(kp, m)
 
             Buffer pushconstsvec{ pushInfo.ptr,
                                   static_cast<size_t>(pushInfo.size),
-                           static_cast<size_t>(push_consts.dtype().itemsize()) };
+                                  static_cast<size_t>(pushInfo.itemsize) };
 
             Buffer specconstsvec{ specInfo.ptr,
                             static_cast<size_t>(specInfo.size),
-                                  static_cast<size_t>(
-                                    spec_consts.dtype().itemsize()) };
+                                  static_cast<size_t>(specInfo.itemsize) };
 
             return self.algorithm(
               tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);

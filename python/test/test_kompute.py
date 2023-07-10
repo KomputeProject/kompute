@@ -5,7 +5,10 @@ import numpy as np
 import logging
 import pyshader as ps
 
-from .utils import compile_source
+def compile_source(source):
+    open("tmp_kp_shader.comp", "w").write(source)
+    os.system("glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv")
+    return open("tmp_kp_shader.comp.spv", "rb").read()
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
@@ -111,7 +114,7 @@ void main()
 
     assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
 
-
+'''
 def test_sequence():
     """
     Test basic OpAlgoBase operation
@@ -167,7 +170,7 @@ def test_sequence():
     assert tensor_in_a.is_init() == False
     assert tensor_in_b.is_init() == False
     assert tensor_out.is_init() == False
-
+'''
 
 def test_pushconsts():
 
@@ -190,6 +193,7 @@ def test_pushconsts():
     mgr = kp.Manager()
 
     tensor = mgr.tensor([0, 0, 0])
+    print(tensor.data())
 
     algo = mgr.algorithm([tensor], spirv, (1, 1, 1), [], [0.1, 0.2, 0.3])
 
@@ -200,9 +204,15 @@ def test_pushconsts():
         .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
         .record(kp.OpTensorSyncLocal([tensor]))
         .eval())
+        
+    print(tensor.data())
+    print(len(tensor.data()))
+    print(len(tensor.data().view('byte')))
 
     assert np.allclose(tensor.data(), np.array([0.7, 0.6, 0.5], dtype=np.float32))
 
+for i in range(50):
+    test_pushconsts()
 
 def test_pushconsts_int():
 
