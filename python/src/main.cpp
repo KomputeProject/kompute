@@ -6,11 +6,11 @@
 #include <string>
 
 #include <kompute/Kompute.hpp>
+#include <kompute/Buffer.hpp>
 
 #include "docstrings.hpp"
 #include "utils.hpp"
 
-typedef unsigned char byte;
 namespace py = pybind11;
 
 // used in Core.hpp
@@ -26,8 +26,9 @@ opAlgoDispatchPyInit(std::shared_ptr<kp::Algorithm>& algorithm,
                  push_consts.size(),
                  std::string(py::str(push_consts.dtype())));
 
-    std::vector<byte> dataVec((byte*)info.ptr,
-                                 ((byte*)info.ptr) + info.size);
+    Buffer dataVec{ info.ptr,
+                    static_cast<size_t>(info.size),
+                    static_cast<size_t>(push_consts.dtype().itemsize()) };
     return std::unique_ptr<kp::OpAlgoDispatch>{ new kp::OpAlgoDispatch(
       algorithm, dataVec) };
 }
@@ -35,24 +36,23 @@ opAlgoDispatchPyInit(std::shared_ptr<kp::Algorithm>& algorithm,
 class PyTypeContainer : public ABCTypeContainer
 {
   public:
-    PyTypeContainer(py::object clazz)
-      : clazz_(clazz)
-    {}
+    PyTypeContainer(py::object dtype) : dtype_(dtype) {}
 
-    bool compare(ABCTypeContainer& obj) override
+    bool operator==(const ABCTypeContainer& other) const override
     {
         // Implement comparison logic here
-        auto other = dynamic_cast<PyTypeContainer*>(&obj);
-        return other && clazz_.is(other->clazz_);
+        const PyTypeContainer* obj =
+          dynamic_cast<const PyTypeContainer*>(&other);
+        return obj && this->dtype_.is(obj->dtype_);
     }
 
     std::string name() override
     {
         // Return the name here
-        return py::str(clazz_);
+        return py::str(dtype_);
     }
 
-    py::object clazz_;
+    py::object dtype_;
 };
 
 PYBIND11_MODULE(kp, m)
@@ -137,21 +137,23 @@ PYBIND11_MODULE(kp, m)
       m, "Tensor", DOC(kp, Tensor))
       .def(
         "data",
-        [np](kp::Tensor& self) {
+        [](kp::Tensor& self) {
             // Non-owning container exposing the underlying pointer
-            auto frombuffer = np.attr("frombuffer");
+            PyTypeContainer* typeContainer =
+              dynamic_cast<PyTypeContainer*>(self.dataType());
 
-            auto dtype =
-              dynamic_cast<PyTypeContainer*>(&(*self.dataType()))->clazz_;
-
-            auto buffer =
-              py::array(self.size() * dtype.attr("itemsize").cast<size_t>(),
-                                    self.data<byte>(),
-                                    py::cast(&self));
-
+            if (typeContainer == nullptr) {
+                throw std::runtime_error(
+                "Kompute Python data type not supported");
+            }
             
+            py::object dtype = typeContainer->dtype_;
 
-            return frombuffer(buffer, dtype);
+            py::array buffer = py::array(self.size() * dtype.attr("itemsize").cast<size_t>(),
+                                         self.data<unsigned char>(),
+                                         py::cast(&self)); 
+            buffer.attr("dtype") = dtype;
+            return buffer;
         },
         DOC(kp, Tensor, data))
       .def("size", &kp::Tensor::size, DOC(kp, Tensor, size))
@@ -160,7 +162,13 @@ PYBIND11_MODULE(kp, m)
       .def(
         "data_type",
         [](kp::Tensor& self) { 
-              return dynamic_cast<PyTypeContainer*>(&(*self.dataType()))->clazz_;
+            PyTypeContainer* typeContainer =
+              dynamic_cast<PyTypeContainer*>(self.dataType());
+            if (typeContainer == nullptr) {
+                throw std::runtime_error(
+                  "Kompute Python data type not supported");
+            }
+            return typeContainer->dtype_;
         },
         DOC(kp, Tensor, dataType))
       .def("is_init", &kp::Tensor::isInit, DOC(kp, Tensor, isInit))
@@ -241,13 +249,13 @@ PYBIND11_MODULE(kp, m)
                          "float with data size {}",
                          flatdata.size());
 
-            std::shared_ptr<ABCTypeContainer> typeContainer =
-              std::make_shared<PyTypeContainer>(flatdata.dtype());
-            return self.tensor(info.ptr,
-                               flatdata.size(),
-                               flatdata.dtype().itemsize(),
-                               typeContainer,
-                               tensor_type);
+            ABCTypeContainer* typeContainer =
+              new PyTypeContainer(flatdata.dtype());
+            return self.internal_tensor(info.ptr,
+                                        flatdata.size(),
+                                        flatdata.dtype().itemsize(),
+                                        typeContainer,
+                                        tensor_type);
         },
         DOC(kp, Manager, tensor),
         py::arg("data"),
@@ -265,13 +273,13 @@ PYBIND11_MODULE(kp, m)
                          flatdata.size(),
                          std::string(py::str(flatdata.dtype())));
 
-            std::shared_ptr<ABCTypeContainer> typeContainer =
-              std::make_shared<PyTypeContainer>(flatdata.dtype());
-            return self.tensor(info.ptr,
-                   flatdata.size(),
-                   flatdata.dtype().itemsize(),
-                   typeContainer,
-                   tensor_type);
+            ABCTypeContainer* typeContainer =
+              new PyTypeContainer(flatdata.dtype());
+            return self.internal_tensor(info.ptr,
+                                        flatdata.size(),
+                                        flatdata.dtype().itemsize(),
+                                        typeContainer,
+                                        tensor_type);
         },
         DOC(kp, Manager, tensorT),
         py::arg("data"),
@@ -323,11 +331,14 @@ PYBIND11_MODULE(kp, m)
                          spec_consts.size(),
                          std::string(py::str(spec_consts.dtype())));
 
-            std::vector<byte> specconstsvec(
-              (byte*)specInfo.ptr, ((byte*)specInfo.ptr) + specInfo.size);
+            Buffer pushconstsvec{ pushInfo.ptr,
+                                  static_cast<size_t>(pushInfo.size),
+                           static_cast<size_t>(push_consts.dtype().itemsize()) };
 
-            std::vector<byte> pushconstsvec(
-              (byte*)pushInfo.ptr, ((byte*)pushInfo.ptr) + pushInfo.size);
+            Buffer specconstsvec{ specInfo.ptr,
+                            static_cast<size_t>(specInfo.size),
+                                  static_cast<size_t>(
+                                    spec_consts.dtype().itemsize()) };
 
             return self.algorithm(
               tensors, spirvVec, workgroup, specconstsvec, pushconstsvec);
