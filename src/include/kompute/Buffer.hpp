@@ -13,9 +13,9 @@ class Buffer
       , buff_end_(static_cast<char*>(data_) + length_ * element_size_)
     {}
 
-    const size_t element_size() const { return element_size_; }
+    size_t element_size() const { return element_size_; }
 
-    const size_t size() const { return length_; }
+    size_t size() const { return length_; }
 
     const void* begin() const {
         return data_;

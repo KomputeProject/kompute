@@ -111,7 +111,7 @@ class Manager
       uint32_t elementTotalCount,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        this->internal_tensor(data,
+        return this->internal_tensor(data,
                               elementTotalCount,
                               sizeof(T),
                               new TypeContainer<T>(), tensorType);
