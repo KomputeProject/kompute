@@ -108,8 +108,8 @@ class Manager
 
     std::shared_ptr<Tensor> tensor(
       void* data,
-      uint32_t elementTotalCount,
-      uint32_t elementMemorySize,
+      uint64_t elementTotalCount,
+      uint64_t elementMemorySize,
       const Tensor::TensorDataTypes& dataType,
       vk::DeviceMemory *deviceMemory,
       vk::Buffer *buffer,

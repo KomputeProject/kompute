@@ -41,8 +41,8 @@ Tensor::toString(Tensor::TensorTypes dt)
 Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                std::shared_ptr<vk::Device> device,
                void* data,
-               uint64_t elementTotalCount,
-               uint64_t elementMemorySize,
+               uint32_t elementTotalCount,
+               uint32_t elementMemorySize,
                const TensorDataTypes& dataType,
                vk::DeviceMemory *deviceMemory,
                vk::Buffer *buffer,
@@ -74,8 +74,8 @@ Tensor::~Tensor()
 
 void
 Tensor::rebuild(void* data,
-                uint64_t elementTotalCount,
-                uint64_t elementMemorySize,
+                uint32_t elementTotalCount,
+                uint32_t elementMemorySize,
                 vk::DeviceMemory *deviceMemory,
                 vk::Buffer *buffer)
 {
@@ -110,19 +110,19 @@ Tensor::isInit()
            this->mRawData;
 }
 
-uint64_t
+uint32_t
 Tensor::size()
 {
     return this->mSize;
 }
 
-uint64_t
+uint32_t
 Tensor::dataTypeMemorySize()
 {
     return this->mDataTypeMemorySize;
 }
 
-uint64_t
+uint32_t
 Tensor::memorySize()
 {
     return this->mSize * this->mDataTypeMemorySize;
