@@ -56,8 +56,8 @@ class Tensor
     Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
            std::shared_ptr<vk::Device> device,
            void* data,
-           uint64_t elementTotalCount,
-           uint64_t elementMemorySize,
+           uint32_t elementTotalCount,
+           uint32_t elementMemorySize,
            const TensorDataTypes& dataType,
            vk::DeviceMemory *deviceMemory,
            vk::Buffer *buffer,
@@ -77,8 +77,8 @@ class Tensor
      * @param tensorType The type to use for the tensor
      */
     void rebuild(void* data,
-                 uint64_t elementTotalCount,
-                 uint64_t elementMemorySize,
+                 uint32_t elementTotalCount,
+                 uint32_t elementMemorySize,
                  vk::DeviceMemory *deviceMemory,
                  vk::Buffer *buffer);
 
@@ -180,7 +180,7 @@ class Tensor
      *
      * @return Unsigned integer representing the total number of elements
      */
-    uint64_t size();
+    uint32_t size();
 
     /**
      * Returns the total size of a single element of the respective data type
@@ -189,7 +189,7 @@ class Tensor
      * @return Unsigned integer representing the memory of a single element of
      * the respective data type.
      */
-    uint64_t dataTypeMemorySize();
+    uint32_t dataTypeMemorySize();
 
     /**
      * Returns the total memory size of the data contained by the Tensor object
@@ -198,7 +198,7 @@ class Tensor
      * @return Unsigned integer representing the memory of a single element of
      * the respective data type.
      */
-    uint64_t memorySize();
+    uint32_t memorySize();
 
     /**
      * Retrieve the data type of the tensor (host, device, storage)
@@ -252,8 +252,8 @@ class Tensor
     // -------------- ALWAYS OWNED RESOURCES
     TensorTypes mTensorType;
     TensorDataTypes mDataType;
-    uint64_t mSize;
-    uint64_t mDataTypeMemorySize;
+    uint32_t mSize;
+    uint32_t mDataTypeMemorySize;
     void* mRawData;
 
   private:
