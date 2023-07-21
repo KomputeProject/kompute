@@ -81,12 +81,14 @@ class Manager
     template<typename T>
     std::shared_ptr<TensorT<T>> tensorT(
       const std::vector<T>& data,
+      vk::DeviceMemory *deviceMemory,
+      vk::Buffer *buffer,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
         std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
-          this->mPhysicalDevice, this->mDevice, data, tensorType) };
+          this->mPhysicalDevice, this->mDevice, data, deviceMemory, buffer, tensorType) };
 
         if (this->mManageResources) {
             this->mManagedTensors.push_back(tensor);
@@ -97,9 +99,11 @@ class Manager
 
     std::shared_ptr<TensorT<float>> tensor(
       const std::vector<float>& data,
+      vk::DeviceMemory *deviceMemory,
+      vk::Buffer *buffer,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
-        return this->tensorT<float>(data, tensorType);
+        return this->tensorT<float>(data, deviceMemory, buffer, tensorType);
     }
 
     std::shared_ptr<Tensor> tensor(
@@ -107,6 +111,8 @@ class Manager
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
       const Tensor::TensorDataTypes& dataType,
+      vk::DeviceMemory *deviceMemory,
+      vk::Buffer *buffer,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
@@ -115,6 +121,8 @@ class Manager
                                                        elementTotalCount,
                                                        elementMemorySize,
                                                        dataType,
+                                                       deviceMemory,
+                                                       buffer,
                                                        tensorType) };
 
         if (this->mManageResources) {
@@ -222,6 +230,9 @@ class Manager
      *object
      **/
     std::shared_ptr<vk::Instance> getVkInstance() const;
+
+    std::shared_ptr<vk::Device> device() const { return mDevice; }
+    std::shared_ptr<vk::PhysicalDevice> physicalDevice() const { return mPhysicalDevice; }
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES

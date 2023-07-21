@@ -59,6 +59,8 @@ class Tensor
            uint32_t elementTotalCount,
            uint32_t elementMemorySize,
            const TensorDataTypes& dataType,
+           vk::DeviceMemory *deviceMemory,
+           vk::Buffer *buffer,
            const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
@@ -77,6 +79,8 @@ class Tensor
     void rebuild(void* data,
                  uint32_t elementTotalCount,
                  uint32_t elementMemorySize);
+                 vk::DeviceMemory *deviceMemory,
+                 vk::Buffer *buffer);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -267,7 +271,7 @@ class Tensor
     std::shared_ptr<vk::DeviceMemory> mStagingMemory;
     bool mFreeStagingMemory = false;
 
-    void allocateMemoryCreateGPUResources(); // Creates the vulkan buffer
+    void allocateMemoryCreateGPUResources(vk::DeviceMemory *stagingMemory, vk::Buffer *stagingBuffer); // Creates the vulkan buffer
     void createBuffer(std::shared_ptr<vk::Buffer> buffer,
                       vk::BufferUsageFlags bufferUsageFlags);
     void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
@@ -303,6 +307,8 @@ class TensorT : public Tensor
     TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device,
             const std::vector<T>& data,
+            vk::DeviceMemory *deviceMemory,
+            vk::Buffer *buffer,
             const TensorTypes& tensorType = TensorTypes::eDevice)
       : Tensor(physicalDevice,
                device,
@@ -310,6 +316,8 @@ class TensorT : public Tensor
                data.size(),
                sizeof(T),
                this->dataType(),
+               deviceMemory,
+               buffer,
                tensorType)
     {
         KP_LOG_DEBUG("Kompute TensorT constructor with data size {}",

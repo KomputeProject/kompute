@@ -41,9 +41,11 @@ Tensor::toString(Tensor::TensorTypes dt)
 Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                std::shared_ptr<vk::Device> device,
                void* data,
-               uint32_t elementTotalCount,
-               uint32_t elementMemorySize,
+               uint64_t elementTotalCount,
+               uint64_t elementMemorySize,
                const TensorDataTypes& dataType,
+               vk::DeviceMemory *deviceMemory,
+               vk::Buffer *buffer,
                const TensorTypes& tensorType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
@@ -55,7 +57,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDataType = dataType;
     this->mTensorType = tensorType;
 
-    this->rebuild(data, elementTotalCount, elementMemorySize);
+    this->rebuild(data, elementTotalCount, elementMemorySize, deviceMemory, buffer);
 }
 
 Tensor::~Tensor()
@@ -72,8 +74,10 @@ Tensor::~Tensor()
 
 void
 Tensor::rebuild(void* data,
-                uint32_t elementTotalCount,
-                uint32_t elementMemorySize)
+                uint64_t elementTotalCount,
+                uint64_t elementMemorySize,
+                vk::DeviceMemory *deviceMemory,
+                vk::Buffer *buffer)
 {
     KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", elementTotalCount);
 
@@ -86,11 +90,10 @@ Tensor::rebuild(void* data,
         this->destroy();
     }
 
-    this->allocateMemoryCreateGPUResources();
+    this->allocateMemoryCreateGPUResources(deviceMemory, buffer);
 
     if (this->tensorType() != Tensor::TensorTypes::eStorage) {
-        this->mapRawData();
-        memcpy(this->mRawData, data, this->memorySize());
+        this->mRawData = data;
     }
 }
 
@@ -107,19 +110,19 @@ Tensor::isInit()
            this->mRawData;
 }
 
-uint32_t
+uint64_t
 Tensor::size()
 {
     return this->mSize;
 }
 
-uint32_t
+uint64_t
 Tensor::dataTypeMemorySize()
 {
     return this->mDataTypeMemorySize;
 }
 
-uint32_t
+uint64_t
 Tensor::memorySize()
 {
     return this->mSize * this->mDataTypeMemorySize;
@@ -393,7 +396,7 @@ Tensor::getStagingMemoryPropertyFlags()
 }
 
 void
-Tensor::allocateMemoryCreateGPUResources()
+Tensor::allocateMemoryCreateGPUResources(vk::DeviceMemory *stagingMemory, vk::Buffer *stagingBuffer)
 {
     KP_LOG_DEBUG("Kompute Tensor creating buffer");
 
@@ -419,14 +422,9 @@ Tensor::allocateMemoryCreateGPUResources()
     if (this->mTensorType == TensorTypes::eDevice) {
         KP_LOG_DEBUG("Kompute Tensor creating staging buffer and memory");
 
-        this->mStagingBuffer = std::make_shared<vk::Buffer>();
-        this->createBuffer(this->mStagingBuffer,
-                           this->getStagingBufferUsageFlags());
+        this->mStagingBuffer = std::shared_ptr<vk::Buffer>(stagingBuffer);
         this->mFreeStagingBuffer = true;
-        this->mStagingMemory = std::make_shared<vk::DeviceMemory>();
-        this->allocateBindMemory(this->mStagingBuffer,
-                                 this->mStagingMemory,
-                                 this->getStagingMemoryPropertyFlags());
+        this->mStagingMemory = std::shared_ptr<vk::DeviceMemory>(stagingMemory);
         this->mFreeStagingMemory = true;
     }
 
