@@ -403,4 +403,9 @@ Algorithm::getTensors()
     return this->mTensors;
 }
 
+void Algorithm::setTensors(const std::vector<std::shared_ptr<Tensor>>& tensors)
+{
+    this->mTensors = tensors;
+}
+
 }

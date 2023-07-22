@@ -197,8 +197,12 @@ class Algorithm
     {
         uint32_t memorySize = sizeof(decltype(pushConstants.back()));
         uint32_t size = pushConstants.size();
-
         this->setPushConstants(pushConstants.data(), size, memorySize);
+
+        this->setWorkgroup(
+          this->mWorkgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
+
+        this->createParameters();
     }
 
     /**
@@ -210,7 +214,7 @@ class Algorithm
      * @param size The number of data elements provided in the data
      * @param memorySize The memory size of each of the data elements in bytes.
      */
-    void setPushConstants(void* data, uint32_t size, uint32_t memorySize)
+    void setPushConstants(const void* data, uint32_t size, uint32_t memorySize)
     {
 
         uint32_t totalSize = memorySize * size;
@@ -272,6 +276,7 @@ class Algorithm
      * @returns The list of tensors used in the algorithm.
      */
     const std::vector<std::shared_ptr<Tensor>>& getTensors();
+    void setTensors(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     void destroy();
 
