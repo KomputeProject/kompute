@@ -278,22 +278,25 @@ Algorithm::createPipeline()
       "main",
       &specializationInfo);
 
+    static std::shared_ptr<vk::PipelineCache> globalPipelineCache = std::make_shared<vk::PipelineCache>();
+    if(!*globalPipelineCache) {
+       vk::PipelineCacheCreateInfo pipelineCacheInfo =
+         vk::PipelineCacheCreateInfo();
+      this->mDevice->createPipelineCache(
+        &pipelineCacheInfo, nullptr, globalPipelineCache.get());
+    }
+
     vk::ComputePipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
                                                shaderStage,
                                                *this->mPipelineLayout,
                                                vk::Pipeline(),
                                                0);
 
-    vk::PipelineCacheCreateInfo pipelineCacheInfo =
-      vk::PipelineCacheCreateInfo();
-    this->mPipelineCache = std::make_shared<vk::PipelineCache>();
-    this->mDevice->createPipelineCache(
-      &pipelineCacheInfo, nullptr, this->mPipelineCache.get());
-    this->mFreePipelineCache = true;
+    this->mFreePipelineCache = false;
 
 #ifdef KOMPUTE_CREATE_PIPELINE_RESULT_VALUE
     vk::ResultValue<vk::Pipeline> pipelineResult =
-      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo);
+      this->mDevice->createComputePipeline(*globalPipelineCache, pipelineInfo);
 
     if (pipelineResult.result != vk::Result::eSuccess) {
         throw std::runtime_error("Failed to create pipeline result: " +
@@ -305,7 +308,7 @@ Algorithm::createPipeline()
     this->mFreePipeline = true;
 #else
     vk::Pipeline pipeline =
-      this->mDevice->createComputePipeline(*this->mPipelineCache, pipelineInfo)
+      this->mDevice->createComputePipeline(*globalPipelineCache, pipelineInfo)
         .value;
     this->mPipeline = std::make_shared<vk::Pipeline>(pipeline);
     this->mFreePipeline = true;
