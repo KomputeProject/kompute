@@ -15,6 +15,7 @@ add_library(kompute Algorithm.cpp
     OpTensorCopy.cpp
     OpTensorSyncDevice.cpp
     OpTensorSyncLocal.cpp
+    OpBufferSyncDevice.cpp
     Sequence.cpp
     Tensor.cpp
     Core.cpp)

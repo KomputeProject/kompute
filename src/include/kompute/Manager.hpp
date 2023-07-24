@@ -81,14 +81,16 @@ class Manager
     template<typename T>
     std::shared_ptr<TensorT<T>> tensorT(
       const std::vector<T>& data,
-      vk::DeviceMemory *deviceMemory,
-      vk::Buffer *buffer,
+       vk::DeviceMemory *primaryMemory,
+       vk::Buffer *primaryBuffer,
+       vk::DeviceMemory *stagingMemory,
+       vk::Buffer *stagingBuffer,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
         std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
-          this->mPhysicalDevice, this->mDevice, data, deviceMemory, buffer, tensorType) };
+          this->mPhysicalDevice, this->mDevice, data, primaryMemory, primaryBuffer, stagingMemory, stagingBuffer, tensorType) };
 
         if (this->mManageResources) {
             this->mManagedTensors.push_back(tensor);
@@ -97,32 +99,29 @@ class Manager
         return tensor;
     }
 
-    std::shared_ptr<TensorT<float>> tensor(
-      const std::vector<float>& data,
-      vk::DeviceMemory *deviceMemory,
-      vk::Buffer *buffer,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
-    {
-        return this->tensorT<float>(data, deviceMemory, buffer, tensorType);
-    }
-
     std::shared_ptr<Tensor> tensor(
       void* data,
-      uint64_t elementTotalCount,
-      uint64_t elementMemorySize,
+      uint32_t elementTotalCount,
+      uint64_t memorySize,
       const Tensor::TensorDataTypes& dataType,
-      vk::DeviceMemory *deviceMemory,
-      vk::Buffer *buffer,
+      vk::DeviceMemory *primaryMemory,
+      vk::Buffer *primaryBuffer,
+      vk::DeviceMemory *stagingMemory,
+      vk::Buffer *stagingBuffer,
+      vk::DeviceSize offset,
       Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
     {
         std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
                                                        this->mDevice,
                                                        data,
                                                        elementTotalCount,
-                                                       elementMemorySize,
+                                                       memorySize,
                                                        dataType,
-                                                       deviceMemory,
-                                                       buffer,
+                                                       primaryMemory,
+                                                       primaryBuffer,
+                                                       stagingMemory,
+                                                       stagingBuffer,
+                                                       offset,
                                                        tensorType) };
 
         if (this->mManageResources) {

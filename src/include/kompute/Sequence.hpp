@@ -120,6 +120,17 @@ class Sequence : public std::enable_shared_from_this<Sequence>
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->eval(op);
     }
+
+    template<typename T, typename... TArgs>
+    std::shared_ptr<Sequence> eval(vk::Buffer *primaryBuffer,
+                                   vk::Buffer *stagingBuffer,
+                                   vk::DeviceSize size,
+                                   TArgs&&... params)
+    {
+        std::shared_ptr<T> op{ new T(primaryBuffer, stagingBuffer, size, std::forward<TArgs>(params)...) };
+        return this->eval(op);
+    }
+
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.

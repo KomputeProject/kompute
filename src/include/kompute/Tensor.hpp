@@ -57,10 +57,13 @@ class Tensor
            std::shared_ptr<vk::Device> device,
            void* data,
            uint32_t elementTotalCount,
-           uint32_t elementMemorySize,
+           uint32_t memorySize,
            const TensorDataTypes& dataType,
-           vk::DeviceMemory *deviceMemory,
-           vk::Buffer *buffer,
+           vk::DeviceMemory *primaryMemory,
+           vk::Buffer *primaryBuffer,
+           vk::DeviceMemory *stagingMemory,
+           vk::Buffer *stagingBuffer,
+           vk::DeviceSize offset,
            const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
@@ -78,9 +81,12 @@ class Tensor
      */
     void rebuild(void* data,
                  uint32_t elementTotalCount,
-                 uint32_t elementMemorySize,
-                 vk::DeviceMemory *deviceMemory,
-                 vk::Buffer *buffer);
+                 uint64_t memorySize,
+                 vk::DeviceMemory *primaryMemory,
+                 vk::Buffer *primaryBuffer,
+                 vk::DeviceMemory *stagingMemory,
+                 vk::Buffer *stagingBuffer,
+                 vk::DeviceSize offset);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -183,22 +189,11 @@ class Tensor
     uint32_t size();
 
     /**
-     * Returns the total size of a single element of the respective data type
-     * that this tensor holds.
-     *
-     * @return Unsigned integer representing the memory of a single element of
-     * the respective data type.
-     */
-    uint32_t dataTypeMemorySize();
-
-    /**
      * Returns the total memory size of the data contained by the Tensor object
-     * which would equate to (this->size() * this->dataTypeMemorySize())
      *
-     * @return Unsigned integer representing the memory of a single element of
-     * the respective data type.
+     * @return Unsigned integer representing the memory of the tensor in bytes.
      */
-    uint32_t memorySize();
+    uint64_t memorySize();
 
     /**
      * Retrieve the data type of the tensor (host, device, storage)
@@ -252,34 +247,28 @@ class Tensor
     // -------------- ALWAYS OWNED RESOURCES
     TensorTypes mTensorType;
     TensorDataTypes mDataType;
-    uint32_t mSize;
-    uint32_t mDataTypeMemorySize;
-    void* mRawData;
+    uint32_t mSize = 0;
+    uint64_t mMemorySize = 0;
+    vk::DeviceSize mOffset = 0;
+    void* mRawData = nullptr;
 
   private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;
     std::shared_ptr<vk::Device> mDevice;
+    vk::Buffer *mPrimaryBuffer = nullptr;
+    vk::Buffer *mStagingBuffer = nullptr;
+    vk::DeviceMemory *mPrimaryMemory = nullptr;
+    vk::DeviceMemory *mStagingMemory = nullptr;
 
-    // -------------- OPTIONALLY OWNED RESOURCES
-    std::shared_ptr<vk::Buffer> mPrimaryBuffer;
-    bool mFreePrimaryBuffer = false;
-    std::shared_ptr<vk::Buffer> mStagingBuffer;
-    bool mFreeStagingBuffer = false;
-    std::shared_ptr<vk::DeviceMemory> mPrimaryMemory;
-    bool mFreePrimaryMemory = false;
-    std::shared_ptr<vk::DeviceMemory> mStagingMemory;
-    bool mFreeStagingMemory = false;
-
-    void allocateMemoryCreateGPUResources(vk::DeviceMemory *stagingMemory, vk::Buffer *stagingBuffer); // Creates the vulkan buffer
-    void createBuffer(std::shared_ptr<vk::Buffer> buffer,
-                      vk::BufferUsageFlags bufferUsageFlags);
-    void allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
-                            std::shared_ptr<vk::DeviceMemory> memory,
-                            vk::MemoryPropertyFlags memoryPropertyFlags);
+    void setGPUResources(vk::DeviceMemory *primaryMemory,
+                         vk::Buffer *primaryBuffer,
+                         vk::DeviceMemory *stagingMemory,
+                         vk::Buffer *stagingBuffer,
+                         vk::DeviceSize offset);
     void recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
-                          std::shared_ptr<vk::Buffer> bufferFrom,
-                          std::shared_ptr<vk::Buffer> bufferTo,
+                          vk::Buffer *bufferFrom,
+                          vk::Buffer *bufferTo,
                           vk::DeviceSize bufferSize,
                           vk::BufferCopy copyRegion);
     void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
@@ -294,9 +283,6 @@ class Tensor
     vk::MemoryPropertyFlags getPrimaryMemoryPropertyFlags();
     vk::BufferUsageFlags getStagingBufferUsageFlags();
     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
-
-    void mapRawData();
-    void unmapRawData();
 };
 
 template<typename T>
@@ -304,50 +290,7 @@ class TensorT : public Tensor
 {
 
   public:
-    TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device,
-            const std::vector<T>& data,
-            vk::DeviceMemory *deviceMemory,
-            vk::Buffer *buffer,
-            const TensorTypes& tensorType = TensorTypes::eDevice)
-      : Tensor(physicalDevice,
-               device,
-               (void*)data.data(),
-               data.size(),
-               sizeof(T),
-               this->dataType(),
-               deviceMemory,
-               buffer,
-               tensorType)
-    {
-        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}",
-                     data.size());
-    }
-
     ~TensorT() { KP_LOG_DEBUG("Kompute TensorT destructor"); }
-
-    T* data() { return (T*)this->mRawData; }
-
-    std::vector<T> vector()
-    {
-        return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
-    }
-
-    T& operator[](int index) { return *(((T*)this->mRawData) + index); }
-
-    void setData(const std::vector<T>& data)
-    {
-
-        KP_LOG_DEBUG("Kompute TensorT setting data with data size {}",
-                     data.size());
-
-        if (data.size() != this->mSize) {
-            throw std::runtime_error(
-              "Kompute TensorT Cannot set data of different sizes");
-        }
-
-        Tensor::setRawData(data.data());
-    }
 
     TensorDataTypes dataType();
 };

@@ -85,19 +85,22 @@ Algorithm::destroy()
         this->mShaderModule = nullptr;
     }
 
-    // We don't call freeDescriptorSet as the descriptor pool is not created
-    // with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
-    // (https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-vkFreeDescriptorSets-descriptorPool-00312))
-    // if (this->mFreeDescriptorSet && this->mDescriptorSet) {
-    //    KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
-    //    if (!this->mDescriptorSet) {
-    //        KP_LOG_WARN(
-    //          "Kompute Algorithm Error requested to free descriptor set");
-    //    }
-    //    this->mDevice->freeDescriptorSets(
-    //      *this->mDescriptorPool, 1, this->mDescriptorSet.get());
-    //    this->mDescriptorSet = nullptr;
-    //}
+    freeParameters();
+}
+
+void
+Algorithm::freeParameters()
+{
+     if (this->mFreeDescriptorSet && this->mDescriptorSet) {
+        KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
+        if (!this->mDescriptorSet) {
+            KP_LOG_WARN(
+              "Kompute Algorithm Error requested to free descriptor set");
+        }
+        this->mDevice->freeDescriptorSets(
+          *this->mDescriptorPool, 1, this->mDescriptorSet.get());
+        this->mDescriptorSet = nullptr;
+    }
 
     if (this->mFreeDescriptorSetLayout && this->mDescriptorSetLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
@@ -137,7 +140,7 @@ Algorithm::createParameters()
     };
 
     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
-      vk::DescriptorPoolCreateFlags(),
+      vk::DescriptorPoolCreateFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT),
       1, // Max sets
       static_cast<uint32_t>(descriptorPoolSizes.size()),
       descriptorPoolSizes.data());

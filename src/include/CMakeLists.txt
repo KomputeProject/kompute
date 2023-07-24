@@ -23,6 +23,7 @@ target_sources(kompute PRIVATE
     kompute/operations/OpTensorCopy.hpp
     kompute/operations/OpTensorSyncDevice.hpp
     kompute/operations/OpTensorSyncLocal.hpp
+    kompute/operations/OpBufferSyncDevice.hpp
 
     kompute/logger/Logger.hpp
 )

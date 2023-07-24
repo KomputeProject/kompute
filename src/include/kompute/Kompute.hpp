@@ -13,6 +13,7 @@
 #include "operations/OpTensorCopy.hpp"
 #include "operations/OpTensorSyncDevice.hpp"
 #include "operations/OpTensorSyncLocal.hpp"
+#include "operations/OpBufferSyncDevice.hpp"
 
 // Will be build by CMake and placed inside the build directory
 #include "ShaderLogisticRegression.hpp"

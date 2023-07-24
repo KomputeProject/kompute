@@ -44,8 +44,11 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                uint32_t elementTotalCount,
                uint32_t elementMemorySize,
                const TensorDataTypes& dataType,
-               vk::DeviceMemory *deviceMemory,
-               vk::Buffer *buffer,
+               vk::DeviceMemory *primaryMemory,
+               vk::Buffer *primaryBuffer,
+               vk::DeviceMemory *stagingMemory,
+               vk::Buffer *stagingBuffer,
+               vk::DeviceSize offset,
                const TensorTypes& tensorType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
@@ -57,7 +60,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDataType = dataType;
     this->mTensorType = tensorType;
 
-    this->rebuild(data, elementTotalCount, elementMemorySize, deviceMemory, buffer);
+    this->rebuild(data, elementTotalCount, elementMemorySize, primaryMemory, primaryBuffer, stagingMemory, stagingBuffer, offset);
 }
 
 Tensor::~Tensor()
@@ -73,16 +76,20 @@ Tensor::~Tensor()
 }
 
 void
-Tensor::rebuild(void* data,
+Tensor::rebuild(void* /*data*/,
                 uint32_t elementTotalCount,
-                uint32_t elementMemorySize,
-                vk::DeviceMemory *deviceMemory,
-                vk::Buffer *buffer)
+                uint64_t memorySize,
+                vk::DeviceMemory *primaryMemory,
+                vk::Buffer *primaryBuffer,
+                vk::DeviceMemory *stagingMemory,
+                vk::Buffer *stagingBuffer,
+                vk::DeviceSize offset)
 {
     KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", elementTotalCount);
 
     this->mSize = elementTotalCount;
-    this->mDataTypeMemorySize = elementMemorySize;
+    this->mMemorySize = memorySize;
+    this->mOffset = offset;
 
     if (this->mPrimaryBuffer || this->mPrimaryMemory) {
         KP_LOG_DEBUG(
@@ -90,11 +97,7 @@ Tensor::rebuild(void* data,
         this->destroy();
     }
 
-    this->allocateMemoryCreateGPUResources(deviceMemory, buffer);
-
-    if (this->tensorType() != Tensor::TensorTypes::eStorage) {
-        this->mRawData = data;
-    }
+    this->setGPUResources(primaryMemory, primaryBuffer, stagingMemory, stagingBuffer, offset);
 }
 
 Tensor::TensorTypes
@@ -116,16 +119,10 @@ Tensor::size()
     return this->mSize;
 }
 
-uint32_t
-Tensor::dataTypeMemorySize()
-{
-    return this->mDataTypeMemorySize;
-}
-
-uint32_t
+uint64_t
 Tensor::memorySize()
 {
-    return this->mSize * this->mDataTypeMemorySize;
+    return this->mMemorySize;
 }
 
 kp::Tensor::TensorDataTypes
@@ -147,63 +144,12 @@ Tensor::setRawData(const void* data)
 }
 
 void
-Tensor::mapRawData()
-{
-
-    KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
-
-    std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-    if (this->mTensorType == TensorTypes::eHost) {
-        hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
-        hostVisibleMemory = this->mStagingMemory;
-    } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
-        return;
-    }
-
-    vk::DeviceSize bufferSize = this->memorySize();
-
-    // Given we request coherent host memory we don't need to invalidate /
-    // flush
-    this->mRawData = this->mDevice->mapMemory(
-      *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-
-}
-
-void
-Tensor::unmapRawData()
-{
-
-    KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
-
-    std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
-
-    if (this->mTensorType == TensorTypes::eHost) {
-        hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
-        hostVisibleMemory = this->mStagingMemory;
-    } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
-        return;
-    }
-
-    vk::DeviceSize bufferSize = this->memorySize();
-    vk::MappedMemoryRange mappedRange(*hostVisibleMemory, 0, bufferSize);
-    this->mDevice->flushMappedMemoryRanges(1, &mappedRange);
-    this->mDevice->unmapMemory(*hostVisibleMemory);
-}
-
-void
 Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                        std::shared_ptr<Tensor> copyFromTensor)
 {
 
     vk::DeviceSize bufferSize(this->memorySize());
-    vk::BufferCopy copyRegion(0, 0, bufferSize);
+    vk::BufferCopy copyRegion(mOffset, mOffset, bufferSize);
 
     KP_LOG_DEBUG("Kompute Tensor recordCopyFrom data size {}.", bufferSize);
 
@@ -218,7 +164,7 @@ void
 Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
 {
     vk::DeviceSize bufferSize(this->memorySize());
-    vk::BufferCopy copyRegion(0, 0, bufferSize);
+    vk::BufferCopy copyRegion(mOffset, mOffset, bufferSize);
 
     KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
@@ -233,7 +179,7 @@ void
 Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
 {
     vk::DeviceSize bufferSize(this->memorySize());
-    vk::BufferCopy copyRegion(0, 0, bufferSize);
+    vk::BufferCopy copyRegion(mOffset, mOffset, bufferSize);
 
     KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
 
@@ -246,8 +192,8 @@ Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
 
 void
 Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
-                         std::shared_ptr<vk::Buffer> bufferFrom,
-                         std::shared_ptr<vk::Buffer> bufferTo,
+                         vk::Buffer *bufferFrom,
+                         vk::Buffer *bufferTo,
                          vk::DeviceSize /*bufferSize*/,
                          vk::BufferCopy copyRegion)
 {
@@ -324,7 +270,7 @@ Tensor::constructDescriptorBufferInfo()
                  this->memorySize());
     vk::DeviceSize bufferSize = this->memorySize();
     return vk::DescriptorBufferInfo(*this->mPrimaryBuffer,
-                                    0, // offset
+                                    mOffset, // offset
                                     bufferSize);
 }
 
@@ -396,7 +342,11 @@ Tensor::getStagingMemoryPropertyFlags()
 }
 
 void
-Tensor::allocateMemoryCreateGPUResources(vk::DeviceMemory *stagingMemory, vk::Buffer *stagingBuffer)
+Tensor::setGPUResources(vk::DeviceMemory *primaryMemory,
+                        vk::Buffer *primaryBuffer,
+                        vk::DeviceMemory *stagingMemory,
+                        vk::Buffer *stagingBuffer,
+                        vk::DeviceSize /*offset*/)
 {
     KP_LOG_DEBUG("Kompute Tensor creating buffer");
 
@@ -409,97 +359,17 @@ Tensor::allocateMemoryCreateGPUResources(vk::DeviceMemory *stagingMemory, vk::Bu
 
     KP_LOG_DEBUG("Kompute Tensor creating primary buffer and memory");
 
-    this->mPrimaryBuffer = std::make_shared<vk::Buffer>();
-    this->createBuffer(this->mPrimaryBuffer,
-                       this->getPrimaryBufferUsageFlags());
-    this->mFreePrimaryBuffer = true;
-    this->mPrimaryMemory = std::make_shared<vk::DeviceMemory>();
-    this->allocateBindMemory(this->mPrimaryBuffer,
-                             this->mPrimaryMemory,
-                             this->getPrimaryMemoryPropertyFlags());
-    this->mFreePrimaryMemory = true;
+    this->mPrimaryBuffer = primaryBuffer;
+    this->mPrimaryMemory = primaryMemory;
 
     if (this->mTensorType == TensorTypes::eDevice) {
         KP_LOG_DEBUG("Kompute Tensor creating staging buffer and memory");
 
-        this->mStagingBuffer = std::shared_ptr<vk::Buffer>(stagingBuffer);
-        this->mFreeStagingBuffer = true;
-        this->mStagingMemory = std::shared_ptr<vk::DeviceMemory>(stagingMemory);
-        this->mFreeStagingMemory = true;
+        this->mStagingBuffer = stagingBuffer;
+        this->mStagingMemory = stagingMemory;
     }
 
     KP_LOG_DEBUG("Kompute Tensor buffer & memory creation successful");
-}
-
-void
-Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer,
-                     vk::BufferUsageFlags bufferUsageFlags)
-{
-
-    vk::DeviceSize bufferSize = this->memorySize();
-
-    if (bufferSize < 1) {
-        throw std::runtime_error(
-          "Kompute Tensor attempted to create a zero-sized buffer");
-    }
-
-    KP_LOG_DEBUG("Kompute Tensor creating buffer with memory size: {}, and "
-                 "usage flags: {}",
-                 bufferSize,
-                 vk::to_string(bufferUsageFlags));
-
-    // TODO: Explore having concurrent sharing mode (with option)
-    vk::BufferCreateInfo bufferInfo(vk::BufferCreateFlags(),
-                                    bufferSize,
-                                    bufferUsageFlags,
-                                    vk::SharingMode::eExclusive);
-
-    this->mDevice->createBuffer(&bufferInfo, nullptr, buffer.get());
-}
-
-void
-Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
-                           std::shared_ptr<vk::DeviceMemory> memory,
-                           vk::MemoryPropertyFlags memoryPropertyFlags)
-{
-
-    KP_LOG_DEBUG("Kompute Tensor allocating and binding memory");
-
-    vk::PhysicalDeviceMemoryProperties memoryProperties =
-      this->mPhysicalDevice->getMemoryProperties();
-
-    vk::MemoryRequirements memoryRequirements =
-      this->mDevice->getBufferMemoryRequirements(*buffer);
-
-    uint32_t memoryTypeIndex = -1;
-    bool memoryTypeIndexFound = false;
-    for (uint32_t i = 0; i < memoryProperties.memoryTypeCount; i++) {
-        if (memoryRequirements.memoryTypeBits & (1 << i)) {
-            if (((memoryProperties.memoryTypes[i]).propertyFlags &
-                 memoryPropertyFlags) == memoryPropertyFlags) {
-                memoryTypeIndex = i;
-                memoryTypeIndexFound = true;
-                break;
-            }
-        }
-    }
-    if (!memoryTypeIndexFound) {
-        throw std::runtime_error(
-          "Memory type index for buffer creation not found");
-    }
-
-    KP_LOG_DEBUG(
-      "Kompute Tensor allocating memory index: {}, size {}, flags: {}",
-      memoryTypeIndex,
-      memoryRequirements.size,
-      vk::to_string(memoryPropertyFlags));
-
-    vk::MemoryAllocateInfo memoryAllocateInfo(memoryRequirements.size,
-                                              memoryTypeIndex);
-
-    this->mDevice->allocateMemory(&memoryAllocateInfo, nullptr, memory.get());
-
-    this->mDevice->bindBufferMemory(*buffer, *memory, 0);
 }
 
 void
@@ -511,7 +381,7 @@ Tensor::destroy()
     // invalidate Tensor
     this->mRawData = nullptr;
     this->mSize = 0;
-    this->mDataTypeMemorySize = 0;
+    this->mMemorySize = 0;
 
     if (!this->mDevice) {
         KP_LOG_WARN(
@@ -519,6 +389,7 @@ Tensor::destroy()
         return;
     }
 
+#if 0 // FIXME: This all moves outside of Kompute
     // Unmap the current memory data
     if (this->tensorType() != Tensor::TensorTypes::eStorage) {
         this->unmapRawData();
@@ -579,6 +450,7 @@ Tensor::destroy()
             this->mFreeStagingMemory = false;
         }
     }
+#endif
 
     if (this->mDevice) {
         this->mDevice = nullptr;

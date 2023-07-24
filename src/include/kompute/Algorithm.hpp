@@ -202,7 +202,25 @@ class Algorithm
         this->setWorkgroup(
           this->mWorkgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
 
-        this->createParameters();
+        this->createParameters(); // TODO: See if we can reduce this
+//        for (size_t i = 0; i < this->mTensors.size(); i++) {
+//            std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
+
+//            vk::DescriptorBufferInfo descriptorBufferInfo =
+//              this->mTensors[i]->constructDescriptorBufferInfo();
+
+//            computeWriteDescriptorSets.push_back(
+//              vk::WriteDescriptorSet(*this->mDescriptorSet,
+//                                     i, // Destination binding
+//                                     0, // Destination array element
+//                                     1, // Descriptor count
+//                                     vk::DescriptorType::eStorageBuffer,
+//                                     nullptr, // Descriptor image info
+//                                     &descriptorBufferInfo));
+
+//            this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
+//                                                nullptr);
+//        }
     }
 
     /**
@@ -316,6 +334,7 @@ class Algorithm
     void createPipeline();
 
     // Parameters
+    void freeParameters();
     void createParameters();
 };
 
