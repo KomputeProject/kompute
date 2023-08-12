@@ -84,6 +84,7 @@ void
 Sequence::clear()
 {
     KP_LOG_DEBUG("Kompute Sequence calling clear");
+    this->mOperations.clear();
     if (this->isRecording()) {
         this->end();
     }
