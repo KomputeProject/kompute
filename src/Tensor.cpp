@@ -202,7 +202,20 @@ Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
 
-    KP_LOG_DEBUG("Kompute Tensor recordCopyFrom data size {}.", bufferSize);
+    this->recordCopyFrom(commandBuffer,
+                           copyFromTensor,
+                           copyRegion);
+}
+
+void
+Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
+                       std::shared_ptr<Tensor> copyFromTensor,
+                       const vk::BufferCopy copyRegion)
+{
+
+    vk::DeviceSize bufferSize(this->memorySize());
+
+    KP_LOG_DEBUG("Kompute Tensor recordCopyFrom data size {}.", copyRegion.size);
 
     this->recordCopyBuffer(commandBuffer,
                            copyFromTensor->mPrimaryBuffer,
@@ -217,7 +230,15 @@ Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
 
-    KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
+    this->recordCopyFromStagingToDevice(commandBuffer, copyRegion);
+}
+
+void
+Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer, const vk::BufferCopy copyRegion)
+{
+    vk::DeviceSize bufferSize(this->memorySize());
+
+    KP_LOG_DEBUG("Kompute Tensor copying data size {}.", copyRegion.size);
 
     this->recordCopyBuffer(commandBuffer,
                            this->mStagingBuffer,
@@ -232,7 +253,17 @@ Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
 
-    KP_LOG_DEBUG("Kompute Tensor copying data size {}.", bufferSize);
+    this->recordCopyFromDeviceToStaging(commandBuffer,
+                                        copyRegion);
+}
+
+void
+Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer,
+                                      const vk::BufferCopy copyRegion)
+{
+    vk::DeviceSize bufferSize(this->memorySize());
+
+    KP_LOG_DEBUG("Kompute Tensor copying data size {}.", copyRegion.size);
 
     this->recordCopyBuffer(commandBuffer,
                            this->mPrimaryBuffer,
