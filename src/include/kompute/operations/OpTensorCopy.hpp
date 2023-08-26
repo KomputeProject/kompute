@@ -18,6 +18,8 @@ namespace kp {
 class OpTensorCopy : public OpBase
 {
   public:
+    using ConstructorParameterType = std::vector<std::shared_ptr<Tensor>>;
+    
     /**
      * Default constructor with parameters that provides the core vulkan
      * resources and the tensors that will be used in the operation.
