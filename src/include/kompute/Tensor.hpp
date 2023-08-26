@@ -378,4 +378,11 @@ class TensorT : public Tensor
     TensorDataTypes dataType();
 };
 
+struct TensorRegion {
+  std::shared_ptr<Tensor> tensor;
+  uint32_t srcIndex;
+  uint32_t dstIndex;
+  uint32_t elemCount;
+};
+
 } // End namespace kp
