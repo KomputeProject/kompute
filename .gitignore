@@ -173,6 +173,9 @@ compile_commands.json
 .clangd/
 .cache/
 
+# CLion/IDEA files
+.idea/
+
 # Project files
 bin/
 external/boost/
