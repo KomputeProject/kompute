@@ -43,6 +43,14 @@ configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/komputeConfig.cmake.in
     "${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
+# Generated komputeConfigVersion.cmake that is required in the following install command
+# This will fix issue #324
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake"
+    VERSION ${CMAKE_PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion # Other possible values: SameMajorVersion, SameMinorVersion, ExactVersion
+)
+
 install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
     ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
