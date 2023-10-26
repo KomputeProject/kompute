@@ -41,4 +41,7 @@ target_sources(kp_logger PRIVATE
     kompute/logger/Logger.hpp
 )
 
-install(DIRECTORY logger DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# This installation requires non-existing dir logger,
+# but previous installation at line 30 has already installed kompute/logger
+# This will cause an error during installation
+# install(DIRECTORY logger DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
