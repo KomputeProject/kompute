@@ -21,6 +21,11 @@ add_library(kp_shader INTERFACE "${CMAKE_CURRENT_BINARY_DIR}/ShaderOpMult.hpp"
 
 target_include_directories(kp_shader INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
 
+# Nothing will be installed, this will only export kp_shader to komputeTargets
+add_library(kompute::shader ALIAS kp_shader)
+install(TARGETS kp_shader
+    EXPORT komputeTargets)
+
 # Make sure we install shaders:
 install(FILES $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>/ShaderOpMult.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>/ShaderLogisticRegression.hpp DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

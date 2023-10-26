@@ -67,3 +67,9 @@ if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
         target_link_libraries(kp_logger PUBLIC fmt::fmt)
     endif()
 endif()
+
+
+# Nothing will be installed, this will only export kp_logger to komputeTargets
+add_library(kompute::logger ALIAS kp_logger)
+install(TARGETS kp_logger
+    EXPORT komputeTargets)

@@ -285,3 +285,10 @@ endif()
 if(KOMPUTE_OPT_BUILD_PYTHON)
     add_subdirectory(python)
 endif()
+
+# Many other targets may be exported to komputeTargets in subdirs, so install the export in the last
+# Generates komputeTargets.cmake, which is required by komputeConfig.cmake in a find_package call.
+install(EXPORT komputeTargets
+    FILE komputeTargets.cmake
+    NAMESPACE kompute::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
