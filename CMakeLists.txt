@@ -244,7 +244,8 @@ if(KOMPUTE_OPT_INSTALL)
     set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
 endif()
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if(MSVC)
+    # MSVC is true when the compiler is msvc(cl) or clang-cl, both receive msvc-like commandline flags
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror")
 endif()
