@@ -48,7 +48,7 @@ configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/komputeConfig.cmake.in
 write_basic_package_version_file(
     "${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake"
     VERSION ${CMAKE_PROJECT_VERSION}
-    COMPATIBILITY AnyNewerVersion # Other possible values: SameMajorVersion, SameMinorVersion, ExactVersion
+    COMPATIBILITY SameMajorVersion# All possible values: SameMajorVersion, SameMinorVersion, ExactVersion, AnyNewerVersion
 )
 
 install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
