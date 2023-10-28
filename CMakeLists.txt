@@ -22,6 +22,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(KOMPUTE_LIBRARIES kompute CACHE INTERNAL "")
 
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(kompute_opt_install_default_val ON)
+else ()
+    set(kompute_opt_install_default_val OFF)
+endif ()
+
 # ####################################################
 # Options
 # ####################################################
@@ -84,7 +90,7 @@ message(STATUS "=======================================================")
 kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests." OFF)
 kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage." OFF)
 kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation." OFF)
-kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." OFF)
+kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." ${kompute_opt_install_default_val})
 
 # Build options
 kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings." OFF)
@@ -286,12 +292,14 @@ if(KOMPUTE_OPT_BUILD_PYTHON)
     add_subdirectory(python)
 endif()
 
-# Many other targets may be exported to komputeTargets in subdirs, so install the export in the last
-# Generates komputeTargets.cmake, which is required by komputeConfig.cmake in a find_package call.
-install(EXPORT komputeTargets
-    FILE komputeTargets.cmake
-    NAMESPACE kompute::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+if(KOMPUTE_OPT_INSTALL)
+    # Many other targets may be exported to komputeTargets in subdirs, so install the export in the last
+    # Generates komputeTargets.cmake, which is required by komputeConfig.cmake in a find_package call.
+    install(EXPORT komputeTargets
+        FILE komputeTargets.cmake
+        NAMESPACE kompute::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+endif()
 
 
 include(cmake/set_package_info.cmake)

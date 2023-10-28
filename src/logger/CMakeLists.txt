@@ -71,5 +71,7 @@ endif()
 
 # Nothing will be installed, this will only export kp_logger to komputeTargets
 add_library(kompute::logger ALIAS kp_logger)
-install(TARGETS kp_logger
-    EXPORT komputeTargets)
+if(KOMPUTE_OPT_INSTALL)
+    install(TARGETS kp_logger
+        EXPORT komputeTargets)
+endif()
