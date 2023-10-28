@@ -98,6 +98,7 @@ if(KOMPUTE_OPT_INSTALL)
         install(TARGETS ${fmt_aliased_target}
             EXPORT komputeTargets)
     endif ()
+
     if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
         # We can't export Vulkan::Headers because it's alias target, so we unwrap the alias and install it.
         get_target_property(vk_header_target Vulkan::Headers ALIASED_TARGET)
@@ -114,6 +115,13 @@ if(KOMPUTE_OPT_INSTALL)
             INTERFACE_INCLUDE_DIRECTORIES "$<INSTALL_INTERFACE:include>;$<BUILD_INTERFACE:${vk_header_include_dir}>")
         #message(STATUS "vk_header_include_dir = ${vk_header_include_di r}")
         install(TARGETS ${vk_header_target}
+            EXPORT komputeTargets)
+    endif ()
+
+    if(KOMPUTE_OPT_BUILD_PYTHON)
+        # We can't export pybind11::headers because it's alias target, so we unwrap the alias and install it.
+        get_target_property(pybind11_aliased_target pybind11::headers ALIASED_TARGET)
+        install(TARGETS ${pybind11_aliased_target}
             EXPORT komputeTargets)
     endif ()
 endif()
