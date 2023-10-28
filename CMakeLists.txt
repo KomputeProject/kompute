@@ -292,3 +292,6 @@ install(EXPORT komputeTargets
     FILE komputeTargets.cmake
     NAMESPACE kompute::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+
+
+include(cmake/set_package_info.cmake)
