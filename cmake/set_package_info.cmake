@@ -14,6 +14,14 @@ set(CPACK_PACKAGE_DESCRIPTION "General purpose GPU compute framework built on Vu
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "GPGPU framework built on Vulkan.")
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://kompute.cc/")
 
+# The license file used by GUI installers
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+# The readme file used by GUI installers
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}\\\\${PROJECT_VERSION}")
+# set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/docs/images/kompute.jpg")
+
 # Other common variables, in most cases they are not used,
 # otherwise their default values are ok.
 # Also see https://cmake.org/cmake/help/v3.20/module/CPack.html
