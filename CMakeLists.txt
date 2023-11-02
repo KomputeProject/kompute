@@ -22,6 +22,12 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 set(KOMPUTE_LIBRARIES kompute CACHE INTERNAL "")
 
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(kompute_opt_install_default_val ON)
+else ()
+    set(kompute_opt_install_default_val OFF)
+endif ()
+
 # ####################################################
 # Options
 # ####################################################
@@ -84,7 +90,7 @@ message(STATUS "=======================================================")
 kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests." OFF)
 kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage." OFF)
 kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation." OFF)
-kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." OFF)
+kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." ${kompute_opt_install_default_val})
 
 # Build options
 kompute_option(KOMPUTE_OPT_BUILD_PYTHON "Enable if you want to build python bindings." OFF)
@@ -177,7 +183,7 @@ endif()
 if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
     set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 8.1.1) # Source: https://github.com/fmtlib/fmt/releases
+        GIT_TAG 10.1.1) # Source: https://github.com/fmtlib/fmt/releases
     FetchContent_MakeAvailable(fmt)
 else()
     find_package(fmt REQUIRED)
@@ -244,7 +250,8 @@ if(KOMPUTE_OPT_INSTALL)
     set(ENABLE_GLSLANG_INSTALL ON CACHE BOOL "Enables install of glslang" FORCE)
 endif()
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+if(MSVC)
+    # MSVC is true when the compiler is msvc(cl) or clang-cl, both receive msvc-like commandline flags
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror")
 endif()
@@ -284,3 +291,15 @@ endif()
 if(KOMPUTE_OPT_BUILD_PYTHON)
     add_subdirectory(python)
 endif()
+
+if(KOMPUTE_OPT_INSTALL)
+    # Many other targets may be exported to komputeTargets in subdirs, so install the export in the last
+    # Generates komputeTargets.cmake, which is required by komputeConfig.cmake in a find_package call.
+    install(EXPORT komputeTargets
+        FILE komputeTargets.cmake
+        NAMESPACE kompute::
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+endif()
+
+
+include(cmake/set_package_info.cmake)

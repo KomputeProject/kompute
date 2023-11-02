@@ -27,7 +27,9 @@ target_sources(kompute PRIVATE
     kompute/logger/Logger.hpp
 )
 
-install(DIRECTORY kompute DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+if(KOMPUTE_OPT_INSTALL)
+    install(DIRECTORY kompute DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
 
 # ####################################################
 # Logger
