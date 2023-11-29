@@ -261,7 +261,7 @@ Manager::createInstance()
           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
         debugCreateInfo.flags = debugFlags;
 
-        this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
+        this->mDebugDispatcher.init(*this->mInstance, vkGetInstanceProcAddr);
         this->mDebugReportCallback =
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
