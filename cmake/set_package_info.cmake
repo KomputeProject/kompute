@@ -15,12 +15,12 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "GPGPU framework built on Vulkan.")
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://kompute.cc/")
 
 # The license file used by GUI installers
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 # The readme file used by GUI installers
-set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.md")
 
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}\\\\${PROJECT_VERSION}")
-# set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/docs/images/kompute.jpg")
+# set(CPACK_PACKAGE_ICON "${PROJECT_SOURCE_DIR}/docs/images/kompute.jpg")
 
 # Other common variables, in most cases they are not used,
 # otherwise their default values are ok.
@@ -53,7 +53,7 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "${PROJECT_NAME}\\\\${PROJECT_VERSION}")
 
 # Setup detailed package info for any cpack generator.
 # Each file correspond to a cpack generator
-file(GLOB config_files "${CMAKE_SOURCE_DIR}/cmake/cpack-configs/*.cmake")
+file(GLOB config_files "${PROJECT_SOURCE_DIR}/cmake/cpack-configs/*.cmake")
 foreach (config_file ${config_files})
     include(${config_file})
 endforeach ()

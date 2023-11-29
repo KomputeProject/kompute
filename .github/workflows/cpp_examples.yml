@@ -27,7 +27,7 @@ jobs:
         build-type: Debug
         run-test: false
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON KOMPUTE_OPT_FROM_SOURCE=ON
+        configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON -DKOMPUTE_OPT_FROM_SOURCE=ON
         build-options: --parallel # Given we don't build too many resources we can leverage parallel
     - name: Run tests
       run: ./examples/array_multiplication/build/src/kompute_array_mult
@@ -52,7 +52,7 @@ jobs:
         build-type: Debug
         run-test: false
         ctest-options: -V
-        configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON KOMPUTE_OPT_FROM_SOURCE=ON
+        configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON -DKOMPUTE_OPT_FROM_SOURCE=ON
         build-options: --parallel # Given we don't build too many resources we can leverage parallel
     - name: Run tests
       run: ./examples/logistic_regression/build/src/kompute_logistic_regression
