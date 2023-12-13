@@ -163,6 +163,9 @@ Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
 void
 Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
 {
+    if (!this->mStagingBuffer)
+        return;
+
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(mOffset, mOffset, bufferSize);
 
@@ -178,6 +181,9 @@ Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
 void
 Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
 {
+    if (!this->mStagingBuffer)
+        return;
+
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(mOffset, mOffset, bufferSize);
 
@@ -199,6 +205,13 @@ Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
 {
 
     commandBuffer.copyBuffer(*bufferFrom, *bufferTo, copyRegion);
+}
+
+void
+Tensor::recordFill(const vk::CommandBuffer &commandBuffer,
+                   uint32_t fill)
+{
+    commandBuffer.fillBuffer(*this->mPrimaryBuffer, mOffset, this->memorySize(), fill);
 }
 
 void
@@ -225,6 +238,9 @@ Tensor::recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
                                          vk::PipelineStageFlagBits srcStageMask,
                                          vk::PipelineStageFlagBits dstStageMask)
 {
+    if (!this->mStagingBuffer)
+        return;
+
     KP_LOG_DEBUG("Kompute Tensor recording STAGING buffer memory barrier");
 
     this->recordBufferMemoryBarrier(commandBuffer,
@@ -388,69 +404,6 @@ Tensor::destroy()
           "Kompute Tensor destructor reached with null Device pointer");
         return;
     }
-
-#if 0 // FIXME: This all moves outside of Kompute
-    // Unmap the current memory data
-    if (this->tensorType() != Tensor::TensorTypes::eStorage) {
-        this->unmapRawData();
-    }
-
-    if (this->mFreePrimaryBuffer) {
-        if (!this->mPrimaryBuffer) {
-            KP_LOG_WARN("Kompose Tensor expected to destroy primary buffer "
-                        "but got null buffer");
-        } else {
-            KP_LOG_DEBUG("Kompose Tensor destroying primary buffer");
-            this->mDevice->destroy(
-              *this->mPrimaryBuffer,
-              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-            this->mPrimaryBuffer = nullptr;
-            this->mFreePrimaryBuffer = false;
-        }
-    }
-
-    if (this->mFreeStagingBuffer) {
-        if (!this->mStagingBuffer) {
-            KP_LOG_WARN("Kompose Tensor expected to destroy staging buffer "
-                        "but got null buffer");
-        } else {
-            KP_LOG_DEBUG("Kompose Tensor destroying staging buffer");
-            this->mDevice->destroy(
-              *this->mStagingBuffer,
-              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-            this->mStagingBuffer = nullptr;
-            this->mFreeStagingBuffer = false;
-        }
-    }
-
-    if (this->mFreePrimaryMemory) {
-        if (!this->mPrimaryMemory) {
-            KP_LOG_WARN("Kompose Tensor expected to free primary memory but "
-                        "got null memory");
-        } else {
-            KP_LOG_DEBUG("Kompose Tensor freeing primary memory");
-            this->mDevice->freeMemory(
-              *this->mPrimaryMemory,
-              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-            this->mPrimaryMemory = nullptr;
-            this->mFreePrimaryMemory = false;
-        }
-    }
-
-    if (this->mFreeStagingMemory) {
-        if (!this->mStagingMemory) {
-            KP_LOG_WARN("Kompose Tensor expected to free staging memory but "
-                        "got null memory");
-        } else {
-            KP_LOG_DEBUG("Kompose Tensor freeing staging memory");
-            this->mDevice->freeMemory(
-              *this->mStagingMemory,
-              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-            this->mStagingMemory = nullptr;
-            this->mFreeStagingMemory = false;
-        }
-    }
-#endif
 
     if (this->mDevice) {
         this->mDevice = nullptr;

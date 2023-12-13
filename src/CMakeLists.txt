@@ -8,14 +8,16 @@ endif()
 
 cmake_minimum_required(VERSION 3.20)
 
-add_library(kompute Algorithm.cpp
+add_library(kompute STATIC Algorithm.cpp
     Manager.cpp
     OpAlgoDispatch.cpp
     OpMemoryBarrier.cpp
     OpTensorCopy.cpp
+    OpTensorFill.cpp
     OpTensorSyncDevice.cpp
     OpTensorSyncLocal.cpp
     OpBufferSyncDevice.cpp
+    OpBufferSyncLocal.cpp
     Sequence.cpp
     Tensor.cpp
     Core.cpp)
@@ -26,7 +28,8 @@ add_library(kompute::kompute ALIAS kompute)
 set_target_properties(kompute
     PROPERTIES
     VERSION ${${PROJECT_NAME}_VERSION}
-    SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR})
+    SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+    POSITION_INDEPENDENT_CODE TRUE)
 
 # Import GNU common install directory variables
 include(GNUInstallDirs)
@@ -44,8 +47,8 @@ configure_package_config_file(${PROJECT_SOURCE_DIR}/cmake/komputeConfig.cmake.in
     "${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
-install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
-    ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+#install(FILES ${PROJECT_BINARY_DIR}/kompute/komputeConfig.cmake
+#    ${PROJECT_BINARY_DIR}/kompute/komputeConfigVersion.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 
 # ####################################################
 # Linking
@@ -55,12 +58,12 @@ if(KOMPUTE_OPT_ANDROID_BUILD)
         android
         kp_logger
         kp_shader
-        fmt::fmt)
+        fmt::fmt-header-only)
 else()
-    target_link_libraries(kompute PUBLIC Vulkan::Vulkan
+    target_link_libraries(kompute PUBLIC
         kp_logger
         kp_shader
-        fmt::fmt)
+        fmt::fmt-header-only)
 endif()
 
 if(KOMPUTE_OPT_BUILD_PYTHON)
@@ -71,6 +74,8 @@ endif()
 
 if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
     target_link_libraries(kompute PUBLIC Vulkan-Headers)
+else()
+    target_link_libraries(kompute PUBLIC Vulkan::Headers)
 endif()
 
 # ####################################################

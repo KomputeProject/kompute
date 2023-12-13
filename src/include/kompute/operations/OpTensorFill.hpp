@@ -1,27 +1,36 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include "kompute/Core.hpp"
+
+#include "kompute/Tensor.hpp"
+
 #include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 
-class OpBufferSyncDevice : public OpBase
+/**
+ * Operation that fills the tensor
+ */
+class OpTensorFill : public OpBase
 {
   public:
-    OpBufferSyncDevice(
-        vk::Buffer *primaryBuffer,
-        vk::Buffer *stagingBuffer,
-        vk::DeviceSize size);
+    /**
+     * Default constructor with parameters that provides the core vulkan
+     * resources and the tensors that will be used in the operation.
+     *
+     * @param tensors Tensors that will be used to create in operation.
+     */
+    OpTensorFill(const std::vector<std::shared_ptr<Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */
-    ~OpBufferSyncDevice() override;
+    ~OpTensorFill() override;
 
     /**
-     * For device buffers, it records the copy command for the buffer to copy
-     * the data from its staging to device memory.
+     * Records the fill command for tensor.
      *
      * @param commandBuffer The command buffer to record the command into.
      */
@@ -42,9 +51,8 @@ class OpBufferSyncDevice : public OpBase
     virtual void postEval(const vk::CommandBuffer& commandBuffer) override;
 
   private:
-    vk::Buffer *mPrimaryBuffer;
-    vk::Buffer *mStagingBuffer;
-    vk::DeviceSize mSize;
+    // -------------- ALWAYS OWNED RESOURCES
+    std::vector<std::shared_ptr<Tensor>> mTensors;
 };
 
 } // End namespace kp

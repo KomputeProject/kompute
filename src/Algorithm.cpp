@@ -49,18 +49,6 @@ Algorithm::destroy()
         this->mPipeline = nullptr;
     }
 
-    if (this->mFreePipelineCache && this->mPipelineCache) {
-        KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
-        if (!this->mPipelineCache) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "pipeline cache but it is null");
-        }
-        this->mDevice->destroy(
-          *this->mPipelineCache,
-          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        this->mPipelineCache = nullptr;
-    }
-
     if (this->mFreePipelineLayout && this->mPipelineLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
         if (!this->mPipelineLayout) {
@@ -91,17 +79,6 @@ Algorithm::destroy()
 void
 Algorithm::freeParameters()
 {
-     if (this->mFreeDescriptorSet && this->mDescriptorSet) {
-        KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
-        if (!this->mDescriptorSet) {
-            KP_LOG_WARN(
-              "Kompute Algorithm Error requested to free descriptor set");
-        }
-        this->mDevice->freeDescriptorSets(
-          *this->mDescriptorPool, 1, this->mDescriptorSet.get());
-        this->mDescriptorSet = nullptr;
-    }
-
     if (this->mFreeDescriptorSetLayout && this->mDescriptorSetLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
         if (!this->mDescriptorSetLayout) {
@@ -113,43 +90,16 @@ Algorithm::freeParameters()
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         this->mDescriptorSetLayout = nullptr;
     }
-
-    if (this->mFreeDescriptorPool && this->mDescriptorPool) {
-        KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
-        if (!this->mDescriptorPool) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "descriptor pool but it is null");
-        }
-        this->mDevice->destroy(
-          *this->mDescriptorPool,
-          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        this->mDescriptorPool = nullptr;
-    }
 }
 
 void
 Algorithm::createParameters()
 {
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
-
-    std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
-        vk::DescriptorPoolSize(
-          vk::DescriptorType::eStorageBuffer,
-          static_cast<uint32_t>(this->mTensors.size()) // Descriptor count
-          )
-    };
-
-    vk::DescriptorPoolCreateInfo descriptorPoolInfo(
-      vk::DescriptorPoolCreateFlags(VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT),
-      1, // Max sets
-      static_cast<uint32_t>(descriptorPoolSizes.size()),
-      descriptorPoolSizes.data());
-
-    KP_LOG_DEBUG("Kompute Algorithm creating descriptor pool");
-    this->mDescriptorPool = std::make_shared<vk::DescriptorPool>();
-    this->mDevice->createDescriptorPool(
-      &descriptorPoolInfo, nullptr, this->mDescriptorPool.get());
-    this->mFreeDescriptorPool = true;
+    if (!*this->mDescriptorPool) {
+        KP_LOG_ERROR("Kompute Algorithm can not create descriptor pool");
+        return;
+    }
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
     for (size_t i = 0; i < this->mTensors.size(); i++) {
@@ -168,9 +118,15 @@ Algorithm::createParameters()
 
     KP_LOG_DEBUG("Kompute Algorithm creating descriptor set layout");
     this->mDescriptorSetLayout = std::make_shared<vk::DescriptorSetLayout>();
-    this->mDevice->createDescriptorSetLayout(
+    vk::Result result = this->mDevice->createDescriptorSetLayout(
       &descriptorSetLayoutInfo, nullptr, this->mDescriptorSetLayout.get());
-    this->mFreeDescriptorSetLayout = true;
+
+   if (result != vk::Result::eSuccess) {
+        KP_LOG_ERROR("Failed to create descriptor set layout. Error code: {}", vk::to_string(result));
+    } else {
+        this->mFreeDescriptorSetLayout = true;
+        KP_LOG_DEBUG("Successfully allocated descriptor set layout.");
+    }
 
     vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
       *this->mDescriptorPool,
@@ -179,8 +135,67 @@ Algorithm::createParameters()
 
     KP_LOG_DEBUG("Kompute Algorithm allocating descriptor sets");
     this->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
-    this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
+    result = this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
                                           this->mDescriptorSet.get());
+
+    if (result != vk::Result::eSuccess) {
+        KP_LOG_ERROR("Failed to allocate descriptor sets. Error code: {}", vk::to_string(result));
+    } else {
+        this->mFreeDescriptorSet = true;
+        KP_LOG_DEBUG("Successfully allocated descriptor sets.");
+    }
+
+    this->mFreeDescriptorSet = true;
+
+    KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
+    for (size_t i = 0; i < this->mTensors.size(); i++) {
+        std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
+
+        vk::DescriptorBufferInfo descriptorBufferInfo =
+          this->mTensors[i]->constructDescriptorBufferInfo();
+
+        computeWriteDescriptorSets.push_back(
+          vk::WriteDescriptorSet(*this->mDescriptorSet,
+                                 i, // Destination binding
+                                 0, // Destination array element
+                                 1, // Descriptor count
+                                 vk::DescriptorType::eStorageBuffer,
+                                 nullptr, // Descriptor image info
+                                 &descriptorBufferInfo));
+
+        this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
+                                            nullptr);
+    }
+
+    KP_LOG_DEBUG("Kompute Algorithm successfully run init");
+}
+
+void
+Algorithm::updateParameters()
+{
+    KP_LOG_DEBUG("Kompute Algorithm updateParameters started");
+    if (!*this->mDescriptorPool) {
+        KP_LOG_ERROR("Kompute Algorithm can not create descriptor pool");
+        return;
+    }
+
+    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
+      *this->mDescriptorPool,
+      1, // Descriptor set layout count
+      this->mDescriptorSetLayout.get());
+
+    KP_LOG_DEBUG("Kompute Algorithm allocating descriptor sets");
+    this->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
+    vk::Result result = this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
+                                          this->mDescriptorSet.get());
+
+    if (result != vk::Result::eSuccess) {
+        KP_LOG_ERROR("Failed to allocate descriptor sets. Error code: {}", vk::to_string(result));
+    } else {
+        this->mFreeDescriptorSet = true;
+        KP_LOG_DEBUG("Successfully allocated descriptor sets.");
+    }
+
     this->mFreeDescriptorSet = true;
 
     KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
@@ -281,25 +296,15 @@ Algorithm::createPipeline()
       "main",
       &specializationInfo);
 
-    static std::shared_ptr<vk::PipelineCache> globalPipelineCache = std::make_shared<vk::PipelineCache>();
-    if(!*globalPipelineCache) {
-       vk::PipelineCacheCreateInfo pipelineCacheInfo =
-         vk::PipelineCacheCreateInfo();
-      this->mDevice->createPipelineCache(
-        &pipelineCacheInfo, nullptr, globalPipelineCache.get());
-    }
-
     vk::ComputePipelineCreateInfo pipelineInfo(vk::PipelineCreateFlags(),
                                                shaderStage,
                                                *this->mPipelineLayout,
                                                vk::Pipeline(),
                                                0);
 
-    this->mFreePipelineCache = false;
-
 #ifdef KOMPUTE_CREATE_PIPELINE_RESULT_VALUE
     vk::ResultValue<vk::Pipeline> pipelineResult =
-      this->mDevice->createComputePipeline(*globalPipelineCache, pipelineInfo);
+      this->mDevice->createComputePipeline(*mPipelineCache, pipelineInfo);
 
     if (pipelineResult.result != vk::Result::eSuccess) {
         throw std::runtime_error("Failed to create pipeline result: " +
@@ -311,7 +316,7 @@ Algorithm::createPipeline()
     this->mFreePipeline = true;
 #else
     vk::Pipeline pipeline =
-      this->mDevice->createComputePipeline(*globalPipelineCache, pipelineInfo)
+      this->mDevice->createComputePipeline(*mPipelineCache, pipelineInfo)
         .value;
     this->mPipeline = std::make_shared<vk::Pipeline>(pipeline);
     this->mFreePipeline = true;
@@ -373,7 +378,6 @@ Algorithm::recordDispatch(const vk::CommandBuffer& commandBuffer)
 void
 Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize)
 {
-
     KP_LOG_INFO("Kompute OpAlgoCreate setting dispatch size");
 
     // The dispatch size is set up based on either explicitly provided template

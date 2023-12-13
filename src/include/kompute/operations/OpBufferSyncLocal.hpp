@@ -5,10 +5,10 @@
 
 namespace kp {
 
-class OpBufferSyncDevice : public OpBase
+class OpBufferSyncLocal : public OpBase
 {
   public:
-    OpBufferSyncDevice(
+    OpBufferSyncLocal(
         vk::Buffer *primaryBuffer,
         vk::Buffer *stagingBuffer,
         vk::DeviceSize size);
@@ -17,7 +17,7 @@ class OpBufferSyncDevice : public OpBase
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */
-    ~OpBufferSyncDevice() override;
+    ~OpBufferSyncLocal() override;
 
     /**
      * For device buffers, it records the copy command for the buffer to copy

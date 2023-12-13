@@ -118,6 +118,9 @@ class Tensor
     void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
                         std::shared_ptr<Tensor> copyFromTensor);
 
+    void recordFill(const vk::CommandBuffer &commandBuffer,
+                    uint32_t fill);
+
     /**
      * Records a copy from the internal staging memory to the device memory
      * using an optional barrier to wait for the operation. This function would
@@ -271,6 +274,7 @@ class Tensor
                           vk::Buffer *bufferTo,
                           vk::DeviceSize bufferSize,
                           vk::BufferCopy copyRegion);
+
     void recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
                                    const vk::Buffer& buffer,
                                    vk::AccessFlagBits srcAccessMask,

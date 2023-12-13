@@ -36,6 +36,8 @@ class Algorithm
      */
     template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
+              vk::PipelineCache *pipelineCache,
+              vk::DescriptorPool *pool,
               const std::vector<std::shared_ptr<Tensor>>& tensors = {},
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
@@ -45,6 +47,8 @@ class Algorithm
         KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
         this->mDevice = device;
+        this->mPipelineCache = pipelineCache;
+        this->mDescriptorPool = pool;
 
         if (tensors.size() && spirv.size()) {
             KP_LOG_INFO(
@@ -198,29 +202,15 @@ class Algorithm
         uint32_t memorySize = sizeof(decltype(pushConstants.back()));
         uint32_t size = pushConstants.size();
         this->setPushConstants(pushConstants.data(), size, memorySize);
+    }
 
+    void updateDescriptors(vk::DescriptorPool *pool)
+    {
+        this->mDescriptorPool = pool;
         this->setWorkgroup(
           this->mWorkgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
 
-        this->createParameters(); // TODO: See if we can reduce this
-//        for (size_t i = 0; i < this->mTensors.size(); i++) {
-//            std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
-
-//            vk::DescriptorBufferInfo descriptorBufferInfo =
-//              this->mTensors[i]->constructDescriptorBufferInfo();
-
-//            computeWriteDescriptorSets.push_back(
-//              vk::WriteDescriptorSet(*this->mDescriptorSet,
-//                                     i, // Destination binding
-//                                     0, // Destination array element
-//                                     1, // Descriptor count
-//                                     vk::DescriptorType::eStorageBuffer,
-//                                     nullptr, // Descriptor image info
-//                                     &descriptorBufferInfo));
-
-//            this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
-//                                                nullptr);
-//        }
+        this->updateParameters(); // TODO: See if we can reduce this
     }
 
     /**
@@ -306,16 +296,14 @@ class Algorithm
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
-    std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
-    bool mFreeDescriptorPool = false;
+    vk::DescriptorPool *mDescriptorPool = nullptr;
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;
     std::shared_ptr<vk::ShaderModule> mShaderModule;
     bool mFreeShaderModule = false;
     std::shared_ptr<vk::PipelineLayout> mPipelineLayout;
     bool mFreePipelineLayout = false;
-    std::shared_ptr<vk::PipelineCache> mPipelineCache;
-    bool mFreePipelineCache = false;
+    vk::PipelineCache *mPipelineCache = nullptr;
     std::shared_ptr<vk::Pipeline> mPipeline;
     bool mFreePipeline = false;
 
@@ -336,6 +324,7 @@ class Algorithm
     // Parameters
     void freeParameters();
     void createParameters();
+    void updateParameters();
 };
 
 } // End namespace kp

@@ -33,13 +33,6 @@ debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
 #endif
 
 Manager::Manager()
-  : Manager(0)
-{
-}
-
-Manager::Manager(uint32_t physicalDeviceIndex,
-                 const std::vector<uint32_t>& familyQueueIndices,
-                 const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
 
@@ -47,26 +40,15 @@ Manager::Manager(uint32_t physicalDeviceIndex,
 #if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
     logger::setupLogger();
 #endif
-
     this->createInstance();
-    this->createDevice(
-      familyQueueIndices, physicalDeviceIndex, desiredExtensions);
 }
 
-Manager::Manager(std::shared_ptr<vk::Instance> instance,
-                 std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                 std::shared_ptr<vk::Device> device)
+void Manager::initializeDevice(uint32_t physicalDeviceIndex,
+                               const std::vector<uint32_t>& familyQueueIndices,
+                               const std::vector<std::string>& desiredExtensions)
 {
-    this->mManageResources = false;
-
-    this->mInstance = instance;
-    this->mPhysicalDevice = physicalDevice;
-    this->mDevice = device;
-
-// Make sure the logger is setup
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
+    this->createDevice(
+      familyQueueIndices, physicalDeviceIndex, desiredExtensions);
 }
 
 Manager::~Manager()
@@ -98,15 +80,14 @@ Manager::destroy()
         this->mManagedSequences.clear();
     }
 
-    if (this->mManageResources && this->mManagedAlgorithms.size()) {
+    if (this->mManageResources && !this->mManagedAlgorithmsMap.empty()) {
         KP_LOG_DEBUG("Kompute Manager explicitly freeing algorithms");
-        for (const std::weak_ptr<Algorithm>& weakAlgorithm :
-             this->mManagedAlgorithms) {
-            if (std::shared_ptr<Algorithm> algorithm = weakAlgorithm.lock()) {
+        for (const auto& kv : this->mManagedAlgorithmsMap) {
+            if (std::shared_ptr<Algorithm> algorithm = kv.second) {
                 algorithm->destroy();
             }
         }
-        this->mManagedAlgorithms.clear();
+        this->mManagedAlgorithmsMap.clear();
     }
 
     if (this->mManageResources && this->mManagedTensors.size()) {
@@ -117,6 +98,18 @@ Manager::destroy()
             }
         }
         this->mManagedTensors.clear();
+    }
+
+    if (this->mPipelineCache) {
+        KP_LOG_DEBUG("Kompute Manager Destroying pipeline cache");
+        if (!this->mPipelineCache) {
+            KP_LOG_WARN("Kompute Manager Error requested to destroy "
+                        "pipeline cache but it is null");
+        }
+        this->mDevice->destroy(
+          *this->mPipelineCache,
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mPipelineCache = nullptr;
     }
 
     if (this->mFreeDevice) {
@@ -179,6 +172,16 @@ Manager::createInstance()
           applicationExtensions.data();
     }
 
+    try {
+        mDynamicLoader = std::make_shared<vk::DynamicLoader>();
+    } catch (const std::exception & err) {
+        return;
+    }
+
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+      mDynamicLoader->getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     KP_LOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
@@ -233,20 +236,18 @@ Manager::createInstance()
     }
 #endif
 
-#if VK_USE_PLATFORM_ANDROID_KHR
-    vk::DynamicLoader dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
-      dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
-#endif // VK_USE_PLATFORM_ANDROID_KHR
-
     this->mInstance = std::make_shared<vk::Instance>();
-    vk::createInstance(
+    vk::Result r = vk::createInstance(
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
+    if (r != vk::Result::eSuccess) {
+        KP_LOG_ERROR(
+          "Kompute Manager Error allocating vulkan instance", vk::to_string(r));
+        this->mInstance = nullptr;
+        this->mFreeInstance = false;
+        return;
+    }
 
-#if VK_USE_PLATFORM_ANDROID_KHR
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this->mInstance);
-#endif // VK_USE_PLATFORM_ANDROID_KHR
 
     KP_LOG_DEBUG("Kompute Manager Instance Created");
 
@@ -261,7 +262,7 @@ Manager::createInstance()
           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
         debugCreateInfo.flags = debugFlags;
 
-        this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
+        this->mDebugDispatcher.init(*this->mInstance, vkGetInstanceProcAddr);
         this->mDebugReportCallback =
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
@@ -278,12 +279,14 @@ Manager::clear()
                          end(this->mManagedTensors),
                          [](std::weak_ptr<Tensor> t) { return t.expired(); }),
           end(this->mManagedTensors));
-        this->mManagedAlgorithms.erase(
-          std::remove_if(
-            begin(this->mManagedAlgorithms),
-            end(this->mManagedAlgorithms),
-            [](std::weak_ptr<Algorithm> t) { return t.expired(); }),
-          end(this->mManagedAlgorithms));
+        for (auto it = this->mManagedAlgorithmsMap.begin();
+             it != this->mManagedAlgorithmsMap.end();) {
+            if (it->second) {
+                it = this->mManagedAlgorithmsMap.erase(it);
+            } else {
+                ++it;
+            }
+        }
         this->mManagedSequences.erase(
           std::remove_if(begin(this->mManagedSequences),
                          end(this->mManagedSequences),
@@ -338,7 +341,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
     KP_LOG_INFO("Using physical device index {} found {}",
                 physicalDeviceIndex,
-                physicalDeviceProperties.deviceName);
+                physicalDeviceProperties.deviceName.data());
 
     if (familyQueueIndices.empty()) {
         // Find compute queue
@@ -413,17 +416,39 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
                      fmt::join(validExtensions, ", "));
     }
 
+    vk::PhysicalDeviceFeatures features;
+    features.shaderInt16 = true;
+
+    vk::PhysicalDeviceVulkan11Features features11;
+    features11.uniformAndStorageBuffer16BitAccess = true;
+    features11.storageBuffer16BitAccess = true;
+    features11.pNext = nullptr;
+
+    vk::PhysicalDeviceVulkan12Features features12;
+    features12.storageBuffer8BitAccess = true;
+    features12.uniformAndStorageBuffer8BitAccess = true;
+    features12.shaderFloat16 = true;
+    features12.shaderInt8 = true;
+    features12.pNext = &features11;
+
     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),
                                           deviceQueueCreateInfos.size(),
                                           deviceQueueCreateInfos.data(),
                                           {},
                                           {},
                                           validExtensions.size(),
-                                          validExtensions.data());
+                                          validExtensions.data(),
+                                          &features);
+
+    deviceCreateInfo.pNext = &features12;
 
     this->mDevice = std::make_shared<vk::Device>();
-    physicalDevice.createDevice(
+    vk::Result r = physicalDevice.createDevice(
       &deviceCreateInfo, nullptr, this->mDevice.get());
+    if (r != vk::Result::eSuccess) {
+        KP_LOG_ERROR("Kompute Manager could not create device");
+    }
+
     KP_LOG_DEBUG("Kompute Manager device created");
 
     for (const uint32_t& familyQueueIndex : this->mComputeQueueFamilyIndices) {
@@ -439,6 +464,12 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     }
 
     KP_LOG_DEBUG("Kompute Manager compute queue obtained");
+
+    mPipelineCache = std::make_shared<vk::PipelineCache>();
+    vk::PipelineCacheCreateInfo pipelineCacheInfo =
+        vk::PipelineCacheCreateInfo();
+    this->mDevice->createPipelineCache(
+        &pipelineCacheInfo, nullptr, mPipelineCache.get());
 }
 
 std::shared_ptr<Sequence>

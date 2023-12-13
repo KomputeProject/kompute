@@ -20,14 +20,30 @@ class Manager
 {
   public:
     /**
-        Base constructor and default used which creates the base resources
-       including choosing the device 0 by default.
+        Base constructor.
     */
     Manager();
 
     /**
-     * Similar to base constructor but allows for further configuration to use
-     * when creating the Vulkan resources.
+     * Manager destructor which would ensure all owned resources are destroyed
+     * unless explicitly stated that resources should not be destroyed or freed.
+     */
+    ~Manager();
+
+    bool hasInstance() const {
+        return this->mInstance.get();
+    }
+
+    bool hasDevice() const {
+        return this->mDevice.get();
+    }
+
+    bool hasVulkan() const {
+        return this->mDynamicLoader.get();
+    }
+
+    /**
+     * Initialize a device.
      *
      * @param physicalDeviceIndex The index of the physical device to use
      * @param familyQueueIndices (Optional) List of queue indices to add for
@@ -35,28 +51,9 @@ class Manager
      * @param desiredExtensions The desired extensions to load from
      * physicalDevice
      */
-    Manager(uint32_t physicalDeviceIndex,
+    void initializeDevice(uint32_t physicalDeviceIndex,
             const std::vector<uint32_t>& familyQueueIndices = {},
             const std::vector<std::string>& desiredExtensions = {});
-
-    /**
-     * Manager constructor which allows your own vulkan application to integrate
-     * with the kompute use.
-     *
-     * @param instance Vulkan compute instance to base this application
-     * @param physicalDevice Vulkan physical device to use for application
-     * @param device Vulkan logical device to use for all base resources
-     * @param physicalDeviceIndex Index for vulkan physical device used
-     */
-    Manager(std::shared_ptr<vk::Instance> instance,
-            std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-            std::shared_ptr<vk::Device> device);
-
-    /**
-     * Manager destructor which would ensure all owned resources are destroyed
-     * unless explicitly stated that resources should not be destroyed or freed.
-     */
-    ~Manager();
 
     /**
      * Create a managed sequence that will be destroyed by this manager
@@ -147,6 +144,8 @@ class Manager
      * @returns Shared pointer with initialised algorithm
      */
     std::shared_ptr<Algorithm> algorithm(
+      const std::string &name,
+      vk::DescriptorPool *pool,
       const std::vector<std::shared_ptr<Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
@@ -154,7 +153,7 @@ class Manager
       const std::vector<float>& pushConstants = {})
     {
         return this->algorithm<>(
-          tensors, spirv, workgroup, specializationConstants, pushConstants);
+          name, pool, tensors, spirv, workgroup, specializationConstants, pushConstants);
     }
 
     /**
@@ -173,6 +172,8 @@ class Manager
      */
     template<typename S = float, typename P = float>
     std::shared_ptr<Algorithm> algorithm(
+      const std::string &name,
+      vk::DescriptorPool *pool,
       const std::vector<std::shared_ptr<Tensor>>& tensors,
       const std::vector<uint32_t>& spirv,
       const Workgroup& workgroup,
@@ -184,6 +185,8 @@ class Manager
 
         std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
           this->mDevice,
+          mPipelineCache.get(),
+          pool,
           tensors,
           spirv,
           workgroup,
@@ -191,10 +194,22 @@ class Manager
           pushConstants) };
 
         if (this->mManageResources) {
-            this->mManagedAlgorithms.push_back(algorithm);
+            this->mManagedAlgorithmsMap.insert({name, algorithm});
         }
 
         return algorithm;
+    }
+
+    bool hasAlgorithm(const std::string &name) const {
+        return mManagedAlgorithmsMap.find(name) != mManagedAlgorithmsMap.end();
+    }
+
+    std::shared_ptr<Algorithm> getAlgorithm(const std::string &name) const {
+        auto it = mManagedAlgorithmsMap.find(name);
+        if (it != mManagedAlgorithmsMap.end()) {
+            return it->second;
+        }
+        return nullptr;
     }
 
     /**
@@ -232,6 +247,7 @@ class Manager
 
     std::shared_ptr<vk::Device> device() const { return mDevice; }
     std::shared_ptr<vk::PhysicalDevice> physicalDevice() const { return mPhysicalDevice; }
+    std::shared_ptr<vk::PipelineCache> pipelineCache() const { return mPipelineCache; }
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES
@@ -239,15 +255,17 @@ class Manager
     bool mFreeInstance = false;
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     std::shared_ptr<vk::Device> mDevice = nullptr;
+    std::shared_ptr<vk::DynamicLoader> mDynamicLoader = nullptr;
     bool mFreeDevice = false;
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<std::weak_ptr<Tensor>> mManagedTensors;
     std::vector<std::weak_ptr<Sequence>> mManagedSequences;
-    std::vector<std::weak_ptr<Algorithm>> mManagedAlgorithms;
+    std::unordered_map<std::string, std::shared_ptr<Algorithm>> mManagedAlgorithmsMap;
 
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
+    std::shared_ptr<vk::PipelineCache> mPipelineCache;
 
     bool mManageResources = false;
 
@@ -259,7 +277,7 @@ class Manager
     // Create functions
     void createInstance();
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
-                      uint32_t hysicalDeviceIndex = 0,
+                      uint32_t physicalDeviceIndex = 0,
                       const std::vector<std::string>& desiredExtensions = {});
 };
 
