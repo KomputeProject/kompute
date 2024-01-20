@@ -71,8 +71,7 @@ Once this installed:
 
 * You can build the documentation using the `gendocsall` cmake target
     * This can be done with `make clean_cmake mk_cmake mk_build_docs`
-* You can serve the documentation locally using the `mk_run_docs_only` command in the Makefile
-    * This can be done with mk_docs_all
+    * This can be done with `mk_build_docs`
 * You can serve the documentation locally using the `mk_run_docs` command in the Makefile
 
 Performing Release
