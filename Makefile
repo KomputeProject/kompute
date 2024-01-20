@@ -32,6 +32,8 @@ else
 	endif
 endif
 
+PYTHON_BIN := "python3"
+
 
 ####### Main Target Rules #######
 
@@ -147,10 +149,16 @@ vs_run_tests: vs_build_tests
 	./build/test/$(VS_BUILD_TYPE)/bin/kompute_tests.exe --gtest_filter=$(FILTER_TESTS)
 
 
-#### PYTHONG ####
+#### PYTHON ####
 
 test_python:
-	python3 -m pytest -s --log-cli-level=DEBUG -v python/test/
+	$(PYTHON_BIN) -m pytest -s --log-cli-level=DEBUG -v python/test/
+
+build_wheels:
+	docker run --rm -it \
+		-e PLAT=manylinux_2_28_x86_64 \
+		-v $(pwd):/io quay.io/pypa/manylinux_2_28_x86_64 \
+		/io/build_wheels.sh
 
 ####### Run CI Commands #######
 
