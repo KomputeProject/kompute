@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -490,7 +491,7 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="kompute-game-engine-integration-godot">
 <h1 id="overview-game-engine-godot--page-root">Kompute Game Engine Integration (Godot)<a class="headerlink" href="#overview-game-engine-godot--page-root" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif"><img alt="" src="https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif"/></a>
 <p>This repository contains the accompanying code for the Blog post <a class="reference external" href="https://medium.com/@AxSaucedo/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">“Supercharging Game Development with GPU Accelerated Machine Learning”</a>.</p>
@@ -501,15 +502,15 @@
 <li><p>The <a class="reference external" href="./gdnative_shared/">instructions for the GdNative Library</a> implementation</p></li>
 </ul>
 <p>You can also find the simpler Godot Summator example implemented in the GPU in <a class="reference external" href="../godot_examples/">this example folder</a>.</p>
-
+<section id="godot-engine-integration-godot-engine-source-module">
 <h2 id="godot-engine-integration-godot-engine-source-module">Godot Engine Integration: Godot Engine Source Module<a class="headerlink" href="#godot-engine-integration-godot-engine-source-module" title="Permalink to this headline">¶</a></h2>
 <p>This is the accompanying code for the Blog post <a class="reference external" href="https://medium.com/@AxSaucedo/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">“Supercharging Game Development with GPU Accelerated Machine Learning”</a>.</p>
 <p>This section contains the implementation of the Kompute module as a statically compile module built with the Godot engine source code. This approach requires re-compiling the Godot engine source code.</p>
 <a class="reference external image-reference" href="https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif"><img alt="" src="https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif"/></a>
-
-
+</section>
+<section id="set-up-dependencies">
 <h2 id="set-up-dependencies">Set Up Dependencies<a class="headerlink" href="#set-up-dependencies" title="Permalink to this headline">¶</a></h2>
-
+<section id="vulkan">
 <h3 id="vulkan">Vulkan<a class="headerlink" href="#vulkan" title="Permalink to this headline">¶</a></h3>
 <p>You will need the Vulkan SDK, in this case we use version <code class="docutils literal notranslate"><span class="pre">1.2.148.1</span></code>, which you can get at the official site <a class="reference external" href="https://vulkan.lunarg.com/sdk/home#windows">https://vulkan.lunarg.com/sdk/home#windows</a></p>
 <p>This will have the following contents that will be required later on:</p>
@@ -517,8 +518,8 @@
 <li><p>The VulkanSDK static library <code class="docutils literal notranslate"><span class="pre">vulkan-1</span></code></p></li>
 <li><p>The Vulkan headers in the <code class="docutils literal notranslate"><span class="pre">include/</span></code> folder</p></li>
 </ul>
-
-
+</section>
+<section id="kompute">
 <h3 id="kompute">Kompute<a class="headerlink" href="#kompute" title="Permalink to this headline">¶</a></h3>
 <p>We will be using v0.3.1 of Kompute, and similar to above we will need the built static library, but in this case we will build it.</p>
 <p>We can start by cloning the repository on the v0.3.1 branch:</p>
@@ -536,9 +537,9 @@
 <li><p>Runtime lib: Multi-threaded / multi-threaded debug</p></li>
 </ul>
 <p>Now you should see the library built under <code class="docutils literal notranslate"><span class="pre">build/src/Release</span></code></p>
-
-
-
+</section>
+</section>
+<section id="building-godot">
 <h2 id="building-godot">Building Godot<a class="headerlink" href="#building-godot" title="Permalink to this headline">¶</a></h2>
 <p>Now to build godot you will need to set up a couple of things for the Scons file to work - namely setting up the following:</p>
 <ul class="simple">
@@ -548,7 +549,7 @@
 <li><p>Copy the <code class="docutils literal notranslate"><span class="pre">single_include/kompute/</span></code> to the <code class="docutils literal notranslate"><span class="pre">./include/</span></code> folder</p></li>
 <li><p>Make sure the versions above match as we provide the headers in the <code class="docutils literal notranslate"><span class="pre">include</span></code> folder - if you used different versions make sure these match as well</p></li>
 </ul>
-
+<section id="clone-godot-repository">
 <h3 id="clone-godot-repository">Clone godot repository<a class="headerlink" href="#clone-godot-repository" title="Permalink to this headline">¶</a></h3>
 <p>Now we can clone the godot repository - it must be on a separate repository, so you can use the parent directory if you are on the Kompute repo.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">../../</span><span class="n">godot_engine</span>
@@ -563,14 +564,14 @@
 </pre></div>
 </div>
 <p>Once we have built it we can now run the generated godot engine in the <code class="docutils literal notranslate"><span class="pre">bin/</span></code> folder, and we will be able to access the custom module from anywhere in the project, as well as creating new nodes from the user interface.</p>
-
-
-
+</section>
+</section>
+<section id="godot-engine-integration-gdnative-library">
 <h2 id="godot-engine-integration-gdnative-library">Godot Engine Integration: GdNative Library<a class="headerlink" href="#godot-engine-integration-gdnative-library" title="Permalink to this headline">¶</a></h2>
 <p>This is the accompanying code for the Blog post <a class="reference external" href="https://medium.com/@AxSaucedo/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">“Supercharging Game Development with GPU Accelerated Machine Learning”</a>.</p>
 <p>This section contains the implementation of the Kompute module as a shared GdNative Library that can be loaded dynamically through the Godot engine. This approach does not require re-compiling the Godot engine source code.</p>
 <a class="reference external image-reference" href="https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif"><img alt="" src="https://github.com/KomputeProject/kompute/raw/master/docs/images/komputer-godot-4.gif"/></a>
-
+<section id="id3">
 <h3 id="id3">Set Up Dependencies<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>We can get all the required dependencies from godot by running</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">branch</span> <span class="mf">3.2</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">godotengine</span><span class="o">/</span><span class="n">godot</span><span class="o">-</span><span class="n">cpp</span>
@@ -586,9 +587,9 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scons</span> <span class="o">-</span><span class="n">j16</span> <span class="n">platform</span><span class="o">=</span><span class="n">linuxbsd</span> <span class="n">target</span><span class="o">=</span><span class="n">debug</span>
 </pre></div>
 </div>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>

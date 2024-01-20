@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -462,7 +463,7 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="asynchronous-and-parallel-operations">
 <h1 id="overview-async-parallel--page-root">Asynchronous and Parallel Operations<a class="headerlink" href="#overview-async-parallel--page-root" title="Permalink to this headline">¶</a></h1>
 <p>In GPU computing it is possible to have multiple levels of asynchronous and parallel processing of GPU tasks.</p>
 <p>It is important to understand the conceptual distinctions of the diffent terminology when using each of these components.</p>
@@ -474,25 +475,25 @@
 <p>You can also find the published <a class="reference external" href="https://towardsdatascience.com/parallelizing-heavy-gpu-workloads-via-multi-queue-operations-50a38b15a1dc">blog post on the topic using Kompute</a>, which covers the points discussed in this section further.</p>
 <p>Below is the architecture we’ll be covering further in the parallel operations section through command submission across multiple family queues.</p>
 <a class="reference internal image-reference" href="../_images/queue-allocation.jpg"><img alt="../_images/queue-allocation.jpg" src="../_images/queue-allocation.jpg" style="width: 100%;"/></a>
-
+<section id="asynchronous-operation-submission">
 <h2 id="asynchronous-operation-submission">Asynchronous operation submission<a class="headerlink" href="#asynchronous-operation-submission" title="Permalink to this headline">¶</a></h2>
 <p>As the name implies, this refers to the asynchronous submission of operations. This means that operations can be submitted to the GPU, and the C++ / host CPU can continue performing tasks, until when the user desires to run <cite>await</cite> to wait until the operation finishes.</p>
 <p>This basically provides further granularity on vk::Fences, which is its means to enable the CPU host to know when GPU commands have finished executing.</p>
 <p>It is important that submitting tasks asynchronously, does not mean that these will be executed in parallel. Parallel execution of operations will be covered in the following section.</p>
 <p>Asynchronous operation submission can be achieved through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Manager</span></code>, or directly through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Sequence</span></code>. Below is an example using the Kompute manager.</p>
-
+<section id="conceptual-overview">
 <h3 id="conceptual-overview">Conceptual Overview<a class="headerlink" href="#conceptual-overview" title="Permalink to this headline">¶</a></h3>
 <p>Asynchronous job submission is done using <cite>evalOpAsync</cite> and <cite>evalOpAwait</cite> functions.</p>
 <p>For simplicity the <cite>evalOpAsyncDefault</cite> and <cite>evalOpAwaitDefault</cite> functions are provided, which can be used similar to the synchronous counterparts (which basically use the default named sequence).</p>
 <p>One important thing to bare in mind when using asynchronous submissions, is that you should make sure that any overlapping asynchronous functions are run in separate sequences.</p>
 <p>The reason why this is important is that the Await function not only waits for the fence, but also runs the <cite>postEval</cite> functions across all operations, which is required for several operations.</p>
-
-
+</section>
+<section id="async-and-parallel-examples">
 <h3 id="async-and-parallel-examples">Async and Parallel Examples<a class="headerlink" href="#async-and-parallel-examples" title="Permalink to this headline">¶</a></h3>
 <p>We have added a set of examples for asynchronous and parallel processing examples in the <a class="reference external" href="advanced-examples.rst">Advanced Examples documentation page</a></p>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>

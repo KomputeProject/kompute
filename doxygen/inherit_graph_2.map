@@ -1,3 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classkp_1_1Manager.html" title="kp::Manager" alt="" coords="5,5,100,32"/>
+<area shape="rect" id="node1" href="$classkp_1_1OpBase.html" title=" " alt="" coords="5,107,101,133"/>
+<area shape="rect" id="node2" href="$classkp_1_1OpAlgoDispatch.html" title=" " alt="" coords="165,5,316,32"/>
+<area shape="rect" id="node4" href="$classkp_1_1OpMemoryBarrier.html" title=" " alt="" coords="159,56,322,83"/>
+<area shape="rect" id="node5" href="$classkp_1_1OpTensorCopy.html" title=" " alt="" coords="171,107,310,133"/>
+<area shape="rect" id="node6" href="$classkp_1_1OpTensorSyncDevice.html" title=" " alt="" coords="149,157,332,184"/>
+<area shape="rect" id="node7" href="$classkp_1_1OpTensorSyncLocal.html" title=" " alt="" coords="155,208,326,235"/>
+<area shape="rect" id="node3" href="$classkp_1_1OpMult.html" title=" " alt="" coords="380,5,473,32"/>
 </map>

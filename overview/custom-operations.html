@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -462,12 +463,12 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="extending-kompute-with-custom-c-operations">
 <h1 id="overview-custom-operations--page-root">Extending Kompute with Custom C++ Operations<a class="headerlink" href="#overview-custom-operations--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Kompute provides an extenisble architecture which allows for the core components to be extended by building custom operations.</p>
 <p>Building operations is intuitive however it requires knowing some nuances around the order in which each of the class functions across the operation are called as a sequence is executed.</p>
 <p>These nuances are important for more advanced users of Kompute, as this will provide further intuition in what are the specific functions and components that the native functions (like OpTensorCreate, OpAlgoBase, etc) contain which define their specific behaviour.</p>
-
+<section id="flow-of-function-calls">
 <h2 id="flow-of-function-calls">Flow of Function Calls<a class="headerlink" href="#flow-of-function-calls" title="Permalink to this headline">¶</a></h2>
 <p>The top level operation which all operations inherit from is the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpBase</span></code> class. Some of the “Core Native Operations” like <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCopy</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpTensorCreate</span></code>, etc all inherit from the base operation class.</p>
 <p>The <cite>kp::OpAlgoBase</cite> is another base operation that is specifically built to enable users to create their own operations that contain custom shader logic (i.e. requiring Compute Pipelines, DescriptorSets, etc). The next section contains an example which shows how to extend the OpAlgoBase class.</p>
@@ -503,36 +504,35 @@
 </tr>
 </tbody>
 </table>
-
-
+</section>
+<section id="simple-operation-extending-opalgobase">
 <h2 id="simple-operation-extending-opalgobase">Simple Operation Extending OpAlgoBase<a class="headerlink" href="#simple-operation-extending-opalgobase" title="Permalink to this headline">¶</a></h2>
 <p>You can find an example in the <a class="reference external" href="advanced-examples.rst">Advanced Examples documentation section</a> that shows how to create your own custom function.</p>
 <p>You can also see an implementation in the codebase through the <cite>OpMult</cite> class:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: Apache-2.0</span>
 <span class="cp">#pragma once</span>
 
-<span class="cp">#include</span> <span class="cpf">&lt;fstream&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;fstream&gt;</span>
 
-<span class="cp">#include</span> <span class="cpf">"kompute/Core.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"kompute/Core.hpp"</span>
 
-<span class="cp">#include</span> <span class="cpf">"kompute/shaders/shaderopmult.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"ShaderOpMult.hpp"</span>
 
-<span class="cp">#include</span> <span class="cpf">"kompute/Algorithm.hpp"</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">"kompute/Tensor.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"kompute/Algorithm.hpp"</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"kompute/Tensor.hpp"</span>
 
-<span class="cp">#include</span> <span class="cpf">"kompute/operations/OpAlgoDispatch.hpp"</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"kompute/operations/OpAlgoDispatch.hpp"</span>
 
-<span class="k">namespace</span> <span class="nn">kp</span> <span class="p">{</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">kp</span><span class="w"> </span><span class="p">{</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Operation that performs multiplication on two tensors and outpus on third</span>
 <span class="cm"> * tensor.</span>
 <span class="cm"> */</span>
-<span class="k">class</span> <span class="nc">OpMult</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoDispatch</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">OpMult</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">OpAlgoDispatch</span>
 <span class="p">{</span>
-  <span class="k">public</span><span class="o">:</span>
-
-    <span class="cm">/**</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="cm">/**</span>
 <span class="cm">     * Default constructor with parameters that provides the bare minimum</span>
 <span class="cm">     * requirements for the operations to be able to create and manage their</span>
 <span class="cm">     * sub-components.</span>
@@ -541,40 +541,39 @@
 <span class="cm">     * @param algorithm An algorithm that will be overridden with the OpMult</span>
 <span class="cm">     * shader data and the tensors provided which are expected to be 3</span>
 <span class="cm">     */</span>
-    <span class="n">OpMult</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algorithm</span><span class="p">)</span>
-        <span class="o">:</span> <span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpMult constructor with params"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">OpMult</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensors</span><span class="p">,</span>
+<span class="w">           </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algorithm</span><span class="p">)</span>
+<span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">OpAlgoDispatch</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpMult constructor with params"</span><span class="p">);</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Kompute OpMult expected 3 tensors but got "</span> <span class="o">+</span> <span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-        <span class="p">}</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span>
+<span class="w">              </span><span class="s">"Kompute OpMult expected 3 tensors but got "</span><span class="w"> </span><span class="o">+</span>
+<span class="w">              </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">()));</span>
+<span class="w">        </span><span class="p">}</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span><span class="p">(</span>
-          <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv</span><span class="p">,</span>
-          <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv</span> <span class="o">+</span>
-            <span class="n">kp</span><span class="o">::</span><span class="n">shader_data</span><span class="o">::</span><span class="n">shaders_glsl_opmult_comp_spv_len</span><span class="p">));</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spirv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">          </span><span class="n">SHADEROPMULT_COMP_SPV</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">SHADEROPMULT_COMP_SPV</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
 
-        <span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">spirv</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">        </span><span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span><span class="w"> </span><span class="n">spirv</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="cm">/**</span>
+<span class="w">    </span><span class="cm">/**</span>
 <span class="cm">     * Default destructor, which is in charge of destroying the algorithm</span>
 <span class="cm">     * components but does not destroy the underlying tensors</span>
 <span class="cm">     */</span>
-    <span class="k">virtual</span> <span class="o">~</span><span class="n">OpMult</span><span class="p">()</span> <span class="k">override</span> <span class="p">{</span>
-        <span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpMult destructor started"</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="o">~</span><span class="n">OpMult</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">KP_LOG_DEBUG</span><span class="p">(</span><span class="s">"Kompute OpMult destructor started"</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
 <span class="p">};</span>
 
-<span class="p">}</span> <span class="c1">// End namespace kp</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// End namespace kp</span>
 </pre></div>
 </div>
-
+<section id="then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above">
 <h3 id="then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above">Then the implementation outlines all the implementations that perform the actions above:<a class="headerlink" href="#then-the-implementation-outlines-all-the-implementations-that-perform-the-actions-above" title="Permalink to this headline">¶</a></h3>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>

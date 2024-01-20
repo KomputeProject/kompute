@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -462,9 +463,9 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="kompute-docs-home">
 <h1 id="index--page-root">Kompute Docs Home<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
-
+<section id="high-level-overview-from-readme">
 <h2 id="high-level-overview-from-readme">High Level Overview (from README)<a class="headerlink" href="#high-level-overview-from-readme" title="Permalink to this headline">¶</a></h2>
 <a class="reference external image-reference" href="https://img.shields.io/badge/Version-0.7.0-green.svg"><img alt="GitHub" src="https://img.shields.io/badge/Version-0.7.0-green.svg"/></a>
 <a class="reference external image-reference" href="https://img.shields.io/badge/C++-14—20-purple.svg"><img alt="GitHub" src="https://img.shields.io/badge/C++-14—20-purple.svg"/></a>
@@ -483,7 +484,7 @@
 </td>
 </tr>
 </table><h4>Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU acceleration usecases.</h4><p>💬 <a class="reference external" href="https://kompute.cc/overview/community.html">Join the Discord &amp; Community Calls</a> 🔋 <a class="reference external" href="https://kompute.cc">Documentation</a> 💻 <a class="reference external" href="https://medium.com/@AxSaucedo/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Blog Post</a> ⌨ <a class="reference external" href="#more-examples">Examples</a> 💾</p>
-<hr/>
+<hr/><section id="kompute-is-backed-by-the-linux-foundation-as-a-a-href-https-lfaidata-foundation-blog-2021-08-26-kompute-joins-lf-ai-data-as-new-sandbox-project-hosted-project-a-by-the-lf-ai-data-foundation">
 <h3 id="kompute-is-backed-by-the-linux-foundation-as-a-a-href-https-lfaidata-foundation-blog-2021-08-26-kompute-joins-lf-ai-data-as-new-sandbox-project-hosted-project-a-by-the-lf-ai-data-foundation">Kompute is backed by the Linux Foundation as a <span class="raw-html-m2r"><a href="https://lfaidata.foundation/blog/2021/08/26/kompute-joins-lf-ai-data-as-new-sandbox-project/">hosted project</a></span> by the LF AI &amp; Data Foundation.<a class="headerlink" href="#kompute-is-backed-by-the-linux-foundation-as-a-a-href-https-lfaidata-foundation-blog-2021-08-26-kompute-joins-lf-ai-data-as-new-sandbox-project-hosted-project-a-by-the-lf-ai-data-foundation" title="Permalink to this headline">¶</a></h3>
 <table>
 <tr>
@@ -498,9 +499,9 @@
 </a>
 </td>
 </tr>
-</table>
-
-
+</table></section>
+</section>
+<section id="principles-features">
 <h2 id="principles-features">Principles &amp; Features<a class="headerlink" href="#principles-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="#your-first-kompute-python">Flexible Python module</a> with <a class="reference external" href="#your-first-kompute-c">C++ SDK</a> for optimizations</p></li>
@@ -513,69 +514,69 @@
 <li><p>Active community with <a class="reference external" href="https://kompute.cc/overview/community.html">monthly calls, discord chat and more</a></p></li>
 </ul>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif"><img alt="" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif"/></a>
-
-
+</section>
+<section id="getting-started">
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.</p>
 <p>You can <a class="reference external" href="https://discord.gg/MaH5Jv5zwv">join the Discord</a> for questions / discussion, open a <a class="reference external" href="https://github.com/KomputeProject/kompute/issues/new">github issue</a>, or read <a class="reference external" href="https://kompute.cc/">the documentation</a>.</p>
 <p>The C++ interface provides low level access to the native components of Kompute, enabling for <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">advanced optimizations</a> as well as <a class="reference external" href="https://kompute.cc/overview/reference.html">extension of components</a>.</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">kompute</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">shader</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">kompute</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">shader</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
-    <span class="c1">// 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// 1. Create Kompute Manager with default settings (device 0, first queue and no extensions)</span>
+<span class="w">    </span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">;</span>
 
-    <span class="c1">// 2. Create and initialise Kompute Tensors through manager</span>
+<span class="w">    </span><span class="c1">// 2. Create and initialise Kompute Tensors through manager</span>
 
-    <span class="c1">// Default tensor constructor simplifies creation of float values</span>
-    <span class="k">auto</span> <span class="n">tensorInA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorInB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span> <span class="p">});</span>
-    <span class="c1">// Explicit type constructor supports uint32, int32, double, float and bool</span>
-    <span class="k">auto</span> <span class="n">tensorOutA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorOutB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
+<span class="w">    </span><span class="c1">// Default tensor constructor simplifies creation of float values</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorInA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorInB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">3.</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="c1">// Explicit type constructor supports uint32, int32, double, float and bool</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorOutA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorOutB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">});</span>
 
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">tensorInA</span><span class="p">,</span> <span class="n">tensorInB</span><span class="p">,</span> <span class="n">tensorOutA</span><span class="p">,</span> <span class="n">tensorOutB</span><span class="p">};</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">tensorInA</span><span class="p">,</span><span class="w"> </span><span class="n">tensorInB</span><span class="p">,</span><span class="w"> </span><span class="n">tensorOutA</span><span class="p">,</span><span class="w"> </span><span class="n">tensorOutB</span><span class="p">};</span>
 
-    <span class="c1">// 3. Create algorithm based on shader (supports buffers &amp; push/spec constants)</span>
-    <span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span> <span class="n">workgroup</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">});</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">specConsts</span><span class="p">({</span> <span class="mi">2</span> <span class="p">});</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">pushConstsA</span><span class="p">({</span> <span class="mf">2.0</span> <span class="p">});</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">pushConstsB</span><span class="p">({</span> <span class="mf">3.0</span> <span class="p">});</span>
+<span class="w">    </span><span class="c1">// 3. Create algorithm based on shader (supports buffers &amp; push/spec constants)</span>
+<span class="w">    </span><span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span><span class="w"> </span><span class="n">workgroup</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">});</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">specConsts</span><span class="p">({</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pushConstsA</span><span class="p">({</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pushConstsB</span><span class="p">({</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="p">});</span>
 
-    <span class="k">auto</span> <span class="n">algorithm</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span>
-                                   <span class="c1">// See documentation shader section for compileSource</span>
-                                   <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">),</span>
-                                   <span class="n">workgroup</span><span class="p">,</span>
-                                   <span class="n">specConsts</span><span class="p">,</span>
-                                   <span class="n">pushConstsA</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">algorithm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span>
+<span class="w">                                   </span><span class="c1">// See documentation shader section for compileSource</span>
+<span class="w">                                   </span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">),</span>
+<span class="w">                                   </span><span class="n">workgroup</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">specConsts</span><span class="p">,</span>
+<span class="w">                                   </span><span class="n">pushConstsA</span><span class="p">);</span>
 
-    <span class="c1">// 4. Run operation synchronously using sequence</span>
-    <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
-        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span> <span class="c1">// Binds default push consts</span>
-        <span class="o">-&gt;</span><span class="n">eval</span><span class="p">()</span> <span class="c1">// Evaluates the two recorded operations</span>
-        <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="n">pushConstsB</span><span class="p">)</span> <span class="c1">// Overrides push consts</span>
-        <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span> <span class="c1">// Evaluates only last recorded operation</span>
+<span class="w">    </span><span class="c1">// 4. Run operation synchronously using sequence</span>
+<span class="w">    </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+<span class="w">        </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="w">        </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span><span class="w"> </span><span class="c1">// Binds default push consts</span>
+<span class="w">        </span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">()</span><span class="w"> </span><span class="c1">// Evaluates the two recorded operations</span>
+<span class="w">        </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span><span class="w"> </span><span class="n">pushConstsB</span><span class="p">)</span><span class="w"> </span><span class="c1">// Overrides push consts</span>
+<span class="w">        </span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span><span class="w"> </span><span class="c1">// Evaluates only last recorded operation</span>
 
-    <span class="c1">// 5. Sync results from the GPU asynchronously</span>
-    <span class="k">auto</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">();</span>
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// 5. Sync results from the GPU asynchronously</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">();</span>
+<span class="w">    </span><span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">);</span>
 
-    <span class="c1">// ... Do other work asynchronously whilst GPU finishes</span>
+<span class="w">    </span><span class="c1">// ... Do other work asynchronously whilst GPU finishes</span>
 
-    <span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAwait</span><span class="p">();</span>
+<span class="w">    </span><span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAwait</span><span class="p">();</span>
 
-    <span class="c1">// Prints the first output which is: { 4, 8, 12 }</span>
-    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="kt">float</span><span class="o">&amp;</span> <span class="nl">elem</span> <span class="p">:</span> <span class="n">tensorOutA</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">())</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">elem</span> <span class="o">&lt;&lt;</span> <span class="s">"  "</span><span class="p">;</span>
-    <span class="c1">// Prints the second output which is: { 10, 10, 10 }</span>
-    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="kt">float</span><span class="o">&amp;</span> <span class="nl">elem</span> <span class="p">:</span> <span class="n">tensorOutB</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">())</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">elem</span> <span class="o">&lt;&lt;</span> <span class="s">"  "</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Prints the first output which is: { 4, 8, 12 }</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">&amp;</span><span class="w"> </span><span class="n">elem</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tensorOutA</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">())</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">elem</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"  "</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Prints the second output which is: { 10, 10, 10 }</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="o">&amp;</span><span class="w"> </span><span class="n">elem</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">tensorOutB</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">())</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">elem</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"  "</span><span class="p">;</span>
 
-<span class="p">}</span> <span class="c1">// Manages / releases all CPU and GPU memory resources</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// Manages / releases all CPU and GPU memory resources</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-    <span class="c1">// Define a raw string shader (or use the Kompute tools to compile to SPIRV / C++ header</span>
-    <span class="c1">// files). This shader shows some of the main components including constants, buffers, etc</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span> <span class="o">=</span> <span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+<span class="w">    </span><span class="c1">// Define a raw string shader (or use the Kompute tools to compile to SPIRV / C++ header</span>
+<span class="w">    </span><span class="c1">// files). This shader shows some of the main components including constants, buffers, etc</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
 <span class="s">        #version 450</span>
 
 <span class="s">        layout (local_size_x = 1) in;</span>
@@ -601,8 +602,8 @@
 <span class="s">        }</span>
 <span class="s">    </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="c1">// Run the function declared above with our raw string shader</span>
-    <span class="n">kompute</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Run the function declared above with our raw string shader</span>
+<span class="w">    </span><span class="n">kompute</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -734,8 +735,8 @@
 </a>
 </td>
 </tr>
-</table>
-
+</table></section>
+<section id="architectural-overview">
 <h2 id="architectural-overview">Architectural Overview<a class="headerlink" href="#architectural-overview" title="Permalink to this headline">¶</a></h2>
 <p>The core architecture of Kompute includes the following:</p>
 <ul class="simple">
@@ -767,14 +768,14 @@ Simplified Kompute Components
 <img src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/kompute-architecture.jpg" width="100%"/>
 </td>
 </tr>
-</table>
-
+</table></section>
+<section id="asynchronous-and-parallel-operations">
 <h2 id="asynchronous-and-parallel-operations">Asynchronous and Parallel Operations<a class="headerlink" href="#asynchronous-and-parallel-operations" title="Permalink to this headline">¶</a></h2>
 <p>Kompute provides flexibility to run operations in an asynrchonous way through vk::Fences. Furthermore, Kompute enables for explicit allocation of queues, which allow for parallel execution of operations across queue families.</p>
 <p>The image below provides an intuition on how Kompute Sequences can be allocated to different queues to enable parallel execution based on hardware. You can see the <a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#parallel-operations">hands on example</a>, as well as the <a class="reference external" href="https://kompute.cc/overview/async-parallel.html">detailed documentation page</a> describing how it would work using an NVIDIA 1650 as an example.</p>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/queue-allocation.jpg"><img alt="" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/queue-allocation.jpg"/></a>
-
-
+</section>
+<section id="id1">
 <h2 id="id1">Mobile Enabled<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>Kompute has been optimized to work in mobile environments. The <a class="reference external" href="#build-overview">build system</a> enables for dynamic loading of the Vulkan shared library for Android environments, together with a working <a class="reference external" href="https://github.com/KomputeProject/kompute/tree/master/vk_ndk_wrapper_include">Android NDK wrapper</a> for the CPP headers.</p>
 <table>
@@ -792,8 +793,8 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 <img src="https://raw.githubusercontent.com/KomputeProject/kompute/android-example/docs/images/android-kompute.jpg"/>
 </td>
 </tr>
-</table>
-
+</table></section>
+<section id="more-examples">
 <h2 id="more-examples">More examples<a class="headerlink" href="#more-examples" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://kompute.cc/overview/advanced-examples.html#simple-shader-example">Simple multiplication example</a></p></li>
@@ -809,8 +810,8 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 <li><p><a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Android NDK Mobile Kompute ML Application</a></p></li>
 <li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
 </ul>
-
-
+</section>
+<section id="id2">
 <h2 id="id2">Python Package<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>Besides the C++ core SDK you can also use the Python package of Kompute, which exposes the same core functionality, and supports interoperability with Python objects like Lists, Numpy Arrays, etc.</p>
 <p>The only dependencies are Python 3.5+ and Cmake 3.4.1+. You can install Kompute from the <a class="reference external" href="https://pypi.org/project/kp/">Python pypi package</a> using the following command.</p>
@@ -822,8 +823,8 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 </pre></div>
 </div>
 <p>For further details you can read the <a class="reference external" href="https://kompute.cc/overview/python-package.html">Python Package documentation</a> or the <a class="reference external" href="https://kompute.cc/overview/python-reference.html">Python Class Reference documentation</a>.</p>
-
-
+</section>
+<section id="c-build-overview">
 <h2 id="c-build-overview">C++ Build Overview<a class="headerlink" href="#c-build-overview" title="Permalink to this headline">¶</a></h2>
 <p>The build system provided uses <code class="docutils literal notranslate"><span class="pre">cmake</span></code>, which allows for cross platform builds.</p>
 <p>The top level <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> provides a set of optimized configurations for development as well as the docker image build, but you can start a build with the following command:</p>
@@ -832,8 +833,8 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 </div>
 <p>You also are able to add Kompute in your repo with <code class="docutils literal notranslate"><span class="pre">add_subdirectory</span></code> - the <a class="reference external" href="https://github.com/KomputeProject/kompute/blob/7c8c0eeba2cdc098349fcd999102bb2cca1bf711/examples/android/android-simple/app/src/main/cpp/CMakeLists.txt#L3">Android example CMakeLists.txt file</a> shows how this would be done.</p>
 <p>For a more advanced overview of the build configuration check out the <a class="reference external" href="https://kompute.cc/overview/build-system.html">Build System Deep Dive</a> documentation.</p>
-
-
+</section>
+<section id="kompute-development">
 <h2 id="kompute-development">Kompute Development<a class="headerlink" href="#kompute-development" title="Permalink to this headline">¶</a></h2>
 <p>We appreciate PRs and Issues. If you want to contribute try checking the “Good first issue” tag, but even using Kompute and reporting issues is a great contribution!</p>
 <ul class="simple">
@@ -865,7 +866,7 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">KOMPUTE_ENV_DEBUG_LAYERS</span><span class="o">=</span><span class="s2">"VK_LAYER_LUNARG_api_dump"</span>
 </pre></div>
 </div>
-
+<section id="updating-documentation">
 <h3 id="updating-documentation">Updating documentation<a class="headerlink" href="#updating-documentation" title="Permalink to this headline">¶</a></h3>
 <p>To update the documentation you will need to:</p>
 <ul class="simple">
@@ -873,8 +874,8 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 <li><p>Run the gensphynx target in the build-system</p></li>
 <li><p>Push to github pages with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">push_docs_to_ghpages</span></code></p></li>
 </ul>
-
-
+</section>
+<section id="running-tests">
 <h3 id="running-tests">Running tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h3>
 <p>Running the unit tests has been significantly simplified for contributors.</p>
 <p>The tests run on CPU, and can be triggered using the ACT command line interface (<a class="reference external" href="https://github.com/nektos/act">https://github.com/nektos/act</a>) - once you install the command line (And start the Docker daemon) you just have to type:</p>
@@ -891,25 +892,25 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 <p>The tests are currently run through the CI using Github Actions. It uses the images found in <code class="docutils literal notranslate"><span class="pre">docker-builders/</span></code>.</p>
 <p>In order to minimise hardware requirements the tests can run without a GPU, directly in the CPU using <a class="reference external" href="https://github.com/google/swiftshader">Swiftshader</a>.</p>
 <p>For more information on how the CI and tests are setup, you can go to the <a class="reference external" href="https://kompute.cc/overview/ci-tests.html">CI, Docker and Tests Section</a> in the documentation.</p>
-
-
-
+</section>
+</section>
+<section id="motivations">
 <h2 id="motivations">Motivations<a class="headerlink" href="#motivations" title="Permalink to this headline">¶</a></h2>
 <p>This project started after seeing that a lot of new and renowned ML &amp; DL projects like Pytorch, Tensorflow, Alibaba DNN, Tencent NCNN - among others - have either integrated or are looking to integrate the Vulkan SDK to add mobile (and cross-vendor) GPU support.</p>
 <p>The Vulkan SDK offers a great low level interface that enables for highly specialized optimizations - however it comes at a cost of highly verbose code which requires 500-2000 lines of code to even begin writing application code. This has resulted in each of these projects having to implement the same baseline to abstract the non-compute related features of the Vulkan SDK. This large amount of non-standardised boiler-plate can result in limited knowledge transfer, higher chance of unique framework implementation bugs being introduced, etc.</p>
 <p>We are currently developing Kompute not to hide the Vulkan SDK interface (as it’s incredibly well designed) but to augment it with a direct focus on the Vulkan SDK’s GPU computing capabilities. <a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">This article</a> provides a high level overview of the motivations of Kompute, together with a set of hands on examples that introduce both GPU computing as well as the core Kompute architecture.</p>
-
-
+</section>
+<section id="documentation-index-as-per-sidebar">
 <h2 id="documentation-index-as-per-sidebar">Documentation Index (as per sidebar)<a class="headerlink" href="#documentation-index-as-per-sidebar" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">C++ Documentation:</span></p>
+<p><span class="caption-text">C++ Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference external" href="https://kompute.cc/">Documentation Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/community.html">Community Meetings, Discord &amp; Links</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">C++ Documentation:</span></p>
+<p><span class="caption-text">C++ Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/memory-management.html">Memory Management Principles</a></li>
@@ -921,14 +922,14 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Python Documentation:</span></p>
+<p><span class="caption-text">Python Documentation:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/python-package.html">Python Package Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/python-reference.html">Python Class Documentation &amp; Reference</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Examples:</span></p>
+<p><span class="caption-text">Examples:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/python-examples.html">Python Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/advanced-examples.html">C++ Examples</a></li>
@@ -940,7 +941,7 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></p>
+<p><span class="caption-text">Advanced Concepts &amp; Deep Dives:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview/ci-tests.html">CI, Docker Images Docs &amp; Tests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview/variable-types.html">Variable Types for Tensors, and Push/Spec Constants</a></li>
@@ -948,8 +949,8 @@ You can also access the <a href="https://github.com/KomputeProject/kompute/tree/
 <li class="toctree-l1"><a class="reference internal" href="genindex.html">Code Index</a></li>
 </ul>
 </div>
-
-
+</section>
+</section>
 
 
           </article>

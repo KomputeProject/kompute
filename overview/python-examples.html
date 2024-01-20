@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -462,14 +463,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="python-examples">
 <h1 id="overview-python-examples--page-root">Python Examples<a class="headerlink" href="#overview-python-examples--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section contains simple and advanced examples using the Python Kompute class. For an overview of the module check <a class="reference external" href="python-package.html">Python Package Overview</a>, for a deep dive into functions check the <a class="reference external" href="python-reference.html">Python Class Reference Section</a>.</p>
 <p>You will be able to run the examples below by installing the dependencies in <cite>python/test/requirements-dev.txt</cite></p>
-
+<section id="python-example-simple">
 <h2 id="python-example-simple">Python Example (Simple)<a class="headerlink" href="#python-example-simple" title="Permalink to this headline">¶</a></h2>
 <p>Then you can interact with it from your interpreter. Below is the same sample as above “Your First Kompute (Simple Version)” but in Python:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -498,7 +499,7 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">OpTensorSyncDevice</span><span class="p">,</span> <span class="n">OpTensorSyncLocal</span><span class="p">,</span> <span class="n">OpAlgoDispatch</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">OpTensorSyncDevice</span><span class="p">,</span> <span class="n">OpTensorSyncLocal</span><span class="p">,</span> <span class="n">OpAlgoDispatch</span>
 <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
 
 <span class="n">mgr</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
@@ -528,13 +529,13 @@
 <span class="n">sq</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">OpTensorSyncLocal</span><span class="p">([</span><span class="n">tensor_out</span><span class="p">]))</span>
 
 <span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="python-example-extended">
 <h2 id="python-example-extended">Python Example (Extended)<a class="headerlink" href="#python-example-extended" title="Permalink to this headline">¶</a></h2>
 <p>Similarly you can find the same extended example as above:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -569,7 +570,7 @@
 <span class="normal">33</span>
 <span class="normal">34</span>
 <span class="normal">35</span>
-<span class="normal">36</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+<span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
  <span class="kn">import</span> <span class="nn">kp</span>
  <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
 
@@ -605,13 +606,13 @@
  <span class="n">seq</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
  <span class="k">assert</span> <span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">]</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="kompute-operation-capabilities">
 <h2 id="kompute-operation-capabilities">Kompute Operation Capabilities<a class="headerlink" href="#kompute-operation-capabilities" title="Permalink to this headline">¶</a></h2>
 <p>Handling multiple capabilites of processing can be done by compute shaders being loaded into separate sequences. The example below shows how this can be done:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -643,7 +644,7 @@
 <span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
-<span class="normal">33</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span>
  <span class="kn">import</span> <span class="nn">kp</span>
 
  <span class="c1"># We'll assume we have the shader data available</span>
@@ -676,13 +677,13 @@
  <span class="n">sq_sync</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
  <span class="nb">print</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">t2</span><span class="o">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">t3</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="machine-learning-logistic-regression-implementation">
 <h2 id="machine-learning-logistic-regression-implementation">Machine Learning Logistic Regression Implementation<a class="headerlink" href="#machine-learning-logistic-regression-implementation" title="Permalink to this headline">¶</a></h2>
 <p>Similar to the logistic regression implementation in the C++ examples section, below you can find the Python implementation of the Logistic Regression algorithm.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
 <span class="normal">  2</span>
 <span class="normal">  3</span>
 <span class="normal">  4</span>
@@ -786,7 +787,7 @@
 <span class="normal">102</span>
 <span class="normal">103</span>
 <span class="normal">104</span>
-<span class="normal">105</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
+<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span> <span class="kn">from</span> <span class="nn">kp</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Tensor</span>
  <span class="kn">import</span> <span class="nn">kp</span>
  <span class="kn">from</span> <span class="nn">pyshader</span> <span class="kn">import</span> <span class="n">python2shader</span><span class="p">,</span> <span class="n">ivec3</span><span class="p">,</span> <span class="n">f32</span><span class="p">,</span> <span class="n">Array</span>
 
@@ -891,10 +892,10 @@
  <span class="c1"># Print outputs</span>
  <span class="nb">print</span><span class="p">(</span><span class="n">tensor_w_in</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
  <span class="nb">print</span><span class="p">(</span><span class="n">tensor_b_in</span><span class="o">.</span><span class="n">data</span><span class="p">())</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+</section>
 
 
           </article>

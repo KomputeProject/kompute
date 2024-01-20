@@ -1,5 +1,10 @@
 var searchData=
 [
-  ['manager',['Manager',['../classkp_1_1Manager.html',1,'kp::Manager'],['../classkp_1_1Manager.html#a43cc11ff353b2b0775e6a204c8395d97',1,'kp::Manager::Manager()'],['../classkp_1_1Manager.html#a03870694ea0749424dc5206638b29c32',1,'kp::Manager::Manager(uint32_t physicalDeviceIndex, const std::vector&lt; uint32_t &gt; &amp;familyQueueIndices={}, const std::vector&lt; std::string &gt; &amp;desiredExtensions={})'],['../classkp_1_1Manager.html#afe401feb6eeb8d462998f095d36e2b46',1,'kp::Manager::Manager(std::shared_ptr&lt; vk::Instance &gt; instance, std::shared_ptr&lt; vk::PhysicalDevice &gt; physicalDevice, std::shared_ptr&lt; vk::Device &gt; device)']]],
-  ['memorysize',['memorySize',['../classkp_1_1Tensor.html#a4be971eaffcb3192c46c6e49a3fe2773',1,'kp::Tensor']]]
+  ['opalgodispatch_30',['OpAlgoDispatch',['../classkp_1_1OpAlgoDispatch.html',1,'kp::OpAlgoDispatch'],['../classkp_1_1OpAlgoDispatch.html#ae435647441f630f5860eed6b414cc003',1,'kp::OpAlgoDispatch::OpAlgoDispatch()']]],
+  ['opbase_31',['OpBase',['../classkp_1_1OpBase.html',1,'kp']]],
+  ['opmemorybarrier_32',['OpMemoryBarrier',['../classkp_1_1OpMemoryBarrier.html',1,'kp::OpMemoryBarrier'],['../classkp_1_1OpMemoryBarrier.html#a7ebead7bcbc8d87716a388a094acf05a',1,'kp::OpMemoryBarrier::OpMemoryBarrier()']]],
+  ['opmult_33',['OpMult',['../classkp_1_1OpMult.html',1,'kp::OpMult'],['../classkp_1_1OpMult.html#a61e02be5bc3184f900a1f2a411a18e25',1,'kp::OpMult::OpMult()']]],
+  ['optensorcopy_34',['OpTensorCopy',['../classkp_1_1OpTensorCopy.html',1,'kp::OpTensorCopy'],['../classkp_1_1OpTensorCopy.html#a332116c77ff4795e634b093b24e9de18',1,'kp::OpTensorCopy::OpTensorCopy()']]],
+  ['optensorsyncdevice_35',['OpTensorSyncDevice',['../classkp_1_1OpTensorSyncDevice.html',1,'kp::OpTensorSyncDevice'],['../classkp_1_1OpTensorSyncDevice.html#a482b739eac339555ca6183f19e850300',1,'kp::OpTensorSyncDevice::OpTensorSyncDevice()']]],
+  ['optensorsynclocal_36',['OpTensorSyncLocal',['../classkp_1_1OpTensorSyncLocal.html',1,'kp::OpTensorSyncLocal'],['../classkp_1_1OpTensorSyncLocal.html#ad427093c4065143a711133bd75207406',1,'kp::OpTensorSyncLocal::OpTensorSyncLocal()']]]
 ];

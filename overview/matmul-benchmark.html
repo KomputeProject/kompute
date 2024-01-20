@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -450,14 +451,14 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="naive-matmul-implementation">
 <h1 id="overview-matmul-benchmark--page-root">Naive Matmul Implementation<a class="headerlink" href="#overview-matmul-benchmark--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This demonstrate a basic matmul implementation using Python and vulkan-kompute. Many thanks for the very helpful <a class="reference external" href="https://www.ibiblio.org/e-notes/webgl/gpu/mul/sgemm.htm">SGEMM in WebGL2-compute</a> article on the public library <a class="reference external" href="https://www.ibiblio.org/">ibiblio.org</a>.</p>
 <p>To test the implementation simply run the <code class="docutils literal notranslate"><span class="pre">matmul.py</span></code> script :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">matmul</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-
+<section id="implementation-overview">
 <h2 id="implementation-overview">Implementation Overview<a class="headerlink" href="#implementation-overview" title="Permalink to this headline">¶</a></h2>
 <p>The benchmark can be found in the <cite>benchmark.py</cite> file in the repo, which is outlined below. This file runs a naive implementation of the three matrix multiplication implementations to evaluate the performance of each.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
@@ -507,9 +508,9 @@
             <span class="c1"># print(tensor_out.data().reshape(tensor_shape))</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tensor_shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">mat_result</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'From </span><span class="si">{</span><span class="n">MatMulOp</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1"> : </span><span class="si">{</span><span class="n">experiment_count</span><span class="si">}</span><span class="s1"> matmul time : '</span>
-                      <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">experiment_time</span> <span class="o">*</span> <span class="mi">1000</span><span class="si">:</span><span class="s1">0.2f</span><span class="si">}</span><span class="s1">ms =&gt; '</span>
-                      <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">experiment_count</span> <span class="o">/</span> <span class="n">experiment_time</span><span class="si">:</span><span class="s1">0.2f</span><span class="si">}</span><span class="s1">op/s or '</span>
-                      <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">experiment_count</span> <span class="o">*</span> <span class="n">op_count</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1e9</span> <span class="o">*</span> <span class="n">experiment_time</span><span class="p">)</span><span class="si">:</span><span class="s1">0.2f</span><span class="si">}</span><span class="s1"> GFLOPS'</span><span class="p">)</span>
+                      <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">experiment_time</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1000</span><span class="si">:</span><span class="s1">0.2f</span><span class="si">}</span><span class="s1">ms =&gt; '</span>
+                      <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">experiment_count</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">experiment_time</span><span class="si">:</span><span class="s1">0.2f</span><span class="si">}</span><span class="s1">op/s or '</span>
+                      <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">experiment_count</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">op_count</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mf">1e9</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">experiment_time</span><span class="p">)</span><span class="si">:</span><span class="s1">0.2f</span><span class="si">}</span><span class="s1"> GFLOPS'</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Test failed =&gt; output tensor is wrong :</span><span class="se">\n</span><span class="si">{</span><span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">tensor_shape</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
 
@@ -518,8 +519,8 @@
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
-
-
+</section>
+</section>
 
 
           </article>

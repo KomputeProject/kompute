@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -462,11 +463,11 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="python-class-documentation-reference">
 <h1 id="overview-python-reference--page-root">Python Class Documentation &amp; Reference<a class="headerlink" href="#overview-python-reference--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section provides a breakdown of the Python classes and what each of their functions provide.
 Below is a diagram that provides insights on the relationship between Kompute objects and Vulkan SDK resources, which primarily encompass ownership of either CPU and/or GPU memory.</p>
-
+<section id="manager">
 <h2 id="manager">Manager<a class="headerlink" href="#manager" title="Permalink to this headline">¶</a></h2>
 <p>The Kompute Manager provides a high level interface to simplify interaction with underlying <a class="reference internal" href="#kp.Sequence" title="kp.Sequence"><code class="xref py py-class docutils literal notranslate"><span class="pre">kp.Sequence</span></code></a> of Operations.</p>
 <dl class="py class">
@@ -544,8 +545,8 @@ The type of tensor to initialize @returns Shared pointer with
 initialised tensor</p>
 </dd></dl>
 </dd></dl>
-
-
+</section>
+<section id="sequence">
 <h2 id="sequence">Sequence<a class="headerlink" href="#sequence" title="Permalink to this headline">¶</a></h2>
 <p>The Kompute Sequence consists of batches of Kompute Operations, which are executed on a respective GPU queue. The execution of sequences can be synchronous or asynchronous, and it can be coordinated through its respective vk::Fence.</p>
 <dl class="py class">
@@ -666,8 +667,8 @@ operations saved, which is useful if the underlying kp::Tensors or
 kp::Algorithms are modified and need to be re-recorded.</p>
 </dd></dl>
 </dd></dl>
-
-
+</section>
+<section id="tensor">
 <h2 id="tensor">Tensor<a class="headerlink" href="#tensor" title="Permalink to this headline">¶</a></h2>
 <p>The Kompute Tensor is the atomic unit in Kompute, and it is used primarily for handling Host and GPU Device data.</p>
 <dl class="py class">
@@ -715,8 +716,8 @@ number of elements across all dimensions</p>
 <p>@return Tensor type of tensor</p>
 </dd></dl>
 </dd></dl>
-
-
+</section>
+<section id="tensortype">
 <h2 id="tensortype">TensorType<a class="headerlink" href="#tensortype" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-kp"></span><dl class="py class">
 <dt id="kp.Algorithm">
@@ -937,8 +938,8 @@ number of elements across all dimensions</p>
 <em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#kp.TensorTypes.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 </dd></dl>
-
-
+</section>
+</section>
 
 
           </article>

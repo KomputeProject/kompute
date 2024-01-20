@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -450,7 +451,7 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="memory-management-principles">
 <h1 id="overview-memory-management--page-root">Memory Management Principles<a class="headerlink" href="#overview-memory-management--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The principle in Kompute on memory management is summarised as follows:</p>
 <ul class="simple">
@@ -467,11 +468,11 @@
 <p>The memory ownership is hierarchically outlined in the component architecture - in this diagram, the arrows provide an intuition on the memory management ownership relationships. It’s worth mentioning that the memory relationship may be different to the way components interact with each other - for this, you can see the high level component overview. More specifically:
 * The purple arrows denote GPU memory management</p>
 <a class="reference internal image-reference" href="../_images/kompute-vulkan-architecture.jpg"><img alt="../_images/kompute-vulkan-architecture.jpg" src="../_images/kompute-vulkan-architecture.jpg" style="width: 100%;"/></a>
-
+<section id="optional-memory-management">
 <h2 id="optional-memory-management">Optional Memory Management<a class="headerlink" href="#optional-memory-management" title="Permalink to this headline">¶</a></h2>
 <p>As outlined above, resource memory is only managed by Kompute if the resources are created by Kompute. Each of the Kompute components can also be initialised with externally managed resources. The <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::Manager</span></code> for example can be initialized with an external vk::Device. The first principle ensures that all memory ownership is explicitly defined when managing and creating Kompute resources.</p>
-
-
+</section>
+</section>
 
 
           </article>

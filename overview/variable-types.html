@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -67,7 +68,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Asynchronous and Parallel Operations" href="async-parallel.html" />
-    <link rel="prev" title="CI, Docker Images, Docs &amp; Tests" href="ci-tests.html" />
+    <link rel="prev" title="CI, Docker Images, Docs, Tests &amp; Release" href="ci-tests.html" />
   
    
 
@@ -490,11 +491,11 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="variable-types-for-tensors-and-constants">
 <h1 id="overview-variable-types--page-root">Variable Types for Tensors and Constants<a class="headerlink" href="#overview-variable-types--page-root" title="Permalink to this headline">¶</a></h1>
 <p>By default the initial interfaces you may interact with, will be primarily using float values by default, which is enough to get through the basic conceptual examples. However as real world applications are being developed, more specialized types may be required for kp::Tensor, as well as for SpecializationConstants and PushConstants.</p>
 <p>Before diving into the practical classes and interfaces that can be used to take advantage of the variable type support of Kompute, we want to provide some high level intution on what each of these components are.</p>
-
+<section id="variable-tensor-types">
 <h2 id="variable-tensor-types">Variable Tensor Types<a class="headerlink" href="#variable-tensor-types" title="Permalink to this headline">¶</a></h2>
 <p>For the kp::Tensor class, Kompute provides under the hood an interface to have more seamless interaction with multiple different underlying data types. This is done through the introduction of the class kp::TensorT&lt;type&gt; and parent class kp::Tensor, however you as a developer you will be primarily interacting with the top level kp::Tensor class, as this is what is provided through the high level kp::Manager class.</p>
 <p>The kp::Tensor class does provide an “integrated” experience, which allows users to “seamlessly” retrieve the underlying data through the <cite>data()</cite> and <cite>vector()</cite> functions. This is done by leveraging C++ templates, as well as limiting the types that can be used, which are namely:</p>
@@ -507,38 +508,38 @@
 </ul>
 <p>Any other data type provided would result in an error, and for the time being Kompute will focus on primarily provide support for these classes.</p>
 <p>The tests under <cite>TestTensor.cpp</cite> and <cite>test_tensor_types.py</cite> provide an overview of how users can take advantage of these features using std::vector for C++ and numpy array for Python.</p>
-
+<section id="c-tensor-types-usage">
 <h3 id="c-tensor-types-usage">C++ Tensor Types Usage<a class="headerlink" href="#c-tensor-types-usage" title="Permalink to this headline">¶</a></h3>
 <p>Below you can see how it is possible to define different types in C++.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span>    <span class="p">{</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">};</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
-        <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eFloat</span><span class="p">);</span>
-    <span class="p">}</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
+<span class="w">        </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span><span class="w"> </span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eFloat</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="p">{</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">};</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
-        <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eInt</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
+<span class="w">        </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span><span class="w"> </span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eInt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="p">{</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">};</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;&gt;</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
-        <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span>
-                  <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eUnsignedInt</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
+<span class="w">        </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span>
+<span class="w">                  </span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eUnsignedInt</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 
-    <span class="p">{</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">vec</span><span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="p">};</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
-        <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span> <span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eDouble</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">vec</span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">};</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="p">(</span><span class="n">vec</span><span class="p">);</span>
+<span class="w">        </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">dataType</span><span class="p">(),</span><span class="w"> </span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">::</span><span class="n">TensorDataTypes</span><span class="o">::</span><span class="n">eDouble</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="python-tensor-types-usage">
 <h3 id="python-tensor-types-usage">Python Tensor Types Usage<a class="headerlink" href="#python-tensor-types-usage" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">spirv</span> <span class="o">=</span> <span class="n">compile_source</span><span class="p">(</span><span class="n">shader</span><span class="p">)</span>
 
@@ -563,71 +564,71 @@
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span> <span class="o">==</span> <span class="n">arr_in_a</span> <span class="o">*</span> <span class="n">arr_in_b</span><span class="p">)</span>
 </pre></div>
 </div>
-
-
-
+</section>
+</section>
+<section id="variable-push-constants">
 <h2 id="variable-push-constants">Variable Push Constants<a class="headerlink" href="#variable-push-constants" title="Permalink to this headline">¶</a></h2>
 <p>Push constants are a relatively non-expensive way to provide dynamic data to a GPU Algorithm (shader) as further CPU compute is performed. Although Push Constants are a more efficient way to provide data, it is also a limited manner as there is a memory limit for push constants.</p>
 <p>Push constants with Kompute are flexible as it is possible to pass user-defined structs in C++. In Python it is limited to providing numpy arrays with multiple elements of the same type.</p>
-
+<section id="c-push-consts-types-usage">
 <h3 id="c-push-consts-types-usage">C++ Push Consts Types Usage<a class="headerlink" href="#c-push-consts-types-usage" title="Permalink to this headline">¶</a></h3>
 <p>As mentioned above, this test under <cite>TestPushConstants.cpp</cite> shows how it is possible to use user-defined structs for multiple elements from different types, which is not possible for specialized constants or tensors.</p>
 <p>These are defined in the <cite>algorithm</cite> function of the <cite>kp::Manager</cite>, and once it push constant is set, all other push constants provided have to consist of the same types and element size.</p>
 <p>More specifically, when passing a custom struct it is possible to pass a single element, or alternatively passing multiple scalar values as part of the vector, and access them as outlined in the rest of the tests.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">//     }</span>
-<span class="c1">// }</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// }</span>
 
-<span class="n">TEST</span><span class="p">(</span><span class="n">TestPushConstants</span><span class="p">,</span> <span class="n">TestConstantsMixedTypes</span><span class="p">)</span>
+<span class="n">TEST</span><span class="p">(</span><span class="n">TestPushConstants</span><span class="p">,</span><span class="w"> </span><span class="n">TestConstantsMixedTypes</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="p">{</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">shader</span><span class="p">(</span><span class="n">R</span><span class="s">"(</span>
-          <span class="cp">#version 450</span>
-          <span class="n">layout</span><span class="p">(</span><span class="n">push_constant</span><span class="p">)</span> <span class="n">uniform</span> <span class="n">PushConstants</span> <span class="p">{</span>
-            <span class="kt">float</span> <span class="n">x</span><span class="p">;</span>
-            <span class="n">uint</span> <span class="n">y</span><span class="p">;</span>
-            <span class="kt">int</span> <span class="n">z</span><span class="p">;</span>
-          <span class="p">}</span> <span class="n">pcs</span><span class="p">;</span>
-          <span class="n">layout</span> <span class="p">(</span><span class="n">local_size_x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span><span class="p">;</span>
-          <span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">a</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">pa</span><span class="p">[];</span> <span class="p">};</span>
-          <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-              <span class="n">pa</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">pcs</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-              <span class="n">pa</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">pcs</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="mi">2147483000</span><span class="p">;</span>
-              <span class="n">pa</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">pcs</span><span class="p">.</span><span class="n">z</span><span class="p">;</span>
-          <span class="p">})</span><span class="s">");</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<span class="s">          #version 450</span>
+<span class="s">          layout(push_constant) uniform PushConstants {</span>
+<span class="s">            float x;</span>
+<span class="s">            uint y;</span>
+<span class="s">            int z;</span>
+<span class="s">          } pcs;</span>
+<span class="s">          layout (local_size_x = 1) in;</span>
+<span class="s">          layout(set = 0, binding = 0) buffer a { float pa[]; };</span>
+<span class="s">          void main() {</span>
+<span class="s">              pa[0] += pcs.x;</span>
+<span class="s">              pa[1] += pcs.y - 2147483000;</span>
+<span class="s">              pa[2] += pcs.z;</span>
+<span class="s">          }</span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-        <span class="k">struct</span> <span class="nc">TestConsts</span>
-        <span class="p">{</span>
-            <span class="kt">float</span> <span class="n">x</span><span class="p">;</span>
-            <span class="kt">uint32_t</span> <span class="n">y</span><span class="p">;</span>
-            <span class="kt">int32_t</span> <span class="n">z</span><span class="p">;</span>
-        <span class="p">};</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">TestConsts</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">float</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="w">            </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="w">            </span><span class="kt">int32_t</span><span class="w"> </span><span class="n">z</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spirv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
 
-        <span class="p">{</span>
-            <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">;</span>
 
-            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span> <span class="n">tensor</span> <span class="o">=</span>
-              <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span>
+<span class="w">              </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">});</span>
 
-            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span>
-              <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span> <span class="n">TestConsts</span><span class="o">&gt;</span><span class="p">(</span>
-                <span class="p">{</span> <span class="n">tensor</span> <span class="p">},</span> <span class="n">spirv</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span><span class="p">({</span> <span class="mi">1</span> <span class="p">}),</span> <span class="p">{},</span> <span class="p">{</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">}</span> <span class="p">});</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algo</span><span class="w"> </span><span class="o">=</span>
+<span class="w">              </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="o">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="w"> </span><span class="n">TestConsts</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">                </span><span class="p">{</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">spirv</span><span class="p">,</span><span class="w"> </span><span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span><span class="p">({</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
 
-            <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+<span class="w">            </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="p">});</span>
 
-            <span class="c1">// We need to run this in sequence to avoid race condition</span>
-            <span class="c1">// We can't use atomicAdd as swiftshader doesn't support it for</span>
-            <span class="c1">// float</span>
-            <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span>
-              <span class="n">algo</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TestConsts</span><span class="o">&gt;</span><span class="p">{</span> <span class="p">{</span> <span class="mf">15.32</span><span class="p">,</span> <span class="mi">2147483650</span><span class="p">,</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">});</span>
-            <span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">            </span><span class="c1">// We need to run this in sequence to avoid race condition</span>
+<span class="w">            </span><span class="c1">// We can't use atomicAdd as swiftshader doesn't support it for</span>
+<span class="w">            </span><span class="c1">// float</span>
+<span class="w">            </span><span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">              </span><span class="n">algo</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TestConsts</span><span class="o">&gt;</span><span class="p">{</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">15.32</span><span class="p">,</span><span class="w"> </span><span class="mi">2147483650</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
+<span class="w">            </span><span class="n">sq</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">              </span><span class="n">algo</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">TestConsts</span><span class="o">&gt;</span><span class="p">{</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">30.32</span><span class="p">,</span><span class="w"> </span><span class="mi">2147483650</span><span class="p">,</span><span class="w"> </span><span class="mi">-3</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">});</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="python-push-consts-types-usage">
 <h3 id="python-push-consts-types-usage">Python Push Consts Types Usage<a class="headerlink" href="#python-push-consts-types-usage" title="Permalink to this headline">¶</a></h3>
 <p>In python the push constants are limited to a single list of elements of the same type. These are provided by passing a numpy array to the <cite>algorithm</cite> function or the <cite>kp::OpAlgoDispatch</cite> operation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dtype value </span><span class="si">{</span><span class="n">tensor_out</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -658,9 +659,9 @@
     <span class="k">assert</span> <span class="n">td</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">is_init</span><span class="p">()</span> <span class="o">==</span> <span class="kc">False</span>
 </pre></div>
 </div>
-
-
-
+</section>
+</section>
+<section id="variable-specialization-constants">
 <h2 id="variable-specialization-constants">Variable Specialization Constants<a class="headerlink" href="#variable-specialization-constants" title="Permalink to this headline">¶</a></h2>
 <p>Specialization constants are analogous to push constants, but these are not dynamic, can only be set on initialization or rebuild of <cite>kp::Algorithm</cite> and cannot be changed unless a <cite>rebuild</cite> is carried out.</p>
 <p>The usage of specailization constants is very similar to the push constants, but the only limitation are:</p>
@@ -669,61 +670,61 @@
 <li><p>Spec constants do not support complex types (i.e. user defined struct)</p></li>
 <li><p>Kompute supports an array of elements of same type for specialization constants</p></li>
 </ul>
-
+<section id="id1">
 <h3 id="id1">C++ Push Consts Types Usage<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>The specialization constant example shows how it is possible to define as a std::vector.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TEST</span><span class="p">(</span><span class="n">TestSpecializationConstants</span><span class="p">,</span> <span class="n">TestConstantsInt</span><span class="p">)</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TEST</span><span class="p">(</span><span class="n">TestSpecializationConstants</span><span class="p">,</span><span class="w"> </span><span class="n">TestConstantsInt</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="p">{</span>
-        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">shader</span><span class="p">(</span><span class="n">R</span><span class="s">"(</span>
-          <span class="cp">#version 450</span>
-          <span class="n">layout</span> <span class="p">(</span><span class="n">constant_id</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">cOne</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="n">layout</span> <span class="p">(</span><span class="n">constant_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">cTwo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-          <span class="n">layout</span> <span class="p">(</span><span class="n">local_size_x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span><span class="p">;</span>
-          <span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">a</span> <span class="p">{</span> <span class="kt">int</span> <span class="n">pa</span><span class="p">[];</span> <span class="p">};</span>
-          <span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">b</span> <span class="p">{</span> <span class="kt">int</span> <span class="n">pb</span><span class="p">[];</span> <span class="p">};</span>
-          <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-              <span class="n">uint</span> <span class="n">index</span> <span class="o">=</span> <span class="n">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
-              <span class="n">pa</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">cOne</span><span class="p">;</span>
-              <span class="n">pb</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">cTwo</span><span class="p">;</span>
-          <span class="p">})</span><span class="s">");</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<span class="s">          #version 450</span>
+<span class="s">          layout (constant_id = 0) const int cOne = 1;</span>
+<span class="s">          layout (constant_id = 1) const int cTwo = 1;</span>
+<span class="s">          layout (local_size_x = 1) in;</span>
+<span class="s">          layout(set = 0, binding = 0) buffer a { int pa[]; };</span>
+<span class="s">          layout(set = 0, binding = 1) buffer b { int pb[]; };</span>
+<span class="s">          void main() {</span>
+<span class="s">              uint index = gl_GlobalInvocationID.x;</span>
+<span class="s">              pa[index] = cOne;</span>
+<span class="s">              pb[index] = cTwo;</span>
+<span class="s">          }</span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spirv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
 
-        <span class="p">{</span>
-            <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">;</span>
 
-            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span> <span class="n">tensorA</span> <span class="o">=</span>
-              <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
-            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span> <span class="n">tensorB</span> <span class="o">=</span>
-              <span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensorA</span><span class="w"> </span><span class="o">=</span>
+<span class="w">              </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">});</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">TensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensorB</span><span class="w"> </span><span class="o">=</span>
+<span class="w">              </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensorT</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">});</span>
 
-            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="n">tensorA</span><span class="p">,</span>
-                                                                <span class="n">tensorB</span> <span class="p">};</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tensorA</span><span class="p">,</span>
+<span class="w">                                                                </span><span class="n">tensorB</span><span class="w"> </span><span class="p">};</span>
 
-            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span> <span class="n">spec</span><span class="p">({</span> <span class="mi">-1</span><span class="p">,</span> <span class="mi">-2</span> <span class="p">});</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spec</span><span class="p">({</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="w"> </span><span class="p">});</span>
 
-            <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span>
-              <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">spirv</span><span class="p">,</span> <span class="p">{},</span> <span class="n">spec</span><span class="p">,</span> <span class="p">{});</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algo</span><span class="w"> </span><span class="o">=</span>
+<span class="w">              </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="n">spirv</span><span class="p">,</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="n">spec</span><span class="p">,</span><span class="w"> </span><span class="p">{});</span>
 
-            <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
-                   <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-                   <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">)</span>
-                   <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-                   <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+<span class="w">            </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+<span class="w">                   </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="w">                   </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">)</span>
+<span class="w">                   </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+<span class="w">                   </span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
 
-            <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensorA</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">-1</span><span class="p">,</span> <span class="mi">-1</span><span class="p">,</span> <span class="mi">-1</span> <span class="p">}));</span>
-            <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensorB</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span> <span class="mi">-2</span><span class="p">,</span> <span class="mi">-2</span><span class="p">,</span> <span class="mi">-2</span> <span class="p">}));</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
+<span class="w">            </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensorA</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">            </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensorB</span><span class="o">-&gt;</span><span class="n">vector</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int32_t</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mi">-2</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="p">,</span><span class="w"> </span><span class="mi">-2</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-
-
-
+</section>
+</section>
+</section>
 
 
           </article>
@@ -735,7 +736,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ci-tests.html" title="CI, Docker Images, Docs &amp; Tests"
+            <a href="ci-tests.html" title="CI, Docker Images, Docs, Tests &amp; Release"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -744,7 +745,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> CI, Docker Images, Docs &amp; Tests </span>
+                      class="md-footer-nav__direction"> Previous </span> CI, Docker Images, Docs, Tests &amp; Release </span>
               </div>
             </a>
           

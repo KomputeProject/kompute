@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -55,7 +56,7 @@
   <script async src='https://www.google-analytics.com/analytics.js'></script>
   
   
-    <title>CI, Docker Images, Docs &amp; Tests &#8212; Kompute Documentation (Python &amp; C++)</title>
+    <title>CI, Docker Images, Docs, Tests &amp; Release &#8212; Kompute Documentation (Python &amp; C++)</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/assets/custom.css" />
@@ -104,7 +105,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kompute Documentation (Python & C++)</span>
-          <span class="md-header-nav__topic"> CI, Docker Images, Docs &amp; Tests </span>
+          <span class="md-header-nav__topic"> CI, Docker Images, Docs, Tests &amp; Release </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -381,7 +382,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images, Docs & Tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images, Docs, Tests & Release</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#ci-commands-triggered" class="md-nav__link">CI Commands Triggered</a>
         </li>
@@ -438,7 +439,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images, Docs & Tests</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#overview-ci-tests--page-root" class="md-nav__link">CI, Docker Images, Docs, Tests & Release</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#ci-commands-triggered" class="md-nav__link">CI Commands Triggered</a>
         </li>
@@ -466,8 +467,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="overview-ci-tests--page-root">CI, Docker Images, Docs &amp; Tests<a class="headerlink" href="#overview-ci-tests--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="ci-docker-images-docs-tests-release">
+<h1 id="overview-ci-tests--page-root">CI, Docker Images, Docs, Tests &amp; Release<a class="headerlink" href="#overview-ci-tests--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This section contains an overview of the steps run on CI, as well as the tools used to simplify the testing (such as running on CPU).</p>
 <p>We use Github Actions to run the tests, which simplifies the workflows significantly for contributors.</p>
 <p>The tests run on CPU, and can be triggered using the ACT command line interface (<a class="reference external" href="https://github.com/nektos/act">https://github.com/nektos/act</a>) - once you install the command line (And start the Docker daemon) you just have to type:</p>
@@ -480,7 +481,7 @@
 ...
 </pre></div>
 </div>
-
+<section id="ci-commands-triggered">
 <h2 id="ci-commands-triggered">CI Commands Triggered<a class="headerlink" href="#ci-commands-triggered" title="Permalink to this headline">¶</a></h2>
 <p>The simplest way to see how this works is by looking at the github actions commands that are run.</p>
 <p>These can be found through the following files:</p>
@@ -489,14 +490,14 @@
 <li><p><a class="reference external" href="https://github.com/KomputeProject/kompute/blob/master/.github/workflows/python_tests.yml">Python Tests</a></p></li>
 </ul>
 <p>When submitting a PR or merging a PR into master, both of these will run - you can see the logs through the github interface.</p>
-
-
+</section>
+<section id="running-on-the-cpu">
 <h2 id="running-on-the-cpu">Running on the CPU<a class="headerlink" href="#running-on-the-cpu" title="Permalink to this headline">¶</a></h2>
 <p>We use <a class="reference external" href="https://github.com/google/swiftshader">Swiftshader</a> to enable us to run the Kompute framework directly on the CPU for the CI tests.</p>
 <p>Even though Swiftshader is optimized to function as a high-performance CPU backend for the Vulkan SDK, there are several limitations, the most notable are limitations in extensions.</p>
 <p>This is one of the main reason why only a subset of the tests are run in the CI.</p>
-
-
+</section>
+<section id="dockerfiles">
 <h2 id="dockerfiles">Dockerfiles<a class="headerlink" href="#dockerfiles" title="Permalink to this headline">¶</a></h2>
 <p>The dockerfiles created provide functionality to simplify the interaction with the system.</p>
 <table>
@@ -521,8 +522,8 @@
 </tr>
 </tbody>
 </table>
-
-
+</section>
+<section id="running-building-documentation">
 <h2 id="running-building-documentation">Running / Building Documentation<a class="headerlink" href="#running-building-documentation" title="Permalink to this headline">¶</a></h2>
 <p>In order to build the documentation you will need the following dependencies:</p>
 <ul class="simple">
@@ -530,17 +531,53 @@
 </ul>
 <p>Once this installed:</p>
 <ul class="simple">
-<li><p>You can build the documentation using the <cite>gendocsall</cite> cmake target</p></li>
+<li><dl class="simple">
+<dt>You can build the documentation using the <cite>gendocsall</cite> cmake target</dt><dd><ul>
+<li><p>This can be done with <cite>make clean_cmake mk_cmake mk_build_docs</cite></p></li>
+<li><p>This can be done with <cite>mk_build_docs</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>You can serve the documentation locally using the <cite>mk_run_docs</cite> command in the Makefile</p></li>
 </ul>
-
-
+</section>
+<section id="performing-release">
 <h2 id="performing-release">Performing Release<a class="headerlink" href="#performing-release" title="Permalink to this headline">¶</a></h2>
 <p>In order to perform the release the following steps need to be carried out:</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt>Build changelog</dt><dd><ul>
+<dt>Set up repo with next version as required if not yet updated</dt><dd><ul>
+<li><p>Update version in <cite>./VERSION</cite> file</p></li>
+<li><dl class="simple">
+<dt>Update the version across the repo</dt><dd><ul>
+<li><p>If using Far.vim you can use <cite>:Far X\.Y\.Z XX.YY.ZZ **/**</cite></p></li>
+<li><p>Make sure you don’t accidentally replace the <cite>CHANGELOG.md</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><p>Create branch called <cite>v&lt;VERSION&gt;-release</cite></p></li>
+<li><p>Commit changes with new version</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Building documentation</dt><dd><ul>
+<li><dl class="simple">
+<dt>Follow section above to build documentation</dt><dd><ul>
+<li><p>Note: Currently some docs packages are only available in linux</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Build changelog</dt><dd><ul>
 <li><p>Generate latest changelog <cite>make build_changelog</cite></p></li>
 <li><p>Update latest tag in new CHANGELOG.md to be the vesion to release</p></li>
 </ul>
@@ -580,9 +617,18 @@
 </dd>
 </dl>
 </li>
+<li><dl class="simple">
+<dt>Merge changes back to master</dt><dd><ul>
+<li><p>Open a PR to run the tests and check everything is working as expected</p></li>
+<li><p>Once everything correct, merge back to master</p></li>
+<li><p>Celebrate 🥳</p></li>
 </ul>
-
-
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
 
 
           </article>

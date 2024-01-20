@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -279,7 +280,11 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#demo-testing-function-to-compile-shaders" class="md-nav__link">Demo / testing function to compile shaders</a>
         </li>
-        <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a>
+        <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#compiling-shaders-using-cmake" class="md-nav__link">Compiling Shaders Using CMake</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -436,7 +441,11 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#demo-testing-function-to-compile-shaders" class="md-nav__link">Demo / testing function to compile shaders</a>
         </li>
-        <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a>
+        <li class="md-nav__item"><a href="#converting-shaders-into-c-c-header-files" class="md-nav__link">Converting Shaders into C / C++ Header Files</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#compiling-shaders-using-cmake" class="md-nav__link">Compiling Shaders Using CMake</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -454,13 +463,13 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="processing-shaders-with-kompute">
 <h1 id="overview-shaders-to-headers--page-root">Processing Shaders with Kompute<a class="headerlink" href="#overview-shaders-to-headers--page-root" title="Permalink to this headline">¶</a></h1>
-
+<section id="demo-testing-function-to-compile-shaders">
 <h2 id="demo-testing-function-to-compile-shaders">Demo / testing function to compile shaders<a class="headerlink" href="#demo-testing-function-to-compile-shaders" title="Permalink to this headline">¶</a></h2>
 <p>GLSLANG was initially integrated as part of the framework but it now has been removed due to the license of the glslang pre-processor being under a custom NVIDIA license which explicitly excludes grant of any licenses to NVIDIA’s patents in the preprocessor. This is covered in more detail here: <a class="reference external" href="https://github.com/KomputeProject/kompute/pull/235">https://github.com/KomputeProject/kompute/pull/235</a></p>
 <p>For users that are looking to quickly test the processors it is possible to use the function that is provided in the examples which provides a (non-thread-safe / non-robust) implementation that compiles a shader string into spirv bytes. It is not recommended to use in production but it does enable for faster iteration cycles during development.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -474,36 +483,36 @@
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">static</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><span class="k">static</span>
 <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span>
 <span class="n">compileSource</span><span class="p">(</span>
-  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">source</span><span class="p">)</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">source</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">ofstream</span> <span class="nf">fileOut</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp"</span><span class="p">);</span>
-    <span class="n">fileOut</span> <span class="o">&lt;&lt;</span> <span class="n">source</span><span class="p">;</span>
-    <span class="n">fileOut</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">system</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv"</span><span class="p">).</span><span class="n">c_str</span><span class="p">()))</span>
-        <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Error running glslangValidator command"</span><span class="p">);</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="nf">fileStream</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp.spv"</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span> <span class="n">buffer</span><span class="p">;</span>
-    <span class="n">buffer</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">istreambuf_iterator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fileStream</span><span class="p">),</span> <span class="p">{});</span>
-    <span class="k">return</span> <span class="p">{(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span><span class="n">buffer</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="n">buffer</span><span class="p">.</span><span class="n">data</span><span class="p">()</span> <span class="o">+</span> <span class="n">buffer</span><span class="p">.</span><span class="n">size</span><span class="p">())};</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ofstream</span><span class="w"> </span><span class="n">fileOut</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">fileOut</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">source</span><span class="p">;</span>
+<span class="w">    </span><span class="n">fileOut</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">system</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="s">"glslangValidator -V tmp_kp_shader.comp -o tmp_kp_shader.comp.spv"</span><span class="p">).</span><span class="n">c_str</span><span class="p">()))</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Error running glslangValidator command"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="n">fileStream</span><span class="p">(</span><span class="s">"tmp_kp_shader.comp.spv"</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ios</span><span class="o">::</span><span class="n">binary</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="w"> </span><span class="n">buffer</span><span class="p">;</span>
+<span class="w">    </span><span class="n">buffer</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">buffer</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">istreambuf_iterator</span><span class="o">&lt;</span><span class="kt">char</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fileStream</span><span class="p">),</span><span class="w"> </span><span class="p">{});</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span><span class="n">buffer</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)(</span><span class="n">buffer</span><span class="p">.</span><span class="n">data</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">buffer</span><span class="p">.</span><span class="n">size</span><span class="p">())};</span>
 <span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="converting-shaders-into-c-c-header-files">
 <h2 id="converting-shaders-into-c-c-header-files">Converting Shaders into C / C++ Header Files<a class="headerlink" href="#converting-shaders-into-c-c-header-files" title="Permalink to this headline">¶</a></h2>
 <p>Kompute allows for shaders to be loaded directly through the <code class="xref py py-class docutils literal notranslate"><span class="pre">kp::OpAlgoBase</span></code> as either raw strings (through shaderc) or compiled SPIRV bytes. For this latter, the traditional method of including the SPIRV bytes is by loading the SPIRV file directly and passing the contents.</p>
 <p>The Kompute codebase has a utility that allows you to convert shader files into C++ header files containing the SPIRV header data. This is useful as it enables developers to compile the SPIRV shaders into the final binary, which avoids the need for multiple files being required.</p>
 <p>The utility can be found under <a class="reference external" href="https://github.com/KomputeProject/kompute/blob/master/scripts/convert_shaders.py">scripts/convert_shaders.py</a> and consists primarily of a Python CLI that can be called to pass arguments.</p>
 <p>In order to use this Python utility, you will have to first install the dependencies outlined by the <cite>scripts/requirements.txt</cite> file. You will need to have python 3 and pip3 installed.</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>python3 -m pip install -r scripts/requirements.txt
-</pre></div>
-</td></tr></table></div>
+<div class="highlight-bash notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>scripts/requirements.txt
+</pre></div></td></tr></table></div>
+</div>
 <p>Once the dependencies can be installed, you can run the Python script directly through the file as <cite>python3 scripts/convert_shaders.py</cite>.</p>
 <p>You can run <cite>python3 scripts/convert_shaders.py –help</cite> to see all the options available - namely:</p>
-<div class="highlight-bash notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-bash notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -520,29 +529,118 @@
 <span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>&gt; python3 scripts/convert_shaders.py --help
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span>&gt;<span class="w"> </span>python3<span class="w"> </span>scripts/convert_shaders.py<span class="w"> </span>--help
 
-Usage: convert_shaders.py <span class="o">[</span>OPTIONS<span class="o">]</span>
+Usage:<span class="w"> </span>convert_shaders.py<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 
-  CLI <span class="k">function</span> <span class="k">for</span> shader generation
+<span class="w">  </span>CLI<span class="w"> </span><span class="k">function</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>shader<span class="w"> </span>generation
 
 Options:
-  -p, --shader-path TEXT    The path <span class="k">for</span> the directory to build and convert
-                            shaders  <span class="o">[</span>required<span class="o">]</span>
+<span class="w">  </span>-p,<span class="w"> </span>--shader-path<span class="w"> </span>TEXT<span class="w">    </span>The<span class="w"> </span>path<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>directory<span class="w"> </span>to<span class="w"> </span>build<span class="w"> </span>and<span class="w"> </span>convert
+<span class="w">                            </span>shaders<span class="w">  </span><span class="o">[</span>required<span class="o">]</span>
 
-  -s, --shader-binary TEXT  The path <span class="k">for</span> the directory to build and convert
-                            shaders  <span class="o">[</span>required<span class="o">]</span>
+<span class="w">  </span>-s,<span class="w"> </span>--shader-binary<span class="w"> </span>TEXT<span class="w">  </span>The<span class="w"> </span>path<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>directory<span class="w"> </span>to<span class="w"> </span>build<span class="w"> </span>and<span class="w"> </span>convert
+<span class="w">                            </span>shaders<span class="w">  </span><span class="o">[</span>required<span class="o">]</span>
 
-  -c, --header-path TEXT    The <span class="o">(</span>optional<span class="o">)</span> output file <span class="k">for</span> the cpp header
-                            files
+<span class="w">  </span>-c,<span class="w"> </span>--header-path<span class="w"> </span>TEXT<span class="w">    </span>The<span class="w"> </span><span class="o">(</span>optional<span class="o">)</span><span class="w"> </span>output<span class="w"> </span>file<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>cpp<span class="w"> </span>header
+<span class="w">                            </span>files
 
-  -v, --verbose             Enable versbosity <span class="k">if</span> flag is provided
-  --help                    Show this message and exit.
-</pre></div>
-</td></tr></table></div>
+<span class="w">  </span>-v,<span class="w"> </span>--verbose<span class="w">             </span>Enable<span class="w"> </span>verbosity<span class="w"> </span><span class="k">if</span><span class="w"> </span>flag<span class="w"> </span>is<span class="w"> </span>provided
+<span class="w">  </span>--help<span class="w">                    </span>Show<span class="w"> </span>this<span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span>exit.
+</pre></div></td></tr></table></div>
+</div>
 <p>You can see the command that converts the shaders <a class="reference external" href="https://github.com/KomputeProject/kompute/blob/45ddfe524b9ed63c5fe1fc33773c8f93a18e2fac/Makefile#L143">in the makefile</a> to get an idea of how you would be able to use this utility.</p>
+<section id="compiling-shaders-using-cmake">
+<h3 id="compiling-shaders-using-cmake">Compiling Shaders Using CMake<a class="headerlink" href="#compiling-shaders-using-cmake" title="Permalink to this headline">¶</a></h3>
+<p>If you are using CMake as build system you can use CMake to directly convert your compute shaders into C++ header files.</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><span class="c"># Consume Kompute via CMake fetch_content</span>
+<span class="nb">include</span><span class="p">(</span><span class="s">FetchContent</span><span class="p">)</span>
+<span class="nb">FetchContent_Declare</span><span class="p">(</span><span class="s">kompute</span><span class="w"> </span><span class="s">GIT_REPOSITORY</span><span class="w"> </span><span class="s">https://github.com/KomputeProject/kompute.git</span>
+<span class="w">                             </span><span class="s">GIT_TAG</span><span class="w"> </span><span class="s">1344ece4ac278f9b3be3b4555ffaace7a032b91f</span><span class="p">)</span><span class="w"> </span><span class="c"># The commit hash for a dev version before v0.9.0. Replace with the latest from: https://github.com/KomputeProject/kompute/releases</span>
+<span class="nb">FetchContent_MakeAvailable</span><span class="p">(</span><span class="s">kompute</span><span class="p">)</span>
+<span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">kompute_SOURCE_DIR</span><span class="o">}</span><span class="s">/src/include</span><span class="p">)</span>
 
+<span class="c"># Add to the list, so CMake can later find the code to compile shaders to header files</span>
+<span class="nb">list</span><span class="p">(</span><span class="s">APPEND</span><span class="w"> </span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">"${kompute_SOURCE_DIR}/cmake"</span><span class="p">)</span>
 
+<span class="c"># To add more shaders simply copy the vulkan_compile_shader command and replace it with your new shader</span>
+<span class="nb">vulkan_compile_shader</span><span class="p">(</span><span class="s">INFILE</span><span class="w"> </span><span class="s">my_shader.comp</span>
+<span class="w">                      </span><span class="s">OUTFILE</span><span class="w"> </span><span class="s">my_shader.hpp</span>
+<span class="w">                      </span><span class="s">NAMESPACE</span><span class="w"> </span><span class="s2">"shader"</span>
+<span class="w">                      </span><span class="s">RELATIVE_PATH</span><span class="w"> </span><span class="s2">"${kompute_SOURCE_DIR}/cmake"</span><span class="p">)</span>
+
+<span class="c"># vulkan_compile_shader(INFILE my_shader2.comp</span>
+<span class="c">#                       OUTFILE my_shader2.hpp</span>
+<span class="c">#                       NAMESPACE "shader"</span>
+<span class="c">#                       RELATIVE_PATH "${kompute_SOURCE_DIR}/cmake")</span>
+
+<span class="c"># Then add it to the library, so you can access it later in your code</span>
+<span class="nb">add_library</span><span class="p">(</span><span class="s">shader</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="s2">"${CMAKE_CURRENT_BINARY_DIR}/my_shader.hpp"</span>
+<span class="c">#                            "${CMAKE_CURRENT_BINARY_DIR}/my_shader2.hpp"</span>
+<span class="p">)</span>
+
+<span class="nb">target_include_directories</span><span class="p">(</span><span class="s">shader</span><span class="w"> </span><span class="s">INTERFACE</span><span class="w"> </span><span class="o">$&lt;</span><span class="nv">BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div></td></tr></table></div>
+</div>
+<p>Once your code then compiles, you can simply include and use your shader header files.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span></pre></div></td><td class="code"><div><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;kompute/kompute.hpp&gt;</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"my_shader.hpp"</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// [...]</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">shader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shader</span><span class="o">::</span><span class="n">MY_SHADER_COMP_SPV</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">shader</span><span class="o">::</span><span class="n">MY_SHADER_COMP_SPV</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">params</span><span class="p">,</span><span class="w"> </span><span class="n">shader</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// [...]</span>
+<span class="p">}</span>
+</pre></div></td></tr></table></div>
+</div>
+</section>
+</section>
+</section>
 
 
           </article>

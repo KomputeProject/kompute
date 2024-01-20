@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -279,8 +280,6 @@
             </nav>
         </li>
         <li class="md-nav__item"><a href="#required-dependencies" class="md-nav__link">Required dependencies</a>
-        </li>
-        <li class="md-nav__item"><a href="#optional-dependencies" class="md-nav__link">Optional dependencies</a>
         </li></ul>
             </nav>
         </li>
@@ -451,8 +450,6 @@
             </nav>
         </li>
         <li class="md-nav__item"><a href="#required-dependencies" class="md-nav__link">Required dependencies</a>
-        </li>
-        <li class="md-nav__item"><a href="#optional-dependencies" class="md-nav__link">Optional dependencies</a>
         </li></ul>
             </nav>
         </li>
@@ -470,11 +467,16 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="c-build-system-deep-dive">
 <h1 id="overview-build-system--page-root">C++ Build System Deep Dive<a class="headerlink" href="#overview-build-system--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The recommended approach to build the project is as out-of-source build in the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder. This project comes with a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> that provides a set of commands that help with developer workflows. You can see some of the commands if you want to add some of the more advanced commands.</p>
+<p>The recommended approach to build the project is as out-of-source built-in the <code class="docutils literal notranslate"><span class="pre">build</span></code> folder. This project uses CMake as build system.</p>
 <p>For a base build you just have to run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">Bbuild</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/KomputeProject/kompute.git
+<span class="nb">cd</span><span class="w"> </span>kompute
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..
+cmake<span class="w"> </span>--build<span class="w"> </span>.
 </pre></div>
 </div>
 <p>This by default configures without any of the extra build tasks (such as building shaders) and compiles without the optional dependencies. The table below provides more detail.</p>
@@ -493,53 +495,65 @@
 <td><p>Enables local installation (which won’t require admin privileges)</p></td>
 </tr>
 <tr class="row-odd"><td><p>-DCMAKE_TOOLCHAIN_FILE=”…”</p></td>
-<td><p>This is the path for your package manager if you use it such as vcpkg</p></td>
+<td><p>This is the path for your package manager if you use it such as vcpkg.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=1</p></td>
-<td><p>Enable if you wish to build and run the tests (must have deps installed.</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_TESTS=ON</p></td>
+<td><p>Enable if you want to build tests.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_CODE_COVERAGE=1</p></td>
-<td><p>Enable if you wish to build and run code coverage (must have deps installed which are limited to Windows platform)</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_CODE_COVERAGE=ON</p></td>
+<td><p>Enable if you want code coverage.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=1</p></td>
-<td><p>Enable if you wish to build the docs (must have docs deps installed)</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_DOCS=ON</p></td>
+<td><p>Enable if you want to build documentation.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILD_SHADERS=1</p></td>
-<td><p>Enable if you wish to build the shaders into header files (must have docs deps installed)</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_INSTALL=ON</p></td>
+<td><p>Enable if you want to enable installation.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_SINGLE_HEADER=1</p></td>
-<td><p>Option to build the single header file using “quom” utility</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_PYTHON=ON</p></td>
+<td><p>Enable if you want to build python bindings.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_INSTALL=0</p></td>
-<td><p>Disables the install step in the cmake file (useful for android build)</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_ANDROID_BUILD=ON</p></td>
+<td><p>Enable android compilation flags required.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_PYTHON=1</p></td>
-<td><p>Enable to build python bindings (used internally for python package)</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON</p></td>
+<td><p>Explicitly disable debug layers even on debug.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_ENABLE_SPDLOG=1</p></td>
-<td><p>Enable to compile with spdlog as the internal logging framework</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON</p></td>
+<td><p>Whether to check if your driver supports the Vulkan Header version you are linking against. This might be useful in case you build shared on a different system than you run later.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_REPO_SUBMODULE_BUILD=1</p></td>
-<td><p>Use the submodule repos instead of external packages / manager</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_SHADERS=OFF</p></td>
+<td><p>Rebuilds all compute shaders during compilation and does not use the already precompiled versions. Requires glslangValidator to be installed on your system.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_ANDROID_BUILD=1</p></td>
-<td><p>Enables android build which includes and excludes relevant libraries</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_LOG_LEVEL=”Default”</p></td>
+<td><p>Internally we use Spdlog or fmt for logging, depending on the value of ‘KOMPUTE_OPT_USE_SPDLOG’. The log level used can be changed here. Possible values: ‘Trace’, ‘Debug’, ‘Info’, ‘Warn’, ‘Error’, ‘Critical’, ‘Off’, ‘Default’. If set to ‘Off’ logging will be deactivated completely. If set to ‘Default’, the log level will be set to ‘Info’ for release builds and ‘Debug’ else.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=1</p></td>
-<td><p>Explicitly disables debug layers even when on debug mode</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_USE_SPDLOG=ON</p></td>
+<td><p>If enabled, logging via KP_LOG_&lt;DEBUG, INFO, etc…&gt; will happen through Spdlog instead of plan fmt.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_OPT_DEPENDENCIES_SHARED_LIBS=1</p></td>
-<td><p>Ensures dependencies are referenced as shared libraries for kompute install</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_USE_BUILT_IN_SPDLOG=ON</p></td>
+<td><p>Use the built-in version of Spdlog. Requires ‘KOMPUTE_OPT_USE_SPDLOG’ to be set to ON in order to have any effect.</p></td>
 </tr>
-<tr class="row-even"><td><p>-DKOMPUTE_OPT_BUILD_AS_SHARED_LIB=1</p></td>
-<td><p>Whether to build Kompute as shared lib instead of static</p></td>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_SPDLOG_ASYNC_MODE=OFF</p></td>
+<td><p>If enabled we use the async thread mode of spdlog, but by default using sync for consistent messages.</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_EXTRA_CXX_FLAGS=”…”</p></td>
-<td><p>Allows you to pass extra config flags to compiler</p></td>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_USE_BUILT_IN_FMT=ON</p></td>
+<td><p>Use the built-in version of fmt.</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST=ON</p></td>
+<td><p>Use the built-in version of GoogleTest.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_USE_BUILT_IN_PYBIND11=ON</p></td>
+<td><p>Use the built-in version of pybind11.</p></td>
+</tr>
+<tr class="row-even"><td><p>-DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=OFF</p></td>
+<td><p>Use the built-in version of Vulkan Headers. This could be helpful in case your system Vulkan Headers are too new for your driver. If you set this to OFF, please make sure your system Vulkan Headers are supported by your driver.</p></td>
+</tr>
+<tr class="row-odd"><td><p>-DKOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG=”v1.2.203”</p></td>
+<td><p>The git tag used for the built-in Vulkan Headers when ‘KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER’ is enabled. A list of tags can be found here: <a class="reference external" href="https://github.com/KhronosGroup/Vulkan-Headers/tags">https://github.com/KhronosGroup/Vulkan-Headers/tags</a></p></td>
 </tr>
 </tbody>
 </table>
-
+<section id="compile-flags">
 <h2 id="compile-flags">Compile Flags<a class="headerlink" href="#compile-flags" title="Permalink to this headline">¶</a></h2>
 <table>
 <colgroup>
@@ -555,40 +569,10 @@
 <tr class="row-even"><td><p>KOMPUTE_CREATE_PIPELINE_RESULT_VALUE</p></td>
 <td><p>Ensure the return value of createPipeline is processed as ResultValue instead of Result</p></td>
 </tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_VK_API_VERSION=”…”</p></td>
-<td><p>Sets the default api version to use for kompute api</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_VK_API_MAJOR_VERSION=1</p></td>
-<td><p>Major version to use for the Vulkan SDK</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_VK_API_MINOR_VERSION=1</p></td>
-<td><p>Minor version to use for the Vulkan SDK</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_ENABLE_SPDLOG=1</p></td>
-<td><p>Enables the build with SPDLOG and FMT dependencies (must be installed)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DKOMPUTE_LOG_OVERRIDE=1</p></td>
-<td><p>Does not define the <a href="#id2"><span class="problematic" id="id3">SPDLOG_</span></a><span class="raw-html-m2r"><level></level></span> macros if these are to be overridden</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_LOG_LEVEL</p></td>
-<td><p>The level for the log level on compile level (also sets spdlog level if enabled)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DVVK_USE_PLATFORM_ANDROID_KHR</p></td>
-<td><p>Flag to enable android imports in kompute (enabled with -DKOMPUTE_OPT_ANDROID_BUILD)</p></td>
-</tr>
-<tr class="row-even"><td><p>-DRELEASE=1</p></td>
-<td><p>Enable release build (enabled by cmake release build)</p></td>
-</tr>
-<tr class="row-odd"><td><p>-DDEBUG=1</p></td>
-<td><p>Enable debug build including debug flags (enabled by cmake debug build)</p></td>
-</tr>
-<tr class="row-even"><td><p>-DKOMPUTE_DISABLE_VK_DEBUG_LAYERS</p></td>
-<td><p>Disable the debug Vulkan SDK Layers, mainly used for android builds</p></td>
-</tr>
 </tbody>
 </table>
-
-
+</section>
+<section id="other-cmake-flags">
 <h2 id="other-cmake-flags">Other CMake Flags<a class="headerlink" href="#other-cmake-flags" title="Permalink to this headline">¶</a></h2>
 <table>
 <colgroup>
@@ -612,30 +596,16 @@
 </tr>
 </tbody>
 </table>
-
+<section id="dependencies">
 <h3 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
 <p>Given Kompute is expected to be used across a broad range of architectures and hardware, it will be important to make sure we are able to minimise dependencies.</p>
-
-
-
+</section>
+</section>
+<section id="required-dependencies">
 <h2 id="required-dependencies">Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>The only required dependency in the build is the Vulkan SDK. More specifically, the header files vulkan.h and vulkan.hpp, which are both part of the Vulkan SDK. If you haven’t installed the Vulkan SDK yet, you can <a class="reference external" href="https://vulkan.lunarg.com/">download it here</a>.</p>
-
-
-<h2 id="optional-dependencies">Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>SPDLOG is the preferred logging library, however by default Kompute runs without SPDLOG by overriding the macros. It also provides an easy way to override the macros if you prefer to bring your own logging framework. The macro override is the following:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef KOMPUTE_LOG_OVERRIDE </span><span class="c1">// Use this if you want to define custom macro overrides</span>
-<span class="cp">#if KOMPUTE_SPDLOG_ENABLED </span><span class="c1">// Use this if you want to enable SPDLOG</span>
-<span class="cp">#include</span> <span class="cpf">&lt;spdlog/spdlog.h&gt;</span><span class="cp"></span>
-<span class="cp">#endif </span><span class="c1">//KOMPUTE_SPDLOG_ENABLED</span>
-<span class="c1">// ... Otherwise it adds macros that use std::cout (and only print first element)</span>
-<span class="cp">#endif </span><span class="c1">// KOMPUTE_LOG_OVERRIDE</span>
-</pre></div>
-</div>
-<p>You can choose to build with or without SPDLOG by using the cmake flag <code class="docutils literal notranslate"><span class="pre">KOMPUTE_OPT_ENABLE_SPDLOG</span></code>.</p>
-<p>Finally, remember that you will still need to set both the compile time log level with <code class="docutils literal notranslate"><span class="pre">SPDLOG_ACTIVE_LEVEL</span></code>, and the runtime log level with <code class="docutils literal notranslate"><span class="pre">spdlog::set_level(spdlog::level::debug);</span></code>.</p>
-
-
+</section>
+</section>
 
 
           </article>

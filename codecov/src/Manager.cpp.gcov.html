@@ -31,18 +31,18 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">174</td>
-            <td class="headerCovTableEntry">217</td>
-            <td class="headerCovTableEntryMed">80.2 %</td>
+            <td class="headerCovTableEntry">190</td>
+            <td class="headerCovTableEntry">241</td>
+            <td class="headerCovTableEntryMed">78.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2022-05-10 20:43:15</td>
+            <td class="headerValue">2024-01-20 13:42:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
-            <td class="headerCovTableEntry">15</td>
-            <td class="headerCovTableEntryMed">86.7 %</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntryMed">81.2 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -61,459 +61,486 @@
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
 <a name="1"><span class="lineNum">       1 </span>            : // SPDX-License-Identifier: Apache-2.0</a>
-<span class="lineNum">       2 </span>            : 
-<span class="lineNum">       3 </span>            : #include &lt;iterator&gt;
-<span class="lineNum">       4 </span>            : #include &lt;set&gt;
-<span class="lineNum">       5 </span>            : #include &lt;sstream&gt;
-<span class="lineNum">       6 </span>            : #include &lt;string&gt;
-<span class="lineNum">       7 </span>            : 
-<span class="lineNum">       8 </span>            : #include &quot;kompute/Manager.hpp&quot;
-<span class="lineNum">       9 </span>            : 
-<span class="lineNum">      10 </span>            : #include &quot;fmt/ranges.h&quot;
-<span class="lineNum">      11 </span>            : 
-<span class="lineNum">      12 </span>            : namespace kp {
-<span class="lineNum">      13 </span>            : 
-<span class="lineNum">      14 </span>            : #if DEBUG
-<a name="15"><span class="lineNum">      15 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS</a>
-<span class="lineNum">      16 </span>            : static VKAPI_ATTR VkBool32 VKAPI_CALL
-<span class="lineNum">      17 </span><span class="lineNoCov">          0 : debugMessageCallback(VkDebugReportFlagsEXT flags,</span>
-<span class="lineNum">      18 </span>            :                      VkDebugReportObjectTypeEXT objectType,
-<span class="lineNum">      19 </span>            :                      uint64_t object,
-<span class="lineNum">      20 </span>            :                      size_t location,
-<span class="lineNum">      21 </span>            :                      int32_t messageCode,
-<span class="lineNum">      22 </span>            :                      const char* pLayerPrefix,
-<span class="lineNum">      23 </span>            :                      const char* pMessage,
-<span class="lineNum">      24 </span>            :                      void* pUserData)
-<span class="lineNum">      25 </span>            : {
-<span class="lineNum">      26 </span><span class="lineNoCov">          0 :     KP_LOG_DEBUG(&quot;[VALIDATION]: {} - {}&quot;, pLayerPrefix, pMessage);</span>
-<span class="lineNum">      27 </span><span class="lineNoCov">          0 :     return VK_FALSE;</span>
-<span class="lineNum">      28 </span>            : }
-<span class="lineNum">      29 </span>            : #endif
-<a name="30"><span class="lineNum">      30 </span>            : #endif</a>
-<span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span><span class="lineCov">         98 : Manager::Manager()</span>
-<span class="lineNum">      33 </span><span class="lineCov">         98 :   : Manager(0)</span>
-<a name="34"><span class="lineNum">      34 </span><span class="lineCov">         98 : {}</span></a>
-<span class="lineNum">      35 </span>            : 
-<span class="lineNum">      36 </span><span class="lineCov">         98 : Manager::Manager(uint32_t physicalDeviceIndex,</span>
-<span class="lineNum">      37 </span>            :                  const std::vector&lt;uint32_t&gt;&amp; familyQueueIndices,
-<span class="lineNum">      38 </span><span class="lineCov">         98 :                  const std::vector&lt;std::string&gt;&amp; desiredExtensions)</span>
-<span class="lineNum">      39 </span>            : {
-<span class="lineNum">      40 </span><span class="lineCov">         98 :     this-&gt;mManageResources = true;</span>
-<span class="lineNum">      41 </span>            : 
-<span class="lineNum">      42 </span><span class="lineCov">         98 :     this-&gt;createInstance();</span>
-<span class="lineNum">      43 </span><span class="lineCov">         98 :     this-&gt;createDevice(</span>
-<span class="lineNum">      44 </span>            :       familyQueueIndices, physicalDeviceIndex, desiredExtensions);
-<a name="45"><span class="lineNum">      45 </span><span class="lineCov">         98 : }</span></a>
-<span class="lineNum">      46 </span>            : 
-<span class="lineNum">      47 </span><span class="lineNoCov">          0 : Manager::Manager(std::shared_ptr&lt;vk::Instance&gt; instance,</span>
-<span class="lineNum">      48 </span>            :                  std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,
-<span class="lineNum">      49 </span><span class="lineNoCov">          0 :                  std::shared_ptr&lt;vk::Device&gt; device)</span>
-<span class="lineNum">      50 </span>            : {
-<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     this-&gt;mManageResources = false;</span>
-<span class="lineNum">      52 </span>            : 
-<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     this-&gt;mInstance = instance;</span>
-<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     this-&gt;mPhysicalDevice = physicalDevice;</span>
-<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     this-&gt;mDevice = device;</span>
-<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span><span class="lineCov">        196 : Manager::~Manager()</span>
-<span class="lineNum">      59 </span>            : {
-<span class="lineNum">      60 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager Destructor started&quot;);</span>
-<span class="lineNum">      61 </span><span class="lineCov">         98 :     this-&gt;destroy();</span>
-<span class="lineNum">      62 </span><span class="lineCov">         98 : }</span>
-<a name="63"><span class="lineNum">      63 </span>            : </a>
-<span class="lineNum">      64 </span>            : void
-<span class="lineNum">      65 </span><span class="lineCov">        100 : Manager::destroy()</span>
-<span class="lineNum">      66 </span>            : {
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span><span class="lineCov">        100 :     KP_LOG_DEBUG(&quot;Kompute Manager destroy() started&quot;);</span>
-<span class="lineNum">      69 </span>            : 
-<span class="lineNum">      70 </span><span class="lineCov">        100 :     if (this-&gt;mDevice == nullptr) {</span>
-<span class="lineNum">      71 </span><span class="lineCov">          2 :         KP_LOG_ERROR(</span>
-<span class="lineNum">      72 </span>            :           &quot;Kompute Manager destructor reached with null Device pointer&quot;);
-<span class="lineNum">      73 </span><span class="lineCov">          2 :         return;</span>
-<span class="lineNum">      74 </span>            :     }
-<span class="lineNum">      75 </span>            : 
-<span class="lineNum">      76 </span><span class="lineCov">         98 :     if (this-&gt;mManageResources &amp;&amp; this-&gt;mManagedSequences.size()) {</span>
-<span class="lineNum">      77 </span><span class="lineCov">         80 :         KP_LOG_DEBUG(&quot;Kompute Manager explicitly running destructor for &quot;</span>
-<span class="lineNum">      78 </span>            :                      &quot;managed sequences&quot;);
-<span class="lineNum">      79 </span><span class="lineCov">        204 :         for (const std::weak_ptr&lt;Sequence&gt;&amp; weakSq : this-&gt;mManagedSequences) {</span>
-<span class="lineNum">      80 </span><span class="lineCov">        248 :             if (std::shared_ptr&lt;Sequence&gt; sq = weakSq.lock()) {</span>
-<span class="lineNum">      81 </span><span class="lineCov">         24 :                 sq-&gt;destroy();</span>
-<span class="lineNum">      82 </span>            :             }
-<span class="lineNum">      83 </span>            :         }
-<span class="lineNum">      84 </span><span class="lineCov">         80 :         this-&gt;mManagedSequences.clear();</span>
-<span class="lineNum">      85 </span>            :     }
-<span class="lineNum">      86 </span>            : 
-<span class="lineNum">      87 </span><span class="lineCov">         98 :     if (this-&gt;mManageResources &amp;&amp; this-&gt;mManagedAlgorithms.size()) {</span>
-<span class="lineNum">      88 </span><span class="lineCov">         60 :         KP_LOG_DEBUG(&quot;Kompute Manager explicitly freeing algorithms&quot;);</span>
-<span class="lineNum">      89 </span><span class="lineCov">         68 :         for (const std::weak_ptr&lt;Algorithm&gt;&amp; weakAlgorithm :</span>
-<span class="lineNum">      90 </span><span class="lineCov">         60 :              this-&gt;mManagedAlgorithms) {</span>
-<span class="lineNum">      91 </span><span class="lineCov">        136 :             if (std::shared_ptr&lt;Algorithm&gt; algorithm = weakAlgorithm.lock()) {</span>
-<span class="lineNum">      92 </span><span class="lineNoCov">          0 :                 algorithm-&gt;destroy();</span>
-<span class="lineNum">      93 </span>            :             }
-<span class="lineNum">      94 </span>            :         }
-<span class="lineNum">      95 </span><span class="lineCov">         60 :         this-&gt;mManagedAlgorithms.clear();</span>
-<span class="lineNum">      96 </span>            :     }
-<span class="lineNum">      97 </span>            : 
-<span class="lineNum">      98 </span><span class="lineCov">         98 :     if (this-&gt;mManageResources &amp;&amp; this-&gt;mManagedTensors.size()) {</span>
-<span class="lineNum">      99 </span><span class="lineCov">         84 :         KP_LOG_DEBUG(&quot;Kompute Manager explicitly freeing tensors&quot;);</span>
-<span class="lineNum">     100 </span><span class="lineCov">        276 :         for (const std::weak_ptr&lt;Tensor&gt;&amp; weakTensor : this-&gt;mManagedTensors) {</span>
-<span class="lineNum">     101 </span><span class="lineCov">        384 :             if (std::shared_ptr&lt;Tensor&gt; tensor = weakTensor.lock()) {</span>
-<span class="lineNum">     102 </span><span class="lineCov">         14 :                 tensor-&gt;destroy();</span>
-<span class="lineNum">     103 </span>            :             }
-<span class="lineNum">     104 </span>            :         }
-<span class="lineNum">     105 </span><span class="lineCov">         84 :         this-&gt;mManagedTensors.clear();</span>
-<span class="lineNum">     106 </span>            :     }
-<span class="lineNum">     107 </span>            : 
-<span class="lineNum">     108 </span><span class="lineCov">         98 :     if (this-&gt;mFreeDevice) {</span>
-<span class="lineNum">     109 </span><span class="lineCov">         98 :         KP_LOG_INFO(&quot;Destroying device&quot;);</span>
-<span class="lineNum">     110 </span><span class="lineCov">        196 :         this-&gt;mDevice-&gt;destroy(</span>
-<span class="lineNum">     111 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
-<span class="lineNum">     112 </span><span class="lineCov">         98 :         this-&gt;mDevice = nullptr;</span>
-<span class="lineNum">     113 </span><span class="lineCov">         98 :         KP_LOG_DEBUG(&quot;Kompute Manager Destroyed Device&quot;);</span>
-<span class="lineNum">     114 </span>            :     }
-<span class="lineNum">     115 </span>            : 
-<span class="lineNum">     116 </span><span class="lineCov">         98 :     if (this-&gt;mInstance == nullptr) {</span>
-<span class="lineNum">     117 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(</span>
-<span class="lineNum">     118 </span>            :           &quot;Kompute Manager destructor reached with null Instance pointer&quot;);
-<span class="lineNum">     119 </span><span class="lineNoCov">          0 :         return;</span>
-<span class="lineNum">     120 </span>            :     }
-<span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span>            : #if DEBUG
-<span class="lineNum">     123 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-<span class="lineNum">     124 </span><span class="lineCov">         98 :     if (this-&gt;mDebugReportCallback) {</span>
-<span class="lineNum">     125 </span><span class="lineNoCov">          0 :         this-&gt;mInstance-&gt;destroyDebugReportCallbackEXT(</span>
-<span class="lineNum">     126 </span>            :           this-&gt;mDebugReportCallback, nullptr, this-&gt;mDebugDispatcher);
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Kompute Manager Destroyed Debug Report Callback&quot;);</span>
-<span class="lineNum">     128 </span>            :     }
-<span class="lineNum">     129 </span>            : #endif
-<span class="lineNum">     130 </span>            : #endif
-<span class="lineNum">     131 </span>            : 
-<span class="lineNum">     132 </span><span class="lineCov">         98 :     if (this-&gt;mFreeInstance) {</span>
-<span class="lineNum">     133 </span><span class="lineCov">        196 :         this-&gt;mInstance-&gt;destroy(</span>
-<span class="lineNum">     134 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);
-<span class="lineNum">     135 </span><span class="lineCov">         98 :         this-&gt;mInstance = nullptr;</span>
-<span class="lineNum">     136 </span><span class="lineCov">         98 :         KP_LOG_DEBUG(&quot;Kompute Manager Destroyed Instance&quot;);</span>
-<span class="lineNum">     137 </span>            :     }
-<span class="lineNum">     138 </span>            : }
-<a name="139"><span class="lineNum">     139 </span>            : </a>
-<span class="lineNum">     140 </span>            : void
-<span class="lineNum">     141 </span><span class="lineCov">         98 : Manager::createInstance()</span>
-<span class="lineNum">     142 </span>            : {
-<span class="lineNum">     143 </span>            : 
-<span class="lineNum">     144 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager creating instance&quot;);</span>
-<span class="lineNum">     145 </span>            : 
-<span class="lineNum">     146 </span><span class="lineCov">         98 :     this-&gt;mFreeInstance = true;</span>
-<span class="lineNum">     147 </span>            : 
-<span class="lineNum">     148 </span><span class="lineCov">         98 :     vk::ApplicationInfo applicationInfo;</span>
-<span class="lineNum">     149 </span><span class="lineCov">         98 :     applicationInfo.pApplicationName = &quot;Kompute&quot;;</span>
-<span class="lineNum">     150 </span><span class="lineCov">         98 :     applicationInfo.pEngineName = &quot;Kompute&quot;;</span>
-<span class="lineNum">     151 </span><span class="lineCov">         98 :     applicationInfo.apiVersion = KOMPUTE_VK_API_VERSION;</span>
-<span class="lineNum">     152 </span><span class="lineCov">         98 :     applicationInfo.engineVersion = KOMPUTE_VK_API_VERSION;</span>
-<span class="lineNum">     153 </span><span class="lineCov">         98 :     applicationInfo.applicationVersion = KOMPUTE_VK_API_VERSION;</span>
-<span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">        196 :     std::vector&lt;const char*&gt; applicationExtensions;</span>
-<span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span>            : #if DEBUG
-<span class="lineNum">     158 </span><span class="lineCov">         98 :     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);</span>
-<span class="lineNum">     159 </span>            : #endif
-<span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span><span class="lineCov">         98 :     vk::InstanceCreateInfo computeInstanceCreateInfo;</span>
-<span class="lineNum">     162 </span><span class="lineCov">         98 :     computeInstanceCreateInfo.pApplicationInfo = &amp;applicationInfo;</span>
-<span class="lineNum">     163 </span><span class="lineCov">         98 :     if (!applicationExtensions.empty()) {</span>
-<span class="lineNum">     164 </span><span class="lineCov">         98 :         computeInstanceCreateInfo.enabledExtensionCount =</span>
-<span class="lineNum">     165 </span><span class="lineCov">         98 :           (uint32_t)applicationExtensions.size();</span>
-<span class="lineNum">     166 </span><span class="lineCov">         98 :         computeInstanceCreateInfo.ppEnabledExtensionNames =</span>
-<span class="lineNum">     167 </span><span class="lineCov">         98 :           applicationExtensions.data();</span>
-<span class="lineNum">     168 </span>            :     }
-<span class="lineNum">     169 </span>            : 
-<span class="lineNum">     170 </span>            : #if DEBUG
-<span class="lineNum">     171 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-<span class="lineNum">     172 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager adding debug validation layers&quot;);</span>
-<span class="lineNum">     173 </span>            :     // We'll identify the layers that are supported
-<span class="lineNum">     174 </span><span class="lineCov">        196 :     std::vector&lt;const char*&gt; validLayerNames;</span>
-<span class="lineNum">     175 </span>            :     std::vector&lt;const char*&gt; desiredLayerNames = {
-<span class="lineNum">     176 </span>            :         &quot;VK_LAYER_LUNARG_assistant_layer&quot;,
-<span class="lineNum">     177 </span>            :         &quot;VK_LAYER_LUNARG_standard_validation&quot;,
-<span class="lineNum">     178 </span>            :         &quot;VK_LAYER_KHRONOS_validation&quot;,
-<span class="lineNum">     179 </span><span class="lineCov">        196 :     };</span>
-<span class="lineNum">     180 </span><span class="lineCov">        196 :     std::vector&lt;std::string&gt; envLayerNames;</span>
-<span class="lineNum">     181 </span><span class="lineCov">         98 :     const char* envLayerNamesVal = std::getenv(&quot;KOMPUTE_ENV_DEBUG_LAYERS&quot;);</span>
-<span class="lineNum">     182 </span><span class="lineCov">         98 :     if (envLayerNamesVal != NULL &amp;&amp; *envLayerNamesVal != '\0') {</span>
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Kompute Manager adding environment layers: {}&quot;,</span>
-<span class="lineNum">     184 </span>            :                      envLayerNamesVal);
-<span class="lineNum">     185 </span><span class="lineNoCov">          0 :         std::istringstream iss(envLayerNamesVal);</span>
-<span class="lineNum">     186 </span><span class="lineNoCov">          0 :         std::istream_iterator&lt;std::string&gt; beg(iss), end;</span>
-<span class="lineNum">     187 </span><span class="lineNoCov">          0 :         envLayerNames = std::vector&lt;std::string&gt;(beg, end);</span>
-<span class="lineNum">     188 </span><span class="lineNoCov">          0 :         for (const std::string&amp; layerName : envLayerNames) {</span>
-<span class="lineNum">     189 </span><span class="lineNoCov">          0 :             desiredLayerNames.push_back(layerName.c_str());</span>
-<span class="lineNum">     190 </span>            :         }
-<span class="lineNum">     191 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Desired layers: {}&quot;, desiredLayerNames);</span>
-<span class="lineNum">     192 </span>            :     }
-<span class="lineNum">     193 </span>            : 
-<span class="lineNum">     194 </span>            :     // Identify the valid layer names based on the desiredLayerNames
-<span class="lineNum">     195 </span>            :     {
-<span class="lineNum">     196 </span><span class="lineCov">        196 :         std::set&lt;std::string&gt; uniqueLayerNames;</span>
-<span class="lineNum">     197 </span>            :         std::vector&lt;vk::LayerProperties&gt; availableLayerProperties =
-<span class="lineNum">     198 </span><span class="lineCov">        196 :           vk::enumerateInstanceLayerProperties();</span>
-<span class="lineNum">     199 </span><span class="lineCov">         98 :         for (vk::LayerProperties layerProperties : availableLayerProperties) {</span>
-<span class="lineNum">     200 </span><span class="lineNoCov">          0 :             std::string layerName(layerProperties.layerName.data());</span>
-<span class="lineNum">     201 </span><span class="lineNoCov">          0 :             uniqueLayerNames.insert(layerName);</span>
-<span class="lineNum">     202 </span>            :         }
-<span class="lineNum">     203 </span><span class="lineCov">         98 :         KP_LOG_DEBUG(&quot;Available layers: {}&quot;, uniqueLayerNames);</span>
-<span class="lineNum">     204 </span><span class="lineCov">        392 :         for (const char* desiredLayerName : desiredLayerNames) {</span>
-<span class="lineNum">     205 </span><span class="lineCov">        294 :             if (uniqueLayerNames.count(desiredLayerName) != 0) {</span>
-<span class="lineNum">     206 </span><span class="lineNoCov">          0 :                 validLayerNames.push_back(desiredLayerName);</span>
-<span class="lineNum">     207 </span>            :             }
-<span class="lineNum">     208 </span>            :         }
-<span class="lineNum">     209 </span>            :     }
-<span class="lineNum">     210 </span>            : 
-<span class="lineNum">     211 </span><span class="lineCov">         98 :     if (validLayerNames.size() &gt; 0) {</span>
-<span class="lineNum">     212 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(</span>
-<span class="lineNum">     213 </span>            :           &quot;Kompute Manager Initializing instance with valid layers: {}&quot;,
-<span class="lineNum">     214 </span>            :           validLayerNames);
-<span class="lineNum">     215 </span><span class="lineNoCov">          0 :         computeInstanceCreateInfo.enabledLayerCount =</span>
-<span class="lineNum">     216 </span><span class="lineNoCov">          0 :           (uint32_t)validLayerNames.size();</span>
-<span class="lineNum">     217 </span><span class="lineNoCov">          0 :         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();</span>
-<span class="lineNum">     218 </span>            :     } else {
-<span class="lineNum">     219 </span><span class="lineCov">         98 :         KP_LOG_WARN(&quot;Kompute Manager no valid layer names found from desired &quot;</span>
-<span class="lineNum">     220 </span>            :                     &quot;layer names&quot;);
-<span class="lineNum">     221 </span>            :     }
-<span class="lineNum">     222 </span>            : #endif
-<span class="lineNum">     223 </span>            : #endif
-<span class="lineNum">     224 </span>            : 
-<span class="lineNum">     225 </span><span class="lineCov">         98 :     this-&gt;mInstance = std::make_shared&lt;vk::Instance&gt;();</span>
-<span class="lineNum">     226 </span><span class="lineCov">        196 :     vk::createInstance(</span>
-<span class="lineNum">     227 </span>            :       &amp;computeInstanceCreateInfo, nullptr, this-&gt;mInstance.get());
-<span class="lineNum">     228 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager Instance Created&quot;);</span>
-<span class="lineNum">     229 </span>            : 
-<span class="lineNum">     230 </span>            : #if DEBUG
-<span class="lineNum">     231 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-<span class="lineNum">     232 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager adding debug callbacks&quot;);</span>
-<span class="lineNum">     233 </span><span class="lineCov">         98 :     if (validLayerNames.size() &gt; 0) {</span>
-<span class="lineNum">     234 </span><span class="lineNoCov">          0 :         vk::DebugReportFlagsEXT debugFlags =</span>
-<span class="lineNum">     235 </span>            :           vk::DebugReportFlagBitsEXT::eError |
-<span class="lineNum">     236 </span>            :           vk::DebugReportFlagBitsEXT::eWarning;
-<span class="lineNum">     237 </span><span class="lineNoCov">          0 :         vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};</span>
-<span class="lineNum">     238 </span><span class="lineNoCov">          0 :         debugCreateInfo.pfnCallback =</span>
-<span class="lineNum">     239 </span>            :           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
-<span class="lineNum">     240 </span><span class="lineNoCov">          0 :         debugCreateInfo.flags = debugFlags;</span>
-<span class="lineNum">     241 </span>            : 
-<span class="lineNum">     242 </span><span class="lineNoCov">          0 :         this-&gt;mDebugDispatcher.init(*this-&gt;mInstance, &amp;vkGetInstanceProcAddr);</span>
-<span class="lineNum">     243 </span><span class="lineNoCov">          0 :         this-&gt;mDebugReportCallback =</span>
-<span class="lineNum">     244 </span>            :           this-&gt;mInstance-&gt;createDebugReportCallbackEXT(
-<span class="lineNum">     245 </span><span class="lineNoCov">          0 :             debugCreateInfo, nullptr, this-&gt;mDebugDispatcher);</span>
-<span class="lineNum">     246 </span>            :     }
-<span class="lineNum">     247 </span>            : #endif
-<span class="lineNum">     248 </span>            : #endif
-<span class="lineNum">     249 </span><span class="lineCov">         98 : }</span>
+<a name="2"><span class="lineNum">       2 </span>            : </a>
+<a name="3"><span class="lineNum">       3 </span>            : #include &quot;kompute/Manager.hpp&quot;</a>
+<a name="4"><span class="lineNum">       4 </span>            : #include &quot;fmt/format.h&quot;</a>
+<a name="5"><span class="lineNum">       5 </span>            : #include &quot;kompute/logger/Logger.hpp&quot;</a>
+<a name="6"><span class="lineNum">       6 </span>            : #include &lt;fmt/core.h&gt;</a>
+<a name="7"><span class="lineNum">       7 </span>            : #include &lt;iterator&gt;</a>
+<a name="8"><span class="lineNum">       8 </span>            : #include &lt;set&gt;</a>
+<a name="9"><span class="lineNum">       9 </span>            : #include &lt;sstream&gt;</a>
+<a name="10"><span class="lineNum">      10 </span>            : #include &lt;string&gt;</a>
+<a name="11"><span class="lineNum">      11 </span>            : </a>
+<a name="12"><span class="lineNum">      12 </span>            : namespace kp {</a>
+<a name="13"><span class="lineNum">      13 </span>            : </a>
+<a name="14"><span class="lineNum">      14 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS</a>
+<a name="15"><span class="lineNum">      15 </span>            : static VKAPI_ATTR VkBool32 VKAPI_CALL</a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineNoCov">          0 : debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,</span></a>
+<a name="17"><span class="lineNum">      17 </span>            :                      VkDebugReportObjectTypeEXT /*objectType*/,</a>
+<a name="18"><span class="lineNum">      18 </span>            :                      uint64_t /*object*/,</a>
+<a name="19"><span class="lineNum">      19 </span>            :                      size_t /*location*/,</a>
+<a name="20"><span class="lineNum">      20 </span>            :                      int32_t /*messageCode*/,</a>
+<a name="21"><span class="lineNum">      21 </span>            : #if KOMPUTE_OPT_ACTIVE_LOG_LEVEL &lt;= KOMPUTE_LOG_LEVEL_DEBUG</a>
+<a name="22"><span class="lineNum">      22 </span>            :                      const char* pLayerPrefix,</a>
+<a name="23"><span class="lineNum">      23 </span>            :                      const char* pMessage,</a>
+<a name="24"><span class="lineNum">      24 </span>            : #else</a>
+<a name="25"><span class="lineNum">      25 </span>            :                      const char* /*pLayerPrefix*/,</a>
+<a name="26"><span class="lineNum">      26 </span>            :                      const char* /*pMessage*/,</a>
+<a name="27"><span class="lineNum">      27 </span>            : #endif</a>
+<a name="28"><span class="lineNum">      28 </span>            :                      void* /*pUserData*/)</a>
+<a name="29"><span class="lineNum">      29 </span>            : {</a>
+<a name="30"><span class="lineNum">      30 </span><span class="lineNoCov">          0 :     KP_LOG_DEBUG(&quot;[VALIDATION]: {} - {}&quot;, pLayerPrefix, pMessage);</span></a>
+<a name="31"><span class="lineNum">      31 </span><span class="lineNoCov">          0 :     return VK_FALSE;</span></a>
+<a name="32"><span class="lineNum">      32 </span>            : }</a>
+<a name="33"><span class="lineNum">      33 </span>            : #endif</a>
+<a name="34"><span class="lineNum">      34 </span>            : </a>
+<a name="35"><span class="lineNum">      35 </span><span class="lineCov">         47 : Manager::Manager()</span></a>
+<a name="36"><span class="lineNum">      36 </span><span class="lineCov">         47 :   : Manager(0)</span></a>
+<a name="37"><span class="lineNum">      37 </span>            : {</a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineCov">         47 : }</span></a>
+<a name="39"><span class="lineNum">      39 </span>            : </a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineCov">         47 : Manager::Manager(uint32_t physicalDeviceIndex,</span></a>
+<a name="41"><span class="lineNum">      41 </span>            :                  const std::vector&lt;uint32_t&gt;&amp; familyQueueIndices,</a>
+<a name="42"><span class="lineNum">      42 </span><span class="lineCov">         47 :                  const std::vector&lt;std::string&gt;&amp; desiredExtensions)</span></a>
+<a name="43"><span class="lineNum">      43 </span>            : {</a>
+<a name="44"><span class="lineNum">      44 </span><span class="lineCov">         47 :     this-&gt;mManageResources = true;</span></a>
+<a name="45"><span class="lineNum">      45 </span>            : </a>
+<a name="46"><span class="lineNum">      46 </span>            : // Make sure the logger is setup</a>
+<a name="47"><span class="lineNum">      47 </span>            : #if !KOMPUTE_OPT_LOG_LEVEL_DISABLED</a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineCov">         47 :     logger::setupLogger();</span></a>
+<a name="49"><span class="lineNum">      49 </span>            : #endif</a>
+<a name="50"><span class="lineNum">      50 </span>            : </a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">         47 :     this-&gt;createInstance();</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">         47 :     this-&gt;createDevice(</span></a>
+<a name="53"><span class="lineNum">      53 </span>            :       familyQueueIndices, physicalDeviceIndex, desiredExtensions);</a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">         47 : }</span></a>
+<a name="55"><span class="lineNum">      55 </span>            : </a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 : Manager::Manager(std::shared_ptr&lt;vk::Instance&gt; instance,</span></a>
+<a name="57"><span class="lineNum">      57 </span>            :                  std::shared_ptr&lt;vk::PhysicalDevice&gt; physicalDevice,</a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineNoCov">          0 :                  std::shared_ptr&lt;vk::Device&gt; device)</span></a>
+<a name="59"><span class="lineNum">      59 </span>            : {</a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :     this-&gt;mManageResources = false;</span></a>
+<a name="61"><span class="lineNum">      61 </span>            : </a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineNoCov">          0 :     this-&gt;mInstance = instance;</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :     this-&gt;mPhysicalDevice = physicalDevice;</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 :     this-&gt;mDevice = device;</span></a>
+<a name="65"><span class="lineNum">      65 </span>            : </a>
+<a name="66"><span class="lineNum">      66 </span>            : // Make sure the logger is setup</a>
+<a name="67"><span class="lineNum">      67 </span>            : #if !KOMPUTE_OPT_LOG_LEVEL_DISABLED</a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineNoCov">          0 :     logger::setupLogger();</span></a>
+<a name="69"><span class="lineNum">      69 </span>            : #endif</a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="71"><span class="lineNum">      71 </span>            : </a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">         47 : Manager::~Manager()</span></a>
+<a name="73"><span class="lineNum">      73 </span>            : {</a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager Destructor started&quot;);</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         47 :     this-&gt;destroy();</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">         47 : }</span></a>
+<a name="77"><span class="lineNum">      77 </span>            : </a>
+<a name="78"><span class="lineNum">      78 </span>            : void</a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">         48 : Manager::destroy()</span></a>
+<a name="80"><span class="lineNum">      80 </span>            : {</a>
+<a name="81"><span class="lineNum">      81 </span>            : </a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineCov">         96 :     KP_LOG_DEBUG(&quot;Kompute Manager destroy() started&quot;);</span></a>
+<a name="83"><span class="lineNum">      83 </span>            : </a>
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">         48 :     if (this-&gt;mDevice == nullptr) {</span></a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">          2 :         KP_LOG_ERROR(</span></a>
+<a name="86"><span class="lineNum">      86 </span>            :           &quot;Kompute Manager destructor reached with null Device pointer&quot;);</a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineCov">          1 :         return;</span></a>
+<a name="88"><span class="lineNum">      88 </span>            :     }</a>
+<a name="89"><span class="lineNum">      89 </span>            : </a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">         47 :     if (this-&gt;mManageResources &amp;&amp; this-&gt;mManagedSequences.size()) {</span></a>
+<a name="91"><span class="lineNum">      91 </span><span class="lineCov">         80 :         KP_LOG_DEBUG(&quot;Kompute Manager explicitly running destructor for &quot;</span></a>
+<a name="92"><span class="lineNum">      92 </span>            :                      &quot;managed sequences&quot;);</a>
+<a name="93"><span class="lineNum">      93 </span><span class="lineCov">         99 :         for (const std::weak_ptr&lt;Sequence&gt;&amp; weakSq : this-&gt;mManagedSequences) {</span></a>
+<a name="94"><span class="lineNum">      94 </span><span class="lineCov">         59 :             if (std::shared_ptr&lt;Sequence&gt; sq = weakSq.lock()) {</span></a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">         12 :                 sq-&gt;destroy();</span></a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">         59 :             }</span></a>
+<a name="97"><span class="lineNum">      97 </span>            :         }</a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">         40 :         this-&gt;mManagedSequences.clear();</span></a>
+<a name="99"><span class="lineNum">      99 </span>            :     }</a>
+<a name="100"><span class="lineNum">     100 </span>            : </a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         47 :     if (this-&gt;mManageResources &amp;&amp; this-&gt;mManagedAlgorithms.size()) {</span></a>
+<a name="102"><span class="lineNum">     102 </span><span class="lineCov">         62 :         KP_LOG_DEBUG(&quot;Kompute Manager explicitly freeing algorithms&quot;);</span></a>
+<a name="103"><span class="lineNum">     103 </span><span class="lineCov">         31 :         for (const std::weak_ptr&lt;Algorithm&gt;&amp; weakAlgorithm :</span></a>
+<a name="104"><span class="lineNum">     104 </span><span class="lineCov">         98 :              this-&gt;mManagedAlgorithms) {</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">         36 :             if (std::shared_ptr&lt;Algorithm&gt; algorithm = weakAlgorithm.lock()) {</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineNoCov">          0 :                 algorithm-&gt;destroy();</span></a>
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         36 :             }</span></a>
+<a name="108"><span class="lineNum">     108 </span>            :         }</a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">         31 :         this-&gt;mManagedAlgorithms.clear();</span></a>
+<a name="110"><span class="lineNum">     110 </span>            :     }</a>
+<a name="111"><span class="lineNum">     111 </span>            : </a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         47 :     if (this-&gt;mManageResources &amp;&amp; this-&gt;mManagedTensors.size()) {</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">         80 :         KP_LOG_DEBUG(&quot;Kompute Manager explicitly freeing tensors&quot;);</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">        133 :         for (const std::weak_ptr&lt;Tensor&gt;&amp; weakTensor : this-&gt;mManagedTensors) {</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         93 :             if (std::shared_ptr&lt;Tensor&gt; tensor = weakTensor.lock()) {</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">          7 :                 tensor-&gt;destroy();</span></a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">         93 :             }</span></a>
+<a name="118"><span class="lineNum">     118 </span>            :         }</a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineCov">         40 :         this-&gt;mManagedTensors.clear();</span></a>
+<a name="120"><span class="lineNum">     120 </span>            :     }</a>
+<a name="121"><span class="lineNum">     121 </span>            : </a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">         47 :     if (this-&gt;mFreeDevice) {</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineCov">         94 :         KP_LOG_INFO(&quot;Destroying device&quot;);</span></a>
+<a name="124"><span class="lineNum">     124 </span><span class="lineCov">         47 :         this-&gt;mDevice-&gt;destroy(</span></a>
+<a name="125"><span class="lineNum">     125 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);</a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">         47 :         this-&gt;mDevice = nullptr;</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         94 :         KP_LOG_DEBUG(&quot;Kompute Manager Destroyed Device&quot;);</span></a>
+<a name="128"><span class="lineNum">     128 </span>            :     }</a>
+<a name="129"><span class="lineNum">     129 </span>            : </a>
+<a name="130"><span class="lineNum">     130 </span><span class="lineCov">         47 :     if (this-&gt;mInstance == nullptr) {</span></a>
+<a name="131"><span class="lineNum">     131 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(</span></a>
+<a name="132"><span class="lineNum">     132 </span>            :           &quot;Kompute Manager destructor reached with null Instance pointer&quot;);</a>
+<a name="133"><span class="lineNum">     133 </span><span class="lineNoCov">          0 :         return;</span></a>
+<a name="134"><span class="lineNum">     134 </span>            :     }</a>
+<a name="135"><span class="lineNum">     135 </span>            : </a>
+<a name="136"><span class="lineNum">     136 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS</a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineCov">         47 :     if (this-&gt;mDebugReportCallback) {</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :         this-&gt;mInstance-&gt;destroyDebugReportCallbackEXT(</span></a>
+<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :           this-&gt;mDebugReportCallback, nullptr, this-&gt;mDebugDispatcher);</span></a>
+<a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Kompute Manager Destroyed Debug Report Callback&quot;);</span></a>
+<a name="141"><span class="lineNum">     141 </span>            :     }</a>
+<a name="142"><span class="lineNum">     142 </span>            : #endif</a>
+<a name="143"><span class="lineNum">     143 </span>            : </a>
+<a name="144"><span class="lineNum">     144 </span><span class="lineCov">         47 :     if (this-&gt;mFreeInstance) {</span></a>
+<a name="145"><span class="lineNum">     145 </span><span class="lineCov">         47 :         this-&gt;mInstance-&gt;destroy(</span></a>
+<a name="146"><span class="lineNum">     146 </span>            :           (vk::Optional&lt;const vk::AllocationCallbacks&gt;)nullptr);</a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">         47 :         this-&gt;mInstance = nullptr;</span></a>
+<a name="148"><span class="lineNum">     148 </span><span class="lineCov">         94 :         KP_LOG_DEBUG(&quot;Kompute Manager Destroyed Instance&quot;);</span></a>
+<a name="149"><span class="lineNum">     149 </span>            :     }</a>
+<a name="150"><span class="lineNum">     150 </span>            : }</a>
+<a name="151"><span class="lineNum">     151 </span>            : </a>
+<a name="152"><span class="lineNum">     152 </span>            : void</a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">         47 : Manager::createInstance()</span></a>
+<a name="154"><span class="lineNum">     154 </span>            : {</a>
+<a name="155"><span class="lineNum">     155 </span>            : </a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager creating instance&quot;);</span></a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span><span class="lineCov">         47 :     this-&gt;mFreeInstance = true;</span></a>
+<a name="159"><span class="lineNum">     159 </span>            : </a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         47 :     vk::ApplicationInfo applicationInfo;</span></a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">         47 :     applicationInfo.pApplicationName = &quot;Kompute&quot;;</span></a>
+<a name="162"><span class="lineNum">     162 </span><span class="lineCov">         47 :     applicationInfo.pEngineName = &quot;Kompute&quot;;</span></a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">         47 :     applicationInfo.apiVersion = KOMPUTE_VK_API_VERSION;</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">         47 :     applicationInfo.engineVersion = KOMPUTE_VK_API_VERSION;</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">         47 :     applicationInfo.applicationVersion = KOMPUTE_VK_API_VERSION;</span></a>
+<a name="166"><span class="lineNum">     166 </span>            : </a>
+<a name="167"><span class="lineNum">     167 </span><span class="lineCov">         47 :     std::vector&lt;const char*&gt; applicationExtensions;</span></a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<a name="169"><span class="lineNum">     169 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS</a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">         47 :     applicationExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);</span></a>
+<a name="171"><span class="lineNum">     171 </span>            : #endif</a>
+<a name="172"><span class="lineNum">     172 </span>            : </a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">         47 :     vk::InstanceCreateInfo computeInstanceCreateInfo;</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">         47 :     computeInstanceCreateInfo.pApplicationInfo = &amp;applicationInfo;</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">         47 :     if (!applicationExtensions.empty()) {</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">         47 :         computeInstanceCreateInfo.enabledExtensionCount =</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">         47 :           (uint32_t)applicationExtensions.size();</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">         47 :         computeInstanceCreateInfo.ppEnabledExtensionNames =</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineCov">         47 :           applicationExtensions.data();</span></a>
+<a name="180"><span class="lineNum">     180 </span>            :     }</a>
+<a name="181"><span class="lineNum">     181 </span>            : </a>
+<a name="182"><span class="lineNum">     182 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS</a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager adding debug validation layers&quot;);</span></a>
+<a name="184"><span class="lineNum">     184 </span>            :     // We'll identify the layers that are supported</a>
+<a name="185"><span class="lineNum">     185 </span><span class="lineCov">         47 :     std::vector&lt;const char*&gt; validLayerNames;</span></a>
+<a name="186"><span class="lineNum">     186 </span>            :     std::vector&lt;const char*&gt; desiredLayerNames = {</a>
+<a name="187"><span class="lineNum">     187 </span>            :         &quot;VK_LAYER_LUNARG_assistant_layer&quot;,</a>
+<a name="188"><span class="lineNum">     188 </span>            :         &quot;VK_LAYER_LUNARG_standard_validation&quot;,</a>
+<a name="189"><span class="lineNum">     189 </span>            :         &quot;VK_LAYER_KHRONOS_validation&quot;,</a>
+<a name="190"><span class="lineNum">     190 </span><span class="lineCov">         47 :     };</span></a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         47 :     std::vector&lt;std::string&gt; envLayerNames;</span></a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">         47 :     const char* envLayerNamesVal = std::getenv(&quot;KOMPUTE_ENV_DEBUG_LAYERS&quot;);</span></a>
+<a name="193"><span class="lineNum">     193 </span><span class="lineCov">         47 :     if (envLayerNamesVal != nullptr &amp;&amp; *envLayerNamesVal != '\0') {</span></a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Kompute Manager adding environment layers: {}&quot;,</span></a>
+<a name="195"><span class="lineNum">     195 </span>            :                      envLayerNamesVal);</a>
+<a name="196"><span class="lineNum">     196 </span><span class="lineNoCov">          0 :         std::istringstream iss(envLayerNamesVal);</span></a>
+<a name="197"><span class="lineNum">     197 </span><span class="lineNoCov">          0 :         std::istream_iterator&lt;std::string&gt; beg(iss);</span></a>
+<a name="198"><span class="lineNum">     198 </span><span class="lineNoCov">          0 :         std::istream_iterator&lt;std::string&gt; end;</span></a>
+<a name="199"><span class="lineNum">     199 </span><span class="lineNoCov">          0 :         envLayerNames = std::vector&lt;std::string&gt;(beg, end);</span></a>
+<a name="200"><span class="lineNum">     200 </span><span class="lineNoCov">          0 :         for (const std::string&amp; layerName : envLayerNames) {</span></a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineNoCov">          0 :             desiredLayerNames.push_back(layerName.c_str());</span></a>
+<a name="202"><span class="lineNum">     202 </span>            :         }</a>
+<a name="203"><span class="lineNum">     203 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(&quot;Desired layers: {}&quot;, fmt::join(desiredLayerNames, &quot;, &quot;));</span></a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineNoCov">          0 :     }</span></a>
+<a name="205"><span class="lineNum">     205 </span>            : </a>
+<a name="206"><span class="lineNum">     206 </span>            :     // Identify the valid layer names based on the desiredLayerNames</a>
+<a name="207"><span class="lineNum">     207 </span>            :     {</a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineCov">         47 :         std::set&lt;std::string&gt; uniqueLayerNames;</span></a>
+<a name="209"><span class="lineNum">     209 </span>            :         std::vector&lt;vk::LayerProperties&gt; availableLayerProperties =</a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineCov">         47 :           vk::enumerateInstanceLayerProperties();</span></a>
+<a name="211"><span class="lineNum">     211 </span><span class="lineCov">         94 :         for (vk::LayerProperties layerProperties : availableLayerProperties) {</span></a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">         47 :             std::string layerName(layerProperties.layerName.data());</span></a>
+<a name="213"><span class="lineNum">     213 </span><span class="lineCov">         47 :             uniqueLayerNames.insert(layerName);</span></a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">         47 :         }</span></a>
+<a name="215"><span class="lineNum">     215 </span><span class="lineCov">        141 :         KP_LOG_DEBUG(&quot;Available layers: {}&quot;, fmt::join(uniqueLayerNames, &quot;, &quot;));</span></a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineCov">        188 :         for (const char* desiredLayerName : desiredLayerNames) {</span></a>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">        141 :             if (uniqueLayerNames.count(desiredLayerName) != 0) {</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineNoCov">          0 :                 validLayerNames.push_back(desiredLayerName);</span></a>
+<a name="219"><span class="lineNum">     219 </span>            :             }</a>
+<a name="220"><span class="lineNum">     220 </span>            :         }</a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">         47 :     }</span></a>
+<a name="222"><span class="lineNum">     222 </span>            : </a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">         47 :     if (!validLayerNames.empty()) {</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineNoCov">          0 :         KP_LOG_DEBUG(</span></a>
+<a name="225"><span class="lineNum">     225 </span>            :           &quot;Kompute Manager Initializing instance with valid layers: {}&quot;,</a>
+<a name="226"><span class="lineNum">     226 </span>            :           fmt::join(validLayerNames, &quot;, &quot;));</a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineNoCov">          0 :         computeInstanceCreateInfo.enabledLayerCount =</span></a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 :           static_cast&lt;uint32_t&gt;(validLayerNames.size());</span></a>
+<a name="229"><span class="lineNum">     229 </span><span class="lineNoCov">          0 :         computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();</span></a>
+<a name="230"><span class="lineNum">     230 </span>            :     } else {</a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">         94 :         KP_LOG_WARN(&quot;Kompute Manager no valid layer names found from desired &quot;</span></a>
+<a name="232"><span class="lineNum">     232 </span>            :                     &quot;layer names&quot;);</a>
+<a name="233"><span class="lineNum">     233 </span>            :     }</a>
+<a name="234"><span class="lineNum">     234 </span>            : #endif</a>
+<a name="235"><span class="lineNum">     235 </span>            : </a>
+<a name="236"><span class="lineNum">     236 </span>            : #if VK_USE_PLATFORM_ANDROID_KHR</a>
+<a name="237"><span class="lineNum">     237 </span>            :     vk::DynamicLoader dl;</a>
+<a name="238"><span class="lineNum">     238 </span>            :     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =</a>
+<a name="239"><span class="lineNum">     239 </span>            :       dl.getProcAddress&lt;PFN_vkGetInstanceProcAddr&gt;(&quot;vkGetInstanceProcAddr&quot;);</a>
+<a name="240"><span class="lineNum">     240 </span>            :     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);</a>
+<a name="241"><span class="lineNum">     241 </span>            : #endif // VK_USE_PLATFORM_ANDROID_KHR</a>
+<a name="242"><span class="lineNum">     242 </span>            : </a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">         47 :     this-&gt;mInstance = std::make_shared&lt;vk::Instance&gt;();</span></a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">         47 :     vk::createInstance(</span></a>
+<a name="245"><span class="lineNum">     245 </span>            :       &amp;computeInstanceCreateInfo, nullptr, this-&gt;mInstance.get());</a>
+<a name="246"><span class="lineNum">     246 </span>            : </a>
+<a name="247"><span class="lineNum">     247 </span>            : #if VK_USE_PLATFORM_ANDROID_KHR</a>
+<a name="248"><span class="lineNum">     248 </span>            :     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this-&gt;mInstance);</a>
+<a name="249"><span class="lineNum">     249 </span>            : #endif // VK_USE_PLATFORM_ANDROID_KHR</a>
 <a name="250"><span class="lineNum">     250 </span>            : </a>
-<span class="lineNum">     251 </span>            : void
-<span class="lineNum">     252 </span><span class="lineCov">          2 : Manager::clear()</span>
-<span class="lineNum">     253 </span>            : {
-<span class="lineNum">     254 </span><span class="lineCov">          2 :     if (this-&gt;mManageResources) {</span>
-<span class="lineNum">     255 </span><span class="lineCov">          2 :         this-&gt;mManagedTensors.erase(</span>
-<a name="256"><span class="lineNum">     256 </span><span class="lineCov">          4 :           std::remove_if(begin(this-&gt;mManagedTensors),</span></a>
-<span class="lineNum">     257 </span>            :                          end(this-&gt;mManagedTensors),
-<span class="lineNum">     258 </span><span class="lineCov">         10 :                          [](std::weak_ptr&lt;Tensor&gt; t) { return t.expired(); }),</span>
-<span class="lineNum">     259 </span><span class="lineCov">          8 :           end(this-&gt;mManagedTensors));</span>
-<span class="lineNum">     260 </span><span class="lineCov">          2 :         this-&gt;mManagedAlgorithms.erase(</span>
-<span class="lineNum">     261 </span><span class="lineCov">          4 :           std::remove_if(</span>
-<a name="262"><span class="lineNum">     262 </span>            :             begin(this-&gt;mManagedAlgorithms),</a>
-<span class="lineNum">     263 </span>            :             end(this-&gt;mManagedAlgorithms),
-<span class="lineNum">     264 </span><span class="lineCov">          6 :             [](std::weak_ptr&lt;Algorithm&gt; t) { return t.expired(); }),</span>
-<span class="lineNum">     265 </span><span class="lineCov">          8 :           end(this-&gt;mManagedAlgorithms));</span>
-<span class="lineNum">     266 </span><span class="lineCov">          2 :         this-&gt;mManagedSequences.erase(</span>
-<a name="267"><span class="lineNum">     267 </span><span class="lineCov">          4 :           std::remove_if(begin(this-&gt;mManagedSequences),</span></a>
-<span class="lineNum">     268 </span>            :                          end(this-&gt;mManagedSequences),
-<span class="lineNum">     269 </span><span class="lineCov">         10 :                          [](std::weak_ptr&lt;Sequence&gt; t) { return t.expired(); }),</span>
-<span class="lineNum">     270 </span><span class="lineCov">          8 :           end(this-&gt;mManagedSequences));</span>
-<span class="lineNum">     271 </span>            :     }
-<span class="lineNum">     272 </span><span class="lineCov">          2 : }</span>
-<a name="273"><span class="lineNum">     273 </span>            : </a>
-<span class="lineNum">     274 </span>            : void
-<span class="lineNum">     275 </span><span class="lineCov">         98 : Manager::createDevice(const std::vector&lt;uint32_t&gt;&amp; familyQueueIndices,</span>
-<span class="lineNum">     276 </span>            :                       uint32_t physicalDeviceIndex,
-<span class="lineNum">     277 </span>            :                       const std::vector&lt;std::string&gt;&amp; desiredExtensions)
-<span class="lineNum">     278 </span>            : {
-<span class="lineNum">     279 </span>            : 
-<span class="lineNum">     280 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager creating Device&quot;);</span>
-<span class="lineNum">     281 </span>            : 
-<span class="lineNum">     282 </span><span class="lineCov">         98 :     if (this-&gt;mInstance == nullptr) {</span>
-<span class="lineNum">     283 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Manager instance is null&quot;);</span>
-<span class="lineNum">     284 </span>            :     }
-<span class="lineNum">     285 </span>            :     if (physicalDeviceIndex &lt; 0) {
-<span class="lineNum">     286 </span>            :         throw std::runtime_error(
-<span class="lineNum">     287 </span>            :           &quot;Kompute Manager physical device index not provided&quot;);
-<span class="lineNum">     288 </span>            :     }
-<span class="lineNum">     289 </span>            : 
-<span class="lineNum">     290 </span><span class="lineCov">         98 :     this-&gt;mFreeDevice = true;</span>
-<span class="lineNum">     291 </span>            : 
-<span class="lineNum">     292 </span>            :     // Getting an integer that says how many vuklan devices we have
-<span class="lineNum">     293 </span>            :     std::vector&lt;vk::PhysicalDevice&gt; physicalDevices =
-<span class="lineNum">     294 </span><span class="lineCov">        294 :             this-&gt;mInstance-&gt;enumeratePhysicalDevices();</span>
-<span class="lineNum">     295 </span><span class="lineCov">         98 :     uint32_t deviceCount = physicalDevices.size();</span>
-<span class="lineNum">     296 </span>            : 
-<span class="lineNum">     297 </span>            :     // This means there are no devices at all
-<span class="lineNum">     298 </span><span class="lineCov">         98 :     if (deviceCount == 0) {</span>
-<span class="lineNum">     299 </span>            :         throw std::runtime_error(&quot;Failed to find GPUs with Vulkan support! &quot;
-<span class="lineNum">     300 </span><span class="lineNoCov">          0 :                                  &quot;Maybe you haven't installed vulkan drivers?&quot;);</span>
-<span class="lineNum">     301 </span>            :     }
-<span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span>            :     // This means that we're exceeding our device limit, for
-<span class="lineNum">     304 </span>            :     // example if we have 2 devices, just physicalDeviceIndex
-<span class="lineNum">     305 </span>            :     // 0 and 1 are acceptable. Hence, physicalDeviceIndex should
-<span class="lineNum">     306 </span>            :     // always be less than deviceCount, else we raise an error
-<span class="lineNum">     307 </span><span class="lineCov">         98 :     if (!(deviceCount &gt; physicalDeviceIndex)) {</span>
-<span class="lineNum">     308 </span>            :         throw std::runtime_error(&quot;There is no such physical index or device, &quot;
-<span class="lineNum">     309 </span><span class="lineNoCov">          0 :                                  &quot;please use your existing device&quot;);</span>
-<span class="lineNum">     310 </span>            :     }
-<span class="lineNum">     311 </span>            : 
-<span class="lineNum">     312 </span><span class="lineCov">         98 :     vk::PhysicalDevice physicalDevice = physicalDevices[physicalDeviceIndex];</span>
-<span class="lineNum">     313 </span>            : 
-<span class="lineNum">     314 </span><span class="lineCov">         98 :     this-&gt;mPhysicalDevice =</span>
-<span class="lineNum">     315 </span><span class="lineCov">        196 :       std::make_shared&lt;vk::PhysicalDevice&gt;(physicalDevice);</span>
-<span class="lineNum">     316 </span>            : 
-<span class="lineNum">     317 </span>            :     vk::PhysicalDeviceProperties physicalDeviceProperties =
-<span class="lineNum">     318 </span><span class="lineCov">         98 :       physicalDevice.getProperties();</span>
-<span class="lineNum">     319 </span>            : 
-<span class="lineNum">     320 </span><span class="lineCov">         98 :     KP_LOG_INFO(&quot;Using physical device index {} found {}&quot;,</span>
-<span class="lineNum">     321 </span>            :                 physicalDeviceIndex,
-<span class="lineNum">     322 </span>            :                 physicalDeviceProperties.deviceName);
-<span class="lineNum">     323 </span>            : 
-<span class="lineNum">     324 </span><span class="lineCov">         98 :     if (!familyQueueIndices.size()) {</span>
-<span class="lineNum">     325 </span>            :         // Find compute queue
-<span class="lineNum">     326 </span>            :         std::vector&lt;vk::QueueFamilyProperties&gt; allQueueFamilyProperties =
-<span class="lineNum">     327 </span><span class="lineCov">        196 :           physicalDevice.getQueueFamilyProperties();</span>
-<span class="lineNum">     328 </span>            : 
-<span class="lineNum">     329 </span><span class="lineCov">         98 :         uint32_t computeQueueFamilyIndex = -1;</span>
-<span class="lineNum">     330 </span><span class="lineCov">         98 :         for (uint32_t i = 0; i &lt; allQueueFamilyProperties.size(); i++) {</span>
-<span class="lineNum">     331 </span>            :             vk::QueueFamilyProperties queueFamilyProperties =
-<span class="lineNum">     332 </span><span class="lineCov">         98 :               allQueueFamilyProperties[i];</span>
-<span class="lineNum">     333 </span>            : 
-<span class="lineNum">     334 </span><span class="lineCov">        196 :             if (queueFamilyProperties.queueFlags &amp;</span>
-<span class="lineNum">     335 </span><span class="lineCov">        196 :                 vk::QueueFlagBits::eCompute) {</span>
-<span class="lineNum">     336 </span><span class="lineCov">         98 :                 computeQueueFamilyIndex = i;</span>
-<span class="lineNum">     337 </span><span class="lineCov">         98 :                 break;</span>
-<span class="lineNum">     338 </span>            :             }
-<span class="lineNum">     339 </span>            :         }
-<span class="lineNum">     340 </span>            : 
-<span class="lineNum">     341 </span>            :         if (computeQueueFamilyIndex &lt; 0) {
-<span class="lineNum">     342 </span>            :             throw std::runtime_error(&quot;Compute queue is not supported&quot;);
-<span class="lineNum">     343 </span>            :         }
-<span class="lineNum">     344 </span>            : 
-<span class="lineNum">     345 </span><span class="lineCov">         98 :         this-&gt;mComputeQueueFamilyIndices.push_back(computeQueueFamilyIndex);</span>
-<span class="lineNum">     346 </span>            :     } else {
-<span class="lineNum">     347 </span><span class="lineNoCov">          0 :         this-&gt;mComputeQueueFamilyIndices = familyQueueIndices;</span>
-<span class="lineNum">     348 </span>            :     }
-<span class="lineNum">     349 </span>            : 
-<span class="lineNum">     350 </span><span class="lineCov">        196 :     std::unordered_map&lt;uint32_t, uint32_t&gt; familyQueueCounts;</span>
-<span class="lineNum">     351 </span><span class="lineCov">        196 :     std::unordered_map&lt;uint32_t, std::vector&lt;float&gt;&gt; familyQueuePriorities;</span>
-<span class="lineNum">     352 </span><span class="lineCov">        196 :     for (const auto&amp; value : this-&gt;mComputeQueueFamilyIndices) {</span>
-<span class="lineNum">     353 </span><span class="lineCov">         98 :         familyQueueCounts[value]++;</span>
-<span class="lineNum">     354 </span><span class="lineCov">         98 :         familyQueuePriorities[value].push_back(1.0f);</span>
-<span class="lineNum">     355 </span>            :     }
-<span class="lineNum">     356 </span>            : 
-<span class="lineNum">     357 </span><span class="lineCov">        196 :     std::unordered_map&lt;uint32_t, uint32_t&gt; familyQueueIndexCount;</span>
-<span class="lineNum">     358 </span><span class="lineCov">        196 :     std::vector&lt;vk::DeviceQueueCreateInfo&gt; deviceQueueCreateInfos;</span>
-<span class="lineNum">     359 </span><span class="lineCov">        196 :     for (const auto&amp; familyQueueInfo : familyQueueCounts) {</span>
-<span class="lineNum">     360 </span>            :         // Setting the device count to 0
-<span class="lineNum">     361 </span><span class="lineCov">         98 :         familyQueueIndexCount[familyQueueInfo.first] = 0;</span>
-<span class="lineNum">     362 </span>            : 
-<span class="lineNum">     363 </span>            :         // Creating the respective device queue
-<span class="lineNum">     364 </span>            :         vk::DeviceQueueCreateInfo deviceQueueCreateInfo(
-<span class="lineNum">     365 </span><span class="lineCov">         98 :           vk::DeviceQueueCreateFlags(),</span>
-<span class="lineNum">     366 </span><span class="lineCov">         98 :           familyQueueInfo.first,</span>
-<span class="lineNum">     367 </span><span class="lineCov">         98 :           familyQueueInfo.second,</span>
-<span class="lineNum">     368 </span><span class="lineCov">        196 :           familyQueuePriorities[familyQueueInfo.first].data());</span>
-<span class="lineNum">     369 </span><span class="lineCov">         98 :         deviceQueueCreateInfos.push_back(deviceQueueCreateInfo);</span>
-<span class="lineNum">     370 </span>            :     }
-<span class="lineNum">     371 </span>            : 
-<span class="lineNum">     372 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager desired extension layers {}&quot;,</span>
-<span class="lineNum">     373 </span>            :                  desiredExtensions);
-<span class="lineNum">     374 </span>            : 
-<span class="lineNum">     375 </span>            :     std::vector&lt;vk::ExtensionProperties&gt; deviceExtensions =
-<span class="lineNum">     376 </span><span class="lineCov">        294 :       this-&gt;mPhysicalDevice-&gt;enumerateDeviceExtensionProperties();</span>
-<span class="lineNum">     377 </span>            : 
-<span class="lineNum">     378 </span><span class="lineCov">        196 :     std::set&lt;std::string&gt; uniqueExtensionNames;</span>
-<span class="lineNum">     379 </span><span class="lineCov">       3626 :     for (const vk::ExtensionProperties&amp; ext : deviceExtensions) {</span>
-<span class="lineNum">     380 </span><span class="lineCov">       3528 :         uniqueExtensionNames.insert(ext.extensionName);</span>
-<span class="lineNum">     381 </span>            :     }
-<span class="lineNum">     382 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager available extensions {}&quot;,</span>
-<span class="lineNum">     383 </span>            :                  uniqueExtensionNames);
-<span class="lineNum">     384 </span><span class="lineCov">        196 :     std::vector&lt;const char*&gt; validExtensions;</span>
-<span class="lineNum">     385 </span><span class="lineCov">         98 :     for (const std::string&amp; ext : desiredExtensions) {</span>
-<span class="lineNum">     386 </span><span class="lineNoCov">          0 :         if (uniqueExtensionNames.count(ext) != 0) {</span>
-<span class="lineNum">     387 </span><span class="lineNoCov">          0 :             validExtensions.push_back(ext.c_str());</span>
-<span class="lineNum">     388 </span>            :         }
-<span class="lineNum">     389 </span>            :     }
-<span class="lineNum">     390 </span><span class="lineCov">         98 :     if (desiredExtensions.size() != validExtensions.size()) {</span>
-<span class="lineNum">     391 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(&quot;Kompute Manager not all extensions were added: {}&quot;,</span>
-<span class="lineNum">     392 </span>            :                      validExtensions);
-<span class="lineNum">     393 </span>            :     }
-<span class="lineNum">     394 </span>            : 
-<span class="lineNum">     395 </span><span class="lineCov">         98 :     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),</span>
-<span class="lineNum">     396 </span><span class="lineCov">         98 :                                           deviceQueueCreateInfos.size(),</span>
-<span class="lineNum">     397 </span><span class="lineCov">         98 :                                           deviceQueueCreateInfos.data(),</span>
-<span class="lineNum">     398 </span>            :                                           {},
-<span class="lineNum">     399 </span>            :                                           {},
-<span class="lineNum">     400 </span><span class="lineCov">         98 :                                           validExtensions.size(),</span>
-<span class="lineNum">     401 </span><span class="lineCov">        294 :                                           validExtensions.data());</span>
-<span class="lineNum">     402 </span>            : 
-<span class="lineNum">     403 </span><span class="lineCov">         98 :     this-&gt;mDevice = std::make_shared&lt;vk::Device&gt;();</span>
-<span class="lineNum">     404 </span><span class="lineCov">        196 :     physicalDevice.createDevice(</span>
-<span class="lineNum">     405 </span>            :       &amp;deviceCreateInfo, nullptr, this-&gt;mDevice.get());
-<span class="lineNum">     406 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager device created&quot;);</span>
-<span class="lineNum">     407 </span>            : 
-<span class="lineNum">     408 </span><span class="lineCov">        196 :     for (const uint32_t&amp; familyQueueIndex : this-&gt;mComputeQueueFamilyIndices) {</span>
-<span class="lineNum">     409 </span><span class="lineCov">        196 :         std::shared_ptr&lt;vk::Queue&gt; currQueue = std::make_shared&lt;vk::Queue&gt;();</span>
-<span class="lineNum">     410 </span>            : 
-<span class="lineNum">     411 </span><span class="lineCov">        294 :         this-&gt;mDevice-&gt;getQueue(familyQueueIndex,</span>
-<span class="lineNum">     412 </span><span class="lineCov">         98 :                                 familyQueueIndexCount[familyQueueIndex],</span>
-<span class="lineNum">     413 </span>            :                                 currQueue.get());
-<span class="lineNum">     414 </span>            : 
-<span class="lineNum">     415 </span><span class="lineCov">         98 :         familyQueueIndexCount[familyQueueIndex]++;</span>
-<span class="lineNum">     416 </span>            : 
-<span class="lineNum">     417 </span><span class="lineCov">         98 :         this-&gt;mComputeQueues.push_back(currQueue);</span>
-<span class="lineNum">     418 </span>            :     }
-<span class="lineNum">     419 </span>            : 
-<span class="lineNum">     420 </span><span class="lineCov">         98 :     KP_LOG_DEBUG(&quot;Kompute Manager compute queue obtained&quot;);</span>
-<span class="lineNum">     421 </span><span class="lineCov">         98 : }</span>
-<a name="422"><span class="lineNum">     422 </span>            : </a>
-<span class="lineNum">     423 </span>            : std::shared_ptr&lt;Sequence&gt;
-<span class="lineNum">     424 </span><span class="lineCov">        130 : Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)</span>
-<span class="lineNum">     425 </span>            : {
-<span class="lineNum">     426 </span><span class="lineCov">        130 :     KP_LOG_DEBUG(&quot;Kompute Manager sequence() with queueIndex: {}&quot;, queueIndex);</span>
-<span class="lineNum">     427 </span>            : 
-<span class="lineNum">     428 </span>            :     std::shared_ptr&lt;Sequence&gt; sq{ new kp::Sequence(
-<span class="lineNum">     429 </span>            :       this-&gt;mPhysicalDevice,
-<span class="lineNum">     430 </span>            :       this-&gt;mDevice,
-<span class="lineNum">     431 </span><span class="lineCov">        130 :       this-&gt;mComputeQueues[queueIndex],</span>
-<span class="lineNum">     432 </span><span class="lineCov">        130 :       this-&gt;mComputeQueueFamilyIndices[queueIndex],</span>
-<span class="lineNum">     433 </span><span class="lineCov">        390 :       totalTimestamps) };</span>
-<span class="lineNum">     434 </span>            : 
-<span class="lineNum">     435 </span><span class="lineCov">        130 :     if (this-&gt;mManageResources) {</span>
-<span class="lineNum">     436 </span><span class="lineCov">        130 :         this-&gt;mManagedSequences.push_back(sq);</span>
-<span class="lineNum">     437 </span>            :     }
-<span class="lineNum">     438 </span>            : 
-<span class="lineNum">     439 </span><span class="lineCov">        130 :     return sq;</span>
-<span class="lineNum">     440 </span>            : }
-<a name="441"><span class="lineNum">     441 </span>            : </a>
-<span class="lineNum">     442 </span>            : vk::PhysicalDeviceProperties
-<span class="lineNum">     443 </span><span class="lineCov">          2 : Manager::getDeviceProperties() const</span>
-<span class="lineNum">     444 </span>            : {
-<span class="lineNum">     445 </span><span class="lineCov">          4 :     return this-&gt;mPhysicalDevice-&gt;getProperties();</span>
-<span class="lineNum">     446 </span>            : }
-<a name="447"><span class="lineNum">     447 </span>            : </a>
-<span class="lineNum">     448 </span>            : std::vector&lt;vk::PhysicalDevice&gt;
-<span class="lineNum">     449 </span><span class="lineCov">          2 : Manager::listDevices() const</span>
-<span class="lineNum">     450 </span>            : {
-<span class="lineNum">     451 </span><span class="lineCov">          4 :     return this-&gt;mInstance-&gt;enumeratePhysicalDevices();</span>
-<span class="lineNum">     452 </span>            : }
-<span class="lineNum">     453 </span>            : 
-<span class="lineNum">     454 </span>            : }
+<a name="251"><span class="lineNum">     251 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager Instance Created&quot;);</span></a>
+<a name="252"><span class="lineNum">     252 </span>            : </a>
+<a name="253"><span class="lineNum">     253 </span>            : #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS</a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager adding debug callbacks&quot;);</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">         47 :     if (validLayerNames.size() &gt; 0) {</span></a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineNoCov">          0 :         vk::DebugReportFlagsEXT debugFlags =</span></a>
+<a name="257"><span class="lineNum">     257 </span>            :           vk::DebugReportFlagBitsEXT::eError |</a>
+<a name="258"><span class="lineNum">     258 </span>            :           vk::DebugReportFlagBitsEXT::eWarning;</a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineNoCov">          0 :         vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};</span></a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineNoCov">          0 :         debugCreateInfo.pfnCallback =</span></a>
+<a name="261"><span class="lineNum">     261 </span>            :           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;</a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineNoCov">          0 :         debugCreateInfo.flags = debugFlags;</span></a>
+<a name="263"><span class="lineNum">     263 </span>            : </a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineNoCov">          0 :         this-&gt;mDebugDispatcher.init(*this-&gt;mInstance, &amp;vkGetInstanceProcAddr);</span></a>
+<a name="265"><span class="lineNum">     265 </span>            :         this-&gt;mDebugReportCallback =</a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineNoCov">          0 :           this-&gt;mInstance-&gt;createDebugReportCallbackEXT(</span></a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineNoCov">          0 :             debugCreateInfo, nullptr, this-&gt;mDebugDispatcher);</span></a>
+<a name="268"><span class="lineNum">     268 </span>            :     }</a>
+<a name="269"><span class="lineNum">     269 </span>            : #endif</a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineCov">         47 : }</span></a>
+<a name="271"><span class="lineNum">     271 </span>            : </a>
+<a name="272"><span class="lineNum">     272 </span>            : void</a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">          1 : Manager::clear()</span></a>
+<a name="274"><span class="lineNum">     274 </span>            : {</a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineCov">          1 :     if (this-&gt;mManageResources) {</span></a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineCov">          2 :         this-&gt;mManagedTensors.erase(</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">          1 :           std::remove_if(begin(this-&gt;mManagedTensors),</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">          1 :                          end(this-&gt;mManagedTensors),</span></a>
+<a name="279"><span class="lineNum">     279 </span><span class="lineCov">          3 :                          [](std::weak_ptr&lt;Tensor&gt; t) { return t.expired(); }),</span></a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineCov">          1 :           end(this-&gt;mManagedTensors));</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineCov">          2 :         this-&gt;mManagedAlgorithms.erase(</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">          1 :           std::remove_if(</span></a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">          1 :             begin(this-&gt;mManagedAlgorithms),</span></a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineCov">          1 :             end(this-&gt;mManagedAlgorithms),</span></a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineCov">          1 :             [](std::weak_ptr&lt;Algorithm&gt; t) { return t.expired(); }),</span></a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          1 :           end(this-&gt;mManagedAlgorithms));</span></a>
+<a name="287"><span class="lineNum">     287 </span><span class="lineCov">          2 :         this-&gt;mManagedSequences.erase(</span></a>
+<a name="288"><span class="lineNum">     288 </span><span class="lineCov">          1 :           std::remove_if(begin(this-&gt;mManagedSequences),</span></a>
+<a name="289"><span class="lineNum">     289 </span><span class="lineCov">          1 :                          end(this-&gt;mManagedSequences),</span></a>
+<a name="290"><span class="lineNum">     290 </span><span class="lineCov">          3 :                          [](std::weak_ptr&lt;Sequence&gt; t) { return t.expired(); }),</span></a>
+<a name="291"><span class="lineNum">     291 </span><span class="lineCov">          2 :           end(this-&gt;mManagedSequences));</span></a>
+<a name="292"><span class="lineNum">     292 </span>            :     }</a>
+<a name="293"><span class="lineNum">     293 </span><span class="lineCov">          1 : }</span></a>
+<a name="294"><span class="lineNum">     294 </span>            : </a>
+<a name="295"><span class="lineNum">     295 </span>            : void</a>
+<a name="296"><span class="lineNum">     296 </span><span class="lineCov">         47 : Manager::createDevice(const std::vector&lt;uint32_t&gt;&amp; familyQueueIndices,</span></a>
+<a name="297"><span class="lineNum">     297 </span>            :                       uint32_t physicalDeviceIndex,</a>
+<a name="298"><span class="lineNum">     298 </span>            :                       const std::vector&lt;std::string&gt;&amp; desiredExtensions)</a>
+<a name="299"><span class="lineNum">     299 </span>            : {</a>
+<a name="300"><span class="lineNum">     300 </span>            : </a>
+<a name="301"><span class="lineNum">     301 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager creating Device&quot;);</span></a>
+<a name="302"><span class="lineNum">     302 </span>            : </a>
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">         47 :     if (this-&gt;mInstance == nullptr) {</span></a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Kompute Manager instance is null&quot;);</span></a>
+<a name="305"><span class="lineNum">     305 </span>            :     }</a>
+<a name="306"><span class="lineNum">     306 </span>            : </a>
+<a name="307"><span class="lineNum">     307 </span><span class="lineCov">         47 :     this-&gt;mFreeDevice = true;</span></a>
+<a name="308"><span class="lineNum">     308 </span>            : </a>
+<a name="309"><span class="lineNum">     309 </span>            :     // Getting an integer that says how many vuklan devices we have</a>
+<a name="310"><span class="lineNum">     310 </span>            :     std::vector&lt;vk::PhysicalDevice&gt; physicalDevices =</a>
+<a name="311"><span class="lineNum">     311 </span><span class="lineCov">         47 :       this-&gt;mInstance-&gt;enumeratePhysicalDevices();</span></a>
+<a name="312"><span class="lineNum">     312 </span><span class="lineCov">         47 :     uint32_t deviceCount = physicalDevices.size();</span></a>
+<a name="313"><span class="lineNum">     313 </span>            : </a>
+<a name="314"><span class="lineNum">     314 </span>            :     // This means there are no devices at all</a>
+<a name="315"><span class="lineNum">     315 </span><span class="lineCov">         47 :     if (deviceCount == 0) {</span></a>
+<a name="316"><span class="lineNum">     316 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;Failed to find GPUs with Vulkan support! &quot;</span></a>
+<a name="317"><span class="lineNum">     317 </span><span class="lineNoCov">          0 :                                  &quot;Maybe you haven't installed vulkan drivers?&quot;);</span></a>
+<a name="318"><span class="lineNum">     318 </span>            :     }</a>
+<a name="319"><span class="lineNum">     319 </span>            : </a>
+<a name="320"><span class="lineNum">     320 </span>            :     // This means that we're exceeding our device limit, for</a>
+<a name="321"><span class="lineNum">     321 </span>            :     // example if we have 2 devices, just physicalDeviceIndex</a>
+<a name="322"><span class="lineNum">     322 </span>            :     // 0 and 1 are acceptable. Hence, physicalDeviceIndex should</a>
+<a name="323"><span class="lineNum">     323 </span>            :     // always be less than deviceCount, else we raise an error</a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineCov">         47 :     if (!(deviceCount &gt; physicalDeviceIndex)) {</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineNoCov">          0 :         throw std::runtime_error(&quot;There is no such physical index or device, &quot;</span></a>
+<a name="326"><span class="lineNum">     326 </span><span class="lineNoCov">          0 :                                  &quot;please use your existing device&quot;);</span></a>
+<a name="327"><span class="lineNum">     327 </span>            :     }</a>
+<a name="328"><span class="lineNum">     328 </span>            : </a>
+<a name="329"><span class="lineNum">     329 </span><span class="lineCov">         47 :     vk::PhysicalDevice physicalDevice = physicalDevices[physicalDeviceIndex];</span></a>
+<a name="330"><span class="lineNum">     330 </span>            : </a>
+<a name="331"><span class="lineNum">     331 </span>            :     this-&gt;mPhysicalDevice =</a>
+<a name="332"><span class="lineNum">     332 </span><span class="lineCov">         47 :       std::make_shared&lt;vk::PhysicalDevice&gt;(physicalDevice);</span></a>
+<a name="333"><span class="lineNum">     333 </span>            : </a>
+<a name="334"><span class="lineNum">     334 </span>            : #if KOMPUTE_OPT_ACTIVE_LOG_LEVEL &lt;= KOMPUTE_LOG_LEVEL_INFO</a>
+<a name="335"><span class="lineNum">     335 </span>            :     vk::PhysicalDeviceProperties physicalDeviceProperties =</a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineCov">         47 :       physicalDevice.getProperties();</span></a>
+<a name="337"><span class="lineNum">     337 </span>            : #endif</a>
+<a name="338"><span class="lineNum">     338 </span>            : </a>
+<a name="339"><span class="lineNum">     339 </span><span class="lineCov">        141 :     KP_LOG_INFO(&quot;Using physical device index {} found {}&quot;,</span></a>
+<a name="340"><span class="lineNum">     340 </span>            :                 physicalDeviceIndex,</a>
+<a name="341"><span class="lineNum">     341 </span>            :                 physicalDeviceProperties.deviceName.data());</a>
+<a name="342"><span class="lineNum">     342 </span>            : </a>
+<a name="343"><span class="lineNum">     343 </span><span class="lineCov">         47 :     if (familyQueueIndices.empty()) {</span></a>
+<a name="344"><span class="lineNum">     344 </span>            :         // Find compute queue</a>
+<a name="345"><span class="lineNum">     345 </span>            :         std::vector&lt;vk::QueueFamilyProperties&gt; allQueueFamilyProperties =</a>
+<a name="346"><span class="lineNum">     346 </span><span class="lineCov">         47 :           physicalDevice.getQueueFamilyProperties();</span></a>
+<a name="347"><span class="lineNum">     347 </span>            : </a>
+<a name="348"><span class="lineNum">     348 </span><span class="lineCov">         47 :         uint32_t computeQueueFamilyIndex = 0;</span></a>
+<a name="349"><span class="lineNum">     349 </span><span class="lineCov">         47 :         bool computeQueueSupported = false;</span></a>
+<a name="350"><span class="lineNum">     350 </span><span class="lineCov">         47 :         for (uint32_t i = 0; i &lt; allQueueFamilyProperties.size(); i++) {</span></a>
+<a name="351"><span class="lineNum">     351 </span>            :             vk::QueueFamilyProperties queueFamilyProperties =</a>
+<a name="352"><span class="lineNum">     352 </span><span class="lineCov">         47 :               allQueueFamilyProperties[i];</span></a>
+<a name="353"><span class="lineNum">     353 </span>            : </a>
+<a name="354"><span class="lineNum">     354 </span><span class="lineCov">         47 :             if (queueFamilyProperties.queueFlags &amp;</span></a>
+<a name="355"><span class="lineNum">     355 </span><span class="lineCov">         47 :                 vk::QueueFlagBits::eCompute) {</span></a>
+<a name="356"><span class="lineNum">     356 </span><span class="lineCov">         47 :                 computeQueueFamilyIndex = i;</span></a>
+<a name="357"><span class="lineNum">     357 </span><span class="lineCov">         47 :                 computeQueueSupported = true;</span></a>
+<a name="358"><span class="lineNum">     358 </span><span class="lineCov">         47 :                 break;</span></a>
+<a name="359"><span class="lineNum">     359 </span>            :             }</a>
+<a name="360"><span class="lineNum">     360 </span>            :         }</a>
+<a name="361"><span class="lineNum">     361 </span>            : </a>
+<a name="362"><span class="lineNum">     362 </span><span class="lineCov">         47 :         if (!computeQueueSupported) {</span></a>
+<a name="363"><span class="lineNum">     363 </span><span class="lineNoCov">          0 :             throw std::runtime_error(&quot;Compute queue is not supported&quot;);</span></a>
+<a name="364"><span class="lineNum">     364 </span>            :         }</a>
+<a name="365"><span class="lineNum">     365 </span>            : </a>
+<a name="366"><span class="lineNum">     366 </span><span class="lineCov">         47 :         this-&gt;mComputeQueueFamilyIndices.push_back(computeQueueFamilyIndex);</span></a>
+<a name="367"><span class="lineNum">     367 </span><span class="lineCov">         47 :     } else {</span></a>
+<a name="368"><span class="lineNum">     368 </span><span class="lineNoCov">          0 :         this-&gt;mComputeQueueFamilyIndices = familyQueueIndices;</span></a>
+<a name="369"><span class="lineNum">     369 </span>            :     }</a>
+<a name="370"><span class="lineNum">     370 </span>            : </a>
+<a name="371"><span class="lineNum">     371 </span><span class="lineCov">         47 :     std::unordered_map&lt;uint32_t, uint32_t&gt; familyQueueCounts;</span></a>
+<a name="372"><span class="lineNum">     372 </span><span class="lineCov">         47 :     std::unordered_map&lt;uint32_t, std::vector&lt;float&gt;&gt; familyQueuePriorities;</span></a>
+<a name="373"><span class="lineNum">     373 </span><span class="lineCov">         94 :     for (const auto&amp; value : this-&gt;mComputeQueueFamilyIndices) {</span></a>
+<a name="374"><span class="lineNum">     374 </span><span class="lineCov">         47 :         familyQueueCounts[value]++;</span></a>
+<a name="375"><span class="lineNum">     375 </span><span class="lineCov">         47 :         familyQueuePriorities[value].push_back(1.0f);</span></a>
+<a name="376"><span class="lineNum">     376 </span>            :     }</a>
+<a name="377"><span class="lineNum">     377 </span>            : </a>
+<a name="378"><span class="lineNum">     378 </span><span class="lineCov">         47 :     std::unordered_map&lt;uint32_t, uint32_t&gt; familyQueueIndexCount;</span></a>
+<a name="379"><span class="lineNum">     379 </span><span class="lineCov">         47 :     std::vector&lt;vk::DeviceQueueCreateInfo&gt; deviceQueueCreateInfos;</span></a>
+<a name="380"><span class="lineNum">     380 </span><span class="lineCov">         94 :     for (const auto&amp; familyQueueInfo : familyQueueCounts) {</span></a>
+<a name="381"><span class="lineNum">     381 </span>            :         // Setting the device count to 0</a>
+<a name="382"><span class="lineNum">     382 </span><span class="lineCov">         47 :         familyQueueIndexCount[familyQueueInfo.first] = 0;</span></a>
+<a name="383"><span class="lineNum">     383 </span>            : </a>
+<a name="384"><span class="lineNum">     384 </span>            :         // Creating the respective device queue</a>
+<a name="385"><span class="lineNum">     385 </span>            :         vk::DeviceQueueCreateInfo deviceQueueCreateInfo(</a>
+<a name="386"><span class="lineNum">     386 </span>            :           vk::DeviceQueueCreateFlags(),</a>
+<a name="387"><span class="lineNum">     387 </span><span class="lineCov">         47 :           familyQueueInfo.first,</span></a>
+<a name="388"><span class="lineNum">     388 </span><span class="lineCov">         47 :           familyQueueInfo.second,</span></a>
+<a name="389"><span class="lineNum">     389 </span><span class="lineCov">         47 :           familyQueuePriorities[familyQueueInfo.first].data());</span></a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineCov">         47 :         deviceQueueCreateInfos.push_back(deviceQueueCreateInfo);</span></a>
+<a name="391"><span class="lineNum">     391 </span>            :     }</a>
+<a name="392"><span class="lineNum">     392 </span>            : </a>
+<a name="393"><span class="lineNum">     393 </span><span class="lineCov">        141 :     KP_LOG_DEBUG(&quot;Kompute Manager desired extension layers {}&quot;,</span></a>
+<a name="394"><span class="lineNum">     394 </span>            :                  fmt::join(desiredExtensions, &quot;, &quot;));</a>
+<a name="395"><span class="lineNum">     395 </span>            : </a>
+<a name="396"><span class="lineNum">     396 </span>            :     std::vector&lt;vk::ExtensionProperties&gt; deviceExtensions =</a>
+<a name="397"><span class="lineNum">     397 </span><span class="lineCov">         47 :       this-&gt;mPhysicalDevice-&gt;enumerateDeviceExtensionProperties();</span></a>
+<a name="398"><span class="lineNum">     398 </span>            : </a>
+<a name="399"><span class="lineNum">     399 </span><span class="lineCov">         47 :     std::set&lt;std::string&gt; uniqueExtensionNames;</span></a>
+<a name="400"><span class="lineNum">     400 </span><span class="lineCov">       3619 :     for (const vk::ExtensionProperties&amp; ext : deviceExtensions) {</span></a>
+<a name="401"><span class="lineNum">     401 </span><span class="lineCov">       3572 :         uniqueExtensionNames.insert(ext.extensionName);</span></a>
+<a name="402"><span class="lineNum">     402 </span>            :     }</a>
+<a name="403"><span class="lineNum">     403 </span><span class="lineCov">        141 :     KP_LOG_DEBUG(&quot;Kompute Manager available extensions {}&quot;,</span></a>
+<a name="404"><span class="lineNum">     404 </span>            :                  fmt::join(uniqueExtensionNames, &quot;, &quot;));</a>
+<a name="405"><span class="lineNum">     405 </span><span class="lineCov">         47 :     std::vector&lt;const char*&gt; validExtensions;</span></a>
+<a name="406"><span class="lineNum">     406 </span><span class="lineCov">         47 :     for (const std::string&amp; ext : desiredExtensions) {</span></a>
+<a name="407"><span class="lineNum">     407 </span><span class="lineNoCov">          0 :         if (uniqueExtensionNames.count(ext) != 0) {</span></a>
+<a name="408"><span class="lineNum">     408 </span><span class="lineNoCov">          0 :             validExtensions.push_back(ext.c_str());</span></a>
+<a name="409"><span class="lineNum">     409 </span>            :         }</a>
+<a name="410"><span class="lineNum">     410 </span>            :     }</a>
+<a name="411"><span class="lineNum">     411 </span><span class="lineCov">         47 :     if (desiredExtensions.size() != validExtensions.size()) {</span></a>
+<a name="412"><span class="lineNum">     412 </span><span class="lineNoCov">          0 :         KP_LOG_ERROR(&quot;Kompute Manager not all extensions were added: {}&quot;,</span></a>
+<a name="413"><span class="lineNum">     413 </span>            :                      fmt::join(validExtensions, &quot;, &quot;));</a>
+<a name="414"><span class="lineNum">     414 </span>            :     }</a>
+<a name="415"><span class="lineNum">     415 </span>            : </a>
+<a name="416"><span class="lineNum">     416 </span>            :     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),</a>
+<a name="417"><span class="lineNum">     417 </span><span class="lineCov">         47 :                                           deviceQueueCreateInfos.size(),</span></a>
+<a name="418"><span class="lineNum">     418 </span><span class="lineCov">         47 :                                           deviceQueueCreateInfos.data(),</span></a>
+<a name="419"><span class="lineNum">     419 </span>            :                                           {},</a>
+<a name="420"><span class="lineNum">     420 </span>            :                                           {},</a>
+<a name="421"><span class="lineNum">     421 </span><span class="lineCov">         47 :                                           validExtensions.size(),</span></a>
+<a name="422"><span class="lineNum">     422 </span><span class="lineCov">        141 :                                           validExtensions.data());</span></a>
+<a name="423"><span class="lineNum">     423 </span>            : </a>
+<a name="424"><span class="lineNum">     424 </span><span class="lineCov">         47 :     this-&gt;mDevice = std::make_shared&lt;vk::Device&gt;();</span></a>
+<a name="425"><span class="lineNum">     425 </span><span class="lineCov">         47 :     physicalDevice.createDevice(</span></a>
+<a name="426"><span class="lineNum">     426 </span>            :       &amp;deviceCreateInfo, nullptr, this-&gt;mDevice.get());</a>
+<a name="427"><span class="lineNum">     427 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager device created&quot;);</span></a>
+<a name="428"><span class="lineNum">     428 </span>            : </a>
+<a name="429"><span class="lineNum">     429 </span><span class="lineCov">         94 :     for (const uint32_t&amp; familyQueueIndex : this-&gt;mComputeQueueFamilyIndices) {</span></a>
+<a name="430"><span class="lineNum">     430 </span><span class="lineCov">         47 :         std::shared_ptr&lt;vk::Queue&gt; currQueue = std::make_shared&lt;vk::Queue&gt;();</span></a>
+<a name="431"><span class="lineNum">     431 </span>            : </a>
+<a name="432"><span class="lineNum">     432 </span><span class="lineCov">         47 :         this-&gt;mDevice-&gt;getQueue(familyQueueIndex,</span></a>
+<a name="433"><span class="lineNum">     433 </span><span class="lineCov">         47 :                                 familyQueueIndexCount[familyQueueIndex],</span></a>
+<a name="434"><span class="lineNum">     434 </span>            :                                 currQueue.get());</a>
+<a name="435"><span class="lineNum">     435 </span>            : </a>
+<a name="436"><span class="lineNum">     436 </span><span class="lineCov">         47 :         familyQueueIndexCount[familyQueueIndex]++;</span></a>
+<a name="437"><span class="lineNum">     437 </span>            : </a>
+<a name="438"><span class="lineNum">     438 </span><span class="lineCov">         47 :         this-&gt;mComputeQueues.push_back(currQueue);</span></a>
+<a name="439"><span class="lineNum">     439 </span><span class="lineCov">         47 :     }</span></a>
+<a name="440"><span class="lineNum">     440 </span>            : </a>
+<a name="441"><span class="lineNum">     441 </span><span class="lineCov">         94 :     KP_LOG_DEBUG(&quot;Kompute Manager compute queue obtained&quot;);</span></a>
+<a name="442"><span class="lineNum">     442 </span><span class="lineCov">         47 : }</span></a>
+<a name="443"><span class="lineNum">     443 </span>            : </a>
+<a name="444"><span class="lineNum">     444 </span>            : std::shared_ptr&lt;Sequence&gt;</a>
+<a name="445"><span class="lineNum">     445 </span><span class="lineCov">         62 : Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)</span></a>
+<a name="446"><span class="lineNum">     446 </span>            : {</a>
+<a name="447"><span class="lineNum">     447 </span><span class="lineCov">        124 :     KP_LOG_DEBUG(&quot;Kompute Manager sequence() with queueIndex: {}&quot;, queueIndex);</span></a>
+<a name="448"><span class="lineNum">     448 </span>            : </a>
+<a name="449"><span class="lineNum">     449 </span>            :     std::shared_ptr&lt;Sequence&gt; sq{ new kp::Sequence(</a>
+<a name="450"><span class="lineNum">     450 </span><span class="lineCov">         62 :       this-&gt;mPhysicalDevice,</span></a>
+<a name="451"><span class="lineNum">     451 </span><span class="lineCov">         62 :       this-&gt;mDevice,</span></a>
+<a name="452"><span class="lineNum">     452 </span><span class="lineCov">         62 :       this-&gt;mComputeQueues[queueIndex],</span></a>
+<a name="453"><span class="lineNum">     453 </span><span class="lineCov">         62 :       this-&gt;mComputeQueueFamilyIndices[queueIndex],</span></a>
+<a name="454"><span class="lineNum">     454 </span><span class="lineCov">        124 :       totalTimestamps) };</span></a>
+<a name="455"><span class="lineNum">     455 </span>            : </a>
+<a name="456"><span class="lineNum">     456 </span><span class="lineCov">         62 :     if (this-&gt;mManageResources) {</span></a>
+<a name="457"><span class="lineNum">     457 </span><span class="lineCov">         62 :         this-&gt;mManagedSequences.push_back(sq);</span></a>
+<a name="458"><span class="lineNum">     458 </span>            :     }</a>
+<a name="459"><span class="lineNum">     459 </span>            : </a>
+<a name="460"><span class="lineNum">     460 </span><span class="lineCov">         62 :     return sq;</span></a>
+<a name="461"><span class="lineNum">     461 </span><span class="lineNoCov">          0 : }</span></a>
+<a name="462"><span class="lineNum">     462 </span>            : </a>
+<a name="463"><span class="lineNum">     463 </span>            : vk::PhysicalDeviceProperties</a>
+<a name="464"><span class="lineNum">     464 </span><span class="lineCov">          1 : Manager::getDeviceProperties() const</span></a>
+<a name="465"><span class="lineNum">     465 </span>            : {</a>
+<a name="466"><span class="lineNum">     466 </span><span class="lineCov">          2 :     return this-&gt;mPhysicalDevice-&gt;getProperties();</span></a>
+<a name="467"><span class="lineNum">     467 </span>            : }</a>
+<a name="468"><span class="lineNum">     468 </span>            : </a>
+<a name="469"><span class="lineNum">     469 </span>            : std::vector&lt;vk::PhysicalDevice&gt;</a>
+<a name="470"><span class="lineNum">     470 </span><span class="lineCov">          1 : Manager::listDevices() const</span></a>
+<a name="471"><span class="lineNum">     471 </span>            : {</a>
+<a name="472"><span class="lineNum">     472 </span><span class="lineCov">          1 :     return this-&gt;mInstance-&gt;enumeratePhysicalDevices();</span></a>
+<a name="473"><span class="lineNum">     473 </span>            : }</a>
+<a name="474"><span class="lineNum">     474 </span>            : </a>
+<a name="475"><span class="lineNum">     475 </span>            : std::shared_ptr&lt;vk::Instance&gt;</a>
+<a name="476"><span class="lineNum">     476 </span><span class="lineNoCov">          0 : Manager::getVkInstance() const</span></a>
+<a name="477"><span class="lineNum">     477 </span>            : {</a>
+<a name="478"><span class="lineNum">     478 </span><span class="lineNoCov">          0 :     return this-&gt;mInstance;</span></a>
+<a name="479"><span class="lineNum">     479 </span>            : }</a>
+<a name="480"><span class="lineNum">     480 </span>            : </a>
+<a name="481"><span class="lineNum">     481 </span>            : }</a>
 </pre>
       </td>
     </tr>
@@ -522,7 +549,7 @@
 
   <table width="100%" border=0 cellspacing=0 cellpadding=0>
     <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
-    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.13</a></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
   </table>
   <br>
 

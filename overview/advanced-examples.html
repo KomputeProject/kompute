@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -517,18 +518,18 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="c-examples">
 <h1 id="overview-advanced-examples--page-root">C++ Examples<a class="headerlink" href="#overview-advanced-examples--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The power of Kompute comes in when the interface is used for complex computations. This section contains an outline of the advanced / end-to-end examples available.</p>
-
+<section id="simple-examples">
 <h2 id="simple-examples">Simple examples<a class="headerlink" href="#simple-examples" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="#your-custom-kompute-operation">Create your custom Kompute Operations</a></p></li>
 <li><p><a class="reference external" href="#asynchronous-operations">Run Asynchronous Operations</a></p></li>
 <li><p><a class="reference external" href="#parallel-operations">Run Parallel Operations Across Multiple GPU Queues</a></p></li>
 </ul>
-
-
+</section>
+<section id="end-to-end-examples">
 <h2 id="end-to-end-examples">End-to-end examples<a class="headerlink" href="#end-to-end-examples" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference external" href="https://towardsdatascience.com/machine-learning-and-data-processing-in-the-gpu-with-vulkan-kompute-c9350e5e5d3a">Machine Learning Logistic Regression Implementation</a></p></li>
@@ -536,12 +537,12 @@
 <li><p><a class="reference external" href="https://towardsdatascience.com/gpu-accelerated-machine-learning-in-your-mobile-applications-using-the-android-ndk-vulkan-kompute-1e9da37b7617">Android NDK Mobile Kompute ML Application</a></p></li>
 <li><p><a class="reference external" href="https://towardsdatascience.com/supercharging-game-development-with-gpu-accelerated-ml-using-vulkan-kompute-the-godot-game-engine-4e75a84ea9f0">Game Development Kompute ML in Godot Engine</a></p></li>
 </ul>
-
-
+</section>
+<section id="add-extensions">
 <h2 id="add-extensions">Add Extensions<a class="headerlink" href="#add-extensions" title="Permalink to this headline">¶</a></h2>
 <p>Kompute provides a simple way to add extensions through kp::Manager initialisation. When debug is enabled you will be able to see logs that show what are the desired extensions requested and the ones that are added based on the available extensions on the current driver.</p>
 <p>The example below shows how you can enable the “VK_EXT_shader_atomic_float” extension so we can use the adomicAdd for floats in the shaders.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -587,8 +588,8 @@
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
 <span class="s">          #version 450</span>
 
 <span class="s">          #extension GL_EXT_shader_atomic_float: enable</span>
@@ -609,39 +610,39 @@
 <span class="s">              atomicAdd(pa[2], pcs.z);</span>
 <span class="s">          }</span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-    <span class="c1">// See shader documentation section for compileSource</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// See shader documentation section for compileSource</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spirv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
-    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span> <span class="n">sq</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Sequence</span><span class="o">&gt;</span><span class="w"> </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
 
-    <span class="p">{</span>
-        <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">{},</span> <span class="p">{</span> <span class="s">"VK_EXT_shader_atomic_float"</span> <span class="p">});</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">"VK_EXT_shader_atomic_float"</span><span class="w"> </span><span class="p">});</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">});</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Tensor</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">});</span>
 
-        <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span>
-          <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">},</span> <span class="n">spirv</span><span class="p">,</span> <span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span><span class="p">({</span> <span class="mi">1</span> <span class="p">}),</span> <span class="p">{},</span> <span class="p">{</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">});</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algo</span><span class="w"> </span><span class="o">=</span>
+<span class="w">          </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">spirv</span><span class="p">,</span><span class="w"> </span><span class="n">kp</span><span class="o">::</span><span class="n">Workgroup</span><span class="p">({</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="p">{},</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="p">});</span>
 
-        <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
-               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">})</span>
-               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span>
-                                            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">{</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span> <span class="p">})</span>
-               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span>
-                                            <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">{</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span> <span class="p">})</span>
-               <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">})</span>
-               <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+<span class="w">        </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+<span class="w">               </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="p">})</span>
+<span class="w">               </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">{</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.3</span><span class="w"> </span><span class="p">})</span>
+<span class="w">               </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">,</span>
+<span class="w">                                            </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">{</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="p">})</span>
+<span class="w">               </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="p">})</span>
+<span class="w">               </span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
 
-        <span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">({</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span> <span class="p">}));</span>
-    <span class="p">}</span>
+<span class="w">        </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">tensor</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="w"> </span><span class="p">}));</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="your-custom-kompute-operation">
 <h2 id="your-custom-kompute-operation">Your Custom Kompute Operation<a class="headerlink" href="#your-custom-kompute-operation" title="Permalink to this headline">¶</a></h2>
 <p>Build your own pre-compiled operations for domain specific workflows. Back to <a class="reference external" href="#simple-examples">examples list</a></p>
 <p>We also provide tools that allow you to <a class="reference external" href="https://github.com/KomputeProject/kompute/blob/master/scripts/convert_shaders.py#L40">convert shaders into C++ headers</a>.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -704,19 +705,19 @@
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
-<span class="normal">64</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OpMyCustom</span> <span class="o">:</span> <span class="k">public</span> <span class="n">OpAlgoDispatch</span>
+<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">OpMyCustom</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">OpAlgoDispatch</span>
 <span class="p">{</span>
-  <span class="k">public</span><span class="o">:</span>
-    <span class="n">OpMyCustom</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span> <span class="n">tensors</span><span class="p">,</span>
-         <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algorithm</span><span class="p">)</span>
-      <span class="o">:</span> <span class="n">OpAlgoBase</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
-    <span class="p">{</span>
-         <span class="k">if</span> <span class="p">(</span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-             <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Kompute OpMult expected 3 tensors but got "</span> <span class="o">+</span> <span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
-         <span class="p">}</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="n">OpMyCustom</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Tensor</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tensors</span><span class="p">,</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algorithm</span><span class="p">)</span>
+<span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">OpAlgoBase</span><span class="p">(</span><span class="n">algorithm</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">             </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">"Kompute OpMult expected 3 tensors but got "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">tensors</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="w">         </span><span class="p">}</span>
 
-        <span class="c1">// See shader documentation section for compileSource</span>
-         <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span><span class="s"></span>
+<span class="w">        </span><span class="c1">// See shader documentation section for compileSource</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spirv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compileSource</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
 <span class="s">             #version 450</span>
 
 <span class="s">             layout(set = 0, binding = 0) buffer tensorLhs {</span>
@@ -745,57 +746,57 @@
 <span class="s">             }</span>
 <span class="s">         </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-         <span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span> <span class="n">spirv</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">         </span><span class="n">algorithm</span><span class="o">-&gt;</span><span class="n">rebuild</span><span class="p">(</span><span class="n">tensors</span><span class="p">,</span><span class="w"> </span><span class="n">spirv</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
 
-<span class="kt">int</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 
-    <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Automatically selects Device 0</span>
+<span class="w">    </span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">;</span><span class="w"> </span><span class="c1">// Automatically selects Device 0</span>
 
-    <span class="c1">// Create 3 tensors of default type float</span>
-    <span class="k">auto</span> <span class="n">tensorLhs</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorRhs</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">6.</span> <span class="p">});</span>
-    <span class="k">auto</span> <span class="n">tensorOut</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span> <span class="p">});</span>
+<span class="w">    </span><span class="c1">// Create 3 tensors of default type float</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorLhs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorRhs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">4.</span><span class="p">,</span><span class="w"> </span><span class="mf">6.</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorOut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="p">,</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="p">});</span>
 
-    <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
-         <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span><span class="p">})</span>
-         <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMyCustom</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span><span class="p">},</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">())</span>
-         <span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLhs</span><span class="p">,</span> <span class="n">tensorRhs</span><span class="p">,</span> <span class="n">tensorOut</span><span class="p">})</span>
-         <span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
+<span class="w">    </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+<span class="w">         </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLhs</span><span class="p">,</span><span class="w"> </span><span class="n">tensorRhs</span><span class="p">,</span><span class="w"> </span><span class="n">tensorOut</span><span class="p">})</span>
+<span class="w">         </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpMyCustom</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLhs</span><span class="p">,</span><span class="w"> </span><span class="n">tensorRhs</span><span class="p">,</span><span class="w"> </span><span class="n">tensorOut</span><span class="p">},</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">())</span>
+<span class="w">         </span><span class="o">-&gt;</span><span class="n">record</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorLhs</span><span class="p">,</span><span class="w"> </span><span class="n">tensorRhs</span><span class="p">,</span><span class="w"> </span><span class="n">tensorOut</span><span class="p">})</span>
+<span class="w">         </span><span class="o">-&gt;</span><span class="n">eval</span><span class="p">();</span>
 
-    <span class="c1">// Prints the output which is { 0, 4, 12 }</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span> <span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Prints the output which is { 0, 4, 12 }</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"Output: {}"</span><span class="p">,</span><span class="w"> </span><span class="n">tensorOutput</span><span class="p">.</span><span class="n">data</span><span class="p">())</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
-</pre></div>
-</td></tr></table></div>
-
-
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="async-await-example">
 <h2 id="async-await-example">Async/Await Example<a class="headerlink" href="#async-await-example" title="Permalink to this headline">¶</a></h2>
 <p>A simple example of asynchronous submission can be found below.</p>
 <p>First we are able to create the manager as we normally would.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// You can allow Kompute to create the GPU resources, or pass your existing ones</span>
-<span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="n">mgr</span><span class="p">;</span> <span class="c1">// Selects device 0 unless explicitly requested</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1">// You can allow Kompute to create the GPU resources, or pass your existing ones</span>
+<span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="n">mgr</span><span class="p">;</span><span class="w"> </span><span class="c1">// Selects device 0 unless explicitly requested</span>
 
 <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
-<span class="k">auto</span> <span class="n">tensor</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">);</span>
-</pre></div>
-</td></tr></table></div>
+<span class="k">auto</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>We can now run our first asynchronous command, which in this case we can use the default sequence.</p>
 <p>Sequences can be executed in synchronously or asynchronously without having to change anything.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Create tensors data explicitly in GPU with an operation</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1">// Create tensors data explicitly in GPU with an operation</span>
 <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensor</span><span class="p">});</span>
-</pre></div>
-</td></tr></table></div>
+</pre></div></td></tr></table></div>
+</div>
 <p>While this is running we can actually do other things like in this case create the shader we’ll be using.</p>
 <p>In this case we create a shader that should take a couple of milliseconds to run.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -822,41 +823,41 @@
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
-<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
 <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">shader</span><span class="p">(</span><span class="n">R</span><span class="s">"(</span>
-    <span class="cp">#version 450</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<span class="s">    #version 450</span>
 
-    <span class="n">layout</span> <span class="p">(</span><span class="n">local_size_x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span><span class="p">;</span>
+<span class="s">    layout (local_size_x = 1) in;</span>
 
-    <span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">b</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">pb</span><span class="p">[];</span> <span class="p">};</span>
+<span class="s">    layout(set = 0, binding = 0) buffer b { float pb[]; };</span>
 
-    <span class="n">shared</span> <span class="n">uint</span> <span class="n">sharedTotal</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="s">    shared uint sharedTotal[1];</span>
 
-    <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-        <span class="n">uint</span> <span class="n">index</span> <span class="o">=</span> <span class="n">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="s">    void main() {</span>
+<span class="s">        uint index = gl_GlobalInvocationID.x;</span>
 
-        <span class="n">sharedTotal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="s">        sharedTotal[0] = 0;</span>
 
-        <span class="c1">// Iterating to simulate longer process</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-        <span class="p">{</span>
-            <span class="n">atomicAdd</span><span class="p">(</span><span class="n">sharedTotal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span>
-        <span class="p">}</span>
+<span class="s">        // Iterating to simulate longer process</span>
+<span class="s">        for (int i = 0; i &lt; 100000000; i++)</span>
+<span class="s">        {</span>
+<span class="s">            atomicAdd(sharedTotal[0], 1);</span>
+<span class="s">        }</span>
 
-        <span class="n">pb</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">sharedTotal</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-    <span class="p">}</span>
-<span class="p">)</span><span class="s">");</span>
+<span class="s">        pb[index] = sharedTotal[0];</span>
+<span class="s">    }</span>
+<span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
 <span class="c1">// See shader documentation section for compileSource</span>
-<span class="k">auto</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensor</span><span class="p">},</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">));</span>
-</pre></div>
-</td></tr></table></div>
+<span class="k">auto</span><span class="w"> </span><span class="n">algo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensor</span><span class="p">},</span><span class="w"> </span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">));</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>Now we are able to run the await function on the default sequence.</p>
 <p>If we are using the manager, we need to make sure that we are awaiting the same named sequence that was triggered asynchronously.</p>
 <p>If the sequence is not running or has finished running, it would return immediately.</p>
 <p>The parameter provided is the maximum amount of time to wait in nanoseconds. When the timeout expires, the sequence would return (with false value), but it does not stop the processing in the GPU - the processing would continue as normal.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -865,7 +866,7 @@
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">auto</span> <span class="n">sq</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">sq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span>
 
 <span class="c1">// Run Async Kompute operation on the parameters provided</span>
 <span class="n">sq</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">);</span>
@@ -875,30 +876,30 @@
 <span class="c1">// When we're ready we can wait</span>
 <span class="c1">// The default wait time is UINT64_MAX</span>
 <span class="n">sq</span><span class="p">.</span><span class="n">evalAwait</span><span class="p">()</span>
-</pre></div>
-</td></tr></table></div>
+</pre></div></td></tr></table></div>
+</div>
 <p>Finally, below you can see that we can also run syncrhonous commands without having to change anything.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">// Sync the GPU memory back to the local tensor</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><span class="c1">// Sync the GPU memory back to the local tensor</span>
 <span class="c1">// We can still run synchronous jobs in our created sequence</span>
-<span class="n">sq</span><span class="p">.</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensor</span> <span class="p">});</span>
+<span class="n">sq</span><span class="p">.</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="p">});</span>
 
 <span class="c1">// Prints the output: B: { 100000000, ... }</span>
-<span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"B: {}"</span><span class="p">,</span>
-    <span class="n">tensor</span><span class="p">.</span><span class="n">data</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</pre></div>
-</td></tr></table></div>
-
+<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"B: {}"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">tensor</span><span class="p">.</span><span class="n">data</span><span class="p">())</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div></td></tr></table></div>
+</div>
+<section id="parallel-operation-submission">
 <h3 id="parallel-operation-submission">Parallel Operation Submission<a class="headerlink" href="#parallel-operation-submission" title="Permalink to this headline">¶</a></h3>
 <p>In order to work with parallel execution of tasks, it is important that you understand some of the core GPU processing limitations, as these can be quite broad and hardware dependent, which means they will vary across NVIDIA / AMD / ETC video cards.</p>
-
-
-
+</section>
+</section>
+<section id="conceptual-overview">
 <h2 id="conceptual-overview">Conceptual Overview<a class="headerlink" href="#conceptual-overview" title="Permalink to this headline">¶</a></h2>
 <p>If you are familiar with the Vulkan SDK, you will have experience that the first few things you do is fetching the physical Queues from the device. The queues themselves tend to have three main particular features - they can be GRAPHICS, TRANSFER and COMPUTE (between a few others we’ll skip for simplicity).</p>
 <p>Queues can have multiple properties - namely a queue can be of type GRAPHICS+TRANSFER+COMPUTE, etc. Now here comes the key point: the underlying hardware may (or may not) support parallelized processing at multiple levels.</p>
@@ -907,60 +908,60 @@
 <p>However the NVIDIA 1650 does support inter-family parallelization, which means that if we were to submit commands across multiple queues from different families, these would execute in parallel.</p>
 <p>This means that we would be able to execute parallel workloads as long as we’re running them across multiple queue families. This is one of the reasons why Kompute enables users to explicitly select the underlying queues and queue families to run particular workloads on.</p>
 <p>It is important that you understand what are the capabilities and limitations of your hardware, as parallelization capabilities can vary, so you will want to make sure you account for potential discrepancies in processing structures, mainyl to avoid undesired/unexpected race conditions.</p>
-
-
+</section>
+<section id="parallel-execution-example">
 <h2 id="parallel-execution-example">Parallel Execution Example<a class="headerlink" href="#parallel-execution-example" title="Permalink to this headline">¶</a></h2>
 <p>In this example we will demonstrate how you can set up parallel processing across two compute families to achieve 2x speedups when running processing workloads.</p>
 <p>To start, you will see that we do have to create the manager with extra parameters. This includes the GPU device index we want to use, together with the array of the queues that we want to enable.</p>
 <p>In this case we are using only two queues, which as per the section above, these would be familyIndex 0 which is of type <cite>GRAPHICS+COMPUTE+TRANSFER</cite> and familyIndex 2 which is of type <cite>COMPUTE+TRANSFER</cite>.</p>
 <p>In this case based on the specifications of the NVIDIA 1650 we could define up to 16 graphics queues (familyIndex 0), 2 transfer queues (familyIndex 1), and 8 compute queues (familyIndex 2) in no particular order. This means that we could have something like <cite>{ 0, 1, 1, 2, 2, 2, 0, … }</cite> as our initialization value.</p>
 <p>You will want to keep track of the indices you initialize your manager, as you will be referring back to this ordering when creating sequences with particular queues.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// In this case we select device 0, and for queues, one queue from familyIndex 0</span>
-   <span class="c1">// and one queue from familyIndex 2</span>
-   <span class="kt">uint32_t</span> <span class="nf">deviceIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">familyIndices</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">};</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><span class="w">   </span><span class="c1">// In this case we select device 0, and for queues, one queue from familyIndex 0</span>
+<span class="w">   </span><span class="c1">// and one queue from familyIndex 2</span>
+<span class="w">   </span><span class="kt">uint32_t</span><span class="w"> </span><span class="nf">deviceIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">familyIndices</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">};</span>
 
-   <span class="c1">// We create a manager with device index, and queues by queue family index</span>
-   <span class="n">kp</span><span class="o">::</span><span class="n">Manager</span> <span class="nf">mgr</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">,</span> <span class="n">familyIndices</span><span class="p">);</span>
-</pre></div>
-</td></tr></table></div>
+<span class="w">   </span><span class="c1">// We create a manager with device index, and queues by queue family index</span>
+<span class="w">   </span><span class="n">kp</span><span class="o">::</span><span class="n">Manager</span><span class="w"> </span><span class="nf">mgr</span><span class="p">(</span><span class="n">deviceIndex</span><span class="p">,</span><span class="w"> </span><span class="n">familyIndices</span><span class="p">);</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>We are now able to create sequences with a particular queue.</p>
 <p>By default the Kompute Manager is created with device 0, and with a single queue of the first compatible familyIndex. Similarly, by default sequences are created with the first available queue.</p>
 <p>In this case we are able to specify which queue we want to use. Below we initialize “queueOne” named sequence with the graphics family queue, and “queueTwo” with the compute family queue.</p>
 <p>It’s worth mentioning you can have multiple sequences referencing the same queue.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// We need to create explicit sequences with their respective queues</span>
-   <span class="c1">// The second parameter is the index in the familyIndex array which is relative</span>
-   <span class="c1">//      to the vector we created the manager with.</span>
-   <span class="n">sqOne</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-   <span class="n">sqTwo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</pre></div>
-</td></tr></table></div>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><span class="w">   </span><span class="c1">// We need to create explicit sequences with their respective queues</span>
+<span class="w">   </span><span class="c1">// The second parameter is the index in the familyIndex array which is relative</span>
+<span class="w">   </span><span class="c1">//      to the vector we created the manager with.</span>
+<span class="w">   </span><span class="n">sqOne</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">   </span><span class="n">sqTwo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>We create the tensors without modifications.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
-   <span class="k">auto</span> <span class="n">tensorA</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">});</span>
-   <span class="k">auto</span> <span class="n">tensorB</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.0</span> <span class="p">});</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><span class="w">   </span><span class="c1">// Creates tensor an initializes GPU memory (below we show more granularity)</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="p">});</span>
+<span class="w">   </span><span class="k">auto</span><span class="w"> </span><span class="n">tensorB</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">tensor</span><span class="p">({</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="p">});</span>
 
-   <span class="c1">// Copies the data into GPU memory</span>
-   <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">().</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorA</span> <span class="n">tensorB</span><span class="p">});</span>
-</pre></div>
-</td></tr></table></div>
+<span class="w">   </span><span class="c1">// Copies the data into GPU memory</span>
+<span class="w">   </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">().</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncDevice</span><span class="o">&gt;</span><span class="p">({</span><span class="n">tensorA</span><span class="w"> </span><span class="n">tensorB</span><span class="p">});</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>Similar to the asyncrhonous usecase above, we can still run synchronous commands without modifications.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -989,53 +990,53 @@
 <span class="normal">27</span>
 <span class="normal">28</span>
 <span class="normal">29</span>
-<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
-   <span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
-   <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="nf">shader</span><span class="p">(</span><span class="n">R</span><span class="s">"(</span>
-       <span class="cp">#version 450</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div><pre><span></span><span class="w">   </span><span class="c1">// Define your shader as a string (using string literals for simplicity)</span>
+<span class="w">   </span><span class="c1">// (You can also pass the raw compiled bytes, or even path to file)</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">shader</span><span class="p">(</span><span class="sa">R</span><span class="s">"</span><span class="dl">(</span>
+<span class="s">       #version 450</span>
 
-       <span class="n">layout</span> <span class="p">(</span><span class="n">local_size_x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">in</span><span class="p">;</span>
+<span class="s">       layout (local_size_x = 1) in;</span>
 
-       <span class="n">layout</span><span class="p">(</span><span class="n">set</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">binding</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">buffer</span> <span class="n">b</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">pb</span><span class="p">[];</span> <span class="p">};</span>
+<span class="s">       layout(set = 0, binding = 0) buffer b { float pb[]; };</span>
 
-       <span class="n">shared</span> <span class="n">uint</span> <span class="n">sharedTotal</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="s">       shared uint sharedTotal[1];</span>
 
-       <span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-           <span class="n">uint</span> <span class="n">index</span> <span class="o">=</span> <span class="n">gl_GlobalInvocationID</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+<span class="s">       void main() {</span>
+<span class="s">           uint index = gl_GlobalInvocationID.x;</span>
 
-           <span class="n">sharedTotal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="s">           sharedTotal[0] = 0;</span>
 
-           <span class="c1">// Iterating to simulate longer process</span>
-           <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">100000000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
-           <span class="p">{</span>
-               <span class="n">atomicAdd</span><span class="p">(</span><span class="n">sharedTotal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span>
-           <span class="p">}</span>
+<span class="s">           // Iterating to simulate longer process</span>
+<span class="s">           for (int i = 0; i &lt; 100000000; i++)</span>
+<span class="s">           {</span>
+<span class="s">               atomicAdd(sharedTotal[0], 1);</span>
+<span class="s">           }</span>
 
-           <span class="n">pb</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">sharedTotal</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-       <span class="p">}</span>
-   <span class="p">)</span><span class="s">");</span>
+<span class="s">           pb[index] = sharedTotal[0];</span>
+<span class="s">       }</span>
+<span class="s">   </span><span class="dl">)</span><span class="s">"</span><span class="p">);</span>
 
-   <span class="c1">// See shader documentation section for compileSource</span>
-   <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">spirv</span> <span class="o">=</span> <span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">// See shader documentation section for compileSource</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">spirv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compileSource</span><span class="p">(</span><span class="n">shader</span><span class="p">);</span>
 
-   <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span> <span class="n">algo</span> <span class="o">=</span> <span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensorA</span><span class="p">,</span> <span class="n">tenssorB</span><span class="p">},</span> <span class="n">spirv</span><span class="p">);</span>
-</pre></div>
-</td></tr></table></div>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">Algorithm</span><span class="o">&gt;</span><span class="w"> </span><span class="n">algo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mgr</span><span class="p">.</span><span class="n">algorithm</span><span class="p">({</span><span class="n">tensorA</span><span class="p">,</span><span class="w"> </span><span class="n">tenssorB</span><span class="p">},</span><span class="w"> </span><span class="n">spirv</span><span class="p">);</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>Now we can actually trigger the parallel processing, running two OpAlgoBase Operations - each in a different sequence / queue.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// Run the first parallel operation in the `queueOne` sequence</span>
-   <span class="n">sqOne</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">);</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><span class="w">   </span><span class="c1">// Run the first parallel operation in the `queueOne` sequence</span>
+<span class="w">   </span><span class="n">sqOne</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">);</span>
 
-   <span class="c1">// Run the second parallel operation in the `queueTwo` sequence</span>
-   <span class="n">sqTwo</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">);</span>
-</pre></div>
-</td></tr></table></div>
+<span class="w">   </span><span class="c1">// Run the second parallel operation in the `queueTwo` sequence</span>
+<span class="w">   </span><span class="n">sqTwo</span><span class="o">-&gt;</span><span class="n">evalAsync</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpAlgoDispatch</span><span class="o">&gt;</span><span class="p">(</span><span class="n">algo</span><span class="p">);</span>
+</pre></div></td></tr></table></div>
+</div>
 <p>Similar to the asynchronous example above, we are able to do other work whilst the tasks are executing.</p>
 <p>We are able to wait for the tasks to complete by triggering the <cite>evalOpAwait</cite> on the respective sequence.</p>
-<div class="highlight-cpp notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -1046,22 +1047,22 @@
 <span class="normal"> 9</span>
 <span class="normal">10</span>
 <span class="normal">11</span>
-<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>   <span class="c1">// Here we can do other work</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div><pre><span></span><span class="w">   </span><span class="c1">// Here we can do other work</span>
 
-   <span class="c1">// We can now wait for the two parallel tasks to finish</span>
-   <span class="n">sqOne</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">()</span>
-   <span class="n">sqTwo</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">()</span>
+<span class="w">   </span><span class="c1">// We can now wait for the two parallel tasks to finish</span>
+<span class="w">   </span><span class="n">sqOne</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">()</span>
+<span class="w">   </span><span class="n">sqTwo</span><span class="p">.</span><span class="n">evalOpAwait</span><span class="p">()</span>
 
-   <span class="c1">// Sync the GPU memory back to the local tensor</span>
-   <span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span> <span class="n">tensorA</span><span class="p">,</span> <span class="n">tensorB</span> <span class="p">});</span>
+<span class="w">   </span><span class="c1">// Sync the GPU memory back to the local tensor</span>
+<span class="w">   </span><span class="n">mgr</span><span class="p">.</span><span class="n">sequence</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">eval</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">::</span><span class="n">OpTensorSyncLocal</span><span class="o">&gt;</span><span class="p">({</span><span class="w"> </span><span class="n">tensorA</span><span class="p">,</span><span class="w"> </span><span class="n">tensorB</span><span class="w"> </span><span class="p">});</span>
 
-   <span class="c1">// Prints the output: A: 100000000 B: 100000000</span>
-   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
-       <span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-</pre></div>
-</td></tr></table></div>
-
-
+<span class="w">   </span><span class="c1">// Prints the output: A: 100000000 B: 100000000</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">fmt</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">"A: {}, B: {}"</span><span class="p">,</span>
+<span class="w">       </span><span class="n">tensorA</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">tensorB</span><span class="p">.</span><span class="n">data</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</pre></div></td></tr></table></div>
+</div>
+</section>
+</section>
 
 
           </article>

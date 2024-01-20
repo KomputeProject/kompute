@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -498,30 +499,30 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="kompute-pi4-mesa-build-example">
 <h1 id="overview-raspberry-pi--page-root">Kompute Pi4 Mesa Build Example<a class="headerlink" href="#overview-raspberry-pi--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The Raspberry Pi 4 is an impressive little computer when you consider that the Broadcom GPU is able to run 2x 4K displays. This example intends to show how to get Kompute up and running on a Raspberry Pi 4. This has huge potential for edge processing using the power of the Pi 4 GPU.</p>
 <p>Special thanks to <a class="reference external" href="https://blogs.igalia.com/apinheiro/">Alejandro Piñeiro</a> and others for their work on Broadcom drivers for <a class="reference external" href="https://gitlab.freedesktop.org/mesa/mesa">Mesa</a> which make this example possible.</p>
-
+<section id="raspberry-pi-operating-system">
 <h2 id="raspberry-pi-operating-system">Raspberry Pi Operating System<a class="headerlink" href="#raspberry-pi-operating-system" title="Permalink to this headline">¶</a></h2>
 <p>For this experiment we used <a class="reference external" href="https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2021-01-12/2021-01-11-raspios-buster-armhf-lite.zip">RaspiOS Lite 2021-01-12</a>, though it is likely best to start with the latest available operation system from <a class="reference external" href="https://www.raspberrypi.org/software/operating-systems/">Raspberry Pi operating system images</a>. In other experiments the full Raspberry Pi operating system (with desktop environment) was found to work. However, when attempting to use Ubuntu on the Raspberry Pi we were not able to run the Python Kompute examples.</p>
-
-
+</section>
+<section id="running-the-pi-headless">
 <h2 id="running-the-pi-headless">Running the Pi headless<a class="headerlink" href="#running-the-pi-headless" title="Permalink to this headline">¶</a></h2>
 <p>By far the easiest way to get up and running with a Raspberry Pi is to configure it for headless operation. This removes the requirement to have a monitor, keyboard or mouse. To run headless the Pi needs access to the internet and for SSH enabled. The following guides from the Raspberry Pi foundation should help.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.raspberrypi.org/documentation/configuration/wireless/headless.md">Setting up a Raspberry Pi headless</a></p></li>
 <li><p><a class="reference external" href="https://www.raspberrypi.org/documentation/remote-access/ssh/">SSH (Secure Shell)</a></p></li>
 </ul>
-
-
+</section>
+<section id="ensure-all-packages-are-using-the-latest-version">
 <h2 id="ensure-all-packages-are-using-the-latest-version">Ensure all packages are using the latest version<a class="headerlink" href="#ensure-all-packages-are-using-the-latest-version" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
 <span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="install-dependencies-for-building-mesa-and-running-kompute">
 <h2 id="install-dependencies-for-building-mesa-and-running-kompute">Install dependencies for building mesa and running Kompute<a class="headerlink" href="#install-dependencies-for-building-mesa-and-running-kompute" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> \
     <span class="n">git</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span> <span class="n">cmake</span> \
@@ -533,14 +534,14 @@
     <span class="n">vulkan</span><span class="o">-</span><span class="n">tools</span> <span class="n">libvulkan</span><span class="o">-</span><span class="n">dev</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="clone-mesa-repository">
 <h2 id="clone-mesa-repository">Clone mesa repository<a class="headerlink" href="#clone-mesa-repository" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">depth</span> <span class="mi">1</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">freedesktop</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">mesa</span><span class="o">/</span><span class="n">mesa</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="build-mesa">
 <h2 id="build-mesa">Build mesa<a class="headerlink" href="#build-mesa" title="Permalink to this headline">¶</a></h2>
 <p>Use meson and ninja to build mesa using the Broadcom Vulkan SDK drivers. For information on the Gallium drivers please see <a class="reference external" href="https://docs.mesa3d.org/drivers/v3d.html">V3D — The Mesa 3D Graphics Library latest documentation</a>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meson</span> <span class="o">--</span><span class="n">libdir</span> <span class="n">lib</span> \
@@ -556,15 +557,15 @@
 <span class="n">sudo</span> <span class="n">ninja</span> <span class="o">-</span><span class="n">C</span> <span class="n">build</span> <span class="n">install</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="configure-preferred-vulkan-sdk-driver">
 <h2 id="configure-preferred-vulkan-sdk-driver">Configure preferred Vulkan SDK driver<a class="headerlink" href="#configure-preferred-vulkan-sdk-driver" title="Permalink to this headline">¶</a></h2>
 <p>Export the path for the Broadcom drivers, this command will need to be run for every new terminal session.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">VK_ICD_FILENAMES</span><span class="o">=/</span><span class="n">mesa</span><span class="o">-</span><span class="n">install</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">vulkan</span><span class="o">/</span><span class="n">icd</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">broadcom_icd</span><span class="o">.</span><span class="n">armv7l</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="allow-access-to-render">
 <h2 id="allow-access-to-render">Allow access to render<a class="headerlink" href="#allow-access-to-render" title="Permalink to this headline">¶</a></h2>
 <p>In order to access the render from remote login there are two options. Both options work.</p>
 <p><strong>Option 1: provide read write access to everyone.</strong></p>
@@ -575,22 +576,22 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">chown</span> <span class="n">root</span><span class="p">:</span><span class="n">video</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">dri</span><span class="o">/</span><span class="n">renderD128</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="confirm-correct-vulkan-sdk-operation">
 <h2 id="confirm-correct-vulkan-sdk-operation">Confirm correct Vulkan SDK operation<a class="headerlink" href="#confirm-correct-vulkan-sdk-operation" title="Permalink to this headline">¶</a></h2>
 <p>To confirm that mesa was configured and built correctly run the following command.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vulkaninfo</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="clone-kompute">
 <h2 id="clone-kompute">Clone Kompute<a class="headerlink" href="#clone-kompute" title="Permalink to this headline">¶</a></h2>
 <p>Clone Kompute for access to the latest Python tests.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">KomputeProject</span><span class="o">/</span><span class="n">kompute</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="install-dependencies-to-run-the-tests">
 <h2 id="install-dependencies-to-run-the-tests">Install dependencies to run the tests<a class="headerlink" href="#install-dependencies-to-run-the-tests" title="Permalink to this headline">¶</a></h2>
 <p>Navigate to the available tests and install required dependencies.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">kompute</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">test</span>
@@ -601,8 +602,8 @@
 <span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">KomputeProject</span><span class="o">/</span><span class="n">kompute</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
-
-
+</section>
+<section id="run-the-available-tests">
 <h2 id="run-the-available-tests">Run the available tests<a class="headerlink" href="#run-the-available-tests" title="Permalink to this headline">¶</a></h2>
 <p>Use the following command to run the python tests for Kompute.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
@@ -613,16 +614,16 @@
 </pre></div>
 </div>
 <p>Please share any issues with the maintainers and they will be more than happy to help.</p>
-
-
+</section>
+<section id="closing-remarks">
 <h2 id="closing-remarks">Closing remarks<a class="headerlink" href="#closing-remarks" title="Permalink to this headline">¶</a></h2>
 <p>To avoid the need to export <code class="docutils literal notranslate"><span class="pre">VK_ICD_FILENAMES</span></code> every time you login, it is possible to symlink the json file into the default directory. The Vulkan SDK loader looks in the <code class="docutils literal notranslate"><span class="pre">/etc/vulkan/icd.d/</span></code> directory for <code class="docutils literal notranslate"><span class="pre">.json</span></code> files.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">mesa</span><span class="o">-</span><span class="n">install</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">vulkan</span><span class="o">/</span><span class="n">icd</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">broadcom_icd</span><span class="o">.</span><span class="n">armv7l</span><span class="o">.</span><span class="n">json</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">vulkan</span><span class="o">/</span><span class="n">icd</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">broadcom_icd</span><span class="o">.</span><span class="n">armv7l</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
 <p>As a word of warning, configuring the icd filenames in this way will stop certain tests being skipped. At the time of writing this will mean that some tests fail when running on the Pi.</p>
-
-
+</section>
+</section>
 
 
           </article>

@@ -4,7 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -66,7 +67,7 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="CI, Docker Images, Docs &amp; Tests" href="ci-tests.html" />
+    <link rel="next" title="CI, Docker Images, Docs, Tests &amp; Release" href="ci-tests.html" />
     <link rel="prev" title="Naive Matmul Implementation" href="matmul-benchmark.html" />
   
    
@@ -462,7 +463,7 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
+  <section id="convolutional-neural-network-cnn-vgg7-implementation">
 <h1 id="overview-convolutional-net--page-root">Convolutional Neural Network (CNN) VGG7 implementation<a class="headerlink" href="#overview-convolutional-net--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This example provides an implementation of a convolutional neural network (CNN) that enables for image resolution upscaling, which means that images can improve their quality through purely the machine learning implementation.</p>
 <p>This example demonstrates performing image upscaling using Kompute on the test image below.</p>
@@ -473,7 +474,7 @@
 <li><p>Create Kompute shader that performs inference on image</p></li>
 <li><p>Run model against image to perform upscale</p></li>
 </ul>
-
+<section id="import-pre-trained-model">
 <h2 id="import-pre-trained-model">Import pre-trained model<a class="headerlink" href="#import-pre-trained-model" title="Permalink to this headline">¶</a></h2>
 <p>To import the no-noise-compensation VGG7 model (into <code class="docutils literal notranslate"><span class="pre">model-kipper</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">curl</span> <span class="o">-</span><span class="n">o</span> <span class="n">model</span><span class="o">.</span><span class="n">json</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">nagadomi</span><span class="o">/</span><span class="n">waifu2x</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">models</span><span class="o">/</span><span class="n">vgg_7</span><span class="o">/</span><span class="n">art</span><span class="o">/</span><span class="n">scale2</span><span class="mf">.0</span><span class="n">x_model</span><span class="o">.</span><span class="n">json</span>
@@ -481,16 +482,16 @@
 </pre></div>
 </div>
 <p>Other models from the vgg_7 set (such as <code class="docutils literal notranslate"><span class="pre">https://raw.githubusercontent.com/nagadomi/waifu2x/master/models/vgg_7/photo/noise0_model.json</span></code>) can be subsituted as desired.</p>
-
-
+</section>
+<section id="create-code-that-loads-model-weights">
 <h2 id="create-code-that-loads-model-weights">Create code that loads model weights<a class="headerlink" href="#create-code-that-loads-model-weights" title="Permalink to this headline">¶</a></h2>
 <p>We implement the kompute logic under run_vgg7 that loads the model weights and coordinates the execution of the inference.</p>
-
-
+</section>
+<section id="create-kompute-shader-that-performs-inference-on-image">
 <h2 id="create-kompute-shader-that-performs-inference-on-image">Create Kompute shader that performs inference on image<a class="headerlink" href="#create-kompute-shader-that-performs-inference-on-image" title="Permalink to this headline">¶</a></h2>
 <p>Similarly, we created a compute shader that performs an inference iteration on an image provided to perfrom upscaling.</p>
-
-
+</section>
+<section id="run-model-against-image-to-perfrom-upscale">
 <h2 id="run-model-against-image-to-perfrom-upscale">Run model against image to perfrom upscale<a class="headerlink" href="#run-model-against-image-to-perfrom-upscale" title="Permalink to this headline">¶</a></h2>
 <p>We now execute model against an image created by us to show how upscaling works. The image used will be the one below:</p>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/KomputeProject/kompute/master/examples/neural_network_vgg7/w2wbinit.png"><img alt="" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/examples/neural_network_vgg7/w2wbinit.png"/></a>
@@ -499,8 +500,8 @@
 <p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">run_vgg7.py</span> <span class="pre">w2wbinit.png</span> <span class="pre">out.png</span></code></p>
 <p>This would successfully upscale the resolution using the machine learning model, and the result is below:</p>
 <a class="reference external image-reference" href="https://raw.githubusercontent.com/KomputeProject/kompute/master/examples/neural_network_vgg7/out.png"><img alt="" src="https://raw.githubusercontent.com/KomputeProject/kompute/master/examples/neural_network_vgg7/out.png"/></a>
-
-
+</section>
+</section>
 
 
           </article>
@@ -526,12 +527,12 @@
             </a>
           
           
-            <a href="ci-tests.html" title="CI, Docker Images, Docs &amp; Tests"
+            <a href="ci-tests.html" title="CI, Docker Images, Docs, Tests &amp; Release"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> CI, Docker Images, Docs &amp; Tests </span>
+                class="md-footer-nav__direction"> Next </span> CI, Docker Images, Docs, Tests &amp; Release </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
