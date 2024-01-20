@@ -96,7 +96,7 @@ In order to perform the release the following steps need to be carried out:
     * Build dependency:
         * Intsall dependency: `pip install .`
         * Ensure all tests pass in GPU and CPU: `python -m pytest`
-        * Build distribution `python setup.py sdist bdist_wheel`
+        * Build distribution `python setup.py sdist` - creating only tarball, no wheel
     * Test repo:
         * Push to test repo `python -m twine upload --repository testpypi dist/*`
         * Install python dependency: `python -m pip install --index-url https://test.pypi.org/simple/ --no-deps kp`
