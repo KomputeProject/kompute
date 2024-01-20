@@ -92,9 +92,6 @@ In order to perform the release the following steps need to be carried out:
 * Building documentation
     * Follow section above to build documentation
         * Note: Currently some docs packages are only available in linux
-* Build changelog
-    * Generate latest changelog `make build_changelog`
-    * Update latest tag in new CHANGELOG.md to be the vesion to release 
 * Python Release
     * Build dependency:
         * Intsall dependency: `pip install .`
@@ -108,6 +105,11 @@ In order to perform the release the following steps need to be carried out:
         * Push to test repo `python -m twine upload dist/*`
         * Install package from prod pypi `pip install kp`
         * Ensure all tests pass in GPU and CPU: `python -m pytest`
+* Build changelog
+    * Generate latest changelog `make build_changelog`
+    * Update latest tag in new CHANGELOG.md to be the vesion to release 
+* Push tag
+    * Push the tag of version `vXX.YY.ZZ`
 * Merge changes back to master
     * Open a PR to run the tests and check everything is working as expected
     * Once everything correct, merge back to master
