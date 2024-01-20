@@ -74,12 +74,14 @@ Once this installed:
     * This can be done with `mk_build_docs`
 * You can serve the documentation locally using the `mk_run_docs` command in the Makefile
 
+Documentation can be published with `make push_docs_to_ghpages`
+
 Performing Release
 ~~~~~~~~~~~~
 
 In order to perform the release the following steps need to be carried out:
 
-
+    
 * Set up repo with next version as required if not yet updated
     * Update version in `./VERSION` file
     * Update the version across the repo
