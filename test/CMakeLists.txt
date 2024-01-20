@@ -39,3 +39,5 @@ if(WIN32 AND BUILD_SHARED_LIBS) # Install dlls in the same directory as the exec
     add_custom_command(TARGET kompute_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:spdlog> $<TARGET_FILE_DIR:kompute_tests>)
     add_custom_command(TARGET kompute_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:kp_logger> $<TARGET_FILE_DIR:kompute_tests>)
 endif()
+
+

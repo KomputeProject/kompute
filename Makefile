@@ -81,8 +81,10 @@ mk_build_kompute:
 mk_build_tests:
 	cmake --build build/. --target kompute_tests --parallel
 
-mk_run_docs: mk_build_docs
-	(cd build/docs/sphinx && python2.7 -m SimpleHTTPServer)
+mk_run_docs: mk_build_docs mk_run_docs_only
+
+mk_run_docs_only:
+	(cd build/docs/sphinx && python -m http.server)
 
 # An alternative would be: ctest -vv --test-dir build/.
 # But this is not possible since we need to filter specific tests, not complete executables, which is not possible with ctest.

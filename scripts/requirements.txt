@@ -7,5 +7,14 @@ quom==1.2.0
 Sphinx==3.2.1
 sphinx_material==0.0.30
 breathe==4.20.0
+
+# Dependencies for m2r2
 m2r2==0.2.5
-git+git://github.com/pybind/pybind11_mkdoc.git@master
+docutils<0.18
+mistune<2
+
+# NEeded for backward compat of Sphynx
+Jinja2<3.1
+
+# Needed for the pybind docstrings
+pybind11_mkdoc @ git+https://github.com/pybind/pybind11_mkdoc@master
