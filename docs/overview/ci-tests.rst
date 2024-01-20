@@ -1,5 +1,5 @@
 
-CI, Docker Images, Docs & Tests
+CI, Docker Images, Docs, Tests & Release
 ======================
 
 This section contains an overview of the steps run on CI, as well as the tools used to simplify the testing (such as running on CPU).
@@ -71,23 +71,32 @@ Once this installed:
 
 * You can build the documentation using the `gendocsall` cmake target
     * This can be done with `make clean_cmake mk_cmake mk_build_docs`
-* You can serve the documentation locally using the `mk_run_docs_only` command in the Makefile
->>>>>>> Stashed changes
+    * This can be done with `mk_build_docs`
+* You can serve the documentation locally using the `mk_run_docs` command in the Makefile
+
+Documentation can be published with `make push_docs_to_ghpages`
 
 Performing Release
 ~~~~~~~~~~~~
 
 In order to perform the release the following steps need to be carried out:
 
-* Build changelog
+    
+* Set up repo with next version as required if not yet updated
+    * Update version in `./VERSION` file
+    * Update the version across the repo
+        * If using Far.vim you can use `:Far X\\.Y\\.Z XX.YY.ZZ **/**`
+        * Make sure you don't accidentally replace the `CHANGELOG.md`
     * Create branch called `v<VERSION>-release`
-    * Generate latest changelog `make build_changelog`
-    * Update latest tag in new CHANGELOG.md to be the vesion to release 
+    * Commit changes with new version
+* Building documentation
+    * Follow section above to build documentation
+        * Note: Currently some docs packages are only available in linux
 * Python Release
     * Build dependency:
         * Intsall dependency: `pip install .`
         * Ensure all tests pass in GPU and CPU: `python -m pytest`
-        * Build distribution `python setup.py sdist bdist_wheel`
+        * Build distribution `python setup.py sdist` - creating only tarball, no wheel
     * Test repo:
         * Push to test repo `python -m twine upload --repository testpypi dist/*`
         * Install python dependency: `python -m pip install --index-url https://test.pypi.org/simple/ --no-deps kp`
@@ -96,5 +105,14 @@ In order to perform the release the following steps need to be carried out:
         * Push to test repo `python -m twine upload dist/*`
         * Install package from prod pypi `pip install kp`
         * Ensure all tests pass in GPU and CPU: `python -m pytest`
+* Build changelog
+    * Generate latest changelog `make build_changelog`
+    * Update latest tag in new CHANGELOG.md to be the vesion to release 
+* Push tag
+    * Push the tag of version `vXX.YY.ZZ`
+* Merge changes back to master
+    * Open a PR to run the tests and check everything is working as expected
+    * Once everything correct, merge back to master
+    * Celebrate 🥳
 
 

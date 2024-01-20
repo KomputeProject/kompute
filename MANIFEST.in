@@ -4,4 +4,5 @@ recursive-include src *
 recursive-include python *
 recursive-include single_include *
 recursive-include external *
+recursive-include cmake *
 

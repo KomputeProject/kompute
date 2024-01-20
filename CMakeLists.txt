@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required(VERSION 3.20)
-project(kompute VERSION 0.8.1 LANGUAGES CXX)
+project(kompute VERSION 0.9.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 
