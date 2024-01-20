@@ -78,7 +78,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name='kp',
-    version='0.8.1',
+    version='0.9.0',
     author='Alejandro Saucedo',
     description='Kompute: Blazing fast, mobile-enabled, asynchronous, and optimized for advanced GPU processing usecases.',
     long_description=long_description,
