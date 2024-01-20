@@ -85,6 +85,7 @@ In order to perform the release the following steps need to be carried out:
     * Update version in `./VERSION` file
     * Update the version across the repo
         * If using Far.vim you can use `:Far X\\.Y\\.Z XX.YY.ZZ **/**`
+        * Make sure you don't accidentally replace the `CHANGELOG.md`
     * Create branch called `v<VERSION>-release`
     * Commit changes with new version
 * Building documentation
