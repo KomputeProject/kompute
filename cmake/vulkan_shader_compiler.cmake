@@ -33,8 +33,10 @@ function(vulkan_compile_shader)
      get_property(VULKAN_COMPILE_SHADER_CWD GLOBAL PROPERTY VULKAN_COMPILE_SHADER_CWD_PROPERTY)
      ## The directory may not be created so we need to ensure its present 
      get_filename_component(SHADER_COMPILE_SPV_PATH ${SHADER_COMPILE_SPV_FILE_FULL} DIRECTORY)
-     add_custom_target(build-time-make-directory ALL
-         COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_COMPILE_SPV_PATH})
+     if(NOT EXISTS ${SHADER_COMPILE_SPV_PATH})
+         add_custom_target(build-time-make-directory ALL
+             COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_COMPILE_SPV_PATH})
+     endif()
      ## Requires custom command function as this is the only way to call 
      ## a function during compile time from cmake (ie through cmake script)
      add_custom_command(OUTPUT "${SHADER_COMPILE_HEADER_FILE_FULL}"

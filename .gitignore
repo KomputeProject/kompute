@@ -192,6 +192,9 @@ vk_swiftshader_icd.json
 tmp_kp_shader.comp.spv
 tmp_kp_shader.comp
 
+# Shaders
+test/shaders/glsl/*.hpp
+
 # Docs
 _build/
 
