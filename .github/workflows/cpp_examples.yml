@@ -30,7 +30,7 @@ jobs:
         configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON -DKOMPUTE_OPT_FROM_SOURCE=ON
         build-options: --parallel # Given we don't build too many resources we can leverage parallel
     - name: Run tests
-      run: ./examples/array_multiplication/build/src/kompute_array_mult
+      run: ./examples/array_multiplication/build/kompute_array_mult
 
   logistc-regression-example:
     runs-on: ubuntu-latest
@@ -55,4 +55,4 @@ jobs:
         configure-options: -DKOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER=ON -DKOMPUTE_OPT_FROM_SOURCE=ON
         build-options: --parallel # Given we don't build too many resources we can leverage parallel
     - name: Run tests
-      run: ./examples/logistic_regression/build/src/kompute_logistic_regression
+      run: ./examples/logistic_regression/build/kompute_logistic_regression
