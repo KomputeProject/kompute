@@ -3,9 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include "kompute/Tensor.hpp"
-#include "my_shader.hpp"
-#include <kompute/Kompute.hpp>
+#include "kompute/Kompute.hpp"
+#include "shader/my_shader.hpp"
 
 int
 main()
