@@ -38,6 +38,7 @@ class Tensor
         eUnsignedInt = 2,
         eFloat = 3,
         eDouble = 4,
+        eCustom = 5,
     };
 
     static std::string toString(TensorDataTypes dt);
