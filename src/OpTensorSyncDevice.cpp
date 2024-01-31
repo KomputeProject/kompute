@@ -6,8 +6,6 @@ namespace kp {
 
 OpTensorSyncDevice::OpTensorSyncDevice(
   const std::vector<std::shared_ptr<Tensor>>& tensors)
-  : mPrimaryBuffer(nullptr)
-  , mStagingBuffer(nullptr)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
 
