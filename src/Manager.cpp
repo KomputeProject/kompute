@@ -427,7 +427,6 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     vk::PhysicalDeviceVulkan12Features features12;
     features12.storageBuffer8BitAccess = true;
     features12.uniformAndStorageBuffer8BitAccess = true;
-    features12.shaderFloat16 = true;
     features12.shaderInt8 = true;
     features12.pNext = &features11;
 
