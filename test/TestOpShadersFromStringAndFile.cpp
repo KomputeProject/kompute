@@ -9,18 +9,18 @@
 #include "test_op_custom_shader.hpp"
 #include "test_shader.hpp"
 
+// Introducing custom struct that can be used for tensors
 struct TestStruct {
     float x;
     uint32_t y;
     int32_t z;
+
+    // Creating an == operator overload for the comparison below
+    bool operator==(const TestStruct rhs) const {
+        return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
+    }
 };
-
-// Creating an == operator overload for the comparison below
-bool operator==(const TestStruct& lhs, const TestStruct rhs) {
-    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
-}
-
-// Required to ensure datatype is set as custom
+// Custom struct needs to be mapped the eCustom datatype
 template<>
 kp::Tensor::TensorDataTypes
 kp::TensorT<TestStruct>::dataType()
