@@ -60,6 +60,12 @@
 
 ![](https://raw.githubusercontent.com/KomputeProject/kompute/master/docs/images/komputer-logos.gif)
 
+## Projects using Kompute ❤️  🤖
+
+* [GPT4ALL](https://github.com/nomic-ai/gpt4all) ![](https://img.shields.io/github/stars/nomic-ai/gpt4all.svg?style=social) - An ecosystem of open-source on-edge large language models that run locally on your CPU and nearly any GPU.
+* [llama.cpp](https://github.com/ggerganov/llama.cpp) ![](https://img.shields.io/github/stars/ggerganov/llama.cpp.svg?style=social) - Port of Facebook's LLaMA model in C/C++.
+* [vkJAX](https://github.com/alexander-g/vkJAX) ![](https://img.shields.io/github/stars/alexander-g/vkJAX.svg?style=social) - JAX interpreter for Vulkan.
+
 ## Getting Started
 
 Below you can find a GPU multiplication example using the C++ and Python Kompute interfaces.
