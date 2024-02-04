@@ -172,6 +172,14 @@ Manager::createInstance()
 
     vk::InstanceCreateInfo computeInstanceCreateInfo;
     computeInstanceCreateInfo.pApplicationInfo = &applicationInfo;
+
+#ifdef __APPLE__
+    // Required for backwards compatibility for MacOS M1 devices
+    // https://stackoverflow.com/questions/72374316/validation-error-on-device-extension-on-m1-mac
+    applicationExtensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    computeInstanceCreateInfo.flags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
+#endif
+
     if (!applicationExtensions.empty()) {
         computeInstanceCreateInfo.enabledExtensionCount =
           (uint32_t)applicationExtensions.size();
@@ -241,8 +249,13 @@ Manager::createInstance()
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 
     this->mInstance = std::make_shared<vk::Instance>();
-    vk::createInstance(
+    vk::Result createInstanceResult = vk::createInstance(
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
+
+    if (createInstanceResult != vk::Result::eSuccess) {
+        throw std::runtime_error("Failed to create instance: " +
+                                 vk::to_string(createInstanceResult));
+    }
 
 #if VK_USE_PLATFORM_ANDROID_KHR
     VULKAN_HPP_DEFAULT_DISPATCHER.init(*this->mInstance);
