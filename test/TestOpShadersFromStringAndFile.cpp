@@ -9,6 +9,68 @@
 #include "test_op_custom_shader.hpp"
 #include "test_shader.hpp"
 
+// Introducing custom struct that can be used for tensors
+struct TestStruct {
+    float x;
+    uint32_t y;
+    int32_t z;
+
+    // Creating an == operator overload for the comparison below
+    bool operator==(const TestStruct rhs) const {
+        return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
+    }
+};
+// Custom struct needs to be mapped the eCustom datatype
+template<>
+kp::Tensor::TensorDataTypes
+kp::TensorT<TestStruct>::dataType()
+{
+    return Tensor::TensorDataTypes::eCustom;
+}
+
+TEST(TestShader, ShaderRawDataFromConstructorCustomDataType)
+{
+    std::string shader(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(std140, binding = 0) buffer a {
+            float ax;
+            uint ay;
+            int az;
+          };
+        layout(std140, binding = 1) buffer b {
+            float bx;
+            uint by;
+            int bz;
+          };
+
+        void main() {
+            bx = ax;
+            by = ay;
+            bz = az;
+        }
+    )");
+
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::TensorT<TestStruct>> tensorA = mgr.tensorT<TestStruct>({ { 0.1, 2, 3} });
+    std::shared_ptr<kp::TensorT<TestStruct>> tensorB = mgr.tensorT<TestStruct>({ { 0.0, 0, 0} });
+
+    std::vector<uint32_t> spirv = compileSource(shader);
+
+    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
+
+    mgr.sequence()
+      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
+      ->eval<kp::OpTensorSyncLocal>(params);
+
+    EXPECT_EQ(tensorA->vector(), std::vector<TestStruct>({ TestStruct{0.1, 2, 3} }));
+    EXPECT_EQ(tensorB->vector(), std::vector<TestStruct>({ TestStruct{0.1, 2, 3} }));
+}
+
 TEST(TestShaderEndianness, ShaderRawDataFromConstructor)
 {
     std::string shader(R"(
@@ -90,21 +152,3 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
     EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 }
 
-// TODO: Add support to read from file for shader
-// TEST(TestOpAlgoCreate, ShaderCompiledDataFromFile)
-//{
-//    kp::Manager mgr;
-//
-//    std::shared_ptr<kp::TensorT<float>> tensorA{ new kp::Tensor({ 3, 4, 5 })
-//    }; std::shared_ptr<kp::TensorT<float>> tensorB{ new kp::Tensor({ 0, 0, 0
-//    }) }; mgr.rebuild({ tensorA, tensorB });
-//
-//    mgr.evalOpDefault<kp::OpAlgoCreate>(
-//      { tensorA, tensorB },
-//      "test/shaders/glsl/test_op_custom_shader.comp.spv");
-//
-//    mgr.evalOpDefault<kp::OpTensorSyncLocal>({ tensorA, tensorB });
-//
-//    EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
-//    EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
-//}
