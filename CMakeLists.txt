@@ -88,7 +88,7 @@ message(STATUS "=======================================================")
 
 # Enable or disable targets
 kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests." OFF)
-kompute_option(KOMPUTE_OPT_ENABLE_TESTS "Enable if you want to build and enable tests." OFF)
+kompute_option(KOMPUTE_OPT_ENABLE_BENCHMARK "Enable if you want to build and enable benchmark." OFF)
 kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage." OFF)
 kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation." OFF)
 kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." ${kompute_opt_install_default_val})
