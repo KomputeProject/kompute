@@ -61,13 +61,14 @@ mk_cmake:
 		-DCMAKE_INSTALL_PREFIX=$(MK_INSTALL_PATH) \
 		-DKOMPUTE_OPT_INSTALL=ON \
 		-DKOMPUTE_OPT_BUILD_TESTS=ON \
+		-DKOMPUTE_OPT_ENABLE_BENCHMARK=ON \
 		-DKOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG="v1.3.275" \
 		-DKOMPUTE_OPT_BUILD_DOCS=ON \
 		-DKOMPUTE_OPT_CODE_COVERAGE=ON \
 		-DKOMPUTE_OPT_USE_SPDLOG=1 \
-		-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=OFF \
-		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		-DKOMPUTE_OPT_LOG_LEVEL=Debug \
+		-DKOMPUTE_OPT_DISABLE_VK_DEBUG_LAYERS=ON \
+		-DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
 		-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON \
 		$(MK_CMAKE_EXTRA_FLAGS) \
 		-G "Unix Makefiles"
@@ -84,6 +85,9 @@ mk_build_kompute:
 mk_build_tests:
 	cmake --build build/. --target kompute_tests --parallel
 
+mk_build_benchmark:
+	cmake --build build/. --target kompute_benchmark --parallel
+
 mk_run_docs: mk_build_docs mk_run_docs_only
 
 mk_run_docs_only:
@@ -94,6 +98,9 @@ mk_run_docs_only:
 # https://gitlab.kitware.com/cmake/cmake/-/issues/13168 
 mk_run_tests: mk_build_tests
 	./build/bin/kompute_tests --gtest_filter=$(FILTER_TESTS)
+
+mk_run_benchmark: mk_build_benchmark
+	./build/bin/kompute_benchmark --gtest_filter=$(FILTER_TESTS)
 
 mk_build_swiftshader_library:
 	git clone https://github.com/google/swiftshader || echo "Assuming already cloned"
