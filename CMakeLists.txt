@@ -88,6 +88,7 @@ message(STATUS "=======================================================")
 
 # Enable or disable targets
 kompute_option(KOMPUTE_OPT_BUILD_TESTS "Enable if you want to build tests." OFF)
+kompute_option(KOMPUTE_OPT_ENABLE_BENCHMARK "Enable if you want to build and enable benchmark." OFF)
 kompute_option(KOMPUTE_OPT_CODE_COVERAGE "Enable if you want code coverage." OFF)
 kompute_option(KOMPUTE_OPT_BUILD_DOCS "Enable if you want to build documentation." OFF)
 kompute_option(KOMPUTE_OPT_INSTALL "Enable if you want to enable installation." ${kompute_opt_install_default_val})
@@ -138,7 +139,8 @@ if(KOMPUTE_OPT_ANDROID_BUILD)
 else()
     if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
         FetchContent_Declare(vulkan_header GIT_REPOSITORY https://github.com/KhronosGroup/Vulkan-Headers.git
-            GIT_TAG ${KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG}) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
+            GIT_TAG ${KOMPUTE_OPT_BUILT_IN_VULKAN_HEADER_TAG}
+            GIT_SHALLOW 1) # Source: https://github.com/KhronosGroup/Vulkan-Headers/tags
         FetchContent_MakeAvailable(vulkan_header)
 
         if(NOT KOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK)
@@ -165,17 +167,16 @@ endif()
 if(KOMPUTE_OPT_USE_SPDLOG)
     add_compile_definitions(KOMPUTE_OPT_USE_SPDLOG=1)
 
-    if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
-        if(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG)
-            set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
-            set(SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS})
+    if(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG)
+        set(SPDLOG_INSTALL ${KOMPUTE_OPT_INSTALL})
+        set(SPDLOG_BUILD_SHARED ${BUILD_SHARED_LIBS})
 
-            FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
-                GIT_TAG v1.10.0) # Source: https://github.com/gabime/spdlog/releases
-            FetchContent_MakeAvailable(spdlog)
-        else()
-            find_package(spdlog REQUIRED)
-        endif()
+        FetchContent_Declare(spdlog GIT_REPOSITORY https://github.com/gabime/spdlog.git
+            GIT_TAG v1.10.0
+            GIT_SHALLOW 1) # Source: https://github.com/gabime/spdlog/releases
+        FetchContent_MakeAvailable(spdlog)
+    else()
+        find_package(spdlog REQUIRED)
     endif()
 endif()
 
@@ -183,14 +184,15 @@ endif()
 if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
     set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 8.1.1) # Source: https://github.com/fmtlib/fmt/releases
+        GIT_TAG 8.1.1
+        GIT_SHALLOW 1) # Source: https://github.com/fmtlib/fmt/releases
     FetchContent_MakeAvailable(fmt)
 else()
     find_package(fmt REQUIRED)
 endif()
 
 # GoogleTest
-if(KOMPUTE_OPT_BUILD_TESTS)
+if(KOMPUTE_OPT_BUILD_TESTS OR KOMPUTE_OPT_ENABLE_BENCHMARK)
     if(KOMPUTE_OPT_USE_BUILT_IN_GOOGLE_TEST)
         FetchContent_Declare(googletest GIT_REPOSITORY https://github.com/google/googletest.git
             GIT_TAG release-1.11.0) # Source: https://github.com/google/googletest/releases
@@ -217,7 +219,8 @@ endif()
 if(KOMPUTE_OPT_BUILD_PYTHON)
     if(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11)
         FetchContent_Declare(pybind GIT_REPOSITORY https://github.com/pybind/pybind11.git
-            GIT_TAG v2.9.2) # Source: https://github.com/pybind/pybind11/releases
+            GIT_TAG v2.9.2
+            GIT_SHALLOW 1) # Source: https://github.com/pybind/pybind11/releases
         FetchContent_MakeAvailable(pybind)
     else()
         find_package(pybind11 REQUIRED)
@@ -270,9 +273,16 @@ endfunction()
 
 add_subdirectory(src)
 
-if(KOMPUTE_OPT_BUILD_TESTS)
+if(KOMPUTE_OPT_BUILD_TESTS OR KOMPUTE_OPT_ENABLE_BENCHMARK)
     enable_testing()
+endif()
+
+if(KOMPUTE_OPT_BUILD_TESTS)
     add_subdirectory(test)
+endif()
+
+if(KOMPUTE_OPT_ENABLE_BENCHMARK)
+    add_subdirectory(benchmark)
 endif()
 
 if(KOMPUTE_OPT_CODE_COVERAGE)

@@ -194,7 +194,9 @@ tmp_kp_shader.comp
 
 # Shaders
 test/shaders/glsl/*.hpp
+compiled_shaders_include/
 
 # Docs
 _build/
+
 

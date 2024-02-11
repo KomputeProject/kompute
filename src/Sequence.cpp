@@ -16,6 +16,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mDevice = device;
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
+    this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
 
     this->createCommandPool();
     this->createCommandBuffer();
@@ -127,10 +128,10 @@ Sequence::evalAsync()
     vk::SubmitInfo submitInfo(
       0, nullptr, nullptr, 1, this->mCommandBuffer.get());
 
-    this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
-
     KP_LOG_DEBUG(
       "Kompute sequence submitting command buffer into compute queue");
+
+    this->mDevice->resetFences({ this->mFence });
 
     this->mComputeQueue->submit(1, &submitInfo, this->mFence);
 
@@ -156,8 +157,6 @@ Sequence::evalAwait(uint64_t waitFor)
 
     vk::Result result =
       this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
-    this->mDevice->destroy(
-      this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
 
     this->mIsRunning = false;
 
@@ -213,6 +212,10 @@ Sequence::destroy()
         KP_LOG_WARN("Kompute Sequence destroy called "
                     "with null Device pointer");
         return;
+    }
+
+    if(this->mFence) {
+        this->mDevice->destroy(this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreeCommandBuffer) {
