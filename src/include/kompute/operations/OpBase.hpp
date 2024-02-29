@@ -18,6 +18,8 @@ namespace kp {
 class OpBase
 {
   public:
+    using ConstructorParameterType = void;
+
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
      * always be called to destroy and free owned resources unless it is

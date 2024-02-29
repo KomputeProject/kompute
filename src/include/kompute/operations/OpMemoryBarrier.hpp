@@ -18,6 +18,8 @@ namespace kp {
 class OpMemoryBarrier : public OpBase
 {
   public:
+    using ConstructorParameterType = std::vector<std::shared_ptr<Tensor>>;
+
     /**
      * Constructor that stores tensors as well as memory barrier parameters to
      * be used to create a pipeline barrier on the respective primary or staging
