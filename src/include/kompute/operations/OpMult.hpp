@@ -21,6 +21,8 @@ namespace kp {
 class OpMult : public OpAlgoDispatch
 {
   public:
+    using ConstructorParameterType = std::vector<std::shared_ptr<Tensor>>;
+    
     /**
      * Default constructor with parameters that provides the bare minimum
      * requirements for the operations to be able to create and manage their
