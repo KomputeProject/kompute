@@ -2,7 +2,7 @@
 click==7.1.2
 
 # Dev dependencies
-black==19.10b0
+black==24.3.0
 quom==1.2.0
 Sphinx==3.2.1
 sphinx_material==0.0.30
