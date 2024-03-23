@@ -160,7 +160,11 @@ PYBIND11_MODULE(kp, m)
       .def("tensor_type", &kp::Tensor::tensorType, DOC(kp, Tensor, tensorType))
       .def("data_type", &kp::Tensor::dataType, DOC(kp, Tensor, dataType))
       .def("is_init", &kp::Tensor::isInit, DOC(kp, Tensor, isInit))
-      .def("destroy", &kp::Tensor::destroy, DOC(kp, Tensor, destroy));
+      .def("destroy", &kp::Tensor::destroy, DOC(kp, Tensor, destroy))
+      .def("set_raw_data", [](kp::Tensor& self, py::buffer b) {
+          py::buffer_info info = b.request();
+          self.setRawData(info.ptr);
+      }, DOC(kp, Tensor, setRawData));
 
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
       .def(
