@@ -63,6 +63,23 @@ class Tensor
            const TensorTypes& tensorType = TensorTypes::eDevice);
 
     /**
+     *  Constructor with size provided which would be used to create the
+     * respective vulkan buffer and memory. Data is not copied.
+     *
+     *  @param physicalDevice The physical device to use to fetch properties
+     *  @param device The device to use to create the buffer and memory from
+     *  @param elmentTotalCount the number of elements of the array
+     *  @param elementMemorySize the size of the element
+     *  @param tensorTypes Type for the tensor which is of type TensorTypes
+     */
+    Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+           std::shared_ptr<vk::Device> device,
+           uint32_t elementTotalCount,
+           uint32_t elementMemorySize,
+           const TensorDataTypes& dataType,
+           const TensorTypes& tensorType = TensorTypes::eDevice);
+
+    /**
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
      */
@@ -78,6 +95,13 @@ class Tensor
     void rebuild(void* data,
                  uint32_t elementTotalCount,
                  uint32_t elementMemorySize);
+
+    /**
+     * @brief Reserve memory on the tensor
+     *
+     * @param newSize the new size for reservation
+     */
+    void reserve(uint32_t elementTotalCount, uint32_t elementMemorySize);
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
@@ -303,6 +327,21 @@ class TensorT : public Tensor
   public:
     TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device,
+            const size_t size,
+            const TensorTypes& tensorType = TensorTypes::eDevice)
+      : Tensor(physicalDevice,
+               device,
+               size,
+               sizeof(T),
+               this->dataType(),
+               tensorType)
+    {
+        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}",
+                     data.size());
+    }
+
+    TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+            std::shared_ptr<vk::Device> device,
             const std::vector<T>& data,
             const TensorTypes& tensorType = TensorTypes::eDevice)
       : Tensor(physicalDevice,
@@ -313,7 +352,7 @@ class TensorT : public Tensor
                this->dataType(),
                tensorType)
     {
-        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}",
+        KP_LOG_DEBUG("Kompute TensorT filling constructor with data size {}",
                      data.size());
     }
 
