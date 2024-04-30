@@ -122,7 +122,7 @@ if(KOMPUTE_OPT_INSTALL)
             EXPORT komputeTargets)
     endif ()
 
-    if(KOMPUTE_OPT_BUILD_PYTHON)
+    if(KOMPUTE_OPT_BUILD_PYTHON AND KOMPUTE_OPT_USE_BUILT_IN_PYBIND11)
         # We can't export pybind11::headers because it's alias target, so we unwrap the alias and install it.
         get_target_property(pybind11_aliased_target pybind11::headers ALIASED_TARGET)
         install(TARGETS ${pybind11_aliased_target}
