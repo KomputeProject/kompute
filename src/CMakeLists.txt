@@ -34,10 +34,10 @@ set_target_properties(kompute
 # Import GNU common install directory variables
 include(GNUInstallDirs)
 
-install(TARGETS kompute
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+#install(TARGETS kompute
+#    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 # Include CMake helpers for package config files
 # Follow this installation guideline: https://cmake.org/cmake/help/latest/manual/cmake-packages.7.html
