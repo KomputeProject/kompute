@@ -25,6 +25,7 @@ static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #else
 #if KOMPUTE_BUILD_PYTHON
 #include <pybind11/pybind11.h>
+#include <fmt/core.h>
 namespace py = pybind11;
 // from python/src/main.cpp
 extern py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
@@ -56,7 +57,7 @@ setupLogger();
       ANDROID_LOG_VERBOSE, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #else
 #if KOMPUTE_BUILD_PYTHON
-#define KP_LOG_DEBUG(...) kp_trace(fmt::format(__VA_ARGS__))
+#define KP_LOG_TRACE(...) kp_trace(fmt::format(__VA_ARGS__))
 #else
 #define KP_LOG_TRACE(...)                                                      \
     fmt::print("[{} {}] [trace] [{}:{}] {}\n",                                 \
@@ -114,7 +115,7 @@ setupLogger();
       ANDROID_LOG_INFO, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #else
 #if KOMPUTE_BUILD_PYTHON
-#define KP_LOG_DEBUG(...) kp_info(fmt::format(__VA_ARGS__))
+#define KP_LOG_INFO(...) kp_info(fmt::format(__VA_ARGS__))
 #else
 #define KP_LOG_INFO(...)                                                       \
     fmt::print("[{} {}] [info] [{}:{}] {}\n",                                  \
@@ -138,7 +139,7 @@ setupLogger();
       ANDROID_LOG_WARN, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #else
 #if KOMPUTE_BUILD_PYTHON
-#define KP_LOG_DEBUG(...) kp_warning(fmt::format(__VA_ARGS__))
+#define KP_LOG_WARN(...) kp_warning(fmt::format(__VA_ARGS__))
 #else
 #define KP_LOG_WARN(...)                                                       \
     fmt::print("[{} {}] [warn] [{}:{}] {}\n",                                  \
@@ -162,7 +163,7 @@ setupLogger();
       ANDROID_LOG_ERROR, KOMPUTE_LOG_TAG, fmt::format(__VA_ARGS__).c_str()))
 #else
 #if KOMPUTE_BUILD_PYTHON
-#define KP_LOG_DEBUG(...) kp_error(fmt::format(__VA_ARGS__))
+#define KP_LOG_ERROR(...) kp_error(fmt::format(__VA_ARGS__))
 #else
 #define KP_LOG_ERROR(...)                                                      \
     fmt::print("[{} {}] [error] [{}:{}] {}\n",                                 \
