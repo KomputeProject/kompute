@@ -54,7 +54,32 @@ void Manager::initializeDevice(uint32_t physicalDeviceIndex,
 Manager::~Manager()
 {
     KP_LOG_DEBUG("Kompute Manager Destructor started");
-    this->destroy();
+
+    if (this->mInstance == nullptr) {
+        KP_LOG_ERROR(
+          "Kompute Manager destructor reached with null Instance pointer");
+        return;
+    }
+
+    if (this->mDevice) {
+        this->destroy();
+    }
+
+#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
+    if (this->mDebugReportCallback) {
+        this->mInstance->destroyDebugReportCallbackEXT(
+          this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
+        this->mDebugReportCallback = nullptr;
+        KP_LOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
+    }
+#endif
+
+    if (this->mFreeInstance) {
+        this->mInstance->destroy(
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mInstance = nullptr;
+        KP_LOG_DEBUG("Kompute Manager Destroyed Instance");
+    }
 }
 
 void
@@ -112,34 +137,13 @@ Manager::destroy()
         this->mPipelineCache = nullptr;
     }
 
-    if (this->mFreeDevice) {
+    if (this->mFreeDevice && this->mDevice) {
         KP_LOG_INFO("Destroying device");
         this->mComputeQueues.clear();
         this->mDevice->destroy(
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         this->mDevice = nullptr;
         KP_LOG_DEBUG("Kompute Manager Destroyed Device");
-    }
-
-    if (this->mInstance == nullptr) {
-        KP_LOG_ERROR(
-          "Kompute Manager destructor reached with null Instance pointer");
-        return;
-    }
-
-#ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-    if (this->mDebugReportCallback) {
-        this->mInstance->destroyDebugReportCallbackEXT(
-          this->mDebugReportCallback, nullptr, this->mDebugDispatcher);
-        KP_LOG_DEBUG("Kompute Manager Destroyed Debug Report Callback");
-    }
-#endif
-
-    if (this->mFreeInstance) {
-        this->mInstance->destroy(
-          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        this->mInstance = nullptr;
-        KP_LOG_DEBUG("Kompute Manager Destroyed Instance");
     }
 }
 
