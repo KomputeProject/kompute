@@ -278,7 +278,15 @@ Manager::createInstance()
 void
 Manager::clear()
 {
-    if (this->mManageResources) {
+    if (!this->mManageResources) {
+        return;
+    }
+
+    auto getTotalObjs = [this]() {
+        return this->mManagedTensors.size() + this->mManagedAlgorithmsMap.size() + this->mManagedSequences.size();
+    };
+    size_t objTotal = getTotalObjs();
+    while (objTotal > 0) {
         this->mManagedTensors.erase(
           std::remove_if(begin(this->mManagedTensors),
                          end(this->mManagedTensors),
@@ -297,6 +305,12 @@ Manager::clear()
                          end(this->mManagedSequences),
                          [](std::weak_ptr<Sequence> t) { return t.expired(); }),
           end(this->mManagedSequences));
+
+        size_t newTotal = getTotalObjs();
+        if (newTotal == objTotal) {
+            break;
+        }
+        objTotal = newTotal;
     }
 }
 
