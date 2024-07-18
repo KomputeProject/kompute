@@ -23,14 +23,6 @@ Algorithm::isInit()
 void
 Algorithm::destroy()
 {
-    // We don't have to free memory on destroy as it's freed by the
-    // commandBuffer destructor if (this->mPushConstantsData) {
-    //     free(this->mPushConstantsData);
-    // }
-    // if (this->mSpecializationConstantsData) {
-    //     free(this->mSpecializationConstantsData);
-    // }
-
     if (!this->mDevice) {
         KP_LOG_WARN("Kompute Algorithm destroy function reached with null "
                     "Device pointer");
@@ -74,6 +66,16 @@ Algorithm::destroy()
     }
 
     freeParameters();
+
+    if (this->mPushConstantsData) {
+        free(this->mPushConstantsData);
+        this->mPushConstantsData = nullptr;
+    }
+
+    if (this->mSpecializationConstantsData) {
+        free(this->mSpecializationConstantsData);
+        this->mSpecializationConstantsData = nullptr;
+    }
 }
 
 void

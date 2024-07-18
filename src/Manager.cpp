@@ -114,6 +114,7 @@ Manager::destroy()
 
     if (this->mFreeDevice) {
         KP_LOG_INFO("Destroying device");
+        this->mComputeQueues.clear();
         this->mDevice->destroy(
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         this->mDevice = nullptr;
