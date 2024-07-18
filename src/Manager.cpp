@@ -435,6 +435,11 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
                      fmt::join(validExtensions, ", "));
     }
 
+    vk::PhysicalDeviceFeatures2 supportedFeatures;
+    vk::PhysicalDeviceVulkan12Features supportedFeatures12;
+    supportedFeatures.pNext = &supportedFeatures12;
+    physicalDevice.getFeatures2(&supportedFeatures);
+
     vk::PhysicalDeviceFeatures features;
     features.shaderInt16 = true;
 
@@ -446,6 +451,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     vk::PhysicalDeviceVulkan12Features features12;
     features12.storageBuffer8BitAccess = true;
     features12.uniformAndStorageBuffer8BitAccess = true;
+    features12.shaderFloat16 = supportedFeatures12.shaderFloat16;
     features12.shaderInt8 = true;
     features12.pNext = &features11;
 
