@@ -176,8 +176,10 @@ Manager::createInstance()
 #ifdef __APPLE__
     // Required for backwards compatibility for MacOS M1 devices
     // https://stackoverflow.com/questions/72374316/validation-error-on-device-extension-on-m1-mac
-    applicationExtensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
-    computeInstanceCreateInfo.flags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
+    applicationExtensions.push_back(
+      VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    computeInstanceCreateInfo.flags |=
+      vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
 #endif
 
     if (!applicationExtensions.empty()) {

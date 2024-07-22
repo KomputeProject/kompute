@@ -43,7 +43,8 @@ KomputeSummatorNode::add(float value)
 
 void
 KomputeSummatorNode::reset()
-{}
+{
+}
 
 float
 KomputeSummatorNode::get_total() const
@@ -97,7 +98,8 @@ KomputeSummatorNode::_init()
 
 void
 KomputeSummatorNode::_process(float delta)
-{}
+{
+}
 
 void
 KomputeSummatorNode::_bind_methods()

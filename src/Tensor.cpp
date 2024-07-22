@@ -156,8 +156,8 @@ Tensor::mapRawData()
     } else if (this->mTensorType == TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
+        KP_LOG_WARN("Kompute Tensor mapping data not supported on {} tensor",
+                    toString(this->tensorType()));
         return;
     }
 
@@ -167,7 +167,6 @@ Tensor::mapRawData()
     // flush
     this->mRawData = this->mDevice->mapMemory(
       *hostVisibleMemory, 0, bufferSize, vk::MemoryMapFlags());
-
 }
 
 void
@@ -183,8 +182,8 @@ Tensor::unmapRawData()
     } else if (this->mTensorType == TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
-        KP_LOG_WARN(
-          "Kompute Tensor mapping data not supported on {} tensor", toString(this->tensorType()));
+        KP_LOG_WARN("Kompute Tensor mapping data not supported on {} tensor",
+                    toString(this->tensorType()));
         return;
     }
 

@@ -10,13 +10,15 @@
 #include "test_shader.hpp"
 
 // Introducing custom struct that can be used for tensors
-struct TestStruct {
+struct TestStruct
+{
     float x;
     uint32_t y;
     int32_t z;
 
     // Creating an == operator overload for the comparison below
-    bool operator==(const TestStruct rhs) const {
+    bool operator==(const TestStruct rhs) const
+    {
         return this->x == rhs.x && this->y == rhs.y && this->z == rhs.z;
     }
 };
@@ -55,8 +57,10 @@ TEST(TestShader, ShaderRawDataFromConstructorCustomDataType)
 
     kp::Manager mgr;
 
-    std::shared_ptr<kp::TensorT<TestStruct>> tensorA = mgr.tensorT<TestStruct>({ { 0.1, 2, 3} });
-    std::shared_ptr<kp::TensorT<TestStruct>> tensorB = mgr.tensorT<TestStruct>({ { 0.0, 0, 0} });
+    std::shared_ptr<kp::TensorT<TestStruct>> tensorA =
+      mgr.tensorT<TestStruct>({ { 0.1, 2, 3 } });
+    std::shared_ptr<kp::TensorT<TestStruct>> tensorB =
+      mgr.tensorT<TestStruct>({ { 0.0, 0, 0 } });
 
     std::vector<uint32_t> spirv = compileSource(shader);
 
@@ -67,8 +71,10 @@ TEST(TestShader, ShaderRawDataFromConstructorCustomDataType)
       ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
       ->eval<kp::OpTensorSyncLocal>(params);
 
-    EXPECT_EQ(tensorA->vector(), std::vector<TestStruct>({ TestStruct{0.1, 2, 3} }));
-    EXPECT_EQ(tensorB->vector(), std::vector<TestStruct>({ TestStruct{0.1, 2, 3} }));
+    EXPECT_EQ(tensorA->vector(),
+              std::vector<TestStruct>({ TestStruct{ 0.1, 2, 3 } }));
+    EXPECT_EQ(tensorB->vector(),
+              std::vector<TestStruct>({ TestStruct{ 0.1, 2, 3 } }));
 }
 
 TEST(TestShaderEndianness, ShaderRawDataFromConstructor)
@@ -151,4 +157,3 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
     EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 }
-

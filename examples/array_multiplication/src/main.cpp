@@ -3,8 +3,8 @@
 #include <memory>
 #include <vector>
 
-#include <shader/my_shader.hpp>
 #include <kompute/Kompute.hpp>
+#include <shader/my_shader.hpp>
 
 int
 main()

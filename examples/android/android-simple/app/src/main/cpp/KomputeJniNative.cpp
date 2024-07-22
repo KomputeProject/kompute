@@ -23,8 +23,8 @@
 
 // Allows us to use the C++ sleep function to wait when loading the
 // Vulkan library in android
-#include <unistd.h>
 #include <kompute/logger/Logger.hpp>
+#include <unistd.h>
 
 static std::vector<float>
 jfloatArrayToVector(JNIEnv* env, const jfloatArray& fromArray)

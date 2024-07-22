@@ -151,7 +151,8 @@ KomputeModelML::_init()
 
 void
 KomputeModelML::_process(float delta)
-{}
+{
+}
 
 void
 KomputeModelML::_register_methods()

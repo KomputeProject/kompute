@@ -147,7 +147,8 @@ KomputeModelMLNode::_init()
 
 void
 KomputeModelMLNode::_process(float delta)
-{}
+{
+}
 
 void
 KomputeModelMLNode::_bind_methods()
