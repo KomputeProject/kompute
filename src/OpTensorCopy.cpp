@@ -62,17 +62,19 @@ OpTensorCopy::postEval(const vk::CommandBuffer& /*commandBuffer*/)
     KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 
     // Do not copy on CPU side if source is storage tensor
-    if (this->mTensors[0]->tensorType() == kp::Tensor::TensorTypes::eStorage)
-    {
-        KP_LOG_DEBUG("Kompute OpTensorCopy not copying tensor source given it's of eStorage type");
+    if (this->mTensors[0]->tensorType() == kp::Tensor::TensorTypes::eStorage) {
+        KP_LOG_DEBUG("Kompute OpTensorCopy not copying tensor source given "
+                     "it's of eStorage type");
         return;
     }
     void* data = this->mTensors[0]->rawData();
 
     // Copy the data from the first tensor into all the tensors
     for (size_t i = 1; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() == kp::Tensor::TensorTypes::eStorage) {
-            KP_LOG_DEBUG("Kompute OpTensorCopy not copying to tensor dest given it's of eStorage type");
+        if (this->mTensors[i]->tensorType() ==
+            kp::Tensor::TensorTypes::eStorage) {
+            KP_LOG_DEBUG("Kompute OpTensorCopy not copying to tensor dest "
+                         "given it's of eStorage type");
             continue;
         }
         this->mTensors[i]->setRawData(data);

@@ -214,8 +214,9 @@ Sequence::destroy()
         return;
     }
 
-    if(this->mFence) {
-        this->mDevice->destroy(this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+    if (this->mFence) {
+        this->mDevice->destroy(
+          this->mFence, (vk::Optional<const vk::AllocationCallbacks>)nullptr);
     }
 
     if (this->mFreeCommandBuffer) {

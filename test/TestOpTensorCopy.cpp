@@ -169,13 +169,13 @@ TEST(TestOpTensorCopy, CopyThroughStorageTensor)
     std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor(testVecOut);
     // Tensor storage requires a vector to be passed only to reflect size
     std::shared_ptr<kp::TensorT<float>> tensorStorage =
-        mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStorage);
+      mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStorage);
 
     mgr.sequence()
-        ->eval<kp::OpTensorSyncDevice>({ tensorIn, tensorOut })
-        ->eval<kp::OpTensorCopy>({ tensorIn, tensorStorage })
-        ->eval<kp::OpTensorCopy>({ tensorStorage, tensorOut })
-        ->eval<kp::OpTensorSyncLocal>({ tensorIn, tensorOut });
+      ->eval<kp::OpTensorSyncDevice>({ tensorIn, tensorOut })
+      ->eval<kp::OpTensorCopy>({ tensorIn, tensorStorage })
+      ->eval<kp::OpTensorCopy>({ tensorStorage, tensorOut })
+      ->eval<kp::OpTensorSyncLocal>({ tensorIn, tensorOut });
 
     // Making sure the GPU holds the same vector
     EXPECT_EQ(tensorIn->vector(), tensorOut->vector());
@@ -192,7 +192,7 @@ TEST(TestOpTensorCopy, CopyTensorThroughStorageViaAlgorithms)
     std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor(testVecOut);
     // Tensor storage requires a vector to be passed only to reflect size
     std::shared_ptr<kp::TensorT<float>> tensorStorage =
-        mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStorage);
+      mgr.tensor({ 0, 0, 0 }, kp::Tensor::TensorTypes::eStorage);
 
     EXPECT_TRUE(tensorIn->isInit());
     EXPECT_TRUE(tensorOut->isInit());
@@ -213,9 +213,8 @@ TEST(TestOpTensorCopy, CopyTensorThroughStorageViaAlgorithms)
         }
     )");
 
-    auto algoA = mgr.algorithm(
-            { tensorIn, tensorStorage },
-            compileSource(shaderA));
+    auto algoA =
+      mgr.algorithm({ tensorIn, tensorStorage }, compileSource(shaderA));
 
     // Copy from storage tensor to output tensor
     std::string shaderB = (R"(
@@ -233,15 +232,14 @@ TEST(TestOpTensorCopy, CopyTensorThroughStorageViaAlgorithms)
         }
     )");
 
-    auto algoB = mgr.algorithm(
-            { tensorStorage, tensorOut },
-            compileSource(shaderB));
+    auto algoB =
+      mgr.algorithm({ tensorStorage, tensorOut }, compileSource(shaderB));
 
     mgr.sequence()
-        ->eval<kp::OpTensorSyncDevice>({ tensorIn })
-        ->eval<kp::OpAlgoDispatch>(algoA)
-        ->eval<kp::OpAlgoDispatch>(algoB)
-        ->eval<kp::OpTensorSyncLocal>({ tensorOut });
+      ->eval<kp::OpTensorSyncDevice>({ tensorIn })
+      ->eval<kp::OpAlgoDispatch>(algoA)
+      ->eval<kp::OpAlgoDispatch>(algoB)
+      ->eval<kp::OpTensorSyncLocal>({ tensorOut });
 
     // Making sure the GPU holds the same vector
     EXPECT_EQ(tensorIn->vector(), tensorOut->vector());

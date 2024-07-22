@@ -52,17 +52,14 @@ setupLogger()
     // TODO: Add flag in compile flags
     std::shared_ptr<spdlog::logger> logger =
 #if KOMPUTE_SPDLOG_ASYNC_LOGGING
-          std::make_shared<spdlog::async_logger>(
-            "",
-            sinks.begin(),
-            sinks.end(),
-            spdlog::thread_pool(),
-            spdlog::async_overflow_policy::block);
+      std::make_shared<spdlog::async_logger>(
+        "",
+        sinks.begin(),
+        sinks.end(),
+        spdlog::thread_pool(),
+        spdlog::async_overflow_policy::block);
 #else
-          std::make_shared<spdlog::logger>(
-            "",
-            sinks.begin(),
-            sinks.end());
+      std::make_shared<spdlog::logger>("", sinks.begin(), sinks.end());
 #endif
 
     logger->set_level(getLogLevel());

@@ -3,7 +3,6 @@
 #include "my_shader.hpp"
 #include <kompute/Kompute.hpp>
 
-
 KomputeModelML::KomputeModelML() {}
 
 KomputeModelML::~KomputeModelML() {}

@@ -24,8 +24,8 @@
 static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #else
 #if KOMPUTE_BUILD_PYTHON
-#include <pybind11/pybind11.h>
 #include <fmt/core.h>
+#include <pybind11/pybind11.h>
 namespace py = pybind11;
 // from python/src/main.cpp
 extern py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
@@ -88,7 +88,7 @@ setupLogger();
     fmt::print("[{} {}] [debug] [{}:{}] {}\n",                                 \
                __DATE__,                                                       \
                __TIME__,                                                       \
-               __FILE_NAME__,                                                       \
+               __FILE_NAME__,                                                  \
                __LINE__,                                                       \
                fmt::format(__VA_ARGS__))
 #else
