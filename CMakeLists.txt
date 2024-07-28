@@ -309,6 +309,13 @@ if(KOMPUTE_OPT_INSTALL)
         FILE komputeTargets.cmake
         NAMESPACE kompute::
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
+
+    # Copy CMake files needed to `vulkan_compile_shader`
+    install(FILES
+        cmake/vulkan_shader_compiler.cmake
+        cmake/bin_file_to_header.cmake
+        cmake/bin2h.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/kompute)
 endif()
 
 
