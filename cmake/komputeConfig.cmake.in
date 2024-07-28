@@ -5,4 +5,7 @@ find_dependency(Vulkan REQUIRED)
 
 include(${CMAKE_CURRENT_LIST_DIR}/komputeTargets.cmake)
 
+# Expose `vulkan_compile_shader`
+include(${CMAKE_CURRENT_LIST_DIR}/vulkan_shader_compiler.cmake)
+
 check_required_components(kompute)
