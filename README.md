@@ -350,7 +350,7 @@ Simplified Kompute Components
 
 <br>
 <br>
-(very tiny, check the <a href="https://ethicalml.github.io/vulkan-kompute/overview/reference.html">full reference diagram in docs for details</a>)
+(very tiny, check the <a href="https://kompute.cc/overview/reference.html">full reference diagram in docs for details</a>)
 <br>
 <br>
 
@@ -374,7 +374,7 @@ The image below provides an intuition on how Kompute Sequences can be allocated 
 
 ## Mobile Enabled
 
-Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments, together with a working [Android NDK wrapper](https://github.com/KomputeProject/kompute/tree/master/vk_ndk_wrapper_include) for the CPP headers.
+Kompute has been optimized to work in mobile environments. The [build system](#build-overview) enables for dynamic loading of the Vulkan shared library for Android environments.
 
 <table>
 <tr>

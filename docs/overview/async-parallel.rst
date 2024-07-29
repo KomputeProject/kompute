@@ -43,5 +43,7 @@ The reason why this is important is that the Await function not only waits for t
 Async and Parallel Examples
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We have added a set of examples for asynchronous and parallel processing examples in the `Advanced Examples documentation page <advanced-examples.rst>`_
+.. _advanced-examples::advanced-examples.rst
+
+We have added a set of examples for asynchronous and parallel processing examples in the `Advanced Examples documentation page :ref:_advanced-examples`
 
