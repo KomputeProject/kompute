@@ -97,7 +97,8 @@ class Tensor
                  uint32_t elementMemorySize);
 
     /**
-     * @brief Reserve memory on the tensor
+     * Function to reserve memory on the tensor. This does not copy any data, it
+     * just reserves memory, similarly to std::vector reserve() method.
      *
      * @param newSize the new size for reservation
      */
@@ -336,8 +337,7 @@ class TensorT : public Tensor
                this->dataType(),
                tensorType)
     {
-        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}",
-                     data.size());
+        KP_LOG_DEBUG("Kompute TensorT constructor with data size {}", size);
     }
 
     TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
