@@ -10,7 +10,8 @@ add_subdirectory(shaders)
 # ####################################################
 # Tests
 # ####################################################
-add_executable(kompute_tests TestAsyncOperations.cpp
+add_executable(kompute_tests 
+    TestAsyncOperations.cpp
     TestDestroy.cpp
     TestLogisticRegression.cpp
     TestManager.cpp
@@ -21,9 +22,12 @@ add_executable(kompute_tests TestAsyncOperations.cpp
     TestPushConstant.cpp
     TestSequence.cpp
     TestSpecializationConstant.cpp
-    TestWorkgroup.cpp)
+    TestWorkgroup.cpp
+    TestVersionDefined.cpp
+)
 
-target_link_libraries(kompute_tests PRIVATE GTest::gtest_main
+target_link_libraries(kompute_tests PRIVATE 
+    GTest::gtest_main
     kompute::kompute
     kp_logger
     test_shaders

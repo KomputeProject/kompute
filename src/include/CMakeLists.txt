@@ -3,8 +3,23 @@ cmake_minimum_required(VERSION 3.20)
 # ####################################################
 # Kompute
 # ####################################################
-target_include_directories(kompute PUBLIC $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
+
+# Configure the version header file
+set(KOMPUTE_VERSION_MAJOR ${${PROJECT_NAME}_VERSION_MAJOR})
+set(KOMPUTE_VERSION_MINOR ${${PROJECT_NAME}_VERSION_MINOR})
+set(KOMPUTE_VERSION_PATCH ${${PROJECT_NAME}_VERSION_PATCH})
+set(KOMPUTE_VERSION_STRING "${KOMPUTE_VERSION_MAJOR}.${KOMPUTE_VERSION_MINOR}.${KOMPUTE_VERSION_PATCH}")
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/kompute/Version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/kompute/Version.h
+    @ONLY
+)
+
+target_include_directories(kompute PUBLIC 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+    $<INSTALL_INTERFACE:include>
+)
 
 target_sources(kompute PRIVATE
 
@@ -29,6 +44,9 @@ target_sources(kompute PRIVATE
 
 if(KOMPUTE_OPT_INSTALL)
     install(DIRECTORY kompute DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+    # Install the generated version header
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/kompute/Version.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/kompute)
 endif()
 
 # ####################################################
