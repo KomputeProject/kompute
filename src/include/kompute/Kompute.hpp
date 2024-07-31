@@ -17,4 +17,4 @@
 // Will be build by CMake and placed inside the build directory
 #include "ShaderLogisticRegression.hpp"
 #include "ShaderOpMult.hpp"
-#include "Version.h"
+#include "kompute/Version.h"
