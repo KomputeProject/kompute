@@ -124,6 +124,26 @@ class Manager
         return tensor;
     }
 
+      std::shared_ptr<Tensor> tensor(
+      uint32_t elementTotalCount,
+      uint32_t elementMemorySize,
+      const Tensor::TensorDataTypes& dataType,
+      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+    {
+        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
+                                                       this->mDevice,
+                                                       elementTotalCount,
+                                                       elementMemorySize,
+                                                       dataType,
+                                                       tensorType) };
+
+        if (this->mManageResources) {
+            this->mManagedTensors.push_back(tensor);
+        }
+
+        return tensor;
+    }
+
     /**
      * Default non-template function that can be used to create algorithm
      * objects which provides default types to the push and spec constants as
