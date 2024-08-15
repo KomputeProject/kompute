@@ -66,10 +66,6 @@ if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
     else()
         target_link_libraries(kp_logger PUBLIC fmt::fmt)
     endif()
-
-    if(KOMPUTE_OPT_BUILD_PYTHON)
-        target_link_libraries(kp_logger PUBLIC pybind11::pybind11)
-    endif()
 endif()
 
 
