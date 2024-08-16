@@ -11,11 +11,11 @@ namespace kp {
 
 /**
  * Operation that syncs tensor's local memory by mapping device data into the
- * local CPU memory. For TensorTypes::eDevice it will use a record operation
- * for the memory to be syncd into GPU memory which means that the operation
- * will be done in sync with GPU commands. For TensorTypes::eHost it will
- * only map the data into host memory which will happen during preEval before
- * the recorded commands are dispatched.
+ * local CPU memory. For kp::Tensor::TensorTypes::eDevice it will use a record
+ * operation for the memory to be syncd into GPU memory which means that the
+ * operation will be done in sync with GPU commands. For
+ * kp::Tensor::TensorTypes::eHost it will only map the data into host memory
+ * which will happen during preEval before the recorded commands are dispatched.
  */
 class OpTensorSyncLocal : public OpBase
 {
@@ -23,11 +23,11 @@ class OpTensorSyncLocal : public OpBase
     /**
      * Default constructor with parameters that provides the core vulkan
      * resources and the tensors that will be used in the operation. The tensors
-     * provided cannot be of type TensorTypes::eStorage.
+     * provided cannot be of type kp::Tensor::TensorTypes::eStorage.
      *
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorSyncLocal(const std::vector<std::shared_ptr<Tensor>>& tensors);
+    OpTensorSyncLocal(const std::vector<std::shared_ptr<kp::Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be
@@ -60,7 +60,7 @@ class OpTensorSyncLocal : public OpBase
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::vector<std::shared_ptr<kp::Tensor>> mTensors;
 };
 
 } // End namespace kp

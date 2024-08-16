@@ -5,18 +5,18 @@
 namespace kp {
 
 std::string
-Tensor::toString(Tensor::TensorDataTypes dt)
+kp::Tensor::toString(kp::Tensor::TensorDataTypes dt)
 {
     switch (dt) {
-        case TensorDataTypes::eBool:
+        case kp::Tensor::TensorDataTypes::eBool:
             return "eBool";
-        case TensorDataTypes::eInt:
+        case kp::Tensor::TensorDataTypes::eInt:
             return "eInt";
-        case TensorDataTypes::eUnsignedInt:
+        case kp::Tensor::TensorDataTypes::eUnsignedInt:
             return "eUnsignedInt";
-        case TensorDataTypes::eFloat:
+        case kp::Tensor::TensorDataTypes::eFloat:
             return "eFloat";
-        case TensorDataTypes::eDouble:
+        case kp::Tensor::TensorDataTypes::eDouble:
             return "eDouble";
         default:
             return "unknown";
@@ -24,31 +24,31 @@ Tensor::toString(Tensor::TensorDataTypes dt)
 }
 
 std::string
-Tensor::toString(Tensor::TensorTypes dt)
+kp::Tensor::toString(kp::Tensor::TensorTypes dt)
 {
     switch (dt) {
-        case TensorTypes::eDevice:
+        case kp::Tensor::TensorTypes::eDevice:
             return "eDevice";
-        case TensorTypes::eHost:
+        case kp::Tensor::TensorTypes::eHost:
             return "eHost";
-        case TensorTypes::eStorage:
+        case kp::Tensor::TensorTypes::eStorage:
             return "eStorage";
         default:
             return "unknown";
     }
 }
 
-Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-               std::shared_ptr<vk::Device> device,
-               void* data,
-               uint32_t elementTotalCount,
-               uint32_t elementMemorySize,
-               const TensorDataTypes& dataType,
-               const TensorTypes& tensorType)
+kp::Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                   std::shared_ptr<vk::Device> device,
+                   void* data,
+                   uint32_t elementTotalCount,
+                   uint32_t elementMemorySize,
+                   const TensorDataTypes& dataType,
+                   const TensorTypes& tensorType)
 {
     KP_LOG_DEBUG("Kompute Tensor constructor data length: {}, and type: {}",
                  elementTotalCount,
-                 Tensor::toString(tensorType));
+                 kp::Tensor::toString(tensorType));
 
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
@@ -58,10 +58,10 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->rebuild(data, elementTotalCount, elementMemorySize);
 }
 
-Tensor::~Tensor()
+kp::Tensor::~Tensor()
 {
     KP_LOG_DEBUG("Kompute Tensor destructor started. Type: {}",
-                 Tensor::toString(this->tensorType()));
+                 kp::Tensor::toString(this->tensorType()));
 
     if (this->mDevice) {
         this->destroy();
@@ -71,9 +71,9 @@ Tensor::~Tensor()
 }
 
 void
-Tensor::rebuild(void* data,
-                uint32_t elementTotalCount,
-                uint32_t elementMemorySize)
+kp::Tensor::rebuild(void* data,
+                    uint32_t elementTotalCount,
+                    uint32_t elementMemorySize)
 {
     KP_LOG_DEBUG("Kompute Tensor rebuilding with size {}", elementTotalCount);
 
@@ -88,72 +88,72 @@ Tensor::rebuild(void* data,
 
     this->allocateMemoryCreateGPUResources();
 
-    if (this->tensorType() != Tensor::TensorTypes::eStorage) {
+    if (this->tensorType() != kp::Tensor::TensorTypes::eStorage) {
         this->mapRawData();
         memcpy(this->mRawData, data, this->memorySize());
     }
 }
 
-Tensor::TensorTypes
-Tensor::tensorType()
+kp::Tensor::TensorTypes
+kp::Tensor::tensorType()
 {
     return this->mTensorType;
 }
 
 bool
-Tensor::isInit()
+kp::Tensor::isInit()
 {
     return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory &&
            this->mRawData;
 }
 
 uint32_t
-Tensor::size()
+kp::Tensor::size()
 {
     return this->mSize;
 }
 
 uint32_t
-Tensor::dataTypeMemorySize()
+kp::Tensor::dataTypeMemorySize()
 {
     return this->mDataTypeMemorySize;
 }
 
 uint32_t
-Tensor::memorySize()
+kp::Tensor::memorySize()
 {
     return this->mSize * this->mDataTypeMemorySize;
 }
 
 kp::Tensor::TensorDataTypes
-Tensor::dataType()
+kp::Tensor::dataType()
 {
     return this->mDataType;
 }
 
 void*
-Tensor::rawData()
+kp::Tensor::rawData()
 {
     return this->mRawData;
 }
 
 void
-Tensor::setRawData(const void* data)
+kp::Tensor::setRawData(const void* data)
 {
     memcpy(this->mRawData, data, this->memorySize());
 }
 
 void
-Tensor::mapRawData()
+kp::Tensor::mapRawData()
 {
 
     KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
     std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
 
-    if (this->mTensorType == TensorTypes::eHost) {
+    if (this->mTensorType == kp::Tensor::TensorTypes::eHost) {
         hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
+    } else if (this->mTensorType == kp::Tensor::TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
         KP_LOG_WARN("Kompute Tensor mapping data not supported on {} tensor",
@@ -170,16 +170,16 @@ Tensor::mapRawData()
 }
 
 void
-Tensor::unmapRawData()
+kp::Tensor::unmapRawData()
 {
 
     KP_LOG_DEBUG("Kompute Tensor mapping data from host buffer");
 
     std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
 
-    if (this->mTensorType == TensorTypes::eHost) {
+    if (this->mTensorType == kp::Tensor::TensorTypes::eHost) {
         hostVisibleMemory = this->mPrimaryMemory;
-    } else if (this->mTensorType == TensorTypes::eDevice) {
+    } else if (this->mTensorType == kp::Tensor::TensorTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
     } else {
         KP_LOG_WARN("Kompute Tensor mapping data not supported on {} tensor",
@@ -194,8 +194,8 @@ Tensor::unmapRawData()
 }
 
 void
-Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                       std::shared_ptr<Tensor> copyFromTensor)
+kp::Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
+                           std::shared_ptr<kp::Tensor> copyFromTensor)
 {
 
     vk::DeviceSize bufferSize(this->memorySize());
@@ -211,7 +211,8 @@ Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
 }
 
 void
-Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
+kp::Tensor::recordCopyFromStagingToDevice(
+  const vk::CommandBuffer& commandBuffer)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
@@ -226,7 +227,8 @@ Tensor::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
+kp::Tensor::recordCopyFromDeviceToStaging(
+  const vk::CommandBuffer& commandBuffer)
 {
     vk::DeviceSize bufferSize(this->memorySize());
     vk::BufferCopy copyRegion(0, 0, bufferSize);
@@ -241,22 +243,23 @@ Tensor::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
-                         std::shared_ptr<vk::Buffer> bufferFrom,
-                         std::shared_ptr<vk::Buffer> bufferTo,
-                         vk::DeviceSize /*bufferSize*/,
-                         vk::BufferCopy copyRegion)
+kp::Tensor::recordCopyBuffer(const vk::CommandBuffer& commandBuffer,
+                             std::shared_ptr<vk::Buffer> bufferFrom,
+                             std::shared_ptr<vk::Buffer> bufferTo,
+                             vk::DeviceSize /*bufferSize*/,
+                             vk::BufferCopy copyRegion)
 {
 
     commandBuffer.copyBuffer(*bufferFrom, *bufferTo, copyRegion);
 }
 
 void
-Tensor::recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                         vk::AccessFlagBits srcAccessMask,
-                                         vk::AccessFlagBits dstAccessMask,
-                                         vk::PipelineStageFlagBits srcStageMask,
-                                         vk::PipelineStageFlagBits dstStageMask)
+kp::Tensor::recordPrimaryBufferMemoryBarrier(
+  const vk::CommandBuffer& commandBuffer,
+  vk::AccessFlagBits srcAccessMask,
+  vk::AccessFlagBits dstAccessMask,
+  vk::PipelineStageFlagBits srcStageMask,
+  vk::PipelineStageFlagBits dstStageMask)
 {
     KP_LOG_DEBUG("Kompute Tensor recording PRIMARY buffer memory barrier");
 
@@ -269,11 +272,12 @@ Tensor::recordPrimaryBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
 }
 
 void
-Tensor::recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                         vk::AccessFlagBits srcAccessMask,
-                                         vk::AccessFlagBits dstAccessMask,
-                                         vk::PipelineStageFlagBits srcStageMask,
-                                         vk::PipelineStageFlagBits dstStageMask)
+kp::Tensor::recordStagingBufferMemoryBarrier(
+  const vk::CommandBuffer& commandBuffer,
+  vk::AccessFlagBits srcAccessMask,
+  vk::AccessFlagBits dstAccessMask,
+  vk::PipelineStageFlagBits srcStageMask,
+  vk::PipelineStageFlagBits dstStageMask)
 {
     KP_LOG_DEBUG("Kompute Tensor recording STAGING buffer memory barrier");
 
@@ -286,12 +290,12 @@ Tensor::recordStagingBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
 }
 
 void
-Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
-                                  const vk::Buffer& buffer,
-                                  vk::AccessFlagBits srcAccessMask,
-                                  vk::AccessFlagBits dstAccessMask,
-                                  vk::PipelineStageFlagBits srcStageMask,
-                                  vk::PipelineStageFlagBits dstStageMask)
+kp::Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
+                                      const vk::Buffer& buffer,
+                                      vk::AccessFlagBits srcAccessMask,
+                                      vk::AccessFlagBits dstAccessMask,
+                                      vk::PipelineStageFlagBits srcStageMask,
+                                      vk::PipelineStageFlagBits dstStageMask)
 {
     KP_LOG_DEBUG("Kompute Tensor recording buffer memory barrier");
 
@@ -314,7 +318,7 @@ Tensor::recordBufferMemoryBarrier(const vk::CommandBuffer& commandBuffer,
 }
 
 vk::DescriptorBufferInfo
-Tensor::constructDescriptorBufferInfo()
+kp::Tensor::constructDescriptorBufferInfo()
 {
     KP_LOG_DEBUG("Kompute Tensor construct descriptor buffer info size {}",
                  this->memorySize());
@@ -325,20 +329,20 @@ Tensor::constructDescriptorBufferInfo()
 }
 
 vk::BufferUsageFlags
-Tensor::getPrimaryBufferUsageFlags()
+kp::Tensor::getPrimaryBufferUsageFlags()
 {
     switch (this->mTensorType) {
-        case TensorTypes::eDevice:
+        case kp::Tensor::TensorTypes::eDevice:
             return vk::BufferUsageFlagBits::eStorageBuffer |
                    vk::BufferUsageFlagBits::eTransferSrc |
                    vk::BufferUsageFlagBits::eTransferDst;
             break;
-        case TensorTypes::eHost:
+        case kp::Tensor::TensorTypes::eHost:
             return vk::BufferUsageFlagBits::eStorageBuffer |
                    vk::BufferUsageFlagBits::eTransferSrc |
                    vk::BufferUsageFlagBits::eTransferDst;
             break;
-        case TensorTypes::eStorage:
+        case kp::Tensor::TensorTypes::eStorage:
             return vk::BufferUsageFlagBits::eStorageBuffer;
             break;
         default:
@@ -347,17 +351,17 @@ Tensor::getPrimaryBufferUsageFlags()
 }
 
 vk::MemoryPropertyFlags
-Tensor::getPrimaryMemoryPropertyFlags()
+kp::Tensor::getPrimaryMemoryPropertyFlags()
 {
     switch (this->mTensorType) {
-        case TensorTypes::eDevice:
+        case kp::Tensor::TensorTypes::eDevice:
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
             break;
-        case TensorTypes::eHost:
+        case kp::Tensor::TensorTypes::eHost:
             return vk::MemoryPropertyFlagBits::eHostVisible |
                    vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
-        case TensorTypes::eStorage:
+        case kp::Tensor::TensorTypes::eStorage:
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
             break;
         default:
@@ -366,10 +370,10 @@ Tensor::getPrimaryMemoryPropertyFlags()
 }
 
 vk::BufferUsageFlags
-Tensor::getStagingBufferUsageFlags()
+kp::Tensor::getStagingBufferUsageFlags()
 {
     switch (this->mTensorType) {
-        case TensorTypes::eDevice:
+        case kp::Tensor::TensorTypes::eDevice:
             return vk::BufferUsageFlagBits::eTransferSrc |
                    vk::BufferUsageFlagBits::eTransferDst;
             break;
@@ -379,10 +383,10 @@ Tensor::getStagingBufferUsageFlags()
 }
 
 vk::MemoryPropertyFlags
-Tensor::getStagingMemoryPropertyFlags()
+kp::Tensor::getStagingMemoryPropertyFlags()
 {
     switch (this->mTensorType) {
-        case TensorTypes::eDevice:
+        case kp::Tensor::TensorTypes::eDevice:
             return vk::MemoryPropertyFlagBits::eHostVisible |
                    vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
@@ -392,7 +396,7 @@ Tensor::getStagingMemoryPropertyFlags()
 }
 
 void
-Tensor::allocateMemoryCreateGPUResources()
+kp::Tensor::allocateMemoryCreateGPUResources()
 {
     KP_LOG_DEBUG("Kompute Tensor creating buffer");
 
@@ -415,7 +419,7 @@ Tensor::allocateMemoryCreateGPUResources()
                              this->getPrimaryMemoryPropertyFlags());
     this->mFreePrimaryMemory = true;
 
-    if (this->mTensorType == TensorTypes::eDevice) {
+    if (this->mTensorType == kp::Tensor::TensorTypes::eDevice) {
         KP_LOG_DEBUG("Kompute Tensor creating staging buffer and memory");
 
         this->mStagingBuffer = std::make_shared<vk::Buffer>();
@@ -433,8 +437,8 @@ Tensor::allocateMemoryCreateGPUResources()
 }
 
 void
-Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer,
-                     vk::BufferUsageFlags bufferUsageFlags)
+kp::Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer,
+                         vk::BufferUsageFlags bufferUsageFlags)
 {
 
     vk::DeviceSize bufferSize = this->memorySize();
@@ -459,9 +463,9 @@ Tensor::createBuffer(std::shared_ptr<vk::Buffer> buffer,
 }
 
 void
-Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
-                           std::shared_ptr<vk::DeviceMemory> memory,
-                           vk::MemoryPropertyFlags memoryPropertyFlags)
+kp::Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
+                               std::shared_ptr<vk::DeviceMemory> memory,
+                               vk::MemoryPropertyFlags memoryPropertyFlags)
 {
 
     KP_LOG_DEBUG("Kompute Tensor allocating and binding memory");
@@ -504,7 +508,7 @@ Tensor::allocateBindMemory(std::shared_ptr<vk::Buffer> buffer,
 }
 
 void
-Tensor::destroy()
+kp::Tensor::destroy()
 {
     KP_LOG_DEBUG("Kompute Tensor started destroy()");
 
@@ -521,7 +525,7 @@ Tensor::destroy()
     }
 
     // Unmap the current memory data
-    if (this->tensorType() != Tensor::TensorTypes::eStorage) {
+    if (this->tensorType() != kp::Tensor::TensorTypes::eStorage) {
         this->unmapRawData();
     }
 
@@ -589,38 +593,38 @@ Tensor::destroy()
 }
 
 template<>
-Tensor::TensorDataTypes
-TensorT<bool>::dataType()
+kp::Tensor::TensorDataTypes
+kp::TensorT<bool>::dataType()
 {
-    return Tensor::TensorDataTypes::eBool;
+    return kp::Tensor::TensorDataTypes::eBool;
 }
 
 template<>
-Tensor::TensorDataTypes
-TensorT<int32_t>::dataType()
+kp::Tensor::TensorDataTypes
+kp::TensorT<int32_t>::dataType()
 {
-    return Tensor::TensorDataTypes::eInt;
+    return kp::Tensor::TensorDataTypes::eInt;
 }
 
 template<>
-Tensor::TensorDataTypes
-TensorT<uint32_t>::dataType()
+kp::Tensor::TensorDataTypes
+kp::TensorT<uint32_t>::dataType()
 {
-    return Tensor::TensorDataTypes::eUnsignedInt;
+    return kp::Tensor::TensorDataTypes::eUnsignedInt;
 }
 
 template<>
-Tensor::TensorDataTypes
-TensorT<float>::dataType()
+kp::Tensor::TensorDataTypes
+kp::TensorT<float>::dataType()
 {
-    return Tensor::TensorDataTypes::eFloat;
+    return kp::Tensor::TensorDataTypes::eFloat;
 }
 
 template<>
-Tensor::TensorDataTypes
-TensorT<double>::dataType()
+kp::Tensor::TensorDataTypes
+kp::TensorT<double>::dataType()
 {
-    return Tensor::TensorDataTypes::eDouble;
+    return kp::Tensor::TensorDataTypes::eDouble;
 }
 
 }

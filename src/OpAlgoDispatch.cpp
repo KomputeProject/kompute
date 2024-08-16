@@ -4,7 +4,7 @@
 
 namespace kp {
 
-OpAlgoDispatch::~OpAlgoDispatch()
+kp::OpAlgoDispatch::~OpAlgoDispatch()
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch destructor started");
 
@@ -15,12 +15,12 @@ OpAlgoDispatch::~OpAlgoDispatch()
 }
 
 void
-OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
+kp::OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
-    for (const std::shared_ptr<Tensor>& tensor :
+    for (const std::shared_ptr<kp::Tensor>& tensor :
          this->mAlgorithm->getTensors()) {
         tensor->recordPrimaryBufferMemoryBarrier(
           commandBuffer,
@@ -43,13 +43,13 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpAlgoDispatch::preEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpAlgoDispatch::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch preEval called");
 }
 
 void
-OpAlgoDispatch::postEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpAlgoDispatch::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch postSubmit called");
 }

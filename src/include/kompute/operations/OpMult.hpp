@@ -30,8 +30,8 @@ class OpMult : public OpAlgoDispatch
      * @param algorithm An algorithm that will be overridden with the OpMult
      * shader data and the tensors provided which are expected to be 3
      */
-    OpMult(std::vector<std::shared_ptr<Tensor>> tensors,
-           std::shared_ptr<Algorithm> algorithm)
+    OpMult(std::vector<std::shared_ptr<kp::Tensor>> tensors,
+           std::shared_ptr<kp::Algorithm> algorithm)
       : OpAlgoDispatch(algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");

@@ -77,7 +77,7 @@ class OpAlgoDispatch : public OpBase
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::shared_ptr<Algorithm> mAlgorithm;
+    std::shared_ptr<kp::Algorithm> mAlgorithm;
     void* mPushConstantsData = nullptr;
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;

@@ -5,7 +5,8 @@
 
 namespace kp {
 
-OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
+kp::OpTensorCopy::OpTensorCopy(
+  const std::vector<std::shared_ptr<kp::Tensor>>& tensors)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy constructor with params");
 
@@ -18,12 +19,12 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
 
     kp::Tensor::TensorDataTypes dataType = this->mTensors[0]->dataType();
     uint32_t size = this->mTensors[0]->size();
-    for (const std::shared_ptr<Tensor>& tensor : tensors) {
+    for (const std::shared_ptr<kp::Tensor>& tensor : tensors) {
         if (tensor->dataType() != dataType) {
             throw std::runtime_error(fmt::format(
               "Attempting to copy tensors of different types from {} to {}",
-              Tensor::toString(dataType),
-              Tensor::toString(tensor->dataType())));
+              kp::Tensor::toString(dataType),
+              kp::Tensor::toString(tensor->dataType())));
         }
         if (tensor->size() != size) {
             throw std::runtime_error(fmt::format(
@@ -34,13 +35,13 @@ OpTensorCopy::OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors)
     }
 }
 
-OpTensorCopy::~OpTensorCopy()
+kp::OpTensorCopy::~OpTensorCopy()
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy destructor started");
 }
 
 void
-OpTensorCopy::record(const vk::CommandBuffer& commandBuffer)
+kp::OpTensorCopy::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy record called");
 
@@ -51,13 +52,13 @@ OpTensorCopy::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpTensorCopy::preEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpTensorCopy::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy preEval called");
 }
 
 void
-OpTensorCopy::postEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpTensorCopy::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorCopy postEval called");
 

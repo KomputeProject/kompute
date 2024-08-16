@@ -24,7 +24,7 @@ class OpTensorCopy : public OpBase
      *
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors);
+    OpTensorCopy(const std::vector<std::shared_ptr<kp::Tensor>>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be
@@ -57,7 +57,7 @@ class OpTensorCopy : public OpBase
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::vector<std::shared_ptr<kp::Tensor>> mTensors;
 };
 
 } // End namespace kp

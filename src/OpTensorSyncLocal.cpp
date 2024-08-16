@@ -6,8 +6,8 @@
 
 namespace kp {
 
-OpTensorSyncLocal::OpTensorSyncLocal(
-  const std::vector<std::shared_ptr<Tensor>>& tensors)
+kp::OpTensorSyncLocal::OpTensorSyncLocal(
+  const std::vector<std::shared_ptr<kp::Tensor>>& tensors)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal constructor with params");
 
@@ -19,18 +19,19 @@ OpTensorSyncLocal::OpTensorSyncLocal(
     this->mTensors = tensors;
 }
 
-OpTensorSyncLocal::~OpTensorSyncLocal()
+kp::OpTensorSyncLocal::~OpTensorSyncLocal()
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal destructor started");
 }
 
 void
-OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
+kp::OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
+        if (this->mTensors[i]->tensorType() ==
+            kp::Tensor::TensorTypes::eDevice) {
 
             this->mTensors[i]->recordPrimaryBufferMemoryBarrier(
               commandBuffer,
@@ -52,13 +53,13 @@ OpTensorSyncLocal::record(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-OpTensorSyncLocal::preEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpTensorSyncLocal::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal preEval called");
 }
 
 void
-OpTensorSyncLocal::postEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpTensorSyncLocal::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncLocal postEval called");
 

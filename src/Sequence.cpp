@@ -4,11 +4,11 @@
 
 namespace kp {
 
-Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                   std::shared_ptr<vk::Device> device,
-                   std::shared_ptr<vk::Queue> computeQueue,
-                   uint32_t queueIndex,
-                   uint32_t totalTimestamps)
+kp::Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                       std::shared_ptr<vk::Device> device,
+                       std::shared_ptr<vk::Queue> computeQueue,
+                       uint32_t queueIndex,
+                       uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
@@ -25,7 +25,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                                        1); //+1 for the first one
 }
 
-Sequence::~Sequence()
+kp::Sequence::~Sequence()
 {
     KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
@@ -35,7 +35,7 @@ Sequence::~Sequence()
 }
 
 void
-Sequence::begin()
+kp::Sequence::begin()
 {
     KP_LOG_DEBUG("Kompute sequence called BEGIN");
 
@@ -62,7 +62,7 @@ Sequence::begin()
 }
 
 void
-Sequence::end()
+kp::Sequence::end()
 {
     KP_LOG_DEBUG("Kompute Sequence calling END");
 
@@ -82,7 +82,7 @@ Sequence::end()
 }
 
 void
-Sequence::clear()
+kp::Sequence::clear()
 {
     KP_LOG_DEBUG("Kompute Sequence calling clear");
     this->mOperations.clear();
@@ -91,23 +91,23 @@ Sequence::clear()
     }
 }
 
-std::shared_ptr<Sequence>
-Sequence::eval()
+std::shared_ptr<kp::Sequence>
+kp::Sequence::eval()
 {
     KP_LOG_DEBUG("Kompute sequence EVAL BEGIN");
 
     return this->evalAsync()->evalAwait();
 }
 
-std::shared_ptr<Sequence>
-Sequence::eval(std::shared_ptr<OpBase> op)
+std::shared_ptr<kp::Sequence>
+kp::Sequence::eval(std::shared_ptr<kp::OpBase> op)
 {
     this->clear();
     return this->record(op)->eval();
 }
 
-std::shared_ptr<Sequence>
-Sequence::evalAsync()
+std::shared_ptr<kp::Sequence>
+kp::Sequence::evalAsync()
 {
     if (this->isRecording()) {
         this->end();
@@ -138,8 +138,8 @@ Sequence::evalAsync()
     return shared_from_this();
 }
 
-std::shared_ptr<Sequence>
-Sequence::evalAsync(std::shared_ptr<OpBase> op)
+std::shared_ptr<kp::Sequence>
+kp::Sequence::evalAsync(std::shared_ptr<kp::OpBase> op)
 {
     this->clear();
     this->record(op);
@@ -147,8 +147,8 @@ Sequence::evalAsync(std::shared_ptr<OpBase> op)
     return shared_from_this();
 }
 
-std::shared_ptr<Sequence>
-Sequence::evalAwait(uint64_t waitFor)
+std::shared_ptr<kp::Sequence>
+kp::Sequence::evalAwait(uint64_t waitFor)
 {
     if (!this->mIsRunning) {
         KP_LOG_WARN("Kompute Sequence evalAwait called without existing eval");
@@ -174,29 +174,29 @@ Sequence::evalAwait(uint64_t waitFor)
 }
 
 bool
-Sequence::isRunning() const
+kp::Sequence::isRunning() const
 {
     return this->mIsRunning;
 }
 
 bool
-Sequence::isRecording() const
+kp::Sequence::isRecording() const
 {
     return this->mRecording;
 }
 
 bool
-Sequence::isInit() const
+kp::Sequence::isInit() const
 {
     return this->mDevice && this->mCommandPool && this->mCommandBuffer &&
            this->mComputeQueue;
 }
 
 void
-Sequence::rerecord()
+kp::Sequence::rerecord()
 {
     this->end();
-    std::vector<std::shared_ptr<OpBase>> ops = this->mOperations;
+    std::vector<std::shared_ptr<kp::OpBase>> ops = this->mOperations;
     this->mOperations.clear();
     for (const std::shared_ptr<kp::OpBase>& op : ops) {
         this->record(op);
@@ -204,7 +204,7 @@ Sequence::rerecord()
 }
 
 void
-Sequence::destroy()
+kp::Sequence::destroy()
 {
     KP_LOG_DEBUG("Kompute Sequence destroy called");
 
@@ -278,8 +278,8 @@ Sequence::destroy()
     }
 }
 
-std::shared_ptr<Sequence>
-Sequence::record(std::shared_ptr<OpBase> op)
+std::shared_ptr<kp::Sequence>
+kp::Sequence::record(std::shared_ptr<kp::OpBase> op)
 {
     KP_LOG_DEBUG("Kompute Sequence record function started");
 
@@ -302,7 +302,7 @@ Sequence::record(std::shared_ptr<OpBase> op)
 }
 
 void
-Sequence::createCommandPool()
+kp::Sequence::createCommandPool()
 {
     KP_LOG_DEBUG("Kompute Sequence creating command pool");
 
@@ -321,7 +321,7 @@ Sequence::createCommandPool()
 }
 
 void
-Sequence::createCommandBuffer()
+kp::Sequence::createCommandBuffer()
 {
     KP_LOG_DEBUG("Kompute Sequence creating command buffer");
     if (!this->mDevice) {
@@ -343,7 +343,7 @@ Sequence::createCommandBuffer()
 }
 
 void
-Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
+kp::Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Sequence creating query pool");
     if (!this->isInit()) {
@@ -371,7 +371,7 @@ Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
 }
 
 std::vector<std::uint64_t>
-Sequence::getTimestamps()
+kp::Sequence::getTimestamps()
 {
     if (!this->timestampQueryPool)
         throw std::runtime_error("Timestamp latching not enabled");

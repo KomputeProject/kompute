@@ -32,14 +32,14 @@ debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
 }
 #endif
 
-Manager::Manager()
+kp::Manager::Manager()
   : Manager(0)
 {
 }
 
-Manager::Manager(uint32_t physicalDeviceIndex,
-                 const std::vector<uint32_t>& familyQueueIndices,
-                 const std::vector<std::string>& desiredExtensions)
+kp::Manager::Manager(uint32_t physicalDeviceIndex,
+                     const std::vector<uint32_t>& familyQueueIndices,
+                     const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
 
@@ -53,9 +53,9 @@ Manager::Manager(uint32_t physicalDeviceIndex,
       familyQueueIndices, physicalDeviceIndex, desiredExtensions);
 }
 
-Manager::Manager(std::shared_ptr<vk::Instance> instance,
-                 std::shared_ptr<vk::PhysicalDevice> physicalDevice,
-                 std::shared_ptr<vk::Device> device)
+kp::Manager::Manager(std::shared_ptr<vk::Instance> instance,
+                     std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+                     std::shared_ptr<vk::Device> device)
 {
     this->mManageResources = false;
 
@@ -69,14 +69,14 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
 #endif
 }
 
-Manager::~Manager()
+kp::Manager::~Manager()
 {
     KP_LOG_DEBUG("Kompute Manager Destructor started");
     this->destroy();
 }
 
 void
-Manager::destroy()
+kp::Manager::destroy()
 {
 
     KP_LOG_DEBUG("Kompute Manager destroy() started");
@@ -90,8 +90,9 @@ Manager::destroy()
     if (this->mManageResources && this->mManagedSequences.size()) {
         KP_LOG_DEBUG("Kompute Manager explicitly running destructor for "
                      "managed sequences");
-        for (const std::weak_ptr<Sequence>& weakSq : this->mManagedSequences) {
-            if (std::shared_ptr<Sequence> sq = weakSq.lock()) {
+        for (const std::weak_ptr<kp::Sequence>& weakSq :
+             this->mManagedSequences) {
+            if (std::shared_ptr<kp::Sequence> sq = weakSq.lock()) {
                 sq->destroy();
             }
         }
@@ -100,9 +101,10 @@ Manager::destroy()
 
     if (this->mManageResources && this->mManagedAlgorithms.size()) {
         KP_LOG_DEBUG("Kompute Manager explicitly freeing algorithms");
-        for (const std::weak_ptr<Algorithm>& weakAlgorithm :
+        for (const std::weak_ptr<kp::Algorithm>& weakAlgorithm :
              this->mManagedAlgorithms) {
-            if (std::shared_ptr<Algorithm> algorithm = weakAlgorithm.lock()) {
+            if (std::shared_ptr<kp::Algorithm> algorithm =
+                  weakAlgorithm.lock()) {
                 algorithm->destroy();
             }
         }
@@ -111,8 +113,9 @@ Manager::destroy()
 
     if (this->mManageResources && this->mManagedTensors.size()) {
         KP_LOG_DEBUG("Kompute Manager explicitly freeing tensors");
-        for (const std::weak_ptr<Tensor>& weakTensor : this->mManagedTensors) {
-            if (std::shared_ptr<Tensor> tensor = weakTensor.lock()) {
+        for (const std::weak_ptr<kp::Tensor>& weakTensor :
+             this->mManagedTensors) {
+            if (std::shared_ptr<kp::Tensor> tensor = weakTensor.lock()) {
                 tensor->destroy();
             }
         }
@@ -150,7 +153,7 @@ Manager::destroy()
 }
 
 void
-Manager::createInstance()
+kp::Manager::createInstance()
 {
 
     KP_LOG_DEBUG("Kompute Manager creating instance");
@@ -285,32 +288,34 @@ Manager::createInstance()
 }
 
 void
-Manager::clear()
+kp::Manager::clear()
 {
     if (this->mManageResources) {
         this->mManagedTensors.erase(
-          std::remove_if(begin(this->mManagedTensors),
-                         end(this->mManagedTensors),
-                         [](std::weak_ptr<Tensor> t) { return t.expired(); }),
+          std::remove_if(
+            begin(this->mManagedTensors),
+            end(this->mManagedTensors),
+            [](std::weak_ptr<kp::Tensor> t) { return t.expired(); }),
           end(this->mManagedTensors));
         this->mManagedAlgorithms.erase(
           std::remove_if(
             begin(this->mManagedAlgorithms),
             end(this->mManagedAlgorithms),
-            [](std::weak_ptr<Algorithm> t) { return t.expired(); }),
+            [](std::weak_ptr<kp::Algorithm> t) { return t.expired(); }),
           end(this->mManagedAlgorithms));
         this->mManagedSequences.erase(
-          std::remove_if(begin(this->mManagedSequences),
-                         end(this->mManagedSequences),
-                         [](std::weak_ptr<Sequence> t) { return t.expired(); }),
+          std::remove_if(
+            begin(this->mManagedSequences),
+            end(this->mManagedSequences),
+            [](std::weak_ptr<kp::Sequence> t) { return t.expired(); }),
           end(this->mManagedSequences));
     }
 }
 
 void
-Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
-                      uint32_t physicalDeviceIndex,
-                      const std::vector<std::string>& desiredExtensions)
+kp::Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
+                          uint32_t physicalDeviceIndex,
+                          const std::vector<std::string>& desiredExtensions)
 {
 
     KP_LOG_DEBUG("Kompute Manager creating Device");
@@ -456,12 +461,12 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     KP_LOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
-std::shared_ptr<Sequence>
-Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
+std::shared_ptr<kp::Sequence>
+kp::Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
-    std::shared_ptr<Sequence> sq{ new kp::Sequence(
+    std::shared_ptr<kp::Sequence> sq{ new kp::Sequence(
       this->mPhysicalDevice,
       this->mDevice,
       this->mComputeQueues[queueIndex],
@@ -476,19 +481,19 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 }
 
 vk::PhysicalDeviceProperties
-Manager::getDeviceProperties() const
+kp::Manager::getDeviceProperties() const
 {
     return this->mPhysicalDevice->getProperties();
 }
 
 std::vector<vk::PhysicalDevice>
-Manager::listDevices() const
+kp::Manager::listDevices() const
 {
     return this->mInstance->enumeratePhysicalDevices();
 }
 
 std::shared_ptr<vk::Instance>
-Manager::getVkInstance() const
+kp::Manager::getVkInstance() const
 {
     return this->mInstance;
 }

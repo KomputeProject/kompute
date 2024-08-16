@@ -36,7 +36,7 @@ class Algorithm
      */
     template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
-              const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+              const std::vector<std::shared_ptr<kp::Tensor>>& tensors = {},
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
               const std::vector<S>& specializationConstants = {},
@@ -81,7 +81,7 @@ class Algorithm
      * as this initial value.
      */
     template<typename S = float, typename P = float>
-    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
+    void rebuild(const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
                  const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
                  const std::vector<S>& specializationConstants = {},
@@ -271,14 +271,14 @@ class Algorithm
      *
      * @returns The list of tensors used in the algorithm.
      */
-    const std::vector<std::shared_ptr<Tensor>>& getTensors();
+    const std::vector<std::shared_ptr<kp::Tensor>>& getTensors();
 
     void destroy();
 
   private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
-    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::vector<std::shared_ptr<kp::Tensor>> mTensors;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;

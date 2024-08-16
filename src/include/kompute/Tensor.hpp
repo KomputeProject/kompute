@@ -60,7 +60,7 @@ class Tensor
            uint32_t elementTotalCount,
            uint32_t elementMemorySize,
            const TensorDataTypes& dataType,
-           const TensorTypes& tensorType = TensorTypes::eDevice);
+           const TensorTypes& tensorType = kp::Tensor::TensorTypes::eDevice);
 
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
@@ -107,7 +107,7 @@ class Tensor
      * @param copyFromTensor Tensor to copy the data from
      */
     void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                        std::shared_ptr<Tensor> copyFromTensor);
+                        std::shared_ptr<kp::Tensor> copyFromTensor);
 
     /**
      * Records a copy from the internal staging memory to the device memory
@@ -304,7 +304,7 @@ class TensorT : public Tensor
     TensorT(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device,
             const std::vector<T>& data,
-            const TensorTypes& tensorType = TensorTypes::eDevice)
+            const TensorTypes& tensorType = kp::Tensor::TensorTypes::eDevice)
       : Tensor(physicalDevice,
                device,
                (void*)data.data(),
@@ -339,7 +339,7 @@ class TensorT : public Tensor
               "Kompute TensorT Cannot set data of different sizes");
         }
 
-        Tensor::setRawData(data.data());
+        kp::Tensor::setRawData(data.data());
     }
 
     TensorDataTypes dataType();

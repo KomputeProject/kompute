@@ -11,7 +11,7 @@ namespace kp {
 /**
  *  Container of operations that can be sent to GPU as batch
  */
-class Sequence : public std::enable_shared_from_this<Sequence>
+class Sequence : public std::enable_shared_from_this<kp::Sequence>
 {
   public:
     /**
@@ -43,9 +43,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @param op Object derived from kp::BaseOp that will be recoreded by the
      * sequence which will be used when the operation is evaluated.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
-    std::shared_ptr<Sequence> record(std::shared_ptr<OpBase> op);
+    std::shared_ptr<kp::Sequence> record(std::shared_ptr<kp::OpBase> op);
 
     /**
      * Record function for operation to be added to the GPU queue in batch. This
@@ -56,11 +56,11 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param tensors Vector of tensors to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> record(
-      std::vector<std::shared_ptr<Tensor>> tensors,
+    std::shared_ptr<kp::Sequence> record(
+      std::vector<std::shared_ptr<kp::Tensor>> tensors,
       TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
@@ -76,11 +76,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * operations
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> record(std::shared_ptr<Algorithm> algorithm,
-                                     TArgs&&... params)
+    std::shared_ptr<kp::Sequence> record(
+      std::shared_ptr<kp::Algorithm> algorithm,
+      TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
@@ -91,18 +92,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job synchronously (with a barrier).
      *
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
-    std::shared_ptr<Sequence> eval();
+    std::shared_ptr<kp::Sequence> eval();
 
     /**
      * Resets all the recorded and stored operations, records the operation
      * provided and submits into the gpu as a submit job synchronously (with a
      * barrier).
      *
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
-    std::shared_ptr<Sequence> eval(std::shared_ptr<OpBase> op);
+    std::shared_ptr<kp::Sequence> eval(std::shared_ptr<kp::OpBase> op);
 
     /**
      * Eval sends all the recorded and stored operations in the vector of
@@ -111,11 +112,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param tensors Vector of tensors to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> eval(std::vector<std::shared_ptr<Tensor>> tensors,
-                                   TArgs&&... params)
+    std::shared_ptr<kp::Sequence> eval(
+      std::vector<std::shared_ptr<kp::Tensor>> tensors,
+      TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
         return this->eval(op);
@@ -128,11 +130,11 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * operations
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> eval(std::shared_ptr<Algorithm> algorithm,
-                                   TArgs&&... params)
+    std::shared_ptr<kp::Sequence> eval(std::shared_ptr<kp::Algorithm> algorithm,
+                                       TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
@@ -147,7 +149,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @return Boolean stating whether execution was successful.
      */
-    std::shared_ptr<Sequence> evalAsync();
+    std::shared_ptr<kp::Sequence> evalAsync();
     /**
      * Clears currnet operations to record provided one in the vector of
      * operations into the gpu as a submit job without a barrier. EvalAwait()
@@ -156,7 +158,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @return Boolean stating whether execution was successful.
      */
-    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<OpBase> op);
+    std::shared_ptr<kp::Sequence> evalAsync(std::shared_ptr<kp::OpBase> op);
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
@@ -164,11 +166,11 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @param tensors Vector of tensors to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> evalAsync(
-      std::vector<std::shared_ptr<Tensor>> tensors,
+    std::shared_ptr<kp::Sequence> evalAsync(
+      std::vector<std::shared_ptr<kp::Tensor>> tensors,
       TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
@@ -182,11 +184,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * operations
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> evalAsync(std::shared_ptr<Algorithm> algorithm,
-                                        TArgs&&... params)
+    std::shared_ptr<kp::Sequence> evalAsync(
+      std::shared_ptr<kp::Algorithm> algorithm,
+      TArgs&&... params)
     {
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
@@ -198,9 +201,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * finishes, it runs the postEval of all operations.
      *
      * @param waitFor Number of milliseconds to wait before timing out.
-     * @return shared_ptr<Sequence> of the Sequence class itself
+     * @return shared_ptr<kp::Sequence> of the Sequence class itself
      */
-    std::shared_ptr<Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
+    std::shared_ptr<kp::Sequence> evalAwait(uint64_t waitFor = UINT64_MAX);
 
     /**
      * Clear function clears all operations currently recorded and starts
@@ -277,7 +280,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
-    std::vector<std::shared_ptr<OpBase>> mOperations{};
+    std::vector<std::shared_ptr<kp::OpBase>> mOperations{};
     std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
 
     // State

@@ -4,8 +4,8 @@
 
 namespace kp {
 
-OpTensorSyncDevice::OpTensorSyncDevice(
-  const std::vector<std::shared_ptr<Tensor>>& tensors)
+kp::OpTensorSyncDevice::OpTensorSyncDevice(
+  const std::vector<std::shared_ptr<kp::Tensor>>& tensors)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice constructor with params");
 
@@ -17,7 +17,7 @@ OpTensorSyncDevice::OpTensorSyncDevice(
     this->mTensors = tensors;
 }
 
-OpTensorSyncDevice::~OpTensorSyncDevice()
+kp::OpTensorSyncDevice::~OpTensorSyncDevice()
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice destructor started");
 
@@ -25,25 +25,26 @@ OpTensorSyncDevice::~OpTensorSyncDevice()
 }
 
 void
-OpTensorSyncDevice::record(const vk::CommandBuffer& commandBuffer)
+kp::OpTensorSyncDevice::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice record called");
 
     for (size_t i = 0; i < this->mTensors.size(); i++) {
-        if (this->mTensors[i]->tensorType() == Tensor::TensorTypes::eDevice) {
+        if (this->mTensors[i]->tensorType() ==
+            kp::Tensor::TensorTypes::eDevice) {
             this->mTensors[i]->recordCopyFromStagingToDevice(commandBuffer);
         }
     }
 }
 
 void
-OpTensorSyncDevice::preEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpTensorSyncDevice::preEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice preEval called");
 }
 
 void
-OpTensorSyncDevice::postEval(const vk::CommandBuffer& /*commandBuffer*/)
+kp::OpTensorSyncDevice::postEval(const vk::CommandBuffer& /*commandBuffer*/)
 {
     KP_LOG_DEBUG("Kompute OpTensorSyncDevice postEval called");
 }

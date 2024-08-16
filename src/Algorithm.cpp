@@ -5,7 +5,7 @@
 
 namespace kp {
 
-Algorithm::~Algorithm()
+kp::Algorithm::~Algorithm()
 {
     KP_LOG_DEBUG("Kompute Algorithm Destructor started");
 
@@ -13,7 +13,7 @@ Algorithm::~Algorithm()
 }
 
 bool
-Algorithm::isInit()
+kp::Algorithm::isInit()
 {
     return this->mPipeline && this->mPipelineCache && this->mPipelineLayout &&
            this->mDescriptorPool && this->mDescriptorSet &&
@@ -21,7 +21,7 @@ Algorithm::isInit()
 }
 
 void
-Algorithm::destroy()
+kp::Algorithm::destroy()
 {
     // We don't have to free memory on destroy as it's freed by the
     // commandBuffer destructor if (this->mPushConstantsData) {
@@ -125,7 +125,7 @@ Algorithm::destroy()
 }
 
 void
-Algorithm::createParameters()
+kp::Algorithm::createParameters()
 {
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
@@ -204,7 +204,7 @@ Algorithm::createParameters()
 }
 
 void
-Algorithm::createShaderModule()
+kp::Algorithm::createShaderModule()
 {
     KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
 
@@ -225,7 +225,7 @@ Algorithm::createShaderModule()
 }
 
 void
-Algorithm::createPipeline()
+kp::Algorithm::createPipeline()
 {
     KP_LOG_DEBUG("Kompute Algorithm calling create Pipeline");
 
@@ -321,7 +321,7 @@ Algorithm::createPipeline()
 }
 
 void
-Algorithm::recordBindCore(const vk::CommandBuffer& commandBuffer)
+kp::Algorithm::recordBindCore(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm binding pipeline");
 
@@ -339,7 +339,7 @@ Algorithm::recordBindCore(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
+kp::Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
 {
     if (this->mPushConstantsSize) {
         KP_LOG_DEBUG("Kompute Algorithm binding push constants memory size: {}",
@@ -356,7 +356,7 @@ Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-Algorithm::recordDispatch(const vk::CommandBuffer& commandBuffer)
+kp::Algorithm::recordDispatch(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute Algorithm recording dispatch");
 
@@ -365,7 +365,7 @@ Algorithm::recordDispatch(const vk::CommandBuffer& commandBuffer)
 }
 
 void
-Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize)
+kp::Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize)
 {
 
     KP_LOG_INFO("Kompute OpAlgoCreate setting dispatch size");
@@ -389,13 +389,13 @@ Algorithm::setWorkgroup(const Workgroup& workgroup, uint32_t minSize)
 }
 
 const Workgroup&
-Algorithm::getWorkgroup()
+kp::Algorithm::getWorkgroup()
 {
     return this->mWorkgroup;
 }
 
-const std::vector<std::shared_ptr<Tensor>>&
-Algorithm::getTensors()
+const std::vector<std::shared_ptr<kp::Tensor>>&
+kp::Algorithm::getTensors()
 {
     return this->mTensors;
 }

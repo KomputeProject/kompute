@@ -67,8 +67,8 @@ class Manager
      * If zero (default), disables latching of timestamps.
      * @returns Shared pointer with initialised sequence
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0,
-                                       uint32_t totalTimestamps = 0);
+    std::shared_ptr<kp::Sequence> sequence(uint32_t queueIndex = 0,
+                                           uint32_t totalTimestamps = 0);
 
     /**
      * Create a managed tensor that will be destroyed by this manager
@@ -79,13 +79,13 @@ class Manager
      * @returns Shared pointer with initialised tensor
      */
     template<typename T>
-    std::shared_ptr<TensorT<T>> tensorT(
+    std::shared_ptr<kp::TensorT<T>> tensorT(
       const std::vector<T>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      kp::Tensor::TensorTypes tensorType = kp::Tensor::TensorTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
+        std::shared_ptr<kp::TensorT<T>> tensor{ new kp::TensorT<T>(
           this->mPhysicalDevice, this->mDevice, data, tensorType) };
 
         if (this->mManageResources) {
@@ -95,27 +95,28 @@ class Manager
         return tensor;
     }
 
-    std::shared_ptr<TensorT<float>> tensor(
+    std::shared_ptr<kp::TensorT<float>> tensor(
       const std::vector<float>& data,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      kp::Tensor::TensorTypes tensorType = kp::Tensor::TensorTypes::eDevice)
     {
         return this->tensorT<float>(data, tensorType);
     }
 
-    std::shared_ptr<Tensor> tensor(
+    std::shared_ptr<kp::Tensor> tensor(
       void* data,
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
-      const Tensor::TensorDataTypes& dataType,
-      Tensor::TensorTypes tensorType = Tensor::TensorTypes::eDevice)
+      const kp::Tensor::TensorDataTypes& dataType,
+      kp::Tensor::TensorTypes tensorType = kp::Tensor::TensorTypes::eDevice)
     {
-        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
-                                                       this->mDevice,
-                                                       data,
-                                                       elementTotalCount,
-                                                       elementMemorySize,
-                                                       dataType,
-                                                       tensorType) };
+        std::shared_ptr<kp::Tensor> tensor{ new kp::Tensor(
+          this->mPhysicalDevice,
+          this->mDevice,
+          data,
+          elementTotalCount,
+          elementMemorySize,
+          dataType,
+          tensorType) };
 
         if (this->mManageResources) {
             this->mManagedTensors.push_back(tensor);
@@ -139,8 +140,8 @@ class Manager
      * and defaults to an empty constant
      * @returns Shared pointer with initialised algorithm
      */
-    std::shared_ptr<Algorithm> algorithm(
-      const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+    std::shared_ptr<kp::Algorithm> algorithm(
+      const std::vector<std::shared_ptr<kp::Tensor>>& tensors = {},
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
       const std::vector<float>& specializationConstants = {},
@@ -165,8 +166,8 @@ class Manager
      * @returns Shared pointer with initialised algorithm
      */
     template<typename S = float, typename P = float>
-    std::shared_ptr<Algorithm> algorithm(
-      const std::vector<std::shared_ptr<Tensor>>& tensors,
+    std::shared_ptr<kp::Algorithm> algorithm(
+      const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
       const std::vector<uint32_t>& spirv,
       const Workgroup& workgroup,
       const std::vector<S>& specializationConstants,
@@ -175,7 +176,7 @@ class Manager
 
         KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
-        std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
+        std::shared_ptr<kp::Algorithm> algorithm{ new kp::Algorithm(
           this->mDevice,
           tensors,
           spirv,
@@ -232,9 +233,9 @@ class Manager
     bool mFreeDevice = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::weak_ptr<Tensor>> mManagedTensors;
-    std::vector<std::weak_ptr<Sequence>> mManagedSequences;
-    std::vector<std::weak_ptr<Algorithm>> mManagedAlgorithms;
+    std::vector<std::weak_ptr<kp::Tensor>> mManagedTensors;
+    std::vector<std::weak_ptr<kp::Sequence>> mManagedSequences;
+    std::vector<std::weak_ptr<kp::Algorithm>> mManagedAlgorithms;
 
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;

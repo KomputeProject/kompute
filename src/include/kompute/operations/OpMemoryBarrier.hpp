@@ -34,7 +34,7 @@ class OpMemoryBarrier : public OpBase
      * @param barrierOnPrimary Boolean to select primary or secondary buffers on
      * tensors
      */
-    OpMemoryBarrier(const std::vector<std::shared_ptr<Tensor>>& tensors,
+    OpMemoryBarrier(const std::vector<std::shared_ptr<kp::Tensor>>& tensors,
                     const vk::AccessFlagBits& srcAccessMask,
                     const vk::AccessFlagBits& dstAccessMask,
                     const vk::PipelineStageFlagBits& srcStageMask,
@@ -75,7 +75,7 @@ class OpMemoryBarrier : public OpBase
     const vk::PipelineStageFlagBits mSrcStageMask;
     const vk::PipelineStageFlagBits mDstStageMask;
     const bool mBarrierOnPrimary;
-    const std::vector<std::shared_ptr<Tensor>> mTensors;
+    const std::vector<std::shared_ptr<kp::Tensor>> mTensors;
 };
 
 } // End namespace kp
