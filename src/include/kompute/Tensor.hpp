@@ -100,7 +100,8 @@ class Tensor
      * Function to reserve memory on the tensor. This does not copy any data, it
      * just reserves memory, similarly to std::vector reserve() method.
      *
-     * @param newSize the new size for reservation
+     * @param elementTotalCount Total number of elements for new size
+     * @param elementMemorySize Memory size of element 
      */
     void reserve(uint32_t elementTotalCount, uint32_t elementMemorySize);
 
