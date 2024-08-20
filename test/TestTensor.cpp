@@ -15,6 +15,14 @@ TEST(TestTensor, ConstructorData)
     EXPECT_EQ(tensor->vector(), vec);
 }
 
+TEST(TestTensor, ReserveData)
+{
+    kp::Manager mgr;
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor(3, sizeof(uint32_t), Tensor::TensorDataType::eUnsignedInt);
+    EXPECT_EQ(tensor->size(), 0);
+    EXPECT_EQ(tensor->dataTypeMemorySize(), sizeof(uint32_t));
+}
+
 TEST(TestTensor, DataTypes)
 {
     kp::Manager mgr;
