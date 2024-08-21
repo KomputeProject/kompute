@@ -255,6 +255,10 @@ class Tensor
     template<typename T>
     T* data()
     {
+        if (this->mRawData == nullptr) {
+            this->mapRawData();
+        }
+
         return (T*)this->mRawData;
     }
 
@@ -268,6 +272,10 @@ class Tensor
     template<typename T>
     std::vector<T> vector()
     {
+        if (this->mRawData == nullptr) {
+            this->mapRawData();
+        }
+
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
@@ -277,7 +285,9 @@ class Tensor
     TensorDataTypes mDataType;
     uint32_t mSize;
     uint32_t mDataTypeMemorySize;
-    void* mRawData;
+    void* mRawData = nullptr;
+
+    void mapRawData();
 
   private:
     // -------------- NEVER OWNED RESOURCES
@@ -318,7 +328,6 @@ class Tensor
     vk::BufferUsageFlags getStagingBufferUsageFlags();
     vk::MemoryPropertyFlags getStagingMemoryPropertyFlags();
 
-    void mapRawData();
     void unmapRawData();
 };
 
@@ -363,6 +372,10 @@ class TensorT : public Tensor
 
     std::vector<T> vector()
     {
+        if (this->mRawData == nullptr) {
+            this->mapRawData();
+        }
+
         return { (T*)this->mRawData, ((T*)this->mRawData) + this->size() };
     }
 
