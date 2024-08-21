@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "kompute/Manager.hpp"
-#include "fmt/format.h"
 #include "kompute/logger/Logger.hpp"
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 #include <iterator>
 #include <set>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 namespace kp {
 
