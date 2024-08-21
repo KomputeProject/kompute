@@ -139,8 +139,7 @@ Tensor::tensorType()
 bool
 Tensor::isInit()
 {
-    return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory &&
-           this->mRawData;
+    return this->mDevice && this->mPrimaryBuffer && this->mPrimaryMemory;
 }
 
 uint32_t
@@ -176,6 +175,9 @@ Tensor::rawData()
 void
 Tensor::setRawData(const void* data)
 {
+    if (!this->mRawData) {
+        this->mapRawData();
+    }
     memcpy(this->mRawData, data, this->memorySize());
 }
 
