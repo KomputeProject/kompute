@@ -10,33 +10,36 @@
 namespace kp {
 
 /**
- * Operation that copies the data from the first tensor to the rest of the
- * tensors provided, using a record command for all the vectors. This operation
- * does not own/manage the memory of the tensors passed to it. The operation
- * must only receive tensors of type
+ * Operation that syncs tensor's local memory by mapping device data into the
+ * local CPU memory. For TensorTypes::eDevice it will use a record operation
+ * for the memory to be syncd into GPU memory which means that the operation
+ * will be done in sync with GPU commands. For TensorTypes::eHost it will
+ * only map the data into host memory which will happen during preEval before
+ * the recorded commands are dispatched.
  */
-class OpTensorCopy : public OpBase
+class OpTensorSyncRegionLocal : public OpBase
 {
   public:
-    using ConstructorParameterType = std::vector<std::shared_ptr<Tensor>>;
+    using ConstructorParameterType = std::vector<TensorRegion>;
     
     /**
      * Default constructor with parameters that provides the core vulkan
-     * resources and the tensors that will be used in the operation.
+     * resources and the tensors that will be used in the operation. The tensors
+     * provided cannot be of type TensorTypes::eStorage.
      *
      * @param tensors Tensors that will be used to create in operation.
      */
-    OpTensorCopy(const std::vector<std::shared_ptr<Tensor>>& tensors);
+    OpTensorSyncRegionLocal(const std::vector<TensorRegion>& tensors);
 
     /**
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */
-    ~OpTensorCopy() override;
+    ~OpTensorSyncRegionLocal() override;
 
     /**
-     * Records the copy commands from the first tensor into all the other
-     * tensors provided. Also optionally records a barrier.
+     * For device tensors, it records the copy command for the tensor to copy
+     * the data from its device to staging memory.
      *
      * @param commandBuffer The command buffer to record the command into.
      */
@@ -50,8 +53,8 @@ class OpTensorCopy : public OpBase
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
-     * Copies the local vectors for all the tensors to sync the data with the
-     * gpu.
+     * For host tensors it performs the map command from the host memory into
+     * local memory.
      *
      * @param commandBuffer The command buffer to record the command into.
      */
@@ -59,7 +62,7 @@ class OpTensorCopy : public OpBase
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::vector<TensorRegion> mRegions;
 };
 
 } // End namespace kp

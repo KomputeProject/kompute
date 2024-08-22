@@ -17,6 +17,7 @@ add_executable(kompute_tests TestAsyncOperations.cpp
     TestMultipleAlgoExecutions.cpp
     TestOpShadersFromStringAndFile.cpp
     TestOpTensorCopy.cpp
+    TestOpTensorSync.cpp
     TestOpTensorCreate.cpp
     TestPushConstant.cpp
     TestSequence.cpp

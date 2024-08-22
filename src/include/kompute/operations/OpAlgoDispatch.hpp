@@ -17,6 +17,8 @@ namespace kp {
 class OpAlgoDispatch : public OpBase
 {
   public:
+    using ConstructorParameterType = std::shared_ptr<kp::Algorithm>;
+
     /**
      * Constructor that stores the algorithm to use as well as the relevant
      * push constants to override when recording.

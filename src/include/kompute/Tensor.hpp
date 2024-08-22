@@ -126,8 +126,9 @@ class Tensor
 
     /**
      * Records a copy from the memory of the tensor provided to the current
-     * thensor. This is intended to pass memory into a processing, to perform
+     * tensor. This is intended to pass memory into a processing, to perform
      * a staging buffer transfer, or to gather output (between others).
+     * Copies the entire tensor.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      * @param copyFromTensor Tensor to copy the data from
@@ -136,22 +137,55 @@ class Tensor
                         std::shared_ptr<Tensor> copyFromTensor);
 
     /**
+     * Records a copy from the memory of the tensor provided to the current
+     * tensor. This is intended to pass memory into a processing, to perform
+     * a staging buffer transfer, or to gather output (between others).
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param copyFromTensor Tensor to copy the data from
+     * @param copyRegion The buffer region to copy
+     */
+    void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
+                        std::shared_ptr<Tensor> copyFromTensor,
+                        const vk::BufferCopy copyRegion);
+
+    /**
      * Records a copy from the internal staging memory to the device memory
      * using an optional barrier to wait for the operation. This function would
-     * only be relevant for kp::Tensors of type eDevice.
+     * only be relevant for kp::Tensors of type eDevice. Copies the entire tensor.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
      */
     void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer);
 
     /**
+     * Records a copy from the internal staging memory to the device memory
+     * using an optional barrier to wait for the operation. This function would
+     * only be relevant for kp::Tensors of type eDevice.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param copyRegion The buffer region to copy
+     */
+    void recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer, const vk::BufferCopy copyRegion);
+
+    /**
+     * Records a copy from the internal device memory to the staging memory
+     * using an optional barrier to wait for the operation. This function would
+     * only be relevant for kp::Tensors of type eDevice. Copies the entire tensor.
+     *
+     * @param commandBuffer Vulkan Command Buffer to record the commands into
+     */
+    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer);
+    
+    /**
      * Records a copy from the internal device memory to the staging memory
      * using an optional barrier to wait for the operation. This function would
      * only be relevant for kp::Tensors of type eDevice.
      *
      * @param commandBuffer Vulkan Command Buffer to record the commands into
+     * @param copyRegion The buffer region to copy
      */
-    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer);
+    void recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer, const vk::BufferCopy copyRegion);
 
     /**
      * Records the buffer memory barrier into the primary buffer and command
@@ -396,6 +430,13 @@ class TensorT : public Tensor
     }
 
     TensorDataTypes dataType();
+};
+
+struct TensorRegion {
+  std::shared_ptr<Tensor> tensor;
+  uint32_t srcIndex;
+  uint32_t dstIndex;
+  uint32_t elemCount;
 };
 
 } // End namespace kp
