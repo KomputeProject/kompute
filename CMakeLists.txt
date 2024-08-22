@@ -124,6 +124,11 @@ include(cmake/vulkan_shader_compiler.cmake)
 include(cmake/check_vulkan_version.cmake)
 include(FetchContent)
 
+# Set -fPIC so that ../lib/kp.cpython-310-x86_64-linux-gnu.so links correctly
+if(KOMPUTE_OPT_BUILD_PYTHON)
+    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 # Vulkan Header
 # We don't import Vulkan library if Android build as it is built dynamically
 # Otherwise it is expected that the Vulkan SDK and dependencies are installed
