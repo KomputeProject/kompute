@@ -93,10 +93,10 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
     std::vector<uint32_t> spirv = compileSource(shader);
 
     {
-        // A sharedMemoryBarrier is required as the shader is not thread-safe:w
+        // A sharedMemoryBarrier is required as the shader is not thread-safe
         std::shared_ptr<kp::OpMemoryBarrier> shaderBarrier{
             new kp::OpMemoryBarrier({ tensorA },
-                                    vk::AccessFlagBits::eTransferRead,
+                                    vk::AccessFlagBits::eShaderRead,
                                     vk::AccessFlagBits::eShaderWrite,
                                     vk::PipelineStageFlagBits::eComputeShader,
                                     vk::PipelineStageFlagBits::eComputeShader)
