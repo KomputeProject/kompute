@@ -38,7 +38,7 @@ KomputeModelML::train(std::vector<float> yData,
 
         std::shared_ptr<kp::TensorT<float>> lOut = mgr.tensor(zerosData);
 
-        std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
+        std::vector<std::shared_ptr<kp::Memory>> params = { xI,  xJ,    y,
                                                             wIn, wOutI, wOutJ,
                                                             bIn, bOut,  lOut };
 
@@ -48,13 +48,13 @@ KomputeModelML::train(std::vector<float> yData,
         std::shared_ptr<kp::Algorithm> algorithm = mgr.algorithm(
           params, shader, kp::Workgroup({ 5 }), std::vector<float>({ 5.0 }));
 
-        mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+        mgr.sequence()->eval<kp::OpSyncDevice>(params);
 
         std::shared_ptr<kp::Sequence> sq =
           mgr.sequence()
-            ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+            ->record<kp::OpSyncDevice>({ wIn, bIn })
             ->record<kp::OpAlgoDispatch>(algorithm)
-            ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+            ->record<kp::OpSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
         // Iterate across all expected iterations
         for (size_t i = 0; i < ITERATIONS; i++) {

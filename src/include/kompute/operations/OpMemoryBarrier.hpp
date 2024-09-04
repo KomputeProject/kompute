@@ -19,11 +19,11 @@ class OpMemoryBarrier : public OpBase
 {
   public:
     /**
-     * Constructor that stores tensors as well as memory barrier parameters to
-     * be used to create a pipeline barrier on the respective primary or staging
-     * tensor.
+     * Constructor that stores mem objects as well as memory barrier parameters
+     * to be used to create a pipeline barrier on the respective primary or
+     * staging tensor.
      *
-     * @param tensors The tensors to apply the memory barriers on
+     * @param memObjects The mem objects to apply the memory barriers on
      * @param srcAccessMask The kp::AccessFlagBits for the source access mask
      * @param dstAccessMask The kp::AccessFlagBits for the destination access
      * mask
@@ -32,9 +32,9 @@ class OpMemoryBarrier : public OpBase
      * @param dstStageMask The kp::PipelineStageFlagBits for the destination
      * stage mask
      * @param barrierOnPrimary Boolean to select primary or secondary buffers on
-     * tensors
+     * mem objects
      */
-    OpMemoryBarrier(const std::vector<std::shared_ptr<Tensor>>& tensors,
+    OpMemoryBarrier(const std::vector<std::shared_ptr<Memory>>& memObjects,
                     const vk::AccessFlagBits& srcAccessMask,
                     const vk::AccessFlagBits& dstAccessMask,
                     const vk::PipelineStageFlagBits& srcStageMask,
@@ -75,7 +75,7 @@ class OpMemoryBarrier : public OpBase
     const vk::PipelineStageFlagBits mSrcStageMask;
     const vk::PipelineStageFlagBits mDstStageMask;
     const bool mBarrierOnPrimary;
-    const std::vector<std::shared_ptr<Tensor>> mTensors;
+    const std::vector<std::shared_ptr<Memory>> mMemObjects;
 };
 
 } // End namespace kp

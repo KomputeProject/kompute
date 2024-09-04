@@ -13,14 +13,14 @@ TEST(TestManager, EndToEndOpMultEvalFlow)
     std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
     std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
                                                         tensorRHS,
                                                         tensorOutput };
 
     mgr.sequence()
-      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpSyncDevice>(params)
       ->eval<kp::OpMult>(params, mgr.algorithm())
-      ->eval<kp::OpTensorSyncLocal>(params);
+      ->eval<kp::OpSyncLocal>(params);
 
     EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
 }
@@ -33,17 +33,33 @@ TEST(TestManager, EndToEndOpMultSeqFlow)
     std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
     std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
                                                         tensorRHS,
                                                         tensorOutput };
 
     mgr.sequence()
-      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpSyncDevice>(params)
       ->record<kp::OpMult>(params, mgr.algorithm())
-      ->record<kp::OpTensorSyncLocal>(params)
+      ->record<kp::OpSyncLocal>(params)
       ->eval();
 
     EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
+}
+
+TEST(TestManager, OpMultInvalidArgs)
+{
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
+    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
+
+    // Only give two paramters instead of three.
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS, tensorRHS };
+
+    EXPECT_THROW(
+      mgr.sequence()->record<kp::OpMult>(params, mgr.algorithm())->eval(),
+      std::runtime_error);
 }
 
 TEST(TestManager, TestMultipleSequences)
@@ -54,13 +70,13 @@ TEST(TestManager, TestMultipleSequences)
     std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
     std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
                                                         tensorRHS,
                                                         tensorOutput };
 
-    mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+    mgr.sequence()->eval<kp::OpSyncDevice>(params);
     mgr.sequence()->eval<kp::OpMult>(params, mgr.algorithm());
-    mgr.sequence()->eval<kp::OpTensorSyncLocal>(params);
+    mgr.sequence()->eval<kp::OpSyncLocal>(params);
 
     EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
 }
@@ -91,13 +107,13 @@ TEST(TestManager, TestClearDestroy)
         std::shared_ptr<kp::TensorT<float>> tensorOutput =
           mgr.tensor({ 0, 0, 0 });
 
-        std::vector<std::shared_ptr<kp::Tensor>> params = { tensorLHS,
+        std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
                                                             tensorRHS,
                                                             tensorOutput };
 
-        mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+        mgr.sequence()->eval<kp::OpSyncDevice>(params);
         mgr.sequence()->eval<kp::OpMult>(params, mgr.algorithm());
-        mgr.sequence()->eval<kp::OpTensorSyncLocal>(params);
+        mgr.sequence()->eval<kp::OpSyncLocal>(params);
 
         EXPECT_EQ(tensorOutput->vector(), std::vector<float>({ 0, 4, 12 }));
     }

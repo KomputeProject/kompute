@@ -31,7 +31,7 @@ def main():
 
         for MatMulOp in [MatMulOp1, MatMulOp2, MatMulOp3]:
             tensor_out.data()[:] = 0
-            mgr.sequence().record(kp.OpTensorSyncDevice([tensor_out]))
+            mgr.sequence().record(kp.OpSyncDevice([tensor_out]))
             matmul_op = MatMulOp(mgr)
             matmul_op(tensor_shape, tensor_in_1, tensor_in_2, tensor_out)
 

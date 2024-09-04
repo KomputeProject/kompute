@@ -26,26 +26,26 @@ class OpMult : public OpAlgoDispatch
      * requirements for the operations to be able to create and manage their
      * sub-components.
      *
-     * @param tensors Tensors that are to be used in this operation
+     * @param memObjects Memory objects that are to be used in this operation
      * @param algorithm An algorithm that will be overridden with the OpMult
      * shader data and the tensors provided which are expected to be 3
      */
-    OpMult(std::vector<std::shared_ptr<Tensor>> tensors,
+    OpMult(std::vector<std::shared_ptr<Memory>> memObjects,
            std::shared_ptr<Algorithm> algorithm)
       : OpAlgoDispatch(algorithm)
     {
         KP_LOG_DEBUG("Kompute OpMult constructor with params");
 
-        if (tensors.size() != 3) {
+        if (memObjects.size() != 3) {
             throw std::runtime_error(
-              "Kompute OpMult expected 3 tensors but got " +
-              std::to_string(tensors.size()));
+              "Kompute OpMult expected 3 mem objects but got " +
+              std::to_string(memObjects.size()));
         }
 
         const std::vector<uint32_t> spirv = std::vector<uint32_t>(
           SHADEROPMULT_COMP_SPV.begin(), SHADEROPMULT_COMP_SPV.end());
 
-        algorithm->rebuild<>(tensors, spirv);
+        algorithm->rebuild<>(memObjects, spirv);
     }
 
     /**

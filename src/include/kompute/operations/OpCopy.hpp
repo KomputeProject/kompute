@@ -2,40 +2,39 @@
 #pragma once
 
 #include "kompute/Core.hpp"
-#include "kompute/Tensor.hpp"
+
+#include "kompute/Memory.hpp"
+
 #include "kompute/operations/OpBase.hpp"
 
 namespace kp {
 
 /**
- * Operation that syncs tensor's device by mapping local data into the device
- * memory. For TensorTypes::eDevice it will use a record operation for the
- * memory to be syncd into GPU memory which means that the operation will be
- * done in sync with GPU commands. For TensorTypes::eHost it will only map the
- * data into host memory which will happen during preEval before the recorded
- * commands are dispatched.
+ * Operation that copies the data from the first memory object to the rest of
+ * the memory objects provided, using a record command for all the vectors. This
+ * operation does not own/manage the memory of the memory objects passed to it.
  */
-class OpTensorSyncDevice : public OpBase
+class OpCopy : public OpBase
 {
   public:
     /**
      * Default constructor with parameters that provides the core vulkan
-     * resources and the tensors that will be used in the operation. The tensos
-     * provided cannot be of type TensorTypes::eStorage.
+     * resources and the memory objects that will be used in the operation.
      *
-     * @param tensors Tensors that will be used to create in operation.
+     * @param memObjects memory objects that will be used to create in
+     * operation.
      */
-    OpTensorSyncDevice(const std::vector<std::shared_ptr<Tensor>>& tensors);
+    OpCopy(const std::vector<std::shared_ptr<Memory>>& memObjects);
 
     /**
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */
-    ~OpTensorSyncDevice() override;
+    ~OpCopy() override;
 
     /**
-     * For device tensors, it records the copy command for the tensor to copy
-     * the data from its staging to device memory.
+     * Records the copy commands from the first memory object into all the other
+     * memory objects provided. Also optionally records a barrier.
      *
      * @param commandBuffer The command buffer to record the command into.
      */
@@ -49,7 +48,8 @@ class OpTensorSyncDevice : public OpBase
     virtual void preEval(const vk::CommandBuffer& commandBuffer) override;
 
     /**
-     * Does not perform any postEval commands.
+     * Copies the local vectors for all the memory objects to sync the data with
+     * the gpu.
      *
      * @param commandBuffer The command buffer to record the command into.
      */
@@ -57,7 +57,7 @@ class OpTensorSyncDevice : public OpBase
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::vector<std::shared_ptr<Memory>> mMemObjects;
 };
 
 } // End namespace kp

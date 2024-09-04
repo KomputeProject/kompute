@@ -12,12 +12,14 @@ add_library(kompute Algorithm.cpp
     Manager.cpp
     OpAlgoDispatch.cpp
     OpMemoryBarrier.cpp
-    OpTensorCopy.cpp
-    OpTensorSyncDevice.cpp
-    OpTensorSyncLocal.cpp
+    OpCopy.cpp
+    OpSyncDevice.cpp
+    OpSyncLocal.cpp
     Sequence.cpp
     Tensor.cpp
-    Core.cpp)
+    Core.cpp
+    Image.cpp
+    Memory.cpp)
 
 add_library(kompute::kompute ALIAS kompute)
 

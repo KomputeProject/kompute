@@ -36,14 +36,14 @@ TEST(TestDestroy, TestDestroyTensorSingle)
               mgr.algorithm({ tensorA }, spirv);
 
             // Sync values to and from device
-            mgr.sequence()->eval<kp::OpTensorSyncDevice>(algo->getTensors());
+            mgr.sequence()->eval<kp::OpSyncDevice>(algo->getMemObjects());
 
             EXPECT_EQ(tensorA->vector(), initialValues);
 
             mgr.sequence()
               ->record<kp::OpAlgoDispatch>(algo)
               ->eval()
-              ->eval<kp::OpTensorSyncLocal>(algo->getTensors());
+              ->eval<kp::OpSyncLocal>(algo->getMemObjects());
 
             const std::vector<float> expectedFinalValues = { 1.0f, 1.0f, 1.0f };
             EXPECT_EQ(tensorA->vector(), expectedFinalValues);
@@ -85,9 +85,9 @@ TEST(TestDestroy, TestDestroyTensorVector)
               mgr.algorithm({ tensorA, tensorB }, spirv);
 
             mgr.sequence()
-              ->record<kp::OpTensorSyncDevice>(algo->getTensors())
+              ->record<kp::OpSyncDevice>(algo->getMemObjects())
               ->record<kp::OpAlgoDispatch>(algo)
-              ->record<kp::OpTensorSyncLocal>(algo->getTensors())
+              ->record<kp::OpSyncLocal>(algo->getMemObjects())
               ->eval();
 
             EXPECT_EQ(tensorA->vector(), std::vector<float>({ 2, 2, 2 }));
@@ -127,9 +127,9 @@ TEST(TestDestroy, TestDestroySequenceSingle)
 
             sq =
               mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>({ tensorA })
+                ->record<kp::OpSyncDevice>({ tensorA })
                 ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-                ->record<kp::OpTensorSyncLocal>({ tensorA })
+                ->record<kp::OpSyncLocal>({ tensorA })
                 ->eval();
 
             sq->destroy();

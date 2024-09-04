@@ -18,7 +18,7 @@ main()
     std::shared_ptr<kp::TensorT<float>> tensorOut =
       mgr.tensor({ 0.0, 0.0, 0.0 });
 
-    const std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA,
+    const std::vector<std::shared_ptr<kp::Memory>> params = { tensorInA,
                                                               tensorInB,
                                                               tensorOut };
 
@@ -27,9 +27,9 @@ main()
     std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, shader);
 
     mgr.sequence()
-      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpSyncDevice>(params)
       ->record<kp::OpAlgoDispatch>(algo)
-      ->record<kp::OpTensorSyncLocal>(params)
+      ->record<kp::OpSyncLocal>(params)
       ->eval();
 
     // prints "Output {  0  4  12  }"

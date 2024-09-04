@@ -20,7 +20,7 @@ TEST(TestWorkgroup, TestSimpleWorkgroup)
             tensorA = mgr.tensor(std::vector<float>(16 * 8));
             tensorB = mgr.tensor(std::vector<float>(16 * 8));
 
-            std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
+            std::vector<std::shared_ptr<kp::Memory>> params = { tensorA,
                                                                 tensorB };
             std::vector<uint32_t> spirv(
               kp::TEST_WORKGROUP_SHADER_COMP_SPV.begin(),
@@ -32,9 +32,9 @@ TEST(TestWorkgroup, TestSimpleWorkgroup)
               mgr.algorithm(params, spirv, workgroup);
 
             sq = mgr.sequence();
-            sq->record<kp::OpTensorSyncDevice>(params);
+            sq->record<kp::OpSyncDevice>(params);
             sq->record<kp::OpAlgoDispatch>(algorithm);
-            sq->record<kp::OpTensorSyncLocal>(params);
+            sq->record<kp::OpSyncLocal>(params);
             sq->eval();
 
             std::vector<float> expectedA = {

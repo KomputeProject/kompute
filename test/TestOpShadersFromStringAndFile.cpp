@@ -24,10 +24,10 @@ struct TestStruct
 };
 // Custom struct needs to be mapped the eCustom datatype
 template<>
-kp::Tensor::TensorDataTypes
-kp::TensorT<TestStruct>::dataType()
+kp::Memory::DataTypes
+kp::Memory::dataType<TestStruct>()
 {
-    return Tensor::TensorDataTypes::eCustom;
+    return Memory::DataTypes::eCustom;
 }
 
 TEST(TestShader, ShaderRawDataFromConstructorCustomDataType)
@@ -64,12 +64,12 @@ TEST(TestShader, ShaderRawDataFromConstructorCustomDataType)
 
     std::vector<uint32_t> spirv = compileSource(shader);
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorA, tensorB };
 
     mgr.sequence()
-      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpSyncDevice>(params)
       ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
-      ->eval<kp::OpTensorSyncLocal>(params);
+      ->eval<kp::OpSyncLocal>(params);
 
     EXPECT_EQ(tensorA->vector(),
               std::vector<TestStruct>({ TestStruct{ 0.1, 2, 3 } }));
@@ -127,12 +127,12 @@ TEST(TestOpAlgoCreate, ShaderRawDataFromConstructor)
 
     std::vector<uint32_t> spirv = compileSource(shader);
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorA, tensorB };
 
     mgr.sequence()
-      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpSyncDevice>(params)
       ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
-      ->eval<kp::OpTensorSyncLocal>(params);
+      ->eval<kp::OpSyncLocal>(params);
 
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
     EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
@@ -147,12 +147,12 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
 
     std::vector<uint32_t> spirv(kp::TEST_OP_CUSTOM_SHADER_COMP_SPV.begin(),
                                 kp::TEST_OP_CUSTOM_SHADER_COMP_SPV.end());
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA, tensorB };
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorA, tensorB };
 
     mgr.sequence()
-      ->eval<kp::OpTensorSyncDevice>(params)
+      ->eval<kp::OpSyncDevice>(params)
       ->eval<kp::OpAlgoDispatch>(mgr.algorithm(params, spirv))
-      ->eval<kp::OpTensorSyncLocal>(params);
+      ->eval<kp::OpSyncLocal>(params);
 
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
     EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));

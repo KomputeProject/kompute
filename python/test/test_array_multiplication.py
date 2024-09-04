@@ -25,9 +25,9 @@ def test_array_multiplication():
         data3[i] = data1[i] * data2[i]
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(mgr.algorithm(params, compute_mult.to_spirv())))
-        .record(kp.OpTensorSyncLocal([tensor_out]))
+        .record(kp.OpSyncLocal([tensor_out]))
         .eval())
 
     assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
