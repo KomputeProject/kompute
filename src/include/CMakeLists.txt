@@ -20,9 +20,9 @@ target_sources(kompute PRIVATE
     kompute/operations/OpBase.hpp
     kompute/operations/OpMemoryBarrier.hpp
     kompute/operations/OpMult.hpp
-    kompute/operations/OpTensorCopy.hpp
-    kompute/operations/OpTensorSyncDevice.hpp
-    kompute/operations/OpTensorSyncLocal.hpp
+    kompute/operations/OpCopy.hpp
+    kompute/operations/OpSyncDevice.hpp
+    kompute/operations/OpSyncLocal.hpp
 
     kompute/logger/Logger.hpp
 )

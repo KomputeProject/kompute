@@ -16,12 +16,19 @@ add_executable(kompute_tests TestAsyncOperations.cpp
     TestManager.cpp
     TestMultipleAlgoExecutions.cpp
     TestOpShadersFromStringAndFile.cpp
-    TestOpTensorCopy.cpp
     TestOpTensorCreate.cpp
+    TestOpSync.cpp
     TestPushConstant.cpp
     TestSequence.cpp
     TestSpecializationConstant.cpp
-    TestWorkgroup.cpp)
+    TestWorkgroup.cpp
+    TestTensor.cpp
+    TestImage.cpp
+    TestOpImageCreate.cpp
+    TestOpCopyTensor.cpp
+    TestOpCopyTensorToImage.cpp
+    TestOpCopyImage.cpp
+    TestOpCopyImageToTensor.cpp)
 
 target_link_libraries(kompute_tests PRIVATE GTest::gtest_main
     kompute::kompute

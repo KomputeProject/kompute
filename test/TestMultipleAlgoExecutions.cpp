@@ -45,7 +45,7 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
         }
     )");
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = {
+    std::vector<std::shared_ptr<kp::Memory>> params = {
         tensorInA, tensorInB, tensorOutA, tensorOutB
     };
 
@@ -59,14 +59,14 @@ TEST(TestMultipleAlgoExecutions, TestEndToEndFunctionality)
 
     // 3. Run operation with string shader synchronously
     mgr.sequence()
-      ->record<kp::OpTensorSyncDevice>(params)
+      ->record<kp::OpSyncDevice>(params)
       ->record<kp::OpAlgoDispatch>(algorithm)
       ->eval()
       ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB)
       ->eval();
 
     auto sq = mgr.sequence();
-    sq->evalAsync<kp::OpTensorSyncLocal>(params);
+    sq->evalAsync<kp::OpSyncLocal>(params);
 
     sq->evalAwait();
 
@@ -93,23 +93,23 @@ TEST(TestMultipleAlgoExecutions, SingleSequenceRecord)
     std::vector<uint32_t> spirv = compileSource(shader);
 
     {
-        // A sharedMemoryBarrier is required as the shader is not thread-safe:w
+        // A sharedMemoryBarrier is required as the shader is not thread-safe
         std::shared_ptr<kp::OpMemoryBarrier> shaderBarrier{
             new kp::OpMemoryBarrier({ tensorA },
-                                    vk::AccessFlagBits::eTransferRead,
+                                    vk::AccessFlagBits::eShaderRead,
                                     vk::AccessFlagBits::eShaderWrite,
                                     vk::PipelineStageFlagBits::eComputeShader,
                                     vk::PipelineStageFlagBits::eComputeShader)
         };
 
         mgr.sequence()
-          ->record<kp::OpTensorSyncDevice>({ tensorA })
+          ->record<kp::OpSyncDevice>({ tensorA })
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
           ->record(shaderBarrier)
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
           ->record(shaderBarrier)
           ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-          ->record<kp::OpTensorSyncLocal>({ tensorA })
+          ->record<kp::OpSyncLocal>({ tensorA })
           ->eval();
     }
 
@@ -138,7 +138,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    mgr.sequence()->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
+    mgr.sequence()->record<kp::OpSyncDevice>({ tensorA })->eval();
 
     mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
@@ -146,7 +146,7 @@ TEST(TestMultipleAlgoExecutions, MultipleCmdBufRecords)
 
     mgr.sequence()->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    mgr.sequence()->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
+    mgr.sequence()->record<kp::OpSyncLocal>({ tensorA })->eval();
 
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
@@ -174,7 +174,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
+    sq->record<kp::OpSyncDevice>({ tensorA })->eval();
 
     sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
@@ -182,7 +182,7 @@ TEST(TestMultipleAlgoExecutions, MultipleSequences)
 
     sq->record<kp::OpAlgoDispatch>(algorithm)->eval();
 
-    sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
+    sq->record<kp::OpSyncLocal>({ tensorA })->eval();
 
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
@@ -209,11 +209,11 @@ TEST(TestMultipleAlgoExecutions, SingleRecordMultipleEval)
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    sq->record<kp::OpTensorSyncDevice>({ tensorA })->eval();
+    sq->record<kp::OpSyncDevice>({ tensorA })->eval();
 
     sq->record<kp::OpAlgoDispatch>(algorithm)->eval()->eval()->eval();
 
-    sq->record<kp::OpTensorSyncLocal>({ tensorA })->eval();
+    sq->record<kp::OpSyncLocal>({ tensorA })->eval();
 
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 3, 3, 3 }));
 }
@@ -256,7 +256,7 @@ TEST(TestMultipleAlgoExecutions, TestAlgorithmUtilFunctions)
         }
     )");
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = {
+    std::vector<std::shared_ptr<kp::Memory>> params = {
         tensorInA, tensorInB, tensorOutA, tensorOutB
     };
 

@@ -38,9 +38,9 @@ def test_type_float():
     params = [tensor_in_a, tensor_in_b, tensor_out]
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(mgr.algorithm(params, spirv)))
-        .record(kp.OpTensorSyncLocal([tensor_out]))
+        .record(kp.OpSyncLocal([tensor_out]))
         .eval())
 
     assert np.all(tensor_out.data() == arr_in_a * arr_in_b)
@@ -77,9 +77,9 @@ def test_type_float_double_incorrect():
     params = [tensor_in_a, tensor_in_b, tensor_out]
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(mgr.algorithm(params, spirv)))
-        .record(kp.OpTensorSyncLocal([tensor_out]))
+        .record(kp.OpSyncLocal([tensor_out]))
         .eval())
 
     assert np.all(tensor_out.data() != arr_in_a * arr_in_b)
@@ -119,9 +119,9 @@ def test_type_double():
     params = [tensor_in_a, tensor_in_b, tensor_out]
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(mgr.algorithm(params, spirv)))
-        .record(kp.OpTensorSyncLocal([tensor_out]))
+        .record(kp.OpSyncLocal([tensor_out]))
         .eval())
 
     print(f"Dtype value {tensor_out.data().dtype}")
@@ -159,9 +159,9 @@ def test_type_int():
     params = [tensor_in_a, tensor_in_b, tensor_out]
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(mgr.algorithm(params, spirv)))
-        .record(kp.OpTensorSyncLocal([tensor_out]))
+        .record(kp.OpSyncLocal([tensor_out]))
         .eval())
 
     print(f"Dtype value {tensor_out.data().dtype}")
@@ -199,9 +199,9 @@ def test_type_unsigned_int():
     params = [tensor_in_a, tensor_in_b, tensor_out]
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(mgr.algorithm(params, spirv)))
-        .record(kp.OpTensorSyncLocal([tensor_out]))
+        .record(kp.OpSyncLocal([tensor_out]))
         .eval())
 
     print(f"Dtype value {tensor_out.data().dtype}")

@@ -68,7 +68,7 @@ TEST(TestSequence, RerecordSequence)
     std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 2, 2, 2 });
     std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({ 0, 0, 0 });
 
-    sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
+    sq->eval<kp::OpSyncDevice>({ tensorA, tensorB, tensorOut });
 
     std::vector<uint32_t> spirv = compileSource(R"(
         #version 450
@@ -89,7 +89,7 @@ TEST(TestSequence, RerecordSequence)
     std::shared_ptr<kp::Algorithm> algo =
       mgr.algorithm({ tensorA, tensorB, tensorOut }, spirv);
 
-    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpTensorSyncLocal>(
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpSyncLocal>(
       { tensorA, tensorB, tensorOut });
 
     sq->eval();
@@ -123,11 +123,11 @@ TEST(TestSequence, SequenceTimestamps)
     std::vector<uint32_t> spirv = compileSource(shader);
 
     auto seq = mgr.sequence(0, 100); // 100 timestamps
-    seq->record<kp::OpTensorSyncDevice>({ tensorA })
+    seq->record<kp::OpSyncDevice>({ tensorA })
       ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
       ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
       ->record<kp::OpAlgoDispatch>(mgr.algorithm({ tensorA }, spirv))
-      ->record<kp::OpTensorSyncLocal>({ tensorA })
+      ->record<kp::OpSyncLocal>({ tensorA })
       ->eval();
     const std::vector<uint64_t> timestamps = seq->getTimestamps();
 
@@ -145,7 +145,7 @@ TEST(TestSequence, UtilsClearRecordingRunning)
     std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 2, 2, 2 });
     std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({ 0, 0, 0 });
 
-    sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
+    sq->eval<kp::OpSyncDevice>({ tensorA, tensorB, tensorOut });
 
     std::vector<uint32_t> spirv = compileSource(R"(
         #version 450
@@ -166,7 +166,7 @@ TEST(TestSequence, UtilsClearRecordingRunning)
     std::shared_ptr<kp::Algorithm> algo =
       mgr.algorithm({ tensorA, tensorB, tensorOut }, spirv);
 
-    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpTensorSyncLocal>(
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpSyncLocal>(
       { tensorA, tensorB, tensorOut });
 
     EXPECT_TRUE(sq->isRecording());
@@ -197,7 +197,7 @@ TEST(TestSequence, CorrectSequenceRunningError)
     std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 2, 2, 2 });
     std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({ 0, 0, 0 });
 
-    sq->eval<kp::OpTensorSyncDevice>({ tensorA, tensorB, tensorOut });
+    sq->eval<kp::OpSyncDevice>({ tensorA, tensorB, tensorOut });
 
     std::vector<uint32_t> spirv = compileSource(R"(
         #version 450
@@ -218,7 +218,7 @@ TEST(TestSequence, CorrectSequenceRunningError)
     std::shared_ptr<kp::Algorithm> algo =
       mgr.algorithm({ tensorA, tensorB, tensorOut }, spirv);
 
-    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpTensorSyncLocal>(
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpSyncLocal>(
       { tensorA, tensorB, tensorOut });
 
     EXPECT_TRUE(sq->isRecording());

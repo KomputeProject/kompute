@@ -67,19 +67,19 @@ def test_logistic_regression():
     params = [tensor_x_i, tensor_x_j, tensor_y, tensor_w_in, tensor_w_out_i,
         tensor_w_out_j, tensor_b_in, tensor_b_out, tensor_l_out, tensor_m]
 
-    mgr.sequence().eval(kp.OpTensorSyncDevice(params))
+    mgr.sequence().eval(kp.OpSyncDevice(params))
 
     # Create a managed sequence
     sq = mgr.sequence()
 
     # Record operation to sync memory from local to GPU memory
-    sq.record(kp.OpTensorSyncDevice([tensor_w_in, tensor_b_in]))
+    sq.record(kp.OpSyncDevice([tensor_w_in, tensor_b_in]))
 
     # Record operation to execute GPU shader against all our parameters
     sq.record(kp.OpAlgoDispatch(mgr.algorithm(params, compute_shader.to_spirv())))
 
     # Record operation to sync memory from GPU to local memory
-    sq.record(kp.OpTensorSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
+    sq.record(kp.OpSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
 
     ITERATIONS = 100
     learning_rate = 0.1

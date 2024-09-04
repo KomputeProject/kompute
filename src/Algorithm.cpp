@@ -2,6 +2,7 @@
 #include <fstream>
 
 #include "kompute/Algorithm.hpp"
+#include "kompute/Image.hpp"
 
 namespace kp {
 
@@ -127,13 +128,33 @@ Algorithm::destroy()
 void
 Algorithm::createParameters()
 {
+    uint32_t numImages = 0;
+    uint32_t numTensors = 0;
+
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
-    std::vector<vk::DescriptorPoolSize> descriptorPoolSizes = {
-        vk::DescriptorPoolSize(
+    for (const std::shared_ptr<Memory>& mem : this->mMemObjects) {
+        if (mem->type() == Memory::Type::eImage) {
+            numImages++;
+        } else {
+            numTensors++;
+        }
+    }
+
+    std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
+
+    if (numTensors > 0) {
+        descriptorPoolSizes.push_back(vk::DescriptorPoolSize(
           vk::DescriptorType::eStorageBuffer,
-          static_cast<uint32_t>(this->mTensors.size()) // Descriptor count
-          )
+          static_cast<uint32_t>(numTensors) // Descriptor count
+          ));
+    }
+
+    if (numImages > 0) {
+        descriptorPoolSizes.push_back(vk::DescriptorPoolSize(
+          vk::DescriptorType::eStorageImage,
+          static_cast<uint32_t>(numImages) // Descriptor count
+          ));
     };
 
     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
@@ -149,10 +170,10 @@ Algorithm::createParameters()
     this->mFreeDescriptorPool = true;
 
     std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
-    for (size_t i = 0; i < this->mTensors.size(); i++) {
+    for (size_t i = 0; i < this->mMemObjects.size(); i++) {
         descriptorSetBindings.push_back(
           vk::DescriptorSetLayoutBinding(i, // Binding index
-                                         vk::DescriptorType::eStorageBuffer,
+                                         mMemObjects[i]->getDescriptorType(),
                                          1, // Descriptor count
                                          vk::ShaderStageFlagBits::eCompute));
     }
@@ -181,20 +202,14 @@ Algorithm::createParameters()
     this->mFreeDescriptorSet = true;
 
     KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
-    for (size_t i = 0; i < this->mTensors.size(); i++) {
+    for (size_t i = 0; i < this->mMemObjects.size(); i++) {
         std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
 
-        vk::DescriptorBufferInfo descriptorBufferInfo =
-          this->mTensors[i]->constructDescriptorBufferInfo();
+        vk::WriteDescriptorSet descriptorSet =
+          this->mMemObjects[i]->constructDescriptorSet(*this->mDescriptorSet,
+                                                       i);
 
-        computeWriteDescriptorSets.push_back(
-          vk::WriteDescriptorSet(*this->mDescriptorSet,
-                                 i, // Destination binding
-                                 0, // Destination array element
-                                 1, // Descriptor count
-                                 vk::DescriptorType::eStorageBuffer,
-                                 nullptr, // Descriptor image info
-                                 &descriptorBufferInfo));
+        computeWriteDescriptorSets.push_back(descriptorSet);
 
         this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
                                             nullptr);
@@ -394,10 +409,10 @@ Algorithm::getWorkgroup()
     return this->mWorkgroup;
 }
 
-const std::vector<std::shared_ptr<Tensor>>&
-Algorithm::getTensors()
+const std::vector<std::shared_ptr<Memory>>&
+Algorithm::getMemObjects()
 {
-    return this->mTensors;
+    return this->mMemObjects;
 }
 
 }

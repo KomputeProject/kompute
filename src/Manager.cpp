@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "kompute/Manager.hpp"
-#include "fmt/format.h"
 #include "kompute/logger/Logger.hpp"
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 #include <iterator>
 #include <set>
 #include <sstream>
 #include <string>
+#include <unordered_map>
 
 namespace kp {
 
@@ -109,14 +110,15 @@ Manager::destroy()
         this->mManagedAlgorithms.clear();
     }
 
-    if (this->mManageResources && this->mManagedTensors.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing tensors");
-        for (const std::weak_ptr<Tensor>& weakTensor : this->mManagedTensors) {
-            if (std::shared_ptr<Tensor> tensor = weakTensor.lock()) {
-                tensor->destroy();
+    if (this->mManageResources && this->mManagedMemObjects.size()) {
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing memory objects");
+        for (const std::weak_ptr<Memory>& weakMemory :
+             this->mManagedMemObjects) {
+            if (std::shared_ptr<Memory> memory = weakMemory.lock()) {
+                memory->destroy();
             }
         }
-        this->mManagedTensors.clear();
+        this->mManagedMemObjects.clear();
     }
 
     if (this->mFreeDevice) {
@@ -288,11 +290,11 @@ void
 Manager::clear()
 {
     if (this->mManageResources) {
-        this->mManagedTensors.erase(
-          std::remove_if(begin(this->mManagedTensors),
-                         end(this->mManagedTensors),
-                         [](std::weak_ptr<Tensor> t) { return t.expired(); }),
-          end(this->mManagedTensors));
+        this->mManagedMemObjects.erase(
+          std::remove_if(begin(this->mManagedMemObjects),
+                         end(this->mManagedMemObjects),
+                         [](std::weak_ptr<Memory> m) { return m.expired(); }),
+          end(this->mManagedMemObjects));
         this->mManagedAlgorithms.erase(
           std::remove_if(
             begin(this->mManagedAlgorithms),

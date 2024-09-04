@@ -53,17 +53,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * function also requires the Sequence to be recording, otherwise it will
      * not be able to add the operation.
      *
-     * @param tensors Vector of tensors to use for the operation
+     * @param memObjects Vector of mem objects to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> record(
-      std::vector<std::shared_ptr<Tensor>> tensors,
+      std::vector<std::shared_ptr<Memory>> memObjects,
       TArgs&&... params)
     {
-        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(memObjects,
+                                     std::forward<TArgs>(params)...) };
         return this->record(op);
     }
     /**
@@ -108,16 +109,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
      *
-     * @param tensors Vector of tensors to use for the operation
+     * @param memObjects Vector of memory objects to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
-    std::shared_ptr<Sequence> eval(std::vector<std::shared_ptr<Tensor>> tensors,
-                                   TArgs&&... params)
+    std::shared_ptr<Sequence> eval(
+      std::vector<std::shared_ptr<Memory>> memObjects,
+      TArgs&&... params)
     {
-        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(memObjects,
+                                     std::forward<TArgs>(params)...) };
         return this->eval(op);
     }
     /**
@@ -161,17 +164,18 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
      *
-     * @param tensors Vector of tensors to use for the operation
+     * @param memObjects Vector of memory objects to use for the operation
      * @param TArgs Template parameters that are used to initialise operation
      * which allows for extensible configurations on initialisation.
      * @return shared_ptr<Sequence> of the Sequence class itself
      */
     template<typename T, typename... TArgs>
     std::shared_ptr<Sequence> evalAsync(
-      std::vector<std::shared_ptr<Tensor>> tensors,
+      std::vector<std::shared_ptr<Memory>> memObjects,
       TArgs&&... params)
     {
-        std::shared_ptr<T> op{ new T(tensors, std::forward<TArgs>(params)...) };
+        std::shared_ptr<T> op{ new T(memObjects,
+                                     std::forward<TArgs>(params)...) };
         return this->evalAsync(op);
     }
     /**
@@ -243,7 +247,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Clears command buffer and triggers re-record of all the current
-     * operations saved, which is useful if the underlying kp::Tensors or
+     * operations saved, which is useful if the underlying kp::Memorys or
      * kp::Algorithms are modified and need to be re-recorded.
      */
     void rerecord();

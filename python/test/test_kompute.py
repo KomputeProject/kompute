@@ -58,13 +58,13 @@ def test_end_to_end():
     algo = mgr.algorithm(params, compile_source(shader), workgroup, spec_consts, push_consts_a)
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpAlgoDispatch(algo, push_consts_b))
         .eval())
 
     sq = mgr.sequence()
-    sq.eval_async(kp.OpTensorSyncLocal(params))
+    sq.eval_async(kp.OpSyncLocal(params))
 
     sq.eval_await()
 
@@ -104,9 +104,9 @@ void main()
     algo = mgr.algorithm(params, spirv)
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(algo))
-        .record(kp.OpTensorSyncLocal(params))
+        .record(kp.OpSyncLocal(params))
         .eval())
 
     assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
@@ -145,9 +145,9 @@ def test_sequence():
 
     sq = mgr.sequence()
 
-    sq.record(kp.OpTensorSyncDevice(params))
+    sq.record(kp.OpSyncDevice(params))
     sq.record(kp.OpAlgoDispatch(algo))
-    sq.record(kp.OpTensorSyncLocal(params))
+    sq.record(kp.OpSyncLocal(params))
 
     sq.eval()
 
@@ -194,11 +194,11 @@ def test_pushconsts():
     algo = mgr.algorithm([tensor], spirv, (1, 1, 1), [], [0.1, 0.2, 0.3])
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice([tensor]))
+        .record(kp.OpSyncDevice([tensor]))
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
         .record(kp.OpAlgoDispatch(algo, [0.3, 0.2, 0.1]))
-        .record(kp.OpTensorSyncLocal([tensor]))
+        .record(kp.OpSyncLocal([tensor]))
         .eval())
 
     assert np.allclose(tensor.data(), np.array([0.7, 0.6, 0.5], dtype=np.float32))
@@ -232,11 +232,11 @@ def test_pushconsts_int():
     algo = mgr.algorithm([tensor], spirv, (1, 1, 1), spec_consts, push_consts)
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice([tensor]))
+        .record(kp.OpSyncDevice([tensor]))
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpAlgoDispatch(algo, np.array([-1, -1, -1], dtype=np.int32)))
         .record(kp.OpAlgoDispatch(algo, np.array([-1, -1, -1], dtype=np.int32)))
-        .record(kp.OpTensorSyncLocal([tensor]))
+        .record(kp.OpSyncLocal([tensor]))
         .eval())
 
     assert np.all(tensor.data() == np.array([-3, -3, -3], dtype=np.int32))
@@ -261,9 +261,9 @@ def test_workgroup():
     algo = mgr.algorithm([tensor_a, tensor_b], compute_shader_wg.to_spirv(), (16,8,1))
 
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice([tensor_a, tensor_b]))
+        .record(kp.OpSyncDevice([tensor_a, tensor_b]))
         .record(kp.OpAlgoDispatch(algo))
-        .record(kp.OpTensorSyncLocal([tensor_a, tensor_b]))
+        .record(kp.OpSyncLocal([tensor_a, tensor_b]))
         .eval())
 
     print(tensor_a.data())

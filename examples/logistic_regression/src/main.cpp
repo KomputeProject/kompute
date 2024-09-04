@@ -28,11 +28,11 @@ main()
 
     std::shared_ptr<kp::TensorT<float>> lOut = mgr.tensor({ 0, 0, 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { xI,  xJ,    y,
+    std::vector<std::shared_ptr<kp::Memory>> params = { xI,  xJ,    y,
                                                         wIn, wOutI, wOutJ,
                                                         bIn, bOut,  lOut };
 
-    mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+    mgr.sequence()->eval<kp::OpSyncDevice>(params);
 
     std::vector<uint32_t> spirv2{ 0x1, 0x2 };
 
@@ -44,9 +44,9 @@ main()
 
     std::shared_ptr<kp::Sequence> sq =
       mgr.sequence()
-        ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+        ->record<kp::OpSyncDevice>({ wIn, bIn })
         ->record<kp::OpAlgoDispatch>(algorithm)
-        ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+        ->record<kp::OpSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
     // Iterate across all expected iterations
     for (size_t i = 0; i < ITERATIONS; i++) {

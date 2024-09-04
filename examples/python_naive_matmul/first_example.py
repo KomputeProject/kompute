@@ -48,9 +48,9 @@ void main()
         [])  # push_consts
 
     (mgr.sequence()
-     .record(kp.OpTensorSyncDevice(params))
+     .record(kp.OpSyncDevice(params))
      .record(kp.OpAlgoDispatch(algo))
-     .record(kp.OpTensorSyncLocal(params))
+     .record(kp.OpSyncLocal(params))
      .eval())
 
     print(f'Output :\n{tensor_out.data().reshape(tensor_shape)}')

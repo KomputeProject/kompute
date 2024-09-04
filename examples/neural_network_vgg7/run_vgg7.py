@@ -85,7 +85,7 @@ for i in range(7):
     if i == 0:
         # For first layer, the input isn't on-device yet
         things_to_sync_to_device.append(tensor_in)
-    last_seq.eval_async(kp.OpTensorSyncDevice(things_to_sync_to_device))
+    last_seq.eval_async(kp.OpSyncDevice(things_to_sync_to_device))
     last_seq.eval_await()
 
     # Prepare
@@ -101,7 +101,7 @@ for i in range(7):
         # DEBUG:
         # We want to see the output, copy it to local
         last_seq = kpm.sequence()
-        last_seq.eval_async(kp.OpTensorSyncLocal([tensor_out]))
+        last_seq.eval_async(kp.OpSyncLocal([tensor_out]))
         last_seq.eval_await()
         tensor_out.data().astype("<f4", "C").tofile("raw" + str(i) + ".bin")
 
@@ -114,7 +114,7 @@ for i in range(7):
 
 # Download output
 fin_seq = kpm.sequence()
-fin_seq.eval_async(kp.OpTensorSyncLocal([tensor_in]))
+fin_seq.eval_async(kp.OpSyncLocal([tensor_in]))
 fin_seq.eval_await()
 
 # Output

@@ -35,7 +35,7 @@ TEST(TestSpecializationConstants, TestTwoConstants)
             std::shared_ptr<kp::TensorT<float>> tensorB =
               mgr.tensor({ 0, 0, 0 });
 
-            std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
+            std::vector<std::shared_ptr<kp::Memory>> params = { tensorA,
                                                                 tensorB };
 
             std::vector<float> spec = std::vector<float>({ 5.0, 0.3 });
@@ -44,9 +44,9 @@ TEST(TestSpecializationConstants, TestTwoConstants)
               mgr.algorithm(params, spirv, {}, spec);
 
             sq = mgr.sequence()
-                   ->record<kp::OpTensorSyncDevice>(params)
+                   ->record<kp::OpSyncDevice>(params)
                    ->record<kp::OpAlgoDispatch>(algo)
-                   ->record<kp::OpTensorSyncLocal>(params)
+                   ->record<kp::OpSyncLocal>(params)
                    ->eval();
 
             EXPECT_EQ(tensorA->vector(), std::vector<float>({ 5, 5, 5 }));
@@ -83,7 +83,7 @@ TEST(TestSpecializationConstants, TestConstantsInt)
             std::shared_ptr<kp::TensorT<int32_t>> tensorB =
               mgr.tensorT<int32_t>({ 0, 0, 0 });
 
-            std::vector<std::shared_ptr<kp::Tensor>> params = { tensorA,
+            std::vector<std::shared_ptr<kp::Memory>> params = { tensorA,
                                                                 tensorB };
 
             std::vector<int32_t> spec({ -1, -2 });
@@ -92,9 +92,9 @@ TEST(TestSpecializationConstants, TestConstantsInt)
               mgr.algorithm(params, spirv, {}, spec, {});
 
             sq = mgr.sequence()
-                   ->record<kp::OpTensorSyncDevice>(params)
+                   ->record<kp::OpSyncDevice>(params)
                    ->record<kp::OpAlgoDispatch>(algo)
-                   ->record<kp::OpTensorSyncLocal>(params)
+                   ->record<kp::OpSyncLocal>(params)
                    ->eval();
 
             EXPECT_EQ(tensorA->vector(), std::vector<int32_t>({ -1, -1, -1 }));

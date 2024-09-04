@@ -110,9 +110,9 @@ void main()
                 [])  # push_consts
 
         (self.mgr.sequence()
-         .record(kp.OpTensorSyncDevice([tensor_in_1, tensor_in_2]))
+         .record(kp.OpSyncDevice([tensor_in_1, tensor_in_2]))
          .record(kp.OpAlgoDispatch(self.algo))
-         .record(kp.OpTensorSyncLocal([tensor_out]))
+         .record(kp.OpSyncLocal([tensor_out]))
          .eval())
 
 

@@ -50,7 +50,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
 
     std::shared_ptr<kp::Sequence> sq = mgr.sequence();
 
-    std::vector<std::shared_ptr<kp::Tensor>> inputsSyncB;
+    std::vector<std::shared_ptr<kp::Memory>> inputsSyncB;
     std::vector<std::shared_ptr<kp::Algorithm>> algorithms;
 
     for (uint32_t i = 0; i < numParallel; i++) {
@@ -58,9 +58,9 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         algorithms.push_back(mgr.algorithm({ inputsSyncB[i] }, spirv));
     }
 
-    sq->eval<kp::OpTensorSyncDevice>(inputsSyncB);
+    sq->eval<kp::OpSyncDevice>(inputsSyncB);
 
-    mgr.sequence()->eval<kp::OpTensorSyncDevice>(inputsSyncB);
+    mgr.sequence()->eval<kp::OpSyncDevice>(inputsSyncB);
 
     auto startSync = std::chrono::high_resolution_clock::now();
 
@@ -73,7 +73,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
       std::chrono::duration_cast<std::chrono::microseconds>(endSync - startSync)
         .count();
 
-    sq->eval<kp::OpTensorSyncLocal>(inputsSyncB);
+    sq->eval<kp::OpSyncLocal>(inputsSyncB);
 
     for (uint32_t i = 0; i < numParallel; i++) {
         EXPECT_EQ(inputsSyncB[i]->vector<float>(), resultSync);
@@ -81,7 +81,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
 
     kp::Manager mgrAsync(0, { 0, 2 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> inputsAsyncB;
+    std::vector<std::shared_ptr<kp::Memory>> inputsAsyncB;
 
     std::vector<std::shared_ptr<kp::Algorithm>> algosAsync;
 
@@ -111,7 +111,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
                            endAsync - startAsync)
                            .count();
 
-    sq->eval<kp::OpTensorSyncLocal>({ inputsAsyncB });
+    sq->eval<kp::OpSyncLocal>({ inputsAsyncB });
 
     for (uint32_t i = 0; i < numParallel; i++) {
         EXPECT_EQ((inputsAsyncB[i]->vector<float>()), resultAsync);
@@ -161,7 +161,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     std::shared_ptr<kp::Sequence> sq1 = mgr.sequence();
     std::shared_ptr<kp::Sequence> sq2 = mgr.sequence();
 
-    sq1->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    sq1->eval<kp::OpSyncLocal>({ tensorA, tensorB });
 
     std::shared_ptr<kp::Algorithm> algo1 = mgr.algorithm({ tensorA }, spirv);
     std::shared_ptr<kp::Algorithm> algo2 = mgr.algorithm({ tensorB }, spirv);
@@ -178,7 +178,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecution)
     sq1->evalAwait();
     sq2->evalAwait();
 
-    sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    sq1->evalAsync<kp::OpSyncLocal>({ tensorA, tensorB });
     sq1->evalAwait();
 
     EXPECT_EQ(tensorA->vector(), resultAsync);
@@ -225,7 +225,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
     std::shared_ptr<kp::Sequence> sq1 = mgr.sequence();
     std::shared_ptr<kp::Sequence> sq2 = mgr.sequence();
 
-    sq1->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    sq1->eval<kp::OpSyncLocal>({ tensorA, tensorB });
 
     std::shared_ptr<kp::Algorithm> algo1 = mgr.algorithm({ tensorA }, spirv);
     std::shared_ptr<kp::Algorithm> algo2 = mgr.algorithm({ tensorB }, spirv);
@@ -253,7 +253,7 @@ TEST(TestAsyncOperations, TestManagerAsyncExecutionTimeout)
     // of 1m ns)
     EXPECT_LT(duration, 100000);
 
-    sq1->evalAsync<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+    sq1->evalAsync<kp::OpSyncLocal>({ tensorA, tensorB });
     sq1->evalAwait();
 
     EXPECT_EQ(tensorA->vector(), resultAsync);

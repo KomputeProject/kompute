@@ -36,7 +36,7 @@ class Algorithm
      */
     template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
-              const std::vector<std::shared_ptr<Tensor>>& tensors = {},
+              const std::vector<std::shared_ptr<Memory>>& memObjects = {},
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
               const std::vector<S>& specializationConstants = {},
@@ -46,20 +46,20 @@ class Algorithm
 
         this->mDevice = device;
 
-        if (tensors.size() && spirv.size()) {
+        if (memObjects.size() && spirv.size()) {
             KP_LOG_INFO(
               "Kompute Algorithm initialising with tensor size: {} and "
               "spirv size: {}",
-              tensors.size(),
+              memObjects.size(),
               spirv.size());
-            this->rebuild(tensors,
+            this->rebuild(memObjects,
                           spirv,
                           workgroup,
                           specializationConstants,
                           pushConstants);
         } else {
             KP_LOG_INFO(
-              "Kompute Algorithm constructor with empty tensors and or "
+              "Kompute Algorithm constructor with empty mem objects and or "
               "spirv so not rebuilding vulkan components");
         }
     }
@@ -81,7 +81,7 @@ class Algorithm
      * as this initial value.
      */
     template<typename S = float, typename P = float>
-    void rebuild(const std::vector<std::shared_ptr<Tensor>>& tensors,
+    void rebuild(const std::vector<std::shared_ptr<Memory>>& memObjects,
                  const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
                  const std::vector<S>& specializationConstants = {},
@@ -89,7 +89,7 @@ class Algorithm
     {
         KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
-        this->mTensors = tensors;
+        this->mMemObjects = memObjects;
         this->mSpirv = spirv;
 
         if (specializationConstants.size()) {
@@ -122,7 +122,8 @@ class Algorithm
         }
 
         this->setWorkgroup(
-          workgroup, this->mTensors.size() ? this->mTensors[0]->size() : 1);
+          workgroup,
+          this->mMemObjects.size() ? this->mMemObjects[0]->size() : 1);
 
         // Descriptor pool is created first so if available then destroy all
         // before rebuild
@@ -267,18 +268,18 @@ class Algorithm
                  ((T*)this->mPushConstantsData) + this->mPushConstantsSize };
     }
     /**
-     * Gets the current tensors that are used in the algorithm.
+     * Gets the current memory objects that are used in the algorithm.
      *
-     * @returns The list of tensors used in the algorithm.
+     * @returns The list of memory objects used in the algorithm.
      */
-    const std::vector<std::shared_ptr<Tensor>>& getTensors();
+    const std::vector<std::shared_ptr<Memory>>& getMemObjects();
 
     void destroy();
 
   private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
-    std::vector<std::shared_ptr<Tensor>> mTensors;
+    std::vector<std::shared_ptr<Memory>> mMemObjects;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
