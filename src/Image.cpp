@@ -442,6 +442,7 @@ Image::getPrimaryImageUsageFlags()
     switch (this->mMemoryType) {
         case MemoryTypes::eDevice:
         case MemoryTypes::eHost:
+        case MemoryTypes::eDeviceAndHost:
             return vk::ImageUsageFlagBits::eStorage |
                    vk::ImageUsageFlagBits::eTransferSrc |
                    vk::ImageUsageFlagBits::eTransferDst;

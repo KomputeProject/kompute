@@ -374,3 +374,27 @@ TEST(TestOpCopyImage, CopyDeviceToDeviceImage2DMismatchedSizes)
     EXPECT_THROW(mgr.sequence()->eval<kp::OpCopy>({ imageA, imageB }),
                  std::runtime_error);
 }
+
+TEST(TestOpImageCopy, CopyDeviceAndHostToDeviceAndHostImage)
+{
+    kp::Manager mgr;
+
+    std::vector<float> testVecA{ 1, 2, 3 };
+    std::vector<float> testVecB{ 0, 0, 0 };
+
+    std::shared_ptr<kp::ImageT<float>> imageA =
+      mgr.image(testVecA, 3, 1, 1, kp::Memory::MemoryTypes::eDeviceAndHost);
+    std::shared_ptr<kp::ImageT<float>> imageB =
+      mgr.image(testVecB, 3, 1, 1, kp::Memory::MemoryTypes::eDeviceAndHost);
+
+    EXPECT_TRUE(imageA->isInit());
+    EXPECT_TRUE(imageB->isInit());
+
+    mgr.sequence()
+      ->eval<kp::OpSyncDevice>({ imageA, imageB })
+      ->eval<kp::OpCopy>({ imageA, imageB })
+      ->eval<kp::OpSyncLocal>({ imageA, imageB });
+
+    // Making sure the GPU holds the same vector
+    EXPECT_EQ(imageA->vector(), imageB->vector());
+}

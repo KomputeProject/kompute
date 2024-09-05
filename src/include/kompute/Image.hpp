@@ -120,7 +120,8 @@ class Image : public Memory
               "Custom data types are not supported for Kompute Images");
         }
 
-        if (memoryType == MemoryTypes::eHost) {
+        if (memoryType == MemoryTypes::eHost ||
+            memoryType == MemoryTypes::eDeviceAndHost) {
             // Host-accessible memory must be linear-tiled.
             tiling = vk::ImageTiling::eLinear;
         } else if (memoryType == MemoryTypes::eDevice ||
