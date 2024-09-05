@@ -34,7 +34,8 @@ function(vulkan_compile_shader)
      ## The directory may not be created so we need to ensure its present 
      get_filename_component(SHADER_COMPILE_SPV_PATH ${SHADER_COMPILE_SPV_FILE_FULL} DIRECTORY)
      if(NOT EXISTS ${SHADER_COMPILE_SPV_PATH})
-         add_custom_target(build-time-make-directory ALL
+             get_filename_component(SHADER_COMPILE_SPV_FILENAME ${SHADER_COMPILE_SPV_FILE_FULL} NAME)
+             add_custom_target(build-time-make-directory-${SHADER_COMPILE_SPV_FILENAME} ALL
              COMMAND ${CMAKE_COMMAND} -E make_directory ${SHADER_COMPILE_SPV_PATH})
      endif()
      ## Requires custom command function as this is the only way to call 
