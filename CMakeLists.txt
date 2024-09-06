@@ -150,12 +150,14 @@ if(KOMPUTE_OPT_USE_SPDLOG)
 endif()
 
 # fmt
-if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
-    FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 10.0.0) # Source: https://github.com/fmtlib/fmt/releases
-    FetchContent_MakeAvailable(fmt)
-else()
-    find_package(fmt REQUIRED)
+if(NOT TARGET fmt::fmt)
+    if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
+        FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+            GIT_TAG 10.0.0) # Source: https://github.com/fmtlib/fmt/releases
+        FetchContent_MakeAvailable(fmt)
+    else()
+        find_package(fmt REQUIRED)
+    endif()
 endif()
 
 add_compile_definitions(VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1)
