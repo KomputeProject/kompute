@@ -191,6 +191,13 @@ Manager::createInstance()
           applicationExtensions.data();
     }
 
+#if VK_USE_PLATFORM_ANDROID_KHR
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+      dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
+#endif // VK_USE_PLATFORM_ANDROID_KHR
+
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
     KP_LOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
@@ -245,13 +252,6 @@ Manager::createInstance()
     }
 #endif
 
-#if VK_USE_PLATFORM_ANDROID_KHR
-    vk::DynamicLoader dl;
-    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
-      dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
-#endif // VK_USE_PLATFORM_ANDROID_KHR
-
     this->mInstance = std::make_shared<vk::Instance>();
     vk::Result createInstanceResult = vk::createInstance(
       &computeInstanceCreateInfo, nullptr, this->mInstance.get());
@@ -278,7 +278,7 @@ Manager::createInstance()
           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
         debugCreateInfo.flags = debugFlags;
 
-        this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
+        this->mDebugDispatcher.init(*this->mInstance, vkGetInstanceProcAddr);
         this->mDebugReportCallback =
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
