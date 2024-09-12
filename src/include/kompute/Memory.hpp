@@ -29,6 +29,8 @@ class Memory
         eDevice = 0,  ///< Type is device memory, source and destination
         eHost = 1,    ///< Type is host memory, source and destination
         eStorage = 2, ///< Type is Device memory (only)
+        eDeviceAndHost =
+          3, ///< Type is host-visible and host-coherent device memory
     };
 
     enum class DataTypes

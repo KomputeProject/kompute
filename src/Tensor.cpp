@@ -282,12 +282,14 @@ Tensor::constructDescriptorSet(vk::DescriptorSet descriptorSet,
 
     return writeDesciptorSet;
 }
+
 vk::BufferUsageFlags
 Tensor::getPrimaryBufferUsageFlags()
 {
     switch (this->mMemoryType) {
         case MemoryTypes::eDevice:
         case MemoryTypes::eHost:
+        case MemoryTypes::eDeviceAndHost:
             return vk::BufferUsageFlagBits::eStorageBuffer |
                    vk::BufferUsageFlagBits::eTransferSrc |
                    vk::BufferUsageFlagBits::eTransferDst;

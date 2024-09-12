@@ -212,3 +212,29 @@ TEST(TestOpCopyImageToTensor, CopyDeviceToDeviceImageUninitialised)
     // Making sure the GPU holds the same vector
     EXPECT_EQ(imageA->vector(), tensorB->vector());
 }
+
+TEST(TestOpImageCopyToTensor, CopyDeviceAndHostToDeviceAndHostTensor)
+{
+    kp::Manager mgr;
+
+    std::vector<float> testVecA{ 1, 2, 3 };
+    std::vector<float> testVecB{ 0, 0, 0 };
+
+    std::shared_ptr<kp::ImageT<float>> imageA = mgr.image(
+      testVecA, testVecA.size(), 1, 1, kp::Memory::MemoryTypes::eDeviceAndHost);
+    std::shared_ptr<kp::TensorT<float>> tensorB =
+      mgr.tensor(testVecB, kp::Memory::MemoryTypes::eDeviceAndHost);
+
+    EXPECT_TRUE(imageA->isInit());
+    EXPECT_TRUE(tensorB->isInit());
+
+    mgr.sequence()
+      ->eval<kp::OpSyncDevice>({ imageA })
+      ->eval<kp::OpSyncDevice>({ tensorB })
+      ->eval<kp::OpCopy>({ imageA, tensorB })
+      ->eval<kp::OpSyncLocal>({ imageA })
+      ->eval<kp::OpSyncLocal>({ tensorB });
+
+    // Making sure the GPU holds the same vector
+    EXPECT_EQ(imageA->vector(), tensorB->vector());
+}

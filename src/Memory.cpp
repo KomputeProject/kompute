@@ -157,7 +157,8 @@ Memory::mapRawData()
 
     std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
 
-    if (this->mMemoryType == MemoryTypes::eHost) {
+    if (this->mMemoryType == MemoryTypes::eHost ||
+        this->mMemoryType == MemoryTypes::eDeviceAndHost) {
         hostVisibleMemory = this->mPrimaryMemory;
     } else if (this->mMemoryType == MemoryTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
@@ -187,7 +188,8 @@ Memory::unmapRawData()
 
     std::shared_ptr<vk::DeviceMemory> hostVisibleMemory = nullptr;
 
-    if (this->mMemoryType == MemoryTypes::eHost) {
+    if (this->mMemoryType == MemoryTypes::eHost ||
+        this->mMemoryType == MemoryTypes::eDeviceAndHost) {
         hostVisibleMemory = this->mPrimaryMemory;
     } else if (this->mMemoryType == MemoryTypes::eDevice) {
         hostVisibleMemory = this->mStagingMemory;
@@ -226,6 +228,10 @@ Memory::getPrimaryMemoryPropertyFlags()
             return vk::MemoryPropertyFlagBits::eHostVisible |
                    vk::MemoryPropertyFlagBits::eHostCoherent;
             break;
+        case MemoryTypes::eDeviceAndHost:
+            return vk::MemoryPropertyFlagBits::eDeviceLocal |
+                   vk::MemoryPropertyFlagBits::eHostVisible |
+                   vk::MemoryPropertyFlagBits::eHostCoherent;
         case MemoryTypes::eStorage:
             return vk::MemoryPropertyFlagBits::eDeviceLocal;
             break;
