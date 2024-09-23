@@ -84,7 +84,7 @@ class Tensor : public Memory
      * @param copyFromTensor Tensor to copy the data from
      */
     void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                        std::shared_ptr<Tensor> copyFromTensor);
+                        std::shared_ptr<Tensor> copyFromTensor) override;
 
     /**
      * Records a copy from the memory of the image provided to the current
@@ -95,7 +95,7 @@ class Tensor : public Memory
      * @param copyFromImage Image to copy the data from
      */
     void recordCopyFrom(const vk::CommandBuffer& commandBuffer,
-                        std::shared_ptr<Image> copyFromImage);
+                        std::shared_ptr<Image> copyFromImage) override;
 
     /**
      * Records a copy from the internal staging memory to the device memory
