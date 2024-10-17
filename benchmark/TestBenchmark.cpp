@@ -48,7 +48,7 @@ TEST(TestBenchmark, TestMultipleSequenceOperationMostlyGPU)
     std::shared_ptr<kp::TensorT<uint32_t>> tensorInB = mgr.tensorT<uint32_t>(std::vector<uint32_t>(numElems, elemValue));
     std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor(std::vector<float>(numElems, 0));
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = { tensorInA, tensorInB, tensorOut };
+    std::vector<std::shared_ptr<kp::Memory>> params = { tensorInA, tensorInB, tensorOut };
 
     // Opt: Avoiding using anonimous sequences when we will reuse
     std::vector<std::shared_ptr<kp::Sequence>> sequences(numSeqs);
@@ -63,7 +63,7 @@ TEST(TestBenchmark, TestMultipleSequenceOperationMostlyGPU)
         }
     }
 
-    mgr.sequence()->eval<kp::OpTensorSyncDevice>({ tensorInA });
+    mgr.sequence()->eval<kp::OpSyncDevice>({ tensorInA });
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -83,7 +83,7 @@ TEST(TestBenchmark, TestMultipleSequenceOperationMostlyGPU)
       std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime)
         .count();
 
-    mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorOut });
+    mgr.sequence()->eval<kp::OpSyncLocal>({ tensorOut });
 
     EXPECT_EQ(tensorOut->vector(), std::vector<float>(numElems, elemValue * numIter * numOps * numSeqs));
 
