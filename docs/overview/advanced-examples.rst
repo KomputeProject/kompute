@@ -92,12 +92,12 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
 .. code-block:: cpp
    :linenos:
 
-   class OpMyCustom : public OpAlgoDispatch
+   class OpMyCustom : public kp::OpAlgoDispatch
    {
      public:
-       OpMyCustom(std::vector<std::shared_ptr<Tensor>> tensors,
+       OpMyCustom(std::vector<std::shared_ptr<kp::Memory>> tensors,
             std::shared_ptr<kp::Algorithm> algorithm)
-         : OpAlgoBase(algorithm)
+         : kp::OpAlgoDispatch(algorithm)
        {
             if (tensors.size() != 3) {
                 throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
@@ -135,7 +135,7 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
 
             algorithm->rebuild(tensors, spirv);
        }
-   }
+   };
 
 
    int main() {
@@ -148,13 +148,13 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
        auto tensorOut = mgr.tensor({ 0., 0., 0. });
 
        mgr.sequence()
-            ->record<kp::OpTensorSyncDevice>({tensorLhs, tensorRhs, tensorOut})
-            ->record<kp::OpMyCustom>({tensorLhs, tensorRhs, tensorOut}, mgr.algorithm())
-            ->record<kp::OpTensorSyncLocal>({tensorLhs, tensorRhs, tensorOut})
+            ->record<kp::OpSyncDevice>({tensorLhs, tensorRhs, tensorOut})
+            ->record<OpMyCustom>({tensorLhs, tensorRhs, tensorOut}, mgr.algorithm())
+            ->record<kp::OpSyncLocal>({tensorLhs, tensorRhs, tensorOut})
             ->eval();
 
        // Prints the output which is { 0, 4, 12 }
-       std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
+       std::cout << fmt::format("Output: {}", tensorOut->vector()) << std::endl;
    }
 
 Async/Await Example
