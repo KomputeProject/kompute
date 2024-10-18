@@ -170,8 +170,8 @@ First we are able to create the manager as we normally would.
     // You can allow Kompute to create the GPU resources, or pass your existing ones
     kp::Manager mgr; // Selects device 0 unless explicitly requested
 
-    // Creates tensor an initializes GPU memory (below we show more granularity)
-    auto tensor = mgr.tensor(10, 0.0);
+    // Creates tensor and initializes GPU memory (below we show more granularity)
+    auto tensor = mgr.tensorT<float>(10);
 
 We can now run our first asynchronous command, which in this case we can use the default sequence.
 
@@ -181,7 +181,7 @@ Sequences can be executed in synchronously or asynchronously without having to c
     :linenos:
 
     // Create tensors data explicitly in GPU with an operation
-    mgr.sequence()->eval<kp::OpTensorSyncDevice>({tensor});
+    mgr.sequence()->eval<kp::OpSyncDevice>({tensor});
 
 
 While this is running we can actually do other things like in this case create the shader we'll be using.
@@ -231,7 +231,7 @@ The parameter provided is the maximum amount of time to wait in nanoseconds. Whe
 .. code-block:: cpp
     :linenos:
 
-    auto sq = mgr.sequence()
+    auto sq = mgr.sequence();
 
     // Run Async Kompute operation on the parameters provided
     sq->evalAsync<kp::OpAlgoDispatch>(algo);
@@ -240,7 +240,7 @@ The parameter provided is the maximum amount of time to wait in nanoseconds. Whe
 
     // When we're ready we can wait 
     // The default wait time is UINT64_MAX
-    sq.evalAwait()
+    sq->evalAwait();
 
 
 Finally, below you can see that we can also run syncrhonous commands without having to change anything.
@@ -250,11 +250,11 @@ Finally, below you can see that we can also run syncrhonous commands without hav
 
     // Sync the GPU memory back to the local tensor
     // We can still run synchronous jobs in our created sequence
-    sq.eval<kp::OpTensorSyncLocal>({ tensor });
+    sq->eval<kp::OpSyncLocal>({ tensor });
 
     // Prints the output: B: { 100000000, ... }
     std::cout << fmt::format("B: {}", 
-        tensor.data()) << std::endl;
+        tensor->vector()) << std::endl;
 
 
 Parallel Operation Submission
