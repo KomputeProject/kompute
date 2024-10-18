@@ -69,12 +69,12 @@ The example below shows how you can enable the "VK_EXT_shader_atomic_float" exte
              mgr.algorithm({ tensor }, spirv, kp::Workgroup({ 1 }), {}, { 0.0, 0.0, 0.0 });
 
            sq = mgr.sequence()
-                  ->record<kp::OpTensorSyncDevice>({ tensor })
+                  ->record<kp::OpSyncDevice>({ tensor })
                   ->record<kp::OpAlgoDispatch>(algo,
                                                std::vector<float>{ 0.1, 0.2, 0.3 })
                   ->record<kp::OpAlgoDispatch>(algo,
                                                std::vector<float>{ 0.3, 0.2, 0.1 })
-                  ->record<kp::OpTensorSyncLocal>({ tensor })
+                  ->record<kp::OpSyncLocal>({ tensor })
                   ->eval();
 
            EXPECT_EQ(tensor->data(), std::vector<float>({ 0.4, 0.4, 0.4 }));
@@ -92,12 +92,12 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
 .. code-block:: cpp
    :linenos:
 
-   class OpMyCustom : public OpAlgoDispatch
+   class OpMyCustom : public kp::OpAlgoDispatch
    {
      public:
-       OpMyCustom(std::vector<std::shared_ptr<Tensor>> tensors,
+       OpMyCustom(std::vector<std::shared_ptr<kp::Memory>> tensors,
             std::shared_ptr<kp::Algorithm> algorithm)
-         : OpAlgoBase(algorithm)
+         : kp::OpAlgoDispatch(algorithm)
        {
             if (tensors.size() != 3) {
                 throw std::runtime_error("Kompute OpMult expected 3 tensors but got " + tensors.size());
@@ -135,7 +135,7 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
 
             algorithm->rebuild(tensors, spirv);
        }
-   }
+   };
 
 
    int main() {
@@ -148,13 +148,13 @@ We also provide tools that allow you to `convert shaders into C++ headers <https
        auto tensorOut = mgr.tensor({ 0., 0., 0. });
 
        mgr.sequence()
-            ->record<kp::OpTensorSyncDevice>({tensorLhs, tensorRhs, tensorOut})
-            ->record<kp::OpMyCustom>({tensorLhs, tensorRhs, tensorOut}, mgr.algorithm())
-            ->record<kp::OpTensorSyncLocal>({tensorLhs, tensorRhs, tensorOut})
+            ->record<kp::OpSyncDevice>({tensorLhs, tensorRhs, tensorOut})
+            ->record<OpMyCustom>({tensorLhs, tensorRhs, tensorOut}, mgr.algorithm())
+            ->record<kp::OpSyncLocal>({tensorLhs, tensorRhs, tensorOut})
             ->eval();
 
        // Prints the output which is { 0, 4, 12 }
-       std::cout << fmt::format("Output: {}", tensorOutput.data()) << std::endl;
+       std::cout << fmt::format("Output: {}", tensorOut->vector()) << std::endl;
    }
 
 Async/Await Example
@@ -170,8 +170,8 @@ First we are able to create the manager as we normally would.
     // You can allow Kompute to create the GPU resources, or pass your existing ones
     kp::Manager mgr; // Selects device 0 unless explicitly requested
 
-    // Creates tensor an initializes GPU memory (below we show more granularity)
-    auto tensor = mgr.tensor(10, 0.0);
+    // Creates tensor and initializes GPU memory (below we show more granularity)
+    auto tensor = mgr.tensorT<float>(10);
 
 We can now run our first asynchronous command, which in this case we can use the default sequence.
 
@@ -181,7 +181,7 @@ Sequences can be executed in synchronously or asynchronously without having to c
     :linenos:
 
     // Create tensors data explicitly in GPU with an operation
-    mgr.sequence()->eval<kp::OpTensorSyncDevice>({tensor});
+    mgr.sequence()->eval<kp::OpSyncDevice>({tensor});
 
 
 While this is running we can actually do other things like in this case create the shader we'll be using.
@@ -231,7 +231,7 @@ The parameter provided is the maximum amount of time to wait in nanoseconds. Whe
 .. code-block:: cpp
     :linenos:
 
-    auto sq = mgr.sequence()
+    auto sq = mgr.sequence();
 
     // Run Async Kompute operation on the parameters provided
     sq->evalAsync<kp::OpAlgoDispatch>(algo);
@@ -240,7 +240,7 @@ The parameter provided is the maximum amount of time to wait in nanoseconds. Whe
 
     // When we're ready we can wait 
     // The default wait time is UINT64_MAX
-    sq.evalAwait()
+    sq->evalAwait();
 
 
 Finally, below you can see that we can also run syncrhonous commands without having to change anything.
@@ -250,11 +250,11 @@ Finally, below you can see that we can also run syncrhonous commands without hav
 
     // Sync the GPU memory back to the local tensor
     // We can still run synchronous jobs in our created sequence
-    sq.eval<kp::OpTensorSyncLocal>({ tensor });
+    sq->eval<kp::OpSyncLocal>({ tensor });
 
     // Prints the output: B: { 100000000, ... }
     std::cout << fmt::format("B: {}", 
-        tensor.data()) << std::endl;
+        tensor->vector()) << std::endl;
 
 
 Parallel Operation Submission
@@ -318,8 +318,8 @@ It's worth mentioning you can have multiple sequences referencing the same queue
        // We need to create explicit sequences with their respective queues
        // The second parameter is the index in the familyIndex array which is relative
        //      to the vector we created the manager with.
-       sqOne = mgr.sequence(0);
-       sqTwo = mgr.sequence(1);
+       auto sqOne = mgr.sequence(0);
+       auto sqTwo = mgr.sequence(1);
 
 We create the tensors without modifications.
 
@@ -327,11 +327,11 @@ We create the tensors without modifications.
     :linenos:
 
        // Creates tensor an initializes GPU memory (below we show more granularity)
-       auto tensorA = mgr.tensor({ 10, 0.0 });
-       auto tensorB = mgr.tensor({ 10, 0.0 });
+       auto tensorA = mgr.tensorT<float>(10);
+       auto tensorB = mgr.tensorT<float>(10);
 
        // Copies the data into GPU memory
-       mgr.sequence().eval<kp::OpTensorSyncDevice>({tensorA tensorB});
+       mgr.sequence()->eval<kp::OpSyncDevice>({tensorA, tensorB});
 
 Similar to the asyncrhonous usecase above, we can still run synchronous commands without modifications.
 
@@ -367,7 +367,8 @@ Similar to the asyncrhonous usecase above, we can still run synchronous commands
        // See shader documentation section for compileSource
        std::vector<uint32_t> spirv = compileSource(shader);
 
-       std::shared_ptr<kp::Algorithm> algo = mgr.algorithm({tensorA, tenssorB}, spirv);
+       std::shared_ptr<kp::Algorithm> algoOne = mgr.algorithm({ tensorA }, spirv);
+       std::shared_ptr<kp::Algorithm> algoTwo = mgr.algorithm({ tensorB }, spirv);
 
 Now we can actually trigger the parallel processing, running two OpAlgoBase Operations - each in a different sequence / queue.
 
@@ -375,15 +376,15 @@ Now we can actually trigger the parallel processing, running two OpAlgoBase Oper
     :linenos:
 
        // Run the first parallel operation in the `queueOne` sequence
-       sqOne->evalAsync<kp::OpAlgoDispatch>(algo);
+       sqOne->evalAsync<kp::OpAlgoDispatch>(algoOne);
 
        // Run the second parallel operation in the `queueTwo` sequence
-       sqTwo->evalAsync<kp::OpAlgoDispatch>(algo);
+       sqTwo->evalAsync<kp::OpAlgoDispatch>(algoTwo);
 
 
 Similar to the asynchronous example above, we are able to do other work whilst the tasks are executing.
 
-We are able to wait for the tasks to complete by triggering the `evalOpAwait` on the respective sequence.
+We are able to wait for the tasks to complete by triggering the `evalAwait` on the respective sequence.
 
 .. code-block:: cpp
     :linenos:
@@ -391,14 +392,14 @@ We are able to wait for the tasks to complete by triggering the `evalOpAwait` on
        // Here we can do other work
 
        // We can now wait for the two parallel tasks to finish
-       sqOne.evalOpAwait()
-       sqTwo.evalOpAwait()
+       sqOne->evalAwait();
+       sqTwo->evalAwait();
 
        // Sync the GPU memory back to the local tensor
-       mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+       mgr.sequence()->eval<kp::OpSyncLocal>({ tensorA, tensorB });
 
        // Prints the output: A: 100000000 B: 100000000
        std::cout << fmt::format("A: {}, B: {}", 
-           tensorA.data()[0], tensorB.data()[0]) << std::endl;
+           tensorA->data()[0], tensorB->data()[0]) << std::endl;
 
 

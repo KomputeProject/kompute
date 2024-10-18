@@ -93,7 +93,7 @@ void kompute(const std::string& shader) {
     auto tensorOutA = mgr.tensorT<uint32_t>({ 0, 0, 0 });
     auto tensorOutB = mgr.tensorT<uint32_t>({ 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Tensor>> params = {tensorInA, tensorInB, tensorOutA, tensorOutB};
+    std::vector<std::shared_ptr<kp::Memory>> params = {tensorInA, tensorInB, tensorOutA, tensorOutB};
 
     // 3. Create algorithm based on shader (supports buffers & push/spec constants)
     kp::Workgroup workgroup({3, 1, 1});
@@ -110,7 +110,7 @@ void kompute(const std::string& shader) {
 
     // 4. Run operation synchronously using sequence
     mgr.sequence()
-        ->record<kp::OpTensorSyncDevice>(params)
+        ->record<kp::OpSyncDevice>(params)
         ->record<kp::OpAlgoDispatch>(algorithm) // Binds default push consts
         ->eval() // Evaluates the two recorded operations
         ->record<kp::OpAlgoDispatch>(algorithm, pushConstsB) // Overrides push consts
@@ -118,7 +118,7 @@ void kompute(const std::string& shader) {
 
     // 5. Sync results from the GPU asynchronously
     auto sq = mgr.sequence();
-    sq->evalAsync<kp::OpTensorSyncLocal>(params);
+    sq->evalAsync<kp::OpSyncLocal>(params);
 
     // ... Do other work asynchronously whilst GPU finishes
 
