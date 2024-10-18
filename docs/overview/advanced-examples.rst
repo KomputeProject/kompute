@@ -318,8 +318,8 @@ It's worth mentioning you can have multiple sequences referencing the same queue
        // We need to create explicit sequences with their respective queues
        // The second parameter is the index in the familyIndex array which is relative
        //      to the vector we created the manager with.
-       sqOne = mgr.sequence(0);
-       sqTwo = mgr.sequence(1);
+       auto sqOne = mgr.sequence(0);
+       auto sqTwo = mgr.sequence(1);
 
 We create the tensors without modifications.
 
@@ -327,11 +327,11 @@ We create the tensors without modifications.
     :linenos:
 
        // Creates tensor an initializes GPU memory (below we show more granularity)
-       auto tensorA = mgr.tensor({ 10, 0.0 });
-       auto tensorB = mgr.tensor({ 10, 0.0 });
+       auto tensorA = mgr.tensorT<float>(10);
+       auto tensorB = mgr.tensorT<float>(10);
 
        // Copies the data into GPU memory
-       mgr.sequence().eval<kp::OpTensorSyncDevice>({tensorA tensorB});
+       mgr.sequence()->eval<kp::OpSyncDevice>({tensorA, tensorB});
 
 Similar to the asyncrhonous usecase above, we can still run synchronous commands without modifications.
 
@@ -367,7 +367,8 @@ Similar to the asyncrhonous usecase above, we can still run synchronous commands
        // See shader documentation section for compileSource
        std::vector<uint32_t> spirv = compileSource(shader);
 
-       std::shared_ptr<kp::Algorithm> algo = mgr.algorithm({tensorA, tenssorB}, spirv);
+       std::shared_ptr<kp::Algorithm> algoOne = mgr.algorithm({ tensorA }, spirv);
+       std::shared_ptr<kp::Algorithm> algoTwo = mgr.algorithm({ tensorB }, spirv);
 
 Now we can actually trigger the parallel processing, running two OpAlgoBase Operations - each in a different sequence / queue.
 
@@ -375,15 +376,15 @@ Now we can actually trigger the parallel processing, running two OpAlgoBase Oper
     :linenos:
 
        // Run the first parallel operation in the `queueOne` sequence
-       sqOne->evalAsync<kp::OpAlgoDispatch>(algo);
+       sqOne->evalAsync<kp::OpAlgoDispatch>(algoOne);
 
        // Run the second parallel operation in the `queueTwo` sequence
-       sqTwo->evalAsync<kp::OpAlgoDispatch>(algo);
+       sqTwo->evalAsync<kp::OpAlgoDispatch>(algoTwo);
 
 
 Similar to the asynchronous example above, we are able to do other work whilst the tasks are executing.
 
-We are able to wait for the tasks to complete by triggering the `evalOpAwait` on the respective sequence.
+We are able to wait for the tasks to complete by triggering the `evalAwait` on the respective sequence.
 
 .. code-block:: cpp
     :linenos:
@@ -391,14 +392,14 @@ We are able to wait for the tasks to complete by triggering the `evalOpAwait` on
        // Here we can do other work
 
        // We can now wait for the two parallel tasks to finish
-       sqOne.evalOpAwait()
-       sqTwo.evalOpAwait()
+       sqOne->evalAwait();
+       sqTwo->evalAwait();
 
        // Sync the GPU memory back to the local tensor
-       mgr.sequence()->eval<kp::OpTensorSyncLocal>({ tensorA, tensorB });
+       mgr.sequence()->eval<kp::OpSyncLocal>({ tensorA, tensorB });
 
        // Prints the output: A: 100000000 B: 100000000
        std::cout << fmt::format("A: {}, B: {}", 
-           tensorA.data()[0], tensorB.data()[0]) << std::endl;
+           tensorA->data()[0], tensorB->data()[0]) << std::endl;
 
 
