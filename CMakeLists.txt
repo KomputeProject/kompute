@@ -189,7 +189,7 @@ endif()
 if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
     set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
     FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 8.1.1
+        GIT_TAG 11.0.0
         GIT_SHALLOW 1) # Source: https://github.com/fmtlib/fmt/releases
     FetchContent_MakeAvailable(fmt)
 else()
