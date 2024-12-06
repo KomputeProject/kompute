@@ -2,7 +2,7 @@
 Extending Kompute with Custom C++ Operations
 =================
 
-Kompute provides an extenisble architecture which allows for the core components to be extended by building custom operations.
+Kompute provides an extensible architecture which allows for the core components to be extended by building custom operations.
 
 Building operations is intuitive however it requires knowing some nuances around the order in which each of the class functions across the operation are called as a sequence is executed.
 
