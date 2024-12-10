@@ -279,8 +279,12 @@ def test_mgr_utils():
     props = mgr.get_device_properties()
 
     assert "device_name" in props
+    assert "max_push_constants_size" in props
 
     devices = mgr.list_devices()
 
     assert len(devices) > 0
     assert "device_name" in devices[0]
+
+    feats = mgr.get_device_features()
+    assert "shader_float64" in feats
