@@ -483,6 +483,12 @@ Manager::getDeviceProperties() const
     return this->mPhysicalDevice->getProperties();
 }
 
+vk::PhysicalDeviceFeatures
+Manager::getDeviceFeatures() const
+{
+    return this->mPhysicalDevice->getFeatures();
+}
+
 std::vector<vk::PhysicalDevice>
 Manager::listDevices() const
 {

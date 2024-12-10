@@ -506,6 +506,14 @@ class Manager
     vk::PhysicalDeviceProperties getDeviceProperties() const;
 
     /**
+     * Information about the current device features.
+     *
+     * @return vk::PhysicalDeviceFeatures containing information about the
+     *device features
+     **/
+    vk::PhysicalDeviceFeatures getDeviceFeatures() const;
+
+    /**
      * List the devices available in the current vulkan instance.
      *
      * @return vector of physical devices containing their respective properties

@@ -733,7 +733,13 @@ PYBIND11_MODULE(kp, m)
 
             return kp::py::vkPropertiesToDict(properties);
         },
-        "Return a dict containing information about the device");
+        "Return a dict containing information about the device")
+      .def(
+        "get_device_features",
+        [](kp::Manager& self) {
+            return kp::py::vkFeaturesToDict(self.getDeviceFeatures());
+        },
+        "Return a dict containing information about the device features");
 
     auto atexit = py::module_::import("atexit");
     atexit.attr("register")(py::cpp_function([]() {
