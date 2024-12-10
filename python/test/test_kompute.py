@@ -288,3 +288,8 @@ def test_mgr_utils():
 
     feats = mgr.get_device_features()
     assert "shader_float64" in feats
+
+def test_mgr_request_features():
+    features = kp.PhysicalDeviceFeatures()
+    features.shader_float64 = True
+    mgr = kp.Manager(0, features)
