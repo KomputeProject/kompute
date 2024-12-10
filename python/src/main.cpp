@@ -65,6 +65,39 @@ PYBIND11_MODULE(kp, m)
 
     py::module_ np = py::module_::import("numpy");
 
+    py::enum_<kp::Memory::DataTypes>(m, "DataTypes")
+      .value("bool",
+             kp::Memory::DataTypes::eBool,
+             DOC(kp, Memory, DataTypes, eBool))
+      .value("int",
+             kp::Memory::DataTypes::eInt,
+             DOC(kp, Memory, DataTypes, eInt))
+      .value("uint",
+             kp::Memory::DataTypes::eUnsignedInt,
+             DOC(kp, Memory, DataTypes, eUnsignedInt))
+      .value("float",
+             kp::Memory::DataTypes::eFloat,
+             DOC(kp, Memory, DataTypes, eFloat))
+      .value("double",
+             kp::Memory::DataTypes::eDouble,
+             DOC(kp, Memory, DataTypes, eDouble))
+      .value("custom",
+             kp::Memory::DataTypes::eCustom,
+             DOC(kp, Memory, DataTypes, eCustom))
+      .value("short",
+             kp::Memory::DataTypes::eShort,
+             DOC(kp, Memory, DataTypes, eShort))
+      .value("ushort",
+             kp::Memory::DataTypes::eUnsignedShort,
+             DOC(kp, Memory, DataTypes, eUnsignedShort))
+      .value("char",
+             kp::Memory::DataTypes::eChar,
+             DOC(kp, Memory, DataTypes, eChar))
+      .value("uchar",
+             kp::Memory::DataTypes::eUnsignedChar,
+             DOC(kp, Memory, DataTypes, eUnsignedChar))
+      .export_values();
+
     py::enum_<kp::Memory::MemoryTypes>(m, "MemoryTypes")
       .value("device",
              kp::Memory::MemoryTypes::eDevice,
