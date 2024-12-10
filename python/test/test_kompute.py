@@ -292,4 +292,6 @@ def test_mgr_utils():
 def test_mgr_request_features():
     features = kp.PhysicalDeviceFeatures()
     features.shader_float64 = True
-    #mgr = kp.Manager(0, features)
+
+    kp_log.setLevel(logging.DEBUG)
+    mgr = kp.Manager(0, features)
