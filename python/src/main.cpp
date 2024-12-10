@@ -65,6 +65,14 @@ PYBIND11_MODULE(kp, m)
 
     py::module_ np = py::module_::import("numpy");
 
+    py::class_<vk::PhysicalDeviceFeatures>(
+      m, "PhysicalDeviceFeatures")
+      .def(py::init())
+      .def_readwrite("robust_buffer_access", &vk::PhysicalDeviceFeatures::robustBufferAccess)
+      .def_readwrite("shader_float64", &vk::PhysicalDeviceFeatures::shaderFloat64)
+      .def_readwrite("shader_int64", &vk::PhysicalDeviceFeatures::shaderInt64)
+      .def_readwrite("shader_int16", &vk::PhysicalDeviceFeatures::shaderInt16);
+
     py::enum_<kp::Memory::DataTypes>(m, "DataTypes")
       .value("bool",
              kp::Memory::DataTypes::eBool,
@@ -288,12 +296,23 @@ PYBIND11_MODULE(kp, m)
     py::class_<kp::Manager, std::shared_ptr<kp::Manager>>(
       m, "Manager", DOC(kp, Manager))
       .def(py::init(), DOC(kp, Manager, Manager))
-      .def(py::init<uint32_t>(), DOC(kp, Manager, Manager_2))
+      .def(py::init<uint32_t>(),
+           DOC(kp, Manager, Manager_2),
+           py::arg("device") = 0)
       .def(py::init<uint32_t,
                     const std::vector<uint32_t>&,
                     const std::vector<std::string>&>(),
-           DOC(kp, Manager, Manager_2),
+           DOC(kp, Manager, Manager_3),
            py::arg("device") = 0,
+           py::arg("family_queue_indices") = std::vector<uint32_t>(),
+           py::arg("desired_extensions") = std::vector<std::string>())
+      .def(py::init<uint32_t,
+                    const vk::PhysicalDeviceFeatures&,
+                    const std::vector<uint32_t>&,
+                    const std::vector<std::string>&>(),
+           DOC(kp, Manager, Manager_4),
+           py::arg("device") = 0,
+           py::arg("desired_features") = vk::PhysicalDeviceFeatures(),
            py::arg("family_queue_indices") = std::vector<uint32_t>(),
            py::arg("desired_extensions") = std::vector<std::string>())
       .def("destroy", &kp::Manager::destroy, DOC(kp, Manager, destroy))

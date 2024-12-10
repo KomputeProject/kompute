@@ -30,10 +30,29 @@ class Manager
      * @param physicalDeviceIndex The index of the physical device to use
      * @param familyQueueIndices (Optional) List of queue indices to add for
      * explicit allocation
-     * @param desiredExtensions The desired extensions to load from
+     * @param desiredExtensions (Optional) The desired extensions to load from
+     * physicalDevice
+     * @param desiredFeatures (Optional) The desired features to include
+     * in the physical device
+     */
+    Manager(uint32_t physicalDeviceIndex,
+            const std::vector<uint32_t>& familyQueueIndices = {},
+            const std::vector<std::string>& desiredExtensions = {});
+
+    /**
+     * Similar to second constructor but allows for further configuration
+     * for Vulkan device features.
+     *
+     * @param physicalDeviceIndex The index of the physical device to use
+     * @param desiredFeatures The desired features to request from the
+     * physical device
+     * @param familyQueueIndices (Optional) List of queue indices to add for
+     * explicit allocation
+     * @param desiredExtensions (Optional) The desired extensions to load from
      * physicalDevice
      */
     Manager(uint32_t physicalDeviceIndex,
+            const vk::PhysicalDeviceFeatures& desiredFeatures,
             const std::vector<uint32_t>& familyQueueIndices = {},
             const std::vector<std::string>& desiredExtensions = {});
 
@@ -555,7 +574,8 @@ class Manager
     void createInstance();
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
                       uint32_t hysicalDeviceIndex = 0,
-                      const std::vector<std::string>& desiredExtensions = {});
+                      const std::vector<std::string>& desiredExtensions = {},
+                      const vk::PhysicalDeviceFeatures* pDesiredFeatures = nullptr);
 };
 
 } // End namespace kp

@@ -33,9 +33,20 @@ debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
 }
 #endif
 
+static void setUpLogger() {
+    // Make sure the logger is setup
+#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
+    logger::setupLogger();
+#endif
+}
+
 Manager::Manager()
-  : Manager(0)
 {
+    this->mManageResources = true;
+    setUpLogger();
+    this->createInstance();
+    this->createDevice(
+      {}, 0, {}, nullptr);
 }
 
 Manager::Manager(uint32_t physicalDeviceIndex,
@@ -43,15 +54,22 @@ Manager::Manager(uint32_t physicalDeviceIndex,
                  const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
-
-// Make sure the logger is setup
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
-
+    setUpLogger();
     this->createInstance();
     this->createDevice(
-      familyQueueIndices, physicalDeviceIndex, desiredExtensions);
+      familyQueueIndices, physicalDeviceIndex, desiredExtensions, nullptr);
+}
+
+Manager::Manager(uint32_t physicalDeviceIndex,
+                 const vk::PhysicalDeviceFeatures& desiredFeatures,
+                 const std::vector<uint32_t>& familyQueueIndices,
+                 const std::vector<std::string>& desiredExtensions)
+{
+    this->mManageResources = true;
+    setUpLogger();
+    this->createInstance();
+    this->createDevice(
+      familyQueueIndices, physicalDeviceIndex, desiredExtensions, &desiredFeatures);
 }
 
 Manager::Manager(std::shared_ptr<vk::Instance> instance,
@@ -64,10 +82,7 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
     this->mPhysicalDevice = physicalDevice;
     this->mDevice = device;
 
-// Make sure the logger is setup
-#if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
-    logger::setupLogger();
-#endif
+    setUpLogger();
 }
 
 Manager::~Manager()
@@ -312,7 +327,8 @@ Manager::clear()
 void
 Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
                       uint32_t physicalDeviceIndex,
-                      const std::vector<std::string>& desiredExtensions)
+                      const std::vector<std::string>& desiredExtensions,
+                      const vk::PhysicalDeviceFeatures* pDesiredFeatures)
 {
 
     KP_LOG_DEBUG("Kompute Manager creating Device");
@@ -436,7 +452,8 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
                                           {},
                                           {},
                                           validExtensions.size(),
-                                          validExtensions.data());
+                                          validExtensions.data(),
+                                          pDesiredFeatures);
 
     this->mDevice = std::make_shared<vk::Device>();
     physicalDevice.createDevice(
