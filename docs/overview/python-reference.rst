@@ -39,3 +39,16 @@ TensorType
 .. automodule:: kp
    :members:
 
+MemoryTypes
+-------
+
+.. automodule:: kp
+   :members:
+
+DataTypes
+-------
+
+.. automodule:: kp
+   :members:
+
+
