@@ -63,7 +63,10 @@ Similarly you can find the same extended example as above:
     # Can be initialized with List[] or np.Array
     tensor_in_a = mgr.tensor([2, 2, 2])
     tensor_in_b = mgr.tensor([1, 2, 3])
-    tensor_out = mgr.tensor([0, 0, 0])
+
+    # By default, tensors use a float type, but that can be explicitly specified
+    tensor_out = mgr.tensor_t([0, 0, 0], dtype=np.float32)
+    assert(tensor_out.data_type() == kp.DataTypes.float)
 
     seq = mgr.sequence()
     seq.eval(kp.OpTensorSyncDevice([tensor_in_a, tensor_in_b, tensor_out]))

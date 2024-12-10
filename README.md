@@ -187,6 +187,7 @@ def kompute(shader):
     # Explicit type constructor supports uint32, int32, double, float and bool
     tensor_out_a = mgr.tensor_t(np.array([0, 0, 0], dtype=np.uint32))
     tensor_out_b = mgr.tensor_t(np.array([0, 0, 0], dtype=np.uint32))
+    assert(t_data.data_type() == kp.DataTypes.uint)
 
     params = [tensor_in_a, tensor_in_b, tensor_out_a, tensor_out_b]
 
