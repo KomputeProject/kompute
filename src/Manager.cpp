@@ -10,6 +10,34 @@
 #include <string>
 #include <unordered_map>
 
+template <> struct fmt::formatter<vk::ValidationFeatureEnableEXT>: public fmt::formatter<std::string> {
+
+  // parse is inherited from formatter<string>.
+
+  template <typename Context>
+  fmt::format_context::iterator format (vk::ValidationFeatureEnableEXT const& flag, Context& ctx) const {
+      std::string name {"unknown"};
+      switch(flag) {
+        case vk::ValidationFeatureEnableEXT::eDebugPrintf:
+            name = "debugPrintF";
+            break;
+        case vk::ValidationFeatureEnableEXT::eGpuAssisted:
+            name = "gpuAssisted";
+            break;
+        case vk::ValidationFeatureEnableEXT::eGpuAssistedReserveBindingSlot:
+            name = "gpuAssistedReserveBindingSlot";
+            break;
+        case vk::ValidationFeatureEnableEXT::eBestPractices:
+            name = "bestPractices";
+            break;
+        case vk::ValidationFeatureEnableEXT::eSynchronizationValidation:
+            name = "synchronizationValidation";
+            break;
+      }
+      return fmt::formatter<std::string>::format(name, ctx);
+  }
+};
+
 namespace kp {
 
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
@@ -185,10 +213,11 @@ Manager::createInstance()
 #endif
 
     if (!applicationExtensions.empty()) {
-        computeInstanceCreateInfo.enabledExtensionCount =
-          (uint32_t)applicationExtensions.size();
-        computeInstanceCreateInfo.ppEnabledExtensionNames =
-          applicationExtensions.data();
+        computeInstanceCreateInfo.setEnabledExtensionCount(
+            (uint32_t)applicationExtensions.size());
+        computeInstanceCreateInfo.setPpEnabledExtensionNames(
+            applicationExtensions.data());
+        KP_LOG_DEBUG("Desired extensions: {}", fmt::join(applicationExtensions, ", "));
     }
 
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
@@ -212,7 +241,21 @@ Manager::createInstance()
         for (const std::string& layerName : envLayerNames) {
             desiredLayerNames.push_back(layerName.c_str());
         }
-        KP_LOG_DEBUG("Desired layers: {}", fmt::join(desiredLayerNames, ", "));
+    }
+    KP_LOG_DEBUG("Desired layers: {}", fmt::join(desiredLayerNames, ", "));
+
+    vk::ValidationFeaturesEXT validationFeatures;
+    std::vector<vk::ValidationFeatureEnableEXT>  validationFeatureEnablesExt;
+    const char* envPrintfVal = std::getenv("KOMPUTE_ENV_PRINTF");
+    if (envPrintfVal != nullptr && *envPrintfVal != '\0') {
+        KP_LOG_DEBUG("Kompute Manager adding debug printf");
+        validationFeatureEnablesExt.push_back(vk::ValidationFeatureEnableEXT::eDebugPrintf);
+    }
+
+    if (!validationFeatureEnablesExt.empty()) {
+        validationFeatures.setEnabledValidationFeatures(validationFeatureEnablesExt);
+        computeInstanceCreateInfo.setPNext(&validationFeatures);
+        KP_LOG_DEBUG("Validation features: {}", fmt::join(validationFeatureEnablesExt, ", "));
     }
 
     // Identify the valid layer names based on the desiredLayerNames
@@ -236,9 +279,9 @@ Manager::createInstance()
         KP_LOG_DEBUG(
           "Kompute Manager Initializing instance with valid layers: {}",
           fmt::join(validLayerNames, ", "));
-        computeInstanceCreateInfo.enabledLayerCount =
-          static_cast<uint32_t>(validLayerNames.size());
-        computeInstanceCreateInfo.ppEnabledLayerNames = validLayerNames.data();
+        computeInstanceCreateInfo.setEnabledLayerCount(
+          static_cast<uint32_t>(validLayerNames.size()));
+        computeInstanceCreateInfo.setPpEnabledLayerNames(validLayerNames.data());
     } else {
         KP_LOG_WARN("Kompute Manager no valid layer names found from desired "
                     "layer names");
@@ -268,15 +311,14 @@ Manager::createInstance()
     KP_LOG_DEBUG("Kompute Manager Instance Created");
 
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-    KP_LOG_DEBUG("Kompute Manager adding debug callbacks");
     if (validLayerNames.size() > 0) {
+        KP_LOG_DEBUG("Kompute Manager adding debug callbacks");
         vk::DebugReportFlagsEXT debugFlags =
           vk::DebugReportFlagBitsEXT::eError |
           vk::DebugReportFlagBitsEXT::eWarning;
-        vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};
-        debugCreateInfo.pfnCallback =
-          (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
-        debugCreateInfo.flags = debugFlags;
+        auto debugCreateInfo = vk::DebugReportCallbackCreateInfoEXT()
+            .setFlags(debugFlags)
+            .setPfnCallback((PFN_vkDebugReportCallbackEXT)debugMessageCallback);
 
         this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
         this->mDebugReportCallback =
@@ -384,6 +426,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     } else {
         this->mComputeQueueFamilyIndices = familyQueueIndices;
     }
+    KP_LOG_DEBUG("compute queue family indices: {}", fmt::join(this->mComputeQueueFamilyIndices, ", "));
 
     std::unordered_map<uint32_t, uint32_t> familyQueueCounts;
     std::unordered_map<uint32_t, std::vector<float>> familyQueuePriorities;
@@ -425,10 +468,14 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
             validExtensions.push_back(ext.c_str());
         }
     }
+
     if (desiredExtensions.size() != validExtensions.size()) {
         KP_LOG_ERROR("Kompute Manager not all extensions were added: {}",
                      fmt::join(validExtensions, ", "));
     }
+
+    KP_LOG_DEBUG("Kompute Manager used extensions {}",
+                 fmt::join(validExtensions, ", "));
 
     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),
                                           deviceQueueCreateInfos.size(),
