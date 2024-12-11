@@ -14,6 +14,30 @@ namespace py = pybind11;
 // used in Core.hpp
 py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
 
+static void kp_log(int level, const std::string& msg) {
+  py::gil_scoped_acquire gil;
+    switch (level) {
+      case 0:
+        kp_trace(msg); break;
+      case 1:
+        kp_debug(msg); break;
+      case 2:
+        kp_info(msg); break;
+      case 3:
+        kp_warning(msg); break;
+      case 4:
+        kp_error(msg); break;
+      default:
+        break;
+    }
+}
+
+void py_log_trace(const std::string& msg) {kp_log(0, msg);}
+void py_log_debug(const std::string& msg) {kp_log(1, msg);}
+void py_log_info(const std::string& msg) {kp_log(2, msg);}
+void py_log_warning(const std::string& msg) {kp_log(3, msg);}
+void py_log_error(const std::string& msg) {kp_log(4, msg);}
+
 std::unique_ptr<kp::OpAlgoDispatch>
 opAlgoDispatchPyInit(std::shared_ptr<kp::Algorithm>& algorithm,
                      const py::array& push_consts)
