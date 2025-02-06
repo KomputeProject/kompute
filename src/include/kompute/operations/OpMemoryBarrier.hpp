@@ -39,7 +39,7 @@ class OpMemoryBarrier : public OpBase
                     const vk::AccessFlagBits& dstAccessMask,
                     const vk::PipelineStageFlagBits& srcStageMask,
                     const vk::PipelineStageFlagBits& dstStageMask,
-                    bool barrierOnPrimary = true);
+                    bool barrierOnPrimary = true) noexcept;
 
     /**
      * Default destructor, which is in charge of destroying the reference to the

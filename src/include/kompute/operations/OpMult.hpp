@@ -52,7 +52,7 @@ class OpMult : public OpAlgoDispatch
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    ~OpMult() override { KP_LOG_DEBUG("Kompute OpMult destructor started"); }
+    ~OpMult() noexcept override { KP_LOG_DEBUG("Kompute OpMult destructor started"); }
 };
 
 } // End namespace kp

@@ -18,7 +18,7 @@ OpSyncLocal::OpSyncLocal(const std::vector<std::shared_ptr<Memory>>& memObjects)
     this->mMemObjects = memObjects;
 }
 
-OpSyncLocal::~OpSyncLocal()
+OpSyncLocal::~OpSyncLocal() noexcept
 {
     KP_LOG_DEBUG("Kompute OpSyncLocal destructor started");
 }
