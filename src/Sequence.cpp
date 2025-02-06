@@ -8,7 +8,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::Queue> computeQueue,
                    uint32_t queueIndex,
-                   uint32_t totalTimestamps)
+                   uint32_t totalTimestamps) noexcept
 {
     KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
@@ -25,7 +25,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                                        1); //+1 for the first one
 }
 
-Sequence::~Sequence()
+Sequence::~Sequence() noexcept
 {
     KP_LOG_DEBUG("Kompute Sequence Destructor started");
 
