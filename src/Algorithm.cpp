@@ -6,7 +6,7 @@
 
 namespace kp {
 
-Algorithm::~Algorithm()
+Algorithm::~Algorithm() noexcept
 {
     KP_LOG_DEBUG("Kompute Algorithm Destructor started");
 
