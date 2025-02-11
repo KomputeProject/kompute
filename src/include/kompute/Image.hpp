@@ -164,6 +164,16 @@ class Image : public Memory
     {
     }
 
+
+    /**
+     * @brief Make Image uncopyable
+     *
+     */
+    Image(const Image&) = delete;
+    Image(const Image&&) = delete;
+    Image& operator=(const Image&) = delete;
+    Image& operator=(const Image&&) = delete;
+
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
