@@ -18,7 +18,7 @@ OpCopy::OpCopy(const std::vector<std::shared_ptr<Memory>>& memObjects)
     this->mMemObjects = memObjects;
 }
 
-OpCopy::~OpCopy()
+OpCopy::~OpCopy() noexcept
 {
     KP_LOG_DEBUG("Kompute OpCopy destructor started");
 }

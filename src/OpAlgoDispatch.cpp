@@ -4,7 +4,7 @@
 
 namespace kp {
 
-OpAlgoDispatch::~OpAlgoDispatch()
+OpAlgoDispatch::~OpAlgoDispatch() noexcept
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch destructor started");
 

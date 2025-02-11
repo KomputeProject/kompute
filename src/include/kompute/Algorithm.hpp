@@ -40,7 +40,7 @@ class Algorithm
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
               const std::vector<S>& specializationConstants = {},
-              const std::vector<P>& pushConstants = {})
+              const std::vector<P>& pushConstants = {}) noexcept
     {
         KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
 
@@ -140,7 +140,7 @@ class Algorithm
      * Destructor for Algorithm which is responsible for freeing and desroying
      * respective pipelines and owned parameter groups.
      */
-    ~Algorithm();
+    ~Algorithm() noexcept;
 
     /**
      * Records the dispatch function with the provided template parameters or

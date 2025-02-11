@@ -26,7 +26,7 @@ class OpAlgoDispatch : public OpBase
      */
     template<typename T = float>
     OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
-                   const std::vector<T>& pushConstants = {})
+                   const std::vector<T>& pushConstants = {}) noexcept
     {
         KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
 
@@ -47,7 +47,7 @@ class OpAlgoDispatch : public OpBase
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
-    virtual ~OpAlgoDispatch() override;
+    virtual ~OpAlgoDispatch() noexcept override;
 
     /**
      * This records the commands that are to be sent to the GPU. This includes

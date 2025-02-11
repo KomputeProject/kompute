@@ -17,7 +17,7 @@ OpSyncDevice::OpSyncDevice(
     this->mMemObjects = memObjects;
 }
 
-OpSyncDevice::~OpSyncDevice()
+OpSyncDevice::~OpSyncDevice() noexcept
 {
     KP_LOG_DEBUG("Kompute OpSyncDevice destructor started");
 
