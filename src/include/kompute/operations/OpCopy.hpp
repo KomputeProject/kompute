@@ -27,6 +27,15 @@ class OpCopy : public OpBase
     OpCopy(const std::vector<std::shared_ptr<Memory>>& memObjects);
 
     /**
+     * @brief Make OpCopy non-copyable
+     *
+     */
+    OpCopy(const OpCopy&) = delete;
+    OpCopy(const OpCopy&&) = delete;
+    OpCopy& operator=(const OpCopy&) = delete;
+    OpCopy& operator=(const OpCopy&&) = delete;
+
+    /**
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */

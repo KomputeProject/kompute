@@ -29,6 +29,16 @@ class OpSyncDevice : public OpBase
     OpSyncDevice(const std::vector<std::shared_ptr<Memory>>& memObjects);
 
     /**
+     * @brief Make OpSyncDevice non-copyable
+     *
+     */
+    OpSyncDevice(const OpSyncDevice&) = delete;
+    OpSyncDevice(const OpSyncDevice&&) = delete;
+    OpSyncDevice& operator=(const OpSyncDevice&) = delete;
+    OpSyncDevice& operator=(const OpSyncDevice&&) = delete;
+
+
+    /**
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */

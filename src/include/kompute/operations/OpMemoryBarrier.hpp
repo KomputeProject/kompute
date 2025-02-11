@@ -42,6 +42,15 @@ class OpMemoryBarrier : public OpBase
                     bool barrierOnPrimary = true) noexcept;
 
     /**
+     * @brief Make OpMemoryBarrier non-copyable
+     *
+     */
+    OpMemoryBarrier(const OpMemoryBarrier&) = delete;
+    OpMemoryBarrier(const OpMemoryBarrier&&) = delete;
+    OpMemoryBarrier& operator=(const OpMemoryBarrier&) = delete;
+    OpMemoryBarrier& operator=(const OpMemoryBarrier&&) = delete;
+
+    /**
      * Default destructor, which is in charge of destroying the reference to the
      * tensors and all the relevant access / stage masks created
      */
