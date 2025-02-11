@@ -29,6 +29,16 @@ class Sequence : public std::enable_shared_from_this<Sequence>
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
              uint32_t totalTimestamps = 0) noexcept;
+
+    /**
+     * @brief Make Sequence uncopyable
+     *
+     */
+    Sequence(const Sequence&) = delete;
+    Sequence(const Sequence&&) = delete;
+    Sequence& operator=(const Sequence&) = delete;
+    Sequence& operator=(const Sequence&&) = delete;
+
     /**
      * Destructor for sequence which is responsible for cleaning all subsequent
      * owned operations.
