@@ -30,7 +30,7 @@ class OpCopy : public OpBase
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */
-    ~OpCopy() override;
+    ~OpCopy() noexcept override;
 
     /**
      * Records the copy commands from the first memory object into all the other

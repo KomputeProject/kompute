@@ -32,7 +32,7 @@ class OpSyncDevice : public OpBase
      * Default destructor. This class does not manage memory so it won't be
      * expecting the parent to perform a release.
      */
-    ~OpSyncDevice() override;
+    ~OpSyncDevice() noexcept override;
 
     /**
      * For device memory objects, it records the copy command for the memory

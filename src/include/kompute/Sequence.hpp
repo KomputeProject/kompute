@@ -28,12 +28,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
-             uint32_t totalTimestamps = 0);
+             uint32_t totalTimestamps = 0) noexcept;
     /**
      * Destructor for sequence which is responsible for cleaning all subsequent
      * owned operations.
      */
-    ~Sequence();
+    ~Sequence() noexcept;
 
     /**
      * Record function for operation to be added to the GPU queue in batch. This

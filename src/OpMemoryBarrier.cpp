@@ -10,7 +10,7 @@ OpMemoryBarrier::OpMemoryBarrier(
   const vk::AccessFlagBits& dstAccessMask,
   const vk::PipelineStageFlagBits& srcStageMask,
   const vk::PipelineStageFlagBits& dstStageMask,
-  bool barrierOnPrimary)
+  bool barrierOnPrimary) noexcept
   : mSrcAccessMask(srcAccessMask)
   , mDstAccessMask(dstAccessMask)
   , mSrcStageMask(srcStageMask)
@@ -21,7 +21,7 @@ OpMemoryBarrier::OpMemoryBarrier(
     KP_LOG_DEBUG("Kompute OpMemoryBarrier constructor");
 }
 
-OpMemoryBarrier::~OpMemoryBarrier()
+OpMemoryBarrier::~OpMemoryBarrier() noexcept
 {
     KP_LOG_DEBUG("Kompute OpMemoryBarrier destructor started");
 }
