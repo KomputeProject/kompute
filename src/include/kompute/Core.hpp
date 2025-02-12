@@ -23,8 +23,11 @@ typedef std::vector<float> Constants;
 #endif // KOMPUTE_VK_API_VERSION
 
 #if defined(KOMPUTE_BUILD_PYTHON)
-#include <pybind11/pybind11.h>
-namespace py = pybind11;
 // from python/src/main.cpp
-extern py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
+
+extern void py_log_trace(const std::string& msg);
+extern void py_log_debug(const std::string& msg);
+extern void py_log_info(const std::string& msg);
+extern void py_log_warning(const std::string& msg);
+extern void py_log_error(const std::string& msg);
 #endif
