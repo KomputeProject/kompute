@@ -160,7 +160,7 @@ vs_run_tests: vs_build_tests
 #### PYTHONG ####
 
 test_python:
-	python3 -m pytest -s --log-cli-level=DEBUG -v python/test/
+	python3 -m pytest --forked -s --log-cli-level=DEBUG -v python/test/
 
 ####### Run CI Commands #######
 
