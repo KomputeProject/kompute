@@ -58,6 +58,15 @@ class Tensor : public Memory
            const MemoryTypes& memoryType = MemoryTypes::eDevice);
 
     /**
+     * @brief Make Tensor uncopyable
+     *
+     */
+    Tensor(const Tensor&) = delete;
+    Tensor(const Tensor&&) = delete;
+    Tensor& operator=(const Tensor&) = delete;
+    Tensor& operator=(const Tensor&&) = delete;
+
+    /**
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
      */
@@ -249,6 +258,16 @@ class TensorT : public Tensor
         KP_LOG_DEBUG("Kompute TensorT filling constructor with data size {}",
                      data.size());
     }
+
+    /**
+     * @brief Make TensorT uncopyable
+     *
+     */
+    TensorT(const TensorT&) = delete;
+    TensorT(const TensorT&&) = delete;
+    TensorT& operator=(const TensorT&) = delete;
+    TensorT& operator=(const TensorT&&) = delete;
+
 
     ~TensorT() { KP_LOG_DEBUG("Kompute TensorT destructor"); }
 

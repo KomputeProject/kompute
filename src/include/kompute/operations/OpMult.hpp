@@ -49,6 +49,15 @@ class OpMult : public OpAlgoDispatch
     }
 
     /**
+     * @brief Make OpMult non-copyable
+     *
+     */
+    OpMult(const OpMult&) = delete;
+    OpMult(const OpMult&&) = delete;
+    OpMult& operator=(const OpMult&) = delete;
+    OpMult& operator=(const OpMult&&) = delete;
+
+    /**
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */

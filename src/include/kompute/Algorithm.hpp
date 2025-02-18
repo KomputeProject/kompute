@@ -137,6 +137,16 @@ class Algorithm
     }
 
     /**
+     * @brief Make Algorithm uncopyable
+     *
+     */
+    Algorithm(const Algorithm&) = delete;
+    Algorithm(const Algorithm&&) = delete;
+    Algorithm& operator=(const Algorithm&) = delete;
+    Algorithm& operator=(const Algorithm&&) = delete;
+
+
+    /**
      * Destructor for Algorithm which is responsible for freeing and desroying
      * respective pipelines and owned parameter groups.
      */

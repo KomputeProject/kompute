@@ -19,6 +19,21 @@ namespace kp {
 class OpBase
 {
   public:
+      /**
+     * @brief Construct a new OpBase object
+     *
+     */
+    OpBase() = default;
+
+    /**
+     * @brief Make OpBase non-copyable
+     *
+     */
+    OpBase(const OpBase&) = delete;
+    OpBase(const OpBase&&) = delete;
+    OpBase& operator=(const OpBase&) = delete;
+    OpBase& operator=(const OpBase&&) = delete;
+
     /**
      * Default destructor for OpBase class. This OpBase destructor class should
      * always be called to destroy and free owned resources unless it is
