@@ -63,6 +63,16 @@ class Memory
            uint32_t x,
            uint32_t y);
 
+
+    /**
+     * @brief Make Memory uncopyable
+     *
+     */
+    Memory(const Memory&) = delete;
+    Memory(const Memory&&) = delete;
+    Memory& operator=(const Memory&) = delete;
+    Memory& operator=(const Memory&&) = delete;
+
     /**
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.

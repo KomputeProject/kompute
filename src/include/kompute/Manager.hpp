@@ -50,6 +50,16 @@ class Manager
             std::shared_ptr<vk::PhysicalDevice> physicalDevice,
             std::shared_ptr<vk::Device> device);
 
+
+    /**
+     * @brief Make Manager uncopyable
+     *
+     */
+    Manager(const Manager&) = delete;
+    Manager(const Manager&&) = delete;
+    Manager& operator=(const Manager&) = delete;
+    Manager& operator=(const Manager&&) = delete;
+
     /**
      * Manager destructor which would ensure all owned resources are destroyed
      * unless explicitly stated that resources should not be destroyed or freed.

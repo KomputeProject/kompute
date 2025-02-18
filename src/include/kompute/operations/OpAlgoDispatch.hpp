@@ -44,6 +44,16 @@ class OpAlgoDispatch : public OpBase
     }
 
     /**
+     * @brief Make OpAlgoDispatch non-copyable
+     *
+     */
+    OpAlgoDispatch(const OpAlgoDispatch&) = delete;
+    OpAlgoDispatch(const OpAlgoDispatch&&) = delete;
+    OpAlgoDispatch& operator=(const OpAlgoDispatch&) = delete;
+    OpAlgoDispatch& operator=(const OpAlgoDispatch&&) = delete;
+
+
+    /**
      * Default destructor, which is in charge of destroying the algorithm
      * components but does not destroy the underlying tensors
      */
