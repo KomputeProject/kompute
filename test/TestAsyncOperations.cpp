@@ -79,7 +79,7 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         EXPECT_EQ(inputsSyncB[i]->vector<float>(), resultSync);
     }
 
-    kp::Manager mgrAsync(0, { 0, 2 });
+    kp::Manager mgrAsync(0, std::vector<uint32_t>{ 0, 2 });
 
     std::vector<std::shared_ptr<kp::Memory>> inputsAsyncB;
 
