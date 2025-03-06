@@ -13,7 +13,11 @@
 namespace kp {
 
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
-static VKAPI_ATTR VkBool32 VKAPI_CALL
+#ifdef VK_VERSION_1_4
+VKAPI_PTR vk::Bool32 VKAPI_CALL
+#else
+static VKAPI_PTR VkBool32 VKAPI_CALL
+#endif // VK_VERSION_1_4
 debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
                      VkDebugReportObjectTypeEXT /*objectType*/,
                      uint64_t /*object*/,
