@@ -274,8 +274,13 @@ Manager::createInstance()
           vk::DebugReportFlagBitsEXT::eError |
           vk::DebugReportFlagBitsEXT::eWarning;
         vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};
+#ifdef VK_VERSION_1_4
+        debugCreateInfo.pfnCallback =
+          (vk::PFN_DebugReportCallbackEXT)debugMessageCallback;
+#else
         debugCreateInfo.pfnCallback =
           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+#endif
         debugCreateInfo.flags = debugFlags;
 
         this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
