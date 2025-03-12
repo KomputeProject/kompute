@@ -23,9 +23,23 @@ vkPropertiesToDict(const vk::PhysicalDeviceProperties& properties)
         pybind11::make_tuple(properties.limits.maxComputeWorkGroupSize[0],
                              properties.limits.maxComputeWorkGroupSize[1],
                              properties.limits.maxComputeWorkGroupSize[2]),
+      "max_push_constants_size"_a =
+        properties.limits.maxPushConstantsSize,
       "timestamps_supported"_a =
         (bool)properties.limits.timestampComputeAndGraphics);
 
+    return pyDict;
+}
+
+static pybind11::dict
+vkFeaturesToDict(const vk::PhysicalDeviceFeatures& features)
+{
+    pybind11::dict pyDict(
+      "robust_buffer_access"_a = (bool)features.robustBufferAccess,
+      "shader_float64"_a = (bool)features.shaderFloat64,
+      "shader_int64"_a = (bool)features.shaderInt64,
+      "shader_int16"_a = (bool)features.shaderInt16
+    );
     return pyDict;
 }
 }
