@@ -6,6 +6,11 @@
 
 namespace kp {
 
+struct DescriptorContext {
+    std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
+    bool mFreeDescriptorSet = false;    
+};
+
 Algorithm::~Algorithm() noexcept
 {
     KP_LOG_DEBUG("Kompute Algorithm Destructor started");
@@ -17,7 +22,7 @@ bool
 Algorithm::isInit()
 {
     return this->mPipeline && this->mPipelineCache && this->mPipelineLayout &&
-           this->mDescriptorPool && this->mDescriptorSet &&
+           this->mDescriptorPool && !this->mDescriptorContexts.empty() &&
            this->mDescriptorSetLayout && this->mShaderModule;
 }
 
@@ -106,11 +111,14 @@ Algorithm::destroy()
             KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
                         "descriptor set layout but it is null");
         }
-        this->mDevice->destroy(
-          *this->mDescriptorSetLayout,
-          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        this->mDescriptorSetLayout = nullptr;
     }
+
+    this->mDevice->destroy(
+      *this->mDescriptorSetLayout,
+      (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+    this->mDescriptorSetLayout = nullptr;
+
+    this->mMemObjects.clear();
 
     if (this->mFreeDescriptorPool && this->mDescriptorPool) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
@@ -126,14 +134,43 @@ Algorithm::destroy()
 }
 
 void
-Algorithm::createParameters()
-{
+Algorithm::createParameters() {
+    KP_LOG_DEBUG("Kompute Algorithm createParameters started");
+    const auto& primaryMemSet = this->mMemObjects[0];
+
+    std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
+
+    for (size_t i = 0; i < primaryMemSet.size(); i++) {
+        descriptorSetBindings.push_back(
+          vk::DescriptorSetLayoutBinding(i, // Binding index
+                                         primaryMemSet[i]->getDescriptorType(),
+                                         1, // Descriptor count
+                                         vk::ShaderStageFlagBits::eCompute));
+    }
+
+    // This is the component that is fed into the pipeline
+    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo(
+      vk::DescriptorSetLayoutCreateFlags(),
+      static_cast<uint32_t>(descriptorSetBindings.size()),
+      descriptorSetBindings.data());
+
+    KP_LOG_DEBUG("Kompute Algorithm creating descriptor set layout");
+
+    this->mDescriptorSetLayout = std::make_shared<vk::DescriptorSetLayout>();
+    
+    this->mDevice->createDescriptorSetLayout(
+      &descriptorSetLayoutInfo, nullptr, this->mDescriptorSetLayout.get());
+    
+    this->mFreeDescriptorSetLayout = true;
+
+    KP_LOG_DEBUG("Kompute Algorithm creating descriptor pool");
+
+    std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
+
     uint32_t numImages = 0;
     uint32_t numTensors = 0;
 
-    KP_LOG_DEBUG("Kompute Algorithm createParameters started");
-
-    for (const std::shared_ptr<Memory>& mem : this->mMemObjects) {
+    for (const auto& mem : primaryMemSet) {
         if (mem->type() == Memory::Type::eImage) {
             numImages++;
         } else {
@@ -141,7 +178,9 @@ Algorithm::createParameters()
         }
     }
 
-    std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
+    // Multiply tensor and image size by the number of sets we have
+    numTensors *= this->mMemObjects.size();
+    numImages *= this->mMemObjects.size();
 
     if (numTensors > 0) {
         descriptorPoolSizes.push_back(vk::DescriptorPoolSize(
@@ -159,60 +198,41 @@ Algorithm::createParameters()
 
     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
       vk::DescriptorPoolCreateFlags(),
-      1, // Max sets
-      static_cast<uint32_t>(descriptorPoolSizes.size()),
-      descriptorPoolSizes.data());
+      static_cast<uint32_t>(this->mMemObjects.size()),      // Max sets
+      static_cast<uint32_t>(descriptorPoolSizes.size()),    // Number of pools
+      descriptorPoolSizes.data()
+    );
 
-    KP_LOG_DEBUG("Kompute Algorithm creating descriptor pool");
     this->mDescriptorPool = std::make_shared<vk::DescriptorPool>();
-    this->mDevice->createDescriptorPool(
-      &descriptorPoolInfo, nullptr, this->mDescriptorPool.get());
+    this->mDevice->createDescriptorPool(&descriptorPoolInfo, nullptr, this->mDescriptorPool.get());
     this->mFreeDescriptorPool = true;
 
-    std::vector<vk::DescriptorSetLayoutBinding> descriptorSetBindings;
-    for (size_t i = 0; i < this->mMemObjects.size(); i++) {
-        descriptorSetBindings.push_back(
-          vk::DescriptorSetLayoutBinding(i, // Binding index
-                                         mMemObjects[i]->getDescriptorType(),
-                                         1, // Descriptor count
-                                         vk::ShaderStageFlagBits::eCompute));
-    }
+    for (const auto& memSet : this->mMemObjects) {
+        std::shared_ptr<DescriptorContext> context = std::make_shared<DescriptorContext>();
 
-    // This is the component that is fed into the pipeline
-    vk::DescriptorSetLayoutCreateInfo descriptorSetLayoutInfo(
-      vk::DescriptorSetLayoutCreateFlags(),
-      static_cast<uint32_t>(descriptorSetBindings.size()),
-      descriptorSetBindings.data());
+        vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
+            *this->mDescriptorPool,
+            1, // Descriptor set layout count
+            this->mDescriptorSetLayout.get());
 
-    KP_LOG_DEBUG("Kompute Algorithm creating descriptor set layout");
-    this->mDescriptorSetLayout = std::make_shared<vk::DescriptorSetLayout>();
-    this->mDevice->createDescriptorSetLayout(
-      &descriptorSetLayoutInfo, nullptr, this->mDescriptorSetLayout.get());
-    this->mFreeDescriptorSetLayout = true;
+        KP_LOG_DEBUG("Kompute Algorithm allocating descriptor sets");
 
-    vk::DescriptorSetAllocateInfo descriptorSetAllocateInfo(
-      *this->mDescriptorPool,
-      1, // Descriptor set layout count
-      this->mDescriptorSetLayout.get());
+        context->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
+        this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo, context->mDescriptorSet.get());
+        context->mFreeDescriptorSet = true;
 
-    KP_LOG_DEBUG("Kompute Algorithm allocating descriptor sets");
-    this->mDescriptorSet = std::make_shared<vk::DescriptorSet>();
-    this->mDevice->allocateDescriptorSets(&descriptorSetAllocateInfo,
-                                          this->mDescriptorSet.get());
-    this->mFreeDescriptorSet = true;
+        KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
+        
+        for (size_t i = 0; i < memSet.size(); i++) {
+            std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
+            vk::WriteDescriptorSet descriptorSet = memSet[i]->constructDescriptorSet(*context->mDescriptorSet, i);
 
-    KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
-    for (size_t i = 0; i < this->mMemObjects.size(); i++) {
-        std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
+            computeWriteDescriptorSets.push_back(descriptorSet);
 
-        vk::WriteDescriptorSet descriptorSet =
-          this->mMemObjects[i]->constructDescriptorSet(*this->mDescriptorSet,
-                                                       i);
+            this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
+        }
 
-        computeWriteDescriptorSets.push_back(descriptorSet);
-
-        this->mDevice->updateDescriptorSets(computeWriteDescriptorSets,
-                                            nullptr);
+        mDescriptorContexts.emplace_back(context);
     }
 
     KP_LOG_DEBUG("Kompute Algorithm successfully run init");
@@ -348,7 +368,7 @@ Algorithm::recordBindCore(const vk::CommandBuffer& commandBuffer)
     commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eCompute,
                                      *this->mPipelineLayout,
                                      0, // First set
-                                     *this->mDescriptorSet,
+                                     *this->mDescriptorContexts[mActiveMemorySet]->mDescriptorSet,
                                      nullptr // Dispatcher
     );
 }
@@ -409,10 +429,12 @@ Algorithm::getWorkgroup()
     return this->mWorkgroup;
 }
 
-const std::vector<std::shared_ptr<Memory>>&
-Algorithm::getMemObjects()
+const std::vector<std::shared_ptr<Memory>>&Algorithm::getMemObjects(const size_t setId)
 {
-    return this->mMemObjects;
+    if(setId >= mMemObjects.size())
+        throw std::runtime_error("Invalid memory object set");
+
+    return mMemObjects[setId];
 }
 
 }

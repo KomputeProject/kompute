@@ -497,6 +497,32 @@ class Manager
         return algorithm;
     }
 
+    template<typename S = float, typename P = float>
+    std::shared_ptr<Algorithm> algorithm(
+      const std::vector<std::vector<std::shared_ptr<Memory>>>& memObjects,
+      const std::vector<uint32_t>& spirv,
+      const Workgroup& workgroup,
+      const std::vector<S>& specializationConstants,
+      const std::vector<P>& pushConstants)
+    {
+
+        KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
+
+        std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
+          this->mDevice,
+          memObjects,
+          spirv,
+          workgroup,
+          specializationConstants,
+          pushConstants) };
+
+        if (this->mManageResources) {
+            this->mManagedAlgorithms.push_back(algorithm);
+        }
+
+        return algorithm;
+    }
+
     /**
      * Destroy the GPU resources and all managed resources by manager.
      **/
@@ -529,6 +555,14 @@ class Manager
      *object
      **/
     std::shared_ptr<vk::Instance> getVkInstance() const;
+
+    /**
+     * The current Vulkan device.
+     *
+     * @return a shared pointer to the current Vulkan device held by this
+     *object
+     **/
+    std::shared_ptr<vk::Device> getVkDevice() const;
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES

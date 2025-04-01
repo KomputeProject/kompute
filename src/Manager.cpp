@@ -495,4 +495,10 @@ Manager::getVkInstance() const
     return this->mInstance;
 }
 
+std::shared_ptr<vk::Device>
+Manager::getVkDevice() const
+{
+    return this->mDevice;
+}
+
 }

@@ -54,7 +54,7 @@ class OpMemoryBarrier : public OpBase
      * Default destructor, which is in charge of destroying the reference to the
      * tensors and all the relevant access / stage masks created
      */
-    virtual ~OpMemoryBarrier() override;
+    virtual ~OpMemoryBarrier() noexcept override;
 
     /**
      * This records the memory barrier with the access and stage masks provided

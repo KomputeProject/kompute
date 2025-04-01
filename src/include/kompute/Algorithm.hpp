@@ -7,7 +7,11 @@
 #include "kompute/Tensor.hpp"
 #include "logger/Logger.hpp"
 
+#include <map>
+
 namespace kp {
+
+struct DescriptorContext;
 
 /**
     Abstraction for compute shaders that are run on top of tensors grouped via
@@ -64,6 +68,36 @@ class Algorithm
         }
     }
 
+    template<typename S = float, typename P = float>
+    Algorithm(std::shared_ptr<vk::Device> device,
+              const std::vector<std::vector<std::shared_ptr<Memory>>>& memObjects = {},
+              const std::vector<uint32_t>& spirv = {},
+              const Workgroup& workgroup = {},
+              const std::vector<S>& specializationConstants = {},
+              const std::vector<P>& pushConstants = {}) noexcept
+    {
+        KP_LOG_DEBUG("Kompute Algorithm Constructor with device");
+
+        this->mDevice = device;
+
+        if (memObjects.size() && spirv.size()) {
+            KP_LOG_INFO(
+              "Kompute Algorithm initialising with tensor size: {} and "
+              "spirv size: {}",
+              memObjects.size(),
+              spirv.size());
+            this->rebuild(memObjects,
+                          spirv,
+                          workgroup,
+                          specializationConstants,
+                          pushConstants);
+        } else {
+            KP_LOG_INFO(
+              "Kompute Algorithm constructor with empty mem objects and or "
+              "spirv so not rebuilding vulkan components");
+        }
+    }
+
     /**
      *  Rebuild function to reconstruct algorithm with configuration parameters
      * to create the underlying resources.
@@ -82,6 +116,18 @@ class Algorithm
      */
     template<typename S = float, typename P = float>
     void rebuild(const std::vector<std::shared_ptr<Memory>>& memObjects,
+                 const std::vector<uint32_t>& spirv,
+                 const Workgroup& workgroup = {},
+                 const std::vector<S>& specializationConstants = {},
+                 const std::vector<P>& pushConstants = {})
+    {
+        auto wrapper = { memObjects };
+
+        rebuild(wrapper, spirv, workgroup, specializationConstants, pushConstants);
+    }
+
+    template<typename S = float, typename P = float>
+    void rebuild(const std::vector<std::vector<std::shared_ptr<Memory>>>& memObjects,
                  const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
                  const std::vector<S>& specializationConstants = {},
@@ -123,7 +169,7 @@ class Algorithm
 
         this->setWorkgroup(
           workgroup,
-          this->mMemObjects.size() ? this->mMemObjects[0]->size() : 1);
+          this->mMemObjects[0].size() ? this->mMemObjects[0].size() : 1);
 
         // Descriptor pool is created first so if available then destroy all
         // before rebuild
@@ -151,6 +197,18 @@ class Algorithm
      * respective pipelines and owned parameter groups.
      */
     ~Algorithm() noexcept;
+
+    /**
+     * Set active descriptor set to use when binding buffers 
+     * 
+     * @param setId The active memory set to use
+     */
+    void setActiveMemorySet(size_t setId) {
+        if(setId >= mMemObjects.size())
+            throw std::runtime_error("Error setting active memory set. It is out of bounds");
+
+        mActiveMemorySet = setId;
+    }
 
     /**
      * Records the dispatch function with the provided template parameters or
@@ -282,22 +340,21 @@ class Algorithm
      *
      * @returns The list of memory objects used in the algorithm.
      */
-    const std::vector<std::shared_ptr<Memory>>& getMemObjects();
+    const std::vector<std::shared_ptr<Memory>>& getMemObjects(size_t setId=0);
 
     void destroy();
 
   private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
-    std::vector<std::shared_ptr<Memory>> mMemObjects;
+    std::vector<std::vector<std::shared_ptr<Memory>>> mMemObjects;
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
     bool mFreeDescriptorSetLayout = false;
     std::shared_ptr<vk::DescriptorPool> mDescriptorPool;
     bool mFreeDescriptorPool = false;
-    std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
-    bool mFreeDescriptorSet = false;
+    std::vector<std::shared_ptr<DescriptorContext>> mDescriptorContexts;
     std::shared_ptr<vk::ShaderModule> mShaderModule;
     bool mFreeShaderModule = false;
     std::shared_ptr<vk::PipelineLayout> mPipelineLayout;
@@ -316,6 +373,7 @@ class Algorithm
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;
     Workgroup mWorkgroup;
+    uint32_t mActiveMemorySet = 0;
 
     // Create util functions
     void createShaderModule();
