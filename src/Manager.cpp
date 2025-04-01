@@ -13,9 +13,15 @@
 namespace kp {
 
 #ifndef KOMPUTE_DISABLE_VK_DEBUG_LAYERS
+#ifdef VK_VERSION_1_4
+VKAPI_ATTR vk::Bool32 VKAPI_CALL
+debugMessageCallback(vk::DebugReportFlagsEXT /*flags*/,
+                     vk::DebugReportObjectTypeEXT /*objectType*/,
+#else
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 debugMessageCallback(VkDebugReportFlagsEXT /*flags*/,
                      VkDebugReportObjectTypeEXT /*objectType*/,
+#endif // VK_VERSION_1_4
                      uint64_t /*object*/,
                      size_t /*location*/,
                      int32_t /*messageCode*/,
@@ -274,8 +280,13 @@ Manager::createInstance()
           vk::DebugReportFlagBitsEXT::eError |
           vk::DebugReportFlagBitsEXT::eWarning;
         vk::DebugReportCallbackCreateInfoEXT debugCreateInfo = {};
+#ifdef VK_VERSION_1_4
+        debugCreateInfo.pfnCallback =
+          (vk::PFN_DebugReportCallbackEXT)debugMessageCallback;
+#else
         debugCreateInfo.pfnCallback =
           (PFN_vkDebugReportCallbackEXT)debugMessageCallback;
+#endif
         debugCreateInfo.flags = debugFlags;
 
         this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
