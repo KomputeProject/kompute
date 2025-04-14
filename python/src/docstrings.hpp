@@ -538,17 +538,11 @@ R"doc(Base constructor and default used which creates the base resources
 including choosing the device 0 by default.)doc";
 
 static const char *__doc_kp_Manager_Manager_2 =
-R"doc(Similar to base constructor but allows for further configuration to
-use when creating the Vulkan resources.
+R"doc(Similar to base constructor but allows selection of the 
+device
 
 Parameter ``physicalDeviceIndex``:
-    The index of the physical device to use
-
-Parameter ``familyQueueIndices``:
-    (Optional) List of queue indices to add for explicit allocation
-
-Parameter ``desiredExtensions``:
-    The desired extensions to load from physicalDevice)doc";
+    The index of the physical device to use)doc";
 
 static const char *__doc_kp_Manager_Manager_3 =
 R"doc(Manager constructor which allows your own vulkan application to
@@ -565,6 +559,23 @@ Parameter ``device``:
 
 Parameter ``physicalDeviceIndex``:
     Index for vulkan physical device used)doc";
+
+static const char *__doc_kp_Manager_Manager_4 =
+R"doc(Similar to second constructor but allows for further configuration to
+control the requested features of the Vulkan device.
+
+Parameter ``device``:
+    The index of the physical device to use
+
+Parameter ``family_queue_indices``:
+    (Optional) List of queue indices to add for explicit allocation
+
+Parameter ``desired_extensions``:
+    The desired extensions to load from physicalDevice
+
+Parameter ``desired_features``:
+    The desired featutures to request from the physicalDevice)doc";
+
 
 static const char *__doc_kp_Manager_algorithm =
 R"doc(Default non-template function that can be used to create algorithm
