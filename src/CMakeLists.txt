@@ -67,13 +67,11 @@ if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(kompute PUBLIC vulkanAndroid
         android
         kp_logger
-        kp_shader
-        fmt::fmt)
+        kp_shader)
 else()
     target_link_libraries(kompute PUBLIC Vulkan::Vulkan
         kp_logger
-        kp_shader
-        fmt::fmt)
+        kp_shader)
 endif()
 
 if(KOMPUTE_OPT_BUILD_PYTHON)
@@ -94,7 +92,7 @@ add_subdirectory(shaders)
 add_subdirectory(include)
 
 if(KOMPUTE_OPT_INSTALL)
-    if (KOMPUTE_OPT_USE_BUILT_IN_FMT)
+    if (NOT KOMPUTE_OPT_USE_SPDLOG AND KOMPUTE_OPT_USE_BUILT_IN_FMT)
         # We can't export fmt::fmt because it's alias target, so we unwrap the alias and install it.
         get_target_property(fmt_aliased_target fmt::fmt ALIASED_TARGET)
         install(TARGETS ${fmt_aliased_target}
