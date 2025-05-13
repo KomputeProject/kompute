@@ -160,7 +160,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      *
      * @return Boolean stating whether execution was successful.
      */
-    std::shared_ptr<Sequence> evalAsync();
+    std::shared_ptr<Sequence> evalAsync(
+        std::shared_ptr<const vk::Semaphore> waitSemaphore=nullptr, std::shared_ptr<const vk::Semaphore> signalSemaphore=nullptr);
+
     /**
      * Clears currnet operations to record provided one in the vector of
      * operations into the gpu as a submit job without a barrier. EvalAwait()

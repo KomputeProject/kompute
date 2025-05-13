@@ -5,6 +5,7 @@
 #include "logger/Logger.hpp"
 #include <memory>
 #include <string>
+#include <cstdint>
 
 namespace kp {
 
@@ -43,7 +44,8 @@ class Memory
         eShort = 6,
         eUnsignedShort = 7,
         eChar = 8,
-        eUnsignedChar = 9
+        eUnsignedChar = 9,
+        eFloat16 = 10
     };
 
     enum class Type
@@ -60,7 +62,8 @@ class Memory
            const DataTypes& dataType,
            const MemoryTypes& memoryType,
            uint32_t x,
-           uint32_t y);
+           uint32_t y,
+           uint32_t z);
 
 
     /**
@@ -112,6 +115,15 @@ class Memory
      * @returns Boolean stating whether memory object is initialized
      */
     virtual bool isInit() = 0;
+
+    /**
+     * Is this an externally managed tensor?
+     *
+     * @returns Boolean True if tensor is imported
+     */
+    virtual bool isExternal() const {
+        return false;
+    }
 
     /**
      * Records a copy from the internal staging memory to the device memory
@@ -301,6 +313,13 @@ class Memory
      */
     uint32_t getY() { return this->mY; };
 
+    /***
+     * Retreive the size of the z-dimension of the memory
+     *
+     * @return Size of the z-dimension of the memory
+     */
+    uint32_t getZ() { return this->mZ; };
+
     /**
      * Return the object type of this Memory object.
      *
@@ -319,6 +338,7 @@ class Memory
     bool mUnmapMemory = false;
     uint32_t mX;
     uint32_t mY;
+    uint32_t mZ;
 
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice;

@@ -12,7 +12,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                uint32_t elementMemorySize,
                const DataTypes& dataType,
                const MemoryTypes& memoryType)
-  : Memory(physicalDevice, device, dataType, memoryType, elementTotalCount, 1)
+  : Memory(physicalDevice, device, dataType, memoryType, elementTotalCount, 1, 1)
 {
     this->mSize = elementTotalCount;
 
@@ -35,7 +35,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                uint32_t elementMemorySize,
                const DataTypes& dataType,
                const MemoryTypes& memoryType)
-  : Memory(physicalDevice, device, dataType, memoryType, elementTotalCount, 1)
+  : Memory(physicalDevice, device, dataType, memoryType, elementTotalCount, 1, 1)
 {
     this->mSize = elementTotalCount;
 
@@ -113,7 +113,7 @@ Tensor::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
     layer.layerCount = 1;
     vk::Offset3D offset = { 0, 0, 0 };
 
-    vk::Extent3D size = { copyFromImage->getX(), copyFromImage->getY(), 1 };
+    vk::Extent3D size = { copyFromImage->getX(), copyFromImage->getY(), copyFromImage->getZ() };
 
     vk::BufferImageCopy copyRegion(0, 0, 0, layer, offset, size);
 

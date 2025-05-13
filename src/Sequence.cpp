@@ -107,7 +107,8 @@ Sequence::eval(std::shared_ptr<OpBase> op)
 }
 
 std::shared_ptr<Sequence>
-Sequence::evalAsync()
+Sequence::evalAsync(
+    std::shared_ptr<const vk::Semaphore> waitSemaphore, std::shared_ptr<const vk::Semaphore> signalSemaphore)
 {
     if (this->isRecording()) {
         this->end();
@@ -125,8 +126,15 @@ Sequence::evalAsync()
         this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
+    int numWaitSemaphores = waitSemaphore == nullptr ? 0 : 1;
+    int numSignalSemaphores = signalSemaphore == nullptr ? 0 : 1;
+
     vk::SubmitInfo submitInfo(
-      0, nullptr, nullptr, 1, this->mCommandBuffer.get());
+      numWaitSemaphores, waitSemaphore.get(),
+      nullptr, // pWaitDstStageMask
+      1, this->mCommandBuffer.get(),
+      numSignalSemaphores, signalSemaphore.get()
+    );
 
     KP_LOG_DEBUG(
       "Kompute sequence submitting command buffer into compute queue");

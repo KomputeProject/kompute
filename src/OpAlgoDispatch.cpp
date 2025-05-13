@@ -34,7 +34,7 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
               vk::AccessFlagBits::eShaderRead,
               vk::PipelineStageFlagBits::eTransfer,
               vk::PipelineStageFlagBits::eComputeShader,
-              vk::ImageLayout::eGeneral);
+              image->isSampled() ? vk::ImageLayout::eShaderReadOnlyOptimal : vk::ImageLayout::eGeneral);
         } else {
             mem->recordPrimaryMemoryBarrier(
               commandBuffer,

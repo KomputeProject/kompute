@@ -289,7 +289,10 @@ Manager::createInstance()
 #endif
         debugCreateInfo.flags = debugFlags;
 
-        this->mDebugDispatcher.init(*this->mInstance, &vkGetInstanceProcAddr);
+        KP_LOG_DEBUG("Kompute Manager init debug dispatcher");
+        this->mDebugDispatcher.init(*this->mInstance, vkGetInstanceProcAddr);
+
+        KP_LOG_DEBUG("Kompute Manager set debug callback");
         this->mDebugReportCallback =
           this->mInstance->createDebugReportCallbackEXT(
             debugCreateInfo, nullptr, this->mDebugDispatcher);
@@ -441,13 +444,37 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
                      fmt::join(validExtensions, ", "));
     }
 
+    //
+    // Device features
+    //
+
+    // Enable float16, if supported.
+    vk::PhysicalDeviceFeatures2 supportedFeatures;
+    vk::PhysicalDeviceVulkan12Features supportedFeatures12;
+    
+    supportedFeatures.pNext = &supportedFeatures12;
+    
+    physicalDevice.getFeatures2(&supportedFeatures);
+
+    vk::PhysicalDeviceFeatures features;
+    
+    features.shaderInt16 = true;
+
+    vk::PhysicalDeviceVulkan12Features features12;
+
+    features12.shaderFloat16 = supportedFeatures12.shaderFloat16;
+    features12.shaderInt8 = supportedFeatures12.shaderInt8;
+
     vk::DeviceCreateInfo deviceCreateInfo(vk::DeviceCreateFlags(),
                                           deviceQueueCreateInfos.size(),
                                           deviceQueueCreateInfos.data(),
                                           {},
                                           {},
                                           validExtensions.size(),
-                                          validExtensions.data());
+                                          validExtensions.data(),
+                                          &features);
+
+    deviceCreateInfo.pNext = &features12;
 
     this->mDevice = std::make_shared<vk::Device>();
     physicalDevice.createDevice(
@@ -510,6 +537,12 @@ std::shared_ptr<vk::Device>
 Manager::getVkDevice() const
 {
     return this->mDevice;
+}
+
+const std::vector<std::shared_ptr<vk::Queue>>&
+Manager::getVkQueues() const
+{
+    return this->mComputeQueues;
 }
 
 }

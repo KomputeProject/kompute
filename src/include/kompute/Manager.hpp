@@ -4,6 +4,7 @@
 #include "kompute/Core.hpp"
 
 #include "kompute/Image.hpp"
+#include "kompute/ExternalTensor.hpp"
 #include "kompute/Sequence.hpp"
 #include "logger/Logger.hpp"
 
@@ -189,9 +190,11 @@ class Manager
       const std::vector<T>& data,
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         KP_LOG_DEBUG("Kompute Manager image creation triggered");
 
@@ -201,9 +204,11 @@ class Manager
           data,
           width,
           height,
+          depth,
           numChannels,
           tiling,
-          imageType) };
+          imageType,
+          sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -217,8 +222,10 @@ class Manager
       const std::vector<T>& data,
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         KP_LOG_DEBUG("Kompute Manager image creation triggered");
 
@@ -228,8 +235,10 @@ class Manager
           data,
           width,
           height,
+          depth,
           numChannels,
-          imageType) };
+          imageType,
+          sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -242,9 +251,11 @@ class Manager
     std::shared_ptr<ImageT<T>> imageT(
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         KP_LOG_DEBUG("Kompute Manager image creation triggered");
 
@@ -253,9 +264,11 @@ class Manager
           this->mDevice,
           width,
           height,
+          depth,
           numChannels,
           tiling,
-          imageType) };
+          imageType,
+          sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -268,8 +281,10 @@ class Manager
     std::shared_ptr<ImageT<T>> imageT(
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         KP_LOG_DEBUG("Kompute Manager image creation triggered");
 
@@ -278,8 +293,10 @@ class Manager
           this->mDevice,
           width,
           height,
+          depth,
           numChannels,
-          imageType) };
+          imageType,
+          sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -291,42 +308,50 @@ class Manager
       const std::vector<float>& data,
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         return this->imageT<float>(
-          data, width, height, numChannels, tiling, imageType);
+          data, width, height, depth, numChannels, tiling, imageType, sampler);
     }
 
     std::shared_ptr<ImageT<float>> image(
       const std::vector<float>& data,
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
-        return this->imageT<float>(data, width, height, numChannels, imageType);
+        return this->imageT<float>(data, width, height, depth, numChannels, imageType, sampler);
     }
 
     std::shared_ptr<ImageT<float>> image(
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         return this->imageT<float>(
-          width, height, numChannels, tiling, imageType);
+          width, height, depth, numChannels, tiling, imageType, sampler);
     }
 
     std::shared_ptr<ImageT<float>> image(
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
-        return this->imageT<float>(width, height, numChannels, imageType);
+        return this->imageT<float>(width, height, depth, numChannels, imageType, sampler);
     }
 
     std::shared_ptr<Image> image(
@@ -334,10 +359,12 @@ class Manager
       size_t dataSize,
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       const Image::DataTypes& dataType,
       vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         std::shared_ptr<Image> image{ new kp::Image(this->mPhysicalDevice,
                                                     this->mDevice,
@@ -345,10 +372,12 @@ class Manager
                                                     dataSize,
                                                     width,
                                                     height,
+                                                    depth,
                                                     numChannels,
                                                     dataType,
                                                     tiling,
-                                                    imageType) };
+                                                    imageType,
+                                                    sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -362,9 +391,11 @@ class Manager
       size_t dataSize,
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       const Memory::DataTypes& dataType,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         std::shared_ptr<Image> image{ new kp::Image(this->mPhysicalDevice,
                                                     this->mDevice,
@@ -372,9 +403,11 @@ class Manager
                                                     dataSize,
                                                     width,
                                                     height,
+                                                    depth,
                                                     numChannels,
                                                     dataType,
-                                                    imageType) };
+                                                    imageType,
+                                                    sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -386,19 +419,23 @@ class Manager
     std::shared_ptr<Image> image(
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       const Memory::DataTypes& dataType,
       vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         std::shared_ptr<Image> image{ new kp::Image(this->mPhysicalDevice,
                                                     this->mDevice,
                                                     width,
                                                     height,
+                                                    depth,
                                                     numChannels,
                                                     dataType,
                                                     tiling,
-                                                    imageType) };
+                                                    imageType,
+                                                    sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
@@ -410,23 +447,39 @@ class Manager
     std::shared_ptr<Image> image(
       uint32_t width,
       uint32_t height,
+      uint32_t depth,
       uint32_t numChannels,
       const Memory::DataTypes& dataType,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice,
+      std::shared_ptr<Sampler> sampler=nullptr)
     {
         std::shared_ptr<Image> image{ new kp::Image(this->mPhysicalDevice,
                                                     this->mDevice,
                                                     width,
                                                     height,
+                                                    depth,
                                                     numChannels,
                                                     dataType,
-                                                    imageType) };
+                                                    imageType,
+                                                    sampler) };
 
         if (this->mManageResources) {
             this->mManagedMemObjects.push_back(image);
         }
 
         return image;
+    }
+
+    /**
+     * Externally managed memory
+     */
+    std::shared_ptr<ExternalTensor> externalTensor()
+    {
+        std::shared_ptr<ExternalTensor> tensor{ 
+            new kp::ExternalTensor(this->mPhysicalDevice,
+                                   this->mDevice) };
+
+        return tensor;
     }
 
     /**
@@ -563,6 +616,13 @@ class Manager
      *object
      **/
     std::shared_ptr<vk::Device> getVkDevice() const;
+
+    /**
+     * The current Vulkan compute queues.
+     *
+     * @return a list of queues
+     **/
+    const std::vector<std::shared_ptr<vk::Queue>>& getVkQueues() const;
 
   private:
     // -------------- OPTIONALLY OWNED RESOURCES

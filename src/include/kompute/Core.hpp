@@ -3,6 +3,12 @@
 
 #include <vulkan/vulkan.hpp>
 
+#ifdef _MSC_VER
+    #define UNUSED(x) x
+#else
+    #define UNUSED(x) __attribute__((unused)) x
+#endif
+
 // Typedefs to simplify interaction with core types
 namespace kp {
 typedef std::array<uint32_t, 3> Workgroup;
@@ -15,7 +21,7 @@ typedef std::vector<float> Constants;
 #define KOMPUTE_VK_API_MAJOR_VERSION 1
 #endif // KOMPUTE_VK_API_MAJOR_VERSION
 #ifndef KOMPUTE_VK_API_MINOR_VERSION
-#define KOMPUTE_VK_API_MINOR_VERSION 1
+#define KOMPUTE_VK_API_MINOR_VERSION 2
 #endif // KOMPUTE_VK_API_MINOR_VERSION
 #define KOMPUTE_VK_API_VERSION                                                 \
     VK_MAKE_VERSION(                                                           \

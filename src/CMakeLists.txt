@@ -17,9 +17,11 @@ add_library(kompute Algorithm.cpp
     OpSyncLocal.cpp
     Sequence.cpp
     Tensor.cpp
+    ExternalTensor.cpp
     Core.cpp
     Image.cpp
-    Memory.cpp)
+    Memory.cpp
+    Sampler.cpp)
 
 add_library(kompute::kompute ALIAS kompute)
 

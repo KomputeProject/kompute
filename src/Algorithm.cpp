@@ -131,6 +131,9 @@ Algorithm::destroy()
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         this->mDescriptorPool = nullptr;
     }
+
+    // Clear contexts
+    mDescriptorContexts.clear();
 }
 
 void
@@ -194,6 +197,11 @@ Algorithm::createParameters() {
           vk::DescriptorType::eStorageImage,
           static_cast<uint32_t>(numImages) // Descriptor count
           ));
+
+        descriptorPoolSizes.push_back(vk::DescriptorPoolSize(
+          vk::DescriptorType::eCombinedImageSampler,
+          static_cast<uint32_t>(numImages) // Descriptor count
+          ));        
     };
 
     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
@@ -224,6 +232,10 @@ Algorithm::createParameters() {
         KP_LOG_DEBUG("Kompute Algorithm updating descriptor sets");
         
         for (size_t i = 0; i < memSet.size(); i++) {
+            // Skip external buffers, they need to be updated after they have been imported
+            if(memSet[i]->isExternal())
+                continue;
+
             std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
             vk::WriteDescriptorSet descriptorSet = memSet[i]->constructDescriptorSet(*context->mDescriptorSet, i);
 
@@ -236,6 +248,27 @@ Algorithm::createParameters() {
     }
 
     KP_LOG_DEBUG("Kompute Algorithm successfully run init");
+}
+
+void Algorithm::updateExternalTensor(size_t setId) {
+    if(setId >= mMemObjects.size())
+        throw std::runtime_error("Error updating memory set. It is out of bounds");
+
+    const auto& memSet = this->mMemObjects[setId];
+    const auto& context = this->mDescriptorContexts[setId];
+
+    for (size_t i = 0; i < memSet.size(); i++) {
+        // Update external memory only
+        if(!memSet[i]->isExternal())
+            continue;
+
+        std::vector<vk::WriteDescriptorSet> computeWriteDescriptorSets;
+        vk::WriteDescriptorSet descriptorSet = memSet[i]->constructDescriptorSet(*context->mDescriptorSet, i);
+
+        computeWriteDescriptorSets.push_back(descriptorSet);
+
+        this->mDevice->updateDescriptorSets(computeWriteDescriptorSets, nullptr);
+    }
 }
 
 void

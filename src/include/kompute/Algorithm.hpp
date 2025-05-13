@@ -211,6 +211,14 @@ class Algorithm
     }
 
     /**
+     * Get descriptor layout. For use with externally owned memory.
+     * 
+     */
+    std::shared_ptr<vk::DescriptorSetLayout> getLayout() const {
+        return mDescriptorSetLayout;
+    }
+
+    /**
      * Records the dispatch function with the provided template parameters or
      * alternatively using the size of the tensor by default.
      *
@@ -343,6 +351,11 @@ class Algorithm
     const std::vector<std::shared_ptr<Memory>>& getMemObjects(size_t setId=0);
 
     void destroy();
+
+    /**
+     * Bind external memory when it is ready
+     */
+    void updateExternalTensor(size_t setId);
 
   private:
     // -------------- NEVER OWNED RESOURCES

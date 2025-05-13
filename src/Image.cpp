@@ -11,9 +11,10 @@ Image::init(void* data,
             vk::ImageTiling tiling)
 {
     KP_LOG_DEBUG(
-      "Kompute Image constructor data width: {}, height: {}, and type: {}",
+      "Kompute Image constructor data width: {}, height: {}, depth: {}, and type: {}",
       this->getX(),
       this->getY(),
+      this->getZ(),
       Memory::toString(this->memoryType()));
 
     if (numChannels == 0) {
@@ -22,7 +23,7 @@ Image::init(void* data,
     }
 
     if (data != nullptr &&
-        dataSize < this->getX() * this->getY() * numChannels) {
+        dataSize < this->getX() * this->getY() * this->getZ() * numChannels) {
         throw std::runtime_error(
           "Kompute Image data is smaller than the requested image size");
     }
@@ -42,10 +43,15 @@ Image::init(void* data,
                                  "supported for eDevice and eStorage images");
     }
 
+    if(mSampler && this->memoryType() != Memory::MemoryTypes::eDevice) {
+        throw std::runtime_error("Can only use sampler with device memory");
+    }
+
     this->mNumChannels = numChannels;
-    this->mDescriptorType = vk::DescriptorType::eStorageImage;
+    this->mDescriptorType = mSampler == nullptr ?
+        vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
     this->mTiling = tiling;
-    this->mSize = this->getX() * this->getY() * this->mNumChannels;
+    this->mSize = this->getX() * this->getY() * this->getZ() * this->mNumChannels;
 
     this->reserve();
     this->updateRawData(data);
@@ -94,12 +100,13 @@ Image::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
     vk::Offset3D offset = { 0, 0, 0 };
 
     if (this->getX() != copyFromImage->getX() ||
-        this->getY() != copyFromImage->getY()) {
+        this->getY() != copyFromImage->getY() ||
+        this->getZ() != copyFromImage->getZ()) {
         throw std::runtime_error(
           "Kompute Image recordCopyFrom image sizes do not match");
     }
 
-    vk::Extent3D size = { this->getX(), this->getY(), 1 };
+    vk::Extent3D size = { this->getX(), this->getY(), this->getZ() };
 
     vk::ImageCopy copyRegion(layer, offset, layer, offset, size);
 
@@ -138,12 +145,12 @@ Image::recordCopyFrom(const vk::CommandBuffer& commandBuffer,
     layer.layerCount = 1;
     vk::Offset3D offset = { 0, 0, 0 };
 
-    vk::Extent3D size = { this->getX(), this->getY(), 1 };
+    vk::Extent3D size = { this->getX(), this->getY(), this->getZ() };
 
     vk::BufferImageCopy copyRegion(0, 0, 0, layer, offset, size);
 
     KP_LOG_DEBUG(
-      "Kompute Image recordCopyFrom size {},{}.", size.width, size.height);
+      "Kompute Image recordCopyFrom size {},{},{}.", size.width, size.height, size.depth);
 
     this->recordPrimaryImageBarrier(commandBuffer,
                                     vk::AccessFlagBits::eMemoryRead,
@@ -167,11 +174,11 @@ Image::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
     layer.layerCount = 1;
     vk::Offset3D offset = { 0, 0, 0 };
 
-    vk::Extent3D size = { this->getX(), this->getY(), 1 };
+    vk::Extent3D size = { this->getX(), this->getY(), this->getZ() };
 
     vk::ImageCopy copyRegion(layer, offset, layer, offset, size);
 
-    KP_LOG_DEBUG("Kompute Image copying size {},{}.", size.width, size.height);
+    KP_LOG_DEBUG("Kompute Image copying size {},{},{}.", size.width, size.height, size.depth);
 
     this->recordStagingImageBarrier(commandBuffer,
                                     vk::AccessFlagBits::eMemoryRead,
@@ -203,7 +210,7 @@ Image::recordCopyFromDeviceToStaging(const vk::CommandBuffer& commandBuffer)
     layer.layerCount = 1;
     vk::Offset3D offset = { 0, 0, 0 };
 
-    vk::Extent3D size = { this->getX(), this->getY(), 1 };
+    vk::Extent3D size = { this->getX(), this->getY(), this->getZ() };
 
     vk::ImageCopy copyRegion(layer, offset, layer, offset, size);
 
@@ -314,7 +321,7 @@ Image::recordPrimaryImageBarrier(const vk::CommandBuffer& commandBuffer,
                                  vk::PipelineStageFlagBits dstStageMask,
                                  vk::ImageLayout dstLayout)
 {
-    KP_LOG_DEBUG("Kompute Image recording PRIMARY image memory barrier");
+    KP_LOG_DEBUG("Kompute Image recording PRIMARY image memory barrier (dstLayout={})", vk::to_string(dstLayout));
 
     this->recordImageMemoryBarrier(commandBuffer,
                                    *this->mPrimaryImage,
@@ -336,7 +343,7 @@ Image::recordStagingImageBarrier(const vk::CommandBuffer& commandBuffer,
                                  vk::PipelineStageFlagBits dstStageMask,
                                  vk::ImageLayout dstLayout)
 {
-    KP_LOG_DEBUG("Kompute Image recording STAGING image memory barrier");
+    KP_LOG_DEBUG("Kompute Image recording STAGING image memory barrier (dstLayout={})", vk::to_string(dstLayout));
 
     this->recordImageMemoryBarrier(commandBuffer,
                                    *this->mStagingImage,
@@ -398,7 +405,7 @@ Image::constructDescriptorImageInfo()
     viewInfo.image = *this->mPrimaryImage;
     viewInfo.format = this->getFormat();
     viewInfo.flags = vk::ImageViewCreateFlags();
-    viewInfo.viewType = vk::ImageViewType::e2D;
+    viewInfo.viewType = this->getZ() == 1 ? vk::ImageViewType::e2D : vk::ImageViewType::e3D;
 
     viewInfo.subresourceRange.baseMipLevel = 0;
     viewInfo.subresourceRange.levelCount = 1;
@@ -415,7 +422,15 @@ Image::constructDescriptorImageInfo()
     vk::DescriptorImageInfo descriptorInfo;
 
     descriptorInfo.imageView = *(mImageView.get());
-    descriptorInfo.imageLayout = this->mPrimaryImageLayout;
+
+    if(mSampler) {
+        descriptorInfo.sampler = *mSampler->getSampler();
+        descriptorInfo.imageLayout = vk::ImageLayout::eShaderReadOnlyOptimal;
+    }
+    else {
+        descriptorInfo.imageLayout = vk::ImageLayout::eGeneral;
+    }
+
     return descriptorInfo;
 }
 
@@ -431,7 +446,7 @@ Image::constructDescriptorSet(vk::DescriptorSet descriptorSet, uint32_t binding)
                                   binding, // Destination binding
                                   0,       // Destination array element
                                   1,       // Descriptor count
-                                  vk::DescriptorType::eStorageImage,
+                                  mSampler == nullptr ? vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler,
                                   &mDescriptorImageInfo,
                                   nullptr); // Descriptor buffer info
 }
@@ -442,11 +457,19 @@ Image::getPrimaryImageUsageFlags()
     switch (this->mMemoryType) {
         case MemoryTypes::eDevice:
         case MemoryTypes::eHost:
-        case MemoryTypes::eDeviceAndHost:
-            return vk::ImageUsageFlagBits::eStorage |
-                   vk::ImageUsageFlagBits::eTransferSrc |
-                   vk::ImageUsageFlagBits::eTransferDst;
-            break;
+        case MemoryTypes::eDeviceAndHost: {
+            auto flags = 
+                vk::ImageUsageFlagBits::eTransferSrc |
+                vk::ImageUsageFlagBits::eTransferDst;
+
+            if(mSampler)
+                flags |= vk::ImageUsageFlagBits::eSampled;
+            else
+                flags |= vk::ImageUsageFlagBits::eStorage;
+
+            return flags;
+        }
+        break;
         case MemoryTypes::eStorage:
             return vk::ImageUsageFlagBits::eStorage |
                    // You can still copy images to/from storage memory
@@ -483,6 +506,33 @@ Image::getPrimaryImageLayout()
 {
     return this->mPrimaryImageLayout;
 }
+
+void Image::getStagingImageLayout(int& dstOffset, int& dstSize, int& dstRowPitch, int& dstArrayPitch, int& dstDepthPitch) const {
+    if(!this->mStagingImage) {
+        dstOffset = 0;
+        dstSize = 0;
+        dstRowPitch = 0;
+        dstArrayPitch = 0;
+        dstDepthPitch = 0;
+    }
+
+    vk::ImageSubresource subresource;
+
+    subresource.aspectMask = vk::ImageAspectFlagBits::eColor,
+    subresource.mipLevel = 0;
+    subresource.arrayLayer = 0;
+
+    vk::SubresourceLayout layout;
+
+    this->mDevice->getImageSubresourceLayout(*this->mStagingImage, &subresource, &layout);
+
+    dstOffset = layout.offset;
+    dstSize = layout.size;
+    dstRowPitch = layout.rowPitch;
+    dstArrayPitch = layout.arrayPitch;
+    dstDepthPitch = layout.depthPitch;
+}
+
 
 uint32_t
 Image::getNumChannels()
@@ -553,9 +603,9 @@ Image::createImage(std::shared_ptr<vk::Image> image,
     vk::ImageCreateInfo imageInfo;
 
     imageInfo.flags = vk::ImageCreateFlags();
-    imageInfo.imageType = vk::ImageType::e2D;
+    imageInfo.imageType = this->getZ() == 1 ? vk::ImageType::e2D : vk::ImageType::e3D;
     imageInfo.format = this->getFormat();
-    imageInfo.extent = vk::Extent3D(this->getX(), this->getY(), 1);
+    imageInfo.extent = vk::Extent3D(this->getX(), this->getY(), this->getZ());
     imageInfo.usage = imageUsageFlags;
     imageInfo.mipLevels = 1;
     imageInfo.arrayLayers = 1;
@@ -748,6 +798,18 @@ Image::getFormat()
                     return vk::Format::eUndefined;
             }
         }
+        case Memory::DataTypes::eFloat16: {
+            switch (this->mNumChannels) {
+                case 1:
+                    return vk::Format::eR16Sfloat;
+                case 2:
+                    return vk::Format::eR16G16Sfloat;
+                case 4:
+                    return vk::Format::eR16G16B16A16Sfloat;
+                default:
+                    return vk::Format::eUndefined;
+            }
+        }        
         default:
             return vk::Format::eUndefined;
     }
