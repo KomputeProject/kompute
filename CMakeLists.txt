@@ -135,7 +135,9 @@ endif()
 # Has to happen AFTER using the build-in Vulkan headers to prevent multiple targets with the name Vulkan::Headers
 if(KOMPUTE_OPT_ANDROID_BUILD)
     add_library(vulkanAndroid INTERFACE)
-    set(VULKAN_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
+    if(NOT DEFINED VULKAN_INCLUDE_DIR)
+        message(FATAL_ERROR "VULKAN_INCLUDE_DIR is not set. Please set it to the Vulkan SDK include directory.")
+    endif()
     target_sources(vulkanAndroid INTERFACE ${VULKAN_INCLUDE_DIR}/vulkan/vulkan.hpp)
     target_include_directories(vulkanAndroid INTERFACE ${VULKAN_INCLUDE_DIR})
 
