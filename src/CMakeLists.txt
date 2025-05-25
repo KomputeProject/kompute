@@ -82,7 +82,7 @@ if(KOMPUTE_OPT_BUILD_PYTHON)
     target_link_libraries(kompute PRIVATE pybind11::headers ${PYTHON_LIBRARIES})
 endif()
 
-if(KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
+if(NOT KOMPUTE_OPT_ANDROID_BUILD AND KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
     target_link_libraries(kompute PUBLIC Vulkan-Headers)
 endif()
 
