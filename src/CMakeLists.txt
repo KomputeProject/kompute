@@ -74,6 +74,17 @@ else()
         kp_shader)
 endif()
 
+# If OPT_LOG_LEVEL is disabled, kp_logger wont link against fmt::fmt, but we
+# still need it for non-logging utilities. Therefore, explicitly link fmt::fmt
+# to kompute target.
+if(KOMPUTE_OPT_LOG_LEVEL_DISABLED)
+    if(KOMPUTE_OPT_USE_SPDLOG)
+        message(FATAL_ERROR "KOMPUTE_OPT_LOG_LEVEL_DISABLED is incompatible with KOMPUTE_OPT_USE_SPDLOG. To continue set either one option to 'OFF'.")
+    else()
+        target_link_libraries(kompute PUBLIC fmt::fmt)
+    endif()
+endif()
+
 if(KOMPUTE_OPT_BUILD_PYTHON)
     include_directories(${PYTHON_INCLUDE_DIRS})
 
