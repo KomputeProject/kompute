@@ -171,7 +171,7 @@ else()
 endif()
 
 # Spdlog
-if(KOMPUTE_OPT_USE_SPDLOG)
+if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED AND KOMPUTE_OPT_USE_SPDLOG)
     add_compile_definitions(KOMPUTE_OPT_USE_SPDLOG=1)
 
     if(KOMPUTE_OPT_USE_BUILT_IN_SPDLOG)
@@ -185,17 +185,17 @@ if(KOMPUTE_OPT_USE_SPDLOG)
     else()
         find_package(spdlog REQUIRED)
     endif()
-endif()
-
-# fmt
-if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
-    set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
-    FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-        GIT_TAG 11.0.0
-        GIT_SHALLOW 1) # Source: https://github.com/fmtlib/fmt/releases
-    FetchContent_MakeAvailable(fmt)
 else()
-    find_package(fmt REQUIRED)
+    # fmt
+    if(KOMPUTE_OPT_USE_BUILT_IN_FMT)
+        set(FMT_INSTALL ${KOMPUTE_OPT_INSTALL})
+        FetchContent_Declare(fmt GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+            GIT_TAG 11.0.0
+            GIT_SHALLOW 1) # Source: https://github.com/fmtlib/fmt/releases
+        FetchContent_MakeAvailable(fmt)
+    else()
+        find_package(fmt REQUIRED)
+    endif()
 endif()
 
 # GoogleTest
