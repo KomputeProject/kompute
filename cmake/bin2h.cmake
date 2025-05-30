@@ -95,7 +95,7 @@ function(BIN2H)
     set(namespaceStart "namespace ${HEADER_NAMESPACE} {")
     set(namespaceEnd "} // namespace ${HEADER_NAMESPACE}")
     set(arrayIncludes "#pragma once\n#include <array>\n#include <cstdint>")
-    set(arrayDefinition "const std::array<uint32_t, ${arraySize}> ${BIN2H_VARIABLE_NAME} = { ${arrayValues} };")
+    set(arrayDefinition "const std::array<uint32_t, ${arraySize}> ${BIN2H_VARIABLE_NAME} = { { ${arrayValues} } };")
 
     set(declarations "${arrayIncludes}\n\n${namespaceStart}\n${arrayDefinition}\n${namespaceEnd}\n\n")
     if(BIN2H_APPEND)

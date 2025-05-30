@@ -2,8 +2,13 @@
 
 #include "kompute/Manager.hpp"
 #include "kompute/logger/Logger.hpp"
+#if KOMPUTE_OPT_USE_SPDLOG
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/fmt/ranges.h>
+#else
 #include <fmt/core.h>
 #include <fmt/ranges.h>
+#endif
 #include <iterator>
 #include <set>
 #include <sstream>

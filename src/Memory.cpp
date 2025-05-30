@@ -3,7 +3,11 @@
 #include "kompute/Memory.hpp"
 #include "kompute/Image.hpp"
 #include "kompute/Tensor.hpp"
+#if KOMPUTE_OPT_USE_SPDLOG
+#include <spdlog/fmt/fmt.h>
+#else
 #include <fmt/core.h>
+#endif
 
 namespace kp {
 
