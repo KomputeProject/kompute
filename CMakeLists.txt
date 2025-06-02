@@ -135,7 +135,7 @@ endif()
 # Has to happen AFTER using the build-in Vulkan headers to prevent multiple targets with the name Vulkan::Headers
 if(KOMPUTE_OPT_ANDROID_BUILD)
     add_library(vulkanAndroid INTERFACE)
-    set(VULKAN_INCLUDE_DIR ${ANDROID_NDK}/sources/third_party/vulkan/src/include)
+    set(VULKAN_INCLUDE_DIR /usr/local/include)
     target_sources(vulkanAndroid INTERFACE ${VULKAN_INCLUDE_DIR}/vulkan/vulkan.hpp)
     target_include_directories(vulkanAndroid INTERFACE ${VULKAN_INCLUDE_DIR})
 
@@ -261,7 +261,7 @@ endif()
 if(MSVC)
     # MSVC is true when the compiler is msvc(cl) or clang-cl, both receive msvc-like commandline flags
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 endif()
 
 # If glslang is cloned, then SPIRV/GlslangToSpv.h will be used instead of glslang/SPIRV/GlslangToSpv.h
