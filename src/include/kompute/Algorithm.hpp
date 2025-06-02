@@ -3,7 +3,12 @@
 
 #include "kompute/Core.hpp"
 
-#include "fmt/format.h"
+#if KOMPUTE_OPT_USE_SPDLOG
+#include <spdlog/fmt/fmt.h>
+#else
+#include <fmt/format.h>
+#endif
+
 #include "kompute/Tensor.hpp"
 #include "logger/Logger.hpp"
 
