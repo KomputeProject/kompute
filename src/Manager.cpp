@@ -46,6 +46,7 @@ Manager::Manager()
 
 Manager::Manager(uint32_t physicalDeviceIndex,
                  const std::vector<uint32_t>& familyQueueIndices,
+                 const std::vector<std::string>& instanceExtensions,
                  const std::vector<std::string>& desiredExtensions)
 {
     this->mManageResources = true;
@@ -55,7 +56,7 @@ Manager::Manager(uint32_t physicalDeviceIndex,
     logger::setupLogger();
 #endif
 
-    this->createInstance();
+    this->createInstance(instanceExtensions);
     this->createDevice(
       familyQueueIndices, physicalDeviceIndex, desiredExtensions);
 }
@@ -158,9 +159,8 @@ Manager::destroy()
 }
 
 void
-Manager::createInstance()
+Manager::createInstance(const std::vector<std::string>& instanceExtensions)
 {
-
     KP_LOG_DEBUG("Kompute Manager creating instance");
 
     this->mFreeInstance = true;
@@ -184,11 +184,15 @@ Manager::createInstance()
 #ifdef __APPLE__
     // Required for backwards compatibility for MacOS M1 devices
     // https://stackoverflow.com/questions/72374316/validation-error-on-device-extension-on-m1-mac
-    applicationExtensions.push_back(
-      VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    applicationExtensions.push_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+    applicationExtensions.push_back(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME);
+
     computeInstanceCreateInfo.flags |=
       vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;
 #endif
+
+    for(auto& e : instanceExtensions)
+        applicationExtensions.push_back(e.c_str());
 
     if (!applicationExtensions.empty()) {
         computeInstanceCreateInfo.enabledExtensionCount =
@@ -459,6 +463,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     vk::PhysicalDeviceFeatures features;
     
     features.shaderInt16 = true;
+    features.shaderStorageImageWriteWithoutFormat = true;
 
     vk::PhysicalDeviceVulkan12Features features12;
 
@@ -537,6 +542,12 @@ std::shared_ptr<vk::Device>
 Manager::getVkDevice() const
 {
     return this->mDevice;
+}
+
+std::shared_ptr<vk::PhysicalDevice>
+Manager::getVkPhysicalDevice() const
+{
+    return this->mPhysicalDevice;
 }
 
 const std::vector<std::shared_ptr<vk::Queue>>&

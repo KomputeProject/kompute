@@ -61,6 +61,29 @@ class Image : public Memory
     }
 
     /**
+     * Wrap an existing resource
+     */
+    Image(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
+          std::shared_ptr<vk::Device> device,
+          std::shared_ptr<vk::Image> image,
+          std::shared_ptr<vk::ImageView> imageView,
+          uint32_t x,
+          uint32_t y,
+          uint32_t z,
+          uint32_t numChannels,
+          const DataTypes& dataType)
+      : Memory(physicalDevice, device, dataType, MemoryTypes::eDevice, x, y, z),
+        mNumChannels(numChannels),
+        mImageView(imageView),
+        mTiling(vk::ImageTiling::eOptimal),        
+        mPrimaryImage(image)
+    {
+        this->mDescriptorType = vk::DescriptorType::eStorageImage;
+        this->mSize = this->getX() * this->getY() * this->getZ() * this->mNumChannels;
+        this->mExternallyManaged = true;
+    }
+
+    /**
      *  Constructor with no data provided.
      *
      *  @param physicalDevice The physical device to use to fetch properties
@@ -369,6 +392,7 @@ class Image : public Memory
     std::shared_ptr<vk::Image> mStagingImage;
     bool mFreeStagingImage = false;
     std::shared_ptr<Sampler> mSampler;
+    bool mExternallyManaged = false;
 
     void allocateMemoryCreateGPUResources(); // Creates the vulkan image
     void createImage(std::shared_ptr<vk::Image> image,

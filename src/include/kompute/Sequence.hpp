@@ -228,7 +228,12 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * Return the timestamps that were latched at the beginning and
      * after each operation during the last eval() call.
      */
-    std::vector<std::uint64_t> getTimestamps();
+    std::vector<std::uint64_t> getTimestamps() const;
+
+    /**
+     * Get the command buffer
+     */
+    const vk::CommandBuffer& getCommandBuffer() const;
 
     /**
      * Begins recording commands for commands to be submitted into the command

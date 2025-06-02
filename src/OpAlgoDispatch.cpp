@@ -20,8 +20,7 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
     KP_LOG_DEBUG("Kompute OpAlgoDispatch record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
-    for (const std::shared_ptr<Memory>& mem :
-         this->mAlgorithm->getMemObjects()) {
+    for (const std::shared_ptr<Memory>& mem : this->mAlgorithm->getMemObjects()) {
 
         // For images the image layout needs to be set to eGeneral before using
         // it for imageLoad/imageStore in a shader.
@@ -30,17 +29,17 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 
             image->recordPrimaryImageBarrier(
               commandBuffer,
-              vk::AccessFlagBits::eTransferWrite,
+              vk::AccessFlagBits::eShaderWrite,
               vk::AccessFlagBits::eShaderRead,
-              vk::PipelineStageFlagBits::eTransfer,
+              vk::PipelineStageFlagBits::eComputeShader,
               vk::PipelineStageFlagBits::eComputeShader,
               image->isSampled() ? vk::ImageLayout::eShaderReadOnlyOptimal : vk::ImageLayout::eGeneral);
         } else {
             mem->recordPrimaryMemoryBarrier(
               commandBuffer,
-              vk::AccessFlagBits::eTransferWrite,
+              vk::AccessFlagBits::eShaderWrite,
               vk::AccessFlagBits::eShaderRead,
-              vk::PipelineStageFlagBits::eTransfer,
+              vk::PipelineStageFlagBits::eComputeShader,
               vk::PipelineStageFlagBits::eComputeShader);
         }
     }

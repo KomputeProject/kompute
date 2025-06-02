@@ -321,18 +321,23 @@ Image::recordPrimaryImageBarrier(const vk::CommandBuffer& commandBuffer,
                                  vk::PipelineStageFlagBits dstStageMask,
                                  vk::ImageLayout dstLayout)
 {
-    KP_LOG_DEBUG("Kompute Image recording PRIMARY image memory barrier (dstLayout={})", vk::to_string(dstLayout));
+    if(this->mExternallyManaged) {
+        KP_LOG_DEBUG("Kompute Image not recording primary barrier. Image is externally managed");
+    }
+    else {
+        KP_LOG_DEBUG("Kompute Image recording PRIMARY image memory barrier (dstLayout={})", vk::to_string(dstLayout));
 
-    this->recordImageMemoryBarrier(commandBuffer,
-                                   *this->mPrimaryImage,
-                                   srcAccessMask,
-                                   dstAccessMask,
-                                   srcStageMask,
-                                   dstStageMask,
-                                   this->mPrimaryImageLayout,
-                                   dstLayout);
+        this->recordImageMemoryBarrier(commandBuffer,
+                                       *this->mPrimaryImage,
+                                       srcAccessMask,
+                                       dstAccessMask,
+                                       srcStageMask,
+                                       dstStageMask,
+                                       this->mPrimaryImageLayout,
+                                       dstLayout);
 
-    this->mPrimaryImageLayout = dstLayout;
+        this->mPrimaryImageLayout = dstLayout;
+    }
 }
 
 void
@@ -368,6 +373,7 @@ Image::recordImageMemoryBarrier(const vk::CommandBuffer& commandBuffer,
                                 vk::ImageLayout dstLayout)
 {
     KP_LOG_DEBUG("Kompute Image recording image memory barrier");
+
 
     vk::ImageMemoryBarrier imageMemoryBarrier;
     imageMemoryBarrier.image = image;

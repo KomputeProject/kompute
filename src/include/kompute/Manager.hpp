@@ -36,6 +36,7 @@ class Manager
      */
     Manager(uint32_t physicalDeviceIndex,
             const std::vector<uint32_t>& familyQueueIndices = {},
+            const std::vector<std::string>& instanceExtensions = {},
             const std::vector<std::string>& desiredExtensions = {});
 
     /**
@@ -616,6 +617,7 @@ class Manager
      *object
      **/
     std::shared_ptr<vk::Device> getVkDevice() const;
+    std::shared_ptr<vk::PhysicalDevice> getVkPhysicalDevice() const;
 
     /**
      * The current Vulkan compute queues.
@@ -652,7 +654,7 @@ class Manager
 #endif // KOMPUTE_DISABLE_VK_DEBUG_LAYERS
 
     // Create functions
-    void createInstance();
+    void createInstance(const std::vector<std::string>& instanceExtensions = {});
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
                       uint32_t hysicalDeviceIndex = 0,
                       const std::vector<std::string>& desiredExtensions = {});

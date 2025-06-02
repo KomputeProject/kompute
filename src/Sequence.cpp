@@ -126,14 +126,17 @@ Sequence::evalAsync(
         this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
+    // Create wait stage mask for the compute shader
+    vk::PipelineStageFlags waitStageMask = vk::PipelineStageFlagBits::eComputeShader;
+
     int numWaitSemaphores = waitSemaphore == nullptr ? 0 : 1;
     int numSignalSemaphores = signalSemaphore == nullptr ? 0 : 1;
-
+    
     vk::SubmitInfo submitInfo(
-      numWaitSemaphores, waitSemaphore.get(),
-      nullptr, // pWaitDstStageMask
-      1, this->mCommandBuffer.get(),
-      numSignalSemaphores, signalSemaphore.get()
+        numWaitSemaphores, waitSemaphore.get(),
+        numWaitSemaphores > 0 ? &waitStageMask : nullptr, // pWaitDstStageMask
+        1, this->mCommandBuffer.get(),
+        numSignalSemaphores, signalSemaphore.get()
     );
 
     KP_LOG_DEBUG(
@@ -379,7 +382,7 @@ Sequence::createTimestampQueryPool(uint32_t totalTimestamps)
 }
 
 std::vector<std::uint64_t>
-Sequence::getTimestamps()
+Sequence::getTimestamps() const
 {
     if (!this->timestampQueryPool)
         throw std::runtime_error("Timestamp latching not enabled");
@@ -396,6 +399,11 @@ Sequence::getTimestamps()
       vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait);
 
     return timestamps;
+}
+
+const vk::CommandBuffer&
+Sequence::getCommandBuffer() const {
+    return *mCommandBuffer;
 }
 
 }
