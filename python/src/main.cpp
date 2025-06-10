@@ -66,12 +66,10 @@ PYBIND11_MODULE(kp, m)
     py::module_ np = py::module_::import("numpy");
 
     py::enum_<kp::Memory::DataTypes>(m, "DataTypes")
-      .value("bool",
-             kp::Memory::DataTypes::eBool,
-             DOC(kp, Memory, DataTypes, eBool))
-      .value("int",
-             kp::Memory::DataTypes::eInt,
-             DOC(kp, Memory, DataTypes, eInt))
+      .value(
+        "bool", kp::Memory::DataTypes::eBool, DOC(kp, Memory, DataTypes, eBool))
+      .value(
+        "int", kp::Memory::DataTypes::eInt, DOC(kp, Memory, DataTypes, eInt))
       .value("uint",
              kp::Memory::DataTypes::eUnsignedInt,
              DOC(kp, Memory, DataTypes, eUnsignedInt))
@@ -90,9 +88,8 @@ PYBIND11_MODULE(kp, m)
       .value("ushort",
              kp::Memory::DataTypes::eUnsignedShort,
              DOC(kp, Memory, DataTypes, eUnsignedShort))
-      .value("char",
-             kp::Memory::DataTypes::eChar,
-             DOC(kp, Memory, DataTypes, eChar))
+      .value(
+        "char", kp::Memory::DataTypes::eChar, DOC(kp, Memory, DataTypes, eChar))
       .value("uchar",
              kp::Memory::DataTypes::eUnsignedChar,
              DOC(kp, Memory, DataTypes, eUnsignedChar))
@@ -108,21 +105,20 @@ PYBIND11_MODULE(kp, m)
       .value("storage",
              kp::Memory::MemoryTypes::eStorage,
              DOC(kp, Memory, MemoryTypes, eStorage))
+      .value("deviceAndHost",
+             kp::Memory::MemoryTypes::eDeviceAndHost,
+             DOC(kp, Memory, MemoryTypes, eDeviceAndHost))
       .export_values();
 
     py::class_<kp::OpBase, std::shared_ptr<kp::OpBase>>(
       m, "OpBase", DOC(kp, OpBase));
 
-    py::class_<kp::OpSyncDevice,
-               kp::OpBase,
-               std::shared_ptr<kp::OpSyncDevice>>(
+    py::class_<kp::OpSyncDevice, kp::OpBase, std::shared_ptr<kp::OpSyncDevice>>(
       m, "OpSyncDevice", DOC(kp, OpSyncDevice))
       .def(py::init<const std::vector<std::shared_ptr<kp::Memory>>&>(),
            DOC(kp, OpSyncDevice, OpSyncDevice));
 
-    py::class_<kp::OpSyncLocal,
-               kp::OpBase,
-               std::shared_ptr<kp::OpSyncLocal>>(
+    py::class_<kp::OpSyncLocal, kp::OpBase, std::shared_ptr<kp::OpSyncLocal>>(
       m, "OpSyncLocal", DOC(kp, OpSyncLocal))
       .def(py::init<const std::vector<std::shared_ptr<kp::Memory>>&>(),
            DOC(kp, OpSyncLocal, OpSyncLocal));
@@ -194,7 +190,10 @@ PYBIND11_MODULE(kp, m)
       .def("size", &kp::Tensor::size, DOC(kp, Memory, size))
       .def("__len__", &kp::Tensor::size, DOC(kp, Memory, size))
       .def("memory_type", &kp::Memory::memoryType, DOC(kp, Memory, memoryType))
-      .def("data_type", static_cast<kp::Memory::DataTypes (kp::Memory::*)()>(&kp::Memory::dataType), DOC(kp, Memory, dataType))
+      .def("data_type",
+           static_cast<kp::Memory::DataTypes (kp::Memory::*)()>(
+             &kp::Memory::dataType),
+           DOC(kp, Memory, dataType))
       .def("is_init", &kp::Tensor::isInit, DOC(kp, Tensor, isInit))
       .def("destroy", &kp::Tensor::destroy, DOC(kp, Tensor, destroy));
     py::class_<kp::Image, std::shared_ptr<kp::Image>, kp::Memory>(
@@ -234,7 +233,10 @@ PYBIND11_MODULE(kp, m)
       .def("size", &kp::Image::size, DOC(kp, Memory, size))
       .def("__len__", &kp::Image::size, DOC(kp, Memory, size))
       .def("memory_type", &kp::Memory::memoryType, DOC(kp, Memory, memoryType))
-      .def("data_type", static_cast<kp::Memory::DataTypes (kp::Memory::*)()>(&kp::Memory::dataType), DOC(kp, Memory, dataType))
+      .def("data_type",
+           static_cast<kp::Memory::DataTypes (kp::Memory::*)()>(
+             &kp::Memory::dataType),
+           DOC(kp, Memory, dataType))
       .def("is_init", &kp::Image::isInit, DOC(kp, Image, isInit))
       .def("destroy", &kp::Image::destroy, DOC(kp, Image, destroy));
 
@@ -436,7 +438,7 @@ PYBIND11_MODULE(kp, m)
                                   height,
                                   num_channels,
                                   kp::Memory::DataTypes::eInt,
-                                   memory_type);
+                                  memory_type);
             } else if (flatdata.dtype().is(py::dtype::of<std::uint16_t>())) {
                 return self.image(info.ptr,
                                   flatdata.size(),
@@ -452,7 +454,7 @@ PYBIND11_MODULE(kp, m)
                                   height,
                                   num_channels,
                                   kp::Memory::DataTypes::eShort,
-                                   memory_type);
+                                  memory_type);
             } else if (flatdata.dtype().is(py::dtype::of<std::uint8_t>())) {
                 return self.image(info.ptr,
                                   flatdata.size(),
@@ -468,7 +470,7 @@ PYBIND11_MODULE(kp, m)
                                   height,
                                   num_channels,
                                   kp::Memory::DataTypes::eChar,
-                                   memory_type);
+                                  memory_type);
             } else {
                 throw std::runtime_error(
                   "Kompute Python no valid dtype supported");
