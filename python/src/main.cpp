@@ -105,7 +105,7 @@ PYBIND11_MODULE(kp, m)
       .value("storage",
              kp::Memory::MemoryTypes::eStorage,
              DOC(kp, Memory, MemoryTypes, eStorage))
-      .value("storage",
+      .value("deviceAndHost",
              kp::Memory::MemoryTypes::eDeviceAndHost,
              DOC(kp, Memory, MemoryTypes, eDeviceAndHost))
       .export_values();
