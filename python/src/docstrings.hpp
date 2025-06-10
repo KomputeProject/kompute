@@ -54,6 +54,10 @@ Parameter ``pushConstants``:
     be modified but all new values must have the same data type and
     length as otherwise it will result in errors.)doc";
 
+static const char *__doc_kp_Algorithm_Algorithm_2 = R"doc(Make Algorithm uncopyable)doc";
+
+static const char *__doc_kp_Algorithm_Algorithm_3 = R"doc()doc";
+
 static const char *__doc_kp_Algorithm_createParameters = R"doc()doc";
 
 static const char *__doc_kp_Algorithm_createPipeline = R"doc()doc";
@@ -142,6 +146,10 @@ static const char *__doc_kp_Algorithm_mSpecializationConstantsSize = R"doc()doc"
 static const char *__doc_kp_Algorithm_mSpirv = R"doc()doc";
 
 static const char *__doc_kp_Algorithm_mWorkgroup = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_Algorithm_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_Algorithm_rebuild =
 R"doc(Rebuild function to reconstruct algorithm with configuration
@@ -263,10 +271,10 @@ Parameter ``data``:
 Parameter ``dataSize``:
     Size in bytes of the data pointed to by \p data
 
-Parameter ``width``:
+Parameter ``x``:
     Width of the image in pixels
 
-Parameter ``height``:
+Parameter ``y``:
     Height of the image in pixels
 
 Parameter ``numChannels``:
@@ -290,10 +298,10 @@ Parameter ``physicalDevice``:
 Parameter ``device``:
     The device to use to create the image and memory from
 
-Parameter ``width``:
+Parameter ``x``:
     Width of the image in pixels
 
-Parameter ``height``:
+Parameter ``y``:
     Height of the image in pixels
 
 Parameter ``dataType``:
@@ -322,10 +330,10 @@ Parameter ``data``:
 Parameter ``dataSize``:
     Size in bytes of the data pointed to by \p data
 
-Parameter ``width``:
+Parameter ``x``:
     Width of the image in pixels
 
-Parameter ``height``:
+Parameter ``y``:
     Height of the image in pixels
 
 Parameter ``numChannels``:
@@ -347,10 +355,10 @@ Parameter ``physicalDevice``:
 Parameter ``device``:
     The device to use to create the image and memory from
 
-Parameter ``width``:
+Parameter ``x``:
     Width of the image in pixels
 
-Parameter ``height``:
+Parameter ``y``:
     Height of the image in pixels
 
 Parameter ``dataType``:
@@ -358,6 +366,10 @@ Parameter ``dataType``:
 
 Parameter ``memoryType``:
     Type for the image which is of type MemoryTypes)doc";
+
+static const char *__doc_kp_Image_Image_5 = R"doc(Make Image uncopyable)doc";
+
+static const char *__doc_kp_Image_Image_6 = R"doc()doc";
 
 static const char *__doc_kp_Image_allocateBindMemory = R"doc()doc";
 
@@ -385,12 +397,6 @@ memory.)doc";
 
 static const char *__doc_kp_Image_getFormat = R"doc()doc";
 
-static const char *__doc_kp_Image_getHeight =
-R"doc(Retreive the height in the image in pixels
-
-Returns:
-    Height of the image in pixels)doc";
-
 static const char *__doc_kp_Image_getNumChannels =
 R"doc(Retreive the number of channels in the image
 
@@ -399,15 +405,11 @@ Returns:
 
 static const char *__doc_kp_Image_getPrimaryImage = R"doc()doc";
 
+static const char *__doc_kp_Image_getPrimaryImageLayout = R"doc()doc";
+
 static const char *__doc_kp_Image_getPrimaryImageUsageFlags = R"doc()doc";
 
 static const char *__doc_kp_Image_getStagingImageUsageFlags = R"doc()doc";
-
-static const char *__doc_kp_Image_getWidth =
-R"doc(Retreive the width in the image in pixels
-
-Returns:
-    Width of the image in pixels)doc";
 
 static const char *__doc_kp_Image_init = R"doc()doc";
 
@@ -423,8 +425,6 @@ static const char *__doc_kp_Image_mFreePrimaryImage = R"doc()doc";
 
 static const char *__doc_kp_Image_mFreeStagingImage = R"doc()doc";
 
-static const char *__doc_kp_Image_mHeight = R"doc()doc";
-
 static const char *__doc_kp_Image_mImageView = R"doc()doc";
 
 static const char *__doc_kp_Image_mNumChannels = R"doc()doc";
@@ -439,7 +439,9 @@ static const char *__doc_kp_Image_mStagingImageLayout = R"doc()doc";
 
 static const char *__doc_kp_Image_mTiling = R"doc()doc";
 
-static const char *__doc_kp_Image_mWidth = R"doc()doc";
+static const char *__doc_kp_Image_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_Image_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_Image_recordCopyFrom =
 R"doc(Records a copy from the memory of the image provided to the current
@@ -485,6 +487,29 @@ static const char *__doc_kp_Image_recordCopyImageFromTensor = R"doc()doc";
 
 static const char *__doc_kp_Image_recordImageMemoryBarrier = R"doc()doc";
 
+static const char *__doc_kp_Image_recordPrimaryImageBarrier =
+R"doc(Records the image memory barrier into the primary image and command
+buffer which ensures that relevant data transfers are carried out
+correctly.
+
+Parameter ``commandBuffer``:
+    Vulkan Command Buffer to record the commands into
+
+Parameter ``srcAccessMask``:
+    Access flags for source access mask
+
+Parameter ``dstAccessMask``:
+    Access flags for destination access mask
+
+Parameter ``scrStageMask``:
+    Pipeline stage flags for source stage mask
+
+Parameter ``dstStageMask``:
+    Pipeline stage flags for destination stage mask
+
+Parameter ``dstLayout``:
+    Image layout for the image after the barrier completes)doc";
+
 static const char *__doc_kp_Image_recordPrimaryMemoryBarrier =
 R"doc(Records the image memory barrier into the primary image and command
 buffer which ensures that relevant data transfers are carried out
@@ -504,6 +529,29 @@ Parameter ``scrStageMask``:
 
 Parameter ``dstStageMask``:
     Pipeline stage flags for destination stage mask)doc";
+
+static const char *__doc_kp_Image_recordStagingImageBarrier =
+R"doc(Records the image memory barrier into the staging image and command
+buffer which ensures that relevant data transfers are carried out
+correctly.
+
+Parameter ``commandBuffer``:
+    Vulkan Command Buffer to record the commands into
+
+Parameter ``srcAccessMask``:
+    Access flags for source access mask
+
+Parameter ``dstAccessMask``:
+    Access flags for destination access mask
+
+Parameter ``scrStageMask``:
+    Pipeline stage flags for source stage mask
+
+Parameter ``dstStageMask``:
+    Pipeline stage flags for destination stage mask
+
+Parameter ``dstLayout``:
+    Image layout for the image after the barrier completes)doc";
 
 static const char *__doc_kp_Image_recordStagingMemoryBarrier =
 R"doc(Records the image memory barrier into the staging image and command
@@ -528,6 +576,8 @@ Parameter ``dstStageMask``:
 static const char *__doc_kp_Image_reserve =
 R"doc(Function to reserve memory on the image. This does not copy any data,
 it just reserves memory, similarly to std::vector reserve() method.)doc";
+
+static const char *__doc_kp_Image_type = R"doc()doc";
 
 static const char *__doc_kp_Manager =
 R"doc(Base orchestrator which creates and manages device and child
@@ -565,6 +615,10 @@ Parameter ``device``:
 
 Parameter ``physicalDeviceIndex``:
     Index for vulkan physical device used)doc";
+
+static const char *__doc_kp_Manager_Manager_4 = R"doc(Make Manager uncopyable)doc";
+
+static const char *__doc_kp_Manager_Manager_5 = R"doc()doc";
 
 static const char *__doc_kp_Manager_algorithm =
 R"doc(Default non-template function that can be used to create algorithm
@@ -708,6 +762,10 @@ static const char *__doc_kp_Manager_mManagedSequences = R"doc()doc";
 
 static const char *__doc_kp_Manager_mPhysicalDevice = R"doc()doc";
 
+static const char *__doc_kp_Manager_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_Manager_operator_assign_2 = R"doc()doc";
+
 static const char *__doc_kp_Manager_sequence =
 R"doc(Create a managed sequence that will be destroyed by this manager if it
 hasn't been destroyed by its reference count going to zero.
@@ -768,8 +826,6 @@ static const char *__doc_kp_Memory_DataTypes_eDouble = R"doc()doc";
 
 static const char *__doc_kp_Memory_DataTypes_eFloat = R"doc()doc";
 
-static const char *__doc_kp_Memory_DataTypes_eHalf = R"doc()doc";
-
 static const char *__doc_kp_Memory_DataTypes_eInt = R"doc()doc";
 
 static const char *__doc_kp_Memory_DataTypes_eShort = R"doc()doc";
@@ -782,6 +838,10 @@ static const char *__doc_kp_Memory_DataTypes_eUnsignedShort = R"doc()doc";
 
 static const char *__doc_kp_Memory_Memory = R"doc()doc";
 
+static const char *__doc_kp_Memory_Memory_2 = R"doc(Make Memory uncopyable)doc";
+
+static const char *__doc_kp_Memory_Memory_3 = R"doc()doc";
+
 static const char *__doc_kp_Memory_MemoryTypes =
 R"doc(Type for memory created: Device allows memory to be transferred from
 staging memory. Staging are host memory visible. Storage are device
@@ -790,9 +850,17 @@ shader storage).)doc";
 
 static const char *__doc_kp_Memory_MemoryTypes_eDevice = R"doc(< Type is device memory, source and destination)doc";
 
+static const char *__doc_kp_Memory_MemoryTypes_eDeviceAndHost = R"doc()doc";
+
 static const char *__doc_kp_Memory_MemoryTypes_eHost = R"doc(< Type is host memory, source and destination)doc";
 
 static const char *__doc_kp_Memory_MemoryTypes_eStorage = R"doc(< Type is Device memory (only))doc";
+
+static const char *__doc_kp_Memory_Type = R"doc()doc";
+
+static const char *__doc_kp_Memory_Type_eImage = R"doc()doc";
+
+static const char *__doc_kp_Memory_Type_eTensor = R"doc()doc";
 
 static const char *__doc_kp_Memory_constructDescriptorSet =
 R"doc(Adds this object to a Vulkan descriptor set at \p binding.
@@ -849,6 +917,18 @@ static const char *__doc_kp_Memory_getPrimaryMemoryPropertyFlags = R"doc()doc";
 
 static const char *__doc_kp_Memory_getStagingMemoryPropertyFlags = R"doc()doc";
 
+static const char *__doc_kp_Memory_getX =
+R"doc(Retreive the size of the x-dimension of the memory
+
+Returns:
+    Size of the x-dimension of the memory)doc";
+
+static const char *__doc_kp_Memory_getY =
+R"doc(Retreive the size of the y-dimension of the memory
+
+Returns:
+    Size of the y-dimension of the memory)doc";
+
 static const char *__doc_kp_Memory_isInit =
 R"doc(Check whether memory object is initialized based on the created gpu
 resources.
@@ -882,6 +962,10 @@ static const char *__doc_kp_Memory_mStagingMemory = R"doc()doc";
 
 static const char *__doc_kp_Memory_mUnmapMemory = R"doc()doc";
 
+static const char *__doc_kp_Memory_mX = R"doc()doc";
+
+static const char *__doc_kp_Memory_mY = R"doc()doc";
+
 static const char *__doc_kp_Memory_mapRawData = R"doc()doc";
 
 static const char *__doc_kp_Memory_memorySize =
@@ -898,6 +982,10 @@ R"doc(Retrieve the memory type of the memory
 
 Returns:
     memory type of memory)doc";
+
+static const char *__doc_kp_Memory_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_Memory_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_Memory_rawData =
 R"doc(Retrieve the raw data via the pointer to the memory that contains the
@@ -997,6 +1085,12 @@ static const char *__doc_kp_Memory_toString = R"doc()doc";
 
 static const char *__doc_kp_Memory_toString_2 = R"doc()doc";
 
+static const char *__doc_kp_Memory_type =
+R"doc(Return the object type of this Memory object.
+
+Returns:
+    The object type of the Memory object.)doc";
+
 static const char *__doc_kp_Memory_unmapRawData = R"doc()doc";
 
 static const char *__doc_kp_Memory_updateRawData = R"doc()doc";
@@ -1025,6 +1119,10 @@ Parameter ``algorithm``:
 Parameter ``pushConstants``:
     The push constants to use for override)doc";
 
+static const char *__doc_kp_OpAlgoDispatch_OpAlgoDispatch_2 = R"doc(Make OpAlgoDispatch non-copyable)doc";
+
+static const char *__doc_kp_OpAlgoDispatch_OpAlgoDispatch_3 = R"doc()doc";
+
 static const char *__doc_kp_OpAlgoDispatch_mAlgorithm = R"doc()doc";
 
 static const char *__doc_kp_OpAlgoDispatch_mPushConstantsData = R"doc()doc";
@@ -1032,6 +1130,10 @@ static const char *__doc_kp_OpAlgoDispatch_mPushConstantsData = R"doc()doc";
 static const char *__doc_kp_OpAlgoDispatch_mPushConstantsDataTypeMemorySize = R"doc()doc";
 
 static const char *__doc_kp_OpAlgoDispatch_mPushConstantsSize = R"doc()doc";
+
+static const char *__doc_kp_OpAlgoDispatch_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpAlgoDispatch_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_OpAlgoDispatch_postEval =
 R"doc(Does not perform any postEval commands.
@@ -1063,6 +1165,16 @@ operations implement in order to perform a set of actions in the GPU.
 Operations can perform actions on tensors, and optionally can also own
 an Algorithm with respective parameters. kp::Operations with
 kp::Algorithms would inherit from kp::OpBaseAlgo.)doc";
+
+static const char *__doc_kp_OpBase_OpBase = R"doc(Construct a new OpBase object)doc";
+
+static const char *__doc_kp_OpBase_OpBase_2 = R"doc(Make OpBase non-copyable)doc";
+
+static const char *__doc_kp_OpBase_OpBase_3 = R"doc()doc";
+
+static const char *__doc_kp_OpBase_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpBase_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_OpBase_postEval =
 R"doc(Post eval is called after the Sequence has called eval and submitted
@@ -1107,7 +1219,15 @@ resources and the memory objects that will be used in the operation.
 Parameter ``memObjects``:
     memory objects that will be used to create in operation.)doc";
 
+static const char *__doc_kp_OpCopy_OpCopy_2 = R"doc(Make OpCopy non-copyable)doc";
+
+static const char *__doc_kp_OpCopy_OpCopy_3 = R"doc()doc";
+
 static const char *__doc_kp_OpCopy_mMemObjects = R"doc()doc";
+
+static const char *__doc_kp_OpCopy_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpCopy_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_OpCopy_postEval =
 R"doc(Copies the local vectors for all the memory objects to sync the data
@@ -1159,6 +1279,10 @@ Parameter ``dstStageMask``:
 Parameter ``barrierOnPrimary``:
     Boolean to select primary or secondary buffers on mem objects)doc";
 
+static const char *__doc_kp_OpMemoryBarrier_OpMemoryBarrier_2 = R"doc(Make OpMemoryBarrier non-copyable)doc";
+
+static const char *__doc_kp_OpMemoryBarrier_OpMemoryBarrier_3 = R"doc()doc";
+
 static const char *__doc_kp_OpMemoryBarrier_mBarrierOnPrimary = R"doc()doc";
 
 static const char *__doc_kp_OpMemoryBarrier_mDstAccessMask = R"doc()doc";
@@ -1170,6 +1294,10 @@ static const char *__doc_kp_OpMemoryBarrier_mMemObjects = R"doc()doc";
 static const char *__doc_kp_OpMemoryBarrier_mSrcAccessMask = R"doc()doc";
 
 static const char *__doc_kp_OpMemoryBarrier_mSrcStageMask = R"doc()doc";
+
+static const char *__doc_kp_OpMemoryBarrier_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpMemoryBarrier_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_OpMemoryBarrier_postEval =
 R"doc(Does not perform any postEval commands.
@@ -1206,6 +1334,14 @@ Parameter ``algorithm``:
     An algorithm that will be overridden with the OpMult shader data
     and the tensors provided which are expected to be 3)doc";
 
+static const char *__doc_kp_OpMult_OpMult_2 = R"doc(Make OpMult non-copyable)doc";
+
+static const char *__doc_kp_OpMult_OpMult_3 = R"doc()doc";
+
+static const char *__doc_kp_OpMult_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpMult_operator_assign_2 = R"doc()doc";
+
 static const char *__doc_kp_OpSyncDevice =
 R"doc(Operation that syncs mem object's device memory by mapping local data
 into the device memory. For MemoryTypes::eDevice it will use a record
@@ -1223,7 +1359,15 @@ The memory objects provided cannot be of type MemoryTypes::eStorage.
 Parameter ``memObjects``:
     Memory objects that will be used to create in operation.)doc";
 
+static const char *__doc_kp_OpSyncDevice_OpSyncDevice_2 = R"doc(Make OpSyncDevice non-copyable)doc";
+
+static const char *__doc_kp_OpSyncDevice_OpSyncDevice_3 = R"doc()doc";
+
 static const char *__doc_kp_OpSyncDevice_mMemObjects = R"doc()doc";
+
+static const char *__doc_kp_OpSyncDevice_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpSyncDevice_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_OpSyncDevice_postEval =
 R"doc(Does not perform any postEval commands.
@@ -1261,7 +1405,15 @@ memory provided cannot be of type MemoryTypes::eStorage.
 Parameter ``memObjects``:
     Memory objects that will be used to create in operation.)doc";
 
+static const char *__doc_kp_OpSyncLocal_OpSyncLocal_2 = R"doc(Make OpSyncLocal non-copyable)doc";
+
+static const char *__doc_kp_OpSyncLocal_OpSyncLocal_3 = R"doc()doc";
+
 static const char *__doc_kp_OpSyncLocal_mMemObjects = R"doc()doc";
+
+static const char *__doc_kp_OpSyncLocal_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_OpSyncLocal_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_OpSyncLocal_postEval =
 R"doc(For host memory objects it performs the map command from the host
@@ -1303,6 +1455,10 @@ Parameter ``queueIndex``:
 
 Parameter ``totalTimestamps``:
     Maximum number of timestamps to allocate)doc";
+
+static const char *__doc_kp_Sequence_Sequence_2 = R"doc(Make Sequence uncopyable)doc";
+
+static const char *__doc_kp_Sequence_Sequence_3 = R"doc()doc";
 
 static const char *__doc_kp_Sequence_begin =
 R"doc(Begins recording commands for commands to be submitted into the
@@ -1474,6 +1630,10 @@ static const char *__doc_kp_Sequence_mQueueIndex = R"doc()doc";
 
 static const char *__doc_kp_Sequence_mRecording = R"doc()doc";
 
+static const char *__doc_kp_Sequence_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_Sequence_operator_assign_2 = R"doc()doc";
+
 static const char *__doc_kp_Sequence_record =
 R"doc(Record function for operation to be added to the GPU queue in batch.
 This template requires classes to be derived from the OpBase class.
@@ -1542,9 +1702,17 @@ static const char *__doc_kp_TensorT_TensorT = R"doc()doc";
 
 static const char *__doc_kp_TensorT_TensorT_2 = R"doc()doc";
 
+static const char *__doc_kp_TensorT_TensorT_3 = R"doc(Make TensorT uncopyable)doc";
+
+static const char *__doc_kp_TensorT_TensorT_4 = R"doc()doc";
+
 static const char *__doc_kp_TensorT_data = R"doc()doc";
 
 static const char *__doc_kp_TensorT_dataType = R"doc()doc";
+
+static const char *__doc_kp_TensorT_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_TensorT_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_TensorT_vector = R"doc()doc";
 
@@ -1582,6 +1750,10 @@ Parameter ``elementMemorySize``:
 
 Parameter ``tensorTypes``:
     Type for the tensor which is of type TensorTypes)doc";
+
+static const char *__doc_kp_Tensor_Tensor_3 = R"doc(Make Tensor uncopyable)doc";
+
+static const char *__doc_kp_Tensor_Tensor_4 = R"doc()doc";
 
 static const char *__doc_kp_Tensor_allocateBindMemory = R"doc()doc";
 
@@ -1629,6 +1801,10 @@ static const char *__doc_kp_Tensor_mFreeStagingBuffer = R"doc()doc";
 static const char *__doc_kp_Tensor_mPrimaryBuffer = R"doc()doc";
 
 static const char *__doc_kp_Tensor_mStagingBuffer = R"doc()doc";
+
+static const char *__doc_kp_Tensor_operator_assign = R"doc()doc";
+
+static const char *__doc_kp_Tensor_operator_assign_2 = R"doc()doc";
 
 static const char *__doc_kp_Tensor_recordBufferMemoryBarrier = R"doc()doc";
 
@@ -1715,6 +1891,26 @@ Parameter ``dstStageMask``:
 static const char *__doc_kp_Tensor_reserve =
 R"doc(Function to reserve memory on the tensor. This does not copy any data,
 it just reserves memory, similarly to std::vector reserve() method.)doc";
+
+static const char *__doc_kp_Tensor_type = R"doc()doc";
+
+static const char *__doc_kp_dataType = R"doc()doc";
+
+static const char *__doc_kp_dataType_2 = R"doc()doc";
+
+static const char *__doc_kp_dataType_3 = R"doc()doc";
+
+static const char *__doc_kp_dataType_4 = R"doc()doc";
+
+static const char *__doc_kp_dataType_5 = R"doc()doc";
+
+static const char *__doc_kp_dataType_6 = R"doc()doc";
+
+static const char *__doc_kp_dataType_7 = R"doc()doc";
+
+static const char *__doc_kp_dataType_8 = R"doc()doc";
+
+static const char *__doc_kp_dataType_9 = R"doc()doc";
 
 #if defined(__GNUG__)
 #pragma GCC diagnostic pop
