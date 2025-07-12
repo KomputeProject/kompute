@@ -666,7 +666,7 @@ PYBIND11_MODULE(kp, m)
                 std::vector<double> specconstsvec((double*)specInfo.ptr,
                                                   ((double*)specInfo.ptr) +
                                                     specInfo.size);
-                if (spec_consts.dtype().is(py::dtype::of<std::float_t>())) {
+                if (push_consts.dtype().is(py::dtype::of<std::float_t>())) {
                     std::vector<float> pushconstsvec((float*)pushInfo.ptr,
                                                      ((float*)pushInfo.ptr) +
                                                        pushInfo.size);
@@ -675,31 +675,25 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
-                             py::dtype::of<std::int32_t>())) {
-                    std::vector<float> pushconstsvec((int32_t*)pushInfo.ptr,
-                                                     ((int32_t*)pushInfo.ptr) +
-                                                       pushInfo.size);
+                } else if (push_consts.dtype().is(py::dtype::of<std::int32_t>())) {
+                    std::vector<int32_t> pushconstsvec((int32_t*)pushInfo.ptr,
+                                           ((int32_t*)pushInfo.ptr) + pushInfo.size);
                     return self.algorithm(tensors,
                                           spirvVec,
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
-                             py::dtype::of<std::uint32_t>())) {
-                    std::vector<float> pushconstsvec((uint32_t*)pushInfo.ptr,
-                                                     ((uint32_t*)pushInfo.ptr) +
-                                                       pushInfo.size);
+                } else if (push_consts.dtype().is(py::dtype::of<std::uint32_t>())) {
+                    std::vector<uint32_t> pushconstsvec((uint32_t*)pushInfo.ptr,
+                                            ((uint32_t*)pushInfo.ptr) + pushInfo.size);
                     return self.algorithm(tensors,
                                           spirvVec,
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
-                             py::dtype::of<std::double_t>())) {
-                    std::vector<float> pushconstsvec((double*)pushInfo.ptr,
-                                                     ((double*)pushInfo.ptr) +
-                                                       pushInfo.size);
+                } else if (push_consts.dtype().is(py::dtype::of<std::double_t>())) {
+                    std::vector<double> pushconstsvec((double*)pushInfo.ptr,
+                                          ((double*)pushInfo.ptr) + pushInfo.size);
                     return self.algorithm(tensors,
                                           spirvVec,
                                           workgroup,
