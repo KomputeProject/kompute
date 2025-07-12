@@ -534,7 +534,7 @@ PYBIND11_MODULE(kp, m)
             if (spec_consts.dtype().is(py::dtype::of<std::float_t>())) {
                 std::vector<float> specConstsVec(
                   (float*)specInfo.ptr, ((float*)specInfo.ptr) + specInfo.size);
-                if (spec_consts.dtype().is(py::dtype::of<std::float_t>())) {
+                if (push_consts.dtype().is(py::dtype::of<std::float_t>())) {
                     std::vector<float> pushConstsVec((float*)pushInfo.ptr,
                                                      ((float*)pushInfo.ptr) +
                                                        pushInfo.size);
@@ -543,7 +543,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specConstsVec,
                                           pushConstsVec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::int32_t>())) {
                     std::vector<int32_t> pushConstsVec(
                       (int32_t*)pushInfo.ptr,
@@ -553,7 +553,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specConstsVec,
                                           pushConstsVec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::uint32_t>())) {
                     std::vector<uint32_t> pushConstsVec(
                       (uint32_t*)pushInfo.ptr,
@@ -563,7 +563,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specConstsVec,
                                           pushConstsVec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::double_t>())) {
                     std::vector<double> pushConstsVec((double*)pushInfo.ptr,
                                                       ((double*)pushInfo.ptr) +
@@ -578,7 +578,7 @@ PYBIND11_MODULE(kp, m)
                 std::vector<int32_t> specconstsvec((int32_t*)specInfo.ptr,
                                                    ((int32_t*)specInfo.ptr) +
                                                      specInfo.size);
-                if (spec_consts.dtype().is(py::dtype::of<std::float_t>())) {
+                if (push_consts.dtype().is(py::dtype::of<std::float_t>())) {
                     std::vector<float> pushconstsvec((float*)pushInfo.ptr,
                                                      ((float*)pushInfo.ptr) +
                                                        pushInfo.size);
@@ -587,7 +587,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::int32_t>())) {
                     std::vector<int32_t> pushconstsvec(
                       (int32_t*)pushInfo.ptr,
@@ -597,7 +597,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::uint32_t>())) {
                     std::vector<uint32_t> pushconstsvec(
                       (uint32_t*)pushInfo.ptr,
@@ -607,7 +607,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::double_t>())) {
                     std::vector<double> pushconstsvec((double*)pushInfo.ptr,
                                                       ((double*)pushInfo.ptr) +
@@ -622,7 +622,7 @@ PYBIND11_MODULE(kp, m)
                 std::vector<uint32_t> specconstsvec((uint32_t*)specInfo.ptr,
                                                     ((uint32_t*)specInfo.ptr) +
                                                       specInfo.size);
-                if (spec_consts.dtype().is(py::dtype::of<std::float_t>())) {
+                if (push_consts.dtype().is(py::dtype::of<std::float_t>())) {
                     std::vector<float> pushconstsvec((float*)pushInfo.ptr,
                                                      ((float*)pushInfo.ptr) +
                                                        pushInfo.size);
@@ -631,7 +631,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::int32_t>())) {
                     std::vector<int32_t> pushconstsvec(
                       (int32_t*)pushInfo.ptr,
@@ -641,7 +641,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::uint32_t>())) {
                     std::vector<uint32_t> pushconstsvec(
                       (uint32_t*)pushInfo.ptr,
@@ -651,7 +651,7 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
+                } else if (push_consts.dtype().is(
                              py::dtype::of<std::double_t>())) {
                     std::vector<double> pushconstsvec((double*)pushInfo.ptr,
                                                       ((double*)pushInfo.ptr) +
@@ -666,7 +666,7 @@ PYBIND11_MODULE(kp, m)
                 std::vector<double> specconstsvec((double*)specInfo.ptr,
                                                   ((double*)specInfo.ptr) +
                                                     specInfo.size);
-                if (spec_consts.dtype().is(py::dtype::of<std::float_t>())) {
+                if (push_consts.dtype().is(py::dtype::of<std::float_t>())) {
                     std::vector<float> pushconstsvec((float*)pushInfo.ptr,
                                                      ((float*)pushInfo.ptr) +
                                                        pushInfo.size);
@@ -675,31 +675,25 @@ PYBIND11_MODULE(kp, m)
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
-                             py::dtype::of<std::int32_t>())) {
-                    std::vector<float> pushconstsvec((int32_t*)pushInfo.ptr,
-                                                     ((int32_t*)pushInfo.ptr) +
-                                                       pushInfo.size);
+                } else if (push_consts.dtype().is(py::dtype::of<std::int32_t>())) {
+                    std::vector<int32_t> pushconstsvec((int32_t*)pushInfo.ptr,
+                                           ((int32_t*)pushInfo.ptr) + pushInfo.size);
                     return self.algorithm(tensors,
                                           spirvVec,
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
-                             py::dtype::of<std::uint32_t>())) {
-                    std::vector<float> pushconstsvec((uint32_t*)pushInfo.ptr,
-                                                     ((uint32_t*)pushInfo.ptr) +
-                                                       pushInfo.size);
+                } else if (push_consts.dtype().is(py::dtype::of<std::uint32_t>())) {
+                    std::vector<uint32_t> pushconstsvec((uint32_t*)pushInfo.ptr,
+                                            ((uint32_t*)pushInfo.ptr) + pushInfo.size);
                     return self.algorithm(tensors,
                                           spirvVec,
                                           workgroup,
                                           specconstsvec,
                                           pushconstsvec);
-                } else if (spec_consts.dtype().is(
-                             py::dtype::of<std::double_t>())) {
-                    std::vector<float> pushconstsvec((double*)pushInfo.ptr,
-                                                     ((double*)pushInfo.ptr) +
-                                                       pushInfo.size);
+                } else if (push_consts.dtype().is(py::dtype::of<std::double_t>())) {
+                    std::vector<double> pushconstsvec((double*)pushInfo.ptr,
+                                          ((double*)pushInfo.ptr) + pushInfo.size);
                     return self.algorithm(tensors,
                                           spirvVec,
                                           workgroup,
