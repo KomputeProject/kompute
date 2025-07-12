@@ -226,7 +226,7 @@ endif()
 if(KOMPUTE_OPT_BUILD_PYTHON)
     if(KOMPUTE_OPT_USE_BUILT_IN_PYBIND11)
         FetchContent_Declare(pybind GIT_REPOSITORY https://github.com/pybind/pybind11.git
-            GIT_TAG v2.9.2
+            GIT_TAG v3.0.0
             GIT_SHALLOW 1) # Source: https://github.com/pybind/pybind11/releases
         FetchContent_MakeAvailable(pybind)
     else()
