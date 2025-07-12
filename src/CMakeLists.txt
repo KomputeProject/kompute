@@ -66,6 +66,7 @@ endif()
 if(KOMPUTE_OPT_ANDROID_BUILD)
     target_link_libraries(kompute PUBLIC vulkanAndroid
         android
+        log
         kp_logger
         kp_shader)
 else()
