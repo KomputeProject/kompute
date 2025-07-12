@@ -32,7 +32,7 @@ def test_pushconsts_int32_spec_const_int32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_int32_spec_const_uint32():
     shader = """
@@ -60,7 +60,7 @@ def test_pushconsts_int32_spec_const_uint32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_int32_spec_const_float():
     shader = """
@@ -82,13 +82,13 @@ def test_pushconsts_int32_spec_const_float():
     arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([7, 8, 9], dtype=np.int32)
-    spec_const = np.array([2.4], dtype=np.float32)
+    spec_const = np.array([3.3], dtype=np.float32)
     algo = mgr.algorithm([tensor_out], spirv, workgroup, spec_const, push_consts)
     (mgr.sequence()
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_uint32_spec_const_int32():
     shader = """
@@ -116,7 +116,7 @@ def test_pushconsts_uint32_spec_const_int32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_uint32_spec_const_uint32():
     shader = """
@@ -144,7 +144,7 @@ def test_pushconsts_uint32_spec_const_uint32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_uint32_spec_const_float():
     shader = """
@@ -172,7 +172,7 @@ def test_pushconsts_uint32_spec_const_float():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_float_spec_const_int32():
     shader = """
@@ -200,7 +200,7 @@ def test_pushconsts_float_spec_const_int32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + float(spec_const[0])))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_float_spec_const_uint32():
     shader = """
@@ -228,7 +228,7 @@ def test_pushconsts_float_spec_const_uint32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + float(spec_const[0])))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
 
 def test_pushconsts_float_spec_const_float():
     shader = """
@@ -256,4 +256,4 @@ def test_pushconsts_float_spec_const_float():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
+    assert np.array_equal(tensor_out.data(), push_consts.astype(np.float32) + spec_const.astype(np.float32)[0])
