@@ -14,16 +14,16 @@ def test_pushconsts_int32_spec_const_int32():
             int value[3];
         } pc;
         layout(set = 0, binding = 0) buffer Output {
-            int outData[];
+            float outData[];
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + spec_val;
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
     mgr = kp.Manager()
-    arr_out = np.array([0, 0, 0], dtype=np.int32)
+    arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([1, 2, 3], dtype=np.int32)
     spec_const = np.array([5], dtype=np.int32)  # Will override spec_val to 5
@@ -32,7 +32,7 @@ def test_pushconsts_int32_spec_const_int32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.all(tensor_out.data() == (push_consts + spec_const[0]))
+    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
 
 def test_pushconsts_int32_spec_const_uint32():
     shader = """
@@ -42,16 +42,16 @@ def test_pushconsts_int32_spec_const_uint32():
             int value[3];
         } pc;
         layout(set = 0, binding = 0) buffer Output {
-            int outData[];
+            float outData[];
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + int(spec_val);
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
     mgr = kp.Manager()
-    arr_out = np.array([0, 0, 0], dtype=np.int32)
+    arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([4, 5, 6], dtype=np.int32)
     spec_const = np.array([7], dtype=np.uint32)
@@ -60,7 +60,7 @@ def test_pushconsts_int32_spec_const_uint32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.all(tensor_out.data() == (push_consts + spec_const[0]))
+    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
 
 def test_pushconsts_int32_spec_const_float():
     shader = """
@@ -70,16 +70,16 @@ def test_pushconsts_int32_spec_const_float():
             int value[3];
         } pc;
         layout(set = 0, binding = 0) buffer Output {
-            int outData[];
+            float outData[];
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + int(spec_val);
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
     mgr = kp.Manager()
-    arr_out = np.array([0, 0, 0], dtype=np.int32)
+    arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([7, 8, 9], dtype=np.int32)
     spec_const = np.array([2.4], dtype=np.float32)
@@ -98,16 +98,16 @@ def test_pushconsts_uint32_spec_const_int32():
             uint value[3];
         } pc;
         layout(set = 0, binding = 0) buffer Output {
-            uint outData[];
+            float outData[];
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + uint(spec_val);
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
     mgr = kp.Manager()
-    arr_out = np.array([0, 0, 0], dtype=np.uint32)
+    arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([1, 2, 3], dtype=np.uint32)
     spec_const = np.array([4], dtype=np.int32)
@@ -116,7 +116,7 @@ def test_pushconsts_uint32_spec_const_int32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.all(tensor_out.data() == (push_consts + spec_const[0]))
+    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
 
 def test_pushconsts_uint32_spec_const_uint32():
     shader = """
@@ -126,16 +126,16 @@ def test_pushconsts_uint32_spec_const_uint32():
             uint value[3];
         } pc;
         layout(set = 0, binding = 0) buffer Output {
-            uint outData[];
+            float outData[];
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + spec_val;
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
     mgr = kp.Manager()
-    arr_out = np.array([0, 0, 0], dtype=np.uint32)
+    arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([4, 5, 6], dtype=np.uint32)
     spec_const = np.array([8], dtype=np.uint32)
@@ -144,7 +144,7 @@ def test_pushconsts_uint32_spec_const_uint32():
         .record(kp.OpAlgoDispatch(algo))
         .record(kp.OpSyncLocal([tensor_out]))
         .eval())
-    assert np.all(tensor_out.data() == (push_consts + spec_const[0]))
+    assert np.allclose(tensor_out.data(), (push_consts + spec_const[0]))
 
 def test_pushconsts_uint32_spec_const_float():
     shader = """
@@ -154,16 +154,16 @@ def test_pushconsts_uint32_spec_const_float():
             uint value[3];
         } pc;
         layout(set = 0, binding = 0) buffer Output {
-            uint outData[];
+            float outData[];
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + uint(spec_val);
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
     mgr = kp.Manager()
-    arr_out = np.array([0, 0, 0], dtype=np.uint32)
+    arr_out = np.array([0.0, 0.0, 0.0], dtype=np.float32)
     tensor_out = mgr.tensor_t(arr_out)
     push_consts = np.array([7, 8, 9], dtype=np.uint32)
     spec_const = np.array([3.3], dtype=np.float32)
@@ -186,7 +186,7 @@ def test_pushconsts_float_spec_const_int32():
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + float(spec_val);
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
@@ -214,7 +214,7 @@ def test_pushconsts_float_spec_const_uint32():
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + float(spec_val);
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
@@ -242,7 +242,7 @@ def test_pushconsts_float_spec_const_float():
         };
         void main() {
             uint idx = gl_GlobalInvocationID.x;
-            outData[idx] = pc.value[idx] + spec_val;
+            outData[idx] = float(pc.value[idx]) + float(spec_val);
         }
     """
     spirv = compile_source(shader)
