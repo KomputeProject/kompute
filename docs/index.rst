@@ -3,7 +3,7 @@ Kompute Docs Home
 ==========================================
 
 High Level Overview (from README)
---------
+---------------------------------
 
 .. mdinclude:: ../README.md
 
