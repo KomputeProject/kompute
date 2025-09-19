@@ -2,7 +2,7 @@ import time
 
 import kp
 import numpy as np
-
+from utils import compile_source
 
 class MatMulOp:
     def __init__(self, manager: kp.Manager, tile_size: int = -1, thread_work_ratio: int = 16):
@@ -83,7 +83,7 @@ void main()
     for(uint w = 0u; w < {thread_work_ratio}; w++)
         out_tensor[(globalCol + w * {local_size_y}) * tensor_size + globalRow] = acc[w];
 }}'''
-        self.compiled_shader = kp.Shader.compile_source(self.shader.format(
+        self.compiled_shader = compile_source(self.shader.format(
             tile_size=tile_size, thread_work_ratio=thread_work_ratio, local_size_y=local_size_y))
         self.tensor_shape: tuple[int, int] = (0, 0)
         self.params: list[kp.Tensor] = []
@@ -99,7 +99,7 @@ void main()
             tile_size = min(self.tensor_shape[0], self.tile_size)
             thread_work_ratio = min(self.tensor_shape[1] // self.tile_size, self.thread_work_ratio)
             local_size_y = tile_size // thread_work_ratio
-            self.compiled_shader = kp.Shader.compile_source(self.shader.format(
+            self.compiled_shader = compile_source(self.shader.format(
                 tile_size=tile_size, thread_work_ratio=thread_work_ratio, local_size_y=local_size_y))
             workgroup = (tensor_shape[0] // self.local_size_x, tensor_shape[1] // self.local_size_y, 1)
             self.algo = self.mgr.algorithm(
