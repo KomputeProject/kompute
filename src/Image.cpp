@@ -181,16 +181,16 @@ Image::recordCopyFromStagingToDevice(const vk::CommandBuffer& commandBuffer)
     KP_LOG_DEBUG("Kompute Image copying size {},{},{}.", size.width, size.height, size.depth);
 
     this->recordStagingImageBarrier(commandBuffer,
-                                    vk::AccessFlagBits::eMemoryRead,
-                                    vk::AccessFlagBits::eMemoryWrite,
-                                    vk::PipelineStageFlagBits::eTransfer,
+                                    vk::AccessFlagBits::eHostWrite,
+                                    vk::AccessFlagBits::eTransferRead,
+                                    vk::PipelineStageFlagBits::eHost,
                                     vk::PipelineStageFlagBits::eTransfer,
                                     vk::ImageLayout::eTransferSrcOptimal);
 
     this->recordPrimaryImageBarrier(commandBuffer,
-                                    vk::AccessFlagBits::eMemoryRead,
+                                    vk::AccessFlagBits::eHostWrite,
                                     vk::AccessFlagBits::eMemoryWrite,
-                                    vk::PipelineStageFlagBits::eTransfer,
+                                    vk::PipelineStageFlagBits::eHost,
                                     vk::PipelineStageFlagBits::eTransfer,
                                     vk::ImageLayout::eTransferDstOptimal);
 
@@ -505,6 +505,12 @@ std::shared_ptr<vk::Image>
 Image::getPrimaryImage()
 {
     return this->mPrimaryImage;
+}
+
+std::shared_ptr<vk::ImageView>
+Image::getImageView()
+{
+    return this->mImageView;
 }
 
 vk::ImageLayout

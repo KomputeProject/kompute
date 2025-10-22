@@ -28,8 +28,6 @@ class OpAlgoDispatch : public OpBase
     OpAlgoDispatch(const std::shared_ptr<kp::Algorithm>& algorithm,
                    const std::vector<T>& pushConstants = {}) noexcept
     {
-        KP_LOG_DEBUG("Kompute OpAlgoDispatch constructor");
-
         this->mAlgorithm = algorithm;
 
         if (pushConstants.size()) {

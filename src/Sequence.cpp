@@ -108,7 +108,9 @@ Sequence::eval(std::shared_ptr<OpBase> op)
 
 std::shared_ptr<Sequence>
 Sequence::evalAsync(
-    std::shared_ptr<const vk::Semaphore> waitSemaphore, std::shared_ptr<const vk::Semaphore> signalSemaphore)
+    std::shared_ptr<const vk::Semaphore> waitSemaphore,
+    std::shared_ptr<const vk::Semaphore> signalSemaphore,
+    vk::PipelineStageFlags waitStageMask)
 {
     if (this->isRecording()) {
         this->end();
@@ -127,8 +129,6 @@ Sequence::evalAsync(
     }
 
     // Create wait stage mask for the compute shader
-    vk::PipelineStageFlags waitStageMask = vk::PipelineStageFlagBits::eComputeShader;
-
     int numWaitSemaphores = waitSemaphore == nullptr ? 0 : 1;
     int numSignalSemaphores = signalSemaphore == nullptr ? 0 : 1;
     

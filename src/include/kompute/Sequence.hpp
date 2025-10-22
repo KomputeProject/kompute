@@ -161,7 +161,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync(
-        std::shared_ptr<const vk::Semaphore> waitSemaphore=nullptr, std::shared_ptr<const vk::Semaphore> signalSemaphore=nullptr);
+        std::shared_ptr<const vk::Semaphore> waitSemaphore=nullptr,
+        std::shared_ptr<const vk::Semaphore> signalSemaphore=nullptr,
+        vk::PipelineStageFlags waitStageMask = vk::PipelineStageFlagBits::eComputeShader);
 
     /**
      * Clears currnet operations to record provided one in the vector of

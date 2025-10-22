@@ -233,13 +233,39 @@ Manager::createInstance(const std::vector<std::string>& instanceExtensions)
     // Identify the valid layer names based on the desiredLayerNames
     {
         std::set<std::string> uniqueLayerNames;
-        std::vector<vk::LayerProperties> availableLayerProperties =
-          vk::enumerateInstanceLayerProperties();
+
+        // std::vector<vk::LayerProperties> availableLayerProperties =
+        //   vk::enumerateInstanceLayerProperties();
+
+        vk::detail::DynamicLoader dl;
+
+        PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+          dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+          
+        auto vkEnumerateInstanceLayerProperties = 
+          PFN_vkEnumerateInstanceLayerProperties(
+            vkGetInstanceProcAddr(nullptr, "vkEnumerateInstanceLayerProperties"));
+
+        uint32_t layerCount;
+
+        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+        std::vector<VkLayerProperties> layerProps(layerCount);
+
+        vkEnumerateInstanceLayerProperties(&layerCount, layerProps.data());
+
+        std::vector<vk::LayerProperties> availableLayerProperties;
+        for (const auto& prop : layerProps) {
+            availableLayerProperties.push_back(vk::LayerProperties(prop));
+        }
+        
         for (vk::LayerProperties layerProperties : availableLayerProperties) {
             std::string layerName(layerProperties.layerName.data());
             uniqueLayerNames.insert(layerName);
         }
+        
         KP_LOG_DEBUG("Available layers: {}", fmt::join(uniqueLayerNames, ", "));
+        
         for (const char* desiredLayerName : desiredLayerNames) {
             if (uniqueLayerNames.count(desiredLayerName) != 0) {
                 validLayerNames.push_back(desiredLayerName);
@@ -261,7 +287,7 @@ Manager::createInstance(const std::vector<std::string>& instanceExtensions)
 #endif
 
 #if VK_USE_PLATFORM_ANDROID_KHR
-    vk::DynamicLoader dl;
+    vk::detail::DynamicLoader dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
       dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);

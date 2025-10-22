@@ -71,14 +71,18 @@ class Image : public Memory
           uint32_t y,
           uint32_t z,
           uint32_t numChannels,
-          const DataTypes& dataType)
+          const DataTypes& dataType,
+          std::shared_ptr<Sampler> sampler=nullptr)
       : Memory(physicalDevice, device, dataType, MemoryTypes::eDevice, x, y, z),
         mNumChannels(numChannels),
         mImageView(imageView),
         mTiling(vk::ImageTiling::eOptimal),        
-        mPrimaryImage(image)
+        mPrimaryImage(image),
+        mSampler(sampler)
     {
-        this->mDescriptorType = vk::DescriptorType::eStorageImage;
+        this->mDescriptorType = sampler == nullptr ?
+          vk::DescriptorType::eStorageImage : vk::DescriptorType::eCombinedImageSampler;
+
         this->mSize = this->getX() * this->getY() * this->getZ() * this->mNumChannels;
         this->mExternallyManaged = true;
     }
@@ -342,6 +346,8 @@ class Image : public Memory
       uint32_t binding) override;
 
     std::shared_ptr<vk::Image> getPrimaryImage();
+    std::shared_ptr<vk::ImageView> getImageView();
+
     vk::ImageLayout getPrimaryImageLayout();
 
     /***
