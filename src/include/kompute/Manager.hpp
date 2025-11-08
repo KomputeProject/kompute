@@ -498,16 +498,24 @@ class Manager
 
         KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
-        std::shared_ptr<Algorithm> algorithm{ new kp::Algorithm(
+        // Create algorithm with direct ownership for improved performance
+        auto ownedAlgorithm = std::make_unique<kp::Algorithm>(
           this->mDevice,
           memObjects,
           spirv,
           workgroup,
           specializationConstants,
-          pushConstants) };
+          pushConstants);
+
+        // Create shared_ptr wrapper for API compatibility
+        Algorithm* rawPtr = ownedAlgorithm.get();
+        std::shared_ptr<Algorithm> algorithm(rawPtr, [](Algorithm*) {
+            // No-op deleter: lifetime managed by Manager's unique_ptr
+        });
 
         if (this->mManageResources) {
             this->mManagedAlgorithms.push_back(algorithm);
+            this->mOwnedAlgorithms.push_back(std::move(ownedAlgorithm));
         }
 
         return algorithm;

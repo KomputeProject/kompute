@@ -99,9 +99,20 @@ Manager::destroy()
         return;
     }
 
+    // Clean up directly owned sequences first
+    if (this->mManageResources && this->mOwnedSequences.size()) {
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing owned sequences");
+        for (auto& ownedSequence : this->mOwnedSequences) {
+            if (ownedSequence) {
+                ownedSequence->destroy();
+            }
+        }
+        this->mOwnedSequences.clear();
+    }
+
+    // Clean up tracked sequences for compatibility
     if (this->mManageResources && this->mManagedSequences.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly running destructor for "
-                     "managed sequences");
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing tracked sequences");
         for (const std::weak_ptr<Sequence>& weakSq : this->mManagedSequences) {
             if (std::shared_ptr<Sequence> sq = weakSq.lock()) {
                 sq->destroy();
@@ -110,8 +121,20 @@ Manager::destroy()
         this->mManagedSequences.clear();
     }
 
+    // Clean up directly owned algorithms first
+    if (this->mManageResources && this->mOwnedAlgorithms.size()) {
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing owned algorithms");
+        for (auto& ownedAlgorithm : this->mOwnedAlgorithms) {
+            if (ownedAlgorithm) {
+                ownedAlgorithm->destroy();
+            }
+        }
+        this->mOwnedAlgorithms.clear();
+    }
+
+    // Clean up tracked algorithms for compatibility
     if (this->mManageResources && this->mManagedAlgorithms.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing algorithms");
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing tracked algorithms");
         for (const std::weak_ptr<Algorithm>& weakAlgorithm :
              this->mManagedAlgorithms) {
             if (std::shared_ptr<Algorithm> algorithm = weakAlgorithm.lock()) {
@@ -491,15 +514,23 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
-    std::shared_ptr<Sequence> sq{ new kp::Sequence(
+    // Create sequence with direct ownership for improved performance
+    auto ownedSequence = std::make_unique<kp::Sequence>(
       this->mPhysicalDevice,
       this->mDevice,
       this->mComputeQueues[queueIndex],
       this->mComputeQueueFamilyIndices[queueIndex],
-      totalTimestamps) };
+      totalTimestamps);
+
+    // Create shared_ptr wrapper for API compatibility
+    Sequence* rawPtr = ownedSequence.get();
+    std::shared_ptr<Sequence> sq(rawPtr, [](Sequence*) {
+        // No-op deleter: lifetime managed by Manager's unique_ptr
+    });
 
     if (this->mManageResources) {
         this->mManagedSequences.push_back(sq);
+        this->mOwnedSequences.push_back(std::move(ownedSequence));
     }
 
     return sq;
