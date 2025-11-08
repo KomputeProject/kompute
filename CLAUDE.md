@@ -222,6 +222,12 @@ vulkan_compile_shader(
 
 # CPU tests (SwiftShader)
 VK_ICD_FILENAMES=./swiftshader/build/vk_swiftshader_icd.json ./build/bin/kompute_tests
+
+# Run specific tests using FILTER_TESTS parameter
+make mk_run_tests FILTER_TESTS="TestManagerLifecycle.*"
+make mk_run_tests FILTER_TESTS="TestTensor.ConstructorData"
+
+# The FILTER_TESTS parameter is passed as --gtest_filter to the test executable
 ```
 
 ## Directory Structure & Build Artifacts
