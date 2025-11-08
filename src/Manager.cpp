@@ -121,9 +121,9 @@ Manager::destroy()
         this->mManagedAlgorithms.clear();
     }
 
-    // Phase 1 Hybrid Cleanup: Handle both unique_ptr owned objects and legacy weak_ptr tracked objects
+    // Clean up directly owned memory objects first
     if (this->mManageResources && this->mOwnedMemObjects.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing owned memory objects (unique_ptr)");
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing owned memory objects");
         for (auto& ownedMemory : this->mOwnedMemObjects) {
             if (ownedMemory) {
                 ownedMemory->destroy();
@@ -132,8 +132,9 @@ Manager::destroy()
         this->mOwnedMemObjects.clear();
     }
 
+    // Clean up tracked memory objects for compatibility
     if (this->mManageResources && this->mManagedMemObjects.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing memory objects (legacy weak_ptr)");
+        KP_LOG_DEBUG("Kompute Manager explicitly freeing tracked memory objects");
         for (const std::weak_ptr<Memory>& weakMemory :
              this->mManagedMemObjects) {
             if (std::shared_ptr<Memory> memory = weakMemory.lock()) {
