@@ -8,6 +8,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **KEEP IT SIMPLE**: When implementing changes or new features, default to simplicity over complexity. Avoid adding extra layers of abstraction unless they are actually required for further feature support. The existing Kompute architecture is already well-designed - respect the established patterns and don't over-engineer solutions. Direct, straightforward implementations that follow existing conventions are preferred over clever abstractions that may complicate future maintenance.
 
+**CODE COMMENTS FOLLOW CODEBASE**: When writing comments on the codebase do not write comments that reference the internal Claude logic. Instead just add comments in case they are necessary and not to be added unless required as code should be readable. Follow the same convention of comments as the current codebase. Similarly when it comes to LOGGING.
+
 ## Project Overview
 
 Kompute is a general-purpose GPU compute framework built on Vulkan that provides cross-vendor graphics card support (AMD, Qualcomm, NVIDIA). It offers blazing fast, mobile-enabled, asynchronous GPU computing capabilities optimized for advanced GPU acceleration use cases, particularly machine learning and high-performance computing workloads.
