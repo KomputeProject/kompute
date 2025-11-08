@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Claude Development Instructions
+
+**DOCUMENT PROGRESS**: Ensure that before implementing a larger change / plan, this is documented in the PROGRESS.md. This file should be append-only; each entry should contain a title with the date and time. Even if auto-accept changes are enabled ensure that user approves the appending of content to this file. ALWAYS APPEND TO THIS FILE, AND REQUEST USER PERMISSION TO APPEND EVEN WHEN AUTO ACCEPT ENABLED. THIS IS IMPORTANT.
+
+**KEEP IT SIMPLE**: When implementing changes or new features, default to simplicity over complexity. Avoid adding extra layers of abstraction unless they are actually required for further feature support. The existing Kompute architecture is already well-designed - respect the established patterns and don't over-engineer solutions. Direct, straightforward implementations that follow existing conventions are preferred over clever abstractions that may complicate future maintenance.
+
 ## Project Overview
 
 Kompute is a general-purpose GPU compute framework built on Vulkan that provides cross-vendor graphics card support (AMD, Qualcomm, NVIDIA). It offers blazing fast, mobile-enabled, asynchronous GPU computing capabilities optimized for advanced GPU acceleration use cases, particularly machine learning and high-performance computing workloads.
@@ -284,10 +290,6 @@ For comprehensive Kompute development, consider:
 - Vulkan SDK dependencies influence Algorithm design (descriptor sets, pipelines)
 - Memory management principles from BYOV design philosophy
 - Cross-platform support requirements (Windows, Linux, macOS, Android)
-
-## Claude Development Principles
-
-**KEEP IT SIMPLE**: When implementing changes or new features, default to simplicity over complexity. Avoid adding extra layers of abstraction unless they are actually required for further feature support. The existing Kompute architecture is already well-designed - respect the established patterns and don't over-engineer solutions. Direct, straightforward implementations that follow existing conventions are preferred over clever abstractions that may complicate future maintenance.
 
 ---
 
