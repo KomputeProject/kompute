@@ -93,11 +93,19 @@ class Manager
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
-          this->mPhysicalDevice, this->mDevice, data, tensorType) };
+        // Phase 1 Hybrid Ownership: Create with unique_ptr for actual ownership
+        auto ownedTensor = std::make_unique<kp::TensorT<T>>(
+          this->mPhysicalDevice, this->mDevice, data, tensorType);
+
+        // Create shared_ptr wrapper that doesn't own (custom deleter that does nothing)
+        TensorT<T>* rawPtr = ownedTensor.get();
+        std::shared_ptr<TensorT<T>> tensor(rawPtr, [](TensorT<T>*) {
+            // Custom deleter: Manager owns via unique_ptr, shared_ptr doesn't delete
+        });
 
         if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(tensor);
+            this->mManagedMemObjects.push_back(tensor);  // weak_ptr tracking (compatibility)
+            this->mOwnedMemObjects.push_back(std::move(ownedTensor));  // unique_ptr ownership
         }
 
         return tensor;
@@ -118,11 +126,19 @@ class Manager
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        std::shared_ptr<TensorT<T>> tensor{ new kp::TensorT<T>(
-          this->mPhysicalDevice, this->mDevice, size, tensorType) };
+        // Phase 1 Hybrid Ownership: Create with unique_ptr for actual ownership
+        auto ownedTensor = std::make_unique<kp::TensorT<T>>(
+          this->mPhysicalDevice, this->mDevice, size, tensorType);
+
+        // Create shared_ptr wrapper that doesn't own (custom deleter that does nothing)
+        TensorT<T>* rawPtr = ownedTensor.get();
+        std::shared_ptr<TensorT<T>> tensor(rawPtr, [](TensorT<T>*) {
+            // Custom deleter: Manager owns via unique_ptr, shared_ptr doesn't delete
+        });
 
         if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(tensor);
+            this->mManagedMemObjects.push_back(tensor);  // weak_ptr tracking (compatibility)
+            this->mOwnedMemObjects.push_back(std::move(ownedTensor));  // unique_ptr ownership
         }
 
         return tensor;
@@ -542,6 +558,12 @@ class Manager
     std::vector<std::weak_ptr<Memory>> mManagedMemObjects;
     std::vector<std::weak_ptr<Sequence>> mManagedSequences;
     std::vector<std::weak_ptr<Algorithm>> mManagedAlgorithms;
+
+    // -------------- HYBRID OWNERSHIP SYSTEM (Phase 1: Performance Foundation)
+    // unique_ptr storage for actual ownership, shared_ptr wrappers for compatibility
+    std::vector<std::unique_ptr<Memory>> mOwnedMemObjects;
+    std::vector<std::unique_ptr<Sequence>> mOwnedSequences;
+    std::vector<std::unique_ptr<Algorithm>> mOwnedAlgorithms;
 
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
