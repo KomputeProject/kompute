@@ -14,6 +14,7 @@ add_executable(kompute_tests TestAsyncOperations.cpp
     TestDestroy.cpp
     TestLogisticRegression.cpp
     TestManager.cpp
+    TestManagerLifecycle.cpp
     TestMultipleAlgoExecutions.cpp
     TestOpShadersFromStringAndFile.cpp
     TestOpTensorCreate.cpp
