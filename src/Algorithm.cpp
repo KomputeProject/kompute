@@ -415,4 +415,10 @@ Algorithm::getMemObjects()
     return this->mMemObjectsShared;
 }
 
+const std::vector<Memory*>&
+Algorithm::getMemObjectsRaw() const
+{
+    return this->mMemObjects;
+}
+
 }

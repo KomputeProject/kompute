@@ -297,6 +297,14 @@ class Algorithm
      */
     const std::vector<std::shared_ptr<Memory>>& getMemObjects();
 
+    /**
+     * Gets the current memory objects as raw pointers for performance-critical internal operations.
+     * WARNING: Raw pointers are valid only while the Algorithm exists and should not be stored.
+     *
+     * @returns The list of memory objects as raw pointers for high-performance access.
+     */
+    const std::vector<Memory*>& getMemObjectsRaw() const;
+
     void destroy();
 
   private:
