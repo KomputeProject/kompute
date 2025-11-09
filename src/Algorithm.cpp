@@ -133,7 +133,7 @@ Algorithm::createParameters()
 
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
-    for (const std::shared_ptr<Memory>& mem : this->mMemObjects) {
+    for (Memory* mem : this->mMemObjects) {
         if (mem->type() == Memory::Type::eImage) {
             numImages++;
         } else {
@@ -412,7 +412,7 @@ Algorithm::getWorkgroup()
 const std::vector<std::shared_ptr<Memory>>&
 Algorithm::getMemObjects()
 {
-    return this->mMemObjects;
+    return this->mMemObjectsShared;
 }
 
 }

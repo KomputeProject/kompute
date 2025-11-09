@@ -94,7 +94,15 @@ class Algorithm
     {
         KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
-        this->mMemObjects = memObjects;
+        // Store both raw pointers (performance) and shared_ptr (API compatibility)
+        this->mMemObjects.clear();
+        this->mMemObjectsShared.clear();
+        this->mMemObjects.reserve(memObjects.size());
+        this->mMemObjectsShared.reserve(memObjects.size());
+        for (const auto& mem : memObjects) {
+            this->mMemObjects.push_back(mem.get()); // Fast internal access
+            this->mMemObjectsShared.push_back(mem); // API compatibility
+        }
         this->mSpirv = spirv;
 
         if (specializationConstants.size()) {
@@ -294,7 +302,8 @@ class Algorithm
   private:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
-    std::vector<std::shared_ptr<Memory>> mMemObjects;
+    std::vector<Memory*> mMemObjects; // Performance-optimized internal storage
+    std::vector<std::shared_ptr<Memory>> mMemObjectsShared; // API compatibility
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::DescriptorSetLayout> mDescriptorSetLayout;
