@@ -110,16 +110,6 @@ Manager::destroy()
         this->mOwnedSequences.clear();
     }
 
-    // Clean up tracked sequences for compatibility
-    if (this->mManageResources && this->mManagedSequences.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing tracked sequences");
-        for (const std::weak_ptr<Sequence>& weakSq : this->mManagedSequences) {
-            if (std::shared_ptr<Sequence> sq = weakSq.lock()) {
-                sq->destroy();
-            }
-        }
-        this->mManagedSequences.clear();
-    }
 
     // Clean up directly owned algorithms first
     if (this->mManageResources && this->mOwnedAlgorithms.size()) {
@@ -132,17 +122,6 @@ Manager::destroy()
         this->mOwnedAlgorithms.clear();
     }
 
-    // Clean up tracked algorithms for compatibility
-    if (this->mManageResources && this->mManagedAlgorithms.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing tracked algorithms");
-        for (const std::weak_ptr<Algorithm>& weakAlgorithm :
-             this->mManagedAlgorithms) {
-            if (std::shared_ptr<Algorithm> algorithm = weakAlgorithm.lock()) {
-                algorithm->destroy();
-            }
-        }
-        this->mManagedAlgorithms.clear();
-    }
 
     // Clean up directly owned memory objects first
     if (this->mManageResources && this->mOwnedMemObjects.size()) {
@@ -155,17 +134,6 @@ Manager::destroy()
         this->mOwnedMemObjects.clear();
     }
 
-    // Clean up tracked memory objects for compatibility
-    if (this->mManageResources && this->mManagedMemObjects.size()) {
-        KP_LOG_DEBUG("Kompute Manager explicitly freeing tracked memory objects");
-        for (const std::weak_ptr<Memory>& weakMemory :
-             this->mManagedMemObjects) {
-            if (std::shared_ptr<Memory> memory = weakMemory.lock()) {
-                memory->destroy();
-            }
-        }
-        this->mManagedMemObjects.clear();
-    }
 
     if (this->mFreeDevice) {
         KP_LOG_INFO("Destroying device");

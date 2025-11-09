@@ -8,6 +8,9 @@
 
 namespace kp {
 
+// Forward declarations for raw pointer overloads
+class Algorithm;
+
 /**
  *  Container of operations that can be sent to GPU as batch
  */
@@ -149,6 +152,49 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     {
         std::shared_ptr<T> op{ new T(algorithm,
                                      std::forward<TArgs>(params)...) };
+        return this->eval(op);
+    }
+
+    // ========== RAW POINTER OVERLOADS FOR ALGORITHM PARAMETERS ==========
+    /**
+     * Record function with raw Algorithm pointer support for optimal performance.
+     * Creates shared_ptr with no-op deleter since Algorithm lifetime is managed by Manager.
+     *
+     * @param memObjects Vector of memory objects to use for the operation
+     * @param algorithm Raw Algorithm pointer from Manager (lifetime managed by Manager)
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    template<typename T>
+    std::shared_ptr<Sequence> record(
+      std::vector<std::shared_ptr<Memory>> memObjects,
+      Algorithm* algorithm)
+    {
+        // Convert raw pointer to shared_ptr with no-op deleter for API compatibility
+        std::shared_ptr<Algorithm> algorithmPtr(algorithm, [](Algorithm*) {
+            // No-op deleter: Algorithm lifetime managed by Manager
+        });
+        std::shared_ptr<T> op{ new T(memObjects, algorithmPtr) };
+        return this->record(op);
+    }
+
+    /**
+     * Eval function with raw Algorithm pointer support for optimal performance.
+     * Creates shared_ptr with no-op deleter since Algorithm lifetime is managed by Manager.
+     *
+     * @param memObjects Vector of memory objects to use for the operation
+     * @param algorithm Raw Algorithm pointer from Manager (lifetime managed by Manager)
+     * @return shared_ptr<Sequence> of the Sequence class itself
+     */
+    template<typename T>
+    std::shared_ptr<Sequence> eval(
+      std::vector<std::shared_ptr<Memory>> memObjects,
+      Algorithm* algorithm)
+    {
+        // Convert raw pointer to shared_ptr with no-op deleter for API compatibility
+        std::shared_ptr<Algorithm> algorithmPtr(algorithm, [](Algorithm*) {
+            // No-op deleter: Algorithm lifetime managed by Manager
+        });
+        std::shared_ptr<T> op{ new T(memObjects, algorithmPtr) };
         return this->eval(op);
     }
 

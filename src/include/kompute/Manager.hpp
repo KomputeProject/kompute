@@ -140,46 +140,50 @@ class Manager
         return this->tensorT<float>(data, tensorType);
     }
 
-    std::shared_ptr<Tensor> tensor(
+    Tensor* tensor(
       void* data,
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
       const Memory::DataTypes& dataType,
       Memory::MemoryTypes tensorType = Memory::MemoryTypes::eDevice)
     {
-        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
+        auto ownedTensor = std::make_unique<kp::Tensor>(this->mPhysicalDevice,
                                                        this->mDevice,
                                                        data,
                                                        elementTotalCount,
                                                        elementMemorySize,
                                                        dataType,
-                                                       tensorType) };
+                                                       tensorType);
+
+        Tensor* rawPtr = ownedTensor.get();
 
         if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(tensor);
+            this->mOwnedMemObjects.push_back(std::move(ownedTensor));
         }
 
-        return tensor;
+        return rawPtr;
     }
 
-    std::shared_ptr<Tensor> tensor(
+    Tensor* tensor(
       uint32_t elementTotalCount,
       uint32_t elementMemorySize,
       const Memory::DataTypes& dataType,
       Memory::MemoryTypes tensorType = Memory::MemoryTypes::eDevice)
     {
-        std::shared_ptr<Tensor> tensor{ new kp::Tensor(this->mPhysicalDevice,
+        auto ownedTensor = std::make_unique<kp::Tensor>(this->mPhysicalDevice,
                                                        this->mDevice,
                                                        elementTotalCount,
                                                        elementMemorySize,
                                                        dataType,
-                                                       tensorType) };
+                                                       tensorType);
+
+        Tensor* rawPtr = ownedTensor.get();
 
         if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(tensor);
+            this->mOwnedMemObjects.push_back(std::move(ownedTensor));
         }
 
-        return tensor;
+        return rawPtr;
     }
 
     /**
@@ -191,8 +195,63 @@ class Manager
      * @returns Shared pointer with initialised image
      */
     template<typename T>
+    ImageT<T>* imageT(
+      const std::vector<T>& data,
+      uint32_t width,
+      uint32_t height,
+      uint32_t numChannels,
+      vk::ImageTiling tiling,
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+    {
+        KP_LOG_DEBUG("Kompute Manager image creation triggered");
+
+        auto ownedImage = std::make_unique<kp::ImageT<T>>(
+          this->mPhysicalDevice,
+          this->mDevice,
+          data,
+          width,
+          height,
+          numChannels,
+          tiling,
+          imageType);
+
+        ImageT<T>* rawPtr = ownedImage.get();
+
+        if (this->mManageResources) {
+            this->mOwnedMemObjects.push_back(std::move(ownedImage));
+        }
+
+        return rawPtr;
+    }
+
+    template<typename T>
     std::shared_ptr<ImageT<T>> imageT(
       const std::vector<T>& data,
+      uint32_t width,
+      uint32_t height,
+      uint32_t numChannels,
+      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
+    {
+        KP_LOG_DEBUG("Kompute Manager image creation triggered");
+
+        std::shared_ptr<ImageT<T>> image{ new kp::ImageT<T>(
+          this->mPhysicalDevice,
+          this->mDevice,
+          data,
+          width,
+          height,
+          numChannels,
+          imageType) };
+
+        if (this->mManageResources) {
+            this->mManagedMemObjects.push_back(image);
+        }
+
+        return image;
+    }
+
+    template<typename T>
+    std::shared_ptr<ImageT<T>> imageT(
       uint32_t width,
       uint32_t height,
       uint32_t numChannels,
@@ -204,7 +263,6 @@ class Manager
         std::shared_ptr<ImageT<T>> image{ new kp::ImageT<T>(
           this->mPhysicalDevice,
           this->mDevice,
-          data,
           width,
           height,
           numChannels,
@@ -220,58 +278,6 @@ class Manager
 
     template<typename T>
     std::shared_ptr<ImageT<T>> imageT(
-      const std::vector<T>& data,
-      uint32_t width,
-      uint32_t height,
-      uint32_t numChannels,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
-    {
-        KP_LOG_DEBUG("Kompute Manager image creation triggered");
-
-        std::shared_ptr<ImageT<T>> image{ new kp::ImageT<T>(
-          this->mPhysicalDevice,
-          this->mDevice,
-          data,
-          width,
-          height,
-          numChannels,
-          imageType) };
-
-        if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(image);
-        }
-
-        return image;
-    }
-
-    template<typename T>
-    std::shared_ptr<ImageT<T>> imageT(
-      uint32_t width,
-      uint32_t height,
-      uint32_t numChannels,
-      vk::ImageTiling tiling,
-      Memory::MemoryTypes imageType = Memory::MemoryTypes::eDevice)
-    {
-        KP_LOG_DEBUG("Kompute Manager image creation triggered");
-
-        std::shared_ptr<ImageT<T>> image{ new kp::ImageT<T>(
-          this->mPhysicalDevice,
-          this->mDevice,
-          width,
-          height,
-          numChannels,
-          tiling,
-          imageType) };
-
-        if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(image);
-        }
-
-        return image;
-    }
-
-    template<typename T>
-    std::shared_ptr<ImageT<T>> imageT(
       uint32_t width,
       uint32_t height,
       uint32_t numChannels,
@@ -293,7 +299,7 @@ class Manager
 
         return image;
     }
-    std::shared_ptr<ImageT<float>> image(
+    ImageT<float>* image(
       const std::vector<float>& data,
       uint32_t width,
       uint32_t height,
@@ -449,9 +455,9 @@ class Manager
      * specialization constants, and defaults to an empty constant
      * @param pushConstants (optional) float vector to use for push constants,
      * and defaults to an empty constant
-     * @returns Shared pointer with initialised algorithm
+     * @returns Raw pointer to managed algorithm (lifetime managed by Manager)
      */
-    std::shared_ptr<Algorithm> algorithm(
+    Algorithm* algorithm(
       const std::vector<std::shared_ptr<Memory>>& memObjects = {},
       const std::vector<uint32_t>& spirv = {},
       const Workgroup& workgroup = {},
@@ -463,8 +469,8 @@ class Manager
     }
 
     /**
-     * Create a managed algorithm that will be destroyed by this manager
-     * if it hasn't been destroyed by its reference count going to zero.
+     * Create a managed algorithm that will be destroyed by this manager.
+     * Returns a raw pointer for optimal performance - lifetime is managed by Manager.
      *
      * @param memObjects (optional) The mem objects to initialise the algorithm
      * with
@@ -475,10 +481,10 @@ class Manager
      * use for specialization constants, and defaults to an empty constant
      * @param pushConstants (optional) templatable vector parameter to use for
      * push constants, and defaults to an empty constant
-     * @returns Shared pointer with initialised algorithm
+     * @returns Raw pointer to managed algorithm (lifetime managed by Manager)
      */
     template<typename S = float, typename P = float>
-    std::shared_ptr<Algorithm> algorithm(
+    Algorithm* algorithm(
       const std::vector<std::shared_ptr<Memory>>& memObjects,
       const std::vector<uint32_t>& spirv,
       const Workgroup& workgroup,
@@ -504,18 +510,14 @@ class Manager
           specializationConstants,
           pushConstants);
 
-        // Create shared_ptr wrapper for API compatibility
+        // Store raw pointer for return
         Algorithm* rawPtr = ownedAlgorithm.get();
-        std::shared_ptr<Algorithm> algorithm(rawPtr, [](Algorithm*) {
-            // No-op deleter: lifetime managed by Manager's unique_ptr
-        });
 
         if (this->mManageResources) {
-            this->mManagedAlgorithms.push_back(algorithm);
             this->mOwnedAlgorithms.push_back(std::move(ownedAlgorithm));
         }
 
-        return algorithm;
+        return rawPtr;
     }
 
     /**
@@ -559,13 +561,8 @@ class Manager
     std::shared_ptr<vk::Device> mDevice = nullptr;
     bool mFreeDevice = false;
 
-    // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::weak_ptr<Memory>> mManagedMemObjects;
-    std::vector<std::weak_ptr<Sequence>> mManagedSequences;
-    std::vector<std::weak_ptr<Algorithm>> mManagedAlgorithms;
-
     // -------------- OWNED RESOURCES
-    // Direct ownership storage for improved performance
+    // Direct ownership storage for optimal performance
     std::vector<std::unique_ptr<Memory>> mOwnedMemObjects;
     std::vector<std::unique_ptr<Sequence>> mOwnedSequences;
     std::vector<std::unique_ptr<Algorithm>> mOwnedAlgorithms;
