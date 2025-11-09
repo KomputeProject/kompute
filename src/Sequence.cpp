@@ -86,6 +86,7 @@ Sequence::clear()
 {
     KP_LOG_DEBUG("Kompute Sequence calling clear");
     this->mOperations.clear();
+    this->mOperationsShared.clear();
     if (this->isRecording()) {
         this->end();
     }
@@ -196,8 +197,9 @@ void
 Sequence::rerecord()
 {
     this->end();
-    std::vector<std::shared_ptr<OpBase>> ops = this->mOperations;
+    std::vector<std::shared_ptr<OpBase>> ops = this->mOperationsShared;
     this->mOperations.clear();
+    this->mOperationsShared.clear();
     for (const std::shared_ptr<kp::OpBase>& op : ops) {
         this->record(op);
     }
@@ -255,6 +257,7 @@ Sequence::destroy()
     if (this->mOperations.size()) {
         KP_LOG_INFO("Kompute Sequence clearing operations buffer");
         this->mOperations.clear();
+        this->mOperationsShared.clear();
     }
 
     if (this->timestampQueryPool) {
@@ -290,7 +293,9 @@ Sequence::record(std::shared_ptr<OpBase> op)
 
     op->record(*this->mCommandBuffer);
 
-    this->mOperations.push_back(op);
+    // Store both raw pointer (performance) and shared_ptr (ownership)
+    this->mOperations.push_back(op.get());
+    this->mOperationsShared.push_back(op);
 
     if (this->timestampQueryPool)
         this->mCommandBuffer->writeTimestamp(

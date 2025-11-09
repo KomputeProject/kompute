@@ -16,9 +16,15 @@ OpMemoryBarrier::OpMemoryBarrier(
   , mSrcStageMask(srcStageMask)
   , mDstStageMask(dstStageMask)
   , mBarrierOnPrimary(barrierOnPrimary)
-  , mMemObjects(memObjects)
+  , mMemObjectsShared(memObjects)
 {
     KP_LOG_DEBUG("Kompute OpMemoryBarrier constructor");
+
+    // Store raw pointers for performance optimization
+    this->mMemObjects.reserve(memObjects.size());
+    for (const auto& memObj : memObjects) {
+        this->mMemObjects.push_back(memObj.get());
+    }
 }
 
 OpMemoryBarrier::~OpMemoryBarrier() noexcept
@@ -32,8 +38,9 @@ OpMemoryBarrier::record(const vk::CommandBuffer& commandBuffer)
     KP_LOG_DEBUG("Kompute OpMemoryBarrier record called");
 
     // Barrier to ensure the data is finished writing to buffer memory
+    // Using raw pointers for performance optimization
     if (this->mBarrierOnPrimary) {
-        for (const std::shared_ptr<Memory>& tensor : this->mMemObjects) {
+        for (Memory* tensor : this->mMemObjects) {
             tensor->recordPrimaryMemoryBarrier(commandBuffer,
                                                this->mSrcAccessMask,
                                                this->mDstAccessMask,
@@ -41,7 +48,7 @@ OpMemoryBarrier::record(const vk::CommandBuffer& commandBuffer)
                                                this->mDstStageMask);
         }
     } else {
-        for (const std::shared_ptr<Memory>& tensor : this->mMemObjects) {
+        for (Memory* tensor : this->mMemObjects) {
             tensor->recordStagingMemoryBarrier(commandBuffer,
                                                this->mSrcAccessMask,
                                                this->mDstAccessMask,

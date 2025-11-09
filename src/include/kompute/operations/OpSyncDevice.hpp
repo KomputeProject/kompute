@@ -68,7 +68,9 @@ class OpSyncDevice : public OpBase
 
   private:
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<std::shared_ptr<Memory>> mMemObjects;
+    // Hybrid storage system: raw pointers for performance, shared_ptr for API compatibility
+    std::vector<Memory*> mMemObjects{}; // Performance-optimized internal storage
+    std::vector<std::shared_ptr<Memory>> mMemObjectsShared{}; // API compatibility and ownership
 };
 
 } // End namespace kp

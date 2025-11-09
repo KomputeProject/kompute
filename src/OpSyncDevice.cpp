@@ -14,14 +14,21 @@ OpSyncDevice::OpSyncDevice(
           "Kompute OpSyncDevice called with less than 1 memory object");
     }
 
-    this->mMemObjects = memObjects;
+    // Store both shared_ptr for ownership and raw pointers for performance
+    this->mMemObjectsShared = memObjects;
+    this->mMemObjects.reserve(memObjects.size());
+    for (const auto& memObj : memObjects) {
+        this->mMemObjects.push_back(memObj.get());
+    }
 }
 
 OpSyncDevice::~OpSyncDevice() noexcept
 {
     KP_LOG_DEBUG("Kompute OpSyncDevice destructor started");
 
+    // Clear both vectors - no explicit cleanup needed as we don't own the Memory objects
     this->mMemObjects.clear();
+    this->mMemObjectsShared.clear();
 }
 
 void
@@ -29,6 +36,7 @@ OpSyncDevice::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpSyncDevice record called");
 
+    // Using raw pointers for performance optimization
     for (size_t i = 0; i < this->mMemObjects.size(); i++) {
         if (this->mMemObjects[i]->memoryType() ==
             Tensor::MemoryTypes::eDevice) {

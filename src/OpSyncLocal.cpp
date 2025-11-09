@@ -15,7 +15,12 @@ OpSyncLocal::OpSyncLocal(const std::vector<std::shared_ptr<Memory>>& memObjects)
           "Kompute OpSyncLocal called with less than 1 memory object");
     }
 
-    this->mMemObjects = memObjects;
+    // Store both shared_ptr for ownership and raw pointers for performance
+    this->mMemObjectsShared = memObjects;
+    this->mMemObjects.reserve(memObjects.size());
+    for (const auto& memObj : memObjects) {
+        this->mMemObjects.push_back(memObj.get());
+    }
 }
 
 OpSyncLocal::~OpSyncLocal() noexcept
@@ -28,6 +33,7 @@ OpSyncLocal::record(const vk::CommandBuffer& commandBuffer)
 {
     KP_LOG_DEBUG("Kompute OpSyncLocal record called");
 
+    // Using raw pointers for performance optimization
     for (size_t i = 0; i < this->mMemObjects.size(); i++) {
         if (this->mMemObjects[i]->memoryType() ==
             Memory::MemoryTypes::eDevice) {

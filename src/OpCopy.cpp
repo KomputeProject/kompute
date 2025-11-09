@@ -15,7 +15,12 @@ OpCopy::OpCopy(const std::vector<std::shared_ptr<Memory>>& memObjects)
           "Kompute OpCopy called with less than 2 memory objects");
     }
 
-    this->mMemObjects = memObjects;
+    // Store both shared_ptr for ownership and raw pointers for performance
+    this->mMemObjectsShared = memObjects;
+    this->mMemObjects.reserve(memObjects.size());
+    for (const auto& memObj : memObjects) {
+        this->mMemObjects.push_back(memObj.get());
+    }
 }
 
 OpCopy::~OpCopy() noexcept
@@ -29,9 +34,10 @@ OpCopy::record(const vk::CommandBuffer& commandBuffer)
     KP_LOG_DEBUG("Kompute OpCopy record called");
 
     // We iterate from the second memory object onwards and record a copy to all
+    // Using raw pointers for performance optimization
     for (size_t i = 1; i < this->mMemObjects.size(); i++) {
         this->mMemObjects[i]->recordCopyFrom(commandBuffer,
-                                             this->mMemObjects[0]);
+                                             this->mMemObjectsShared[0]);
     }
 }
 
@@ -47,6 +53,7 @@ OpCopy::postEval(const vk::CommandBuffer& /*commandBuffer*/)
     KP_LOG_DEBUG("Kompute OpCopy postEval called");
 
     // Do not copy on CPU side if source is storage memory
+    // Using raw pointers for performance optimization
     if (this->mMemObjects[0]->memoryType() ==
         kp::Memory::MemoryTypes::eStorage) {
         KP_LOG_DEBUG("Kompute OpCopy not copying tensor source given "

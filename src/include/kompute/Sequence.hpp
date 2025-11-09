@@ -291,7 +291,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     // -------------- ALWAYS OWNED RESOURCES
     vk::Fence mFence;
-    std::vector<std::shared_ptr<OpBase>> mOperations{};
+    std::vector<OpBase*> mOperations{}; // Performance-optimized internal storage
+    std::vector<std::shared_ptr<OpBase>> mOperationsShared{}; // API compatibility and ownership
     std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
 
     // State
