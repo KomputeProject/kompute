@@ -41,7 +41,7 @@ class Algorithm
      */
     template<typename S = float, typename P = float>
     Algorithm(std::shared_ptr<vk::Device> device,
-              const std::vector<std::shared_ptr<Memory>>& memObjects = {},
+              const std::vector<Memory*>& memObjects = {},
               const std::vector<uint32_t>& spirv = {},
               const Workgroup& workgroup = {},
               const std::vector<S>& specializationConstants = {},
@@ -86,7 +86,7 @@ class Algorithm
      * as this initial value.
      */
     template<typename S = float, typename P = float>
-    void rebuild(const std::vector<std::shared_ptr<Memory>>& memObjects,
+    void rebuild(const std::vector<Memory*>& memObjects,
                  const std::vector<uint32_t>& spirv,
                  const Workgroup& workgroup = {},
                  const std::vector<S>& specializationConstants = {},
@@ -94,14 +94,79 @@ class Algorithm
     {
         KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
-        // Store both raw pointers (performance) and shared_ptr (API compatibility)
+        // Store raw pointers directly for optimal performance
         this->mMemObjects.clear();
-        this->mMemObjectsShared.clear();
         this->mMemObjects.reserve(memObjects.size());
-        this->mMemObjectsShared.reserve(memObjects.size());
-        for (const auto& mem : memObjects) {
-            this->mMemObjects.push_back(mem.get()); // Fast internal access
-            this->mMemObjectsShared.push_back(mem); // API compatibility
+        for (Memory* mem : memObjects) {
+            this->mMemObjects.push_back(mem);
+        }
+
+        // Clear shared_ptr storage since we only have raw pointers in this path
+        this->mMemObjectsShared.clear();
+        this->mSpirv = spirv;
+
+        if (specializationConstants.size()) {
+            if (this->mSpecializationConstantsData) {
+                free(this->mSpecializationConstantsData);
+            }
+            uint32_t memorySize =
+              sizeof(decltype(specializationConstants.back()));
+            uint32_t size = specializationConstants.size();
+            uint32_t totalSize = size * memorySize;
+            this->mSpecializationConstantsData = malloc(totalSize);
+            memcpy(this->mSpecializationConstantsData,
+                   specializationConstants.data(),
+                   totalSize);
+            this->mSpecializationConstantsDataTypeMemorySize = memorySize;
+            this->mSpecializationConstantsSize = size;
+        }
+
+        if (pushConstants.size()) {
+            if (this->mPushConstantsData) {
+                free(this->mPushConstantsData);
+            }
+            uint32_t memorySize = sizeof(decltype(pushConstants.back()));
+            uint32_t size = pushConstants.size();
+            uint32_t totalSize = size * memorySize;
+            this->mPushConstantsData = malloc(totalSize);
+            memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+            this->mPushConstantsDataTypeMemorySize = memorySize;
+            this->mPushConstantsSize = size;
+        }
+
+        this->setWorkgroup(
+          workgroup,
+          this->mMemObjects.size() ? this->mMemObjects[0]->size() : 1);
+
+        // Descriptor pool is created first so if available then destroy all
+        // before rebuild
+        if (this->isInit()) {
+            this->destroy();
+        }
+
+        this->createParameters();
+        this->createShaderModule();
+        this->createPipeline();
+    }
+
+    /**
+     * Compatibility overload for shared_ptr vectors - maintains dual storage for API compatibility
+     */
+    template<typename S = float, typename P = float>
+    void rebuild(const std::vector<std::shared_ptr<Memory>>& memObjects,
+                 const std::vector<uint32_t>& spirv,
+                 const Workgroup& workgroup = {},
+                 const std::vector<S>& specializationConstants = {},
+                 const std::vector<P>& pushConstants = {})
+    {
+        KP_LOG_DEBUG("Kompute Algorithm rebuild started (shared_ptr version)");
+
+        // Store both for compatibility during transition
+        this->mMemObjectsShared = memObjects;
+        this->mMemObjects.clear();
+        this->mMemObjects.reserve(memObjects.size());
+        for (const auto& memObj : memObjects) {
+            this->mMemObjects.push_back(memObj.get());
         }
         this->mSpirv = spirv;
 

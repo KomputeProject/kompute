@@ -509,12 +509,12 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     KP_LOG_DEBUG("Kompute Manager compute queue obtained");
 }
 
-std::shared_ptr<Sequence>
+Sequence*
 Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
-    // Create sequence with direct ownership for improved performance
+    // Create sequence with direct ownership for optimal performance
     auto ownedSequence = std::make_unique<kp::Sequence>(
       this->mPhysicalDevice,
       this->mDevice,
@@ -522,18 +522,13 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
       this->mComputeQueueFamilyIndices[queueIndex],
       totalTimestamps);
 
-    // Create shared_ptr wrapper for API compatibility
     Sequence* rawPtr = ownedSequence.get();
-    std::shared_ptr<Sequence> sq(rawPtr, [](Sequence*) {
-        // No-op deleter: lifetime managed by Manager's unique_ptr
-    });
 
     if (this->mManageResources) {
-        this->mManagedSequences.push_back(sq);
         this->mOwnedSequences.push_back(std::move(ownedSequence));
     }
 
-    return sq;
+    return rawPtr;
 }
 
 vk::PhysicalDeviceProperties

@@ -67,83 +67,73 @@ class Manager
     ~Manager();
 
     /**
-     * Create a managed sequence that will be destroyed by this manager
-     * if it hasn't been destroyed by its reference count going to zero.
+     * Create a managed sequence that will be destroyed by this manager.
+     * WARNING: Returned pointer is valid only while Manager exists.
      *
      * @param queueIndex The queue to use from the available queues
      * @param nrOfTimestamps The maximum number of timestamps to allocate.
      * If zero (default), disables latching of timestamps.
-     * @returns Shared pointer with initialised sequence
+     * @returns Raw pointer to initialised sequence (owned by Manager)
      */
-    std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0,
-                                       uint32_t totalTimestamps = 0);
+    Sequence* sequence(uint32_t queueIndex = 0,
+                       uint32_t totalTimestamps = 0);
 
     /**
-     * Create a managed tensor that will be destroyed by this manager
-     * if it hasn't been destroyed by its reference count going to zero.
+     * Create a managed tensor that will be destroyed by this manager.
+     * WARNING: Returned pointer is valid only while Manager exists.
      *
      * @param data The data to initialize the tensor with
      * @param tensorType The type of tensor to initialize
-     * @returns Shared pointer with initialised tensor
+     * @returns Raw pointer to initialised tensor (owned by Manager)
      */
     template<typename T>
-    std::shared_ptr<TensorT<T>> tensorT(
+    TensorT<T>* tensorT(
       const std::vector<T>& data,
       Memory::MemoryTypes tensorType = Memory::MemoryTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        // Create tensor with direct ownership for improved performance
+        // Create tensor with direct ownership for optimal performance
         auto ownedTensor = std::make_unique<kp::TensorT<T>>(
           this->mPhysicalDevice, this->mDevice, data, tensorType);
 
-        // Create shared_ptr wrapper for API compatibility
         TensorT<T>* rawPtr = ownedTensor.get();
-        std::shared_ptr<TensorT<T>> tensor(rawPtr, [](TensorT<T>*) {
-            // No-op deleter: lifetime managed by Manager's unique_ptr
-        });
 
         if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(tensor);
             this->mOwnedMemObjects.push_back(std::move(ownedTensor));
         }
 
-        return tensor;
+        return rawPtr;
     }
 
     /**
-     * Create a managed tensor that will be destroyed by this manager
-     * if it hasn't been destroyed by its reference count going to zero.
+     * Create a managed tensor that will be destroyed by this manager.
+     * WARNING: Returned pointer is valid only while Manager exists.
      *
      * @param size The number of element in this tensor
      * @param tensorType The type of tensor to initialize
-     * @returns Shared pointer with initialised tensor
+     * @returns Raw pointer to initialised tensor (owned by Manager)
      */
     template<typename T>
-    std::shared_ptr<TensorT<T>> tensorT(
+    TensorT<T>* tensorT(
       size_t size,
       Memory::MemoryTypes tensorType = Memory::MemoryTypes::eDevice)
     {
         KP_LOG_DEBUG("Kompute Manager tensor creation triggered");
 
-        // Create tensor with direct ownership for improved performance
+        // Create tensor with direct ownership for optimal performance
         auto ownedTensor = std::make_unique<kp::TensorT<T>>(
           this->mPhysicalDevice, this->mDevice, size, tensorType);
 
-        // Create shared_ptr wrapper for API compatibility
         TensorT<T>* rawPtr = ownedTensor.get();
-        std::shared_ptr<TensorT<T>> tensor(rawPtr, [](TensorT<T>*) {
-            // No-op deleter: lifetime managed by Manager's unique_ptr
-        });
 
         if (this->mManageResources) {
-            this->mManagedMemObjects.push_back(tensor);
             this->mOwnedMemObjects.push_back(std::move(ownedTensor));
         }
 
-        return tensor;
+        return rawPtr;
     }
-    std::shared_ptr<TensorT<float>> tensor(
+    TensorT<float>* tensor(
       const std::vector<float>& data,
       Memory::MemoryTypes tensorType = Memory::MemoryTypes::eDevice)
     {
@@ -498,10 +488,17 @@ class Manager
 
         KP_LOG_DEBUG("Kompute Manager algorithm creation triggered");
 
+        // Convert shared_ptr vector to raw pointer vector for Algorithm constructor
+        std::vector<Memory*> rawMemObjects;
+        rawMemObjects.reserve(memObjects.size());
+        for (const auto& memObj : memObjects) {
+            rawMemObjects.push_back(memObj.get());
+        }
+
         // Create algorithm with direct ownership for improved performance
         auto ownedAlgorithm = std::make_unique<kp::Algorithm>(
           this->mDevice,
-          memObjects,
+          rawMemObjects,
           spirv,
           workgroup,
           specializationConstants,
