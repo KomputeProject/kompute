@@ -4,6 +4,7 @@
 
 #include "kompute/Kompute.hpp"
 #include "kompute/logger/Logger.hpp"
+#include "TestUtils.hpp"
 
 TEST(TestOpSync, SyncToDeviceMemorySingleTensor)
 {
@@ -12,15 +13,15 @@ TEST(TestOpSync, SyncToDeviceMemorySingleTensor)
     std::vector<float> testVecPreA{ 0, 0, 0 };
     std::vector<float> testVecPostA{ 9, 8, 7 };
 
-    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor(testVecPreA);
+    kp::TensorT<float>* tensorA = mgr.tensor(testVecPreA);
 
     EXPECT_TRUE(tensorA->isInit());
 
     tensorA->setData(testVecPostA);
 
-    mgr.sequence()->eval<kp::OpSyncDevice>({ tensorA });
+    mgr.sequence()->eval<kp::OpSyncDevice>({ TestUtils::toSharedPtr<kp::Memory>(tensorA) });
 
-    mgr.sequence()->eval<kp::OpSyncLocal>({ tensorA });
+    mgr.sequence()->eval<kp::OpSyncLocal>({ TestUtils::toSharedPtr<kp::Memory>(tensorA) });
 
     EXPECT_EQ(tensorA->vector(), testVecPostA);
 }
@@ -31,9 +32,9 @@ TEST(TestOpSync, SyncToDeviceMemoryMultiTensor)
 
     std::vector<float> testVec{ 9, 8, 7 };
 
-    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 0, 0, 0 });
-    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 0, 0, 0 });
-    std::shared_ptr<kp::TensorT<float>> tensorC = mgr.tensor({ 0, 0, 0 });
+    kp::TensorT<float>* tensorA = mgr.tensor({ 0, 0, 0 });
+    kp::TensorT<float>* tensorB = mgr.tensor({ 0, 0, 0 });
+    kp::TensorT<float>* tensorC = mgr.tensor({ 0, 0, 0 });
 
     EXPECT_TRUE(tensorA->isInit());
     EXPECT_TRUE(tensorB->isInit());
@@ -41,11 +42,19 @@ TEST(TestOpSync, SyncToDeviceMemoryMultiTensor)
 
     tensorA->setData(testVec);
 
-    mgr.sequence()->eval<kp::OpSyncDevice>({ tensorA });
+    mgr.sequence()->eval<kp::OpSyncDevice>({ TestUtils::toSharedPtr<kp::Memory>(tensorA) });
 
-    mgr.sequence()->eval<kp::OpCopy>({ tensorA, tensorB, tensorC });
+    mgr.sequence()->eval<kp::OpCopy>({
+        TestUtils::toSharedPtr<kp::Memory>(tensorA),
+        TestUtils::toSharedPtr<kp::Memory>(tensorB),
+        TestUtils::toSharedPtr<kp::Memory>(tensorC)
+    });
 
-    mgr.sequence()->eval<kp::OpSyncLocal>({ tensorA, tensorB, tensorC });
+    mgr.sequence()->eval<kp::OpSyncLocal>({
+        TestUtils::toSharedPtr<kp::Memory>(tensorA),
+        TestUtils::toSharedPtr<kp::Memory>(tensorB),
+        TestUtils::toSharedPtr<kp::Memory>(tensorC)
+    });
 
     EXPECT_EQ(tensorA->vector(), testVec);
     EXPECT_EQ(tensorB->vector(), testVec);
