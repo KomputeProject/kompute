@@ -32,13 +32,15 @@ TEST(TestManager, EndToEndOpMultSeqFlow)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
-    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
-    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
+    kp::TensorT<float>* tensorLHS = mgr.tensor({ 0, 1, 2 });
+    kp::TensorT<float>* tensorRHS = mgr.tensor({ 2, 4, 6 });
+    kp::TensorT<float>* tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
-                                                        tensorRHS,
-                                                        tensorOutput };
+    std::vector<std::shared_ptr<kp::Memory>> params = {
+        TestUtils::toSharedPtr<kp::Memory>(tensorLHS),
+        TestUtils::toSharedPtr<kp::Memory>(tensorRHS),
+        TestUtils::toSharedPtr<kp::Memory>(tensorOutput)
+    };
 
     mgr.sequence()
       ->record<kp::OpSyncDevice>(params)
@@ -53,12 +55,15 @@ TEST(TestManager, OpMultInvalidArgs)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
-    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
-    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
+    kp::TensorT<float>* tensorLHS = mgr.tensor({ 0, 1, 2 });
+    kp::TensorT<float>* tensorRHS = mgr.tensor({ 2, 4, 6 });
+    kp::TensorT<float>* tensorOutput = mgr.tensor({ 0, 0, 0 });
 
     // Only give two paramters instead of three.
-    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS, tensorRHS };
+    std::vector<std::shared_ptr<kp::Memory>> params = {
+        TestUtils::toSharedPtr<kp::Memory>(tensorLHS),
+        TestUtils::toSharedPtr<kp::Memory>(tensorRHS)
+    };
 
     EXPECT_THROW(
       mgr.sequence()->record<kp::OpMult>(params, mgr.algorithm())->eval(),
@@ -69,13 +74,15 @@ TEST(TestManager, TestMultipleSequences)
 {
     kp::Manager mgr;
 
-    std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
-    std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
-    std::shared_ptr<kp::TensorT<float>> tensorOutput = mgr.tensor({ 0, 0, 0 });
+    kp::TensorT<float>* tensorLHS = mgr.tensor({ 0, 1, 2 });
+    kp::TensorT<float>* tensorRHS = mgr.tensor({ 2, 4, 6 });
+    kp::TensorT<float>* tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-    std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
-                                                        tensorRHS,
-                                                        tensorOutput };
+    std::vector<std::shared_ptr<kp::Memory>> params = {
+        TestUtils::toSharedPtr<kp::Memory>(tensorLHS),
+        TestUtils::toSharedPtr<kp::Memory>(tensorRHS),
+        TestUtils::toSharedPtr<kp::Memory>(tensorOutput)
+    };
 
     mgr.sequence()->eval<kp::OpSyncDevice>(params);
     mgr.sequence()->eval<kp::OpMult>(params, mgr.algorithm());
@@ -105,14 +112,15 @@ TEST(TestManager, TestClearDestroy)
 
     // Running within scope to run clear
     {
-        std::shared_ptr<kp::TensorT<float>> tensorLHS = mgr.tensor({ 0, 1, 2 });
-        std::shared_ptr<kp::TensorT<float>> tensorRHS = mgr.tensor({ 2, 4, 6 });
-        std::shared_ptr<kp::TensorT<float>> tensorOutput =
-          mgr.tensor({ 0, 0, 0 });
+        kp::TensorT<float>* tensorLHS = mgr.tensor({ 0, 1, 2 });
+        kp::TensorT<float>* tensorRHS = mgr.tensor({ 2, 4, 6 });
+        kp::TensorT<float>* tensorOutput = mgr.tensor({ 0, 0, 0 });
 
-        std::vector<std::shared_ptr<kp::Memory>> params = { tensorLHS,
-                                                            tensorRHS,
-                                                            tensorOutput };
+        std::vector<std::shared_ptr<kp::Memory>> params = {
+            TestUtils::toSharedPtr<kp::Memory>(tensorLHS),
+            TestUtils::toSharedPtr<kp::Memory>(tensorRHS),
+            TestUtils::toSharedPtr<kp::Memory>(tensorOutput)
+        };
 
         mgr.sequence()->eval<kp::OpSyncDevice>(params);
         mgr.sequence()->eval<kp::OpMult>(params, mgr.algorithm());
