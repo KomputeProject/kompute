@@ -178,7 +178,7 @@ class Image : public Memory
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
      */
-    virtual ~Image();
+    virtual ~Image() noexcept;
 
     /**
      * Destroys and frees the GPU resources which include the image and memory.

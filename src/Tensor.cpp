@@ -51,7 +51,7 @@ Tensor::Tensor(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->reserve();
 }
 
-Tensor::~Tensor()
+Tensor::~Tensor() noexcept
 {
     KP_LOG_DEBUG("Kompute Tensor destructor started. Type: {}",
                  Memory::toString(this->memoryType()));
@@ -331,7 +331,7 @@ Tensor::allocateMemoryCreateGPUResources()
     KP_LOG_DEBUG("Kompute Tensor creating buffer");
 
     if (!this->mPhysicalDevice) {
-        throw std::runtime_error("Kompute Tensor phyisical device is null");
+        throw std::runtime_error("Kompute Tensor physical device is null");
     }
     if (!this->mDevice) {
         throw std::runtime_error("Kompute Tensor device is null");
@@ -450,10 +450,10 @@ Tensor::destroy()
 
     if (this->mFreePrimaryBuffer) {
         if (!this->mPrimaryBuffer) {
-            KP_LOG_WARN("Kompose Tensor expected to destroy primary buffer "
+            KP_LOG_WARN("Kompute Tensor expected to destroy primary buffer "
                         "but got null buffer");
         } else {
-            KP_LOG_DEBUG("Kompose Tensor destroying primary buffer");
+            KP_LOG_DEBUG("Kompute Tensor destroying primary buffer");
             this->mDevice->destroy(
               *this->mPrimaryBuffer,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -464,10 +464,10 @@ Tensor::destroy()
 
     if (this->mFreeStagingBuffer) {
         if (!this->mStagingBuffer) {
-            KP_LOG_WARN("Kompose Tensor expected to destroy staging buffer "
+            KP_LOG_WARN("Kompute Tensor expected to destroy staging buffer "
                         "but got null buffer");
         } else {
-            KP_LOG_DEBUG("Kompose Tensor destroying staging buffer");
+            KP_LOG_DEBUG("Kompute Tensor destroying staging buffer");
             this->mDevice->destroy(
               *this->mStagingBuffer,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);

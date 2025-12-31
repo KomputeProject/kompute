@@ -302,10 +302,10 @@ Memory::destroy(void)
 
     if (this->mFreePrimaryMemory) {
         if (!this->mPrimaryMemory) {
-            KP_LOG_WARN("Kompose Memory expected to free primary memory but "
+            KP_LOG_WARN("Kompute Memory expected to free primary memory but "
                         "got null memory");
         } else {
-            KP_LOG_DEBUG("Kompose Memory freeing primary memory");
+            KP_LOG_DEBUG("Kompute Memory freeing primary memory");
             this->mDevice->freeMemory(
               *this->mPrimaryMemory,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -316,10 +316,10 @@ Memory::destroy(void)
 
     if (this->mFreeStagingMemory) {
         if (!this->mStagingMemory) {
-            KP_LOG_WARN("Kompose Memory expected to free staging memory but "
+            KP_LOG_WARN("Kompute Memory expected to free staging memory but "
                         "got null memory");
         } else {
-            KP_LOG_DEBUG("Kompose Memory freeing staging memory");
+            KP_LOG_DEBUG("Kompute Memory freeing staging memory");
             this->mDevice->freeMemory(
               *this->mStagingMemory,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);

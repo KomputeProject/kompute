@@ -4,6 +4,12 @@
 
 namespace kp {
 
+// Maximum number of channels supported by Kompute images.
+// Note: 3-channel images are not supported because they are not supported by
+// Metal or Mesa (llvmpipe). See:
+// https://github.com/KomputeProject/kompute/pull/388#discussion_r1720959531
+static constexpr uint32_t KP_MAX_IMAGE_CHANNELS = 4;
+
 void
 Image::init(void* data,
             size_t dataSize,
@@ -27,12 +33,10 @@ Image::init(void* data,
           "Kompute Image data is smaller than the requested image size");
     }
 
-    if (numChannels > 4 || numChannels == 3) {
-        // We don't support 3-channel images because they are not supported by
-        // Metal or Mesa (llvmpipe) See comment here:
-        // https://github.com/KomputeProject/kompute/pull/388#discussion_r1720959531
+    if (numChannels > KP_MAX_IMAGE_CHANNELS || numChannels == 3) {
+        // Note: 3-channel images are explicitly excluded - see KP_MAX_IMAGE_CHANNELS comment
         throw std::runtime_error(
-          "Kompute Images can only have up to 1, 2 or 4 channels");
+          "Kompute Images can only have 1, 2 or 4 channels");
     }
 
     if (tiling == vk::ImageTiling::eOptimal &&
@@ -51,7 +55,7 @@ Image::init(void* data,
     this->updateRawData(data);
 }
 
-Image::~Image()
+Image::~Image() noexcept
 {
     KP_LOG_DEBUG("Kompute Image destructor started. Type: {}",
                  Memory::toString(this->memoryType()));
@@ -496,7 +500,7 @@ Image::allocateMemoryCreateGPUResources()
     KP_LOG_DEBUG("Kompute Image creating image");
 
     if (!this->mPhysicalDevice) {
-        throw std::runtime_error("Kompute Image phyisical device is null");
+        throw std::runtime_error("Kompute Image physical device is null");
     }
     if (!this->mDevice) {
         throw std::runtime_error("Kompute Image device is null");
@@ -623,10 +627,10 @@ Image::destroy()
 
     if (this->mFreePrimaryImage) {
         if (!this->mPrimaryImage) {
-            KP_LOG_WARN("Kompose Image expected to destroy primary image "
+            KP_LOG_WARN("Kompute Image expected to destroy primary image "
                         "but got null image");
         } else {
-            KP_LOG_DEBUG("Kompose Image destroying primary image");
+            KP_LOG_DEBUG("Kompute Image destroying primary image");
             this->mDevice->destroy(
               *this->mPrimaryImage,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -637,10 +641,10 @@ Image::destroy()
 
     if (this->mFreeStagingImage) {
         if (!this->mStagingImage) {
-            KP_LOG_WARN("Kompose Image expected to destroy staging image "
+            KP_LOG_WARN("Kompute Image expected to destroy staging image "
                         "but got null image");
         } else {
-            KP_LOG_DEBUG("Kompose Image destroying staging image");
+            KP_LOG_DEBUG("Kompute Image destroying staging image");
             this->mDevice->destroy(
               *this->mStagingImage,
               (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -650,7 +654,7 @@ Image::destroy()
     }
 
     if (this->mImageView) {
-        KP_LOG_DEBUG("Kompose Image freeing image view");
+        KP_LOG_DEBUG("Kompute Image freeing image view");
         this->mDevice->destroyImageView(*this->mImageView);
         this->mImageView = nullptr;
     }

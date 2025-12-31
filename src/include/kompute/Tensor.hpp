@@ -70,7 +70,7 @@ class Tensor : public Memory
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
      */
-    virtual ~Tensor();
+    virtual ~Tensor() noexcept;
 
     /**
      * Destroys and frees the GPU resources which include the buffer and memory.
