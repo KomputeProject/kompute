@@ -3,6 +3,8 @@
 
 #include "kompute/Core.hpp"
 
+#include <cstring>
+
 #if KOMPUTE_OPT_USE_SPDLOG
 #include <spdlog/fmt/fmt.h>
 #else
@@ -98,30 +100,26 @@ class Algorithm
         this->mSpirv = spirv;
 
         if (specializationConstants.size()) {
-            if (this->mSpecializationConstantsData) {
-                free(this->mSpecializationConstantsData);
-            }
             uint32_t memorySize =
               sizeof(decltype(specializationConstants.back()));
             uint32_t size = specializationConstants.size();
             uint32_t totalSize = size * memorySize;
-            this->mSpecializationConstantsData = malloc(totalSize);
-            memcpy(this->mSpecializationConstantsData,
-                   specializationConstants.data(),
-                   totalSize);
+            this->mSpecializationConstantsData.resize(totalSize);
+            std::memcpy(this->mSpecializationConstantsData.data(),
+                        specializationConstants.data(),
+                        totalSize);
             this->mSpecializationConstantsDataTypeMemorySize = memorySize;
             this->mSpecializationConstantsSize = size;
         }
 
         if (pushConstants.size()) {
-            if (this->mPushConstantsData) {
-                free(this->mPushConstantsData);
-            }
             uint32_t memorySize = sizeof(decltype(pushConstants.back()));
             uint32_t size = pushConstants.size();
             uint32_t totalSize = size * memorySize;
-            this->mPushConstantsData = malloc(totalSize);
-            memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+            this->mPushConstantsData.resize(totalSize);
+            std::memcpy(this->mPushConstantsData.data(),
+                        pushConstants.data(),
+                        totalSize);
             this->mPushConstantsDataTypeMemorySize = memorySize;
             this->mPushConstantsSize = size;
         }
@@ -226,7 +224,7 @@ class Algorithm
      * @param size The number of data elements provided in the data
      * @param memorySize The memory size of each of the data elements in bytes.
      */
-    void setPushConstants(void* data, uint32_t size, uint32_t memorySize)
+    void setPushConstants(const void* data, uint32_t size, uint32_t memorySize)
     {
 
         uint32_t totalSize = memorySize * size;
@@ -240,12 +238,9 @@ class Algorithm
               totalSize,
               previousTotalSize));
         }
-        if (this->mPushConstantsData) {
-            free(this->mPushConstantsData);
-        }
 
-        this->mPushConstantsData = malloc(totalSize);
-        memcpy(this->mPushConstantsData, data, totalSize);
+        this->mPushConstantsData.resize(totalSize);
+        std::memcpy(this->mPushConstantsData.data(), data, totalSize);
         this->mPushConstantsDataTypeMemorySize = memorySize;
         this->mPushConstantsSize = size;
     }
@@ -267,8 +262,8 @@ class Algorithm
     template<typename T>
     const std::vector<T> getSpecializationConstants()
     {
-        return { (T*)this->mSpecializationConstantsData,
-                 ((T*)this->mSpecializationConstantsData) +
+        return { reinterpret_cast<const T*>(this->mSpecializationConstantsData.data()),
+                 reinterpret_cast<const T*>(this->mSpecializationConstantsData.data()) +
                    this->mSpecializationConstantsSize };
     }
     /**
@@ -279,8 +274,9 @@ class Algorithm
     template<typename T>
     const std::vector<T> getPushConstants()
     {
-        return { (T*)this->mPushConstantsData,
-                 ((T*)this->mPushConstantsData) + this->mPushConstantsSize };
+        return { reinterpret_cast<const T*>(this->mPushConstantsData.data()),
+                 reinterpret_cast<const T*>(this->mPushConstantsData.data()) +
+                   this->mPushConstantsSize };
     }
     /**
      * Gets the current memory objects that are used in the algorithm.
@@ -314,10 +310,10 @@ class Algorithm
 
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mSpirv;
-    void* mSpecializationConstantsData = nullptr;
+    std::vector<uint8_t> mSpecializationConstantsData;
     uint32_t mSpecializationConstantsDataTypeMemorySize = 0;
     uint32_t mSpecializationConstantsSize = 0;
-    void* mPushConstantsData = nullptr;
+    std::vector<uint8_t> mPushConstantsData;
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;
     Workgroup mWorkgroup;

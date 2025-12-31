@@ -200,3 +200,4 @@ compiled_shaders_include/
 _build/
 
 
+.venv/

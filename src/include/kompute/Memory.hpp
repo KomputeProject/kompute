@@ -77,7 +77,7 @@ class Memory
      * Destructor which is in charge of freeing vulkan resources unless they
      * have been provided externally.
      */
-    virtual ~Memory(){};
+    virtual ~Memory() = default;
 
     /**
      * Destroys and frees the GPU resources which includes the memory.

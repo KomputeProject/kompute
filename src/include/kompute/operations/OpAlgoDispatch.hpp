@@ -6,6 +6,9 @@
 #include "kompute/Tensor.hpp"
 #include "kompute/operations/OpBase.hpp"
 
+#include <cstring>
+#include <vector>
+
 namespace kp {
 
 /**
@@ -36,8 +39,10 @@ class OpAlgoDispatch : public OpBase
             uint32_t memorySize = sizeof(decltype(pushConstants.back()));
             uint32_t size = pushConstants.size();
             uint32_t totalSize = size * memorySize;
-            this->mPushConstantsData = malloc(totalSize);
-            memcpy(this->mPushConstantsData, pushConstants.data(), totalSize);
+            this->mPushConstantsData.resize(totalSize);
+            std::memcpy(this->mPushConstantsData.data(),
+                        pushConstants.data(),
+                        totalSize);
             this->mPushConstantsDataTypeMemorySize = memorySize;
             this->mPushConstantsSize = size;
         }
@@ -88,7 +93,7 @@ class OpAlgoDispatch : public OpBase
   private:
     // -------------- ALWAYS OWNED RESOURCES
     std::shared_ptr<Algorithm> mAlgorithm;
-    void* mPushConstantsData = nullptr;
+    std::vector<uint8_t> mPushConstantsData;
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;
 };

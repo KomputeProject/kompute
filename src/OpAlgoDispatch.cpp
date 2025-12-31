@@ -7,11 +7,8 @@ namespace kp {
 OpAlgoDispatch::~OpAlgoDispatch() noexcept
 {
     KP_LOG_DEBUG("Kompute OpAlgoDispatch destructor started");
-
-    if (this->mPushConstantsData) {
-        KP_LOG_DEBUG("Kompute freeing push constants data");
-        free(this->mPushConstantsData);
-    }
+    // Note: mPushConstantsData is now std::vector<uint8_t> and is
+    // automatically cleaned up.
 }
 
 void
@@ -47,7 +44,7 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 
     if (this->mPushConstantsSize) {
         this->mAlgorithm->setPushConstants(
-          this->mPushConstantsData,
+          this->mPushConstantsData.data(),
           this->mPushConstantsSize,
           this->mPushConstantsDataTypeMemorySize);
     }

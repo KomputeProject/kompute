@@ -206,11 +206,15 @@ Manager::createInstance()
     KP_LOG_DEBUG("Kompute Manager adding debug validation layers");
     // We'll identify the layers that are supported
     std::vector<const char*> validLayerNames;
+    
+    // Static layer names (these string literals have static storage duration)
     std::vector<const char*> desiredLayerNames = {
         "VK_LAYER_LUNARG_assistant_layer",
         "VK_LAYER_LUNARG_standard_validation",
         "VK_LAYER_KHRONOS_validation",
     };
+    
+    // Environment layer names - stored to ensure c_str() pointers remain valid
     std::vector<std::string> envLayerNames;
     const char* envLayerNamesVal = std::getenv("KOMPUTE_ENV_DEBUG_LAYERS");
     if (envLayerNamesVal != nullptr && *envLayerNamesVal != '\0') {
@@ -220,6 +224,8 @@ Manager::createInstance()
         std::istream_iterator<std::string> beg(iss);
         std::istream_iterator<std::string> end;
         envLayerNames = std::vector<std::string>(beg, end);
+        // Reserve space to prevent reallocation which would invalidate c_str() pointers
+        desiredLayerNames.reserve(desiredLayerNames.size() + envLayerNames.size());
         for (const std::string& layerName : envLayerNames) {
             desiredLayerNames.push_back(layerName.c_str());
         }

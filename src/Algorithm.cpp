@@ -24,13 +24,8 @@ Algorithm::isInit()
 void
 Algorithm::destroy()
 {
-    // We don't have to free memory on destroy as it's freed by the
-    // commandBuffer destructor if (this->mPushConstantsData) {
-    //     free(this->mPushConstantsData);
-    // }
-    // if (this->mSpecializationConstantsData) {
-    //     free(this->mSpecializationConstantsData);
-    // }
+    // Note: mPushConstantsData and mSpecializationConstantsData are now
+    // std::vector<uint8_t> and are automatically cleaned up.
 
     if (!this->mDevice) {
         KP_LOG_WARN("Kompute Algorithm destroy function reached with null "
@@ -40,10 +35,6 @@ Algorithm::destroy()
 
     if (this->mFreePipeline && this->mPipeline) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline");
-        if (!this->mPipeline) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "pipeline but it is null");
-        }
         this->mDevice->destroy(
           *this->mPipeline,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -52,10 +43,6 @@ Algorithm::destroy()
 
     if (this->mFreePipelineCache && this->mPipelineCache) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline cache");
-        if (!this->mPipelineCache) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "pipeline cache but it is null");
-        }
         this->mDevice->destroy(
           *this->mPipelineCache,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -64,10 +51,6 @@ Algorithm::destroy()
 
     if (this->mFreePipelineLayout && this->mPipelineLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying pipeline layout");
-        if (!this->mPipelineLayout) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "pipeline layout but it is null");
-        }
         this->mDevice->destroy(
           *this->mPipelineLayout,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -76,36 +59,18 @@ Algorithm::destroy()
 
     if (this->mFreeShaderModule && this->mShaderModule) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying shader module");
-        if (!this->mShaderModule) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy shader "
-                        "module but it is null");
-        }
         this->mDevice->destroy(
           *this->mShaderModule,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         this->mShaderModule = nullptr;
     }
 
-    // We don't call freeDescriptorSet as the descriptor pool is not created
-    // with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
-    // (https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-vkFreeDescriptorSets-descriptorPool-00312))
-    // if (this->mFreeDescriptorSet && this->mDescriptorSet) {
-    //    KP_LOG_DEBUG("Kompute Algorithm Freeing Descriptor Set");
-    //    if (!this->mDescriptorSet) {
-    //        KP_LOG_WARN(
-    //          "Kompute Algorithm Error requested to free descriptor set");
-    //    }
-    //    this->mDevice->freeDescriptorSets(
-    //      *this->mDescriptorPool, 1, this->mDescriptorSet.get());
-    //    this->mDescriptorSet = nullptr;
-    //}
+    // Note: We don't call freeDescriptorSet as the descriptor pool is not
+    // created with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT.
+    // See: https://www.khronos.org/registry/vulkan/specs/1.0/html/vkspec.html#VUID-vkFreeDescriptorSets-descriptorPool-00312
 
     if (this->mFreeDescriptorSetLayout && this->mDescriptorSetLayout) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Set Layout");
-        if (!this->mDescriptorSetLayout) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "descriptor set layout but it is null");
-        }
         this->mDevice->destroy(
           *this->mDescriptorSetLayout,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -114,10 +79,6 @@ Algorithm::destroy()
 
     if (this->mFreeDescriptorPool && this->mDescriptorPool) {
         KP_LOG_DEBUG("Kompute Algorithm Destroying Descriptor Pool");
-        if (!this->mDescriptorPool) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy "
-                        "descriptor pool but it is null");
-        }
         this->mDevice->destroy(
           *this->mDescriptorPool,
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
@@ -284,7 +245,7 @@ Algorithm::createPipeline()
       specializationEntries.data(),
       this->mSpecializationConstantsDataTypeMemorySize *
         this->mSpecializationConstantsSize,
-      this->mSpecializationConstantsData);
+      this->mSpecializationConstantsData.data());
 
     vk::PipelineShaderStageCreateInfo shaderStage(
       vk::PipelineShaderStageCreateFlags(),
@@ -366,7 +327,7 @@ Algorithm::recordBindPush(const vk::CommandBuffer& commandBuffer)
                                     0,
                                     this->mPushConstantsSize *
                                       this->mPushConstantsDataTypeMemorySize,
-                                    this->mPushConstantsData);
+                                    this->mPushConstantsData.data());
     }
 }
 
