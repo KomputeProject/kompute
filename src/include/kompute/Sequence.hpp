@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
+#include <limits>
+
 #include "kompute/Core.hpp"
 
 #include "kompute/operations/OpAlgoDispatch.hpp"
@@ -281,7 +283,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     std::shared_ptr<vk::Device> mDevice = nullptr;
     std::shared_ptr<vk::Queue> mComputeQueue = nullptr;
-    uint32_t mQueueIndex = -1;
+    // Using UINT32_MAX as sentinel value for uninitialized state
+    // The value is always set by the constructor before use
+    uint32_t mQueueIndex = std::numeric_limits<uint32_t>::max();
 
     // -------------- OPTIONALLY OWNED RESOURCES
     std::shared_ptr<vk::CommandPool> mCommandPool = nullptr;

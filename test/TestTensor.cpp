@@ -111,3 +111,45 @@ TEST(TestTensor, DataTypes)
         EXPECT_EQ(tensor->dataType(), kp::Memory::DataTypes::eDouble);
     }
 }
+
+// Edge case tests
+TEST(TestTensorEdgeCases, ZeroSizedTensorFromData)
+{
+    kp::Manager mgr;
+    // Creating a tensor with empty data should throw since zero-sized
+    // allocations are not supported by Vulkan
+    std::vector<float> emptyVec{};
+    EXPECT_THROW(mgr.tensorT(emptyVec), std::runtime_error);
+}
+
+TEST(TestTensorEdgeCases, TensorDestroyMultipleCalls)
+{
+    kp::Manager mgr;
+    std::vector<float> vec{ 1.0f, 2.0f, 3.0f };
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensorT(vec);
+    
+    EXPECT_TRUE(tensor->isInit());
+    
+    // First destroy
+    tensor->destroy();
+    EXPECT_FALSE(tensor->isInit());
+    
+    // Second destroy should not crash
+    tensor->destroy();
+    EXPECT_FALSE(tensor->isInit());
+}
+
+TEST(TestTensorEdgeCases, TensorAccessAfterSync)
+{
+    kp::Manager mgr;
+    std::vector<float> vec{ 1.0f, 2.0f, 3.0f };
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensorT(vec);
+    
+    // Sync to device and back
+    mgr.sequence()
+        ->eval<kp::OpSyncDevice>({ tensor })
+        ->eval<kp::OpSyncLocal>({ tensor });
+    
+    // Verify data is intact
+    EXPECT_EQ(tensor->vector(), vec);
+}
