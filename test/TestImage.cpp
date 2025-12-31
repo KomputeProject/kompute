@@ -184,3 +184,50 @@ TEST(TestImage, InvalidDataType)
         3, 3, 1, kp::Memory::DataTypes::eCustom, vk::ImageTiling::eOptimal),
       std::runtime_error);
 }
+
+// Edge case tests bundled for efficiency
+TEST(TestImageEdgeCases, ZeroSizedImageCreation)
+{
+    kp::Manager mgr;
+
+    // Zero-sized images should throw since Vulkan doesn't support them
+    std::vector<float> emptyVec{};
+    EXPECT_THROW(mgr.image(emptyVec, 0, 0, 1), std::runtime_error);
+
+    // Zero width or height should also fail
+    std::vector<float> smallVec{ 1.0f };
+    EXPECT_THROW(mgr.image(smallVec, 0, 1, 1), std::runtime_error);
+    EXPECT_THROW(mgr.image(smallVec, 1, 0, 1), std::runtime_error);
+}
+
+TEST(TestImageEdgeCases, ImageDestroyMultipleCalls)
+{
+    kp::Manager mgr;
+    std::vector<float> vec{ 1.0f, 2.0f, 3.0f, 4.0f };
+    std::shared_ptr<kp::ImageT<float>> image = mgr.image(vec, 2, 2, 1);
+
+    EXPECT_TRUE(image->isInit());
+
+    // First destroy
+    image->destroy();
+    EXPECT_FALSE(image->isInit());
+
+    // Second destroy should not crash
+    image->destroy();
+    EXPECT_FALSE(image->isInit());
+}
+
+TEST(TestImageEdgeCases, ImageAccessAfterSync)
+{
+    kp::Manager mgr;
+    std::vector<float> vec{ 1.0f, 2.0f, 3.0f, 4.0f };
+    std::shared_ptr<kp::ImageT<float>> image = mgr.image(vec, 2, 2, 1);
+
+    // Sync to device and back
+    mgr.sequence()
+        ->eval<kp::OpSyncDevice>({ image })
+        ->eval<kp::OpSyncLocal>({ image });
+
+    // Verify data is intact
+    EXPECT_EQ(image->vector(), vec);
+}

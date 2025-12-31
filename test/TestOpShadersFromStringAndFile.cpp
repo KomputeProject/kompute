@@ -157,3 +157,53 @@ TEST(TestOpAlgoCreate, ShaderCompiledDataFromConstructor)
     EXPECT_EQ(tensorA->vector(), std::vector<float>({ 0, 1, 2 }));
     EXPECT_EQ(tensorB->vector(), std::vector<float>({ 3, 4, 5 }));
 }
+
+// Edge case tests for Algorithm
+// Note: Invalid SPIRV data tests are skipped as MoltenVK on macOS crashes
+// instead of throwing an exception for invalid shader bytecode.
+
+TEST(TestAlgorithmEdgeCases, EmptySpirvCreatesUninitializedAlgorithm)
+{
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 1.0f, 2.0f, 3.0f });
+
+    // Empty SPIRV data creates an uninitialized algorithm (by design)
+    // This allows for deferred shader compilation
+    std::vector<uint32_t> emptySpirv{};
+
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm({ tensor }, emptySpirv);
+    
+    // Algorithm exists but is not fully initialized
+    EXPECT_FALSE(algo->isInit());
+}
+
+TEST(TestAlgorithmEdgeCases, AlgorithmDestroyMultipleCalls)
+{
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 1.0f, 2.0f, 3.0f });
+
+    // Simple shader with single buffer binding
+    std::vector<uint32_t> spirv = compileSource(R"(
+        #version 450
+        layout (local_size_x = 1) in;
+        layout(set = 0, binding = 0) buffer buf { float data[]; };
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            data[index] = data[index] + 1.0;
+        }
+    )");
+
+    std::shared_ptr<kp::Algorithm> algo = mgr.algorithm({ tensor }, spirv);
+
+    EXPECT_TRUE(algo->isInit());
+
+    // First destroy
+    algo->destroy();
+    EXPECT_FALSE(algo->isInit());
+
+    // Second destroy should not crash
+    algo->destroy();
+    EXPECT_FALSE(algo->isInit());
+}

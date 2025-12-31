@@ -243,3 +243,53 @@ TEST(TestSequence, CorrectSequenceRunningError)
 
     EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 }
+
+// Edge case tests for Sequence
+TEST(TestSequenceEdgeCases, SequenceDestroyMultipleCalls)
+{
+    kp::Manager mgr;
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+
+    EXPECT_TRUE(sq->isInit());
+
+    // First destroy
+    sq->destroy();
+    EXPECT_FALSE(sq->isInit());
+
+    // Second destroy should not crash
+    sq->destroy();
+    EXPECT_FALSE(sq->isInit());
+}
+
+TEST(TestSequenceEdgeCases, SequenceClearWhileRecording)
+{
+    kp::Manager mgr;
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor({ 1.0f, 2.0f, 3.0f });
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+
+    sq->begin();
+    EXPECT_TRUE(sq->isRecording());
+
+    // Clear while recording - should reset state
+    sq->clear();
+    EXPECT_FALSE(sq->isRecording());
+    EXPECT_TRUE(sq->isInit());
+}
+
+TEST(TestSequenceEdgeCases, SequenceRerecordAfterEval)
+{
+    kp::Manager mgr;
+    std::vector<float> vec{ 1.0f, 2.0f, 3.0f };
+    std::shared_ptr<kp::TensorT<float>> tensor = mgr.tensor(vec);
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+
+    // First record and eval
+    sq->eval<kp::OpSyncDevice>({ tensor });
+    EXPECT_FALSE(sq->isRecording());
+
+    // Should be able to record again
+    sq->begin();
+    EXPECT_TRUE(sq->isRecording());
+    sq->end();
+    EXPECT_FALSE(sq->isRecording());
+}
