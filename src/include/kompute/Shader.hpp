@@ -7,39 +7,38 @@
 namespace kp {
 
 // forward declarations for std::shared_from_this
-class Module;
+class Shader;
 
 /*
  * Wrapper for Vulkan's shader modules.
- * The purpose of this is to manage the module lifetime, while
- * building the groundwork for easily integrating things like
- * SPIR-V reflection and multiple entry points in the future.
  */
-class Module : public std::enable_shared_from_this<Module>
+class Shader
 {
-	// the vulkan device; not owned by this object
-	std::weak_ptr<vk::Device> mDevice;
+	// not-owned resources
+	std::shared_ptr<vk::Device> mDevice;
 	
-	// the shader module handle
+	// owned resources
 	vk::ShaderModule mShaderModule;
+	bool mDestroyed = false;
 	
 public:
 	
-	/*
+	/**
 	 * Constructor accepting a device and a SPIR-V binary
-	 */
-	Module(const std::shared_ptr<vk::Device>& device,
+	 * @param device The vk::Device for the shader module to be compiled for
+	 * @param spv The SPIR-V binary
+	 **/
+	Shader(const std::shared_ptr<vk::Device>& device,
 		const std::vector<uint32_t>& spv);
 	
-	/*
+	/**
 	 * getter for mShaderModule
-	 */
-	vk::ShaderModule& getShaderModule() { return mShaderModule; }
+	 **/
+	const vk::ShaderModule& getShaderModule();
 	
-	/*
-	 * Destroys the shader module properly.
-	 */
-	~Module();
+	void destroy();
+	
+	~Shader();
 };
 	
 } // End namespace kp

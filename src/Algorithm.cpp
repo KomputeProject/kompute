@@ -18,7 +18,7 @@ Algorithm::isInit()
 {
     return this->mPipeline && this->mPipelineCache && this->mPipelineLayout &&
            this->mDescriptorPool && this->mDescriptorSet &&
-           this->mDescriptorSetLayout && this->mModule;
+           this->mDescriptorSetLayout && this->mShader;
 }
 
 void
@@ -74,7 +74,8 @@ Algorithm::destroy()
         this->mPipelineLayout = nullptr;
     }
     
-	this->mModule = nullptr;
+    this->mShader->destroy();
+	this->mShader = nullptr;
 
     // We don't call freeDescriptorSet as the descriptor pool is not created
     // with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
@@ -212,7 +213,7 @@ void
 Algorithm::createShaderModule()
 {
 	KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
-	this->mModule = std::make_shared<Module>(this->mDevice, this->mSpirv);
+	this->mShader = std::make_shared<Shader>(this->mDevice, this->mSpirv);
 	KP_LOG_DEBUG("Kompute Algorithm create shader module success");
 }
 
@@ -266,7 +267,7 @@ Algorithm::createPipeline()
     vk::PipelineShaderStageCreateInfo shaderStage(
       vk::PipelineShaderStageCreateFlags(),
       vk::ShaderStageFlagBits::eCompute,
-      this->mModule->getShaderModule(),
+      this->mShader->getShaderModule(),
       "main",
       &specializationInfo);
 

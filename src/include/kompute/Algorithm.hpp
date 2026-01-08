@@ -304,7 +304,6 @@ class Algorithm
     bool mFreeDescriptorPool = false;
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;
-	std::shared_ptr<Module> mModule = nullptr;
     std::shared_ptr<vk::PipelineLayout> mPipelineLayout;
     bool mFreePipelineLayout = false;
     std::shared_ptr<vk::PipelineCache> mPipelineCache;
@@ -321,6 +320,7 @@ class Algorithm
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;
     Workgroup mWorkgroup;
+    std::shared_ptr<Shader> mShader = nullptr;
 
     // Create util functions
     void createShaderModule();
