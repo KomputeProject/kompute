@@ -163,24 +163,39 @@ PYBIND11_MODULE(kp, m)
       m, "Tensor", DOC(kp, Tensor))
       .def(
         "data",
-        [](kp::Tensor& self) {
+        [](kp::Tensor& self) -> py::array {
             // Non-owning container exposing the underlying pointer
             switch (self.dataType()) {
                 case kp::Memory::DataTypes::eFloat:
-                    return py::array(
-                      self.size(), self.data<float>(), py::cast(&self));
+                    return py::array_t<float>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(float)}, // strides
+                      self.data<float>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eUnsignedInt:
-                    return py::array(
-                      self.size(), self.data<uint32_t>(), py::cast(&self));
+                    return py::array_t<uint32_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(uint32_t)}, // strides
+                      self.data<uint32_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eInt:
-                    return py::array(
-                      self.size(), self.data<int32_t>(), py::cast(&self));
+                    return py::array_t<int32_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(int32_t)}, // strides
+                      self.data<int32_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eDouble:
-                    return py::array(
-                      self.size(), self.data<double>(), py::cast(&self));
+                    return py::array_t<double>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(double)}, // strides
+                      self.data<double>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eBool:
-                    return py::array(
-                      self.size(), self.data<bool>(), py::cast(&self));
+                    return py::array_t<bool>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(bool)}, // strides
+                      self.data<bool>(), // ptr
+                      py::cast(&self)); // parent
                 default:
                     throw std::runtime_error(
                       "Kompute Python data type not supported");
@@ -200,30 +215,51 @@ PYBIND11_MODULE(kp, m)
       m, "Image", DOC(kp, Image))
       .def(
         "data",
-        [](kp::Image& self) {
+        [](kp::Image& self) -> py::array {
             // Non-owning container exposing the underlying pointer
             switch (self.dataType()) {
                 case kp::Memory::DataTypes::eFloat:
-                    return py::array(
-                      self.size(), self.data<float>(), py::cast(&self));
+                    return py::array_t<float>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(float)}, // strides
+                      self.data<float>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eUnsignedInt:
-                    return py::array(
-                      self.size(), self.data<uint32_t>(), py::cast(&self));
+                    return py::array_t<uint32_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(uint32_t)}, // strides
+                      self.data<uint32_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eInt:
-                    return py::array(
-                      self.size(), self.data<int32_t>(), py::cast(&self));
+                    return py::array_t<int32_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(int32_t)}, // strides
+                      self.data<int32_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eUnsignedShort:
-                    return py::array(
-                      self.size(), self.data<uint16_t>(), py::cast(&self));
+                    return py::array_t<uint16_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(uint16_t)}, // strides
+                      self.data<uint16_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eShort:
-                    return py::array(
-                      self.size(), self.data<int16_t>(), py::cast(&self));
+                    return py::array_t<int16_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(int16_t)}, // strides
+                      self.data<int16_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eUnsignedChar:
-                    return py::array(
-                      self.size(), self.data<uint8_t>(), py::cast(&self));
+                    return py::array_t<uint8_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(uint8_t)}, // strides
+                      self.data<uint8_t>(), // ptr
+                      py::cast(&self)); // parent
                 case kp::Memory::DataTypes::eChar:
-                    return py::array(
-                      self.size(), self.data<int8_t>(), py::cast(&self));
+                    return py::array_t<int8_t>(
+                      {static_cast<py::ssize_t>(self.size())}, // shape
+                      {sizeof(int8_t)}, // strides
+                      self.data<int8_t>(), // ptr
+                      py::cast(&self)); // parent
                 default:
                     throw std::runtime_error(
                       "Kompute Python data type not supported");

@@ -2,6 +2,7 @@ import time
 
 import kp
 import numpy as np
+from utils import compile_source
 
 
 class MatMulOp:
@@ -63,7 +64,7 @@ void main()
         acc += in_tensor_1[(k * tensor_size) + globalRow] * in_tensor_2[(globalCol * tensor_size) + k];
     out_tensor[(globalCol * tensor_size) + globalRow] = acc;
 }}'''
-        self.compiled_shader = kp.Shader.compile_source(self.shader.format(
+        self.compiled_shader = compile_source(self.shader.format(
             local_size_x=self.local_size_x, local_size_y=self.local_size_y))
         self.tensor_shape: tuple[int, int] = (0, 0)
         self.params: list[kp.Tensor] = []
@@ -78,7 +79,7 @@ void main()
             self.params = params
             local_size_x = min(self.local_size_x, tensor_shape[0])
             local_size_y = min(self.local_size_y, tensor_shape[1])
-            self.compiled_shader = kp.Shader.compile_source(self.shader.format(
+            self.compiled_shader = compile_source(self.shader.format(
                 local_size_x=local_size_x, local_size_y=local_size_y))
             workgroup = (tensor_shape[0] // local_size_x, tensor_shape[1] // local_size_y, 1)
             print(f'{workgroup=} {self.local_size_x=} {self.local_size_y=}')
