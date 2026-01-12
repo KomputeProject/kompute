@@ -74,8 +74,11 @@ Algorithm::destroy()
         this->mPipelineLayout = nullptr;
     }
     
-    this->mShader->destroy();
-	this->mShader = nullptr;
+    if (this->mShader)
+    {
+		this->mShader->destroy();
+		this->mShader = nullptr;
+	}
 
     // We don't call freeDescriptorSet as the descriptor pool is not created
     // with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
