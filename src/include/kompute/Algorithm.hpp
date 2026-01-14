@@ -96,7 +96,6 @@ class Algorithm
         KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
         this->mMemObjects = memObjects;
-        this->mSpirv = spirv;
 
         if (specializationConstants.size()) {
             if (this->mSpecializationConstantsData) {
@@ -138,7 +137,7 @@ class Algorithm
         }
 
         this->createParameters();
-        this->createShaderModule();
+        this->createShaderModule(spirv);
         this->createPipeline();
     }
 
@@ -312,7 +311,6 @@ class Algorithm
     bool mFreePipeline = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<uint32_t> mSpirv;
     void* mSpecializationConstantsData = nullptr;
     uint32_t mSpecializationConstantsDataTypeMemorySize = 0;
     uint32_t mSpecializationConstantsSize = 0;
@@ -323,7 +321,7 @@ class Algorithm
     std::shared_ptr<Shader> mShader = nullptr;
 
     // Create util functions
-    void createShaderModule();
+    void createShaderModule(const std::vector<uint32_t>& spirv);
     void createPipeline();
 
     // Parameters

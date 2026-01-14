@@ -213,10 +213,10 @@ Algorithm::createParameters()
 }
 
 void
-Algorithm::createShaderModule()
+Algorithm::createShaderModule(const std::vector<uint32_t>& spirv)
 {
 	KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
-	this->mShader = std::make_shared<Shader>(this->mDevice, this->mSpirv);
+	this->mShader = std::make_shared<Shader>(this->mDevice, spirv);
 	KP_LOG_DEBUG("Kompute Algorithm create shader module success");
 }
 
