@@ -385,7 +385,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
               allQueueFamilyProperties[i];
 
             if (queueFamilyProperties.queueFlags &
-                (vk::QueueFlagBits::eCompute | vk::QueueFlagBits::eTransfer) ) {
+                vk::QueueFlagBits::eCompute ) {
                 computeQueueFamilyIndex = i;
                 computeQueueSupported = true;
                 break;
