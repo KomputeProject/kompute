@@ -51,3 +51,4 @@ In order to run this example, you will need the following dependencies:
 
 For the Vulkan SDK, the simplest way to install it is through [their website](https://vulkan.lunarg.com/sdk/home). You just have to follow the instructions for the relevant platform.
 
+For a walkthrough of the process please see my article at https://medium.com/@evanokeeffe/using-debug-printf-in-vulkan-kompute-shaders-2aaf30bdb96c
