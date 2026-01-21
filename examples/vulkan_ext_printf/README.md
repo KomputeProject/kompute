@@ -5,3 +5,4 @@ supported within RenderDoc in a way that allows for per-invocation inspection of
 This article describes how to instrument your GLSL or HLSL shaders with Debug Printf and how to
 inspect and debug with them in RenderDoc, using vkconfig, or with environment variables.
 
+For a walkthrough of the process please see my article at https://medium.com/@evanokeeffe/using-debug-printf-in-vulkan-kompute-shaders-2aaf30bdb96c
