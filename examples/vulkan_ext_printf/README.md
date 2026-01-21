@@ -42,12 +42,6 @@ From inside the `build/` directory run:
 ./example_shader_printf
 ```
 
-### Windows
-
-```bash
-.\Debug\example_shader_printf.exe
-```
-
 ## Pre-requisites
 
 In order to run this example, you will need the following dependencies:
@@ -56,3 +50,4 @@ In order to run this example, you will need the following dependencies:
     + The Vulkan SDK must be installed
 
 For the Vulkan SDK, the simplest way to install it is through [their website](https://vulkan.lunarg.com/sdk/home). You just have to follow the instructions for the relevant platform.
+
