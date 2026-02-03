@@ -18,6 +18,6 @@ void main() {
 
     // the debug statement operates much the same as printf in C
     // do be wary of the size of each line as the default debug message size is
-    // 1024
+    // 1024 bytes
     debugPrintfEXT("The result of %f x %f = %f  \n", a[index], b[index], o[index]);
 }
