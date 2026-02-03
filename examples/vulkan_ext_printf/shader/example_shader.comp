@@ -1,0 +1,23 @@
+#version 450
+// To use Debug Printf in GLSL shaders, you need to enable the GL_EXT_debug_printf extension.
+// Then add debugPrintfEXT calls at the locations in your shader where you want to print
+// messages and/or values
+#extension GL_EXT_debug_printf : enable
+
+// The execution structure
+layout (local_size_x = 1) in;
+
+// The buffers are provided via the tensors
+layout(binding = 0) buffer bufA { float a[]; };
+layout(binding = 1) buffer bufB { float b[]; };
+layout(binding = 2) buffer bufOut { float o[]; };
+
+void main() {
+    uint index = gl_GlobalInvocationID.x;
+    o[index] = a[index] * b[index];
+
+    // the debug statement operates much the same as printf in C
+    // do be wary of the size of each line as the default debug message size is
+    // 1024
+    debugPrintfEXT("The result of %f x %f = %f  \n", a[index], b[index], o[index]);
+}
