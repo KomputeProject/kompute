@@ -42,12 +42,6 @@ From inside the `build/` directory run:
 ./example_shader_printf
 ```
 
-### Windows
-
-```bash
-.\Debug\example_shader_printf.exe
-```
-
 ## Pre-requisites
 
 In order to run this example, you will need the following dependencies:
