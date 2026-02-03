@@ -34,7 +34,7 @@ cmake --build .
 
 ## Executing
 
-Form inside the `build/` directory run:
+From inside the `build/` directory run:
 
 ### Linux
 
