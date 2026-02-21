@@ -5,10 +5,13 @@ ARG VULKAN_SDK_VERSION
 # First install vulkan 
 RUN apt-get update
 RUN apt-get install -y curl unzip tar wget
-RUN wget -O VulkanSDK.tar.gz https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.gz?u=true && \
-    mkdir VulkanSDK && \
+RUN wget -O VulkanSDK.tar.xz https://sdk.lunarg.com/sdk/download/${VULKAN_SDK_VERSION}/linux/vulkansdk-linux-x86_64-${VULKAN_SDK_VERSION}.tar.xz?u=true
+
+RUN apt install -y xz-utils
+
+RUN mkdir VulkanSDK && \
     cd VulkanSDK && \
-    tar xvf /VulkanSDK.tar.gz
+    tar xvf /VulkanSDK.tar.xz
 
 RUN cd VulkanSDK/${VULKAN_SDK_VERSION}
 ENV VULKAN_SDK="/VulkanSDK/${VULKAN_SDK_VERSION}/x86_64"
@@ -59,7 +62,8 @@ RUN apt-get install -y qt5-qmake
 # Python deps
 RUN pip install jsonschema
 
-RUN /VulkanSDK/${VULKAN_SDK_VERSION}/vulkansdk -j $(nproc)
+RUN apt-get install -y sudo
+RUN /VulkanSDK/${VULKAN_SDK_VERSION}/vulkansdk -j $(nproc) -y
 
 # Cleanup to reduce image size
 RUN rm -rf /VulkanSDK/${VULKAN_SDK_VERSION}/source
@@ -68,7 +72,7 @@ RUN mkdir /workspace
 WORKDIR /workspace
 
 # Store build in slim down image (reduce from 16GB to 1GB)
-FROM ubuntu:20.04
+FROM ubuntu:23.10
 
 ARG VULKAN_SDK_VERSION
 

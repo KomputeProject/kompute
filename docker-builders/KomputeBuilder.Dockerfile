@@ -7,7 +7,7 @@ FROM axsauze/vulkan-sdk:${VULKAN_SDK_VERSION} as vulkansdk-image
 FROM axsauze/swiftshader:${SWIFTSHADER_VERSION} as swiftshader-image
 
 # Ubuntu as actual image base
-FROM ubuntu:22.04
+FROM ubuntu:23.10
 
 # Repeating args for context in this image
 ARG VULKAN_SDK_VERSION
