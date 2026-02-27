@@ -18,7 +18,7 @@ Algorithm::isInit()
 {
     return this->mPipeline && this->mPipelineCache && this->mPipelineLayout &&
            this->mDescriptorPool && this->mDescriptorSet &&
-           this->mDescriptorSetLayout && this->mShaderModule;
+           this->mDescriptorSetLayout && this->mShader;
 }
 
 void
@@ -73,18 +73,12 @@ Algorithm::destroy()
           (vk::Optional<const vk::AllocationCallbacks>)nullptr);
         this->mPipelineLayout = nullptr;
     }
-
-    if (this->mFreeShaderModule && this->mShaderModule) {
-        KP_LOG_DEBUG("Kompute Algorithm Destroying shader module");
-        if (!this->mShaderModule) {
-            KP_LOG_WARN("Kompute Algorithm Error requested to destroy shader "
-                        "module but it is null");
-        }
-        this->mDevice->destroy(
-          *this->mShaderModule,
-          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
-        this->mShaderModule = nullptr;
-    }
+    
+    if (this->mShader)
+    {
+		this->mShader->destroy();
+		this->mShader = nullptr;
+	}
 
     // We don't call freeDescriptorSet as the descriptor pool is not created
     // with VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT more at
@@ -219,24 +213,11 @@ Algorithm::createParameters()
 }
 
 void
-Algorithm::createShaderModule()
+Algorithm::createShaderModule(const std::vector<uint32_t>& spirv)
 {
-    KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
-
-    vk::ShaderModuleCreateInfo shaderModuleInfo(vk::ShaderModuleCreateFlags(),
-                                                sizeof(uint32_t) *
-                                                  this->mSpirv.size(),
-                                                this->mSpirv.data());
-
-    KP_LOG_DEBUG("Kompute Algorithm Creating shader module. ShaderFileSize: {}",
-                 this->mSpirv.size());
-    this->mFreeShaderModule = true;
-    this->mShaderModule = std::make_shared<vk::ShaderModule>();
-    this->mDevice->createShaderModule(
-      &shaderModuleInfo, nullptr, this->mShaderModule.get());
-    this->mFreeShaderModule = true;
-
-    KP_LOG_DEBUG("Kompute Algorithm create shader module success");
+	KP_LOG_DEBUG("Kompute Algorithm createShaderModule started");
+	this->mShader = std::make_shared<Shader>(this->mDevice, spirv);
+	KP_LOG_DEBUG("Kompute Algorithm create shader module success");
 }
 
 void
@@ -289,7 +270,7 @@ Algorithm::createPipeline()
     vk::PipelineShaderStageCreateInfo shaderStage(
       vk::PipelineShaderStageCreateFlags(),
       vk::ShaderStageFlagBits::eCompute,
-      *this->mShaderModule,
+      this->mShader->getShaderModule(),
       "main",
       &specializationInfo);
 

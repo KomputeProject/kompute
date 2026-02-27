@@ -115,8 +115,8 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
     std::vector<std::shared_ptr<kp::Algorithm>> algosAsync;
 
     for (uint32_t i = 0; i < numParallel; i++) {
-        inputsAsyncB.push_back(mgr.tensor(data));
-        algosAsync.push_back(mgr.algorithm({ inputsAsyncB[i] }, spirv));
+        inputsAsyncB.push_back(mgrAsync.tensor(data));
+        algosAsync.push_back(mgrAsync.algorithm({ inputsAsyncB[i] }, spirv));
     }
 
     std::vector<std::shared_ptr<kp::Sequence>> sqs;

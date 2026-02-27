@@ -10,6 +10,7 @@
 #endif
 
 #include "kompute/Tensor.hpp"
+#include "kompute/Shader.hpp"
 #include "logger/Logger.hpp"
 
 namespace kp {
@@ -95,7 +96,6 @@ class Algorithm
         KP_LOG_DEBUG("Kompute Algorithm rebuild started");
 
         this->mMemObjects = memObjects;
-        this->mSpirv = spirv;
 
         if (specializationConstants.size()) {
             if (this->mSpecializationConstantsData) {
@@ -137,7 +137,7 @@ class Algorithm
         }
 
         this->createParameters();
-        this->createShaderModule();
+        this->createShaderModule(spirv);
         this->createPipeline();
     }
 
@@ -303,8 +303,6 @@ class Algorithm
     bool mFreeDescriptorPool = false;
     std::shared_ptr<vk::DescriptorSet> mDescriptorSet;
     bool mFreeDescriptorSet = false;
-    std::shared_ptr<vk::ShaderModule> mShaderModule;
-    bool mFreeShaderModule = false;
     std::shared_ptr<vk::PipelineLayout> mPipelineLayout;
     bool mFreePipelineLayout = false;
     std::shared_ptr<vk::PipelineCache> mPipelineCache;
@@ -313,7 +311,6 @@ class Algorithm
     bool mFreePipeline = false;
 
     // -------------- ALWAYS OWNED RESOURCES
-    std::vector<uint32_t> mSpirv;
     void* mSpecializationConstantsData = nullptr;
     uint32_t mSpecializationConstantsDataTypeMemorySize = 0;
     uint32_t mSpecializationConstantsSize = 0;
@@ -321,9 +318,10 @@ class Algorithm
     uint32_t mPushConstantsDataTypeMemorySize = 0;
     uint32_t mPushConstantsSize = 0;
     Workgroup mWorkgroup;
+    std::shared_ptr<Shader> mShader = nullptr;
 
     // Create util functions
-    void createShaderModule();
+    void createShaderModule(const std::vector<uint32_t>& spirv);
     void createPipeline();
 
     // Parameters
