@@ -398,6 +398,22 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
         this->mComputeQueueFamilyIndices.push_back(computeQueueFamilyIndex);
     } else {
+        std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
+          physicalDevice.getQueueFamilyProperties();
+        for (auto queueIndexGiven : familyQueueIndices) {
+            if (queueIndexGiven >= allQueueFamilyProperties.size()) {
+                throw std::runtime_error(
+                  "Given family queue index does not exists. Index given: " +
+                  std::to_string(queueIndexGiven));
+            }
+            if (!(allQueueFamilyProperties[queueIndexGiven].queueFlags &
+                  vk::QueueFlagBits::eCompute)) {
+                throw std::runtime_error(
+                  "Given family queue index does not support compute "
+                  "operations. Index given: " +
+                  std::to_string(queueIndexGiven));
+            }
+        }
         this->mComputeQueueFamilyIndices = familyQueueIndices;
     }
 

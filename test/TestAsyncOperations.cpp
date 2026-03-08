@@ -8,14 +8,32 @@
 #include "kompute/logger/Logger.hpp"
 #include "shaders/Utils.hpp"
 
+namespace {
+std::vector<uint32_t>
+distinctFamilyQueueIndices(const vk::PhysicalDevice& device)
+{
+    const std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
+      device.getQueueFamilyProperties();
+    std::vector<uint32_t> distinctQueuesIndices;
+
+    for (uint32_t i = 0; i < allQueueFamilyProperties.size(); i++) {
+        if (allQueueFamilyProperties[i].queueFlags &
+            (vk::QueueFlagBits::eCompute)) {
+            distinctQueuesIndices.push_back(i);
+        }
+    }
+    return distinctQueuesIndices;
+}
+}
+
 TEST(TestAsyncOperations, TestManagerParallelExecution)
 {
-    // This test is built for NVIDIA 1650. It assumes:
-    // * Queue family 0 and 2 have compute capabilities
+    // This test assumes:
+    // * There are at least 2 different Queue families with compute capabilities
     // * GPU is able to process parallel shader code across different families
-    uint32_t size = 10;
+    constexpr uint32_t size = 10;
 
-    uint32_t numParallel = 2;
+    constexpr uint32_t numParallel = 2;
 
     std::string shader(R"(
         #version 450
@@ -79,7 +97,18 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
         EXPECT_EQ(inputsSyncB[i]->vector<float>(), resultSync);
     }
 
-    kp::Manager mgrAsync(0, { 0, 2 });
+    constexpr uint32_t deviceId =
+      0u; // device 0 exists, because "mgr" could be created already
+    auto queues = distinctFamilyQueueIndices(
+      mgr.getVkInstance()->enumeratePhysicalDevices().at(deviceId));
+    if (queues.size() < numParallel) {
+        GTEST_SKIP() << "GPU does not support multiple compute queues. Only "
+                     << queues.size() << " are supported. Skipping test.";
+    }
+
+    queues.resize(numParallel);
+
+    kp::Manager mgrAsync(deviceId, std::move(queues));
 
     std::vector<std::shared_ptr<kp::Memory>> inputsAsyncB;
 
@@ -118,7 +147,9 @@ TEST(TestAsyncOperations, TestManagerParallelExecution)
     }
 
     // The speedup should be at least 40%
-    EXPECT_LT(durationAsync, durationSync * 0.6);
+    EXPECT_LT(durationAsync, durationSync * 0.6)
+      << "There was no speedup in using multiple queues from different "
+         "QueueFamilies. Maybe your GPU does not support parallel execution.";
 }
 
 TEST(TestAsyncOperations, TestManagerAsyncExecution)
