@@ -381,11 +381,11 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
         uint32_t computeQueueFamilyIndex = 0;
         bool computeQueueSupported = false;
         for (uint32_t i = 0; i < allQueueFamilyProperties.size(); i++) {
-            vk::QueueFamilyProperties queueFamilyProperties =
+            const vk::QueueFamilyProperties& queueFamilyProperties =
               allQueueFamilyProperties[i];
 
             if (queueFamilyProperties.queueFlags &
-                vk::QueueFlagBits::eCompute) {
+                vk::QueueFlagBits::eCompute ) {
                 computeQueueFamilyIndex = i;
                 computeQueueSupported = true;
                 break;
