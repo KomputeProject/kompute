@@ -32,10 +32,14 @@ class Manager
      * explicit allocation
      * @param desiredExtensions The desired extensions to load from
      * physicalDevice
+     * @param desiredFeaturesChain (Optional) Caller-owned pNext chain
+     * forwarded to VkDeviceCreateInfo::pNext (e.g. a VkPhysicalDeviceFeatures2
+     * head enabling VK_EXT_shader_atomic_float).
      */
     Manager(uint32_t physicalDeviceIndex,
             const std::vector<uint32_t>& familyQueueIndices = {},
-            const std::vector<std::string>& desiredExtensions = {});
+            const std::vector<std::string>& desiredExtensions = {},
+            const void* desiredFeaturesChain = nullptr);
 
     /**
      * Manager constructor which allows your own vulkan application to integrate
@@ -561,7 +565,8 @@ class Manager
     void createInstance();
     void createDevice(const std::vector<uint32_t>& familyQueueIndices = {},
                       uint32_t hysicalDeviceIndex = 0,
-                      const std::vector<std::string>& desiredExtensions = {});
+                      const std::vector<std::string>& desiredExtensions = {},
+                      const void* desiredFeaturesChain = nullptr);
 };
 
 } // End namespace kp
