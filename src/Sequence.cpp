@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "kompute/Sequence.hpp"
+#include "kompute/Exceptions.hpp"
 
 namespace kp {
 
@@ -133,7 +134,12 @@ Sequence::evalAsync()
 
     this->mDevice->resetFences({ this->mFence });
 
-    this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+    try {
+        this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+    } catch (const vk::DeviceLostError& e) {
+        this->mIsRunning = false;
+        throw DeviceLostError("vkQueueSubmit failed: device lost");
+    }
 
     return shared_from_this();
 }
@@ -155,8 +161,13 @@ Sequence::evalAwait(uint64_t waitFor)
         return shared_from_this();
     }
 
-    vk::Result result =
-      this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
+    vk::Result result;
+    try {
+        result = this->mDevice->waitForFences(1, &this->mFence, VK_TRUE, waitFor);
+    } catch (const vk::DeviceLostError& e) {
+        this->mIsRunning = false;
+        throw DeviceLostError("vkWaitForFences failed: device lost");
+    }
 
     this->mIsRunning = false;
 

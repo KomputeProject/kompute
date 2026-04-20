@@ -2,6 +2,7 @@
 
 #include "Algorithm.hpp"
 #include "Core.hpp"
+#include "Exceptions.hpp"
 #include "Image.hpp"
 #include "Manager.hpp"
 #include "Sequence.hpp"
