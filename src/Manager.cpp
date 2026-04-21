@@ -380,16 +380,14 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
         uint32_t computeQueueFamilyIndex = 0;
         bool computeQueueSupported = false;
+        // Pick the first compute-capable family, preferring one without
+        // graphics so long dispatches don't stall the desktop on iGPUs.
         for (uint32_t i = 0; i < allQueueFamilyProperties.size(); i++) {
-            vk::QueueFamilyProperties queueFamilyProperties =
-              allQueueFamilyProperties[i];
-
-            if (queueFamilyProperties.queueFlags &
-                vk::QueueFlagBits::eCompute) {
-                computeQueueFamilyIndex = i;
-                computeQueueSupported = true;
-                break;
-            }
+            auto flags = allQueueFamilyProperties[i].queueFlags;
+            if (!(flags & vk::QueueFlagBits::eCompute)) continue;
+            computeQueueFamilyIndex = i;
+            computeQueueSupported = true;
+            if (!(flags & vk::QueueFlagBits::eGraphics)) break;
         }
 
         if (!computeQueueSupported) {
@@ -421,7 +419,7 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
     std::unordered_map<uint32_t, std::vector<float>> familyQueuePriorities;
     for (const auto& value : this->mComputeQueueFamilyIndices) {
         familyQueueCounts[value]++;
-        familyQueuePriorities[value].push_back(1.0f);
+        familyQueuePriorities[value].push_back(0.0f);
     }
 
     std::unordered_map<uint32_t, uint32_t> familyQueueIndexCount;
