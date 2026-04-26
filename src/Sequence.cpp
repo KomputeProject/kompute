@@ -111,6 +111,14 @@ Sequence::eval(std::shared_ptr<OpBase> op)
 std::shared_ptr<Sequence>
 Sequence::evalAsync()
 {
+    return this->evalAsync({}, {}, {});
+}
+
+std::shared_ptr<Sequence>
+Sequence::evalAsync(const std::vector<vk::Semaphore>& waitSemaphores,
+                    const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
+                    const std::vector<vk::Semaphore>& signalSemaphores)
+{
     if (this->isRecording()) {
         this->end();
     }
@@ -127,8 +135,35 @@ Sequence::evalAsync()
         this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
+    if (!waitDstStageMasks.empty() &&
+        waitSemaphores.size() != waitDstStageMasks.size()) {
+        throw std::runtime_error("Kompute Sequence evalAsync wait semaphore "
+                                 "count must match wait dst stage mask count");
+    }
+
+    std::vector<vk::PipelineStageFlags> resolvedWaitDstStageMasks =
+      waitDstStageMasks;
+    if (resolvedWaitDstStageMasks.empty() && !waitSemaphores.empty()) {
+        resolvedWaitDstStageMasks.resize(waitSemaphores.size(),
+                                         vk::PipelineStageFlagBits::eAllCommands);
+    }
+
+    const vk::Semaphore* waitSemaphoresPtr =
+      waitSemaphores.empty() ? nullptr : waitSemaphores.data();
+    const vk::PipelineStageFlags* waitDstStageMasksPtr =
+      resolvedWaitDstStageMasks.empty() ? nullptr
+                                        : resolvedWaitDstStageMasks.data();
+    const vk::Semaphore* signalSemaphoresPtr =
+      signalSemaphores.empty() ? nullptr : signalSemaphores.data();
+
     vk::SubmitInfo submitInfo(
-      0, nullptr, nullptr, 1, this->mCommandBuffer.get());
+      static_cast<uint32_t>(waitSemaphores.size()),
+      waitSemaphoresPtr,
+      waitDstStageMasksPtr,
+      1,
+      this->mCommandBuffer.get(),
+      static_cast<uint32_t>(signalSemaphores.size()),
+      signalSemaphoresPtr);
 
     KP_LOG_DEBUG(
       "Kompute sequence submitting command buffer into compute queue");
@@ -154,10 +189,19 @@ Sequence::submitCommandBuffer(const vk::SubmitInfo& submitInfo)
 std::shared_ptr<Sequence>
 Sequence::evalAsync(std::shared_ptr<OpBase> op)
 {
+    return this->evalAsync(op, {}, {}, {});
+}
+
+std::shared_ptr<Sequence>
+Sequence::evalAsync(std::shared_ptr<OpBase> op,
+                    const std::vector<vk::Semaphore>& waitSemaphores,
+                    const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
+                    const std::vector<vk::Semaphore>& signalSemaphores)
+{
     this->clear();
     this->record(op);
-    this->evalAsync();
-    return shared_from_this();
+    return this->evalAsync(
+      waitSemaphores, waitDstStageMasks, signalSemaphores);
 }
 
 std::shared_ptr<Sequence>
