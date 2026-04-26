@@ -162,6 +162,9 @@ Async/Await Example
 
 A simple example of asynchronous submission can be found below.
 
+You can also use async submissions with Vulkan semaphores to synchronize
+Kompute-generated submits with user-managed queue submits.
+
 First we are able to create the manager as we normally would.
 
 .. code-block:: cpp
@@ -233,14 +236,24 @@ The parameter provided is the maximum amount of time to wait in nanoseconds. Whe
 
     auto sq = mgr.sequence();
 
-    // Run Async Kompute operation on the parameters provided
-    sq->evalAsync<kp::OpAlgoDispatch>(algo);
+    // Optional: pass submit-level synchronization primitives so this submit
+    // waits/signals alongside user-managed queue work
+    std::vector<vk::Semaphore> waitSemaphores = { externalWaitSemaphore };
+    std::vector<vk::PipelineStageFlags> waitDstStageMasks = {
+        vk::PipelineStageFlagBits::eComputeShader
+    };
+    std::vector<vk::Semaphore> signalSemaphores = { externalSignalSemaphore };
+    auto opAlgo = std::make_shared<kp::OpAlgoDispatch>(algo);
+    sq->evalAsync(opAlgo, waitSemaphores, waitDstStageMasks, signalSemaphores);
 
     // Here we can do other work
 
-    // When we're ready we can wait 
+    // When we're ready we can wait
     // The default wait time is UINT64_MAX
     sq->evalAwait();
+
+``evalAwait()`` must be called before invoking ``evalAsync()`` again on the
+same ``Sequence``.
 
 
 Finally, below you can see that we can also run syncrhonous commands without having to change anything.

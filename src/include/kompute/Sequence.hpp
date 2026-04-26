@@ -157,9 +157,10 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait()
-     * must ALWAYS be called after to ensure the sequence is terminated
-     * correctly.
+     * operations into the gpu as a submit job without a barrier.
+     *
+     * evalAwait() must be called before invoking evalAsync() again on this same
+     * Sequence to complete the previous async run and reset internal state.
      *
      * @return Boolean stating whether execution was successful.
      */
@@ -167,8 +168,11 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Eval Async sends all recorded operations as a submit job and allows
      * submit-level GPU synchronization by providing wait and signal semaphores.
-     * EvalAwait() must ALWAYS be called after to ensure the sequence is
-     * terminated correctly.
+     *
+     * This overload is useful for synchronizing Kompute submissions with
+     * user-managed queue submissions without forcing CPU-side synchronization.
+     * evalAwait() must be called before invoking evalAsync() again on this same
+     * Sequence to complete the previous async run and reset internal state.
      *
      * @param waitSemaphores Semaphores that must be signaled before this submit
      * starts executing.
@@ -185,9 +189,10 @@ class Sequence : public std::enable_shared_from_this<Sequence>
       const std::vector<vk::Semaphore>& signalSemaphores);
     /**
      * Clears currnet operations to record provided one in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait()
-     * must ALWAYS be called after to ensure the sequence is terminated
-     * correctly.
+     * operations into the gpu as a submit job without a barrier.
+     *
+     * evalAwait() must be called before invoking evalAsync() again on this same
+     * Sequence to complete the previous async run and reset internal state.
      *
      * @return Boolean stating whether execution was successful.
      */
@@ -195,8 +200,11 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Clears current operations, records the provided one and submits with
      * optional wait/signal semaphores for submit-level GPU synchronization.
-     * EvalAwait() must ALWAYS be called after to ensure the sequence is
-     * terminated correctly.
+     *
+     * This overload is useful for synchronizing Kompute submissions with
+     * user-managed queue submissions without forcing CPU-side synchronization.
+     * evalAwait() must be called before invoking evalAsync() again on this same
+     * Sequence to complete the previous async run and reset internal state.
      *
      * @param op Operation to record prior to submit.
      * @param waitSemaphores Semaphores that must be signaled before this submit
