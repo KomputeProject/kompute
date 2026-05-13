@@ -336,7 +336,9 @@ PYBIND11_MODULE(kp, m)
            py::arg("desired_extensions") = std::vector<std::string>())
       .def("destroy", &kp::Manager::destroy, DOC(kp, Manager, destroy))
       .def("sequence",
-           &kp::Manager::sequence,
+           [](kp::Manager& self, uint32_t queueIndex, uint32_t totalTimestamps) {
+               return self.sequence(queueIndex, totalTimestamps, {}, {}, {});
+           },
            DOC(kp, Manager, sequence),
            py::arg("queue_index") = 0,
            py::arg("total_timestamps") = 0)

@@ -31,6 +31,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
              uint32_t totalTimestamps = 0,
+             const std::vector<vk::Semaphore>& waitSemaphores = {},
+             const std::vector<vk::PipelineStageFlags>& waitDstStageMasks = {},
+             const std::vector<vk::Semaphore>& signalSemaphores = {},
              std::shared_ptr<std::mutex> submitMutex = nullptr) noexcept;
 
     /**
@@ -158,6 +161,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job without a barrier.
+     * Submit-level wait/signal semaphores are configured when creating the
+     * Sequence.
      *
      * evalAwait() must be called before invoking evalAsync() again on this same
      * Sequence to complete the previous async run and reset internal state.
@@ -166,30 +171,10 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      */
     std::shared_ptr<Sequence> evalAsync();
     /**
-     * Eval Async sends all recorded operations as a submit job and allows
-     * submit-level GPU synchronization by providing wait and signal semaphores.
-     *
-     * This overload is useful for synchronizing Kompute submissions with
-     * user-managed queue submissions without forcing CPU-side synchronization.
-     * evalAwait() must be called before invoking evalAsync() again on this same
-     * Sequence to complete the previous async run and reset internal state.
-     *
-     * @param waitSemaphores Semaphores that must be signaled before this submit
-     * starts executing.
-     * @param waitDstStageMasks Pipeline stages at which to wait for each
-     * semaphore. If empty and waitSemaphores is not empty, defaults to
-     * vk::PipelineStageFlagBits::eAllCommands for each wait semaphore.
-     * @param signalSemaphores Semaphores that this submit will signal when it
-     * completes.
-     * @return shared_ptr<Sequence> of the Sequence class itself
-     */
-    std::shared_ptr<Sequence> evalAsync(
-      const std::vector<vk::Semaphore>& waitSemaphores,
-      const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
-      const std::vector<vk::Semaphore>& signalSemaphores);
-    /**
      * Clears currnet operations to record provided one in the vector of
      * operations into the gpu as a submit job without a barrier.
+     * Submit-level wait/signal semaphores are configured when creating the
+     * Sequence.
      *
      * evalAwait() must be called before invoking evalAsync() again on this same
      * Sequence to complete the previous async run and reset internal state.
@@ -197,30 +182,6 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync(std::shared_ptr<OpBase> op);
-    /**
-     * Clears current operations, records the provided one and submits with
-     * optional wait/signal semaphores for submit-level GPU synchronization.
-     *
-     * This overload is useful for synchronizing Kompute submissions with
-     * user-managed queue submissions without forcing CPU-side synchronization.
-     * evalAwait() must be called before invoking evalAsync() again on this same
-     * Sequence to complete the previous async run and reset internal state.
-     *
-     * @param op Operation to record prior to submit.
-     * @param waitSemaphores Semaphores that must be signaled before this submit
-     * starts executing.
-     * @param waitDstStageMasks Pipeline stages at which to wait for each
-     * semaphore. If empty and waitSemaphores is not empty, defaults to
-     * vk::PipelineStageFlagBits::eAllCommands for each wait semaphore.
-     * @param signalSemaphores Semaphores that this submit will signal when it
-     * completes.
-     * @return shared_ptr<Sequence> of the Sequence class itself
-     */
-    std::shared_ptr<Sequence> evalAsync(
-      std::shared_ptr<OpBase> op,
-      const std::vector<vk::Semaphore>& waitSemaphores,
-      const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
-      const std::vector<vk::Semaphore>& signalSemaphores);
     /**
      * Eval sends all the recorded and stored operations in the vector of
      * operations into the gpu as a submit job with a barrier.
@@ -345,6 +306,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     std::vector<std::shared_ptr<OpBase>> mOperations{};
     std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
     std::shared_ptr<std::mutex> mSubmitMutex = nullptr;
+    std::vector<vk::Semaphore> mWaitSemaphores{};
+    std::vector<vk::PipelineStageFlags> mWaitDstStageMasks{};
+    std::vector<vk::Semaphore> mSignalSemaphores{};
 
     // State
     bool mRecording = false;

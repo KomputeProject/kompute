@@ -9,6 +9,9 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Queue> computeQueue,
                    uint32_t queueIndex,
                    uint32_t totalTimestamps,
+                   const std::vector<vk::Semaphore>& waitSemaphores,
+                   const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
+                   const std::vector<vk::Semaphore>& signalSemaphores,
                    std::shared_ptr<std::mutex> submitMutex) noexcept
 {
     KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
@@ -19,6 +22,14 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mQueueIndex = queueIndex;
     this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
     this->mSubmitMutex = submitMutex;
+    this->mWaitSemaphores = waitSemaphores;
+    this->mWaitDstStageMasks = waitDstStageMasks;
+    this->mSignalSemaphores = signalSemaphores;
+
+    if (this->mWaitDstStageMasks.empty() && !this->mWaitSemaphores.empty()) {
+        this->mWaitDstStageMasks.resize(this->mWaitSemaphores.size(),
+                                        vk::PipelineStageFlagBits::eAllCommands);
+    }
 
     this->createCommandPool();
     this->createCommandBuffer();
@@ -111,14 +122,6 @@ Sequence::eval(std::shared_ptr<OpBase> op)
 std::shared_ptr<Sequence>
 Sequence::evalAsync()
 {
-    return this->evalAsync({}, {}, {});
-}
-
-std::shared_ptr<Sequence>
-Sequence::evalAsync(const std::vector<vk::Semaphore>& waitSemaphores,
-                    const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
-                    const std::vector<vk::Semaphore>& signalSemaphores)
-{
     if (this->isRecording()) {
         this->end();
     }
@@ -135,34 +138,26 @@ Sequence::evalAsync(const std::vector<vk::Semaphore>& waitSemaphores,
         this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
-    if (!waitDstStageMasks.empty() &&
-        waitSemaphores.size() != waitDstStageMasks.size()) {
+    if (!this->mWaitDstStageMasks.empty() &&
+        this->mWaitSemaphores.size() != this->mWaitDstStageMasks.size()) {
         throw std::runtime_error("Kompute Sequence evalAsync wait semaphore "
                                  "count must match wait dst stage mask count");
     }
 
-    std::vector<vk::PipelineStageFlags> resolvedWaitDstStageMasks =
-      waitDstStageMasks;
-    if (resolvedWaitDstStageMasks.empty() && !waitSemaphores.empty()) {
-        resolvedWaitDstStageMasks.resize(waitSemaphores.size(),
-                                         vk::PipelineStageFlagBits::eAllCommands);
-    }
-
     const vk::Semaphore* waitSemaphoresPtr =
-      waitSemaphores.empty() ? nullptr : waitSemaphores.data();
+      this->mWaitSemaphores.empty() ? nullptr : this->mWaitSemaphores.data();
     const vk::PipelineStageFlags* waitDstStageMasksPtr =
-      resolvedWaitDstStageMasks.empty() ? nullptr
-                                        : resolvedWaitDstStageMasks.data();
+      this->mWaitDstStageMasks.empty() ? nullptr : this->mWaitDstStageMasks.data();
     const vk::Semaphore* signalSemaphoresPtr =
-      signalSemaphores.empty() ? nullptr : signalSemaphores.data();
+      this->mSignalSemaphores.empty() ? nullptr : this->mSignalSemaphores.data();
 
     vk::SubmitInfo submitInfo(
-      static_cast<uint32_t>(waitSemaphores.size()),
+      static_cast<uint32_t>(this->mWaitSemaphores.size()),
       waitSemaphoresPtr,
       waitDstStageMasksPtr,
       1,
       this->mCommandBuffer.get(),
-      static_cast<uint32_t>(signalSemaphores.size()),
+      static_cast<uint32_t>(this->mSignalSemaphores.size()),
       signalSemaphoresPtr);
 
     KP_LOG_DEBUG(
@@ -189,19 +184,9 @@ Sequence::submitCommandBuffer(const vk::SubmitInfo& submitInfo)
 std::shared_ptr<Sequence>
 Sequence::evalAsync(std::shared_ptr<OpBase> op)
 {
-    return this->evalAsync(op, {}, {}, {});
-}
-
-std::shared_ptr<Sequence>
-Sequence::evalAsync(std::shared_ptr<OpBase> op,
-                    const std::vector<vk::Semaphore>& waitSemaphores,
-                    const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
-                    const std::vector<vk::Semaphore>& signalSemaphores)
-{
     this->clear();
     this->record(op);
-    return this->evalAsync(
-      waitSemaphores, waitDstStageMasks, signalSemaphores);
+    return this->evalAsync();
 }
 
 std::shared_ptr<Sequence>

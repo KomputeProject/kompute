@@ -234,17 +234,17 @@ The parameter provided is the maximum amount of time to wait in nanoseconds. Whe
 .. code-block:: cpp
     :linenos:
 
-    auto sq = mgr.sequence();
-
-    // Optional: pass submit-level synchronization primitives so this submit
-    // waits/signals alongside user-managed queue work
+    // Optional: pass submit-level synchronization primitives once when
+    // creating the sequence so every submit waits/signals alongside
+    // user-managed queue work
     std::vector<vk::Semaphore> waitSemaphores = { externalWaitSemaphore };
     std::vector<vk::PipelineStageFlags> waitDstStageMasks = {
         vk::PipelineStageFlagBits::eComputeShader
     };
     std::vector<vk::Semaphore> signalSemaphores = { externalSignalSemaphore };
+    auto sq = mgr.sequence(0, 0, waitSemaphores, waitDstStageMasks, signalSemaphores);
     auto opAlgo = std::make_shared<kp::OpAlgoDispatch>(algo);
-    sq->evalAsync(opAlgo, waitSemaphores, waitDstStageMasks, signalSemaphores);
+    sq->evalAsync(opAlgo);
 
     // Here we can do other work
 

@@ -77,10 +77,23 @@ class Manager
      * @param queueIndex The queue to use from the available queues
      * @param nrOfTimestamps The maximum number of timestamps to allocate.
      * If zero (default), disables latching of timestamps.
+     * @param waitSemaphores Semaphores to wait on before each submit from this
+     * sequence.
+     * @param waitDstStageMasks Pipeline stages to use for each wait semaphore.
+     * If empty and waitSemaphores is not empty, defaults to
+     * vk::PipelineStageFlagBits::eAllCommands for every wait semaphore.
+     * @param signalSemaphores Semaphores to signal after each submit from this
+     * sequence.
      * @returns Shared pointer with initialised sequence
      */
     std::shared_ptr<Sequence> sequence(uint32_t queueIndex = 0,
-                                       uint32_t totalTimestamps = 0);
+                                       uint32_t totalTimestamps = 0,
+                                       const std::vector<vk::Semaphore>&
+                                         waitSemaphores = {},
+                                       const std::vector<vk::PipelineStageFlags>&
+                                         waitDstStageMasks = {},
+                                       const std::vector<vk::Semaphore>&
+                                         signalSemaphores = {});
 
     /**
      * Create a managed tensor that will be destroyed by this manager

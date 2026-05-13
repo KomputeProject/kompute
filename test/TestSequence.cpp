@@ -244,7 +244,7 @@ TEST(TestSequence, CorrectSequenceRunningError)
     EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 }
 
-TEST(TestSequence, EvalAsyncSemaphoreOverloadSupportsEmptySyncLists)
+TEST(TestSequence, SequenceSubmitSyncSupportsEmptySyncLists)
 {
     kp::Manager mgr;
 
@@ -277,21 +277,15 @@ TEST(TestSequence, EvalAsyncSemaphoreOverloadSupportsEmptySyncLists)
     sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpSyncLocal>(
       { tensorA, tensorB, tensorOut });
 
-    EXPECT_NO_THROW(sq->evalAsync({}, {}, {}));
+    EXPECT_NO_THROW(sq->evalAsync());
     EXPECT_NO_THROW(sq->evalAwait());
 
     EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 }
 
-TEST(TestSequence, EvalAsyncSemaphoreOverloadValidatesWaitMaskCount)
+TEST(TestSequence, SequenceSubmitSyncValidatesWaitMaskCount)
 {
     kp::Manager mgr;
-
-    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
-
-    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 1, 2, 3 });
-
-    sq->record<kp::OpSyncDevice>({ tensorA });
 
     std::vector<vk::Semaphore> waitSemaphores = { vk::Semaphore{} };
     std::vector<vk::PipelineStageFlags> waitDstStageMasks = {
@@ -300,6 +294,6 @@ TEST(TestSequence, EvalAsyncSemaphoreOverloadValidatesWaitMaskCount)
     };
     std::vector<vk::Semaphore> signalSemaphores = {};
 
-    EXPECT_ANY_THROW(
-      sq->evalAsync(waitSemaphores, waitDstStageMasks, signalSemaphores));
+    EXPECT_ANY_THROW(mgr.sequence(
+      0, 0, waitSemaphores, waitDstStageMasks, signalSemaphores));
 }

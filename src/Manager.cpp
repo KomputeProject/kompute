@@ -499,9 +499,19 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 }
 
 std::shared_ptr<Sequence>
-Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
+Manager::sequence(uint32_t queueIndex,
+                  uint32_t totalTimestamps,
+                  const std::vector<vk::Semaphore>& waitSemaphores,
+                  const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
+                  const std::vector<vk::Semaphore>& signalSemaphores)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
+
+    if (!waitDstStageMasks.empty() &&
+        waitSemaphores.size() != waitDstStageMasks.size()) {
+        throw std::runtime_error("Kompute Manager sequence() wait semaphore "
+                                 "count must match wait dst stage mask count");
+    }
 
     std::shared_ptr<std::mutex> submitMutex = nullptr;
 #ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
@@ -514,6 +524,9 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
         this->mComputeQueues[queueIndex],
         this->mComputeQueueFamilyIndices[queueIndex],
         totalTimestamps,
+        waitSemaphores,
+        waitDstStageMasks,
+        signalSemaphores,
         submitMutex) };
 
     if (this->mManageResources) {
