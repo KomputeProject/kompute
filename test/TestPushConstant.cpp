@@ -101,7 +101,6 @@ TEST(TestPushConstants, TestConstantsAlgoSetPushConstants)
     }
 }
 
-
 TEST(TestPushConstants, TestConstantsAlgoDispatchNoOverride)
 {
     {
