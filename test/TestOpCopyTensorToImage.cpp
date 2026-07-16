@@ -214,7 +214,7 @@ TEST(TestOpCopyTensorToImage, CopyDeviceToDeviceImageUninitialised)
     EXPECT_EQ(tensorA->vector(), imageB->vector());
 }
 
-TEST(TestOpTensorCopyToImage, CopyDeviceAndHostToDeviceAndHostTensor)
+TEST(TestOpCopyToImage, CopyDeviceAndHostToDeviceAndHostTensor)
 {
     kp::Manager mgr;
 

@@ -83,13 +83,13 @@ KomputeSummatorNode::_init()
 
         // First we ensure secondary tensor loads to GPU
         // No need to sync the primary tensor as it should not be changed
-        sq->record<kp::OpTensorSyncDevice>({ this->mSecondaryTensor });
+        sq->record<kp::OpSyncDevice>({ this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
         sq->record<kp::OpAlgoDispatch>(algo);
 
         // We map the result back to local
-        sq->record<kp::OpTensorSyncLocal>({ this->mPrimaryTensor });
+        sq->record<kp::OpSyncLocal>({ this->mPrimaryTensor });
 
     } else {
         throw std::runtime_error("Sequence pointer no longer available");
