@@ -87,28 +87,28 @@ The :class:`kp::OpMult` operation is a sample implementation of the :class:`kp::
    :members:
 
 
-OpTensorCopy
+OpCopy
 -------
 
-The :class:`kp::OpTensorCopy` is a tensor only operation that copies the GPU memory buffer data from one :class:`kp::Tensor` to one or more subsequent tensors.
+The :class:`kp::OpCopy` is a tensor only operation that copies the GPU memory buffer data from one :class:`kp::Tensor` to one or more subsequent tensors.
 
-.. doxygenclass:: kp::OpTensorCopy
+.. doxygenclass:: kp::OpCopy
    :members:
 
-OpTensorSyncLocal
+OpSyncLocal
 -------
 
-The :class:`kp::OpTensorSyncLocal` is a tensor only operation that maps the data from the GPU device memory into the local host vector.
+The :class:`kp::OpSyncLocal` is a tensor only operation that maps the data from the GPU device memory into the local host vector.
 
-.. doxygenclass:: kp::OpTensorSyncLocal
+.. doxygenclass:: kp::OpSyncLocal
    :members:
 
-OpTensorSyncDevice
+OpSyncDevice
 -------
 
-The :class:`kp::OpTensorSyncDevice` is a tensor only operation that maps the data from the local host vector into the GPU device memory.
+The :class:`kp::OpSyncDevice` is a tensor only operation that maps the data from the local host vector into the GPU device memory.
 
-.. doxygenclass:: kp::OpTensorSyncDevice
+.. doxygenclass:: kp::OpSyncDevice
    :members:
 
 OpMemoryBarrier
@@ -116,7 +116,7 @@ OpMemoryBarrier
 
 The :class:`kp::OpMemoryBarrier` is a tensor only operation which adds memory barriers to the tensors provided with the access and stage masks provided.
 
-.. doxygenclass:: kp::OpTensorSyncDevice
+.. doxygenclass:: kp::OpSyncDevice
    :members:
 
 

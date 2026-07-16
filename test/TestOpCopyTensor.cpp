@@ -359,7 +359,7 @@ TEST(TestOpCopyTensor, CopyTensorThroughStorageViaAlgorithmsUninitialisedOutput)
     EXPECT_EQ(tensorIn->vector(), tensorOut->vector());
 }
 
-TEST(TestOpTensorCopy, CopyDeviceAndHostToDeviceAndHostTensor)
+TEST(TestOpCopy, CopyDeviceAndHostToDeviceAndHostTensor)
 {
     kp::Manager mgr;
 
