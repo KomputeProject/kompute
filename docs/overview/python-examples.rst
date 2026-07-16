@@ -14,7 +14,7 @@ Then you can interact with it from your interpreter. Below is the same sample as
 .. code-block:: python
    :linenos:
 
-   from kp import Manager, Tensor, OpTensorSyncDevice, OpTensorSyncLocal, OpAlgoDispatch
+   from kp import Manager, Tensor, OpSyncDevice, OpSyncLocal, OpAlgoDispatch
    from pyshader import python2shader, ivec3, f32, Array
 
    mgr = Manager()
@@ -26,7 +26,7 @@ Then you can interact with it from your interpreter. Below is the same sample as
 
    sq = mgr.sequence()
 
-   sq.eval(OpTensorSyncDevice([tensor_in_a, tensor_in_b, tensor_out]))
+   sq.eval(OpSyncDevice([tensor_in_a, tensor_in_b, tensor_out]))
 
    # Define the function via PyShader or directly as glsl string or spirv bytes
    @python2shader
@@ -41,7 +41,7 @@ Then you can interact with it from your interpreter. Below is the same sample as
 
    # Run shader operation synchronously
    sq.eval(OpAlgoDispatch(algo))
-   sq.eval(OpTensorSyncLocal([tensor_out]))
+   sq.eval(OpSyncLocal([tensor_out]))
 
    assert tensor_out.data().tolist() == [2.0, 4.0, 6.0]
 
@@ -69,7 +69,7 @@ Similarly you can find the same extended example as above:
     assert(tensor_out.data_type() == kp.DataTypes.float)
 
     seq = mgr.sequence()
-    seq.eval(kp.OpTensorSyncDevice([tensor_in_a, tensor_in_b, tensor_out]))
+    seq.eval(kp.OpSyncDevice([tensor_in_a, tensor_in_b, tensor_out]))
 
     # Define the function via PyShader or directly as glsl string or spirv bytes
     @python2shader
@@ -86,9 +86,9 @@ Similarly you can find the same extended example as above:
     seq.eval_async(kp.OpAlgoDispatch(algo))
     seq.eval_await()
 
-    seq.record(kp.OpTensorSyncLocal([tensor_in_a]))
-    seq.record(kp.OpTensorSyncLocal([tensor_in_b]))
-    seq.record(kp.OpTensorSyncLocal([tensor_out]))
+    seq.record(kp.OpSyncLocal([tensor_in_a]))
+    seq.record(kp.OpSyncLocal([tensor_in_b]))
+    seq.record(kp.OpSyncLocal([tensor_out]))
 
     seq.eval()
 
@@ -114,7 +114,7 @@ Handling multiple capabilites of processing can be done by compute shaders being
     t2 = mgr.tensor([1,2,3])
     t3 = mgr.tensor([1,2,3])
 
-    mgr.sequence().eval(kp.OpTensorSyncLocal([t1, t3]))
+    mgr.sequence().eval(kp.OpSyncLocal([t1, t3]))
 
     # Create multiple separate sequences
     sq_mult = mgr.sequence()
@@ -125,7 +125,7 @@ Handling multiple capabilites of processing can be done by compute shaders being
 
     sq_sum.record(kp.OpAlgoDispatch(mgr.algorithm([t3, t2, t1], sum_shader))
 
-    sq_sync.record(kp.OpTensorSyncLocal([t1, t3]))
+    sq_sync.record(kp.OpSyncLocal([t1, t3]))
 
     # Run multiple iterations
     for i in range(10):
@@ -211,14 +211,14 @@ Similar to the logistic regression implementation in the C++ examples section, b
     params = [tensor_x_i, tensor_x_j, tensor_y, tensor_w_in, tensor_w_out_i,
         tensor_w_out_j, tensor_b_in, tensor_b_out, tensor_l_out, tensor_m]
 
-    sq.sequence().eval(kp.OpTensorSyncDevice(params))
+    sq.sequence().eval(kp.OpSyncDevice(params))
 
     # Record commands for efficient evaluation
     sq = mgr.sequence()
 
-    sq.record(kp.OpTensorSyncDevice([tensor_w_in, tensor_b_in]))
+    sq.record(kp.OpSyncDevice([tensor_w_in, tensor_b_in]))
     sq.record(kp.OpAlgoDispatch(mgr.algorithm(params, compute_shader.to_spirv())))
-    sq.record(kp.OpTensorSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
+    sq.record(kp.OpSyncLocal([tensor_w_out_i, tensor_w_out_j, tensor_b_out, tensor_l_out]))
 
     ITERATIONS = 100
     learning_rate = 0.1

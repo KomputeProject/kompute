@@ -80,7 +80,7 @@ KomputeSummator::_init()
 
         // First we ensure secondary tensor loads to GPU
         // No need to sync the primary tensor as it should not be changed
-        this->mSequence->record<kp::OpTensorSyncDevice>(
+        this->mSequence->record<kp::OpSyncDevice>(
           { this->mSecondaryTensor });
 
         // Then we run the operation with both tensors
@@ -89,7 +89,7 @@ KomputeSummator::_init()
           compileSource(shader));
 
         // We map the result back to local
-        this->mSequence->record<kp::OpTensorSyncLocal>(
+        this->mSequence->record<kp::OpSyncLocal>(
           { this->mPrimaryTensor });
 
         this->mSequence->end();
