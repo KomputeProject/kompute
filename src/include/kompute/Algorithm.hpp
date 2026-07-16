@@ -226,7 +226,7 @@ class Algorithm
      * @param size The number of data elements provided in the data
      * @param memorySize The memory size of each of the data elements in bytes.
      */
-    void setPushConstants(void* data, uint32_t size, uint32_t memorySize)
+    void setPushConstants(const void* data, uint32_t size, uint32_t memorySize)
     {
 
         uint32_t totalSize = memorySize * size;
