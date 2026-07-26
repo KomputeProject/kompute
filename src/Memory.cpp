@@ -7,6 +7,7 @@
 #include <spdlog/fmt/fmt.h>
 #else
 #include <fmt/core.h>
+#include <fmt/format.h>
 #endif
 
 namespace kp {
