@@ -243,3 +243,57 @@ TEST(TestSequence, CorrectSequenceRunningError)
 
     EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
 }
+
+TEST(TestSequence, SequenceSubmitSyncSupportsEmptySyncLists)
+{
+    kp::Manager mgr;
+
+    std::shared_ptr<kp::Sequence> sq = mgr.sequence();
+
+    std::shared_ptr<kp::TensorT<float>> tensorA = mgr.tensor({ 1, 2, 3 });
+    std::shared_ptr<kp::TensorT<float>> tensorB = mgr.tensor({ 2, 2, 2 });
+    std::shared_ptr<kp::TensorT<float>> tensorOut = mgr.tensor({ 0, 0, 0 });
+
+    sq->eval<kp::OpSyncDevice>({ tensorA, tensorB, tensorOut });
+
+    std::vector<uint32_t> spirv = compileSource(R"(
+        #version 450
+
+        layout (local_size_x = 1) in;
+
+        layout(set = 0, binding = 0) buffer bina { float tina[]; };
+        layout(set = 0, binding = 1) buffer binb { float tinb[]; };
+        layout(set = 0, binding = 2) buffer bout { float tout[]; };
+
+        void main() {
+            uint index = gl_GlobalInvocationID.x;
+            tout[index] = tina[index] * tinb[index];
+        }
+    )");
+
+    std::shared_ptr<kp::Algorithm> algo =
+      mgr.algorithm({ tensorA, tensorB, tensorOut }, spirv);
+
+    sq->record<kp::OpAlgoDispatch>(algo)->record<kp::OpSyncLocal>(
+      { tensorA, tensorB, tensorOut });
+
+    EXPECT_NO_THROW(sq->evalAsync());
+    EXPECT_NO_THROW(sq->evalAwait());
+
+    EXPECT_EQ(tensorOut->vector(), std::vector<float>({ 2, 4, 6 }));
+}
+
+TEST(TestSequence, SequenceSubmitSyncValidatesWaitMaskCount)
+{
+    kp::Manager mgr;
+
+    std::vector<vk::Semaphore> waitSemaphores = { vk::Semaphore{} };
+    std::vector<vk::PipelineStageFlags> waitDstStageMasks = {
+        vk::PipelineStageFlagBits::eComputeShader,
+        vk::PipelineStageFlagBits::eTransfer
+    };
+    std::vector<vk::Semaphore> signalSemaphores = {};
+
+    EXPECT_ANY_THROW(mgr.sequence(
+      0, 0, waitSemaphores, waitDstStageMasks, signalSemaphores));
+}

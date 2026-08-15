@@ -9,6 +9,9 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Queue> computeQueue,
                    uint32_t queueIndex,
                    uint32_t totalTimestamps,
+                   const std::vector<vk::Semaphore>& waitSemaphores,
+                   const std::vector<vk::PipelineStageFlags>& waitDstStageMasks,
+                   const std::vector<vk::Semaphore>& signalSemaphores,
                    std::shared_ptr<std::mutex> submitMutex) noexcept
 {
     KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
@@ -19,6 +22,14 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mQueueIndex = queueIndex;
     this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
     this->mSubmitMutex = submitMutex;
+    this->mWaitSemaphores = waitSemaphores;
+    this->mWaitDstStageMasks = waitDstStageMasks;
+    this->mSignalSemaphores = signalSemaphores;
+
+    if (this->mWaitDstStageMasks.empty() && !this->mWaitSemaphores.empty()) {
+        this->mWaitDstStageMasks.resize(this->mWaitSemaphores.size(),
+                                        vk::PipelineStageFlagBits::eAllCommands);
+    }
 
     this->createCommandPool();
     this->createCommandBuffer();
@@ -127,8 +138,27 @@ Sequence::evalAsync()
         this->mOperations[i]->preEval(*this->mCommandBuffer);
     }
 
+    if (!this->mWaitDstStageMasks.empty() &&
+        this->mWaitSemaphores.size() != this->mWaitDstStageMasks.size()) {
+        throw std::runtime_error("Kompute Sequence evalAsync wait semaphore "
+                                 "count must match wait dst stage mask count");
+    }
+
+    const vk::Semaphore* waitSemaphoresPtr =
+      this->mWaitSemaphores.empty() ? nullptr : this->mWaitSemaphores.data();
+    const vk::PipelineStageFlags* waitDstStageMasksPtr =
+      this->mWaitDstStageMasks.empty() ? nullptr : this->mWaitDstStageMasks.data();
+    const vk::Semaphore* signalSemaphoresPtr =
+      this->mSignalSemaphores.empty() ? nullptr : this->mSignalSemaphores.data();
+
     vk::SubmitInfo submitInfo(
-      0, nullptr, nullptr, 1, this->mCommandBuffer.get());
+      static_cast<uint32_t>(this->mWaitSemaphores.size()),
+      waitSemaphoresPtr,
+      waitDstStageMasksPtr,
+      1,
+      this->mCommandBuffer.get(),
+      static_cast<uint32_t>(this->mSignalSemaphores.size()),
+      signalSemaphoresPtr);
 
     KP_LOG_DEBUG(
       "Kompute sequence submitting command buffer into compute queue");
@@ -156,8 +186,7 @@ Sequence::evalAsync(std::shared_ptr<OpBase> op)
 {
     this->clear();
     this->record(op);
-    this->evalAsync();
-    return shared_from_this();
+    return this->evalAsync();
 }
 
 std::shared_ptr<Sequence>

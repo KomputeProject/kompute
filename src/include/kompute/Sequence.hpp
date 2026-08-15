@@ -31,6 +31,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
              uint32_t totalTimestamps = 0,
+             const std::vector<vk::Semaphore>& waitSemaphores = {},
+             const std::vector<vk::PipelineStageFlags>& waitDstStageMasks = {},
+             const std::vector<vk::Semaphore>& signalSemaphores = {},
              std::shared_ptr<std::mutex> submitMutex = nullptr) noexcept;
 
     /**
@@ -157,18 +160,24 @@ class Sequence : public std::enable_shared_from_this<Sequence>
 
     /**
      * Eval Async sends all the recorded and stored operations in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait()
-     * must ALWAYS be called after to ensure the sequence is terminated
-     * correctly.
+     * operations into the gpu as a submit job without a barrier.
+     * Submit-level wait/signal semaphores are configured when creating the
+     * Sequence.
+     *
+     * evalAwait() must be called before invoking evalAsync() again on this same
+     * Sequence to complete the previous async run and reset internal state.
      *
      * @return Boolean stating whether execution was successful.
      */
     std::shared_ptr<Sequence> evalAsync();
     /**
      * Clears currnet operations to record provided one in the vector of
-     * operations into the gpu as a submit job without a barrier. EvalAwait()
-     * must ALWAYS be called after to ensure the sequence is terminated
-     * correctly.
+     * operations into the gpu as a submit job without a barrier.
+     * Submit-level wait/signal semaphores are configured when creating the
+     * Sequence.
+     *
+     * evalAwait() must be called before invoking evalAsync() again on this same
+     * Sequence to complete the previous async run and reset internal state.
      *
      * @return Boolean stating whether execution was successful.
      */
@@ -297,6 +306,9 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     std::vector<std::shared_ptr<OpBase>> mOperations{};
     std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
     std::shared_ptr<std::mutex> mSubmitMutex = nullptr;
+    std::vector<vk::Semaphore> mWaitSemaphores{};
+    std::vector<vk::PipelineStageFlags> mWaitDstStageMasks{};
+    std::vector<vk::Semaphore> mSignalSemaphores{};
 
     // State
     bool mRecording = false;

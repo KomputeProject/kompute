@@ -33,7 +33,7 @@ Below you
    * - preEval()
      - When the Sequence is Evaluated this preEval is called across all operations before dispatching the batch of recorded commands to the GPU. This is useful for example if you need to copy data from local to host memory.
    * - postEval()
-     - After the sequence is Evaluated this postEval is called across all operations. When running asynchronously the postEval is called when you call `evalAwait()`, which is why it's important to always run evalAwait() to ensure the process doesn't go into inconsistent state.
+     - After the sequence is Evaluated this postEval is called across all operations. In asynchronous flows postEval is called when you run `evalAwait()`, and `evalAwait()` must be called before triggering `evalAsync()` again on the same sequence to avoid inconsistent state.
 
 
 Simple Operation Extending OpAlgoBase
