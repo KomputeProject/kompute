@@ -87,9 +87,7 @@ if(KOMPUTE_OPT_LOG_LEVEL_DISABLED)
 endif()
 
 if(KOMPUTE_OPT_BUILD_PYTHON)
-    include_directories(${PYTHON_INCLUDE_DIRS})
-
-    target_link_libraries(kompute PRIVATE pybind11::headers ${PYTHON_LIBRARIES})
+    target_link_libraries(kompute PRIVATE pybind11::headers Python3::Python)
 endif()
 
 if(NOT KOMPUTE_OPT_ANDROID_BUILD AND KOMPUTE_OPT_USE_BUILT_IN_VULKAN_HEADER)
