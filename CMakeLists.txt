@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.50)
 project(kompute VERSION 0.9.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -234,7 +234,7 @@ if(KOMPUTE_OPT_BUILD_PYTHON)
         find_package(pybind11 REQUIRED)
     endif()
 
-    find_package(PythonLibs REQUIRED)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 endif()
 
 # ####################################################

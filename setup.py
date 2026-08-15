@@ -44,10 +44,9 @@ class CMakeBuild(build_ext):
                       '-DKOMPUTE_OPT_BUILD_PYTHON=ON',
                       '-DKOMPUTE_OPT_LOG_LEVEL=Off',
                       '-DKOMPUTE_OPT_USE_SPDLOG=Off',
-                      '-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON'
-                      '-DPYTHON_EXECUTABLE=' + sys.executable,
-                      '-DPYTHON_INCLUDE_DIR=' + sysconfig.get_path('include'),
-                      '-DPYTHON_LIBRARY=' + sysconfig.get_path('stdlib'),
+                      '-DKOMPUTE_OPT_DISABLE_VULKAN_VERSION_CHECK=ON',
+                      '-DPython3_EXECUTABLE=' + sys.executable,
+                      '-DPython3_INCLUDE_DIR=' + sysconfig.get_path('include'),
         ]
 
         cfg = 'Debug' if self.debug else 'Release'
