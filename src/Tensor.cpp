@@ -288,7 +288,10 @@ Tensor::getPrimaryBufferUsageFlags()
 {
     switch (this->mMemoryType) {
         case MemoryTypes::eDevice:
-        case MemoryTypes::eHost:
+        case TensorTypes::eHost:
+            return vk::MemoryPropertyFlagBits::eHostVisible |
+                   vk::MemoryPropertyFlagBits::eHostCoherent;
+            break;
         case MemoryTypes::eDeviceAndHost:
             return vk::BufferUsageFlagBits::eStorageBuffer |
                    vk::BufferUsageFlagBits::eTransferSrc |
@@ -310,8 +313,11 @@ vk::BufferUsageFlags
 Tensor::getStagingBufferUsageFlags()
 {
     switch (this->mMemoryType) {
-        case MemoryTypes::eDevice:
-            return vk::BufferUsageFlagBits::eTransferSrc |
+        case TensorTypes::eDevice:
+            return vk::MemoryPropertyFlagBits::eHostVisible |
+                   vk::MemoryPropertyFlagBits::eHostCoherent | 
+                   vk::MemoryPropertyFlagBits::eHostCached | 
+                   vk::BufferUsageFlagBits::eTransferSrc |
                    vk::BufferUsageFlagBits::eTransferDst;
             break;
         default:
