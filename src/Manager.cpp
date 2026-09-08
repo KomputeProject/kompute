@@ -55,6 +55,10 @@ Manager::Manager(uint32_t physicalDeviceIndex,
 {
     this->mManageResources = true;
 
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    this->mSequenceSubmitMutex = std::make_shared<std::mutex>();
+#endif
+
 // Make sure the logger is setup
 #if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
     logger::setupLogger();
@@ -70,6 +74,10 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
                  std::shared_ptr<vk::Device> device)
 {
     this->mManageResources = false;
+
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    this->mSequenceSubmitMutex = std::make_shared<std::mutex>();
+#endif
 
     this->mInstance = instance;
     this->mPhysicalDevice = physicalDevice;
@@ -398,6 +406,22 @@ Manager::createDevice(const std::vector<uint32_t>& familyQueueIndices,
 
         this->mComputeQueueFamilyIndices.push_back(computeQueueFamilyIndex);
     } else {
+        std::vector<vk::QueueFamilyProperties> allQueueFamilyProperties =
+          physicalDevice.getQueueFamilyProperties();
+        for (auto queueIndexGiven : familyQueueIndices) {
+            if (queueIndexGiven >= allQueueFamilyProperties.size()) {
+                throw std::runtime_error(
+                  "Given family queue index does not exists. Index given: " +
+                  std::to_string(queueIndexGiven));
+            }
+            if (!(allQueueFamilyProperties[queueIndexGiven].queueFlags &
+                  vk::QueueFlagBits::eCompute)) {
+                throw std::runtime_error(
+                  "Given family queue index does not support compute "
+                  "operations. Index given: " +
+                  std::to_string(queueIndexGiven));
+            }
+        }
         this->mComputeQueueFamilyIndices = familyQueueIndices;
     }
 
@@ -479,12 +503,18 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
+    std::shared_ptr<std::mutex> submitMutex = nullptr;
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    submitMutex = this->mSequenceSubmitMutex;
+#endif
+
     std::shared_ptr<Sequence> sq{ new kp::Sequence(
-      this->mPhysicalDevice,
-      this->mDevice,
-      this->mComputeQueues[queueIndex],
-      this->mComputeQueueFamilyIndices[queueIndex],
-      totalTimestamps) };
+        this->mPhysicalDevice,
+        this->mDevice,
+        this->mComputeQueues[queueIndex],
+        this->mComputeQueueFamilyIndices[queueIndex],
+        totalTimestamps,
+        submitMutex) };
 
     if (this->mManageResources) {
         this->mManagedSequences.push_back(sq);

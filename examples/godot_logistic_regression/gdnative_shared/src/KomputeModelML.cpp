@@ -68,13 +68,13 @@ KomputeModelML::train(Array yArr, Array xIArr, Array xJArr)
 
             std::shared_ptr<kp::Algorithm> algo = mgr.algorithm(params, spirv);
 
-            mgr.sequence()->eval<kp::OpTensorSyncDevice>(params);
+            mgr.sequence()->eval<kp::OpSyncDevice>(params);
 
             std::shared_ptr<kp::Sequence> sq =
               mgr.sequence()
-                ->record<kp::OpTensorSyncDevice>({ wIn, bIn })
+                ->record<kp::OpSyncDevice>({ wIn, bIn })
                 ->record<kp::OpAlgoDispatch>(algo)
-                ->record<kp::OpTensorSyncLocal>({ wOutI, wOutJ, bOut, lOut });
+                ->record<kp::OpSyncLocal>({ wOutI, wOutJ, bOut, lOut });
 
             // Iterate across all expected iterations
             for (size_t i = 0; i < ITERATIONS; i++) {

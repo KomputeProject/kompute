@@ -5,6 +5,8 @@
 
 #include "kompute/operations/OpAlgoDispatch.hpp"
 #include "kompute/operations/OpBase.hpp"
+#include <mutex>
+#include <functional>
 
 namespace kp {
 
@@ -28,7 +30,8 @@ class Sequence : public std::enable_shared_from_this<Sequence>
              std::shared_ptr<vk::Device> device,
              std::shared_ptr<vk::Queue> computeQueue,
              uint32_t queueIndex,
-             uint32_t totalTimestamps = 0) noexcept;
+             uint32_t totalTimestamps = 0,
+             std::shared_ptr<std::mutex> submitMutex = nullptr) noexcept;
 
     /**
      * @brief Make Sequence uncopyable
@@ -276,7 +279,7 @@ class Sequence : public std::enable_shared_from_this<Sequence>
      */
     void destroy();
 
-  private:
+  protected:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::PhysicalDevice> mPhysicalDevice = nullptr;
     std::shared_ptr<vk::Device> mDevice = nullptr;
@@ -293,11 +296,21 @@ class Sequence : public std::enable_shared_from_this<Sequence>
     vk::Fence mFence;
     std::vector<std::shared_ptr<OpBase>> mOperations{};
     std::shared_ptr<vk::QueryPool> timestampQueryPool = nullptr;
+    std::shared_ptr<std::mutex> mSubmitMutex = nullptr;
 
     // State
     bool mRecording = false;
     bool mIsRunning = false;
 
+    /**
+     * Submits the command buffer to the compute queue, acquiring the submit
+     * mutex beforehand if one was provided.
+     *
+     * @param submitInfo The Vulkan submit info to pass to the queue.
+     */
+    void submitCommandBuffer(const vk::SubmitInfo& submitInfo);
+
+  private:
     // Create functions
     void createCommandPool();
     void createCommandBuffer();

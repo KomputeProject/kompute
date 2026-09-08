@@ -204,7 +204,7 @@ def kompute(shader):
 
     # 4. Run operation synchronously using sequence
     (mgr.sequence()
-        .record(kp.OpTensorSyncDevice(params))
+        .record(kp.OpSyncDevice(params))
         .record(kp.OpAlgoDispatch(algo)) # Binds default push consts provided
         .eval() # evaluates the two recorded ops
         .record(kp.OpAlgoDispatch(algo, push_consts_b)) # Overrides push consts
@@ -212,7 +212,7 @@ def kompute(shader):
 
     # 5. Sync results from the GPU asynchronously
     sq = mgr.sequence()
-    sq.eval_async(kp.OpTensorSyncLocal(params))
+    sq.eval_async(kp.OpSyncLocal(params))
 
     # ... Do other work asynchronously whilst GPU finishes
 

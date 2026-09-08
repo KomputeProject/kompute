@@ -56,7 +56,6 @@ target_compile_definitions(kp_logger INTERFACE KOMPUTE_OPT_ACTIVE_LOG_LEVEL=KOMP
 if(NOT KOMPUTE_OPT_LOG_LEVEL_DISABLED)
     if(KOMPUTE_OPT_USE_SPDLOG)
         target_link_libraries(kp_logger PUBLIC spdlog::spdlog)
-        target_compile_definitions(spdlog INTERFACE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_${KOMPUTE_OPT_LOG_LEVEL})
         target_compile_definitions(kp_logger INTERFACE SPDLOG_ACTIVE_LEVEL=SPDLOG_LEVEL_${KOMPUTE_OPT_LOG_LEVEL})
         message(STATUS "setting SPDLOG_ACTIVE_LEVEL to SPDLOG_LEVEL_${KOMPUTE_OPT_LOG_LEVEL}")
 

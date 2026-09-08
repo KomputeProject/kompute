@@ -25,9 +25,8 @@ OpAlgoDispatch::record(const vk::CommandBuffer& commandBuffer)
 
         // For images the image layout needs to be set to eGeneral before using
         // it for imageLoad/imageStore in a shader.
-        if (mem->type() == Memory::Type::eImage) {
-            std::shared_ptr<Image> image = std::static_pointer_cast<Image>(mem);
-
+        std::shared_ptr<Image> image = std::dynamic_pointer_cast<Image>(mem);
+        if (image) {
             image->recordPrimaryImageBarrier(
               commandBuffer,
               vk::AccessFlagBits::eTransferWrite,
