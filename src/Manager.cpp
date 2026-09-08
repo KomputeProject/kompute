@@ -55,6 +55,10 @@ Manager::Manager(uint32_t physicalDeviceIndex,
 {
     this->mManageResources = true;
 
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    this->mSequenceSubmitMutex = std::make_shared<std::mutex>();
+#endif
+
 // Make sure the logger is setup
 #if !KOMPUTE_OPT_LOG_LEVEL_DISABLED
     logger::setupLogger();
@@ -70,6 +74,10 @@ Manager::Manager(std::shared_ptr<vk::Instance> instance,
                  std::shared_ptr<vk::Device> device)
 {
     this->mManageResources = false;
+
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    this->mSequenceSubmitMutex = std::make_shared<std::mutex>();
+#endif
 
     this->mInstance = instance;
     this->mPhysicalDevice = physicalDevice;
@@ -495,12 +503,18 @@ Manager::sequence(uint32_t queueIndex, uint32_t totalTimestamps)
 {
     KP_LOG_DEBUG("Kompute Manager sequence() with queueIndex: {}", queueIndex);
 
+    std::shared_ptr<std::mutex> submitMutex = nullptr;
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    submitMutex = this->mSequenceSubmitMutex;
+#endif
+
     std::shared_ptr<Sequence> sq{ new kp::Sequence(
-      this->mPhysicalDevice,
-      this->mDevice,
-      this->mComputeQueues[queueIndex],
-      this->mComputeQueueFamilyIndices[queueIndex],
-      totalTimestamps) };
+        this->mPhysicalDevice,
+        this->mDevice,
+        this->mComputeQueues[queueIndex],
+        this->mComputeQueueFamilyIndices[queueIndex],
+        totalTimestamps,
+        submitMutex) };
 
     if (this->mManageResources) {
         this->mManagedSequences.push_back(sq);

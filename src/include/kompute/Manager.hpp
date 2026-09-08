@@ -7,6 +7,10 @@
 #include "kompute/Sequence.hpp"
 #include "logger/Logger.hpp"
 
+#ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+#include <mutex>
+#endif
+
 #define KP_DEFAULT_SESSION "DEFAULT"
 
 namespace kp {
@@ -545,6 +549,10 @@ class Manager
 
     std::vector<uint32_t> mComputeQueueFamilyIndices;
     std::vector<std::shared_ptr<vk::Queue>> mComputeQueues;
+
+  #ifdef KOMPUTE_OPT_THREAD_SAFE_COMPUTE_QUEUE
+    std::shared_ptr<std::mutex> mSequenceSubmitMutex = nullptr;
+  #endif
 
     bool mManageResources = false;
 

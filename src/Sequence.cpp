@@ -8,7 +8,8 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
                    std::shared_ptr<vk::Device> device,
                    std::shared_ptr<vk::Queue> computeQueue,
                    uint32_t queueIndex,
-                   uint32_t totalTimestamps) noexcept
+                   uint32_t totalTimestamps,
+                   std::shared_ptr<std::mutex> submitMutex) noexcept
 {
     KP_LOG_DEBUG("Kompute Sequence Constructor with existing device & queue");
 
@@ -17,6 +18,7 @@ Sequence::Sequence(std::shared_ptr<vk::PhysicalDevice> physicalDevice,
     this->mComputeQueue = computeQueue;
     this->mQueueIndex = queueIndex;
     this->mFence = this->mDevice->createFence(vk::FenceCreateInfo());
+    this->mSubmitMutex = submitMutex;
 
     this->createCommandPool();
     this->createCommandBuffer();
@@ -133,9 +135,20 @@ Sequence::evalAsync()
 
     this->mDevice->resetFences({ this->mFence });
 
-    this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+    this->submitCommandBuffer(submitInfo);
 
     return shared_from_this();
+}
+
+void
+Sequence::submitCommandBuffer(const vk::SubmitInfo& submitInfo)
+{
+    if (this->mSubmitMutex) {
+        std::lock_guard<std::mutex> submitLock(*this->mSubmitMutex);
+        this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+    } else {
+        this->mComputeQueue->submit(1, &submitInfo, this->mFence);
+    }
 }
 
 std::shared_ptr<Sequence>

@@ -226,7 +226,7 @@ class Algorithm
      * @param size The number of data elements provided in the data
      * @param memorySize The memory size of each of the data elements in bytes.
      */
-    void setPushConstants(void* data, uint32_t size, uint32_t memorySize)
+    void setPushConstants(const void* data, uint32_t size, uint32_t memorySize)
     {
 
         uint32_t totalSize = memorySize * size;
@@ -291,7 +291,7 @@ class Algorithm
 
     void destroy();
 
-  private:
+  protected:
     // -------------- NEVER OWNED RESOURCES
     std::shared_ptr<vk::Device> mDevice;
     std::vector<std::shared_ptr<Memory>> mMemObjects;
@@ -312,6 +312,7 @@ class Algorithm
     std::shared_ptr<vk::Pipeline> mPipeline;
     bool mFreePipeline = false;
 
+  private:
     // -------------- ALWAYS OWNED RESOURCES
     std::vector<uint32_t> mSpirv;
     void* mSpecializationConstantsData = nullptr;

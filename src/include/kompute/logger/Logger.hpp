@@ -21,16 +21,19 @@
 #if VK_USE_PLATFORM_ANDROID_KHR
 #include <android/log.h>
 #include <fmt/core.h>
+#include <fmt/format.h>
 static const char* KOMPUTE_LOG_TAG = "KomputeLog";
 #else
 #if KOMPUTE_BUILD_PYTHON
 #include <fmt/core.h>
+#include <fmt/format.h>
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 // from python/src/main.cpp
 extern py::object kp_trace, kp_debug, kp_info, kp_warning, kp_error;
 #else
 #include <fmt/core.h>
+#include <fmt/format.h>
 #endif // KOMPUTE_BUILD_PYTHON
 #endif // VK_USE_PLATFORM_ANDROID_KHR
 #else
