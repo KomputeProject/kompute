@@ -274,7 +274,33 @@ PYBIND11_MODULE(kp, m)
              &kp::Memory::dataType),
            DOC(kp, Memory, dataType))
       .def("is_init", &kp::Image::isInit, DOC(kp, Image, isInit))
-      .def("destroy", &kp::Image::destroy, DOC(kp, Image, destroy));
+      .def("destroy", &kp::Image::destroy, DOC(kp, Image, destroy))
+      .def(
+        "create_sampler",
+        [](kp::Image& self, bool linear, bool repeat) {
+            vk::SamplerCreateInfo samplerInfo =
+              kp::Image::defaultSamplerCreateInfo();
+            vk::Filter filter =
+              linear ? vk::Filter::eLinear : vk::Filter::eNearest;
+            samplerInfo.magFilter = filter;
+            samplerInfo.minFilter = filter;
+            vk::SamplerAddressMode addressMode =
+              repeat ? vk::SamplerAddressMode::eRepeat
+                     : vk::SamplerAddressMode::eClampToEdge;
+            samplerInfo.addressModeU = addressMode;
+            samplerInfo.addressModeV = addressMode;
+            samplerInfo.addressModeW = addressMode;
+            self.createSampler(samplerInfo);
+        },
+        "Attaches a Vulkan sampler to this image so it can be bound as a "
+        "combined image sampler (`sampler2D` in GLSL) instead of a storage "
+        "image (`image2D`), enabling hardware filtering/interpolation.",
+        py::arg("linear") = true,
+        py::arg("repeat") = false)
+      .def("has_sampler",
+           &kp::Image::hasSampler,
+           "Returns whether create_sampler() has been called on this "
+           "image.");
 
     py::class_<kp::Sequence, std::shared_ptr<kp::Sequence>>(m, "Sequence")
       .def(

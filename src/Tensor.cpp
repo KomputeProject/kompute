@@ -288,10 +288,7 @@ Tensor::getPrimaryBufferUsageFlags()
 {
     switch (this->mMemoryType) {
         case MemoryTypes::eDevice:
-        case TensorTypes::eHost:
-            return vk::MemoryPropertyFlagBits::eHostVisible |
-                   vk::MemoryPropertyFlagBits::eHostCoherent;
-            break;
+        case MemoryTypes::eHost:
         case MemoryTypes::eDeviceAndHost:
             return vk::BufferUsageFlagBits::eStorageBuffer |
                    vk::BufferUsageFlagBits::eTransferSrc |
@@ -314,8 +311,8 @@ Tensor::getStagingBufferUsageFlags()
 {
     switch (this->mMemoryType) {
         case MemoryTypes::eDevice:
-            return vk::MemoryPropertyFlagBits::eHostVisible |
-                   vk::MemoryPropertyFlagBits::eHostCoherent | vk::MemoryPropertyFlagBits::eHostCached;
+            return vk::BufferUsageFlagBits::eTransferSrc |
+                   vk::BufferUsageFlagBits::eTransferDst;
             break;
         default:
             throw std::runtime_error("Kompute Tensor invalid tensor type");

@@ -416,6 +416,7 @@ Image::constructDescriptorImageInfo()
 
     descriptorInfo.imageView = *(mImageView.get());
     descriptorInfo.imageLayout = this->mPrimaryImageLayout;
+    descriptorInfo.sampler = this->mSampler ? *this->mSampler : nullptr;
     return descriptorInfo;
 }
 
@@ -431,9 +432,63 @@ Image::constructDescriptorSet(vk::DescriptorSet descriptorSet, uint32_t binding)
                                   binding, // Destination binding
                                   0,       // Destination array element
                                   1,       // Descriptor count
-                                  vk::DescriptorType::eStorageImage,
+                                  this->mDescriptorType,
                                   &mDescriptorImageInfo,
                                   nullptr); // Descriptor buffer info
+}
+
+vk::SamplerCreateInfo
+Image::defaultSamplerCreateInfo()
+{
+    vk::SamplerCreateInfo samplerInfo;
+    samplerInfo.magFilter = vk::Filter::eLinear;
+    samplerInfo.minFilter = vk::Filter::eLinear;
+    samplerInfo.addressModeU = vk::SamplerAddressMode::eClampToEdge;
+    samplerInfo.addressModeV = vk::SamplerAddressMode::eClampToEdge;
+    samplerInfo.addressModeW = vk::SamplerAddressMode::eClampToEdge;
+    samplerInfo.anisotropyEnable = VK_FALSE;
+    samplerInfo.maxAnisotropy = 1.0f;
+    samplerInfo.borderColor = vk::BorderColor::eIntOpaqueBlack;
+    samplerInfo.unnormalizedCoordinates = VK_FALSE;
+    samplerInfo.compareEnable = VK_FALSE;
+    samplerInfo.compareOp = vk::CompareOp::eAlways;
+    samplerInfo.mipmapMode = vk::SamplerMipmapMode::eNearest;
+    samplerInfo.mipLodBias = 0.0f;
+    samplerInfo.minLod = 0.0f;
+    samplerInfo.maxLod = 0.0f;
+    return samplerInfo;
+}
+
+void
+Image::createSampler(vk::SamplerCreateInfo samplerInfo)
+{
+    KP_LOG_DEBUG("Kompute Image creating sampler");
+
+    if (!this->mDevice) {
+        throw std::runtime_error("Kompute Image device is null");
+    }
+
+    if (this->mFreeSampler && this->mSampler) {
+        KP_LOG_DEBUG("Kompute Image destroying existing sampler before "
+                     "creating a new one");
+        this->mDevice->destroy(
+          *this->mSampler,
+          (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+        this->mSampler = nullptr;
+        this->mFreeSampler = false;
+    }
+
+    this->mSampler = std::make_shared<vk::Sampler>(
+      this->mDevice->createSampler(samplerInfo));
+    this->mFreeSampler = true;
+
+    this->mDescriptorType = vk::DescriptorType::eCombinedImageSampler;
+}
+
+bool
+Image::hasSampler()
+{
+    return this->mSampler != nullptr;
 }
 
 vk::ImageUsageFlags
@@ -444,11 +499,13 @@ Image::getPrimaryImageUsageFlags()
         case MemoryTypes::eHost:
         case MemoryTypes::eDeviceAndHost:
             return vk::ImageUsageFlagBits::eStorage |
+                   vk::ImageUsageFlagBits::eSampled |
                    vk::ImageUsageFlagBits::eTransferSrc |
                    vk::ImageUsageFlagBits::eTransferDst;
             break;
         case MemoryTypes::eStorage:
             return vk::ImageUsageFlagBits::eStorage |
+                   vk::ImageUsageFlagBits::eSampled |
                    // You can still copy images to/from storage memory
                    // so set the transfer usage flags here.
                    vk::ImageUsageFlagBits::eTransferSrc |
@@ -653,6 +710,21 @@ Image::destroy()
         KP_LOG_DEBUG("Kompose Image freeing image view");
         this->mDevice->destroyImageView(*this->mImageView);
         this->mImageView = nullptr;
+    }
+
+    if (this->mFreeSampler) {
+        if (!this->mSampler) {
+            KP_LOG_WARN("Kompose Image expected to destroy sampler "
+                        "but got null sampler");
+        } else {
+            KP_LOG_DEBUG("Kompose Image destroying sampler");
+            this->mDevice->destroy(
+              *this->mSampler,
+              (vk::Optional<const vk::AllocationCallbacks>)nullptr);
+            this->mSampler = nullptr;
+            this->mFreeSampler = false;
+        }
+        this->mDescriptorType = vk::DescriptorType::eStorageImage;
     }
 
     Memory::destroy();

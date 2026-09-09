@@ -309,6 +309,34 @@ class Image : public Memory
      */
     uint32_t getNumChannels();
 
+    /**
+     * Returns a default vk::SamplerCreateInfo suitable for sampling a
+     * single-mip 2D image: linear filtering, clamp-to-edge addressing, no
+     * anisotropy and no mipmapping.
+     *
+     * @return Default sampler creation parameters.
+     */
+    static vk::SamplerCreateInfo defaultSamplerCreateInfo();
+
+    /**
+     * Creates a Vulkan sampler for this image and switches its descriptor
+     * type to vk::DescriptorType::eCombinedImageSampler so it can be bound
+     * to a `sampler2D` (rather than `image2D`) in a shader. Can be called
+     * again to replace an existing sampler with new parameters.
+     *
+     * @param samplerInfo Sampler creation parameters. Defaults to
+     * defaultSamplerCreateInfo().
+     */
+    void createSampler(
+      vk::SamplerCreateInfo samplerInfo = defaultSamplerCreateInfo());
+
+    /**
+     * Check whether this image currently has a sampler attached.
+     *
+     * @returns Boolean stating whether a sampler has been created.
+     */
+    bool hasSampler();
+
     Type type() override { return Type::eImage; }
 
   protected:
@@ -326,6 +354,8 @@ class Image : public Memory
     bool mFreePrimaryImage = false;
     std::shared_ptr<vk::Image> mStagingImage;
     bool mFreeStagingImage = false;
+    std::shared_ptr<vk::Sampler> mSampler = nullptr;
+    bool mFreeSampler = false;
 
     void allocateMemoryCreateGPUResources(); // Creates the vulkan image
     void createImage(std::shared_ptr<vk::Image> image,
