@@ -15,14 +15,6 @@ This example is structured such that you will be able to extend it for your
 project. It contains a CMake build configuration that can be used in your
 production applications.
 
-## Building the example
-
-You will notice that it's a standalone project, so you can re-use it for
-your application. It uses CMake's
-[`fetch_content`](https://cmake.org/cmake/help/latest/module/FetchContent.html)
-to consume Kompute as a dependency. To build you just need to run the CMake
-command in this folder as follows:
-
 ```bash
 git clone https://github.com/KomputeProject/kompute.git
 cd kompute/examples/image_sampler

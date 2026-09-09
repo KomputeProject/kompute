@@ -1,4 +1,3 @@
-
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -7,8 +6,7 @@
 #include <kompute/Kompute.hpp>
 #include <shader/upsample.hpp>
 
-int
-main()
+int main()
 {
     kp::Manager mgr;
 

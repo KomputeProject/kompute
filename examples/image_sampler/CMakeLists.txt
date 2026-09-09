@@ -23,10 +23,8 @@ vulkan_compile_shader(
     OUTFILE shader/upsample.hpp
     NAMESPACE "shader")
 
-# Then add it to the library, so you can access it later in your code
 add_library(shader INTERFACE "shader/upsample.hpp")
 target_include_directories(shader INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
-# Setting up main example code
 add_executable(kompute_image_sampler src/main.cpp)
 target_link_libraries(kompute_image_sampler PRIVATE shader kompute::kompute)
