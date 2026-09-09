@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #include <fstream>
+#include <map>
 
 #include "kompute/Algorithm.hpp"
 #include "kompute/Image.hpp"
@@ -128,34 +129,22 @@ Algorithm::destroy()
 void
 Algorithm::createParameters()
 {
-    uint32_t numImages = 0;
-    uint32_t numTensors = 0;
-
     KP_LOG_DEBUG("Kompute Algorithm createParameters started");
 
+    std::map<vk::DescriptorType, uint32_t> descriptorTypeCounts;
+
     for (const std::shared_ptr<Memory>& mem : this->mMemObjects) {
-        if (mem->getDescriptorType() == vk::DescriptorType::eStorageImage) {
-            numImages++;
-        } else {
-            numTensors++;
-        }
+        descriptorTypeCounts[mem->getDescriptorType()]++;
     }
 
     std::vector<vk::DescriptorPoolSize> descriptorPoolSizes;
 
-    if (numTensors > 0) {
+    for (const auto& descriptorTypeCount : descriptorTypeCounts) {
         descriptorPoolSizes.push_back(vk::DescriptorPoolSize(
-          vk::DescriptorType::eStorageBuffer,
-          static_cast<uint32_t>(numTensors) // Descriptor count
+          descriptorTypeCount.first,
+          descriptorTypeCount.second // Descriptor count
           ));
     }
-
-    if (numImages > 0) {
-        descriptorPoolSizes.push_back(vk::DescriptorPoolSize(
-          vk::DescriptorType::eStorageImage,
-          static_cast<uint32_t>(numImages) // Descriptor count
-          ));
-    };
 
     vk::DescriptorPoolCreateInfo descriptorPoolInfo(
       vk::DescriptorPoolCreateFlags(),

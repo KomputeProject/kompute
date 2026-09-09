@@ -24,6 +24,7 @@ add_executable(kompute_tests TestAsyncOperations.cpp
     TestWorkgroup.cpp
     TestTensor.cpp
     TestImage.cpp
+    TestImageSampler.cpp
     TestOpImageCreate.cpp
     TestOpCopyTensor.cpp
     TestOpCopyTensorToImage.cpp
